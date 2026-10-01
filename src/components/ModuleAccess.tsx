@@ -12,7 +12,7 @@ export function ModuleAccess({ id, showScreenshots = true }: { id: string; showS
     {showScreenshots && <div className="media-gallery">{screenshots.map(item => {
       const url = assetUrl('module-media/' + id + '/' + document.version + '/' + item.path)
       return <figure key={item.path}>
-        <a href={url} target="_blank" rel="noreferrer"><img src={url} alt={item.alt} loading="lazy" /></a>
+        <a href={url} target="_blank" rel="noreferrer"><img className={item.otUi ? 'ot-ui-capture' : undefined} src={url} alt={item.alt} loading="lazy" /></a>
         <figcaption>{item.caption}<span>{item.captureType === 'hardware' ? 'Hardware capture' : 'Emulator capture'} · {item.credit} · {item.license}</span>{item.source !== 'original' && <a href={item.source} target="_blank" rel="noreferrer">Original source ↗</a>}</figcaption>
       </figure>
     })}</div>}
