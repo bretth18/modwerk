@@ -23,7 +23,8 @@ describe('SDK developer scaffolds', () => {
         expect(native).toContain('modules/' + id + '/verify.py')
         expect(native).not.toContain('verify_template.py')
         for (const file of ['README.md', 'TESTING.md', 'LICENSE', kind === 'dsp' ? 'engine.asm' : 'unit.s']) expect(existsSync(resolve(folder, file))).toBe(true)
-        const gate = spawnSync('python3', [resolve(folder, 'verify.py')], { encoding: 'utf8' })
+        const python = process.platform === 'win32' ? 'python' : 'python3'
+        const gate = spawnSync(python, [resolve(folder, 'verify.py')], { encoding: 'utf8' })
         expect(gate.status).not.toBe(0)
         expect(gate.stderr).toContain('Untested development scaffold')
         const retry = spawnSync(process.execPath, ['scripts/scaffold-module.mjs', id, '--author', 'example-author', '--output', output], { encoding: 'utf8' })

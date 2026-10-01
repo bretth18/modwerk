@@ -524,7 +524,6 @@
     "euclid": "0.1.1-experimental",
     "repitch": "0.1.1-experimental",
     "analog-bassdrum": "0.1.1-experimental",
-    "midi-scenes": "0.1.1-experimental",
     "usb-audio-out-tracks-main-cue": "0.1.1-experimental",
     "quantizer": "0.1.1-experimental"
   }

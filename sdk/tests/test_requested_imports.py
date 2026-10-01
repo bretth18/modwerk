@@ -49,13 +49,29 @@ class RequestedImports(unittest.TestCase):
             doc = json.loads((SDK / 'modules' / id / 'octamod.module.json').read_text())
             self.assertEqual(pins[id], doc['version'])
             self.assertEqual(doc['source']['revision'], REPORT['revision'])
-            self.assertNotIn('build', doc)
-            self.assertEqual(doc['version'], '0.1.1-experimental')
             self.assertTrue((SDK / 'modules' / id / 'LICENSE').is_file())
+            if id == 'midi-scenes':
+                self.assertEqual(doc['version'], '0.2.0-experimental')
+                self.assertEqual(doc['build']['status'], 'pending')
+            else:
+                self.assertNotIn('build', doc)
+                self.assertEqual(doc['version'], '0.1.1-experimental')
         for id, pin in REPORT['authorPins'].items():
             sources = [item for item in REPORT['files'] if item['path'].startswith('modules/' + id + '/upstream/')]
             self.assertTrue(sources)
-            self.assertEqual({item['revision'] for item in sources}, {pin['revision']})
+            doc = pin.get('documentation')
+            doc_path = doc['path'] if doc else None
+            assembly = [item for item in sources if item['path'] != doc_path]
+            self.assertTrue(assembly)
+            self.assertEqual({item['revision'] for item in assembly}, {pin['revision']})
+            self.assertEqual({item['repository'] for item in sources}, {pin['repository']})
+            if doc:
+                matches = [item for item in sources if item['path'] == doc['path']]
+                self.assertEqual(len(matches), 1)
+                self.assertEqual(matches[0]['revision'], doc['revision'])
+                self.assertEqual(matches[0].get('assemblyPinRevision'), pin['revision'])
+                self.assertEqual(matches[0]['sourcePath'], 'README.md')
+                self.assertEqual(matches[0]['sourceSha256'], matches[0]['vendoredSha256'])
         self.assertEqual(REPORT['dependencies']['usb-audio-out-tracks-main-cue'], ['platform/usb-midi'])
         self.assertTrue((SDK / 'platform/usb-midi/descriptors.py').is_file())
         self.assertIn('platform/usb-midi/', (SDK / 'platform/usb-midi/manifest.py').read_text())

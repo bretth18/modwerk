@@ -11,10 +11,11 @@ describe('native selection conflicts', () => {
     expect(result.conflicts[0].moduleIds).toEqual(['analog-bassdrum', 'miniverb', 'tapeecho', 'euclid'])
     expect(result.conflicts[0].fixes[0]).toEqual({label:'Remove Analog BD & Euclid',removeIds:['analog-bassdrum','euclid']})
     expect(result.conflicts[0].fixes[1].removeIds).toEqual(['miniverb', 'tapeecho', 'euclid'])
-    expect(result.notes).toEqual([])
+    expect(result.notes.join(' ')).toContain('MIDI Scenes: firmware builds are awaiting Octamod verification')
     const analogChoice = ids.filter(id => !result.conflicts[0].fixes[1].removeIds?.includes(id))
     expect(selectionConflicts(analogChoice)).toEqual([])
-    expect(checkSelection(analogChoice).checked).toBe(true)
+    expect(checkSelection(analogChoice).checked).toBe(false)
+    expect(checkSelection(analogChoice.filter(id => id !== 'midi-scenes')).checked).toBe(true)
   })
   it('reports the verified minimal menu collision regardless of additional runtime modules', () => {
     expect(selectionConflicts(seven)[0].id).toBe('module-menu-space')

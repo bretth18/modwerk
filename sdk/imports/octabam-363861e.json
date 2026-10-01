@@ -17,7 +17,12 @@
     "midi-scenes": {
       "repository": "https://github.com/bkkbrls-del/midisc",
       "revision": "63ca127bc99638602957f2b05747f8ed3bd9ba52",
-      "version": "1.40MIDISC8.2"
+      "version": "1.40MIDISC8.2",
+      "documentation": {
+        "path": "modules/midi-scenes/upstream/README.md",
+        "revision": "4f9a89453fdcdd39a3cd57f010ffa489cac721cd",
+        "version": "MIDISC2.0"
+      }
     },
     "quantizer": {
       "repository": "https://github.com/timhastie/octatrick-modules",
@@ -219,9 +224,9 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/midi-scenes/README.md",
       "sourceSha256": "6210403449aec741d1f388a525f2b3b2df083a7c762ba4f110f770c070d9b492",
-      "vendoredSha256": "2d4b9c2b0a35e1853698b00cc41d158be441cc5fccd91ae1d7cdfa5a2fc1861d",
+      "vendoredSha256": "988538d0ba5b5fedbd921d916ffafa8cee2b997b59ba1dcd019de48d3fcfdc5d",
       "importedVendoredSha256": "bb1b4b9f5babe96ad4455c9d639a1eadcbaa4dd8a7b373f0179369493c2ff078",
-      "adaptation": " Octamod 0.1.1 version and native verification evidence appended; imported fingerprint retained."
+      "adaptation": "Octamod 0.2.0-experimental catalog/docs for standalone MIDISC2.0; original octabam README fingerprint retained; firmware builds pending; native gas remains at the 1.40MIDISC8.2 author pin."
     },
     {
       "path": "modules/midi-scenes/manifest.py",
@@ -326,10 +331,12 @@
     {
       "path": "modules/midi-scenes/upstream/README.md",
       "repository": "https://github.com/bkkbrls-del/midisc",
-      "revision": "63ca127bc99638602957f2b05747f8ed3bd9ba52",
+      "revision": "4f9a89453fdcdd39a3cd57f010ffa489cac721cd",
       "sourcePath": "README.md",
-      "sourceSha256": "fe45f26033bb7f9f2c881344555702725679a0bc5898950adda620ed2d399cb6",
-      "vendoredSha256": "fe45f26033bb7f9f2c881344555702725679a0bc5898950adda620ed2d399cb6"
+      "sourceSha256": "d804ce0ae05bf69ffc63537606f9374358cdc1da3e6d864ef0dbdeba250e142e",
+      "vendoredSha256": "d804ce0ae05bf69ffc63537606f9374358cdc1da3e6d864ef0dbdeba250e142e",
+      "assemblyPinRevision": "63ca127bc99638602957f2b05747f8ed3bd9ba52",
+      "adaptation": " Standalone MIDISC2.0 README from bkkbrls-del/midisc@4f9a894; assembly gas files remain pinned at 1.40MIDISC8.2 (63ca127)."
     },
     {
       "path": "modules/midi-scenes/upstream/LICENSE",

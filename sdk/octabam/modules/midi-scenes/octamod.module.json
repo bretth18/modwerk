@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.1.1-experimental",
+  "version": "0.2.0-experimental",
   "nativeManifest": "manifest.py",
   "media": [],
   "id": "midi-scenes",
@@ -10,24 +10,25 @@
   "author": {
     "github": "bkkbrls-del",
     "credits": [
-      "bkkbrls-del/midisc: MIDI scene locks, version 1.40MIDISC8.2",
-      "Sam Banks: relocatable octabam port"
+      "bkkbrls-del/midisc: MIDI scene locks, version MIDISC2.0",
+      "Sam Banks: relocatable octabam port (1.40MIDISC8.2 gas pin)"
     ]
   },
   "presentation": {
     "label": "SCENE MORPH",
     "family": "Scenes",
     "summary": "Lock MIDI track parameters to scenes and morph them with the crossfader.",
-    "overview": "MIDI Scenes brings scene locks to MIDI tracks. Hold a scene and edit MIDI parameters, then morph between scenes with the crossfader. Locks follow Part and project save/reload and scene clear, copy and paste.",
+    "overview": "MIDI Scenes brings scene locks to MIDI tracks. Hold a scene and edit MIDI parameters, then morph between scenes with the crossfader. Locks follow Part and project save/reload and scene clear, copy and paste. The author's standalone MIDISC2.0 activates scenes before the first trig, lands changes on the real pattern/Part boundary, holds unscened live locks across refresh, sends CC before notes, and follows the playing pattern's Part as soon as the sequencer commits ACT. Octamod support for these changes is awaiting verification.",
     "highlights": [
       "Scene A/B locks on MIDI tracks",
       "Crossfader morphing with step parameter locks",
-      "Part and project save/reload support"
+      "Part and project save/reload support",
+      "Standalone MIDISC2.0: pre-trig scenes and pattern/Part sync"
     ],
     "usage": [
       "Hold scene A or B and turn a MIDI track parameter to create its scene lock. The lock indicator shows which scene holds values.",
       "Move the crossfader to morph between the two sides. An empty side uses a trig lock when present, otherwise the underlying track value.",
-      "Use the scene clear, copy and paste actions and Part Save/Reload. The upstream MIDI CONTROL CC48/55/56 filtering options are disabled."
+      "Use the scene clear, copy and paste actions and Part Save/Reload. The standalone MIDISC2.0 update adds pattern-commit Part sync; Octamod support is pending. The upstream MIDI CONTROL CC48/55/56 filtering options are disabled."
     ]
   },
   "controls": [],
@@ -37,12 +38,13 @@
     "location": "MIDI tracks",
     "conflicts": [],
     "limitations": [
+      "MIDISC2.0 features are awaiting Octamod verification; this catalog update does not enable firmware builds.",
       "MIDI CONTROL CC48/55/56 filter rows are not included.",
       "Composition with Octakit requires its KITS RELOAD bridge; Octakit is outside this catalog."
     ]
   },
   "resources": {
-    "recorded": "14 Sep 2026 hardware; 1.40MIDISC8.2 source pin",
+    "recorded": "1 Oct 2026: standalone MIDISC2.0 author-reported; Octamod verification pending",
     "storage": {
       "label": "Lock state",
       "display": "4 KB live table",
@@ -64,7 +66,7 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "The octabam port records hardware operation in OKMS1 with Octakit on 14 September. This import pins 1.40MIDISC8.2 and its regenerated GNU assembly. That earlier hardware result does not qualify this later pin or an Octamod composition. Octamod native and actual-browser composition/packaging parity and rejection checks passed on 1 October 2026. The owner reported both combined test images working; this is a smoke report, not full feature/load qualification.",
+    "summary": "Standalone MIDISC2.0 operation is author-reported. Its changes await Octamod build verification. Earlier hardware reports do not qualify this module version.",
     "hardwareStatus": "historical",
     "evidenceRevision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
     "gates": [
@@ -80,5 +82,9 @@
     "spdx": "MIT",
     "file": "LICENSE",
     "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance."
+  },
+  "build": {
+    "status": "pending",
+    "reason": "MIDI Scenes 2.0 firmware builds are awaiting Octamod verification. You can save this configuration while verification is pending."
   }
 }

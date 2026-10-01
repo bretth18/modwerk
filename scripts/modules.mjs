@@ -1,16 +1,16 @@
-import { readFile, readdir, realpath, lstat, mkdir, writeFile, copyFile, rm } from 'node:fs/promises'
+import { readFile, readdir, mkdir, writeFile, copyFile, rm } from 'node:fs/promises'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync } from 'node:child_process'
-import { parseModuleDocument, modulePath } from '../src/catalog/module-contract.ts'
+import { parseModuleDocument } from '../src/catalog/module-contract.ts'
 import { compareModuleVersions } from '../src/catalog/versions.ts'
+import { resolveModuleFile as file } from '../src/catalog/module-folder.ts'
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..'),modules=resolve(root,'sdk/octabam/modules')
 const args=process.argv.slice(2),write=args.includes('--write'),baseIndex=args.indexOf('--base'),base=baseIndex<0?null:args[baseIndex+1]
 if(baseIndex>=0&&!base)throw new Error('--base requires a Git commit/ref')
 const git=(...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8',maxBuffer:4*1024*1024})
 const baseCommit=base?git('rev-parse','--verify',base+'^{commit}').trim():null
 const json=async path=>JSON.parse(await readFile(path,'utf8'))
-async function file(folder,path){modulePath(path);const target=resolve(folder,path);const info=await lstat(target);if(!info.isFile()||info.isSymbolicLink())throw new Error(path+': expected a regular file');const real=await realpath(target);if(!real.startsWith(folder+'/'))throw new Error(path+': escapes module folder');return target}
 async function walk(folder){const paths=[];for(const entry of await readdir(folder,{withFileTypes:true})){if(entry.name==='__pycache__')continue;if(entry.isSymbolicLink())throw new Error('Module symlinks are not allowed: '+entry.name);if(entry.isDirectory())paths.push(...(await walk(resolve(folder,entry.name))).map(p=>entry.name+'/'+p));else paths.push(entry.name)}return paths.sort()}
 const documents=new Map()
 for(const entry of await readdir(modules,{withFileTypes:true})){

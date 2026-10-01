@@ -7,15 +7,18 @@ import { compiledModuleVersions, moduleSourcePaths } from './module-source.mjs'
 const root = fileURLToPath(new URL('../', import.meta.url))
 const catalog = JSON.parse(await readFile(resolve(root, 'sdk/catalog.json'), 'utf8'))
 const requested = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer']
+const verifiedRequested = requested.filter(id => id !== 'midi-scenes')
 describe('release package scope and reviewed source inventory', () => {
-  it('compiles all eleven verified modules and includes the required USB infrastructure', async () => {
+  it('compiles verified modules, keeps pending MIDI Scenes in source inventory, and includes USB infrastructure', async () => {
     const versions = await compiledModuleVersions(root, catalog), paths = await moduleSourcePaths(root)
-    expect(Object.keys(versions)).toEqual(['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', ...requested])
+    expect(Object.keys(versions)).toEqual(['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', ...verifiedRequested])
+    expect(versions).not.toHaveProperty('midi-scenes')
     expect(versions.miniverb).toBe('0.1.1-experimental')
-    for (const id of requested) {
+    for (const id of verifiedRequested) {
       expect(versions[id]).toBe('0.1.1-experimental')
       expect(paths).toContain('modules/' + id + '/manifest.py')
     }
+    expect(paths).toContain('modules/midi-scenes/manifest.py')
     expect(paths).toContain('platform/usb-midi/manifest.py')
   })
   it('refuses stale and duplicate catalog pins for requested imports', async () => {
