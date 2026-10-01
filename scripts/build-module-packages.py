@@ -118,15 +118,13 @@ def compile_requested(root, known, documents, versions, revision, provenance, na
         for t in m.tables:
             tables.append(dict(label=t.label,old=t.old,count=t.count,symbols=[dict(unit=u,symbol=n) for u,n in t.symbols],refs=[dict(address=a,old=o) for a,o in t.refs]))
         groups.append(dict(moduleId=m.name,key=m.key,author=author,nativeAuthor=m.author,detours=detours,refs=refs,pokes=pokes,tables=tables))
-    analog = baseline['analog']
-    if 'analog-bassdrum' in ids:
-        import ab_image, dsp909
-        ab_image.OUT = root / 'requested/analog'; dsp909.DSP_ASM=assembler; dsp909.DISASM=disassembler
-        lay,vbase=ab_image.layout(); variants=[]
-        for tag,c in ab_image.PAY.items():
-            words,syms=ab_image.assemble(c['spring'],c['cont'],lay,vbase,tag)
-            variants.append(dict(tag=tag,payloadAddress=c['payload'][0],payloadBytes=c['payload'][1],pointer=c['pointer'],spring=c['spring'],null=list(c['null']),seam=c['seam'],entry=syms['zg01'],words=words,sha256=HASH(code_bytes(words)),calls=list(ab_image.SHARED_CALLS[tag]),destination=ab_image.PRE[tag][0],stage=ab_image.PRE[tag][1]))
-        analog=dict(variants=variants,xBase=ab_image.TABLES,xWords=ab_image.x_image(lay,vbase),springWords=ab_image.SPRING_WORDS,sharedWords=ab_image.SHARED_WORDS,sharedOffset=ab_image.SHARED_OFFSET,sharedSha256=ab_image.SHARED_SHA256)
+    import ab_image, dsp909
+    ab_image.OUT = root / 'requested/analog'; dsp909.DSP_ASM=assembler; dsp909.DISASM=disassembler
+    lay,vbase=ab_image.layout(); variants=[]
+    for tag,c in ab_image.PAY.items():
+        words,syms=ab_image.assemble(c['spring'],c['cont'],lay,vbase,tag)
+        variants.append(dict(tag=tag,payloadAddress=c['payload'][0],payloadBytes=c['payload'][1],pointer=c['pointer'],spring=c['spring'],null=list(c['null']),seam=c['seam'],entry=syms['zg01'],words=words,sha256=HASH(code_bytes(words)),calls=list(ab_image.SHARED_CALLS[tag]),destination=ab_image.PRE[tag][0],stage=ab_image.PRE[tag][1]))
+    analog=dict(variants=variants,xBase=ab_image.TABLES,xWords=ab_image.x_image(lay,vbase),springWords=ab_image.SPRING_WORDS,sharedWords=ab_image.SHARED_WORDS,sharedOffset=ab_image.SHARED_OFFSET,sharedSha256=ab_image.SHARED_SHA256)
     work=root/'requested/bootstrap'; work.mkdir()
     (work/'table.inc').write_text('        .long 1\n        .long blob0,0,0,0,0,0,0,0\n        .align 4\nblob0:\n')
     (work/'pretable.inc').write_text('        .long 2\n        .long preblob0,0,0,0,0,0,0,0\n        .long preblob1,0,0,0,0,0,0,0\n        .align 4\npreblob0:\npreblob1:\n')
@@ -171,8 +169,8 @@ def main():
         if catalog_documents[module['id']]['version'] != module['version']: parser.error('Stale catalog module version: ' + module['id'])
     buildable = [module for module in catalog['modules'] if catalog_documents[module['id']].get('build', {}).get('status') != 'pending']
     requested_ids = REQUESTED if args.include_requested else [id for id in REQUESTED if id in {m['id'] for m in buildable}]
-    if [module['id'] for module in buildable] != ORDER + [id for id in REQUESTED if id in {m['id'] for m in buildable}]:
-        parser.error('This release compiler supports the seven original modules and reviewed requested modules')
+    if [module['id'] for module in buildable] not in (ORDER, ORDER + [id for id in REQUESTED if id != 'midi-scenes'], ORDER + REQUESTED):
+        parser.error('This release compiler supports the seven original modules and reviewed requested modules, including pending MIDI Scenes')
     include_requested = bool(requested_ids)
     versions = {module['id']: module['version'] for module in buildable}
     revision = catalog['sourceRevision']
