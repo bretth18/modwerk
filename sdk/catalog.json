@@ -16,35 +16,35 @@
     },
     {
       "id": "miniverb",
-      "version": "0.1.1-experimental"
+      "version": "0.1.2-experimental"
     },
     {
       "id": "tapeecho",
-      "version": "0.1.1-experimental"
+      "version": "0.1.2-experimental"
     },
     {
       "id": "euclid",
-      "version": "0.1.1-experimental"
+      "version": "0.1.2-experimental"
     },
     {
       "id": "repitch",
-      "version": "0.1.1-experimental"
+      "version": "0.1.2-experimental"
     },
     {
       "id": "analog-bassdrum",
-      "version": "0.1.1-experimental"
+      "version": "0.1.2-experimental"
     },
     {
       "id": "midi-scenes",
-      "version": "0.2.0-experimental"
+      "version": "0.2.1-experimental"
     },
     {
       "id": "usb-audio-out-tracks-main-cue",
-      "version": "0.1.1-experimental"
+      "version": "0.1.2-experimental"
     },
     {
       "id": "quantizer",
-      "version": "0.1.1-experimental"
+      "version": "0.1.2-experimental"
     }
   ]
 }

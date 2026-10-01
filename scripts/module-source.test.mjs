@@ -13,9 +13,9 @@ describe('release package scope and reviewed source inventory', () => {
     const versions = await compiledModuleVersions(root, catalog), paths = await moduleSourcePaths(root)
     expect(Object.keys(versions)).toEqual(['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', ...verifiedRequested])
     expect(versions).not.toHaveProperty('midi-scenes')
-    expect(versions.miniverb).toBe('0.1.1-experimental')
+    expect(versions.miniverb).toBe('0.1.2-experimental')
     for (const id of verifiedRequested) {
-      expect(versions[id]).toBe('0.1.1-experimental')
+      expect(versions[id]).toBe('0.1.2-experimental')
       expect(paths).toContain('modules/' + id + '/manifest.py')
     }
     expect(paths).toContain('modules/midi-scenes/manifest.py')

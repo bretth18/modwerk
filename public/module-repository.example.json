@@ -82,5 +82,12 @@
     "file": "LICENSE",
     "declaration": "Replace with accurate authorship, attribution and original/licensed source and media rights. Never include Elektron firmware, extracted routines or tables."
   },
-  "media": []
+  "media": [],
+  "access": {
+    "location": "Describe the exact OT page or menu where the module is selected or enabled.",
+    "steps": [
+      "Describe prerequisites, track/machine selection and the exact button/menu sequence."
+    ],
+    "screenshots": []
+  }
 }

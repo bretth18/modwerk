@@ -46,7 +46,7 @@ These declaration checks do not prove final memory placement or hardware safety.
 
 The module-set browser includes four actual native test configurations from the pinned tree, with source links and historical evidence. Starting a configuration copies the selected modules. Chooser settings preserve stock effects by default; with stock FX2 kept, only Repitch can be built. Turn stock FX2 off to make room for other modules. All stock FX1 effects remain available, and selections that exceed the available space are refused.
 
-Module thumbnails are original SVG illustrations. Actual licensed screenshots/audio belong in module source folders and are submitted through PRs. No real captures have been published yet; illustrations are not screenshots or measurements.
+Module thumbnails are original SVG illustrations. Module manifests now provide actual LCD captures and exact button/menu access steps. Capture/build provenance and rights review are required for new modules and updates; see [the workflow](MODULE_UI_CAPTURES.md). Actual licensed screenshots/audio belong in module source folders and are submitted through PRs. No real captures have been published yet; illustrations are not screenshots or measurements.
 
 ## Module source and versions
 

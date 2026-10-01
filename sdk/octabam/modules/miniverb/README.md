@@ -142,3 +142,20 @@ preserves the rejected candidate, and `diffuse_shallow/` preserves the
 shallower modulation experiment. These local artifacts are not runtime
 requirements. The optional installed-AU comparison remains available in
 `out/vintage_study`; it does not measure target DSP cost.
+
+## Access on the OT and actual UI captures
+
+Audio track FX2 SETUP: Mini Verb in the effect chooser.
+
+1. Select an audio track with its TRACK key.
+2. Hold FUNC and press FX2 to open FX2 SETUP.
+3. Turn LEVEL to Mini Verb and press YES to assign it.
+4. Press FX2 to close SETUP, then adjust DECAY, DAMP, MIX, MOD and RATE.
+
+![Mini Verb selected in the FX2 SETUP chooser. Its five controls are on the main FX2 page.](media/ot-location.png)
+
+![Mini Verb on the main FX2 page: DECAY, DAMP, MIX, MOD and RATE.](media/ot-controls.png)
+
+These are actual headless-emulator LCD captures, not hardware results. See
+[TESTING.md](TESTING.md), [capture provenance](media/capture.json) and
+[media rights](media/LICENSE.md).

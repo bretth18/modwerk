@@ -211,3 +211,19 @@ cross-checked against actual ColdFire execution, but it is not a hardware
 capture. Hardware listening, cache/bus timing and worst-case CPU load remain open.
 The remixer's DSP-only audition refuses Tape Echo explicitly instead of
 silently playing its dry stub. Use the CPU verifier's audition for now.
+
+## Access on the OT and actual UI captures
+
+Audio track FX2 SETUP: Tape Echo in the effect chooser.
+
+1. Select an audio track with its TRACK key.
+2. Hold FUNC and press FX2 to open FX2 SETUP.
+3. Turn LEVEL to Tape Echo and press YES to assign it.
+4. Press FX2 to close SETUP, then adjust TIME, FDBK, WOW, AGE, SYNC and MIX. All six active controls are on this main page.
+
+![Tape Echo main controls on FX2: TIME, FDBK, WOW, AGE, SYNC and MIX.](media/ot-controls.png)
+
+![Tape Echo selected in the FX2 SETUP chooser. Its six active controls are on the main FX2 page.](media/ot-setup.png)
+
+These are actual headless-emulator LCD captures. See [TESTING.md](TESTING.md),
+[capture provenance](media/capture.json) and [media rights](media/LICENSE.md).

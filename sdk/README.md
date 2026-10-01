@@ -45,6 +45,8 @@ The recorded verification used a temporary SDK copy, verified the original seven
 
 ## Versions and approval
 
+Publication requires actual hardware/emulator LCD captures of the selection/enable location and relevant controls, plus exact access steps and version/build/setup provenance in the manifest. See [the capture workflow](../docs/MODULE_UI_CAPTURES.md). Empty screenshots are draft-only; automatic USB modules without OT UI need the narrow reviewer-verified `access.noUiReason` declaration.
+
 Every module has a semantic version. Code, native declarations, web descriptions, controls, evidence or media changes require a strictly greater version. Patch versions suit compatible fixes; minor versions suit compatible additions; major versions identify changed stored parameter layouts, IDs or behavior requiring migration. Never reuse an already released version for different contents.
 
 **The owner merging the PR is the approval.** There is no second website approval step. Require owner review and passing checks on the current PR revision before merge. Automation builds the merged source commit and records module versions, source and artifact identities. A failed build keeps the previous release available. Protect main against unreviewed direct changes before enabling publication.

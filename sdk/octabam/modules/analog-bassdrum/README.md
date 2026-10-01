@@ -119,3 +119,26 @@ for the measured envelope; eight voices does not guarantee every FX combination.
 Module version: `0.1.1-experimental`. Imported from [sambanks/octabam at `363861e31ee9`](https://github.com/sambanks/octabam/tree/363861e31ee963c478fab2b190a0fabe1d7ce37b/modules/analog-bassdrum). Stock expectation bytes in manifests are converted to address/length/SHA-256 guards; they resolve only from the user’s own verified local OS. See [TESTING.md](TESTING.md) for composition verification and historical evidence. Native and actual-browser composition, packaging and rejection verification passed; no DSP execution or emulator suite was run. Owner merge of a reviewed PR remains required for publication.
 
 Octamod 0.1.1-experimental: browser composition uses reviewed source packages and derives inherited bytes from local 1.40C. The native matrix passed 156 byte identities and 132 refusals. The owner reported both combined native test images working on 1 October 2026; detailed feature/load qualification is not claimed.
+
+## Access and actual OT UI captures
+
+Audio track SRC SETUP: ANALOG BD; double-tap the track key for its 808 / 909 engine browser.
+
+1. Select an audio track with its TRACK key.
+2. Hold FUNC and press SRC to open SRC SETUP. Use DOWN to reach ANALOG BD, then press YES to assign it.
+3. Press SRC to close SETUP and edit the main controls. The 808 model uses PITCH, DECAY, TONE, ATK, SWEEP and SAT; the 909 uses TUNE and TDEP in place of TONE and SWEEP.
+4. Double-tap the assigned track’s TRACK key to open the engine browser. Choose 808 or 909 with UP/DOWN or LEVEL, then press YES. Selecting a model retains the existing knob settings.
+5. Hold FUNC and press SRC for the shared ACCNT, LPF, LOW and HIGH controls. AMP and the track FX pages remain available.
+
+![ANALOG BD selected on SRC SETUP, with its shared ACCNT, LPF, LOW and HIGH controls.](media/ot-location.png)
+
+![Analog BD’s engine browser: choose 808 or 909, then press YES.](media/ot-engines.png)
+
+![Analog BD 808 main controls: PITCH, DECAY, TONE, ATK, SWEEP and SAT.](media/ot-808.png)
+
+![Analog BD 909 main controls: PITCH, DECAY, TUNE, ATK, TDEP and SAT.](media/ot-909.png)
+
+![Shared Analog BD setup controls: ACCNT, LPF, LOW and HIGH.](media/ot-setup.png)
+
+These are actual firmware-rendered emulator LCD captures. See [TESTING.md](TESTING.md),
+[capture provenance](media/capture.json) and [media rights](media/LICENSE.md).

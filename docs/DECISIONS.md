@@ -30,6 +30,8 @@ New modules, updates, documentation and media are submitted through GitHub pull 
 
 Approved packages bind source commits, versions, compiler records and immutable artifact hashes. No arbitrary repository code runs in the website or metadata importer. Isolate source compilation from network, credentials, firmware and publishing rights; publish only packages reproduced from the reviewed source.
 
+New modules and updates with an OT UI require actual location/control screenshots and manifest access steps, with version/build/setup provenance. Automatic USB modules without an OT page use the narrow reviewer-verified exception. See [OT UI captures](MODULE_UI_CAPTURES.md).
+
 Require original or properly licensed sources and media, attribution, contributor declarations and reviewer verification. Distinguish illustrations, emulator evidence and hardware results. Review is not automatic legal clearance. See [contribution rules](../CONTRIBUTING.md).
 
 ## Guest community and private administration

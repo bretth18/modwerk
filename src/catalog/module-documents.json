@@ -451,8 +451,21 @@
       "id": "miniverb",
       "key": "MINIVERB",
       "name": "Mini Verb",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "category": "effects",
+      "access": {
+        "location": "Audio track FX2 SETUP: Mini Verb in the effect chooser.",
+        "steps": [
+          "Select an audio track with its TRACK key.",
+          "Hold FUNC and press FX2 to open FX2 SETUP.",
+          "Turn LEVEL to Mini Verb and press YES to assign it.",
+          "Press FX2 to close SETUP, then adjust DECAY, DAMP, MIX, MOD and RATE."
+        ],
+        "screenshots": [
+          "media/ot-location.png",
+          "media/ot-controls.png"
+        ]
+      },
       "author": {
         "github": "repeat98",
         "name": "Jannik Aßfalg",
@@ -566,17 +579,65 @@
       "license": {
         "spdx": "MIT",
         "file": "LICENSE",
-        "declaration": "Original module sources retain upstream authorship and permissive licences. See ../../THIRD_PARTY.md for component-specific credits and terms. No rights or hardware qualification are newly asserted by this import."
+        "declaration": "Original module sources retain upstream authorship and permissive licences. See ../../THIRD_PARTY.md for component-specific credits and terms. No rights or hardware qualification are newly asserted by this import. Original OT LCD captures are declared in media/LICENSE.md as LicenseRef-OT-UI-Documentation; underlying Elektron rights remain reserved. Reviewer verification is required before publication and is not automatic legal clearance."
       },
-      "media": []
+      "media": [
+        {
+          "path": "media/ot-location.png",
+          "captureType": "emulator",
+          "caption": "Mini Verb selected in the FX2 SETUP chooser. Its five controls are on the main FX2 page.",
+          "alt": "Mini Verb selected in the FX2 SETUP chooser. Its five controls are on the main FX2 page.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "FX2 SETUP",
+            "shows": "location",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+            "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+          }
+        },
+        {
+          "path": "media/ot-controls.png",
+          "captureType": "emulator",
+          "caption": "Mini Verb on the main FX2 page: DECAY, DAMP, MIX, MOD and RATE.",
+          "alt": "Mini Verb on the main FX2 page: DECAY, DAMP, MIX, MOD and RATE.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "FX2 main",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+            "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+          }
+        }
+      ]
     },
     {
       "schemaVersion": 2,
       "id": "tapeecho",
       "key": "TAPE ECHO",
       "name": "Tape Echo",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "category": "effects",
+      "access": {
+        "location": "Audio track FX2 SETUP: Tape Echo in the effect chooser.",
+        "steps": [
+          "Select an audio track with its TRACK key.",
+          "Hold FUNC and press FX2 to open FX2 SETUP.",
+          "Turn LEVEL to Tape Echo and press YES to assign it.",
+          "Press FX2 to close SETUP, then adjust TIME, FDBK, WOW, AGE, SYNC and MIX. All six active controls are on this main page."
+        ],
+        "screenshots": [
+          "media/ot-controls.png",
+          "media/ot-setup.png"
+        ]
+      },
       "author": {
         "github": "repeat98",
         "name": "Jannik Aßfalg",
@@ -691,17 +752,66 @@
       "license": {
         "spdx": "MIT",
         "file": "LICENSE",
-        "declaration": "Original module sources retain upstream authorship and permissive licences. See ../../THIRD_PARTY.md for component-specific credits and terms. No rights or hardware qualification are newly asserted by this import."
+        "declaration": "Original module sources retain upstream authorship and permissive licences. See ../../THIRD_PARTY.md for component-specific credits and terms. No rights or hardware qualification are newly asserted by this import. Original OT LCD captures are declared in media/LICENSE.md as LicenseRef-OT-UI-Documentation; underlying Elektron rights remain reserved. Reviewer verification is required before publication and is not automatic legal clearance."
       },
-      "media": []
+      "media": [
+        {
+          "path": "media/ot-controls.png",
+          "captureType": "emulator",
+          "caption": "Tape Echo main controls on FX2: TIME, FDBK, WOW, AGE, SYNC and MIX.",
+          "alt": "Tape Echo main controls on FX2: TIME, FDBK, WOW, AGE, SYNC and MIX.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "FX2 main",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+            "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+          }
+        },
+        {
+          "path": "media/ot-setup.png",
+          "captureType": "emulator",
+          "caption": "Tape Echo selected in the FX2 SETUP chooser. Its six active controls are on the main FX2 page.",
+          "alt": "Tape Echo selected in the FX2 SETUP chooser. Its six active controls are on the main FX2 page.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "FX2 SETUP",
+            "shows": "location",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+            "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+          }
+        }
+      ]
     },
     {
       "schemaVersion": 2,
       "id": "euclid",
       "key": "EUCLID",
       "name": "Euclid",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "category": "effects",
+      "access": {
+        "location": "Audio track FX1 or FX2 SETUP: Euclid in the effect chooser. These captures use FX2.",
+        "steps": [
+          "Select an audio track with its TRACK key.",
+          "Hold FUNC and press FX1 or FX2 to open that effect slot's SETUP.",
+          "Turn LEVEL to Euclid and press YES to assign it.",
+          "Press the same FX key to close SETUP for FREQ, RES, DEPTH, DEC, STEPS and PULSE.",
+          "Hold FUNC and press that FX key again for ROT, RATE, TYPE, ATK, output mode and MIX. Labels change with TYPE and output mode."
+        ],
+        "screenshots": [
+          "media/ot-controls.png",
+          "media/ot-setup.png"
+        ]
+      },
       "author": {
         "github": "repeat98",
         "name": "Jannik Aßfalg",
@@ -1068,17 +1178,68 @@
       "license": {
         "spdx": "MIT",
         "file": "LICENSE",
-        "declaration": "Original module sources retain upstream authorship and permissive licences. See ../../THIRD_PARTY.md for component-specific credits and terms. No rights or hardware qualification are newly asserted by this import."
+        "declaration": "Original module sources retain upstream authorship and permissive licences. See ../../THIRD_PARTY.md for component-specific credits and terms. No rights or hardware qualification are newly asserted by this import. Original OT LCD captures are declared in media/LICENSE.md as LicenseRef-OT-UI-Documentation; underlying Elektron rights remain reserved. Reviewer verification is required before publication and is not automatic legal clearance."
       },
-      "media": []
+      "media": [
+        {
+          "path": "media/ot-controls.png",
+          "captureType": "emulator",
+          "caption": "Euclid main controls in its default filter/envelope mode: FREQ, RES, DEPTH, DEC, STEPS and PULSE.",
+          "alt": "Euclid main controls in its default filter/envelope mode: FREQ, RES, DEPTH, DEC, STEPS and PULSE.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "FX2 main",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+            "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+          }
+        },
+        {
+          "path": "media/ot-setup.png",
+          "captureType": "emulator",
+          "caption": "Euclid selected in FX2 SETUP: ROT, RATE, TYPE, ATK, ENV output mode and MIX.",
+          "alt": "Euclid selected in FX2 SETUP: ROT, RATE, TYPE, ATK, ENV output mode and MIX.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "FX2 SETUP",
+            "shows": "location-and-controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+            "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+          }
+        }
+      ]
     },
     {
       "schemaVersion": 2,
       "id": "repitch",
       "key": "REPITCH",
       "name": "Repitch",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "category": "playback",
+      "access": {
+        "location": "STATIC or FLEX track SRC SETUP: TSTR = RPCH. The sample attribute route also offers TIMESTRETCH = REPITCH.",
+        "steps": [
+          "Select a STATIC or FLEX audio track with its TRACK key. PICKUP does not offer REPITCH.",
+          "Hold FUNC and press SRC to open SRC SETUP.",
+          "Turn encoder E (TSTR) to RPCH, after OFF, AUTO, NORM and BEAT.",
+          "Press SRC to close SETUP. REPITCH disables PTCH; RATE still applies.",
+          "For the sample-based route, load and select a sample on the STATIC or FLEX track. Press AED on the MKII panel, then FX1 to open the audio editor ATTR page.",
+          "Use UP/DOWN to select TIMESTRETCH. Press RIGHT to step through NORMAL, BEAT and REPITCH; LEFT steps back. Return to the track and set TSTR to AUTO in FUNC + SRC SETUP to use that sample attribute."
+        ],
+        "screenshots": [
+          "media/ot-location.png",
+          "media/ot-attributes.png",
+          "media/ot-controls.png"
+        ]
+      },
       "author": {
         "github": "repeat98",
         "name": "Jannik Aßfalg",
@@ -1147,21 +1308,90 @@
       "license": {
         "spdx": "MIT",
         "file": "LICENSE",
-        "declaration": "Original module sources retain upstream authorship and permissive licences. See ../../THIRD_PARTY.md for component-specific credits and terms. No rights or hardware qualification are newly asserted by this import."
+        "declaration": "Original module sources retain upstream authorship and permissive licences. See ../../THIRD_PARTY.md for component-specific credits and terms. No rights or hardware qualification are newly asserted by this import. Original OT LCD captures are declared in media/LICENSE.md as LicenseRef-OT-UI-Documentation; underlying Elektron rights remain reserved. Reviewer verification is required before publication and is not automatic legal clearance."
       },
-      "media": []
+      "media": [
+        {
+          "path": "media/ot-location.png",
+          "captureType": "emulator",
+          "caption": "STATIC SRC SETUP with TSTR set to RPCH using encoder E. FLEX offers the same option.",
+          "alt": "STATIC SRC SETUP with TSTR set to RPCH using encoder E. FLEX offers the same option.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "SRC SETUP",
+            "shows": "location-and-controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+            "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+          }
+        },
+        {
+          "path": "media/ot-attributes.png",
+          "captureType": "emulator",
+          "caption": "Audio editor ATTR with TIMESTRETCH set to REPITCH. Use this sample setting with track TSTR set to AUTO.",
+          "alt": "Audio editor ATTR with TIMESTRETCH set to REPITCH. Use this sample setting with track TSTR set to AUTO.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "Audio editor ATTR",
+            "shows": "location-and-controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "fd48ea8b84227dfbd31ed2824661087ddfe53d9ade8c82535e5da43c9a41fd38",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; original two-second 44.1 kHz mono PCM sample on a temporary scratch card; actual 128×64 LCD at integer scale 6."
+          }
+        },
+        {
+          "path": "media/ot-controls.png",
+          "captureType": "emulator",
+          "caption": "STATIC SRC main with an original sample loaded and track TSTR set to RPCH. PTCH reads OFF; RATE remains available.",
+          "alt": "STATIC SRC main with an original sample loaded and track TSTR set to RPCH. PTCH reads OFF; RATE remains available.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "SRC main",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "fd48ea8b84227dfbd31ed2824661087ddfe53d9ade8c82535e5da43c9a41fd38",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; original two-second 44.1 kHz mono PCM sample on a temporary scratch card; actual 128×64 LCD at integer scale 6."
+          }
+        }
+      ]
     },
     {
       "schemaVersion": 2,
       "id": "analog-bassdrum",
       "key": "ANALOG BD",
       "name": "Analog BD",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "category": "machines",
       "source": {
         "repository": "https://github.com/sambanks/octabam",
         "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
         "path": "modules/analog-bassdrum"
+      },
+      "access": {
+        "location": "Audio track SRC SETUP: ANALOG BD; double-tap the track key for its 808 / 909 engine browser.",
+        "steps": [
+          "Select an audio track with its TRACK key.",
+          "Hold FUNC and press SRC to open SRC SETUP. Use DOWN to reach ANALOG BD, then press YES to assign it.",
+          "Press SRC to close SETUP and edit the main controls. The 808 model uses PITCH, DECAY, TONE, ATK, SWEEP and SAT; the 909 uses TUNE and TDEP in place of TONE and SWEEP.",
+          "Double-tap the assigned track’s TRACK key to open the engine browser. Choose 808 or 909 with UP/DOWN or LEVEL, then press YES. Selecting a model retains the existing knob settings.",
+          "Hold FUNC and press SRC for the shared ACCNT, LPF, LOW and HIGH controls. AMP and the track FX pages remain available."
+        ],
+        "screenshots": [
+          "media/ot-location.png",
+          "media/ot-engines.png",
+          "media/ot-808.png",
+          "media/ot-909.png",
+          "media/ot-setup.png"
+        ]
       },
       "author": {
         "github": "repeat98",
@@ -1315,16 +1545,102 @@
       "license": {
         "spdx": "MIT",
         "file": "LICENSE",
-        "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance."
+        "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance. Original OT LCD captures are declared in media/LICENSE.md as LicenseRef-OT-UI-Documentation; underlying Elektron rights remain reserved. Reviewer verification is required before publication and is not automatic legal clearance."
       },
-      "media": []
+      "media": [
+        {
+          "path": "media/ot-location.png",
+          "captureType": "emulator",
+          "caption": "ANALOG BD selected on SRC SETUP, with its shared ACCNT, LPF, LOW and HIGH controls.",
+          "alt": "ANALOG BD selected on SRC SETUP, with its shared ACCNT, LPF, LOW and HIGH controls.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "SRC SETUP",
+            "shows": "location-and-controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+          }
+        },
+        {
+          "path": "media/ot-engines.png",
+          "captureType": "emulator",
+          "caption": "Analog BD’s engine browser: choose 808 or 909, then press YES.",
+          "alt": "Analog BD’s engine browser: choose 808 or 909, then press YES.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "Analog BD engine browser",
+            "shows": "location",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+          }
+        },
+        {
+          "path": "media/ot-808.png",
+          "captureType": "emulator",
+          "caption": "Analog BD 808 main controls: PITCH, DECAY, TONE, ATK, SWEEP and SAT.",
+          "alt": "Analog BD 808 main controls: PITCH, DECAY, TONE, ATK, SWEEP and SAT.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "808 SRC main",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+          }
+        },
+        {
+          "path": "media/ot-909.png",
+          "captureType": "emulator",
+          "caption": "Analog BD 909 main controls: PITCH, DECAY, TUNE, ATK, TDEP and SAT.",
+          "alt": "Analog BD 909 main controls: PITCH, DECAY, TUNE, ATK, TDEP and SAT.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "909 SRC main",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+          }
+        },
+        {
+          "path": "media/ot-setup.png",
+          "captureType": "emulator",
+          "caption": "Shared Analog BD setup controls: ACCNT, LPF, LOW and HIGH.",
+          "alt": "Shared Analog BD setup controls: ACCNT, LPF, LOW and HIGH.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "SRC SETUP",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+          }
+        }
+      ]
     },
     {
       "schemaVersion": 2,
       "id": "midi-scenes",
       "key": "MIDI SCENES",
       "name": "MIDI Scenes",
-      "version": "0.2.0-experimental",
+      "version": "0.2.1-experimental",
       "category": "scenes",
       "source": {
         "repository": "https://github.com/sambanks/octabam",
@@ -1334,6 +1650,22 @@
       "build": {
         "status": "pending",
         "reason": "MIDI Scenes 2.0 firmware builds are awaiting Octamod verification. You can save this configuration while verification is pending."
+      },
+      "access": {
+        "location": "MIDI track parameter pages: hold SCENE A or SCENE B and edit an enabled parameter; the example uses MIDI CTRL 1.",
+        "steps": [
+          "Press MIDI to enter MIDI mode and select a track with its TRACK key.",
+          "For an external receiver, open MIDI NOTE SETUP with FUNC + SRC, choose CHAN with encoder A and press YES to confirm. The capture fixture has no connected receiver and leaves CHAN off.",
+          "For the illustrated CC example, hold FUNC and press FX1 to open MIDI CTRL 1 SETUP. Assign controller 74 to CC1 with encoder C and press YES to confirm.",
+          "Press FX1 to return to MIDI CTRL 1. Hold FUNC and press encoder C to enable CC1; its default OFF state cannot be edited as a normal active control.",
+          "Hold SCENE A or SCENE B and press a TRIG key to assign a scene to that side. Keep the scene key held and turn encoder C to set its CC1 scene lock. The pictured example locks CC1 to 64 while the base value is 0.",
+          "Release the scene key. Move the crossfader to morph the assigned scenes. Other supported MIDI parameter pages use the same hold-and-edit pattern."
+        ],
+        "screenshots": [
+          "media/ot-setup.png",
+          "media/ot-location.png",
+          "media/ot-scene-lock.png"
+        ]
       },
       "author": {
         "github": "bkkbrls-del",
@@ -1405,21 +1737,84 @@
       "license": {
         "spdx": "MIT",
         "file": "LICENSE",
-        "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance."
+        "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance. Original OT LCD captures are declared in media/LICENSE.md as LicenseRef-OT-UI-Documentation; underlying Elektron rights remain reserved. Reviewer verification is required before publication and is not automatic legal clearance."
       },
-      "media": []
+      "media": [
+        {
+          "path": "media/ot-setup.png",
+          "captureType": "emulator",
+          "caption": "MIDI CTRL 1 SETUP: CC1 is assigned to controller 74 using encoder C and confirmed with YES.",
+          "alt": "MIDI CTRL 1 SETUP: CC1 is assigned to controller 74 using encoder C and confirmed with YES.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "MIDI CTRL 1 SETUP",
+            "shows": "location",
+            "firmware": "1.40C",
+            "moduleVersion": "0.2.1-experimental",
+            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+          }
+        },
+        {
+          "path": "media/ot-location.png",
+          "captureType": "emulator",
+          "caption": "MIDI CONTROL 1 with CC1 enabled at its base value of 0. Hold FUNC and press encoder C to enable it.",
+          "alt": "MIDI CONTROL 1 with CC1 enabled at its base value of 0. Hold FUNC and press encoder C to enable it.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "MIDI CONTROL 1",
+            "shows": "location-and-controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.2.1-experimental",
+            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+          }
+        },
+        {
+          "path": "media/ot-scene-lock.png",
+          "captureType": "emulator",
+          "caption": "Scene A held on MIDI CONTROL 1: the CC1 scene lock reads 64; releasing Scene A returns to the base value of 0.",
+          "alt": "Scene A held on MIDI CONTROL 1: the CC1 scene lock reads 64; releasing Scene A returns to the base value of 0.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "MIDI CONTROL 1, Scene A held",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.2.1-experimental",
+            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+          }
+        }
+      ]
     },
     {
       "schemaVersion": 2,
       "id": "usb-audio-out-tracks-main-cue",
       "key": "USB AUDIO OUT TRACKS MAIN CUE",
       "name": "USB Audio",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "category": "midi-usb",
       "source": {
         "repository": "https://github.com/sambanks/octabam",
         "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
         "path": "modules/usb-audio-out-tracks-main-cue"
+      },
+      "access": {
+        "location": "The Octatrack USB port and your recording host’s audio input selector.",
+        "steps": [
+          "Include USB Audio in the firmware configuration. This source import is still pending verification.",
+          "Connect the Octatrack’s USB port to your recording host using high-speed USB for all twenty channels.",
+          "Choose the Octatrack USB audio input in your recording software. Channels 1–16 are the eight track stereo pairs, 17–18 MAIN and 19–20 CUE.",
+          "Allow the stream to settle before recording; upstream reports reordered startup samples around 0.5–1.5 seconds after opening."
+        ],
+        "screenshots": [],
+        "noUiReason": "This automatic USB output contribution adds no dedicated OT page, chooser entry or panel controls. Access is through the USB connection and the host’s audio input selector. The reviewer must verify this absence of OT UI against the pinned source before publication."
       },
       "author": {
         "github": "markandrus",
@@ -1508,12 +1903,28 @@
       "id": "quantizer",
       "key": "SCALE QUANTIZER",
       "name": "Scale Quantizer",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "category": "machines",
       "source": {
         "repository": "https://github.com/sambanks/octabam",
         "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
         "path": "modules/quantizer"
+      },
+      "access": {
+        "location": "PROJECT > CONTROL > SEQUENCER: SCALE, ROOT and GLIDE rows.",
+        "steps": [
+          "On the MKII panel, press PROJ to open the project menu.",
+          "Use UP/DOWN to select CONTROL, then press RIGHT to enter its list.",
+          "Select SEQUENCER with UP/DOWN and press YES.",
+          "Scroll DOWN to SCALE and turn LEVEL to choose a scale. OFF restores stock pitch behavior.",
+          "Scroll to ROOT and turn LEVEL to select the key. GLIDE is the next row; its effect depends on the track’s LEG setting."
+        ],
+        "screenshots": [
+          "media/ot-location.png",
+          "media/ot-scale.png",
+          "media/ot-root.png",
+          "media/ot-glide.png"
+        ]
       },
       "author": {
         "github": "timhastie",
@@ -1644,9 +2055,78 @@
       "license": {
         "spdx": "MIT",
         "file": "LICENSE",
-        "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance."
+        "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance. Original OT LCD captures are declared in media/LICENSE.md as LicenseRef-OT-UI-Documentation; underlying Elektron rights remain reserved. Reviewer verification is required before publication and is not automatic legal clearance."
       },
-      "media": []
+      "media": [
+        {
+          "path": "media/ot-location.png",
+          "captureType": "emulator",
+          "caption": "Select SEQUENCER in PROJECT > CONTROL and press YES to reach the scale settings.",
+          "alt": "Select SEQUENCER in PROJECT > CONTROL and press YES to reach the scale settings.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "PROJECT > CONTROL",
+            "shows": "location",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+          }
+        },
+        {
+          "path": "media/ot-scale.png",
+          "captureType": "emulator",
+          "caption": "SCALE selected in CONTROL SEQUENCER, with MAJOR enabled using LEVEL.",
+          "alt": "SCALE selected in CONTROL SEQUENCER, with MAJOR enabled using LEVEL.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "CONTROL SEQUENCER: SCALE",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+          }
+        },
+        {
+          "path": "media/ot-root.png",
+          "captureType": "emulator",
+          "caption": "ROOT selected below SCALE; the example uses C with the MAJOR scale.",
+          "alt": "ROOT selected below SCALE; the example uses C with the MAJOR scale.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "CONTROL SEQUENCER: ROOT",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+          }
+        },
+        {
+          "path": "media/ot-glide.png",
+          "captureType": "emulator",
+          "caption": "The scrolled sequencer menu shows all three added rows: SCALE, ROOT and GLIDE.",
+          "alt": "The scrolled sequencer menu shows all three added rows: SCALE, ROOT and GLIDE.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "CONTROL SEQUENCER: GLIDE",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+          }
+        }
+      ]
     }
   ]
 }

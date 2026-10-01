@@ -3,7 +3,7 @@
   "id": "miniverb",
   "key": "MINIVERB",
   "name": "Mini Verb",
-  "version": "0.1.1-experimental",
+  "version": "0.1.2-experimental",
   "category": "effects",
   "author": {
     "github": "repeat98",
@@ -118,7 +118,55 @@
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "Original module sources retain upstream authorship and permissive licences. See ../../THIRD_PARTY.md for component-specific credits and terms. No rights or hardware qualification are newly asserted by this import."
+    "declaration": "Original module sources retain upstream authorship and permissive licences. See ../../THIRD_PARTY.md for component-specific credits and terms. No rights or hardware qualification are newly asserted by this import. Original OT LCD captures are declared in media/LICENSE.md as LicenseRef-OT-UI-Documentation; underlying Elektron rights remain reserved. Reviewer verification is required before publication and is not automatic legal clearance."
   },
-  "media": []
+  "media": [
+    {
+      "path": "media/ot-location.png",
+      "captureType": "emulator",
+      "caption": "Mini Verb selected in the FX2 SETUP chooser. Its five controls are on the main FX2 page.",
+      "alt": "Mini Verb selected in the FX2 SETUP chooser. Its five controls are on the main FX2 page.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "FX2 SETUP",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+        "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+      }
+    },
+    {
+      "path": "media/ot-controls.png",
+      "captureType": "emulator",
+      "caption": "Mini Verb on the main FX2 page: DECAY, DAMP, MIX, MOD and RATE.",
+      "alt": "Mini Verb on the main FX2 page: DECAY, DAMP, MIX, MOD and RATE.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "FX2 main",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+        "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+      }
+    }
+  ],
+  "access": {
+    "location": "Audio track FX2 SETUP: Mini Verb in the effect chooser.",
+    "steps": [
+      "Select an audio track with its TRACK key.",
+      "Hold FUNC and press FX2 to open FX2 SETUP.",
+      "Turn LEVEL to Mini Verb and press YES to assign it.",
+      "Press FX2 to close SETUP, then adjust DECAY, DAMP, MIX, MOD and RATE."
+    ],
+    "screenshots": [
+      "media/ot-location.png",
+      "media/ot-controls.png"
+    ]
+  }
 }

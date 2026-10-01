@@ -26,15 +26,15 @@ describe('reviewed imports with verified loader-free composition', () => {
     expect(() => moduleBuildError(['unknown'])).toThrow('Unknown module')
   })
 
-  it('exports and imports MIDI Scenes at 0.2.0-experimental', () => {
-    expect(MODULE_DOCUMENTS_BY_ID['midi-scenes'].version).toBe('0.2.0-experimental')
-    expect(newConfiguration('MIDI Scenes', ['midi-scenes']).moduleVersions).toEqual({ 'midi-scenes': '0.2.0-experimental' })
+  it('exports and imports MIDI Scenes at 0.2.1-experimental', () => {
+    expect(MODULE_DOCUMENTS_BY_ID['midi-scenes'].version).toBe('0.2.1-experimental')
+    expect(newConfiguration('MIDI Scenes', ['midi-scenes']).moduleVersions).toEqual({ 'midi-scenes': '0.2.1-experimental' })
     const selection = { ...createSelection(['midi-scenes'], null), name: 'MIDI Scenes 2.0' }
-    expect(selection.modules).toEqual([{ id: 'midi-scenes', key: 'MIDI SCENES', version: '0.2.0-experimental' }])
+    expect(selection.modules).toEqual([{ id: 'midi-scenes', key: 'MIDI SCENES', version: '0.2.1-experimental' }])
     expect(parseSelection(JSON.stringify(selection))).toEqual({
       name: 'MIDI Scenes 2.0',
       moduleIds: ['midi-scenes'],
-      moduleVersions: { 'midi-scenes': '0.2.0-experimental' },
+      moduleVersions: { 'midi-scenes': '0.2.1-experimental' },
       keepStockFx2: false,
     })
   })
@@ -45,7 +45,7 @@ describe('reviewed imports with verified loader-free composition', () => {
     const imported = parseSelection(JSON.stringify(selection))
     const old = validateConfiguration(newConfiguration('Older MIDI Scenes', imported.moduleIds, imported.keepStockFx2, imported.moduleVersions))
     expect(old.moduleVersions['midi-scenes']).toBe(version)
-    expect(configurationVersionError(old)).toContain('MIDI Scenes ' + version + ' → 0.2.0-experimental')
+    expect(configurationVersionError(old)).toContain('MIDI Scenes ' + version + ' → 0.2.1-experimental')
     expect(configurationVersionError(old)).toContain('Use current module versions')
   })
 
@@ -55,7 +55,7 @@ describe('reviewed imports with verified loader-free composition', () => {
     expect(checkSelection(['midi-scenes']).checked).toBe(false)
     expect(checkSelection(['repitch', 'midi-scenes']).checked).toBe(false)
     expect(checkSelection(['repitch', 'midi-scenes']).notes.join(' ')).toContain('MIDI Scenes')
-    expect(() => validateCompiledPackage('midi-scenes', '0.2.0-experimental')).toThrow('awaiting')
+    expect(() => validateCompiledPackage('midi-scenes', '0.2.1-experimental')).toThrow('awaiting')
     const original = new Uint8Array(64)
     await expect(composeOs(original, ['midi-scenes'])).rejects.toThrow('awaiting Octamod verification')
     await expect(composeOs(original, ['repitch', 'midi-scenes'])).rejects.toThrow('awaiting Octamod verification')
@@ -66,9 +66,9 @@ describe('reviewed imports with verified loader-free composition', () => {
     const selection = { ...createSelection(imported, null), name: 'New modules' }
     expect(selection.validation).toBe('pending')
     expect(parseSelection(JSON.stringify(selection)).moduleIds).toEqual(imported)
-    expect(selection.modules.find(module => module.id === 'midi-scenes')?.version).toBe('0.2.0-experimental')
+    expect(selection.modules.find(module => module.id === 'midi-scenes')?.version).toBe('0.2.1-experimental')
     for (const id of verified) {
-      expect(selection.modules.find(module => module.id === id)?.version).toBe('0.1.1-experimental')
+      expect(selection.modules.find(module => module.id === id)?.version).toBe('0.1.2-experimental')
     }
   })
 

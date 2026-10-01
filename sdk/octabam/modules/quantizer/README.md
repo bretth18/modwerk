@@ -91,3 +91,24 @@ addresses, so a pin that moves them needs both modules bumped together.
 Module version: `0.1.1-experimental`. Imported from [sambanks/octabam at `363861e31ee9`](https://github.com/sambanks/octabam/tree/363861e31ee963c478fab2b190a0fabe1d7ce37b/modules/quantizer). The author implementation is pinned to `525f4b19b04dc3ba3f3bae3b25abbf48df34a10a` (v2.9); only the quantizer sources and author documentation/licence are vendored as ordinary files. Stock expectation bytes in manifests are converted to address/length/SHA-256 guards; they resolve only from the user’s own verified local OS. See [TESTING.md](TESTING.md) for composition verification and historical evidence. Native and actual-browser composition, packaging and rejection verification passed; no DSP execution or emulator suite was run. Owner merge of a reviewed PR remains required for publication.
 
 Octamod 0.1.1-experimental: browser composition uses reviewed source packages and derives inherited bytes from local 1.40C. The native matrix passed 156 byte identities and 132 refusals. The owner reported both combined native test images working on 1 October 2026; detailed feature/load qualification is not claimed.
+
+## Access and actual OT UI captures
+
+PROJECT > CONTROL > SEQUENCER: SCALE, ROOT and GLIDE rows.
+
+1. On the MKII panel, press PROJ to open the project menu.
+2. Use UP/DOWN to select CONTROL, then press RIGHT to enter its list.
+3. Select SEQUENCER with UP/DOWN and press YES.
+4. Scroll DOWN to SCALE and turn LEVEL to choose a scale. OFF restores stock pitch behavior.
+5. Scroll to ROOT and turn LEVEL to select the key. GLIDE is the next row; its effect depends on the track’s LEG setting.
+
+![Select SEQUENCER in PROJECT > CONTROL and press YES to reach the scale settings.](media/ot-location.png)
+
+![SCALE selected in CONTROL SEQUENCER, with MAJOR enabled using LEVEL.](media/ot-scale.png)
+
+![ROOT selected below SCALE; the example uses C with the MAJOR scale.](media/ot-root.png)
+
+![The scrolled sequencer menu shows all three added rows: SCALE, ROOT and GLIDE.](media/ot-glide.png)
+
+These are actual firmware-rendered emulator LCD captures. See [TESTING.md](TESTING.md),
+[capture provenance](media/capture.json) and [media rights](media/LICENSE.md).

@@ -8,8 +8,9 @@ Contribute modules, fixes, documentation, screenshots and audio through GitHub p
 2. Read [the SDK quickstart](sdk/README.md), then run `npm run module:new -- my-module --kind dsp --author your-github-login` (or `--kind coldfire`). Keep source and site metadata together under `sdk/octabam/modules/my-module/`.
 3. Implement the native contribution, assign a free ID where applicable, document all controls and declare claims/conflicts. Supply your own stock OS only in ignored local storage when native development requires it.
 4. Record actual quality/stress results, tested commit, conditions and every command/result in TESTING.md. Separate static estimates, emulator evidence, historical hardware evidence and current hardware qualification. A passing assembly or metadata check is insufficient.
-5. Validate the strict site manifest. Run `npm run modules:generate` for catalog changes and `npm run check`. New modules also need approved engine package integration and native parity/rejection evidence before they can be included in `sdk/catalog.json`; metadata alone cannot install executable code.
-6. Open a PR against the Octamod repository. Include authorship/licence/media-rights declarations and validation results. Updates must remain reviewable as one source/documentation change.
+5. Capture the actual OT UI showing where the module is selected/enabled and its control pages. Add button/menu instructions and capture provenance to the manifest; see [the capture workflow](docs/MODULE_UI_CAPTURES.md).
+6. Validate the strict site manifest. Run `npm run modules:generate` for catalog changes and `npm run check`. New modules also need approved engine package integration and native parity/rejection evidence before they can be included in `sdk/catalog.json`; metadata alone cannot install executable code.
+7. Open a PR against the Octamod repository. Include authorship/licence/media-rights declarations and validation results. Updates must remain reviewable as one source/documentation change.
 
 ## Required version increase
 
@@ -23,7 +24,9 @@ For adapted components, preserve their copyright notices and full terms in the m
 
 ## Screenshots and audio
 
-Store assets in the module's media/ folder and list them in the manifest, with capture type, caption, alt text, credit, licence and original/source provenance. Hardware captures and emulator captures must be labelled accurately. PNG/JPEG/WebP: 5 MB maximum; WAV/MP3/Ogg: 12 MB maximum; eight assets maximum. No executable files, firmware, path escapes or symlinks. Empty media is honest when no licensed capture exists; it does not satisfy the completion requirement for real media where available.
+Store assets in the module's media/ folder and list them in the manifest, with capture type, caption, alt text, credit, licence and original/source provenance. Hardware captures and emulator captures must be labelled accurately. PNG/JPEG/WebP: 5 MB maximum; WAV/MP3/Ogg: 12 MB maximum; eight assets maximum. No executable files, firmware, path escapes or symlinks. Every new module and module update with an OT UI requires actual OT UI screenshots. Automatic USB modules with no dedicated OT page must document the narrow `access.noUiReason` exception for reviewer verification. The manifest's `access` section must explain the location, prerequisites and exact button/menu sequence, and reference declared `media` images with `otUi` provenance. Show the chooser/enable location and all relevant main/setup/control pages; one image can cover both when it clearly shows both. Capture the real LCD pixels from hardware or the headless emulator. Generic OT photos, illustrations, reconstructed labels and mockups do not satisfy this requirement. Audio remains optional.
+
+`npm run modules:check -- --base origin/main` enforces this requirement for new/changed module folders and modules newly added to the catalog. Unchanged previously approved versions remain available. A draft may have empty screenshots, but it cannot pass publication checks. Each capture records the module version, base OS, local build SHA-256 and hardware/emulator setup; the reviewer verifies that the pictures and instructions match the current UI, including every relevant control page. Capture metadata validation cannot prove authenticity or completeness. Record capture commands and any limitations in TESTING.md. Capture evidence does not change hardware qualification. See [the capture workflow](docs/MODULE_UI_CAPTURES.md).
 
 ## Review and release
 

@@ -51,11 +51,11 @@ class RequestedImports(unittest.TestCase):
             self.assertEqual(doc['source']['revision'], REPORT['revision'])
             self.assertTrue((SDK / 'modules' / id / 'LICENSE').is_file())
             if id == 'midi-scenes':
-                self.assertEqual(doc['version'], '0.2.0-experimental')
+                self.assertEqual(doc['version'], '0.2.1-experimental')
                 self.assertEqual(doc['build']['status'], 'pending')
             else:
                 self.assertNotIn('build', doc)
-                self.assertEqual(doc['version'], '0.1.1-experimental')
+                self.assertEqual(doc['version'], '0.1.2-experimental')
         for id, pin in REPORT['authorPins'].items():
             sources = [item for item in REPORT['files'] if item['path'].startswith('modules/' + id + '/upstream/')]
             self.assertTrue(sources)

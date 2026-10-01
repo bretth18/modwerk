@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "captured": "2026-10-01",
+  "moduleId": "tapeecho",
+  "moduleVersion": "0.1.2-experimental",
+  "firmware": "1.40C",
+  "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+  "emulatorSha256": "93484e4b71c70f48f795825103146a36ef95ef9ac06ee627e28608ae3e3bb3eb",
+  "captureMethod": "ot_emu --interactive --dsp --frame --mkii --main-level off; panel key/encoder commands, then lcd_view.png(lcd_view.screen(lcd_view.read_plane(...)), scale=6). No qualification gates or transport playback.",
+  "imageProfile": {
+    "nativeRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+    "modules": [
+      "spectrum",
+      "modulation",
+      "character",
+      "miniverb",
+      "tapeecho",
+      "euclid",
+      "repitch"
+    ],
+    "fx2": [
+      "MINIVERB",
+      "TAPE ECHO",
+      "EUCLID"
+    ]
+  },
+  "accessSteps": [
+    "Select an audio track with its TRACK key.",
+    "Hold FUNC and press FX2 to open FX2 SETUP.",
+    "Turn LEVEL to Tape Echo and press YES to assign it.",
+    "Press FX2 to close SETUP, then adjust TIME, FDBK, WOW, AGE, SYNC and MIX. All six active controls are on this main page."
+  ],
+  "screenshots": [
+    {
+      "path": "media/ot-controls.png",
+      "sha256": "84dde305ac99ae026af7bd0954891338837e716519b1db388a35df17ea26bdda",
+      "page": "FX2 main"
+    },
+    {
+      "path": "media/ot-setup.png",
+      "sha256": "b0b73b477df925217dd369cca9eb6b4fc73c12238d238b6eb075faf7a5e54d1a",
+      "page": "FX2 SETUP"
+    }
+  ],
+  "limitations": [
+    "Emulator UI evidence only; no new hardware/audio/native-byte-parity qualification.",
+    "Empty scratch card, no samples or user projects."
+  ],
+  "reproduction": {
+    "script": "scripts/capture-module-ui.py",
+    "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6.",
+    "plan": [
+      {
+        "wait": 3000
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "wait": 2000
+      },
+      {
+        "press": [
+          "NO"
+        ]
+      },
+      {
+        "press": [
+          "FUNC",
+          "FX2"
+        ]
+      },
+      {
+        "encoder": {
+          "name": "LEVEL",
+          "delta": -20
+        }
+      },
+      {
+        "encoder": {
+          "name": "LEVEL",
+          "delta": 1
+        }
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "capture": "miniverb-location.png"
+      },
+      {
+        "press": [
+          "FX2"
+        ]
+      },
+      {
+        "capture": "miniverb-controls.png"
+      },
+      {
+        "press": [
+          "FUNC",
+          "FX2"
+        ]
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "capture": "tapeecho-setup.png"
+      },
+      {
+        "press": [
+          "FX2"
+        ]
+      },
+      {
+        "capture": "tapeecho-controls.png"
+      },
+      {
+        "press": [
+          "FUNC",
+          "FX2"
+        ]
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "capture": "euclid-setup.png"
+      },
+      {
+        "press": [
+          "FX2"
+        ]
+      },
+      {
+        "capture": "euclid-controls.png"
+      },
+      {
+        "press": [
+          "FUNC",
+          "SRC"
+        ]
+      },
+      {
+        "encoder": {
+          "name": "E",
+          "delta": 127
+        }
+      },
+      {
+        "capture": "repitch-location.png"
+      },
+      {
+        "press": [
+          "SRC"
+        ]
+      },
+      {
+        "capture": "repitch-controls.png"
+      }
+    ],
+    "captureFiles": {
+      "media/ot-controls.png": "tapeecho-controls.png",
+      "media/ot-setup.png": "tapeecho-setup.png"
+    }
+  },
+  "capturedDraftVersion": "0.1.2-experimental",
+  "publicationBinding": {
+    "moduleVersion": "0.1.2-experimental",
+    "previousMainVersion": "0.1.1-experimental",
+    "baseCommit": "3ab925a",
+    "nativeSourceFiles": {
+      "cpu_hooks.s": "d1d959af91fbd0759191c5e244b4396613d18c057c8e65281d76cb67beb73e34",
+      "cpu.c": "13c8ab1a6934bab2f679c40ad8096d2151326b06d1fcffaf261bde40d82c9814",
+      "time_fmt.s": "f50337532bbd802f67bb3c93d975405c2e386ec2a75bf525a814b9f9756f9d15",
+      "cpu_tables.h": "1d2e3e062651f021ca94fd19339dde824bcf49c4d867da790c20957dd24db9b2",
+      "manifest.py": "e83c639b3a6d51946b6cb5ae2af72d9376f2ff9cad75502396287c95c751927b",
+      "cpu_kernels.s": "5cd8a759642ee9f59b6fe44f1dbe82928dc1c5ead69f5ee3c92d76d6b5945327",
+      "cpu.s": "1da9056c6a175fe91b09a03172e4ef516f085ee659cf7a9f9aff53836c368e64",
+      "cpu_passthrough.asm": "68ef0beaa213de43e116d2feb367b437ef8c73c7f7b1c07328fde2d72edb3fdc",
+      "cpu.h": "d07d496a62b95f23f8c2cbd893a0125e8a67071e83bf2c642e14251e48e69ff3",
+      "generate_tables.py": "3461b659e2f22d7da776eb87755610094a4a3e72609c875e82902a8da9a8a69c",
+      "generate_cpu.py": "09477f59af29dc6b68458454f818ec999339f4f4eefadb979cc13236ce431353"
+    },
+    "reason": "Only documentation/media metadata changed. All native module source files are byte-identical to the source used for the actual LCD captures; original PNG pixels, capture date and local image hashes are preserved."
+  }
+}
