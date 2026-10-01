@@ -58,9 +58,30 @@ def fingerprint(reference, address):
     raise ValueError('A protected span must be declared with a fingerprint')
 
 
-def compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler):
+def requested_release_scope(buildable):
+    """Permit the reviewed scope with the MIDI Scenes update still pending."""
+    scopes = (ORDER, ORDER + REQUESTED, ORDER + [id for id in REQUESTED if id != 'midi-scenes'])
+    if buildable not in scopes:
+        raise ValueError('Unsupported reviewed module scope')
+    return [id for id in REQUESTED if id in buildable]
+
+
+def retain_pending_requested(compiled, baseline, ids):
+    """Keep inactive, previously verified objects unchanged; never compile their pending source."""
+    pending = set(REQUESTED) - set(ids)
+    if pending & set(baseline['moduleVersions']):
+        raise ValueError('Pending modules must be absent from verified version pins')
+    for field, key in [('objects', 'label'), ('groups', 'moduleId')]:
+        actual = {row[key]: row for row in compiled[field]}
+        expected = {row[key] for row in baseline[field] if row['moduleId'] not in pending}
+        if len(actual) != len(compiled[field]) or set(actual) != expected:
+            raise ValueError('Compiled requested package scope differs from the verified baseline')
+        compiled[field] = [row if row['moduleId'] in pending else actual[row[key]] for row in baseline[field]]
+    return compiled
+
+
+def compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler, ids):
     """Authored objects and runtime recipes only; inherited USB spans are masked."""
-    ids = REQUESTED
     byid = {m.name: m for m in known.values()}
     selected = [byid[id] for id in ids] + [known['USB MIDI']]
     selection = {m.key: m for m in selected}
@@ -117,7 +138,7 @@ def compile_requested(root, known, documents, versions, revision, provenance, na
     (work/'loader.S').write_text(loader.replace('pretable(%pc)', 'octamod_pre_table(%pc)'))
     obj=work/'loader.o';run(['m68k-elf-as','-mcpu=5475','-I',work,'--defsym','PREBOOT=1','-o',obj,work/'loader.S'],root)
     raw=obj.read_bytes(); bootstrap=dict(bytes=len(raw),code=raw.hex(),sha256=HASH(raw))
-    print('Compiled 23 requested ColdFire objects, both Analog BD engines and stock-free pre-boot skeleton.',flush=True)
+    print(f'Compiled {len(objects)} requested ColdFire objects, both Analog BD engines and stock-free pre-boot skeleton.',flush=True)
     return dict(schema=1,revision=revision,**provenance,objects=objects,groups=groups,analog=analog,bootstrap=bootstrap)
 
 def main():
@@ -149,8 +170,12 @@ def main():
     for module in catalog['modules']:
         if catalog_documents[module['id']]['version'] != module['version']: parser.error('Stale catalog module version: ' + module['id'])
     buildable = [module for module in catalog['modules'] if catalog_documents[module['id']].get('build', {}).get('status') != 'pending']
-    if [module['id'] for module in buildable] not in (ORDER, ORDER + REQUESTED): parser.error('This release compiler supports the seven original modules and four reviewed requested modules')
-    include_requested = args.include_requested or len(buildable) == len(ORDER + REQUESTED)
+    try:
+        approved_requested = requested_release_scope([module['id'] for module in buildable])
+    except ValueError as error:
+        parser.error(str(error))
+    requested_ids = REQUESTED if args.include_requested else approved_requested
+    include_requested = bool(requested_ids)
     versions = {module['id']: module['version'] for module in buildable}
     revision = catalog['sourceRevision']
     documents = {id: json_file(sdk / 'modules' / id / 'octamod.module.json') for id in ORDER + REQUESTED}
@@ -160,7 +185,7 @@ def main():
         root = Path(temporary)
         # Pending imports stay in the source fingerprint, but are never evaluated or compiled.
         (root / 'modules').mkdir()
-        for id in ORDER + (REQUESTED if include_requested else []):
+        for id in ORDER + requested_ids:
             shutil.copytree(sdk / 'modules' / id, root / 'modules' / id, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '.DS_Store'))
         for group in ['platform', 'tools', 'dsp']:
             shutil.copytree(sdk / group, root / group, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '.DS_Store'))
@@ -178,7 +203,7 @@ def main():
         known = registry.modules()
         byid = {module.name: module for module in known.values()}
         public = sorted(module.name for module in known.values() if not module.is_stock and module.name not in registry.PLATFORM_NAMES)
-        if public != sorted(ORDER + (REQUESTED if include_requested else [])): raise ValueError('Unexpected module scope')
+        if public != sorted(ORDER + requested_ids): raise ValueError('Unexpected module scope')
         for id in ORDER:
             module, doc = byid[id], documents[id]
             if doc['version'] != versions[id] or doc['key'] != module.key or doc['author']['github'] != module.author or doc['compatibility']['effectId'] != (module.menu.fx2_id if module.menu else None):
@@ -360,7 +385,8 @@ def main():
             groups.append(dict(old, source=manifest, sourceSha256=sources[manifest], detours=rows))
         products['platform-writes.json'] = dict(baseline['platform-writes.json'], **provenance, groups=groups)
         if include_requested:
-            products['requested-packages.json'] = compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler)
+            requested = compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler, requested_ids)
+            products['requested-packages.json'] = retain_pending_requested(requested, baseline['requested-packages.json'], requested_ids) if args.source_commit else requested
         if stock_guard._cache is not None: raise RuntimeError('Stock must never be read during source compilation')
         if native._SCRATCH is not None: shutil.rmtree(native._SCRATCH, ignore_errors=True)
 
