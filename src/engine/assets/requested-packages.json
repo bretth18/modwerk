@@ -1,24 +1,24 @@
 {
   "schema": 1,
   "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
-  "sourceCommit": null,
+  "sourceCommit": "973036183ea507c472864c1dc2a54fe928eb9d5b",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
     "character": "0.1.1-experimental",
-    "miniverb": "0.1.1-experimental",
-    "tapeecho": "0.1.1-experimental",
-    "euclid": "0.1.1-experimental",
-    "repitch": "0.1.1-experimental",
-    "analog-bassdrum": "0.1.1-experimental",
-    "usb-audio-out-tracks-main-cue": "0.1.1-experimental",
-    "quantizer": "0.1.1-experimental"
+    "miniverb": "0.1.2-experimental",
+    "tapeecho": "0.1.2-experimental",
+    "euclid": "0.1.2-experimental",
+    "repitch": "0.1.2-experimental",
+    "analog-bassdrum": "0.1.2-experimental",
+    "usb-audio-out-tracks-main-cue": "0.1.2-experimental",
+    "quantizer": "0.1.2-experimental"
   },
   "objects": [
     {
       "label": "abmachine",
       "moduleId": "analog-bassdrum",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "key": "ANALOG BD",
       "author": "repeat98",
       "nativeAuthor": "repeat98",
@@ -38,7 +38,7 @@
     {
       "label": "abcontrol",
       "moduleId": "analog-bassdrum",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "key": "ANALOG BD",
       "author": "repeat98",
       "nativeAuthor": "repeat98",
@@ -58,7 +58,7 @@
     {
       "label": "abengine",
       "moduleId": "analog-bassdrum",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "key": "ANALOG BD",
       "author": "repeat98",
       "nativeAuthor": "repeat98",
@@ -318,7 +318,7 @@
     {
       "label": "usbaudio",
       "moduleId": "usb-audio-out-tracks-main-cue",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "key": "USB AUDIO OUT TRACKS MAIN CUE",
       "author": "markandrus",
       "nativeAuthor": "markandrus/octemu",
@@ -338,7 +338,7 @@
     {
       "label": "qzk",
       "moduleId": "quantizer",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "key": "SCALE QUANTIZER",
       "author": "timhastie",
       "nativeAuthor": "timhastie/octatrick-modules",
@@ -358,7 +358,7 @@
     {
       "label": "qzc",
       "moduleId": "quantizer",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "key": "SCALE QUANTIZER",
       "author": "timhastie",
       "nativeAuthor": "timhastie/octatrick-modules",
@@ -378,7 +378,7 @@
     {
       "label": "qzs",
       "moduleId": "quantizer",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "key": "SCALE QUANTIZER",
       "author": "timhastie",
       "nativeAuthor": "timhastie/octatrick-modules",
@@ -398,7 +398,7 @@
     {
       "label": "qz",
       "moduleId": "quantizer",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "key": "SCALE QUANTIZER",
       "author": "timhastie",
       "nativeAuthor": "timhastie/octatrick-modules",
