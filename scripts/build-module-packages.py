@@ -58,25 +58,30 @@ def fingerprint(reference, address):
     raise ValueError('A protected span must be declared with a fingerprint')
 
 
-def retained_pending(baseline, ids, sources):
-    """Keep unchanged, previously compiled objects without evaluating pending source."""
-    objects, groups = [], []
-    for id in REQUESTED:
-        if id in ids: continue
-        old_objects = [row for row in baseline['objects'] if row['moduleId'] == id]
-        old_groups = [row for row in baseline['groups'] if row['moduleId'] == id]
-        if not old_objects or len(old_groups) != 1:
-            raise ValueError(id + ': missing retained pending package')
-        for row in old_objects:
-            if not row.get('sources') or any(sources.get(path) != digest for path, digest in row['sources'].items()):
-                raise ValueError(id + ': pending native source differs from the retained package; local verification is required')
-        objects.extend(old_objects); groups.extend(old_groups)
-    return objects, groups
+def requested_release_scope(buildable):
+    """Permit the reviewed scope with the MIDI Scenes update still pending."""
+    scopes = (ORDER, ORDER + REQUESTED, ORDER + [id for id in REQUESTED if id != 'midi-scenes'])
+    if buildable not in scopes:
+        raise ValueError('Unsupported reviewed module scope')
+    return [id for id in REQUESTED if id in buildable]
 
 
-def compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler, ids, baseline):
+def retain_pending_requested(compiled, baseline, ids):
+    """Keep inactive, previously verified objects unchanged; never compile their pending source."""
+    pending = set(REQUESTED) - set(ids)
+    if pending & set(baseline['moduleVersions']):
+        raise ValueError('Pending modules must be absent from verified version pins')
+    for field, key in [('objects', 'label'), ('groups', 'moduleId')]:
+        actual = {row[key]: row for row in compiled[field]}
+        expected = {row[key] for row in baseline[field] if row['moduleId'] not in pending}
+        if len(actual) != len(compiled[field]) or set(actual) != expected:
+            raise ValueError('Compiled requested package scope differs from the verified baseline')
+        compiled[field] = [row if row['moduleId'] in pending else actual[row[key]] for row in baseline[field]]
+    return compiled
+
+
+def compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler, ids):
     """Authored objects and runtime recipes only; inherited USB spans are masked."""
-    retained_objects, retained_groups = retained_pending(baseline, ids, sources)
     byid = {m.name: m for m in known.values()}
     selected = [byid[id] for id in ids] + [known['USB MIDI']]
     selection = {m.key: m for m in selected}
@@ -133,10 +138,7 @@ def compile_requested(root, known, documents, versions, revision, provenance, na
     (work/'loader.S').write_text(loader.replace('pretable(%pc)', 'octamod_pre_table(%pc)'))
     obj=work/'loader.o';run(['m68k-elf-as','-mcpu=5475','-I',work,'--defsym','PREBOOT=1','-o',obj,work/'loader.S'],root)
     raw=obj.read_bytes(); bootstrap=dict(bytes=len(raw),code=raw.hex(),sha256=HASH(raw))
-    objects += retained_objects; groups += retained_groups
-    rank = {id: at for at, id in enumerate(REQUESTED + ['usb-midi'])}
-    objects.sort(key=lambda row: rank[row['moduleId']]); groups.sort(key=lambda row: rank[row['moduleId']])
-    print(f'Compiled {len(objects) - len(retained_objects)} requested ColdFire objects and stock-free pre-boot skeleton; retained {len(retained_objects)} unchanged pending objects without evaluating their source.', flush=True)
+    print(f'Compiled {len(objects)} requested ColdFire objects, both Analog BD engines and stock-free pre-boot skeleton.',flush=True)
     return dict(schema=1,revision=revision,**provenance,objects=objects,groups=groups,analog=analog,bootstrap=bootstrap)
 
 def main():
@@ -168,9 +170,11 @@ def main():
     for module in catalog['modules']:
         if catalog_documents[module['id']]['version'] != module['version']: parser.error('Stale catalog module version: ' + module['id'])
     buildable = [module for module in catalog['modules'] if catalog_documents[module['id']].get('build', {}).get('status') != 'pending']
-    requested_ids = REQUESTED if args.include_requested else [id for id in REQUESTED if id in {m['id'] for m in buildable}]
-    if [module['id'] for module in buildable] not in (ORDER, ORDER + [id for id in REQUESTED if id != 'midi-scenes'], ORDER + REQUESTED):
-        parser.error('This release compiler supports the seven original modules and reviewed requested modules, including pending MIDI Scenes')
+    try:
+        approved_requested = requested_release_scope([module['id'] for module in buildable])
+    except ValueError as error:
+        parser.error(str(error))
+    requested_ids = REQUESTED if args.include_requested else approved_requested
     include_requested = bool(requested_ids)
     versions = {module['id']: module['version'] for module in buildable}
     revision = catalog['sourceRevision']
@@ -381,7 +385,8 @@ def main():
             groups.append(dict(old, source=manifest, sourceSha256=sources[manifest], detours=rows))
         products['platform-writes.json'] = dict(baseline['platform-writes.json'], **provenance, groups=groups)
         if include_requested:
-            products['requested-packages.json'] = compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler, requested_ids, baseline['requested-packages.json'])
+            requested = compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler, requested_ids)
+            products['requested-packages.json'] = retain_pending_requested(requested, baseline['requested-packages.json'], requested_ids) if args.source_commit else requested
         if stock_guard._cache is not None: raise RuntimeError('Stock must never be read during source compilation')
         if native._SCRATCH is not None: shutil.rmtree(native._SCRATCH, ignore_errors=True)
 
