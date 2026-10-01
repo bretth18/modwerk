@@ -1,5 +1,7 @@
 import type { Configuration } from '../config/workspace'
 import { validateConfiguration } from '../config/workspace'
+import { compareModuleVersions } from '../catalog/versions'
+import type { ModuleVersion } from '../catalog/module-updates'
 
 export type StoredFirmware = { name: string; blob: Blob }
 const DATABASE = 'octamod-device'
@@ -40,6 +42,22 @@ export function deviceStore(db: IDBDatabase) {
     async deleteConfiguration(id: string) { await transaction('configurations', 'readwrite', store => store.delete(id)) },
     async activeConfiguration(): Promise<string | undefined> { return transaction('settings', 'readonly', store => store.get('active')) },
     async setActiveConfiguration(id: string) { await transaction('settings', 'readwrite', store => store.put(id, 'active')) },
+    async readModuleViews(): Promise<Record<string, string>> {
+      const records: unknown[] = await transaction('settings', 'readonly', store => store.getAll(IDBKeyRange.bound('module-view/', 'module-view/\uffff')))
+      const versions: Record<string, string> = {}
+      for (const record of records) {
+        if (!record || typeof record !== 'object') continue
+        const { id, version } = record as Partial<ModuleVersion>
+        if (typeof id !== 'string' || !/^[a-z][a-z0-9-]*$/.test(id) || typeof version !== 'string') continue
+        try { compareModuleVersions(version, version); versions[id] = version } catch { /* Ignore corrupt viewing history. */ }
+      }
+      return versions
+    },
+    async rememberModuleView(module: ModuleVersion) {
+      if (!/^[a-z][a-z0-9-]*$/.test(module.id)) throw new Error('Invalid viewed module.')
+      compareModuleVersions(module.version, module.version)
+      await transaction('settings', 'readwrite', store => store.put({ id: module.id, version: module.version }, 'module-view/' + module.id))
+    },
     async readFirmware(): Promise<StoredFirmware | undefined> { return transaction('firmware', 'readonly', store => store.get('base')) },
     async saveFirmware(file: File) {
       await transaction('firmware', 'readwrite', store => store.put({ name: file.name, blob: file }, 'base'))

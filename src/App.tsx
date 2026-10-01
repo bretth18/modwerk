@@ -29,6 +29,8 @@ import { downloadSelection, parseSelection } from './config/selection'
 import { Icon } from './components/Icon'
 import { ModulePreview } from './components/ModulePreview'
 import { ModuleDetail } from './components/ModuleDetail'
+import { ModuleRelease } from './components/ModuleRelease'
+import { useModuleUpdates } from './hooks/useModuleUpdates'
 import { FaqPage } from './components/FaqPage'
 import { MobileMenu } from './components/MobileMenu'
 import { SupportButton, SupportDialog } from './components/SupportDialog'
@@ -87,6 +89,8 @@ export default function App() {
     && (family==='all'||DETAILS[module.id].family===family)
     && (module.name + ' ' + module.description + ' ' + module.authorName + ' ' + module.author).toLowerCase().includes(query.toLowerCase().trim()),
   ).sort((a,b)=>compareModules(a,b,sort,statistics))
+  const displayedModules = detailModule ? [detailModule] : route === 'library' || MODULE_CATEGORIES.includes(route as typeof MODULE_CATEGORIES[number]) ? visibleModules : []
+  const viewedModuleVersions = useModuleUpdates(displayedModules, detailModule?.id)
 
   function toggleModule(id: string) { workspace.toggleModule(id); setSaved(false); setRiskAccepted({key:'',accepted:false}) }
   function fixConflict(fix: ConflictFix) {
@@ -199,7 +203,7 @@ export default function App() {
                 const stats=statistics?.find(item=>item.module_id===module.id),record=MODULE_DOCUMENTS_BY_ID[module.id]
                 return <article key={module.id} className={'module-card ' + (selected ? 'is-selected' : '')}>
                   <a href={'#module/' + module.id} className="module-cover" aria-label={'View ' + module.name}><ModulePreview id={module.id} /><div className="hover-info"><span>{module.description}</span><strong>Explore module <Icon name="arrow" size={15} /></strong></div>{selected && <span className="selected-badge" aria-label="Selected"><Icon name="check" size={12} /></span>}</a>
-                  <div className="module-card-body"><div className="module-card-title"><a href={'#module/' + module.id}>{module.name}</a><button className={'add-button ' + (selected ? 'is-added' : '')} aria-label={(selected ? 'Remove ' : 'Add ') + module.name + (selected ? ' from configuration' : ' to configuration')} aria-pressed={selected} onClick={() => toggleModule(module.id)}><Icon name={selected ? 'check' : 'plus'} size={15} /><span>{selected ? 'Added' : 'Add'}</span></button></div><div className="card-credit"><a href={module.authorUrl} target="_blank" rel="noreferrer">{module.authorName}</a><span>{module.detail}</span></div><div className="card-description">{module.description}</div><div className="card-bottom"><span>{DETAILS[module.id].family}</span><span className="unrated"><Icon name="star" size={11} />{stats?.count&&stats.average!==null?stats.average.toFixed(1)+' ('+stats.count+')':'Unrated'}</span></div><ModulePopularity statistics={stats}/><div className="card-proof"><span>{moduleBuildPending(module.id)?'Build verification pending':record.tests.hardwareStatus!=='untested'?'Earlier hardware evidence':'Emulator evidence'}</span><label><input type="checkbox" checked={comparison.includes(module.id)} disabled={comparison.length>=3&&!comparison.includes(module.id)} onChange={()=>setComparison(current=>current.includes(module.id)?current.filter(id=>id!==module.id):[...current,module.id])}/>Compare<span className="sr-only"> {module.name}</span></label></div></div>
+                  <div className="module-card-body"><div className="module-card-title"><div className="module-card-heading"><a href={'#module/' + module.id}>{module.name}</a><ModuleRelease module={module} viewedVersion={viewedModuleVersions[module.id]} /></div><button className={'add-button ' + (selected ? 'is-added' : '')} aria-label={(selected ? 'Remove ' : 'Add ') + module.name + (selected ? ' from configuration' : ' to configuration')} aria-pressed={selected} onClick={() => toggleModule(module.id)}><Icon name={selected ? 'check' : 'plus'} size={15} /><span>{selected ? 'Added' : 'Add'}</span></button></div><div className="card-credit"><a href={module.authorUrl} target="_blank" rel="noreferrer">{module.authorName}</a><span>{module.detail}</span></div><div className="card-description">{module.description}</div><div className="card-bottom"><span>{DETAILS[module.id].family}</span><span className="unrated"><Icon name="star" size={11} />{stats?.count&&stats.average!==null?stats.average.toFixed(1)+' ('+stats.count+')':'Unrated'}</span></div><ModulePopularity statistics={stats}/><div className="card-proof"><span>{moduleBuildPending(module.id)?'Build verification pending':record.tests.hardwareStatus!=='untested'?'Earlier hardware evidence':'Emulator evidence'}</span><label><input type="checkbox" checked={comparison.includes(module.id)} disabled={comparison.length>=3&&!comparison.includes(module.id)} onChange={()=>setComparison(current=>current.includes(module.id)?current.filter(id=>id!==module.id):[...current,module.id])}/>Compare<span className="sr-only"> {module.name}</span></label></div></div>
                 </article>
               })}</div>
               <p className="popularity-note">{statistics ? downloadCoverage(statistics[0]?.downloadsStarted) : 'Popularity counts are currently unavailable.'}</p>
