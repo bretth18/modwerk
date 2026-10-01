@@ -14,6 +14,7 @@ import { MODULE_DOCUMENTS_BY_ID } from '../catalog/documents'
 type DetailTab = 'Overview' | 'Media' | 'Discussion'
 export function ModuleDetail({ module, selected, onToggle }: { module: FirmwareModule; selected: boolean; onToggle: () => void }) {
   const [tab, setTab] = useState<DetailTab>('Overview')
+  const [issueOpenRequest, setIssueOpenRequest] = useState(0)
   const details = DETAILS[module.id]
   const moduleDocument = MODULE_DOCUMENTS_BY_ID[module.id]
   function showDiscussion() {
@@ -22,7 +23,10 @@ export function ModuleDetail({ module, selected, onToggle }: { module: FirmwareM
   }
   return (
     <div className="detail-page">
-      <a className="back-link" href="#library"><Icon name="back" size={15} /> All modules</a>
+      <div className="module-page-actions">
+        <a className="back-link" href="#library"><Icon name="back" size={15} /> All modules</a>
+        <button type="button" className="button button-quiet module-issue-action" onClick={() => { setTab('Overview'); setIssueOpenRequest(request => request + 1) }}><Icon name="message" size={15} />Report an issue</button>
+      </div>
       <section className="detail-hero" aria-labelledby="module-title">
         <ModulePreview id={module.id} />
         <div className="detail-intro">
@@ -63,7 +67,7 @@ export function ModuleDetail({ module, selected, onToggle }: { module: FirmwareM
             <ModuleControls id={module.id}/>
             <ModuleResources id={module.id} />
           </div>
-          <IssueReport id={module.id} author={module.author} />
+          <IssueReport id={module.id} author={module.author} openRequest={issueOpenRequest} />
         </>}
         {tab === 'Media' && <ModuleCommunity id={module.id} mode="media" />}
         {tab === 'Discussion' && <ModuleCommunity id={module.id} mode="discussion" />}

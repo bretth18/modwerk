@@ -24,6 +24,12 @@ npm run dev:community
 
 In a second terminal, run `npm run dev` and open http://127.0.0.1:5173. Vite proxies /api to the local Cloudflare runtime on port 8788, with D1 emulated locally. `.dev.vars` (ignored) sets the local `APP_URL` and overrides the production values in `wrangler.worker.jsonc`. Without the API, local configuration and firmware storage still work; community actions explain their unavailable state.
 
+## Optional site support
+
+The PayPal.Me destination is configured in `src/config/support.ts`. Set it to an empty string to hide the support entry.
+
+A quiet “Support Octamod” entry with a small heart appears below the desktop sidebar’s privacy note and at the bottom of the mobile menu. It opens a personal note from the site maintainer, crediting the collaborative work of octabam, module authors and contributors, and explains that tips support site maintenance, module curation and community moderation. The visitor then chooses whether to open PayPal in a new tab. The site embeds no payment scripts and collects no donor information.
+
 ## Local workspace
 
 Create, rename, edit, duplicate and delete multiple configurations. They save in IndexedDB and can be exported as JSON. Verified original OS 1.40C firmware is saved separately in this browser, reverified on restore and removable from the device. Firmware is never uploaded, synchronized, logged or included in configuration exports.
