@@ -223,3 +223,9 @@ The browser loaded all three Repitch PNGs at their original 768×384 dimensions
 and displayed both access routes in the existing How to use it disclosure.
 No firmware, raw LCD/RAM dumps, cards or local audio fixtures entered this PR,
 and no firmware/DSP/stress/audio qualification tests ran.
+
+Final Node 24 checks on this base passed: 223 tests in 43 files, seven synthetic
+SDK checks, four licence checks, lint, app/server TypeScript and production
+build. Exact-base publication validation passed. All 21 PNG SHA-256 values and
+their complete native-source capture bindings were rechecked. The final isolated
+compilation and development import passed with main's unchanged release compiler.
