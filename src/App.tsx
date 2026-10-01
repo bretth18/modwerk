@@ -142,15 +142,13 @@ export default function App() {
         </nav>
         <div className="sidebar-section-label configuration-label"><span>Configurations</span><button className="icon-button" aria-label="New configuration" disabled={!ready} onClick={() => setConfigDialog("create")}><Icon name="plus" size={18} /></button></div>
         <nav className="sidebar-nav configuration-nav" aria-label="Saved configurations">{workspace.configurations.map(item => <button key={item.id} className={item.id === active?.id ? 'active' : ''} aria-pressed={item.id === active?.id} onClick={() => changeConfiguration(item.id)}><Icon name="file" /><span>{item.name}</span><small>{item.moduleIds.length}</small></button>)}</nav>
-        <div className="sidebar-section-label community-label">Community</div><nav className="sidebar-nav community-nav" aria-label="Community"><a href="#submit" className={route.startsWith('submit') ? 'active' : ''}><Icon name="plus"/><span>Submit a module</span></a><a href="#activity" className={route === 'activity' ? 'active' : ''}><Icon name="message"/><span>Your activity</span></a>{session.admin && <a href="#admin" className={route === 'admin'||route === 'review' ? 'active' : ''}><Icon name="shield"/><span>Admin workspace</span></a>}</nav>
-        <div className="sidebar-section-label help-label">Help</div>
-        <nav className="sidebar-nav help-nav" aria-label="Help"><a href="#faq" className={route === 'faq' ? 'active' : ''} aria-current={route === 'faq' ? 'page' : undefined}><Icon name="help" /><span>FAQ<span className="help-guide-label"> & flashing guide</span></span></a></nav>
+        <div className="sidebar-section-label community-label">Community & help</div><nav className="sidebar-nav community-nav" aria-label="Community and help"><a href="#submit" className={route.startsWith('submit') ? 'active' : ''}><Icon name="plus"/><span>Submit a module</span></a><a href="#activity" className={route === 'activity' ? 'active' : ''}><Icon name="message"/><span>Your activity</span></a>{session.admin && <a href="#admin" className={route === 'admin'||route === 'review' ? 'active' : ''}><Icon name="shield"/><span>Admin workspace</span></a>}<a href="#faq" className={route === 'faq' ? 'active' : ''} aria-current={route === 'faq' ? 'page' : undefined}><Icon name="help" /><span>FAQ<span className="help-guide-label"> & flashing guide</span></span></a></nav>
         <div className="sidebar-spacer" />
-        <div className="sidebar-build">
-          <div className="sidebar-build-heading"><span className={'status-dot ' + (firmware ? 'verified' : '')} /><strong>{firmware ? 'Base firmware ready' : 'Your base firmware'}</strong></div>
-          <p>{firmware ? 'OS 1.40C · ' + (firmwareSaved ? 'saved on device' : 'this session') + '' : 'Start with your own OS 1.40C file.'}</p>
-          <a className="button button-quiet" href="#configuration">{firmware ? 'View configuration' : 'Choose firmware'}<Icon name="arrow" size={14} /></a>
-        </div>
+        <a className="sidebar-build" href="#configuration" aria-label={firmware ? 'Base firmware ready — View configuration' : undefined} aria-describedby={firmware ? 'sidebar-firmware-status' : undefined}>
+          <span className={'status-dot ' + (firmware ? 'verified' : '')} />
+          <span className="sidebar-build-copy"><strong>{firmware ? 'Base firmware ready' : 'Choose firmware'}</strong><small id="sidebar-firmware-status">{firmware ? 'OS 1.40C · ' + (firmwareSaved ? 'saved on device' : 'this session') : 'Start with your own OS 1.40C file.'}</small></span>
+          <Icon name="arrow" size={14} />
+        </a>
         <div className="sidebar-footer"><div className="sidebar-privacy"><Icon name="shield" size={14} /><span>Firmware stays on your device</span></div>{PAYPAL_DONATION_URL && <SupportButton onClick={() => setSupportOpen(true)} />}</div>
       </aside>
       {compareOpen&&<ModuleComparison ids={comparison} selected={selectedIds} onToggle={toggleModule} onClose={()=>setCompareOpen(false)}/>}
