@@ -243,3 +243,13 @@ this open; anchor is the frames skipped at that poll.
 Module version: `0.1.1-experimental`. Imported from [sambanks/octabam at `363861e31ee9`](https://github.com/sambanks/octabam/tree/363861e31ee963c478fab2b190a0fabe1d7ce37b/modules/usb-audio-out-tracks-main-cue). Stock expectation bytes in manifests are converted to address/length/SHA-256 guards; they resolve only from the user’s own verified local OS. See [TESTING.md](TESTING.md) for composition verification and historical evidence. Native and actual-browser composition, packaging and rejection verification passed; no DSP execution or emulator suite was run. Owner merge of a reviewed PR remains required for publication.
 
 Octamod 0.1.1-experimental: browser composition uses reviewed source packages and derives inherited bytes from local 1.40C. The native matrix passed 156 byte identities and 132 refusals. The owner reported both combined native test images working on 1 October 2026; detailed feature/load qualification is not claimed.
+
+## Access and OT UI declaration
+
+This automatic USB contribution adds no dedicated OT page or panel controls.
+Connect the USB port to your recording host and select the Octatrack USB audio
+input there. Use high-speed USB for all twenty channels; at full speed the
+input is a stereo track sum. The website manifest records the exact access
+steps and the narrow `access.noUiReason` declaration. Owner review must verify
+that declaration against the pinned source. This documentation update does
+not change the pending build status or qualify the firmware.

@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 1,
+  "captured": "2026-10-01",
+  "moduleId": "quantizer",
+  "moduleVersion": "0.1.2-experimental",
+  "firmware": "1.40C",
+  "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+  "emulatorSha256": "93484e4b71c70f48f795825103146a36ef95ef9ac06ee627e28608ae3e3bb3eb",
+  "imageProfile": {
+    "modules": [
+      "FILTER",
+      "EQUALIZER",
+      "DJ EQ",
+      "PHASER",
+      "FLANGER",
+      "CHORUS",
+      "SPATIALIZER",
+      "COMB FILTER",
+      "COMPRESSOR",
+      "LO-FI",
+      "DELAY",
+      "PLATE REV",
+      "DARK REV",
+      "ANALOG BD",
+      "MIDI SCENES",
+      "SCALE QUANTIZER"
+    ],
+    "fx1": [
+      "FILTER",
+      "EQUALIZER",
+      "DJ EQ",
+      "PHASER",
+      "FLANGER",
+      "CHORUS",
+      "SPATIALIZER",
+      "COMB FILTER",
+      "COMPRESSOR",
+      "LO-FI"
+    ],
+    "staticStock": true
+  },
+  "sourcePins": {
+    "analog-bassdrum": {
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
+      "path": "modules/analog-bassdrum"
+    },
+    "midi-scenes": {
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
+      "path": "modules/midi-scenes"
+    },
+    "quantizer": {
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
+      "path": "modules/quantizer"
+    }
+  },
+  "nativeToolsRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+  "sourceFiles": {
+    "manifest.py": "0cb4a79f7cd68e1881cd1076a0f6ba2e132b1c199da3a2d4923906b443797602",
+    "upstream/quantizer/core.s": "2992b6c85cff440de03ae84eb22dee8b8a83a84f23e94b699404d28940b6f958",
+    "upstream/quantizer/keys.s": "e2ffdbfae34b0828794a4eb4cc229e3efcaed25dc953bf7c05c13f6e37f65587",
+    "upstream/quantizer/manifest.py": "3a8ba2d366320ce702b02129386e3d384f0e9d6ae7df64e4811b32f3e08e4011",
+    "upstream/quantizer/quantizer.s": "91f34be65891fdc61988a3d3a7736b55457572355ffc42d0f423df688e1698fb",
+    "upstream/quantizer/scale.s": "82242c407847ac61a6f60fe15bdc5b0b4fc852bac82c39745b5c838ec9389c64"
+  },
+  "localBuild": {
+    "scriptSha256": "894e09ad1672b5f018b5a2a1bf510d414ba7e6444692a3e4be5226807fc087b0",
+    "environment": {
+      "REMIX": "approved-ui",
+      "XBUS": "1",
+      "SPEC": "1",
+      "DEV": "0",
+      "NOROUNDTRIP": "0",
+      "OCTABAM_STATIC_STOCK": "1",
+      "OCTABAM_NO_CACHE": "1",
+      "BUILD": "79"
+    },
+    "isolation": "macOS sandbox: network denied; no user/shared-temp reads except staged source/image and reviewed toolchain; writes confined to temporary capture workspace; clean inherited environment.",
+    "authorization": "Owner explicitly authorized pending-source execution solely for local UI captures; this is not release approval."
+  },
+  "accessSteps": [
+    "On the MKII panel, press PROJ to open the project menu.",
+    "Use UP/DOWN to select CONTROL, then press RIGHT to enter its list.",
+    "Select SEQUENCER with UP/DOWN and press YES.",
+    "Scroll DOWN to SCALE and turn LEVEL to choose a scale. OFF restores stock pitch behavior.",
+    "Scroll to ROOT and turn LEVEL to select the key. GLIDE is the next row; its effect depends on the track’s LEG setting."
+  ],
+  "screenshots": [
+    {
+      "path": "media/ot-location.png",
+      "sha256": "84fd32326aa524f4dea2fdb07cecde86cabf668c1e2a3e6bfc357b3bc306cf70",
+      "page": "PROJECT > CONTROL"
+    },
+    {
+      "path": "media/ot-scale.png",
+      "sha256": "c9c7c72b92dd13bb8c5bc887cb06700f977930cf0adfe206425726a8093fd447",
+      "page": "CONTROL SEQUENCER: SCALE"
+    },
+    {
+      "path": "media/ot-root.png",
+      "sha256": "bf10ad7f5a523b866197a91aab45f13526a3e48163d1481e4aad65666c12b26e",
+      "page": "CONTROL SEQUENCER: ROOT"
+    },
+    {
+      "path": "media/ot-glide.png",
+      "sha256": "7aa937f9f769d817c895d159a313ab0e20a4c8c6aff60880cab6e3db86502c4b",
+      "page": "CONTROL SEQUENCER: GLIDE"
+    }
+  ],
+  "reproduction": {
+    "script": "scripts/capture-module-ui.py",
+    "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6.",
+    "keyMs": 50,
+    "plan": [
+      {
+        "wait": 3000
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "wait": 2000
+      },
+      {
+        "press": [
+          "NO"
+        ]
+      },
+      {
+        "press": [
+          "MENU"
+        ]
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "press": [
+          "RIGHT"
+        ]
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "capture": "quantizer-location.png"
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "capture": "sequencer-top.png"
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "capture": "quantizer-scale-off.png"
+      },
+      {
+        "encoder": {
+          "name": "LEVEL",
+          "delta": 1
+        }
+      },
+      {
+        "capture": "quantizer-scale.png"
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "capture": "quantizer-row-five.png"
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "capture": "quantizer-row-six.png"
+      },
+      {
+        "press": [
+          "NO"
+        ]
+      },
+      {
+        "press": [
+          "NO"
+        ]
+      },
+      {
+        "press": [
+          "NO"
+        ]
+      },
+      {
+        "press": [
+          "MIDI"
+        ]
+      },
+      {
+        "press": [
+          "FUNC",
+          "SRC"
+        ]
+      },
+      {
+        "encoder": {
+          "name": "A",
+          "delta": -127
+        }
+      },
+      {
+        "capture": "midi-channel.png"
+      },
+      {
+        "press": [
+          "SRC"
+        ]
+      },
+      {
+        "press": [
+          "FUNC",
+          "FX1"
+        ]
+      },
+      {
+        "encoder": {
+          "name": "C",
+          "delta": -127
+        }
+      },
+      {
+        "encoder": {
+          "name": "C",
+          "delta": -127
+        }
+      },
+      {
+        "encoder": {
+          "name": "C",
+          "delta": 74
+        }
+      },
+      {
+        "capture": "midi-control-setup.png"
+      },
+      {
+        "press": [
+          "FX1"
+        ]
+      },
+      {
+        "hold": [
+          "SCENE A"
+        ]
+      },
+      {
+        "press": [
+          "TRIG1"
+        ]
+      },
+      {
+        "capture": "midi-scene-assignment.png"
+      },
+      {
+        "encoder": {
+          "name": "C",
+          "delta": -64
+        }
+      },
+      {
+        "capture": "midi-scene-lock.png"
+      },
+      {
+        "release": [
+          "SCENE A"
+        ]
+      },
+      {
+        "capture": "midi-after-release.png"
+      }
+    ],
+    "captureFiles": {
+      "media/ot-location.png": "quantizer-location.png",
+      "media/ot-scale.png": "quantizer-scale.png",
+      "media/ot-root.png": "quantizer-row-five.png",
+      "media/ot-glide.png": "quantizer-row-six.png"
+    }
+  },
+  "limitations": [
+    "Menu navigation and visible SCALE selection only; no pitch, keyboard, glide, persistence, hardware or firmware parity qualification.",
+    "MKII emulated panel; transport stopped; empty scratch card; no hardware connection."
+  ],
+  "capturedDraftVersion": "0.1.1-experimental",
+  "publicationBinding": {
+    "moduleVersion": "0.1.2-experimental",
+    "previousMainVersion": "0.1.1-experimental",
+    "baseCommit": "3ab925a",
+    "nativeSourceFiles": {
+      "manifest.py": "0cb4a79f7cd68e1881cd1076a0f6ba2e132b1c199da3a2d4923906b443797602",
+      "upstream/quantizer/keys.s": "e2ffdbfae34b0828794a4eb4cc229e3efcaed25dc953bf7c05c13f6e37f65587",
+      "upstream/quantizer/core.s": "2992b6c85cff440de03ae84eb22dee8b8a83a84f23e94b699404d28940b6f958",
+      "upstream/quantizer/scale.s": "82242c407847ac61a6f60fe15bdc5b0b4fc852bac82c39745b5c838ec9389c64",
+      "upstream/quantizer/manifest.py": "3a8ba2d366320ce702b02129386e3d384f0e9d6ae7df64e4811b32f3e08e4011",
+      "upstream/quantizer/quantizer.s": "91f34be65891fdc61988a3d3a7736b55457572355ffc42d0f423df688e1698fb"
+    },
+    "reason": "Only documentation/media metadata changed. All native module source files are byte-identical to the source used for the actual LCD captures; original PNG pixels, capture date and local image hashes are preserved."
+  }
+}

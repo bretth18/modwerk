@@ -936,6 +936,10 @@ h1 { font-size: 28px; }
   .module-disclosure summary small { display: block; margin: 3px 0 0; }
 }
 
+.module-access ol { padding-left: 1.5rem; line-height: 1.7; }
+.module-access li + li { margin-top: .5rem; }
+.module-access .media-gallery { margin-top: 1.25rem; }
+.module-access .media-gallery img { image-rendering: pixelated; }
 .discovery-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
 .discovery-actions .button { min-height: 44px; margin-left: 0; font-size: 12px; white-space: nowrap; }
 @media (max-width: 600px) {

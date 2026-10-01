@@ -3,7 +3,7 @@ import { execFileSync, spawnSync } from 'node:child_process'
 import { mkdtempSync, readFileSync, existsSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
-import { parseModuleDocument } from './module-contract'
+import { parseModuleDocument, requireModuleUiForPublication } from './module-contract'
 
 describe('SDK developer scaffolds', () => {
   it('creates coherent DSP and CPU declarations with author attribution and a failing qualification gate', () => {
@@ -17,6 +17,8 @@ describe('SDK developer scaffolds', () => {
         expect(doc.id).toBe(id)
         expect(doc.author.github).toBe('example-author')
         expect(doc.tests.hardwareStatus).toBe('untested')
+        expect(doc.access?.screenshots).toEqual([])
+        expect(()=>requireModuleUiForPublication(doc)).toThrow('actual screenshots')
         const native = readFileSync(resolve(folder, 'manifest.py'), 'utf8')
         expect(native).toContain('author="example-author"')
         expect(native).toContain('proof=Proof.UNTESTED')

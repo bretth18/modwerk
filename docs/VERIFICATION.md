@@ -177,3 +177,55 @@ Full component copyright notices and terms were checked against pinned upstream 
 Node 24 checks passed: 82 catalog/community/configuration/release/hosting tests, four notice rejection/HTML-escaping tests, seven synthetic SDK guard/import tests, lint, module/version validation, TypeScript and the production build. Source, public, built and compiled-artifact plain-text notices were byte-identical; the HTML viewer matched its generated source. The actual browser displayed the independence notice and expanded flashing warning, opened the licence viewer and retained keyboard access at a 390-pixel mobile viewport without horizontal overflow. No firmware composition, DSP, emulator, stress or hardware checks ran for this update. The current loader-free release keeps `DSP_LOADER = false` and the owner-approved `DOWNLOADS_ENABLED = true`; the older dynamic-loader failure does not disable this static build.
 
 The focused release branch was rebased onto `3207fe39be49628f889938a44f82ea0410c6431b`, preserving the merged privacy page, private usage statistics, compact mobile header and module popularity/download tracking. Its diff leaves the statistics services, backend, database, workspace hooks and download/loader flags unchanged. The frontend release job now installs dependencies before artifact import so licence validation can verify the installed React runtime terms on a clean runner.
+
+## Actual OT UI screenshots and publication requirements — 1 October 2026
+
+Twenty-one actual headless-emulator LCD images document Mini Verb, Tape Echo,
+Euclid, Repitch, Analog BD, MIDI Scenes and Scale Quantizer. They show selection
+and enable locations, effect controls, the Analog BD 808/909 pages, MIDI CC
+setup/scene editing, all three quantizer rows, and both Repitch access routes.
+Each module has exact access steps, captions, rights declarations, image/build
+hashes and reproducible panel plans. USB Audio documents the narrow no-OT-UI
+exception. Suspended Spectrum, Modulation and Character have no successful
+retained captures; failed-load screens were discarded.
+
+Captures used local 1.40C and a stopped MKII headless panel. The three source
+imports were compiled for UI capture under explicit owner authorization in a
+restricted temporary macOS sandbox. No audio/stress/hardware/firmware-parity
+qualification gates ran. Temporary firmware, LCD/RAM planes, sample/card
+fixtures and private logs were removed.
+
+For publication on current main, documentation/media revisions advance to
+0.1.2-experimental and MIDI Scenes to 0.2.1-experimental. Every native module
+source file is byte-identical to its captured source; records preserve the
+original captured draft versions and bind those pixels to the updated metadata.
+The MIDI capture shows the existing 8.2-derived native UI, not standalone
+MIDISC2.0 qualification; MIDI Scenes remains pending. Other support and hardware
+statuses retain current main's decisions.
+
+The manifest and PR checks require version-matched location/control captures
+and access instructions for new/changed module folders and new catalog entries.
+Unchanged legacy versions remain readable. Source-import fingerprints preserve
+original upstream identities alongside updated local README hashes.
+
+The final publication uses main's pending-module release fix merged in PR #22
+at `f5cd9386c92475b2259eb7529f92049e86493454`; the screenshot PR does not change
+that compiler. Its ten-module release scope excludes pending MIDI Scenes source
+from discovery/compilation and retains the previous inactive objects verbatim.
+The captured native source fingerprints were independently compared with main
+and remain identical. Both pending build guards and prior object metadata are
+preserved. A network-disabled, read-only source container regenerates only
+stock-free packages at the new publication versions. Every executable byte,
+source fingerprint, relocation proof and composition recipe matches main; only
+publication versions and build provenance differ.
+
+The browser loaded all three Repitch PNGs at their original 768×384 dimensions
+and displayed both access routes in the existing How to use it disclosure.
+No firmware, raw LCD/RAM dumps, cards or local audio fixtures entered this PR,
+and no firmware/DSP/stress/audio qualification tests ran.
+
+Final Node 24 checks on this base passed: 223 tests in 43 files, seven synthetic
+SDK checks, four licence checks, lint, app/server TypeScript and production
+build. Exact-base publication validation passed. All 21 PNG SHA-256 values and
+their complete native-source capture bindings were rechecked. The final isolated
+compilation and development import passed with main's unchanged release compiler.

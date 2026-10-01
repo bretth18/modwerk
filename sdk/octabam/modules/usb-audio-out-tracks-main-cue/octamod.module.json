@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.1.1-experimental",
+  "version": "0.1.2-experimental",
   "nativeManifest": "manifest.py",
   "media": [],
   "id": "usb-audio-out-tracks-main-cue",
@@ -90,5 +90,16 @@
     "spdx": "MIT",
     "file": "LICENSE",
     "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance."
+  },
+  "access": {
+    "location": "The Octatrack USB port and your recording host’s audio input selector.",
+    "steps": [
+      "Include USB Audio in the firmware configuration. This source import is still pending verification.",
+      "Connect the Octatrack’s USB port to your recording host using high-speed USB for all twenty channels.",
+      "Choose the Octatrack USB audio input in your recording software. Channels 1–16 are the eight track stereo pairs, 17–18 MAIN and 19–20 CUE.",
+      "Allow the stream to settle before recording; upstream reports reordered startup samples around 0.5–1.5 seconds after opening."
+    ],
+    "screenshots": [],
+    "noUiReason": "This automatic USB output contribution adds no dedicated OT page, chooser entry or panel controls. Access is through the USB connection and the host’s audio input selector. The reviewer must verify this absence of OT UI against the pinned source before publication."
   }
 }

@@ -1,8 +1,77 @@
 {
   "schemaVersion": 2,
-  "version": "0.1.1-experimental",
+  "version": "0.1.2-experimental",
   "nativeManifest": "manifest.py",
-  "media": [],
+  "media": [
+    {
+      "path": "media/ot-location.png",
+      "captureType": "emulator",
+      "caption": "Select SEQUENCER in PROJECT > CONTROL and press YES to reach the scale settings.",
+      "alt": "Select SEQUENCER in PROJECT > CONTROL and press YES to reach the scale settings.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "PROJECT > CONTROL",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+      }
+    },
+    {
+      "path": "media/ot-scale.png",
+      "captureType": "emulator",
+      "caption": "SCALE selected in CONTROL SEQUENCER, with MAJOR enabled using LEVEL.",
+      "alt": "SCALE selected in CONTROL SEQUENCER, with MAJOR enabled using LEVEL.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "CONTROL SEQUENCER: SCALE",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+      }
+    },
+    {
+      "path": "media/ot-root.png",
+      "captureType": "emulator",
+      "caption": "ROOT selected below SCALE; the example uses C with the MAJOR scale.",
+      "alt": "ROOT selected below SCALE; the example uses C with the MAJOR scale.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "CONTROL SEQUENCER: ROOT",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+      }
+    },
+    {
+      "path": "media/ot-glide.png",
+      "captureType": "emulator",
+      "caption": "The scrolled sequencer menu shows all three added rows: SCALE, ROOT and GLIDE.",
+      "alt": "The scrolled sequencer menu shows all three added rows: SCALE, ROOT and GLIDE.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "CONTROL SEQUENCER: GLIDE",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+      }
+    }
+  ],
   "id": "quantizer",
   "key": "SCALE QUANTIZER",
   "name": "Scale Quantizer",
@@ -140,6 +209,22 @@
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance."
+    "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance. Original OT LCD captures are declared in media/LICENSE.md as LicenseRef-OT-UI-Documentation; underlying Elektron rights remain reserved. Reviewer verification is required before publication and is not automatic legal clearance."
+  },
+  "access": {
+    "location": "PROJECT > CONTROL > SEQUENCER: SCALE, ROOT and GLIDE rows.",
+    "steps": [
+      "On the MKII panel, press PROJ to open the project menu.",
+      "Use UP/DOWN to select CONTROL, then press RIGHT to enter its list.",
+      "Select SEQUENCER with UP/DOWN and press YES.",
+      "Scroll DOWN to SCALE and turn LEVEL to choose a scale. OFF restores stock pitch behavior.",
+      "Scroll to ROOT and turn LEVEL to select the key. GLIDE is the next row; its effect depends on the track’s LEG setting."
+    ],
+    "screenshots": [
+      "media/ot-location.png",
+      "media/ot-scale.png",
+      "media/ot-root.png",
+      "media/ot-glide.png"
+    ]
   }
 }

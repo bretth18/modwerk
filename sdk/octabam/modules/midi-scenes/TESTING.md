@@ -1,6 +1,6 @@
 # MIDI Scenes testing
 
-Version: `0.2.0-experimental`.
+Version: `0.2.1-experimental`.
 
 ## Standalone author evidence (not Octamod qualification)
 
@@ -56,3 +56,39 @@ npm run check
 The production preview was inspected in the actual browser at `#module/midi-scenes`: both `bkkbrls-del` and Sam Banks credits, `0.2.0-experimental`, the standalone MIDISC2.0 feature text and the pending-build notice were present. No firmware was selected or uploaded. POSIX/Windows lexical cases and real macOS symlink escapes passed locally; actual Windows junction coverage is checked by the dedicated CI job.
 
 The vendored standalone README's exact SHA-256 (`d804ce0ae05bf69ffc63537606f9374358cdc1da3e6d864ef0dbdeba250e142e`) also matches the author's GitHub README at `4f9a89453fdcdd39a3cd57f010ffa489cac721cd`. The 8.2 assembly files and native manifest are unchanged. No submitted firmware source, firmware image, DSP/emulator/stress suite, relocatable 2.0 build or hardware test ran for this metadata follow-up.
+
+## Actual OT UI captures — 1 October 2026
+
+Publication version: `0.2.1-experimental` (captured draft `0.1.1-experimental`; native sources unchanged). The owner explicitly authorized pending-source execution
+solely for local UI capture builds. A temporary SDK source snapshot combined
+ANALOG BD, MIDI SCENES and SCALE QUANTIZER with stock FX, excluding SPRING REV
+for Analog BD. `static_stock=True` retained stock DSP without the dynamic
+stock-effect loader. The native builder was `tools/build/build_bus.py` from
+the SDK tool pin; `media/capture.json` records the profile, exact module/author
+pins, source-file hashes, build environment and local image/emulator hashes.
+
+Build: a local wrapper supplies that `remix.schema.Remix` profile to
+`remix.registry.remix`, then calls `build_bus.main()`. It ran under a macOS
+sandbox with network access denied, user/shared temporary reads restricted,
+writes confined to the private capture workspace and a clean environment.
+Only a local verified 1.40C file was available to the native image builder.
+No source-build automation received firmware.
+
+Capture: `python3 -B scripts/capture-module-ui.py --emulator <local-ot_emu>
+--image <private-mainos> --image-sha256 2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e
+--key-ms 50 --plan <recorded-panel-plan.json> --output <new-directory>`.
+The exact plan and PNG hashes are retained in [media/capture.json](media/capture.json).
+MKII panel, actual 128×64 LCD pixels at integer scale 6, stopped transport,
+empty scratch FAT card, no samples, user projects or hardware connection.
+
+- Actual MIDI CTRL 1 UI and scene-held value only; CHAN remains OFF with no external MIDI receiver.
+- The capture does not qualify MIDI output, crossfader morphing, other pages, persistence, hardware or browser/native firmware parity.
+
+Screenshots document the UI only; this documentation update does not change
+existing composition support, pending status or hardware qualification.
+Temporary stock-containing outputs, card/framebuffer files and logs are removed
+after capture review; only PNGs and metadata are retained.
+
+Publication metadata was synchronized with current main without changing native code.
+The capture record preserves the original draft version and records the source-file
+comparison binding these exact pixels to this documentation/media-only update.

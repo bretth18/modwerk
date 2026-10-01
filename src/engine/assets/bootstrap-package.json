@@ -16,17 +16,17 @@
   "reserveBytes": 10487808,
   "uncachedAlias": 134217728,
   "stageAlignment": 4096,
-  "sourceCommit": null,
+  "sourceCommit": "396a670440e94eeaf985335650571509e600f24f",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
     "character": "0.1.1-experimental",
-    "miniverb": "0.1.1-experimental",
-    "tapeecho": "0.1.1-experimental",
-    "euclid": "0.1.1-experimental",
-    "repitch": "0.1.1-experimental",
-    "analog-bassdrum": "0.1.1-experimental",
-    "usb-audio-out-tracks-main-cue": "0.1.1-experimental",
-    "quantizer": "0.1.1-experimental"
+    "miniverb": "0.1.2-experimental",
+    "tapeecho": "0.1.2-experimental",
+    "euclid": "0.1.2-experimental",
+    "repitch": "0.1.2-experimental",
+    "analog-bassdrum": "0.1.2-experimental",
+    "usb-audio-out-tracks-main-cue": "0.1.2-experimental",
+    "quantizer": "0.1.2-experimental"
   }
 }

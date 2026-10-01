@@ -62,9 +62,14 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/analog-bassdrum/README.md",
       "sourceSha256": "4876d9613e5e65de0aefeef7ddd60ef6d0d5642c61b1fde60b97fc0f72255f68",
-      "vendoredSha256": "2f1f71fbf24b2781a08a0d9a87459694816e43ac01f7d849ce60786db0ea68bd",
+      "vendoredSha256": "298478c31f64935eb87814eac9272651a2de15cef4781085bd3f613dec645b58",
       "importedVendoredSha256": "57743ee073204e2a1b51ed7abad7ddf44eae95faddc90d397ca707d30a2bdfed",
-      "adaptation": " Octamod 0.1.1 version and native verification evidence appended; imported fingerprint retained."
+      "adaptation": " Octamod 0.1.1 version and native verification evidence appended; imported fingerprint retained.",
+      "localDocumentationUpdate": {
+        "moduleVersion": "0.1.2-experimental",
+        "previousVendoredSha256": "2f1f71fbf24b2781a08a0d9a87459694816e43ac01f7d849ce60786db0ea68bd",
+        "reason": "Add actual OT UI access/capture documentation; native import and original upstream fingerprints preserved."
+      }
     },
     {
       "path": "modules/analog-bassdrum/REFERENCE.md",
@@ -224,9 +229,14 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/midi-scenes/README.md",
       "sourceSha256": "6210403449aec741d1f388a525f2b3b2df083a7c762ba4f110f770c070d9b492",
-      "vendoredSha256": "988538d0ba5b5fedbd921d916ffafa8cee2b997b59ba1dcd019de48d3fcfdc5d",
+      "vendoredSha256": "8c99ae784947a6acd32f08c8ae0b7315a693996f874e75964fd67e7e999e7601",
       "importedVendoredSha256": "bb1b4b9f5babe96ad4455c9d639a1eadcbaa4dd8a7b373f0179369493c2ff078",
-      "adaptation": "Octamod 0.2.0-experimental catalog/docs for standalone MIDISC2.0; original octabam README fingerprint retained; firmware builds pending; native gas remains at the 1.40MIDISC8.2 author pin."
+      "adaptation": "Octamod 0.2.0-experimental catalog/docs for standalone MIDISC2.0; original octabam README fingerprint retained; firmware builds pending; native gas remains at the 1.40MIDISC8.2 author pin.",
+      "localDocumentationUpdate": {
+        "moduleVersion": "0.2.1-experimental",
+        "previousVendoredSha256": "988538d0ba5b5fedbd921d916ffafa8cee2b997b59ba1dcd019de48d3fcfdc5d",
+        "reason": "Add actual OT UI access/capture documentation; native import and original upstream fingerprints preserved."
+      }
     },
     {
       "path": "modules/midi-scenes/manifest.py",
@@ -242,9 +252,14 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/usb-audio-out-tracks-main-cue/README.md",
       "sourceSha256": "29178fb2e5f4897de68981d011abb93a15d2ef2e79a39964431640c10f3b84f1",
-      "vendoredSha256": "b486482e1bfd7f4a5d2d328adb5029788b32690cf95b7fcdb74b7038911fab67",
+      "vendoredSha256": "00fe9ad51331850a1792d262c46a2365e11270ad036bf434a533721ec3e516d0",
       "importedVendoredSha256": "e4dbbca399a112ae15ff2faa6449570fb1208ad7b3808ffb8beb72f16d7f6bfb",
-      "adaptation": " Octamod 0.1.1 version and native verification evidence appended; imported fingerprint retained."
+      "adaptation": " Octamod 0.1.1 version and native verification evidence appended; imported fingerprint retained.",
+      "localDocumentationUpdate": {
+        "moduleVersion": "0.1.2-experimental",
+        "previousVendoredSha256": "b486482e1bfd7f4a5d2d328adb5029788b32690cf95b7fcdb74b7038911fab67",
+        "reason": "Document automatic USB access and the reviewer-verified absence of dedicated OT UI."
+      }
     },
     {
       "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
@@ -268,9 +283,14 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/quantizer/README.md",
       "sourceSha256": "7361d0da558aac29b9d02752bab6c9cc7d569d83d81a843988df767e29bb3c69",
-      "vendoredSha256": "095c6e3a93c4278943cbc7c692db5d6c5099b1ae9805d203b90ef533f3ad5c1b",
+      "vendoredSha256": "e19df9692d4febc6fa63a0e9d3d1fb40c3de866b84a97697b2e6aa5fcc30a913",
       "importedVendoredSha256": "7ffc975e6de64f77478f4f9bdce8ee2b43dbe5a0a704bff0acfa0e61f2cf0a65",
-      "adaptation": " Octamod 0.1.1 version and native verification evidence appended; imported fingerprint retained."
+      "adaptation": " Octamod 0.1.1 version and native verification evidence appended; imported fingerprint retained.",
+      "localDocumentationUpdate": {
+        "moduleVersion": "0.1.2-experimental",
+        "previousVendoredSha256": "095c6e3a93c4278943cbc7c692db5d6c5099b1ae9805d203b90ef533f3ad5c1b",
+        "reason": "Add actual OT UI access/capture documentation; native import and original upstream fingerprints preserved."
+      }
     },
     {
       "path": "modules/quantizer/manifest.py",

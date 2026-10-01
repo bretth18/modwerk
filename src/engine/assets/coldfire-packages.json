@@ -159,7 +159,7 @@
     {
       "label": "euclid",
       "moduleId": "euclid",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "key": "EUCLID",
       "author": "repeat98",
       "cpu": "54455",
@@ -176,7 +176,7 @@
     {
       "label": "tapeecho",
       "moduleId": "tapeecho",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "key": "TAPE ECHO",
       "author": "repeat98",
       "cpu": "54455",
@@ -191,17 +191,17 @@
       "sha256": "0bd2782079a4890b6506cd44cd8d9f0db917bfc96e71b03821c05c9c555b4ba2"
     }
   ],
-  "sourceCommit": null,
+  "sourceCommit": "396a670440e94eeaf985335650571509e600f24f",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
     "character": "0.1.1-experimental",
-    "miniverb": "0.1.1-experimental",
-    "tapeecho": "0.1.1-experimental",
-    "euclid": "0.1.1-experimental",
-    "repitch": "0.1.1-experimental",
-    "analog-bassdrum": "0.1.1-experimental",
-    "usb-audio-out-tracks-main-cue": "0.1.1-experimental",
-    "quantizer": "0.1.1-experimental"
+    "miniverb": "0.1.2-experimental",
+    "tapeecho": "0.1.2-experimental",
+    "euclid": "0.1.2-experimental",
+    "repitch": "0.1.2-experimental",
+    "analog-bassdrum": "0.1.2-experimental",
+    "usb-audio-out-tracks-main-cue": "0.1.2-experimental",
+    "quantizer": "0.1.2-experimental"
   }
 }

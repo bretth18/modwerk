@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "captured": "2026-10-01",
+  "moduleId": "miniverb",
+  "moduleVersion": "0.1.2-experimental",
+  "firmware": "1.40C",
+  "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+  "emulatorSha256": "93484e4b71c70f48f795825103146a36ef95ef9ac06ee627e28608ae3e3bb3eb",
+  "captureMethod": "ot_emu --interactive --dsp --frame --mkii --main-level off; panel key/encoder commands, then lcd_view.png(lcd_view.screen(lcd_view.read_plane(...)), scale=6). No qualification gates or transport playback.",
+  "imageProfile": {
+    "nativeRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+    "modules": [
+      "spectrum",
+      "modulation",
+      "character",
+      "miniverb",
+      "tapeecho",
+      "euclid",
+      "repitch"
+    ],
+    "fx2": [
+      "MINIVERB",
+      "TAPE ECHO",
+      "EUCLID"
+    ]
+  },
+  "accessSteps": [
+    "Select an audio track with its TRACK key.",
+    "Hold FUNC and press FX2 to open FX2 SETUP.",
+    "Turn LEVEL to Mini Verb and press YES to assign it.",
+    "Press FX2 to close SETUP, then adjust DECAY, DAMP, MIX, MOD and RATE."
+  ],
+  "screenshots": [
+    {
+      "path": "media/ot-location.png",
+      "sha256": "3e8bbd84a6c1ecda110402623eb02aabf117abaca991b0fdac7a2f1c03422ef1",
+      "page": "FX2 SETUP"
+    },
+    {
+      "path": "media/ot-controls.png",
+      "sha256": "f3071fbf2f9feee45844e8cffe081bdf7b0c8edd4b8556e51ae0cc936f74a633",
+      "page": "FX2 main"
+    }
+  ],
+  "limitations": [
+    "Emulator UI evidence only; no new hardware/audio/native-byte-parity qualification.",
+    "Empty scratch card, no samples or user projects."
+  ],
+  "reproduction": {
+    "script": "scripts/capture-module-ui.py",
+    "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6.",
+    "plan": [
+      {
+        "wait": 3000
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "wait": 2000
+      },
+      {
+        "press": [
+          "NO"
+        ]
+      },
+      {
+        "press": [
+          "FUNC",
+          "FX2"
+        ]
+      },
+      {
+        "encoder": {
+          "name": "LEVEL",
+          "delta": -20
+        }
+      },
+      {
+        "encoder": {
+          "name": "LEVEL",
+          "delta": 1
+        }
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "capture": "miniverb-location.png"
+      },
+      {
+        "press": [
+          "FX2"
+        ]
+      },
+      {
+        "capture": "miniverb-controls.png"
+      },
+      {
+        "press": [
+          "FUNC",
+          "FX2"
+        ]
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "capture": "tapeecho-setup.png"
+      },
+      {
+        "press": [
+          "FX2"
+        ]
+      },
+      {
+        "capture": "tapeecho-controls.png"
+      },
+      {
+        "press": [
+          "FUNC",
+          "FX2"
+        ]
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "capture": "euclid-setup.png"
+      },
+      {
+        "press": [
+          "FX2"
+        ]
+      },
+      {
+        "capture": "euclid-controls.png"
+      },
+      {
+        "press": [
+          "FUNC",
+          "SRC"
+        ]
+      },
+      {
+        "encoder": {
+          "name": "E",
+          "delta": 127
+        }
+      },
+      {
+        "capture": "repitch-location.png"
+      },
+      {
+        "press": [
+          "SRC"
+        ]
+      },
+      {
+        "capture": "repitch-controls.png"
+      }
+    ],
+    "captureFiles": {
+      "media/ot-location.png": "miniverb-location.png",
+      "media/ot-controls.png": "miniverb-controls.png"
+    }
+  },
+  "capturedDraftVersion": "0.1.2-experimental",
+  "publicationBinding": {
+    "moduleVersion": "0.1.2-experimental",
+    "previousMainVersion": "0.1.1-experimental",
+    "baseCommit": "3ab925a",
+    "nativeSourceFiles": {
+      "manifest.py": "ea8eb70ef4d9e374bdcd90ffcbc67263ec27b10883ceb120df7f22185f6788e3",
+      "miniverb.asm": "a9d582dff3405f709acfa9fe25bf4234146965a011dfbb31ca5dc75942b2ea30"
+    },
+    "reason": "Only documentation/media metadata changed. All native module source files are byte-identical to the source used for the actual LCD captures; original PNG pixels, capture date and local image hashes are preserved."
+  }
+}

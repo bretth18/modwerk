@@ -32,3 +32,24 @@ sounded stretched: the renderer still moved the sample by output samples
 ## Open
 
 - Slices and the recorder buffers are not measured.
+
+## Access on the OT and actual UI captures
+
+STATIC or FLEX track SRC SETUP: TSTR = RPCH. The sample attribute route also offers TIMESTRETCH = REPITCH.
+
+1. Select a STATIC or FLEX audio track with its TRACK key. PICKUP does not offer REPITCH.
+2. Hold FUNC and press SRC to open SRC SETUP.
+3. Turn encoder E (TSTR) to RPCH, after OFF, AUTO, NORM and BEAT.
+4. Press SRC to close SETUP. REPITCH disables PTCH; RATE still applies.
+5. For the sample-based route, load and select a sample on the STATIC or FLEX track. Press AED on the MKII panel, then FX1 to open the audio editor ATTR page.
+6. Use UP/DOWN to select TIMESTRETCH. Press RIGHT to step through NORMAL, BEAT and REPITCH; LEFT steps back. Return to the track and set TSTR to AUTO in FUNC + SRC SETUP to use that sample attribute.
+
+![STATIC SRC SETUP with TSTR set to RPCH using encoder E. FLEX offers the same option.](media/ot-location.png)
+
+![Audio editor ATTR with TIMESTRETCH set to REPITCH. Use this sample setting with track TSTR set to AUTO.](media/ot-attributes.png)
+
+![STATIC SRC main with an original sample loaded and track TSTR set to RPCH. PTCH reads OFF; RATE remains available.](media/ot-controls.png)
+
+These are actual headless-emulator LCD captures, not hardware results. See
+[TESTING.md](TESTING.md), [capture provenance](media/capture.json) and
+[media rights](media/LICENSE.md).

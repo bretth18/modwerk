@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "captured": "2026-10-01",
+  "moduleId": "euclid",
+  "moduleVersion": "0.1.2-experimental",
+  "firmware": "1.40C",
+  "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+  "emulatorSha256": "93484e4b71c70f48f795825103146a36ef95ef9ac06ee627e28608ae3e3bb3eb",
+  "captureMethod": "ot_emu --interactive --dsp --frame --mkii --main-level off; panel key/encoder commands, then lcd_view.png(lcd_view.screen(lcd_view.read_plane(...)), scale=6). No qualification gates or transport playback.",
+  "imageProfile": {
+    "nativeRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+    "modules": [
+      "spectrum",
+      "modulation",
+      "character",
+      "miniverb",
+      "tapeecho",
+      "euclid",
+      "repitch"
+    ],
+    "fx2": [
+      "MINIVERB",
+      "TAPE ECHO",
+      "EUCLID"
+    ]
+  },
+  "accessSteps": [
+    "Select an audio track with its TRACK key.",
+    "Hold FUNC and press FX1 or FX2 to open that effect slot's SETUP.",
+    "Turn LEVEL to Euclid and press YES to assign it.",
+    "Press the same FX key to close SETUP for FREQ, RES, DEPTH, DEC, STEPS and PULSE.",
+    "Hold FUNC and press that FX key again for ROT, RATE, TYPE, ATK, output mode and MIX. Labels change with TYPE and output mode."
+  ],
+  "screenshots": [
+    {
+      "path": "media/ot-controls.png",
+      "sha256": "a67dbe6ec2cb67af1d5a787ec091185c8f1d5d894a150e6f57d6ef4c75de88cd",
+      "page": "FX2 main"
+    },
+    {
+      "path": "media/ot-setup.png",
+      "sha256": "847190b9b578d52c9bfadecd7d2a0de587df84ccf0485c8cff4c2e495ca49b3f",
+      "page": "FX2 SETUP"
+    }
+  ],
+  "limitations": [
+    "Emulator UI evidence only; no new hardware/audio/native-byte-parity qualification.",
+    "Empty scratch card, no samples or user projects."
+  ],
+  "reproduction": {
+    "script": "scripts/capture-module-ui.py",
+    "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6.",
+    "plan": [
+      {
+        "wait": 3000
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "wait": 2000
+      },
+      {
+        "press": [
+          "NO"
+        ]
+      },
+      {
+        "press": [
+          "FUNC",
+          "FX2"
+        ]
+      },
+      {
+        "encoder": {
+          "name": "LEVEL",
+          "delta": -20
+        }
+      },
+      {
+        "encoder": {
+          "name": "LEVEL",
+          "delta": 1
+        }
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "capture": "miniverb-location.png"
+      },
+      {
+        "press": [
+          "FX2"
+        ]
+      },
+      {
+        "capture": "miniverb-controls.png"
+      },
+      {
+        "press": [
+          "FUNC",
+          "FX2"
+        ]
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "capture": "tapeecho-setup.png"
+      },
+      {
+        "press": [
+          "FX2"
+        ]
+      },
+      {
+        "capture": "tapeecho-controls.png"
+      },
+      {
+        "press": [
+          "FUNC",
+          "FX2"
+        ]
+      },
+      {
+        "press": [
+          "DOWN"
+        ]
+      },
+      {
+        "press": [
+          "YES"
+        ]
+      },
+      {
+        "capture": "euclid-setup.png"
+      },
+      {
+        "press": [
+          "FX2"
+        ]
+      },
+      {
+        "capture": "euclid-controls.png"
+      },
+      {
+        "press": [
+          "FUNC",
+          "SRC"
+        ]
+      },
+      {
+        "encoder": {
+          "name": "E",
+          "delta": 127
+        }
+      },
+      {
+        "capture": "repitch-location.png"
+      },
+      {
+        "press": [
+          "SRC"
+        ]
+      },
+      {
+        "capture": "repitch-controls.png"
+      }
+    ],
+    "captureFiles": {
+      "media/ot-controls.png": "euclid-controls.png",
+      "media/ot-setup.png": "euclid-setup.png"
+    }
+  },
+  "capturedDraftVersion": "0.1.2-experimental",
+  "publicationBinding": {
+    "moduleVersion": "0.1.2-experimental",
+    "previousMainVersion": "0.1.1-experimental",
+    "baseCommit": "3ab925a",
+    "nativeSourceFiles": {
+      "control.s": "e9c7bb033d109922a606f2486fddd05f3c214d9c50f8008d02576d712e080b13",
+      "control.h": "3b46d1ec81f83942c0303bbb146cbd3509cabd7e030c4ed1d6ff7304181bb7b2",
+      "hooks.s": "00e12da65fe555fc9223c2716093e45591ed73cee9ddf1fb672b46affc953d6e",
+      "manifest.py": "e43eac70260eda028417be31773b2cd3abf4bf60698ca5968704de3774d1f31a",
+      "control.c": "d12f48f641555febc8f416a6eb15bbbb2d238b4a98c11b88e674cb7d6e203707",
+      "generate_control.py": "64e711025c513d5c3c933dbecf73a95e1193bb9a7ab31a11ad28906246dbf6fd",
+      "filter.asm": "b0fef9bfb99aabc67de2bd452feba6ae045603340b7d56405140d2afc3a0f35e"
+    },
+    "reason": "Only documentation/media metadata changed. All native module source files are byte-identical to the source used for the actual LCD captures; original PNG pixels, capture date and local image hashes are preserved."
+  }
+}

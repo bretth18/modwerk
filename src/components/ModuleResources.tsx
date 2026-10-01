@@ -1,10 +1,12 @@
 import { FLASHING_RISKS, FIRMWARE_SHARING_NOTICE } from '../firmware-notices'
 import { RESOURCES, resourceSource } from '../catalog/resources'
 import { Icon } from './Icon'
+import { ModuleAccess } from './ModuleAccess'
 export function ModuleResources({ id }: { id: string }) {
   const data = RESOURCES[id]
   return <>
     <details className="module-disclosure"><summary><span>How to use it</span><Icon name="plus" size={16} /></summary><div className="disclosure-content">
+      <ModuleAccess id={id} showScreenshots={false} />
       <ol className="usage-list">{data.usage.map(step => <li key={step}>{step}</li>)}</ol>
     </div></details>
     <details className="module-disclosure"><summary><span>Technical details & safety<small>Resources, tests, flashing</small></span><Icon name="plus" size={16} /></summary><div className="disclosure-content">

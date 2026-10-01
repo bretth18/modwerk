@@ -1,8 +1,60 @@
 {
   "schemaVersion": 2,
-  "version": "0.2.0-experimental",
+  "version": "0.2.1-experimental",
   "nativeManifest": "manifest.py",
-  "media": [],
+  "media": [
+    {
+      "path": "media/ot-setup.png",
+      "captureType": "emulator",
+      "caption": "MIDI CTRL 1 SETUP: CC1 is assigned to controller 74 using encoder C and confirmed with YES.",
+      "alt": "MIDI CTRL 1 SETUP: CC1 is assigned to controller 74 using encoder C and confirmed with YES.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "MIDI CTRL 1 SETUP",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.2.1-experimental",
+        "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+      }
+    },
+    {
+      "path": "media/ot-location.png",
+      "captureType": "emulator",
+      "caption": "MIDI CONTROL 1 with CC1 enabled at its base value of 0. Hold FUNC and press encoder C to enable it.",
+      "alt": "MIDI CONTROL 1 with CC1 enabled at its base value of 0. Hold FUNC and press encoder C to enable it.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "MIDI CONTROL 1",
+        "shows": "location-and-controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.2.1-experimental",
+        "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+      }
+    },
+    {
+      "path": "media/ot-scene-lock.png",
+      "captureType": "emulator",
+      "caption": "Scene A held on MIDI CONTROL 1: the CC1 scene lock reads 64; releasing Scene A returns to the base value of 0.",
+      "alt": "Scene A held on MIDI CONTROL 1: the CC1 scene lock reads 64; releasing Scene A returns to the base value of 0.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "MIDI CONTROL 1, Scene A held",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.2.1-experimental",
+        "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+      }
+    }
+  ],
   "id": "midi-scenes",
   "key": "MIDI SCENES",
   "name": "MIDI Scenes",
@@ -81,10 +133,26 @@
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance."
+    "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance. Original OT LCD captures are declared in media/LICENSE.md as LicenseRef-OT-UI-Documentation; underlying Elektron rights remain reserved. Reviewer verification is required before publication and is not automatic legal clearance."
   },
   "build": {
     "status": "pending",
     "reason": "MIDI Scenes 2.0 firmware builds are awaiting Octamod verification. You can save this configuration while verification is pending."
+  },
+  "access": {
+    "location": "MIDI track parameter pages: hold SCENE A or SCENE B and edit an enabled parameter; the example uses MIDI CTRL 1.",
+    "steps": [
+      "Press MIDI to enter MIDI mode and select a track with its TRACK key.",
+      "For an external receiver, open MIDI NOTE SETUP with FUNC + SRC, choose CHAN with encoder A and press YES to confirm. The capture fixture has no connected receiver and leaves CHAN off.",
+      "For the illustrated CC example, hold FUNC and press FX1 to open MIDI CTRL 1 SETUP. Assign controller 74 to CC1 with encoder C and press YES to confirm.",
+      "Press FX1 to return to MIDI CTRL 1. Hold FUNC and press encoder C to enable CC1; its default OFF state cannot be edited as a normal active control.",
+      "Hold SCENE A or SCENE B and press a TRIG key to assign a scene to that side. Keep the scene key held and turn encoder C to set its CC1 scene lock. The pictured example locks CC1 to 64 while the base value is 0.",
+      "Release the scene key. Move the crossfader to morph the assigned scenes. Other supported MIDI parameter pages use the same hold-and-edit pattern."
+    ],
+    "screenshots": [
+      "media/ot-setup.png",
+      "media/ot-location.png",
+      "media/ot-scene-lock.png"
+    ]
   }
 }

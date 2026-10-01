@@ -73,3 +73,28 @@ Module version: `0.2.0-experimental`. Catalog/docs updated to author
 Native relocatable units and octabam source pin remain the earlier import
 ([sambanks/octabam@363861e](https://github.com/sambanks/octabam/tree/363861e31ee963c478fab2b190a0fabe1d7ce37b/modules/midi-scenes)).
 Firmware builds are enabled for this catalog revision (verified 8.2-derived packages). See [TESTING.md](TESTING.md).
+
+## Access and actual OT UI captures
+
+MIDI track parameter pages: hold SCENE A or SCENE B and edit an enabled parameter; the example uses MIDI CTRL 1.
+
+1. Press MIDI to enter MIDI mode and select a track with its TRACK key.
+2. For an external receiver, open MIDI NOTE SETUP with FUNC + SRC, choose CHAN with encoder A and press YES to confirm. The capture fixture has no connected receiver and leaves CHAN off.
+3. For the illustrated CC example, hold FUNC and press FX1 to open MIDI CTRL 1 SETUP. Assign controller 74 to CC1 with encoder C and press YES to confirm.
+4. Press FX1 to return to MIDI CTRL 1. Hold FUNC and press encoder C to enable CC1; its default OFF state cannot be edited as a normal active control.
+5. Hold SCENE A or SCENE B and press a TRIG key to assign a scene to that side. Keep the scene key held and turn encoder C to set its CC1 scene lock. The pictured example locks CC1 to 64 while the base value is 0.
+6. Release the scene key. Move the crossfader to morph the assigned scenes. Other supported MIDI parameter pages use the same hold-and-edit pattern.
+
+![MIDI CTRL 1 SETUP: CC1 is assigned to controller 74 using encoder C and confirmed with YES.](media/ot-setup.png)
+
+![MIDI CONTROL 1 with CC1 enabled at its base value of 0. Hold FUNC and press encoder C to enable it.](media/ot-location.png)
+
+![Scene A held on MIDI CONTROL 1: the CC1 scene lock reads 64; releasing Scene A returns to the base value of 0.](media/ot-scene-lock.png)
+
+These are actual firmware-rendered emulator LCD captures. See [TESTING.md](TESTING.md),
+[capture provenance](media/capture.json) and [media rights](media/LICENSE.md).
+
+The standard MIDI channel confirmation and FUNC + encoder activation steps
+follow Elektron’s [MKII manual, MIDI track parameters](https://www.elektron.se/wp-content/uploads/2024/09/Octatrack-MKII-User-Manual_ENG_OS1.40A_210414.pdf#page=94).
+MIDI scene locks are supplied by the pinned module; stock firmware does not
+provide them. The capture leaves CHAN off because no receiver is connected.

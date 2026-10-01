@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "captured": "2026-10-01",
+  "moduleId": "repitch",
+  "moduleVersion": "0.1.2-experimental",
+  "firmware": "1.40C",
+  "emulatorSha256": "93484e4b71c70f48f795825103146a36ef95ef9ac06ee627e28608ae3e3bb3eb",
+  "captureMethod": "ot_emu --interactive --dsp --frame --mkii --main-level off; panel key/encoder commands, then lcd_view.png(lcd_view.screen(lcd_view.read_plane(...)), scale=6). No qualification gates or transport playback.",
+  "accessSteps": [
+    "Select a STATIC or FLEX audio track with its TRACK key. PICKUP does not offer REPITCH.",
+    "Hold FUNC and press SRC to open SRC SETUP.",
+    "Turn encoder E (TSTR) to RPCH, after OFF, AUTO, NORM and BEAT.",
+    "Press SRC to close SETUP. REPITCH disables PTCH; RATE still applies.",
+    "For the sample-based route, load and select a sample on the STATIC or FLEX track. Press AED on the MKII panel, then FX1 to open the audio editor ATTR page.",
+    "Use UP/DOWN to select TIMESTRETCH. Press RIGHT to step through NORMAL, BEAT and REPITCH; LEFT steps back. Return to the track and set TSTR to AUTO in FUNC + SRC SETUP to use that sample attribute."
+  ],
+  "sessions": [
+    {
+      "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+      "imageProfile": {
+        "nativeRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+        "modules": [
+          "spectrum",
+          "modulation",
+          "character",
+          "miniverb",
+          "tapeecho",
+          "euclid",
+          "repitch"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID"
+        ]
+      },
+      "reproduction": {
+        "script": "scripts/capture-module-ui.py",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6.",
+        "plan": [
+          {
+            "wait": 3000
+          },
+          {
+            "press": [
+              "YES"
+            ]
+          },
+          {
+            "wait": 2000
+          },
+          {
+            "press": [
+              "NO"
+            ]
+          },
+          {
+            "press": [
+              "FUNC",
+              "FX2"
+            ]
+          },
+          {
+            "encoder": {
+              "name": "LEVEL",
+              "delta": -20
+            }
+          },
+          {
+            "encoder": {
+              "name": "LEVEL",
+              "delta": 1
+            }
+          },
+          {
+            "press": [
+              "YES"
+            ]
+          },
+          {
+            "capture": "miniverb-location.png"
+          },
+          {
+            "press": [
+              "FX2"
+            ]
+          },
+          {
+            "capture": "miniverb-controls.png"
+          },
+          {
+            "press": [
+              "FUNC",
+              "FX2"
+            ]
+          },
+          {
+            "press": [
+              "DOWN"
+            ]
+          },
+          {
+            "press": [
+              "YES"
+            ]
+          },
+          {
+            "capture": "tapeecho-setup.png"
+          },
+          {
+            "press": [
+              "FX2"
+            ]
+          },
+          {
+            "capture": "tapeecho-controls.png"
+          },
+          {
+            "press": [
+              "FUNC",
+              "FX2"
+            ]
+          },
+          {
+            "press": [
+              "DOWN"
+            ]
+          },
+          {
+            "press": [
+              "YES"
+            ]
+          },
+          {
+            "capture": "euclid-setup.png"
+          },
+          {
+            "press": [
+              "FX2"
+            ]
+          },
+          {
+            "capture": "euclid-controls.png"
+          },
+          {
+            "press": [
+              "FUNC",
+              "SRC"
+            ]
+          },
+          {
+            "encoder": {
+              "name": "E",
+              "delta": 127
+            }
+          },
+          {
+            "capture": "repitch-location.png"
+          },
+          {
+            "press": [
+              "SRC"
+            ]
+          },
+          {
+            "capture": "repitch-controls.png"
+          }
+        ],
+        "captureFiles": {
+          "media/ot-location.png": "repitch-location.png"
+        },
+        "keyMs": 150
+      },
+      "screenshots": [
+        {
+          "path": "media/ot-location.png",
+          "sha256": "a9c303e04532ff3e1b2f6571bb4ef4939049dd7bb890ae39c509906ac90716b0",
+          "page": "SRC SETUP"
+        }
+      ]
+    },
+    {
+      "imageSha256": "fd48ea8b84227dfbd31ed2824661087ddfe53d9ade8c82535e5da43c9a41fd38",
+      "imageProfile": {
+        "modules": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "ANALOG BD",
+          "MIDI SCENES",
+          "SCALE QUANTIZER",
+          "REPITCH"
+        ],
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "staticStock": true
+      },
+      "sourcePins": {
+        "analog-bassdrum": {
+          "repository": "https://github.com/sambanks/octabam",
+          "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
+          "path": "modules/analog-bassdrum"
+        },
+        "midi-scenes": {
+          "repository": "https://github.com/sambanks/octabam",
+          "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
+          "path": "modules/midi-scenes"
+        },
+        "quantizer": {
+          "repository": "https://github.com/sambanks/octabam",
+          "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
+          "path": "modules/quantizer"
+        },
+        "repitch": {
+          "repository": "https://github.com/repeat98/octamad",
+          "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+          "path": "modules/repitch"
+        }
+      },
+      "nativeToolsRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+      "localBuild": {
+        "scriptSha256": "8f113002a453bee1452127ab46b0ac981c31424a2f34addc9b89dacde2367548",
+        "environment": {
+          "REMIX": "approved-ui",
+          "XBUS": "1",
+          "SPEC": "1",
+          "DEV": "0",
+          "NOROUNDTRIP": "0",
+          "OCTABAM_STATIC_STOCK": "1",
+          "OCTABAM_NO_CACHE": "1",
+          "BUILD": "79"
+        },
+        "isolation": "Temporary macOS source build sandbox: no network; user/shared-temp reads restricted; writes confined to the task workspace; clean environment. Pending sources explicitly authorized for UI-only capture."
+      },
+      "sampleFixture": {
+        "file": "ONE/AUDIO/UI_120.WAV",
+        "sha256": "507c28c225c705eb93c8b9ded0ee26b253b8bbbfce9948c1718529db4c68490b",
+        "recipe": "Original generated sine; mono 16-bit PCM, 44,100 Hz, 88,200 frames. Each sample is round(4096 * sin(2 * pi * 220 * frame / 44100)); write with Python wave and struct little-endian <h. Build a 32 MiB FAT16 scratch card with emu_card.build_image. No retained sample/card or playback."
+      },
+      "reproduction": {
+        "script": "scripts/capture-module-ui.py",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6.",
+        "keyMs": 50,
+        "plan": [
+          {
+            "wait": 3000
+          },
+          {
+            "press": [
+              "YES"
+            ]
+          },
+          {
+            "wait": 2000
+          },
+          {
+            "press": [
+              "NO"
+            ]
+          },
+          {
+            "press": [
+              "T1"
+            ]
+          },
+          {
+            "press": [
+              "T1"
+            ]
+          },
+          {
+            "press": [
+              "YES"
+            ]
+          },
+          {
+            "press": [
+              "YES"
+            ]
+          },
+          {
+            "press": [
+              "YES"
+            ]
+          },
+          {
+            "wait": 1000
+          },
+          {
+            "press": [
+              "YES"
+            ]
+          },
+          {
+            "press": [
+              "YES"
+            ]
+          },
+          {
+            "press": [
+              "NO"
+            ]
+          },
+          {
+            "press": [
+              "AED"
+            ]
+          },
+          {
+            "press": [
+              "FX1"
+            ]
+          },
+          {
+            "press": [
+              "DOWN"
+            ]
+          },
+          {
+            "press": [
+              "DOWN"
+            ]
+          },
+          {
+            "encoder": {
+              "name": "LEVEL",
+              "delta": 127
+            }
+          },
+          {
+            "press": [
+              "RIGHT"
+            ]
+          },
+          {
+            "press": [
+              "RIGHT"
+            ]
+          },
+          {
+            "capture": "repitch-attributes.png"
+          },
+          {
+            "press": [
+              "AED"
+            ]
+          },
+          {
+            "press": [
+              "FUNC",
+              "SRC"
+            ]
+          },
+          {
+            "encoder": {
+              "name": "E",
+              "delta": -127
+            }
+          },
+          {
+            "encoder": {
+              "name": "E",
+              "delta": 4
+            }
+          },
+          {
+            "capture": "repitch-tstr-4.png"
+          },
+          {
+            "encoder": {
+              "name": "E",
+              "delta": 8
+            }
+          },
+          {
+            "capture": "repitch-tstr-8.png"
+          },
+          {
+            "encoder": {
+              "name": "E",
+              "delta": 16
+            }
+          },
+          {
+            "capture": "repitch-tstr-16.png"
+          },
+          {
+            "encoder": {
+              "name": "E",
+              "delta": 32
+            }
+          },
+          {
+            "capture": "repitch-tstr-32.png"
+          },
+          {
+            "press": [
+              "SRC"
+            ]
+          },
+          {
+            "capture": "repitch-loaded-controls.png"
+          }
+        ],
+        "captureFiles": {
+          "media/ot-attributes.png": "repitch-attributes.png",
+          "media/ot-controls.png": "repitch-loaded-controls.png"
+        }
+      },
+      "screenshots": [
+        {
+          "path": "media/ot-attributes.png",
+          "sha256": "a61160f5f776e6e79444432dfaf7ea2b0ded3bbf39e2966a9698d18825dbc36f",
+          "page": "Audio editor ATTR"
+        },
+        {
+          "path": "media/ot-controls.png",
+          "sha256": "e6441a8ddac0de7d993d5a7fb3dfe568e31da88c9edb1952dada107cb24a269a",
+          "page": "SRC main"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Emulator UI evidence only; no new hardware, playback, audio, persistence or native/browser parity qualification.",
+    "The first session uses an empty scratch card. The second loads only an original temporary sample, with no user projects or hardware connection.",
+    "ATTR = REPITCH and loaded-sample track RPCH presentation were captured in separate panel states. No AUTO playback or sample saving was tested."
+  ],
+  "capturedDraftVersion": "0.1.2-experimental",
+  "publicationBinding": {
+    "moduleVersion": "0.1.2-experimental",
+    "previousMainVersion": "0.1.1-experimental",
+    "baseCommit": "3ab925a",
+    "nativeSourceFiles": {
+      "manifest.py": "52c9c6e81ec38764237baf8470ad34f5747bc3af519e026d8ad96b3251e252c7",
+      "repitch.s": "55114bdea09fe82c1bd68b725e77cc1873e2e956fb9ce9f071e3155a63fb721b"
+    },
+    "reason": "Only documentation/media metadata changed. All native module source files are byte-identical to the source used for the actual LCD captures; original PNG pixels, capture date and local image hashes are preserved."
+  }
+}

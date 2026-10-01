@@ -2,23 +2,23 @@
   "schema": 1,
   "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
   "license": "/licenses/octabam.txt",
-  "sourceCommit": null,
+  "sourceCommit": "396a670440e94eeaf985335650571509e600f24f",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
     "character": "0.1.1-experimental",
-    "miniverb": "0.1.1-experimental",
-    "tapeecho": "0.1.1-experimental",
-    "euclid": "0.1.1-experimental",
-    "repitch": "0.1.1-experimental",
-    "analog-bassdrum": "0.1.1-experimental",
-    "usb-audio-out-tracks-main-cue": "0.1.1-experimental",
-    "quantizer": "0.1.1-experimental"
+    "miniverb": "0.1.2-experimental",
+    "tapeecho": "0.1.2-experimental",
+    "euclid": "0.1.2-experimental",
+    "repitch": "0.1.2-experimental",
+    "analog-bassdrum": "0.1.2-experimental",
+    "usb-audio-out-tracks-main-cue": "0.1.2-experimental",
+    "quantizer": "0.1.2-experimental"
   },
   "packages": [
     {
       "id": "euclid",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "key": "EUCLID",
       "author": "repeat98",
       "sources": {
@@ -58,7 +58,7 @@
     },
     {
       "id": "miniverb",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "key": "MINIVERB",
       "author": "repeat98",
       "sources": {
@@ -190,7 +190,7 @@
     },
     {
       "id": "tapeecho",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "key": "TAPE ECHO",
       "author": "repeat98",
       "sources": {

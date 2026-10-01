@@ -1,6 +1,6 @@
 # Module folder and website contract
 
-A module is a folder under `sdk/octabam/modules/<id>/` containing native source, `manifest.py`, `octamod.module.json`, README, TESTING, licence and optional media. Start with `npm run module:new`. See [SDK setup](../sdk/README.md) and [contribution rules](../CONTRIBUTING.md). Submissions and all updates use PRs; merging the PR is owner approval. No direct module upload or separate website approval remains.
+A module is a folder under `sdk/octabam/modules/<id>/` containing native source, `manifest.py`, `octamod.module.json`, README, TESTING, licence and real OT UI screenshots (audio is optional). Start with `npm run module:new`. See [SDK setup](../sdk/README.md) and [contribution rules](../CONTRIBUTING.md). Submissions and all updates use PRs; merging the PR is owner approval. No direct module upload or separate website approval remains.
 
 ## Schema version 2
 
@@ -14,12 +14,13 @@ A module is a folder under `sdk/octabam/modules/<id>/` containing native source,
 | build (optional) | `status: pending` and a user-facing reason; source import does not imply browser/native qualification |
 | nativeManifest | `manifest.py` beside this file |
 | presentation | Library summary, page overview, family/label, highlights and practical usage |
+| access | OT location, prerequisites, exact button/menu steps and declared screenshot paths; narrow no-UI declaration for automatic USB modules |
 | controls | Every active control: name, default, count, description, labels or null |
 | compatibility | Original OS 1.40C, location, conflicts and explicit limitations |
 | resources | Storage/processing label, display, optional numeric value, unit, evidence method, exact conditions/source; unknown numbers are null |
 | tests | TESTING path, honest result summary, hardware status, exact evidence commit and declared gates |
 | license | SPDX expression, local licence file and accurate source/media declaration |
-| media | Relative path, hardware/emulator/audio type, caption, alt text, credit, licence and original/source provenance |
+| media | Relative path, hardware/emulator/audio type, caption, alt text, credit, licence and original/source provenance; `otUi` page, version, local build hash and setup for OT captures |
 
 A display string may report a range or several quantities while its scalar value stays null. `method: unmeasured` forbids a numeric claim. Static prices and emulator instruction counts are not hardware percentages. Historical hardware results do not qualify a later revision.
 
@@ -27,7 +28,7 @@ A display string may report a range or several quantities while its scalar value
 
 `npm run modules:generate` validates source folders and writes `src/catalog/module-documents.json`. The module library, pages, controls and resource explanations consume that generated content. `sdk/catalog.json` lists the seven initial modules plus the four explicitly requested additions, each at an exact version. Its `sourceRevision` remains the existing native composition pin; newer per-module `source` pins identify imports separately. New source folders do not silently enter the configurator.
 
-`npm run modules:check` rejects stale generated content and missing local documentation/media. `--base origin/main` also requires a strictly greater semantic version whenever any file in an existing module folder changes. PR CI runs it against the exact base SHA. Sources, docs and media are reviewed together. No `.bin` or `.syx` file belongs in the source or media folder. No symlink may escape the folder.
+`npm run modules:check` rejects stale generated content and missing local documentation/media. `--base origin/main` also requires a strictly greater semantic version whenever any file in an existing module folder changes. PR CI runs it against the exact base SHA. New or changed module folders and modules newly added to the catalog also require version-matched real OT UI location/control captures and access instructions; unchanged legacy publications remain readable. See [the capture workflow](MODULE_UI_CAPTURES.md). Sources, docs and media are reviewed together. No `.bin` or `.syx` file belongs in the source or media folder. No symlink may escape the folder.
 
 ## Temporary frontend availability
 

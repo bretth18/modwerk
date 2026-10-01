@@ -95,3 +95,21 @@ copied project under the ColdFire port and checks full playback. No test
 writes to the source project or hardware.
 
 The current revision has not been hardware-tested by these tools.
+
+## Access on the OT and actual UI captures
+
+Audio track FX1 or FX2 SETUP: Euclid in the effect chooser. These captures use FX2.
+
+1. Select an audio track with its TRACK key.
+2. Hold FUNC and press FX1 or FX2 to open that effect slot's SETUP.
+3. Turn LEVEL to Euclid and press YES to assign it.
+4. Press the same FX key to close SETUP for FREQ, RES, DEPTH, DEC, STEPS and PULSE.
+5. Hold FUNC and press that FX key again for ROT, RATE, TYPE, ATK, output mode and MIX. Labels change with TYPE and output mode.
+
+![Euclid main controls in its default filter/envelope mode: FREQ, RES, DEPTH, DEC, STEPS and PULSE.](media/ot-controls.png)
+
+![Euclid selected in FX2 SETUP: ROT, RATE, TYPE, ATK, ENV output mode and MIX.](media/ot-setup.png)
+
+These are actual headless-emulator LCD captures, not hardware results. See
+[TESTING.md](TESTING.md), [capture provenance](media/capture.json) and
+[media rights](media/LICENSE.md).

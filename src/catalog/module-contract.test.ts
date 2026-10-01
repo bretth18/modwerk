@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseModuleDocument } from './module-contract'
+import { parseModuleDocument, requireModuleUiForPublication } from './module-contract'
 import { compareModuleVersions } from './versions'
 import example from '../../public/module-repository.example.json'
 import catalog from './module-documents.json'
@@ -30,6 +30,30 @@ describe('module folder contract',()=>{
   const resources=example.resources
   expect(()=>parseModuleDocument({...example,resources:{...resources,storage:{...resources.storage,value:30}}})).toThrow('unmeasured')
   expect(()=>parseModuleDocument({...example,resources:{...resources,processing:{...resources.processing,value:101,unit:'%',method:'hardware'}}})).toThrow('percentage')
+ })
+ it('requires real versioned OT location and control captures for publication, while allowing drafts',()=>{
+  const ui={page:'FX2 SETUP',shows:'location-and-controls',firmware:'1.40C',moduleVersion:example.version,imageSha256:'a'.repeat(64),setup:'Headless ot_emu, MKII panel, stopped transport.'}
+  const media={path:'media/fx2.png',captureType:'emulator',caption:'Select the effect in FX2 SETUP.',alt:'FX2 SETUP with the module selected.',credit:'Contributor',license:'LicenseRef-OT-UI-Documentation',source:'original',otUi:ui}
+  const access={location:'Audio track FX2 SETUP',steps:['Select an audio track.','Hold FUNC and press FX2.'],screenshots:[media.path]}
+  const draft=parseModuleDocument(example)
+  expect(draft.access?.screenshots).toEqual([])
+  expect(()=>requireModuleUiForPublication(draft)).toThrow('actual screenshots')
+  const document=parseModuleDocument({...example,access,media:[media]})
+  expect(()=>requireModuleUiForPublication(document)).not.toThrow()
+  expect(document.media[0].otUi).toEqual(ui)
+  expect(()=>requireModuleUiForPublication(parseModuleDocument({...example,access,media:[{...media,otUi:{...ui,moduleVersion:'0.0.1'}}]}))).toThrow('this module version')
+  expect(()=>requireModuleUiForPublication(parseModuleDocument({...example,access,media:[{...media,otUi:{...ui,shows:'controls'}}]}))).toThrow('selected or enabled')
+  expect(()=>requireModuleUiForPublication(parseModuleDocument({...example,access,media:[{...media,otUi:{...ui,shows:'location'}}]}))).toThrow('module controls')
+  expect(()=>requireModuleUiForPublication(parseModuleDocument({...example,access,controls:[],media:[{...media,otUi:{...ui,shows:'location'}}]}))).not.toThrow()
+  for(const change of [{screenshots:['media/missing.png']},{screenshots:[media.path,media.path]},{steps:[]},{extra:true}])expect(()=>parseModuleDocument({...example,access:{...access,...change},media:[media]})).toThrow()
+  for(const change of [{firmware:'1.41'},{shows:'mockup'},{page:''},{moduleVersion:'latest'},{imageSha256:'main'},{setup:''},{extra:true}])expect(()=>parseModuleDocument({...example,access,media:[{...media,otUi:{...ui,...change}}]})).toThrow()
+  expect(()=>parseModuleDocument({...example,access,media:[{...media,path:'media/sound.wav',captureType:'audio'}]})).toThrow('OT UI evidence')
+  expect(()=>parseModuleDocument({...example,access,media:[{...media,otUi:undefined}]})).toThrow()
+  const automatic={...example,category:'midi-usb',controls:[],compatibility:{...example.compatibility,location:'USB',effectId:null},access:{...access,screenshots:[],noUiReason:'USB Audio starts automatically and adds no OT page or controls.'},media:[]}
+  expect(()=>requireModuleUiForPublication(parseModuleDocument(automatic))).not.toThrow()
+  expect(()=>parseModuleDocument({...automatic,controls:example.controls})).toThrow('no dedicated OT UI')
+  expect(()=>parseModuleDocument({...automatic,compatibility:example.compatibility})).toThrow('no dedicated OT UI')
+  expect(()=>parseModuleDocument({...automatic,access:{...automatic.access,noUiReason:''}})).toThrow()
  })
  it('accepts a separate author name while keeping the GitHub login and strict author fields',()=>{
   const author={...example.author,github:'repeat98',name:'Jannik Aßfalg'}

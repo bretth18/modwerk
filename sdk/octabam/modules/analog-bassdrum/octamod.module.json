@@ -1,8 +1,94 @@
 {
   "schemaVersion": 2,
-  "version": "0.1.1-experimental",
+  "version": "0.1.2-experimental",
   "nativeManifest": "manifest.py",
-  "media": [],
+  "media": [
+    {
+      "path": "media/ot-location.png",
+      "captureType": "emulator",
+      "caption": "ANALOG BD selected on SRC SETUP, with its shared ACCNT, LPF, LOW and HIGH controls.",
+      "alt": "ANALOG BD selected on SRC SETUP, with its shared ACCNT, LPF, LOW and HIGH controls.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "SRC SETUP",
+        "shows": "location-and-controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+      }
+    },
+    {
+      "path": "media/ot-engines.png",
+      "captureType": "emulator",
+      "caption": "Analog BD’s engine browser: choose 808 or 909, then press YES.",
+      "alt": "Analog BD’s engine browser: choose 808 or 909, then press YES.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "Analog BD engine browser",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+      }
+    },
+    {
+      "path": "media/ot-808.png",
+      "captureType": "emulator",
+      "caption": "Analog BD 808 main controls: PITCH, DECAY, TONE, ATK, SWEEP and SAT.",
+      "alt": "Analog BD 808 main controls: PITCH, DECAY, TONE, ATK, SWEEP and SAT.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "808 SRC main",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+      }
+    },
+    {
+      "path": "media/ot-909.png",
+      "captureType": "emulator",
+      "caption": "Analog BD 909 main controls: PITCH, DECAY, TUNE, ATK, TDEP and SAT.",
+      "alt": "Analog BD 909 main controls: PITCH, DECAY, TUNE, ATK, TDEP and SAT.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "909 SRC main",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+      }
+    },
+    {
+      "path": "media/ot-setup.png",
+      "captureType": "emulator",
+      "caption": "Shared Analog BD setup controls: ACCNT, LPF, LOW and HIGH.",
+      "alt": "Shared Analog BD setup controls: ACCNT, LPF, LOW and HIGH.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "SRC SETUP",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+      }
+    }
+  ],
   "id": "analog-bassdrum",
   "key": "ANALOG BD",
   "name": "Analog BD",
@@ -163,6 +249,23 @@
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance."
+    "declaration": "Imported original/MIT-licensed sources with upstream copyright, author attribution and exact commit pins retained. No firmware, extracted stock routines, recordings or screenshots imported. Contributor licensing statements are retained in LICENSE; owner/reviewer verification is required before publication and is not automatic legal clearance. Original OT LCD captures are declared in media/LICENSE.md as LicenseRef-OT-UI-Documentation; underlying Elektron rights remain reserved. Reviewer verification is required before publication and is not automatic legal clearance."
+  },
+  "access": {
+    "location": "Audio track SRC SETUP: ANALOG BD; double-tap the track key for its 808 / 909 engine browser.",
+    "steps": [
+      "Select an audio track with its TRACK key.",
+      "Hold FUNC and press SRC to open SRC SETUP. Use DOWN to reach ANALOG BD, then press YES to assign it.",
+      "Press SRC to close SETUP and edit the main controls. The 808 model uses PITCH, DECAY, TONE, ATK, SWEEP and SAT; the 909 uses TUNE and TDEP in place of TONE and SWEEP.",
+      "Double-tap the assigned track’s TRACK key to open the engine browser. Choose 808 or 909 with UP/DOWN or LEVEL, then press YES. Selecting a model retains the existing knob settings.",
+      "Hold FUNC and press SRC for the shared ACCNT, LPF, LOW and HIGH controls. AMP and the track FX pages remain available."
+    ],
+    "screenshots": [
+      "media/ot-location.png",
+      "media/ot-engines.png",
+      "media/ot-808.png",
+      "media/ot-909.png",
+      "media/ot-setup.png"
+    ]
   }
 }

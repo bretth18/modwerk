@@ -3,7 +3,7 @@
   "id": "euclid",
   "key": "EUCLID",
   "name": "Euclid",
-  "version": "0.1.1-experimental",
+  "version": "0.1.2-experimental",
   "category": "effects",
   "author": {
     "github": "repeat98",
@@ -371,7 +371,56 @@
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "Original module sources retain upstream authorship and permissive licences. See ../../THIRD_PARTY.md for component-specific credits and terms. No rights or hardware qualification are newly asserted by this import."
+    "declaration": "Original module sources retain upstream authorship and permissive licences. See ../../THIRD_PARTY.md for component-specific credits and terms. No rights or hardware qualification are newly asserted by this import. Original OT LCD captures are declared in media/LICENSE.md as LicenseRef-OT-UI-Documentation; underlying Elektron rights remain reserved. Reviewer verification is required before publication and is not automatic legal clearance."
   },
-  "media": []
+  "media": [
+    {
+      "path": "media/ot-controls.png",
+      "captureType": "emulator",
+      "caption": "Euclid main controls in its default filter/envelope mode: FREQ, RES, DEPTH, DEC, STEPS and PULSE.",
+      "alt": "Euclid main controls in its default filter/envelope mode: FREQ, RES, DEPTH, DEC, STEPS and PULSE.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "FX2 main",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+        "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+      }
+    },
+    {
+      "path": "media/ot-setup.png",
+      "captureType": "emulator",
+      "caption": "Euclid selected in FX2 SETUP: ROT, RATE, TYPE, ATK, ENV output mode and MIX.",
+      "alt": "Euclid selected in FX2 SETUP: ROT, RATE, TYPE, ATK, ENV output mode and MIX.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "FX2 SETUP",
+        "shows": "location-and-controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
+        "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+      }
+    }
+  ],
+  "access": {
+    "location": "Audio track FX1 or FX2 SETUP: Euclid in the effect chooser. These captures use FX2.",
+    "steps": [
+      "Select an audio track with its TRACK key.",
+      "Hold FUNC and press FX1 or FX2 to open that effect slot's SETUP.",
+      "Turn LEVEL to Euclid and press YES to assign it.",
+      "Press the same FX key to close SETUP for FREQ, RES, DEPTH, DEC, STEPS and PULSE.",
+      "Hold FUNC and press that FX key again for ROT, RATE, TYPE, ATK, output mode and MIX. Labels change with TYPE and output mode."
+    ],
+    "screenshots": [
+      "media/ot-controls.png",
+      "media/ot-setup.png"
+    ]
+  }
 }

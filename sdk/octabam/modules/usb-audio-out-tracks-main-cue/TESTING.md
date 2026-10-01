@@ -1,6 +1,6 @@
 # USB Audio testing
 
-Version: `0.1.1-experimental`. Octabam evidence pin: `363861e31ee963c478fab2b190a0fabe1d7ce37b`.
+Version: `0.1.2-experimental`. Octabam evidence pin: `363861e31ee963c478fab2b190a0fabe1d7ce37b`.
 
 Selected for the broadest recorded hardware evidence: MKI and MKII, sustained multi-track 24-bit captures and high MIDI receive traffic. The latest source includes track/MAIN alignment and a hardware-tested master-on CUE correction; startup artifacts and unmeasured host/platform cases remain.
 
@@ -26,3 +26,12 @@ These gate references belong to the pinned upstream tree. Author encoder/regener
 USB MIDI lives under `../../platform/usb-midi/`. It is an internal requirement, not another public catalog option. The output-only twenty-channel layout was selected for MKI/MKII and sustained-stream evidence. USB input and USB CROSSBAR are not imported because this selected output does not require them.
 
 Octamod 0.1.1-experimental: browser composition uses reviewed source packages and derives inherited bytes from local 1.40C. The native matrix passed 156 byte identities and 132 refusals. The owner reported both combined native test images working on 1 October 2026; detailed feature/load qualification is not claimed.
+
+## OT UI publication exception
+
+Version 0.1.2-experimental adds host/device access instructions and the
+`access.noUiReason` declaration. No dedicated OT page or controls are added
+by this automatic USB contribution; no unrelated stock screenshot is supplied.
+The reviewer must verify the exception against the exact upstream pin before
+publication. No source was executed and no USB or firmware tests were run for
+this documentation change.
