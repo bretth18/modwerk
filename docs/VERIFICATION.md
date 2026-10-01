@@ -207,3 +207,23 @@ The manifest and PR checks require version-matched location/control captures
 and access instructions for new/changed module folders and new catalog entries.
 Unchanged legacy versions remain readable. Source-import fingerprints preserve
 original upstream identities alongside updated local README hashes.
+
+The focused PR was rebased onto main at `568ac1d630a87a6cb30590933819ad3d7e4a85bf`,
+preserving the merged module-update indicators. Node 24 checks passed: 221 tests
+in 42 files, seven synthetic SDK checks, four licence checks, lint, TypeScript
+and the production build. Publication checks against the exact main base passed.
+The browser loaded all three Repitch PNGs at their original 768×384 dimensions
+and displayed both access routes in the existing How to use it disclosure.
+
+A network-disabled, read-only source container rebuilt the stock-free packages
+from the clean rebased branch. Independent comparison confirmed that every
+executable byte, source fingerprint, relocation proof and placement/dispatch
+recipe in all nine artifacts matches main; only publication versions and build
+provenance differ. The compiler now accepts main's ten-buildable-module scope,
+excludes pending MIDI Scenes source from discovery and compilation, and retains
+its earlier objects only when all recorded native source fingerprints match.
+A changed/missing pending source or missing baseline fails closed. Its twelve
+pending objects and metadata remain unchanged, with MIDI Scenes excluded from
+compiled module pins. The validated development importer updated the exact
+version packages. No firmware, raw LCD/RAM dumps, cards or local audio fixtures
+entered this PR, and no firmware/DSP/stress/audio qualification tests ran.
