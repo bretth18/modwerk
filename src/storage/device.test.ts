@@ -2,8 +2,44 @@ import 'fake-indexeddb/auto'
 import { describe, expect, it } from 'vitest'
 import { deviceStore, openDeviceDatabase } from './device'
 import { newConfiguration, validateConfiguration } from '../config/workspace'
+import { moduleHasUpdate } from '../catalog/module-updates'
 
 describe('device persistence', () => {
+  it('remembers module views across sessions without changing saved configurations', async () => {
+    const name = 'test-' + crypto.randomUUID()
+    const db = await openDeviceDatabase(name), store = deviceStore(db)
+    const config = newConfiguration('Earlier release', ['midi-scenes'], false, { 'midi-scenes': '0.1.1-experimental' })
+    await store.saveConfiguration(config)
+    await store.setActiveConfiguration(config.id)
+    await Promise.all([
+      store.rememberModuleView({ id: 'midi-scenes', version: '0.1.1-experimental' }),
+      store.rememberModuleView({ id: 'repitch', version: '0.1.1-experimental' }),
+    ])
+    db.close()
+    const restoredDb = await openDeviceDatabase(name), restored = deviceStore(restoredDb)
+    const current = { id: 'midi-scenes', version: '0.2.0-experimental' }
+    expect(await restored.readModuleViews()).toEqual({ 'midi-scenes': '0.1.1-experimental', repitch: '0.1.1-experimental' })
+    expect(moduleHasUpdate(current, (await restored.readModuleViews())[current.id])).toBe(true)
+    await restored.rememberModuleView(current)
+    expect(moduleHasUpdate(current, (await restored.readModuleViews())[current.id])).toBe(false)
+    expect((await restored.listConfigurations())[0].moduleVersions).toEqual(config.moduleVersions)
+    expect(await restored.activeConfiguration()).toBe(config.id)
+    expect(await restored.readFirmware()).toBeUndefined()
+    restoredDb.close()
+  })
+
+  it('ignores corrupt viewing history and rejects invalid versions without breaking the workspace', async () => {
+    const db = await openDeviceDatabase('test-' + crypto.randomUUID()), store = deviceStore(db)
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction('settings', 'readwrite')
+      tx.objectStore('settings').put({ id: 'midi-scenes', version: 'latest' }, 'module-view/midi-scenes')
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+    })
+    expect(await store.readModuleViews()).toEqual({})
+    await expect(store.rememberModuleView({ id: 'midi-scenes', version: 'latest' })).rejects.toThrow('semantic version')
+    db.close()
+  })
   it('keeps independently edited configurations and the active selection across connections', async () => {
     const name = 'test-' + crypto.randomUUID()
     const db = await openDeviceDatabase(name)
