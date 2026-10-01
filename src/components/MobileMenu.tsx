@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Icon } from './Icon'
 import type { IconName } from './Icon'
+import { SupportButton } from './SupportDialog'
 
 type MenuLink = { href: string; label: string; icon: IconName; current: boolean; count?: number }
 
 // Phone-width home for the destinations the desktop sidebar lists under Configurations, Community and Help.
-export function MobileMenu({ route, selectedCount, admin }: { route: string; selectedCount: number; admin: boolean }) {
+export function MobileMenu({ route, selectedCount, admin, onSupport }: { route: string; selectedCount: number; admin: boolean; onSupport?: () => void }) {
   const [open, setOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
   useEffect(() => {
@@ -32,6 +33,7 @@ export function MobileMenu({ route, selectedCount, admin }: { route: string; sel
         <div className="mobile-menu-scrim" aria-hidden="true" onClick={() => setOpen(false)} />
         <nav id="mobile-menu-panel" className="mobile-menu-panel" aria-label="Menu">
           {groups.map((links, index) => <div key={index} className="mobile-menu-group">{links.map(link => <a key={link.href} href={link.href} aria-current={link.current ? 'page' : undefined} onClick={() => setOpen(false)}><Icon name={link.icon} size={18} /><span>{link.label}</span>{link.count !== undefined && <small>{link.count}</small>}</a>)}</div>)}
+          {onSupport && <div className="mobile-menu-support"><SupportButton onClick={() => { setOpen(false); buttonRef.current?.focus(); onSupport() }} /></div>}
         </nav>
       </>}
     </div>

@@ -33,6 +33,8 @@ import { ModuleRelease } from './components/ModuleRelease'
 import { useModuleUpdates } from './hooks/useModuleUpdates'
 import { FaqPage } from './components/FaqPage'
 import { MobileMenu } from './components/MobileMenu'
+import { SupportButton, SupportDialog } from './components/SupportDialog'
+import { PAYPAL_DONATION_URL } from './config/support'
 
 import { useWorkspace } from './hooks/useWorkspace'
 import { ConfigurationDialog } from './components/ConfigurationDialog'
@@ -68,6 +70,7 @@ export default function App() {
   const [importError,setImportError]=useState('')
   const importRef=useRef<HTMLInputElement>(null)
   const [configDialog, setConfigDialog] = useState<'create' | 'rename' | 'duplicate' | 'delete' | null>(null)
+  const [supportOpen, setSupportOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const mainRef = useRef<HTMLElement>(null)
   const libraryNavRef = useRef<HTMLElement>(null)
@@ -148,16 +151,17 @@ export default function App() {
           <p>{firmware ? 'OS 1.40C · ' + (firmwareSaved ? 'saved on device' : 'this session') + '' : 'Start with your own OS 1.40C file.'}</p>
           <a className="button button-quiet" href="#configuration">{firmware ? 'View configuration' : 'Choose firmware'}<Icon name="arrow" size={14} /></a>
         </div>
-        <div className="sidebar-footer"><Icon name="shield" size={14} /><span>Firmware stays on your device</span></div>
+        <div className="sidebar-footer"><div className="sidebar-privacy"><Icon name="shield" size={14} /><span>Firmware stays on your device</span></div>{PAYPAL_DONATION_URL && <SupportButton onClick={() => setSupportOpen(true)} />}</div>
       </aside>
       {compareOpen&&<ModuleComparison ids={comparison} selected={selectedIds} onToggle={toggleModule} onClose={()=>setCompareOpen(false)}/>}
       {configDialog && <ConfigurationDialog mode={configDialog} initialName={configDialog === 'create' ? '' : configDialog === 'duplicate' ? (active?.name ?? '') + ' copy' : active?.name ?? ''} onSubmit={submitConfigurationDialog} onClose={() => setConfigDialog(null)} />}
+      {supportOpen && <SupportDialog url={PAYPAL_DONATION_URL} onClose={() => setSupportOpen(false)} />}
       <div className="workspace">
         <header className="app-toolbar">
           <a className="toolbar-brand" href="#library"><img src={import.meta.env.BASE_URL + 'favicon.svg'} width="30" height="30" alt="" /><span>Octamod</span></a>
           <div className="toolbar-title"><Icon name={route === 'faq' ? 'help' : configuration ? 'file' : 'grid'} size={17} /><span>{route === 'faq' ? 'FAQ & flashing guide' : configuration ? 'Configuration' : route === 'privacy' ? 'Privacy' : communityRoute ? 'Community' : route.startsWith('module-set') ? 'Module sets' : 'Modules'}</span>{detailModule && <><span className="breadcrumb-divider">/</span><strong>{detailModule.name}</strong></>}<span className="preview-badge">Preview</span></div>
           {['library',...MODULE_CATEGORIES,'module-sets'].includes(route) && <label className="search"><Icon name="search" size={15} /><input type="search" aria-label={route==='module-sets'?'Search module sets':'Search modules'} placeholder={route==='module-sets'?'Search sets':'Search modules'} value={query} onChange={(event) => setQuery(event.target.value)} /></label>}
-          <MobileMenu route={route} selectedCount={selection.length} admin={session.admin} />
+          <MobileMenu route={route} selectedCount={selection.length} admin={session.admin} onSupport={PAYPAL_DONATION_URL ? () => setSupportOpen(true) : undefined} />
           <a className="configuration-button" href="#configuration" aria-label={"Open configuration, " + selection.length + " modules selected"}><Icon name="sliders" size={16} /><span>Configuration</span><span className="toolbar-count">{selection.length}</span></a>
         </header>
         <main className="workspace-content" id="main-content" ref={mainRef} tabIndex={-1}>
@@ -193,7 +197,7 @@ export default function App() {
               <div className="page-heading"><div><p className="page-kicker">OCTAMOD / COLLECTION</p><h1>{filter === 'all' ? 'Module library' : categoryLabels[filter]}</h1><p>A different way to play your Octatrack.</p></div><span className="library-total">{visibleModules.length} modules</span></div>
               {!!conflicts.length && <a className="selection-conflict-link" href="#configuration"><Icon name="sliders" size={18}/><span><strong>Your selection needs a change</strong><small>Some modules cannot run together. Choose a compatible set in your configuration.</small></span><Icon name="arrow" size={18}/></a>}
               <div className="library-subheading"><span>{query.trim() ? 'Results for “' + query.trim() + '”' : filter === 'all' ? 'Explore the collection' : filter === 'effects' ? 'Filters, texture & space' : 'New ways to play'}</span><span className="subtle">Octatrack · OS 1.40C</span></div>
-              <div className="discovery-tools"><label>Type<select value={family} onChange={event=>setFamily(event.target.value)}><option value="all">All types</option>{Array.from(new Set(AVAILABLE_MODULES.map(m=>DETAILS[m.id].family))).map(value=><option key={value}>{value}</option>)}</select></label><label>Sort<select value={sort} onChange={event=>setSort(event.target.value)}><option value="collection">Collection order</option><option value="name">Name A–Z</option><option value="author">Author</option><option value="rated">Highest rated</option><option value="liked">Most liked</option><option value="downloaded">Most downloaded</option></select></label><button className="button button-quiet" disabled={comparison.length<2} onClick={()=>setCompareOpen(true)}>Compare{comparison.length?' ('+comparison.length+')':''}</button></div>
+              <div className="discovery-tools"><label>Type<select value={family} onChange={event=>setFamily(event.target.value)}><option value="all">All types</option>{Array.from(new Set(AVAILABLE_MODULES.map(m=>DETAILS[m.id].family))).map(value=><option key={value}>{value}</option>)}</select></label><label>Sort<select value={sort} onChange={event=>setSort(event.target.value)}><option value="collection">Collection order</option><option value="name">Name A–Z</option><option value="author">Author</option><option value="rated">Highest rated</option><option value="liked">Most liked</option><option value="downloaded">Most downloaded</option></select></label><div className="discovery-actions"><button className="button button-quiet" disabled={comparison.length<2} onClick={()=>setCompareOpen(true)}>Compare{comparison.length?' ('+comparison.length+')':''}</button><a className="button button-primary" href="#configuration"><Icon name="sliders" size={16}/>Build firmware</a></div></div>
               <div className="module-grid">{visibleModules.map((module) => {
                 const selected = selectedIds.includes(module.id)
                 const stats=statistics?.find(item=>item.module_id===module.id),record=MODULE_DOCUMENTS_BY_ID[module.id]
