@@ -58,9 +58,25 @@ def fingerprint(reference, address):
     raise ValueError('A protected span must be declared with a fingerprint')
 
 
-def compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler):
+def retained_pending(baseline, ids, sources):
+    """Keep unchanged, previously compiled objects without evaluating pending source."""
+    objects, groups = [], []
+    for id in REQUESTED:
+        if id in ids: continue
+        old_objects = [row for row in baseline['objects'] if row['moduleId'] == id]
+        old_groups = [row for row in baseline['groups'] if row['moduleId'] == id]
+        if not old_objects or len(old_groups) != 1:
+            raise ValueError(id + ': missing retained pending package')
+        for row in old_objects:
+            if not row.get('sources') or any(sources.get(path) != digest for path, digest in row['sources'].items()):
+                raise ValueError(id + ': pending native source differs from the retained package; local verification is required')
+        objects.extend(old_objects); groups.extend(old_groups)
+    return objects, groups
+
+
+def compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler, ids, baseline):
     """Authored objects and runtime recipes only; inherited USB spans are masked."""
-    ids = REQUESTED
+    retained_objects, retained_groups = retained_pending(baseline, ids, sources)
     byid = {m.name: m for m in known.values()}
     selected = [byid[id] for id in ids] + [known['USB MIDI']]
     selection = {m.key: m for m in selected}
@@ -102,13 +118,15 @@ def compile_requested(root, known, documents, versions, revision, provenance, na
         for t in m.tables:
             tables.append(dict(label=t.label,old=t.old,count=t.count,symbols=[dict(unit=u,symbol=n) for u,n in t.symbols],refs=[dict(address=a,old=o) for a,o in t.refs]))
         groups.append(dict(moduleId=m.name,key=m.key,author=author,nativeAuthor=m.author,detours=detours,refs=refs,pokes=pokes,tables=tables))
-    import ab_image, dsp909
-    ab_image.OUT = root / 'requested/analog'; dsp909.DSP_ASM=assembler; dsp909.DISASM=disassembler
-    lay,vbase=ab_image.layout(); variants=[]
-    for tag,c in ab_image.PAY.items():
-        words,syms=ab_image.assemble(c['spring'],c['cont'],lay,vbase,tag)
-        variants.append(dict(tag=tag,payloadAddress=c['payload'][0],payloadBytes=c['payload'][1],pointer=c['pointer'],spring=c['spring'],null=list(c['null']),seam=c['seam'],entry=syms['zg01'],words=words,sha256=HASH(code_bytes(words)),calls=list(ab_image.SHARED_CALLS[tag]),destination=ab_image.PRE[tag][0],stage=ab_image.PRE[tag][1]))
-    analog=dict(variants=variants,xBase=ab_image.TABLES,xWords=ab_image.x_image(lay,vbase),springWords=ab_image.SPRING_WORDS,sharedWords=ab_image.SHARED_WORDS,sharedOffset=ab_image.SHARED_OFFSET,sharedSha256=ab_image.SHARED_SHA256)
+    analog = baseline['analog']
+    if 'analog-bassdrum' in ids:
+        import ab_image, dsp909
+        ab_image.OUT = root / 'requested/analog'; dsp909.DSP_ASM=assembler; dsp909.DISASM=disassembler
+        lay,vbase=ab_image.layout(); variants=[]
+        for tag,c in ab_image.PAY.items():
+            words,syms=ab_image.assemble(c['spring'],c['cont'],lay,vbase,tag)
+            variants.append(dict(tag=tag,payloadAddress=c['payload'][0],payloadBytes=c['payload'][1],pointer=c['pointer'],spring=c['spring'],null=list(c['null']),seam=c['seam'],entry=syms['zg01'],words=words,sha256=HASH(code_bytes(words)),calls=list(ab_image.SHARED_CALLS[tag]),destination=ab_image.PRE[tag][0],stage=ab_image.PRE[tag][1]))
+        analog=dict(variants=variants,xBase=ab_image.TABLES,xWords=ab_image.x_image(lay,vbase),springWords=ab_image.SPRING_WORDS,sharedWords=ab_image.SHARED_WORDS,sharedOffset=ab_image.SHARED_OFFSET,sharedSha256=ab_image.SHARED_SHA256)
     work=root/'requested/bootstrap'; work.mkdir()
     (work/'table.inc').write_text('        .long 1\n        .long blob0,0,0,0,0,0,0,0\n        .align 4\nblob0:\n')
     (work/'pretable.inc').write_text('        .long 2\n        .long preblob0,0,0,0,0,0,0,0\n        .long preblob1,0,0,0,0,0,0,0\n        .align 4\npreblob0:\npreblob1:\n')
@@ -117,7 +135,10 @@ def compile_requested(root, known, documents, versions, revision, provenance, na
     (work/'loader.S').write_text(loader.replace('pretable(%pc)', 'octamod_pre_table(%pc)'))
     obj=work/'loader.o';run(['m68k-elf-as','-mcpu=5475','-I',work,'--defsym','PREBOOT=1','-o',obj,work/'loader.S'],root)
     raw=obj.read_bytes(); bootstrap=dict(bytes=len(raw),code=raw.hex(),sha256=HASH(raw))
-    print('Compiled 23 requested ColdFire objects, both Analog BD engines and stock-free pre-boot skeleton.',flush=True)
+    objects += retained_objects; groups += retained_groups
+    rank = {id: at for at, id in enumerate(REQUESTED + ['usb-midi'])}
+    objects.sort(key=lambda row: rank[row['moduleId']]); groups.sort(key=lambda row: rank[row['moduleId']])
+    print(f'Compiled {len(objects) - len(retained_objects)} requested ColdFire objects and stock-free pre-boot skeleton; retained {len(retained_objects)} unchanged pending objects without evaluating their source.', flush=True)
     return dict(schema=1,revision=revision,**provenance,objects=objects,groups=groups,analog=analog,bootstrap=bootstrap)
 
 def main():
@@ -149,8 +170,10 @@ def main():
     for module in catalog['modules']:
         if catalog_documents[module['id']]['version'] != module['version']: parser.error('Stale catalog module version: ' + module['id'])
     buildable = [module for module in catalog['modules'] if catalog_documents[module['id']].get('build', {}).get('status') != 'pending']
-    if [module['id'] for module in buildable] not in (ORDER, ORDER + REQUESTED): parser.error('This release compiler supports the seven original modules and four reviewed requested modules')
-    include_requested = args.include_requested or len(buildable) == len(ORDER + REQUESTED)
+    requested_ids = REQUESTED if args.include_requested else [id for id in REQUESTED if id in {m['id'] for m in buildable}]
+    if [module['id'] for module in buildable] != ORDER + [id for id in REQUESTED if id in {m['id'] for m in buildable}]:
+        parser.error('This release compiler supports the seven original modules and reviewed requested modules')
+    include_requested = bool(requested_ids)
     versions = {module['id']: module['version'] for module in buildable}
     revision = catalog['sourceRevision']
     documents = {id: json_file(sdk / 'modules' / id / 'octamod.module.json') for id in ORDER + REQUESTED}
@@ -160,7 +183,7 @@ def main():
         root = Path(temporary)
         # Pending imports stay in the source fingerprint, but are never evaluated or compiled.
         (root / 'modules').mkdir()
-        for id in ORDER + (REQUESTED if include_requested else []):
+        for id in ORDER + requested_ids:
             shutil.copytree(sdk / 'modules' / id, root / 'modules' / id, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '.DS_Store'))
         for group in ['platform', 'tools', 'dsp']:
             shutil.copytree(sdk / group, root / group, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '.DS_Store'))
@@ -178,7 +201,7 @@ def main():
         known = registry.modules()
         byid = {module.name: module for module in known.values()}
         public = sorted(module.name for module in known.values() if not module.is_stock and module.name not in registry.PLATFORM_NAMES)
-        if public != sorted(ORDER + (REQUESTED if include_requested else [])): raise ValueError('Unexpected module scope')
+        if public != sorted(ORDER + requested_ids): raise ValueError('Unexpected module scope')
         for id in ORDER:
             module, doc = byid[id], documents[id]
             if doc['version'] != versions[id] or doc['key'] != module.key or doc['author']['github'] != module.author or doc['compatibility']['effectId'] != (module.menu.fx2_id if module.menu else None):
@@ -360,7 +383,7 @@ def main():
             groups.append(dict(old, source=manifest, sourceSha256=sources[manifest], detours=rows))
         products['platform-writes.json'] = dict(baseline['platform-writes.json'], **provenance, groups=groups)
         if include_requested:
-            products['requested-packages.json'] = compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler)
+            products['requested-packages.json'] = compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler, requested_ids, baseline['requested-packages.json'])
         if stock_guard._cache is not None: raise RuntimeError('Stock must never be read during source compilation')
         if native._SCRATCH is not None: shutil.rmtree(native._SCRATCH, ignore_errors=True)
 
