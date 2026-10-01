@@ -1,14 +1,21 @@
 import { describe, expect, it } from 'vitest'
+import { createHash } from 'node:crypto'
 import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { compiledModuleVersions, moduleSourcePaths } from './module-source.mjs'
+import { compiledModuleVersions, moduleSourcePaths, moduleSourceFingerprint } from './module-source.mjs'
 const root = fileURLToPath(new URL('../', import.meta.url))
 const catalog = JSON.parse(await readFile(resolve(root, 'sdk/catalog.json'), 'utf8'))
 const requested = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer']
 const verifiedRequested = requested.filter(id => id !== 'midi-scenes')
 describe('release package scope and reviewed source inventory', () => {
+  it('keeps the committed release identity bound to the complete SDK source and compiler', async () => {
+    const record = JSON.parse(await readFile(resolve(root, 'src/engine/assets/module-build.json'), 'utf8'))
+    expect(record.sourceTreeSha256).toBe(await moduleSourceFingerprint(root))
+    expect(record.compilerSha256).toBe(createHash('sha256').update(await readFile(resolve(root, 'scripts/build-module-packages.py'))).digest('hex'))
+    expect(record.moduleVersions).toEqual(await compiledModuleVersions(root, catalog))
+  })
   it('compiles verified modules, keeps pending MIDI Scenes in source inventory, and includes USB infrastructure', async () => {
     const versions = await compiledModuleVersions(root, catalog), paths = await moduleSourcePaths(root)
     expect(Object.keys(versions)).toEqual(['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', ...verifiedRequested])
