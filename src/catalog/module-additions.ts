@@ -12,6 +12,7 @@ export const MODULE_ADDED_AT: Readonly<Record<string, string>> = {
   'analog-bassdrum': '2026-10-01T09:19:37Z',
   'midi-scenes': '2026-10-01T09:19:37Z',
   'usb-audio-out-tracks-main-cue': '2026-10-01T09:19:37Z',
+  tapehead: '2026-10-02T13:30:00Z',
   quantizer: '2026-10-01T09:19:37Z',
   previewvol: '2026-10-02T00:00:00Z',
   'cc-map': '2026-10-02T00:00:00Z',

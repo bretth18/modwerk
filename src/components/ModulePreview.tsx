@@ -95,7 +95,17 @@ export function ModulePreview({ id, compact = false }: { id: string; compact?: b
           </g>)}
           <text x="25" y="177">TRACKS 1–8</text><text x="219" y="177">MAIN / CUE</text>
         </g>}
-        {id === 'quantizer' && <g>
+        {id === 'tapehead' && <g>
+          <path className="signal-ghost" d={sine(0, 49, 2)} />
+          <path className="signal-main" d={Array.from({ length: 121 }, (_, i) => {
+            const v = Math.sin(i / 120 * Math.PI * 4) * 2
+            const c = Math.max(-1, Math.min(1, v))
+            return (i ? 'L' : 'M') + (28 + i * 2.2).toFixed(1) + ' ' + (97 + (1.5 * c - .5 * c ** 3) * 36).toFixed(1)
+          }).join(' ')} />
+          <path className="signal-secondary" d="M28 61H292M28 133H292" strokeDasharray="3 6" />
+          <text x="25" y="177">DRIVE → SATURATION → TRIM</text>
+        </g>}
+        {id === 'quantizer'  && <g>
           <path className="signal-ghost" d="M28 139 291 43" />
           <path className="signal-main" d="M28 140H65V125H103V111H141V96H179V82H217V67H254V52H291" />
           {[28,65,103,141,179,217,254,291].map((x,i)=><circle key={x} className="signal-dot" cx={x} cy={140-i*14.6} r="3" />)}

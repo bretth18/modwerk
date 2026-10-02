@@ -54,7 +54,7 @@ const SECTIONS: FaqSection[] = [
           <ol>
             <li>Worst-case cycle counts under parameter extremes, simultaneous modulation, mode changes and maximum supported load, within the available processing budget.</li>
             <li>Exact memory accounting for code, state, tables, buffers, stack/heap and shared allocations, including totals at the maximum instance count.</li>
-            <li>Module-specific emulator/native checks and a passed stress project on a real MKI or MKII for at least 60 minutes, with all eight audio tracks active and the maximum supported module instances. The workload must exercise modulation, transitions and applicable MIDI/USB activity, checking audio continuity, transport, controls, memory integrity and recovery.</li>
+            <li>Module-specific emulator/native checks and owner-reviewed real-hardware test evidence. Record the tester, date, tested source and build, observed behavior, workload and limitations. Reported functional operation must remain labelled as reported; a one-hour, eight-track stress run is no longer mandatory.</li>
             <li>Complete module documentation, a short practical tutorial and real screenshots matching the online modules’ black-and-white style. The owner reviews the documentation and test evidence before release.</li>
           </ol>
           <p>Emulator results cannot replace hardware testing. Existing modules retain their recorded evidence; read each module’s test conditions and limitations rather than assuming every configuration has been tested.</p>

@@ -18,7 +18,7 @@ describe('effect chooser composition', () => {
     expect(validateChoosers(ids, profile).hidden).toEqual(['SPECTRUM','MODULATION','CHARACTER'])
     const compact = defaultChoosers(ids, false)
     expect(compact.fx1).toEqual(profile.fx1)
-    expect(compact.fx2).toEqual(['MINIVERB','TAPE ECHO','EUCLID'])
+    expect(compact.fx2).toEqual(['MINIVERB','TAPE ECHO','EUCLID','TAPEHEAD'])
   })
   it('without the loader, leaves out only the stock FX2 effects whose code the modules take', () => {
     const others = (ids: string[]) => metadata.stockFx2.filter(key => !defaultChoosers(ids).fx2.includes(key))

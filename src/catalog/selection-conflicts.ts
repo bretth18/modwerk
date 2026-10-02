@@ -4,7 +4,7 @@ export type ConflictFix = { label: string; removeIds?: string[]; keepStockFx2?: 
 export type SelectionConflict = { id: string; title: string; description: string; moduleIds: string[]; fixes: ConflictFix[] }
 // Native build_bus.py admits Analog BD with stock DSP effects only. These
 // are the custom DSP sections in the pinned catalog, including paused ones.
-const customDspIds = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid']
+const customDspIds = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'tapehead']
 const crowdedMenuIds = ['miniverb', 'tapeecho', 'euclid', 'repitch', 'quantizer']
 
 export function selectionConflicts(ids: readonly string[], keepStockFx2 = false): SelectionConflict[] {
@@ -18,10 +18,11 @@ export function selectionConflicts(ids: readonly string[], keepStockFx2 = false)
     moduleIds: ['analog-bassdrum', ...dsp.map(module => module.id)],
     fixes: [{ label: keepEffectsRemoves.length > 1 ? 'Remove Analog BD & Euclid' : 'Remove Analog BD', removeIds: keepEffectsRemoves }, { label: 'Keep Analog BD · remove custom effects', removeIds: dsp.map(module => module.id) }],
   })
-  if (keepStockFx2 && (dsp.length || selected.has('analog-bassdrum'))) conflicts.push({
+  const stockFx2Dsp = dsp.filter(module => module.id !== 'tapehead')
+  if (keepStockFx2 && (stockFx2Dsp.length || selected.has('analog-bassdrum'))) conflicts.push({
     id: 'stock-fx2-space', title: 'Make room for your modules',
     description: 'These modules need space used by the original FX2 effects. Turn off “Keep stock FX2 effects” to continue. Original FX1 effects stay available.',
-    moduleIds: [...dsp.map(module => module.id), ...(selected.has('analog-bassdrum') ? ['analog-bassdrum'] : [])],
+    moduleIds: [...stockFx2Dsp.map(module => module.id), ...(selected.has('analog-bassdrum') ? ['analog-bassdrum'] : [])],
     fixes: [{ label: 'Turn off stock FX2', keepStockFx2: false }],
   })
   // Native matrix: this five-module subset exhausts menu space, regardless

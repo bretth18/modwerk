@@ -68,7 +68,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 JSFXClones (TapeHead, DaTube, OInflator, AC1)
 SPDX: MIT
-Used in: modules/character: SAT, COMP, GLUE
+Used in: modules/character: SAT, COMP, GLUE; modules/tapehead: TapeHead
 Notice source: https://raw.githubusercontent.com/JClones/JSFXClones/88a1503d668c378ced4c166e772378272f3b72ea/LICENSE
 
 MIT License
@@ -1963,6 +1963,35 @@ ColdFire module carries them. Nothing in this project is endorsed by,
 supported by or affiliated with Elektron. Octatrack and Elektron are
 trademarks of Elektron Music Machines MAV AB, used only to identify the
 hardware this project targets.
+
+========================================================================
+
+TapeHead DSP56300 port
+SPDX: MIT
+Used in: modules/tapehead
+Notice source: sdk/octabam/modules/tapehead/LICENSE
+
+MIT License
+
+Copyright (c) 2026 devilfish707
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ========================================================================
 

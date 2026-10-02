@@ -3,7 +3,7 @@
   "kind": "authored-utility-packages",
   "stockRead": false,
   "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
-  "sourceCommit": "b91ea87fb5c938c044ab2cf66bc796919f2960ed",
+  "sourceCommit": null,
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
@@ -12,6 +12,7 @@
     "tapeecho": "0.1.2-experimental",
     "euclid": "0.1.2-experimental",
     "repitch": "0.1.2-experimental",
+    "tapehead": "0.1.1-experimental",
     "analog-bassdrum": "0.1.2-experimental",
     "usb-audio-out-tracks-main-cue": "0.1.2-experimental",
     "quantizer": "0.1.2-experimental",

@@ -1,4 +1,4 @@
-"""Compile the reviewed SDK modules without stock firmware.
+"""Compile the owner-reviewed SDK modules without stock firmware.
 
 Run untrusted changes only in the isolated build container. This developer
 command executes reviewed native declarations in a disposable source copy.
@@ -8,7 +8,7 @@ from pathlib import Path
 import argparse, hashlib, importlib.util, json, os, re, shutil, struct, subprocess, sys, tempfile
 
 APP = Path(__file__).resolve().parents[1]
-ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch']
+ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead']
 REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer']
 UTILITIES = ['previewvol', 'cc-map']
 ASSET_NAMES = ['dsp-packages.json', 'coldfire-packages.json', 'resident-dsp.json', 'rom-packages.json',
@@ -243,7 +243,7 @@ def main():
             packages.append(package(module, text))
         products['dsp-packages.json'] = {'schema': 1, 'revision': revision, 'license': '/licenses/octabam.txt', **provenance,
             'packages': packages, 'excluded': [{'id': 'character', 'reason': 'Native resident placement.'}]}
-        print('Compiled five loadable DSP modules with four-origin relocation proofs.', flush=True)
+        print('Compiled loadable DSP modules with four-origin relocation proofs.', flush=True)
 
         character = byid['character']
         text = (root / character.dsp.asm).read_text()

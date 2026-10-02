@@ -638,6 +638,32 @@
           "sha256": "65d4f443032d8da83b35300ab182e417334eef978534a88ac86e1868d22a1292"
         }
       ]
+    },
+    {
+      "id": "tapehead",
+      "key": "TAPEHEAD",
+      "author": "devilfish707",
+      "slot": 2,
+      "name": "COLOR",
+      "labels": [
+        "NORM",
+        "MED",
+        "BRGT"
+      ],
+      "renames": {},
+      "wideMaximum": null,
+      "proofs": [
+        {
+          "namesAddress": 1074621238,
+          "bytes": 60,
+          "sha256": "4fdf4a515aa11f5569e1b7166f70907bcad463adce8c027e815a77819a8b50f3"
+        },
+        {
+          "namesAddress": 1074623350,
+          "bytes": 60,
+          "sha256": "4fdf4a515aa11f5569e1b7166f70907bcad463adce8c027e815a77819a8b50f3"
+        }
+      ]
     }
   ],
   "repitchPatches": [
@@ -1220,7 +1246,7 @@
       "caveLimit": 1074625596
     }
   ],
-  "sourceCommit": "b91ea87fb5c938c044ab2cf66bc796919f2960ed",
+  "sourceCommit": null,
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
@@ -1229,6 +1255,7 @@
     "tapeecho": "0.1.2-experimental",
     "euclid": "0.1.2-experimental",
     "repitch": "0.1.2-experimental",
+    "tapehead": "0.1.1-experimental",
     "analog-bassdrum": "0.1.2-experimental",
     "usb-audio-out-tracks-main-cue": "0.1.2-experimental",
     "quantizer": "0.1.2-experimental",

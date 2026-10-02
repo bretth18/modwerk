@@ -1,6 +1,6 @@
 # Module qualification gates
 
-From 2 October 2026, new modules and all module updates must provide **worst-case cycle counts, exact memory accounting, passed real-hardware stress-project evidence and complete documentation**. These are publication requirements. Missing measurements, nominal/average CPU percentages, emulator-only evidence, historical evidence for another version, failed checks and incomplete runs cannot qualify a submission.
+From 2 October 2026, new modules and all module updates must provide **worst-case cycle counts, exact memory accounting, attributed real-hardware test evidence and complete documentation**. These are publication requirements. Missing measurements, nominal/average CPU percentages, emulator-only evidence, historical evidence for another source and failed detailed hardware checks cannot qualify a submission. On 2 October 2026 the owner removed the mandatory 60-minute, eight-track stress run. A clearly labelled functional hardware report is accepted alongside the cycle, memory, source, UI and integration evidence below.
 
 `npm run modules:check`, `npm run modules:generate`, PR CI and release validation enforce the record. PR CI also checks version increases against the exact base commit. Configure `module-contract` as a required status check on protected main. The owner verifies the actual reports and merges the PR to approve the version; there is no extra website approval. Metadata checks do not run submitted source or perform physical hardware tests. A contributor declaration cannot replace reviewer verification.
 
@@ -28,7 +28,7 @@ An automatic USB module's reviewed `access.noUiReason` removes only the nonexist
 
 Complete [the qualification template](../public/module-qualification.example.json) using actual results and place its object under `tests.qualification` in `octamod.module.json`. The downloadable file and scaffold copy are deliberately incomplete: null numbers, placeholder identities and pending/failed statuses fail validation. Leave a draft without `tests.qualification` while developing; it cannot pass submission/publication checks. Never replace unknown quantities with zero, averages or invented measurements.
 
-Keep `tests.report`, `tests.evidenceRevision`, README, native declarations and the qualification reports synchronized. `tests.evidenceRevision` identifies the exact tested source commit; `qualification.moduleVersion` must match the submitted version. `qualification.sourceSha256` binds the evidence to the current native source inventory and `qualification.imageSha256` identifies the exact local image used for the hardware run. Commit only the hashes, never the firmware bytes. Source changes invalidate the qualification hash.
+Keep `tests.report`, `tests.evidenceRevision`, README, native declarations and the qualification reports synchronized. `tests.evidenceRevision` identifies the exact tested source commit; `qualification.moduleVersion` must match the submitted version. `qualification.sourceSha256` binds the evidence to the current native source inventory and `qualification.imageSha256` identifies the exact local image tested on hardware (a reviewer may reproduce it from the unchanged DSP source). Commit only the hashes, never the firmware bytes. Source changes invalidate the qualification hash.
 
 Each qualification `report` must reference `TESTING.md` or a `.md`, `.json` or `.txt` report under `evidence/`. Reports must be regular, nonempty local files. The manifest and draft template are not evidence reports. Keep executable source and runtime inputs outside `evidence/`.
 
@@ -62,7 +62,7 @@ The five required condition fields, separately for cycle measurements and hardwa
 
 For inapplicable mechanisms, explain why they cannot affect this module and which equivalent control path was exercised. Blank strings fail. The reviewer checks substantive coverage: writing “N/A” or copying a stock benchmark is insufficient.
 
-The local report must include commands/tool versions, the measured maximum and where it occurred, the parameter/mode matrix, branch coverage, sample/block/event basis, budget derivation and limitations. `static` counts need a defensible upper bound; emulator instruction counts without contention are not chip wall-clock cycles. State that limitation, account for contention/overhead and verify real-time operation on hardware. Average or nominal load does not meet this requirement.
+The local report must include commands/tool versions, the measured maximum and where it occurred, the parameter/mode matrix, branch coverage, sample/block/event basis, budget derivation and limitations. `static` counts need a defensible upper bound; emulator instruction counts without contention are not chip wall-clock cycles. State that limitation, account for contention/overhead and retain the actual hardware operation report. Average or nominal load does not meet this requirement.
 
 ## Exact memory
 
@@ -76,23 +76,40 @@ sharedBytes      = sum(shared regions)
 totalBytes       = perInstanceBytes × maxInstances + sharedBytes
 ```
 
-The report must reconcile the inventory with native allocation/build maps, exact ranges and claims, build options, lifetime/peak overlap and supported instance limits. Explain zero or absent allocation classes and reused stock memory. Show stack/heap upper bounds and memory guard/canary evidence under modulation and stress. Estimates, an assembly-file length alone, unbounded dynamic allocation or a percentage of firmware size cannot substitute for exact memory. The owner checks for omitted allocations, unsafe overlaps and capacity overruns; a mathematically consistent table alone does not prove completeness.
+The report must reconcile the inventory with native allocation/build maps, exact ranges and claims, build options, lifetime/peak overlap and supported instance limits. Explain zero or absent allocation classes and reused stock memory. Show stack/heap upper bounds and applicable memory-bound/guard evidence; state explicitly when hardware canaries were not measured. Estimates, an assembly-file length alone, unbounded dynamic allocation or a percentage of firmware size cannot substitute for exact memory. The owner checks for omitted allocations, unsafe overlaps and capacity overruns; a mathematically consistent table alone does not prove completeness.
 
-## Real hardware stress project
+## Hardware evidence
 
-Test on a real Octatrack **MKI or MKII**, with original OS 1.40C as the local base, using the exact recorded module/source/image. Do not infer support for an untested model. Run for **at least 60 continuous minutes with all eight audio tracks active**, at the most expensive supported placement and instance/voice count. Exercise applicable MIDI tracks and USB streaming, recording/playback, heavy parameter modulation, scene sweeps, mode/Part changes, bypass/reselection and sustained feedback. Test start/stop and recovery as well as the long-running workload. Record exact settings and any unsupported cases.
+The owner explicitly removed the mandatory one-hour, eight-track stress test
+on 2 October 2026 and accepted the TapeHead author's functional hardware report.
+This changes the required hardware evidence, not the source, licence, actual UI,
+worst-case code-cycle, exact memory or browser/native byte-parity gates. The
+eleven-version frozen baseline remains unchanged.
 
-The SDK's `sdk/octabam/tools/harness/stress_project.py` is a starting point for generating a repeatable local project; its dearest/default settings do not alone cover every module or modulation path. Record generator/tool revision and commands, source-template fingerprint, sample recipe, final settings and added module-specific cases. An equivalent reproducible stress project is allowed. The `hardware.project` record requires `name`, `sha256` and `recipe`. Fingerprint the final project deterministically (sorted relative file names and per-file SHA-256 values, then SHA-256 of that JSON object) and document the procedure; reviewers must be able to reproduce the workload locally. Do not commit project/card dumps or source templates.
+Use either a detailed passed test record or the narrow functional report form:
+`hardware.kind: "functional"`, `status: "reported"`, `model` (`MKI`, `MKII`, or
+null when unreported), `testedOn`, credited `tester`, exact `sourceRevision`,
+`imageSha256`, `summary`, nonempty `limitations`, and a local `report` path.
+Set `tests.hardwareStatus: "reported"`. Source and image must agree with the
+qualification identities; retain the actual contributor statement and how the
+owner verified it. Describe unreported duration, track/instance counts, model
+and untested cases explicitly. Do not fill them with guesses or upgrade an
+author report to a measured stress pass. A reproduced image must match the
+reported hardware image hash; packaging-only version changes are separate.
 
-Record `model`, `testedOn`, credited `tester` handle (no email), `durationMinutes`, `audioTracks`, `midiTracks`, `maxInstances`, the five condition fields and a local text `report`. The hardware instance count must equal the supported total declared in memory and cover every cycle record's maximum instance count (which may be per core). `hardware.status` must be `passed`, `tests.hardwareStatus` must be `verified`, and each of these checks must pass:
+Detailed hardware records remain supported. Their project fingerprint, actual
+duration, track counts, maximum instance count, conditions and continuity,
+transport, controls, memory-integrity and recovery checks must describe the
+test actually performed. Pending/failed checks still block that form. There is
+no minimum duration or eight-active-track requirement. The owner reviews the
+evidence and approves publication by merging the PR.
 
-- `audioContinuity`: no unintended dropouts, freezes, crackling or sustained corruption; define observation/capture criteria and compare with stock where appropriate.
-- `transport`: sequencing, playback and recording remain responsive through the workload.
-- `controls`: rapid modulation, edits and mode changes work correctly without destabilizing audio.
-- `memoryIntegrity`: native bounds/guards and hardware canary/stack/allocator evidence cover the submitted allocation claims; explain the instrument used.
-- `recovery`: stop/start, bypass/reselection and interrupted transitions recover; include a cold boot/power cycle in the procedure.
-
-Report commands/procedure, duration, observations and failures honestly. A failed or shortened run must be fixed and rerun. Hardware evidence may be a reviewer-reproducible record rather than an uploaded video, but the owner must verify it. Emulator acceptance (`make accept`) and pressure/cycle reports remain separate supporting evidence; upstream acceptance explicitly records `hardware_validated: false`.
+DSP static counts must include expensive branches, parameter updates, trigger
+splits and initialization. State explicitly which counts model instruction
+cycles and which measurements exclude stalls; don't present them as chip
+wall-clock measurements. Separate the core's standard processing reserve and
+unmeasured contention from module code costs. Hardware operation is supporting
+evidence, and maximum-load coverage must remain honestly labelled.
 
 Keep firmware, extracted stock, LCD/RAM dumps, cards and private raw logs local and temporary. Only original/licensed code, sanitized text evidence and reviewed media enter the PR. CI validates text records without firmware, native source execution or hardware access. Visitor configuration builds retain only lightweight compatibility/placement/packaging checks and never run this qualification suite.
 

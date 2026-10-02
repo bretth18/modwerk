@@ -2118,9 +2118,244 @@
         }
       ],
       "sourceSha256": "e83c639b3a6d51946b6cb5ae2af72d9376f2ff9cad75502396287c95c751927b"
+    },
+    {
+      "id": "tapehead",
+      "key": "TAPEHEAD",
+      "author": "devilfish707",
+      "fxId": 31,
+      "donorAddress": 1074616158,
+      "donorSha256": "8e242cb76550b7d81dac70ddb1835314139222845a61cd3f95a6e1769e991467",
+      "fx2Slot": 1074618456,
+      "slotSha256": "79bc740214b4d029e385d06d21e224d04e8f91b53fb26ea08ffa4e5d70964b7a",
+      "integers": [
+        {
+          "offset": 3,
+          "width": 1,
+          "value": 31
+        },
+        {
+          "offset": 94,
+          "width": 1,
+          "value": 36
+        },
+        {
+          "offset": 95,
+          "width": 1,
+          "value": 18
+        },
+        {
+          "offset": 96,
+          "width": 1,
+          "value": 0
+        },
+        {
+          "offset": 202,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 250,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 206,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 254,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 210,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 258,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 214,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 262,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 218,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 266,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 222,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 270,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 226,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 274,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 230,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 278,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 234,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 282,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 238,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 286,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 242,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 290,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 246,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 294,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 210,
+          "width": 4,
+          "value": 1073989400
+        },
+        {
+          "offset": 258,
+          "width": 4,
+          "value": 1074033236
+        },
+        {
+          "offset": 306,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 154,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 106,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 158,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 110,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 162,
+          "width": 4,
+          "value": 3
+        },
+        {
+          "offset": 114,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 398,
+          "width": 4,
+          "value": 273
+        },
+        {
+          "offset": 394,
+          "width": 4,
+          "value": 0
+        }
+      ],
+      "strings": [
+        {
+          "offset": 4,
+          "width": 5,
+          "value": "TAPE"
+        },
+        {
+          "offset": 9,
+          "width": 13,
+          "value": "TAPEHEAD"
+        },
+        {
+          "offset": 22,
+          "width": 6,
+          "value": "DRIVE"
+        },
+        {
+          "offset": 28,
+          "width": 6,
+          "value": "TRIM"
+        },
+        {
+          "offset": 34,
+          "width": 6,
+          "value": "COLOR"
+        }
+      ],
+      "sourceSha256": "16c234de1d2ac45a3a4d229769e4708a1af428ac5a47ac5da53848a85dbbebd3"
     }
   ],
-  "sourceCommit": "b91ea87fb5c938c044ab2cf66bc796919f2960ed",
+  "sourceCommit": null,
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
@@ -2129,6 +2364,7 @@
     "tapeecho": "0.1.2-experimental",
     "euclid": "0.1.2-experimental",
     "repitch": "0.1.2-experimental",
+    "tapehead": "0.1.1-experimental",
     "analog-bassdrum": "0.1.2-experimental",
     "usb-audio-out-tracks-main-cue": "0.1.2-experimental",
     "quantizer": "0.1.2-experimental",

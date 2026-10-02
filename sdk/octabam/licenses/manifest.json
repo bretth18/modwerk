@@ -47,7 +47,8 @@
         }
       ],
       "usedIn": [
-        "modules/character: SAT, COMP, GLUE"
+        "modules/character: SAT, COMP, GLUE",
+        "modules/tapehead: TapeHead"
       ]
     },
     {
@@ -225,6 +226,20 @@
       ]
     },
     {
+      "id": "devilfish707-tapehead",
+      "name": "TapeHead DSP56300 port",
+      "spdx": "MIT",
+      "noticeFile": "tapehead-port.txt",
+      "sources": [
+        {
+          "path": "sdk/octabam/modules/tapehead/LICENSE"
+        }
+      ],
+      "usedIn": [
+        "modules/tapehead"
+      ]
+    },
+    {
       "id": "react",
       "name": "React / React DOM / Scheduler",
       "spdx": "MIT",
@@ -257,6 +272,10 @@
     ],
     "quantizer": [
       "octa-panel"
+    ],
+    "tapehead": [
+      "jsfxclones",
+      "devilfish707-tapehead"
     ]
   }
 }
