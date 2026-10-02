@@ -3,6 +3,7 @@ import { FLASHING_RISKS, FIRMWARE_SHARING_NOTICE } from '../firmware-notices'
 import { assetUrl } from '../hosting'
 import { useState } from 'react'
 import type { useFirmwareBuild } from '../hooks/useFirmwareBuild'
+import { BuildProgressIndicator } from './BuildProgressIndicator'
 import { Icon } from './Icon'
 function saveFirmware(buffer:ArrayBuffer,name:string) {
   const url=URL.createObjectURL(new Blob([buffer],{type:'application/octet-stream'})),link=document.createElement('a')
@@ -20,7 +21,7 @@ export function FirmwareBuildPanel({build,available,downloadsEnabled,firmwareRea
   return <>
     {!downloadsEnabled&&<aside className="risk-note" role="note"><strong>Firmware downloads are paused</strong><p>Downloads remain paused while the updated firmware build is reviewed. You can build locally to check that modules fit and inspect the finished file’s identity.</p></aside>}
     <section className="build-section" aria-labelledby="build-title" aria-busy={build.state==='building'||build.state==='validating'}>
-      <div><h2 id="build-title">{finished?'Firmware ready':'Build firmware'}</h2><p id="engine-status" role={build.state==='error'?'alert':'status'}>{message}</p><span className="subtle">No firmware upload. Local validation does not qualify this configuration on hardware.</span></div>
+      <div><h2 id="build-title">{finished?'Firmware ready':'Build firmware'}</h2><p id="engine-status" role={build.state==='error'?'alert':'status'}>{message}</p>{(build.state==='building'||finished)&&<BuildProgressIndicator phase={build.phase} finished={finished}/>}<span className="subtle">No firmware upload. Local validation does not qualify this configuration on hardware.</span></div>
       <div className="build-actions">
         {build.state==='building'?<button className="button button-quiet" onClick={build.cancel}>Cancel build</button>:finished&&!downloadsEnabled?null:finished?<button className="button button-primary" disabled={!riskAccepted} aria-describedby="engine-status" onClick={()=>{saveFirmware(build.result!.buffer,configurationName);setDownloadedKey(build.key);trackFirmwareDownload(build.report?.moduleIds??[])}}><Icon name="download" size={16}/>Download .bin</button>:<button className="button button-primary" disabled={!available||!ready||!riskAccepted} onClick={()=>void build.build()} aria-describedby="engine-status"><Icon name="sliders" size={16}/>Build firmware</button>}
         {build.state==='error'&&build.canRetry&&<button className="button button-quiet" onClick={build.retry}>Check again</button>}
