@@ -229,3 +229,28 @@ SDK checks, four licence checks, lint, app/server TypeScript and production
 build. Exact-base publication validation passed. All 21 PNG SHA-256 values and
 their complete native-source capture bindings were rechecked. The final isolated
 compilation and development import passed with main's unchanged release compiler.
+
+## Module qualification and documentation gates — 2 October 2026
+
+New modules and updates now require current source/version/build identities,
+worst-case cycle counts under modulation and maximum load, exact memory totals,
+and passed real-hardware stress-project records. Release validation also requires
+complete README sections, a synchronized short tutorial, real access captures
+and black-and-white PNG documentation screenshots. The frozen folder baseline
+retains all eleven existing modules without changing their sources, versions,
+media or recorded test/availability statuses.
+
+Node 24 validation passed: 234 tests in 45 files, four licence checks, seven
+synthetic SDK checks, lint, app/server TypeScript and the production build.
+Exact-base module validation passed against main. Synthetic rejection fixtures
+cover missing evidence, budget overruns, inconsistent memory, incomplete/failed
+hardware records, stale source hashes, altered legacy folders, missing README
+sections/tutorial steps and colored or malformed screenshots. No submitted
+native source was executed.
+
+The local browser confirmed that “Are the mods stable?” appears in FAQ search
+and explains the gates without guaranteeing stability. It explicitly asks users
+to test their own configuration before relying on it. No firmware, DSP,
+emulator, audio or physical hardware qualification tests ran for this policy PR;
+it adds enforcement and documentation, rather than new module qualification
+claims. No firmware, project/card dumps or raw captures were added.

@@ -154,3 +154,7 @@ Run `npm run modules:generate`, `npm run check` and
 approves the version; pending/rejected updates preserve the current publication.
 Capturing the UI does not establish audio safety, native/browser parity or
 hardware qualification, and never authorizes uploading firmware.
+
+## Release documentation gate — 2 October 2026
+
+New modules and updates must include complete documentation and a short practical tutorial, with real screenshots in the same black-and-white/gray style as the online modules. Yellow or colored captures do not qualify. Declare PNG screenshot paths and `screenshotStyle: "black-and-white"` under `tests.qualification.documentation`; release validation inspects actual pixels, requires the tutorial and complete README sections, and checks the OT location/control evidence even without `--base`. Preserve actual captured labels and controls; never replace them with a reconstruction. The owner verifies page coverage, exact access steps, tutorial usefulness and provenance. Automatic no-OT-UI modules still need real host setup/routing screenshots and a tutorial. See [the full qualification and documentation gates](MODULE_QUALIFICATION.md).

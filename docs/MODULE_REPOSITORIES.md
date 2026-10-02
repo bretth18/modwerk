@@ -19,16 +19,21 @@ A module is a folder under `sdk/octabam/modules/<id>/` containing native source,
 | compatibility | Original OS 1.40C, location, conflicts and explicit limitations |
 | resources | Storage/processing label, display, optional numeric value, unit, evidence method, exact conditions/source; unknown numbers are null |
 | tests | TESTING path, honest result summary, hardware status, exact evidence commit and declared gates |
+| tests.qualification | Mandatory for new modules/updates: this version/source/image identity, worst-case cycles under modulation, exact memory regions/totals passed hardware stress-project evidence, complete README/tutorial and real black-and-white documentation screenshots; see [qualification gates](MODULE_QUALIFICATION.md) |
 | license | SPDX expression, local licence file and accurate source/media declaration |
 | media | Relative path, hardware/emulator/audio type, caption, alt text, credit, licence and original/source provenance; `otUi` page, version, local build hash and setup for OT captures |
 
 A display string may report a range or several quantities while its scalar value stays null. `method: unmeasured` forbids a numeric claim. Static prices and emulator instruction counts are not hardware percentages. Historical hardware results do not qualify a later revision.
+
+These display fields retain existing-module evidence and may describe an incomplete draft. They cannot substitute for `tests.qualification` on a new submission or update. The [qualification template](../public/module-qualification.example.json) starts incomplete and deliberately fails validation until populated with actual results. Required counts are integers; memory words/bytes and allocation totals must agree; maximum cycle load must fit the declared budget; hardware must pass at least 60 minutes with eight active audio tracks. The tested-source hash is recomputed without executing source, and text reports must exist and contain evidence. The owner verifies the actual test results before merge.
 
 ## Build and version checks
 
 `npm run modules:generate` validates source folders and writes `src/catalog/module-documents.json`. The module library, pages, controls and resource explanations consume that generated content. `sdk/catalog.json` lists the seven initial modules plus the four explicitly requested additions, each at an exact version. Its `sourceRevision` remains the existing native composition pin; newer per-module `source` pins identify imports separately. New source folders do not silently enter the configurator.
 
 `npm run modules:check` rejects stale generated content and missing local documentation/media. `--base origin/main` also requires a strictly greater semantic version whenever any file in an existing module folder changes. PR CI runs it against the exact base SHA. New or changed module folders and modules newly added to the catalog also require version-matched real OT UI location/control captures and access instructions; unchanged legacy publications remain readable. See [the capture workflow](MODULE_UI_CAPTURES.md). Sources, docs and media are reviewed together. No `.bin` or `.syx` file belongs in the source or media folder. No symlink may escape the folder.
+
+Qualification is enforced even without `--base`, during generation and release validation. [The frozen 2 October 2026 baseline](../sdk/module-qualification-baseline.json) preserves the eleven existing modules only while their version and complete folder fingerprint match. Any file change loses that exemption; a new ID cannot inherit it. PR checks prohibit rewriting or expanding the baseline once it exists on the base branch. Pending imports, suspensions and download restrictions remain independent of this grandfathering policy.
 
 ## Temporary frontend availability
 

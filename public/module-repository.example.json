@@ -72,10 +72,14 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "No tests have been run. This scaffold is not qualified for publication or hardware use.",
+    "summary": "No tests have been run. Add tests.qualification with worst-case cycles, exact memory and passed hardware stress-project evidence before submitting. This scaffold cannot pass publication checks.",
     "hardwareStatus": "untested",
     "evidenceRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
-    "gates": []
+    "gates": [
+      "Worst-case cycles under parameter modulation and maximum load",
+      "Exact memory region and maximum-instance totals",
+      "Real hardware stress project: eight audio tracks, at least 60 minutes"
+    ]
   },
   "license": {
     "spdx": "MIT",

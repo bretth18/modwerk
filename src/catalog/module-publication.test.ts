@@ -4,8 +4,11 @@ import { mkdtempSync, mkdirSync, copyFileSync, writeFileSync, rmSync } from 'nod
 import { tmpdir } from 'node:os'
 import { resolve, dirname } from 'node:path'
 import example from '../../public/module-repository.example.json'
+import { moduleFolderSha256, moduleNativeSourceSha256 } from '../../scripts/module-qualification.mjs'
+import { parseModuleDocument } from './module-contract'
+import { qualificationFixture, qualificationReadme } from './test-fixtures/qualification'
 
-it('checks real PR publication changes without executing module source', () => {
+it('checks real PR publication changes without executing module source', async () => {
   const root=mkdtempSync(resolve(tmpdir(),'octamod-publication-test.'))
   const folder=resolve(root,'sdk/octabam/modules',example.id)
   const document={...structuredClone(example),access:{...example.access,screenshots:[] as string[]}}
@@ -19,18 +22,25 @@ it('checks real PR publication changes without executing module source', () => {
   const failure=()=>{const result=run('--base','HEAD','--write');expect(result.status).not.toBe(0);return result.stderr}
   const git=(...args:string[])=>execFileSync('git',args,{cwd:root,encoding:'utf8'})
   try {
-    for(const path of ['scripts/modules.mjs','src/catalog/module-contract.ts','src/catalog/versions.ts','src/catalog/module-folder.ts']){
+    for(const path of ['scripts/modules.mjs','scripts/module-qualification.mjs','scripts/module-documentation.mjs','src/catalog/module-contract.ts','src/catalog/versions.ts','src/catalog/module-folder.ts']){
       mkdirSync(dirname(resolve(root,path)),{recursive:true})
       copyFileSync(resolve(path),resolve(root,path))
     }
     for(const path of ['manifest.py','README.md','TESTING.md','LICENSE'])put(resolve(folder,path),path==='manifest.py'?'raise AssertionError("module source must never execute")':'Fixture document\n')
     save()
+    const baselinePath=resolve(root,'sdk/module-qualification-baseline.json')
+    const baseline={schemaVersion:1,recorded:'2026-10-02',modules:[{id:document.id,version:document.version,folderSha256:await moduleFolderSha256(folder)}]}
+    const baselineBytes=JSON.stringify(baseline)
+    put(baselinePath,baselineBytes)
     expect(run('--write').status).toBe(0)
     git('init','--quiet')
     git('add','.')
     git('-c','user.name=Publication test','-c','user.email=fixture@example.invalid','commit','--quiet','-m','Legacy publication fixture')
     // Existing publications remain readable while new media is being prepared.
     expect(run('--base','HEAD').status).toBe(0)
+    put(baselinePath,JSON.stringify({...baseline,modules:[{...baseline.modules[0],folderSha256:'f'.repeat(64)}]}))
+    expect(failure()).toContain('baseline is frozen')
+    put(baselinePath,baselineBytes)
     put(resolve(folder,'README.md'),'Documentation update\n')
     expect(failure()).toContain('greater module version')
     document.version='0.1.1'
@@ -49,7 +59,18 @@ it('checks real PR publication changes without executing module source', () => {
     expect(failure()).toContain('this module version')
     media.otUi.moduleVersion=document.version
     saveMedia()
+    expect(failure()).toContain('worst-case cycles, exact memory and hardware')
+    // These requirements also apply without a Git base (local and release builds).
+    expect(run('--write').stderr).toContain('publication requires')
+    const q=qualificationFixture();q.moduleVersion=document.version
+    put(resolve(folder,'README.md'),qualificationReadme)
+    const qualified={...withMedia,tests:{...withMedia.tests,hardwareStatus:'verified',qualification:q}}
+    q.sourceSha256=await moduleNativeSourceSha256(folder,parseModuleDocument(qualified))
+    put(resolve(folder,'octamod.module.json'),JSON.stringify(qualified))
     expect(run('--base','HEAD','--write').status).toBe(0)
+    // Updating executable source invalidates the tested-source identity.
+    put(resolve(folder,'manifest.py'),'raise AssertionError("changed module must never execute")')
+    expect(failure()).toContain('source SHA-256 differs')
     // A pre-existing draft folder newly added to the catalog must also qualify.
     git('reset','--hard','HEAD')
     git('clean','-fd')
@@ -64,4 +85,4 @@ it('checks real PR publication changes without executing module source', () => {
     save()
     expect(failure()).toContain('actual screenshots')
   } finally { rmSync(root,{recursive:true,force:true}) }
-})
+},15000)

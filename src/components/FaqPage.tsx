@@ -45,6 +45,24 @@ const SECTIONS: FaqSection[] = [
         </>,
       },
       {
+        id: 'mods-stability',
+        title: 'Are the mods stable?',
+        keywords: 'stable stability reliable reliability testing stress project cycles memory modulation hardware emulator performance live configuration',
+        answer: <>
+          <p>Test records describe what was checked on a particular version and setup. They do not guarantee that your combination of modules, Octatrack model and workload will behave reliably.</p>
+          <p>New modules and updates must provide the following evidence for owner review:</p>
+          <ol>
+            <li>Worst-case cycle counts under parameter extremes, simultaneous modulation, mode changes and maximum supported load, within the available processing budget.</li>
+            <li>Exact memory accounting for code, state, tables, buffers, stack/heap and shared allocations, including totals at the maximum instance count.</li>
+            <li>Module-specific emulator/native checks and a passed stress project on a real MKI or MKII for at least 60 minutes, with all eight audio tracks active and the maximum supported module instances. The workload must exercise modulation, transitions and applicable MIDI/USB activity, checking audio continuity, transport, controls, memory integrity and recovery.</li>
+            <li>Complete module documentation, a short practical tutorial and real screenshots matching the online modules’ black-and-white style. The owner reviews the documentation and test evidence before release.</li>
+          </ol>
+          <p>Emulator results cannot replace hardware testing. Existing modules retain their recorded evidence; read each module’s test conditions and limitations rather than assuming every configuration has been tested.</p>
+          <p><strong>Always test your own configuration before relying on it.</strong> Use a backed-up copy of your project and rehearse your actual track count, module combinations, modulation, recording, streaming and transitions for a sustained run. Repeat after changing modules or versions, and keep a tested fallback for performances or important recordings.</p>
+          {!DOWNLOADS_ENABLED && <p>Firmware downloads remain paused. Wait for the current hardware issue to be resolved before installing a custom build from Octamod.</p>}
+        </>,
+      },
+      {
         id: 'models',
         title: 'Does it work with the Octatrack MKI and MKII?',
         keywords: 'compatibility supported model hardware device 1.40c',
