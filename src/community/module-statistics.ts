@@ -1,7 +1,11 @@
 export type ModuleStatistics = { module_id: string; average: number | null; count: number; likes: number; downloads: number; downloadsStarted: string | null }
-type SortableModule = { id: string; name: string; authorName: string }
+type SortableModule = { id: string; name: string; authorName: string; addedAt?: string }
 export function compareModules(a: SortableModule, b: SortableModule, sort: string, statistics: readonly ModuleStatistics[] | null) {
   if (sort === 'collection') return 0
+  if (sort === 'recent') {
+    const added = (module: SortableModule) => { const timestamp = Date.parse(module.addedAt ?? ''); return Number.isFinite(timestamp) ? timestamp : 0 }
+    return added(b) - added(a) || a.name.localeCompare(b.name)
+  }
   if (sort === 'name') return a.name.localeCompare(b.name)
   if (sort === 'author') return a.authorName.localeCompare(b.authorName) || a.name.localeCompare(b.name)
   const metric = sort === 'liked' ? 'likes' : sort === 'downloaded' ? 'downloads' : 'average'

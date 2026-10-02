@@ -1,4 +1,5 @@
 import { MODULE_DOCUMENTS } from './documents.ts'
+import { MODULE_ADDED_AT } from './module-additions.ts'
 import type { ModuleDocument } from './module-contract.ts'
 export const CATALOG_SOURCE = {
   repository: 'https://github.com/repeat98/octamad',
@@ -20,13 +21,14 @@ export type FirmwareModule = {
   sourcePath: string
   fxId?: number
   version: string
+  addedAt: string
 }
 
 export const MODULES: readonly FirmwareModule[] = MODULE_DOCUMENTS.map(document=>({
   id:document.id,key:document.key,name:document.name,category:document.category,
   description:document.presentation.summary,detail:document.compatibility.location,
   author:document.author.github,authorName:document.author.name??document.author.github,authorUrl:'https://github.com/'+document.author.github,
-  sourcePath:'sdk/octabam/modules/'+document.id+'/manifest.py',version:document.version,fxId:document.compatibility.effectId??undefined,
+  sourcePath:'sdk/octabam/modules/'+document.id+'/manifest.py',version:document.version,addedAt:MODULE_ADDED_AT[document.id],fxId:document.compatibility.effectId??undefined,
 }))
 
 export function getModuleSource(module: FirmwareModule): string {

@@ -2,7 +2,7 @@ import 'fake-indexeddb/auto'
 import { describe, expect, it } from 'vitest'
 import { deviceStore, openDeviceDatabase } from './device'
 import { newConfiguration, validateConfiguration } from '../config/workspace'
-import { moduleHasUpdate } from '../catalog/module-updates'
+import { moduleHasUpdate, moduleIsNew, moduleViewsToRemember } from '../catalog/module-updates'
 
 describe('device persistence', () => {
   it('remembers module views across sessions without changing saved configurations', async () => {
@@ -83,4 +83,41 @@ it('migrates old device configurations without changing selection and preserves 
  const db=await openDeviceDatabase('test-'+crypto.randomUUID()),store=deviceStore(db)
  await store.saveConfiguration({...created,keepStockFx2:false})
  expect((await store.listConfigurations())[0].keepStockFx2).toBe(false);db.close()
+})
+
+
+it('persists the initial full catalog across sessions and remembers opening a new module', async () => {
+ const name = 'test-' + crypto.randomUUID(), existing = { id: 'repitch', version: '0.1.1-experimental' }, addition = { id: 'midi-scenes', version: '0.2.0-experimental' }
+ const db = await openDeviceDatabase(name), store = deviceStore(db)
+ expect(await store.readModuleBaseline()).toBeUndefined()
+ // Legacy viewing history remains usable when establishing the new full-catalog baseline.
+ await store.rememberModuleView(existing)
+ await store.rememberModuleBaseline([existing.id, 'miniverb'])
+ db.close()
+ const restoredDb = await openDeviceDatabase(name), restored = deviceStore(restoredDb)
+ const baseline = (await restored.readModuleBaseline())!, viewed = await restored.readModuleViews()
+ expect(baseline).toEqual([existing.id, 'miniverb'])
+ expect(moduleIsNew({ id: 'miniverb', version: '0.1.2-experimental' }, undefined, baseline)).toBe(false)
+ expect(moduleIsNew(addition, viewed[addition.id], baseline)).toBe(true)
+ expect(moduleViewsToRemember([addition], viewed, baseline)).toEqual([])
+ await restored.rememberModuleView(addition)
+ restoredDb.close()
+ const reopenedDb = await openDeviceDatabase(name), reopened = deviceStore(reopenedDb)
+ expect(moduleIsNew(addition, (await reopened.readModuleViews())[addition.id], (await reopened.readModuleBaseline())!)).toBe(false)
+ expect(await reopened.listConfigurations()).toEqual([])
+ expect(await reopened.readFirmware()).toBeUndefined()
+ reopenedDb.close()
+})
+
+it('ignores corrupt catalog baselines so the workspace can establish a fresh baseline', async () => {
+ const db = await openDeviceDatabase('test-' + crypto.randomUUID()), store = deviceStore(db)
+ await new Promise<void>((resolve, reject) => {
+  const tx = db.transaction('settings', 'readwrite')
+  tx.objectStore('settings').put(['repitch', 42], 'module-library-baseline')
+  tx.oncomplete = () => resolve()
+  tx.onerror = () => reject(tx.error)
+ })
+ expect(await store.readModuleBaseline()).toBeUndefined()
+ await expect(store.rememberModuleBaseline(['invalid id'])).rejects.toThrow('baseline')
+ db.close()
 })
