@@ -19,6 +19,7 @@ import { AdminPage } from './community/AdminPage'
 import { PublishedModulePage } from './community/PublishedModulePage'
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import type { ChangeEvent, DragEvent } from 'react'
+import { flushSync } from 'react-dom'
 import { MODULES, resolveSelection } from './catalog/modules'
 import { AVAILABLE_MODULES, isModulePaused, moduleAvailabilityError } from './catalog/availability'
 import { DETAILS } from './catalog/details'
@@ -42,10 +43,19 @@ function subscribeRoute(callback: () => void) {
   window.addEventListener('hashchange', callback)
   return () => window.removeEventListener('hashchange', callback)
 }
+// Matches the phone shell breakpoint in styles.css.
+const PHONE_LAYOUT = '(max-width: 600px)'
+function subscribePhoneLayout(callback: () => void) {
+  const media = window.matchMedia(PHONE_LAYOUT)
+  media.addEventListener('change', callback)
+  return () => media.removeEventListener('change', callback)
+}
+function getPhoneLayout() { return window.matchMedia(PHONE_LAYOUT).matches }
 function getRoute() { const route=window.location.hash.slice(1)||'library'; return route==='remixes'?'module-sets':route==='account'?'activity':route.startsWith('remix/')?'module-set/'+route.slice(6):route }
 
 export default function App() {
   const route = useSyncExternalStore(subscribeRoute, getRoute, () => 'library')
+  const phoneLayout = useSyncExternalStore(subscribePhoneLayout, getPhoneLayout, () => false)
   useEffect(()=>trackPageView(route),[route])
   const detailModule = route.startsWith('module/') ? AVAILABLE_MODULES.find((module) => module.id === route.slice(7)) : undefined
   const pausedModule = MODULES.find(module => isModulePaused(module.id) && (route === 'module/' + module.id || route === 'community-module/' + module.id))
@@ -61,6 +71,13 @@ export default function App() {
   const selectedIds = active?.moduleIds ?? []
   const firmwareBuild = useFirmwareBuild(workspace.firmwareClient, active, firmware)
   const [query, setQuery] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
+  const searchRef = useRef<HTMLInputElement>(null)
+  const searchToggleRef = useRef<HTMLButtonElement>(null)
+  const searchExpanded = searchOpen || query !== ''
+  // Phones show search as an icon; open it within the tap so the keyboard appears.
+  function openSearch() { flushSync(() => setSearchOpen(true)); searchRef.current?.focus() }
+  function closeSearch() { setQuery(''); flushSync(() => setSearchOpen(false)); searchToggleRef.current?.focus() }
   const [family,setFamily]=useState('all'),[sort,setSort]=useState('collection'),[comparison,setComparison]=useState<string[]>([]),[compareOpen,setCompareOpen]=useState(false)
   const [statistics,setStatistics]=useState<ModuleStatistics[]|null>(null)
   useEffect(()=>{let cancelled=false;if(session.available)void api<ModuleStatistics[]>('/community/summary').then(value=>{if(!cancelled)setStatistics(value)}).catch(()=>{if(!cancelled)setStatistics(null)});return()=>{cancelled=true}},[session.available,route])
@@ -127,6 +144,9 @@ export default function App() {
     setSaved(false); setRiskAccepted({key:'',accepted:false}); window.location.assign('#configuration')
   }
 
+  // Phones show the independence notice as a page footer; wider layouts keep it above the content.
+  const projectNotice = <aside className="project-notice" aria-label="Project independence"><p>{INDEPENDENCE_NOTICE}</p><a href={assetUrl('licenses/THIRD_PARTY_NOTICES.html')} target="_blank" rel="noreferrer">Copyright &amp; licence notices</a></aside>
+
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content" onClick={(event) => { event.preventDefault(); mainRef.current?.focus() }}>Skip to content</a>
@@ -158,12 +178,12 @@ export default function App() {
         <header className="app-toolbar">
           <a className="toolbar-brand" href="#library"><img src={import.meta.env.BASE_URL + 'favicon.svg'} width="30" height="30" alt="" /><span>Octamod</span></a>
           <div className="toolbar-title"><Icon name={route === 'faq' ? 'help' : configuration ? 'file' : 'grid'} size={17} /><span>{route === 'faq' ? 'FAQ & flashing guide' : configuration ? 'Configuration' : route === 'privacy' ? 'Privacy' : communityRoute ? 'Community' : route.startsWith('module-set') ? 'Module sets' : 'Modules'}</span>{detailModule && <><span className="breadcrumb-divider">/</span><strong>{detailModule.name}</strong></>}<span className="preview-badge">Preview</span></div>
-          {['library',...MODULE_CATEGORIES,'module-sets'].includes(route) && <label className="search"><Icon name="search" size={15} /><input type="search" aria-label={route==='module-sets'?'Search module sets':'Search modules'} placeholder={route==='module-sets'?'Search sets':'Search modules'} value={query} onChange={(event) => setQuery(event.target.value)} /></label>}
+          {['library',...MODULE_CATEGORIES,'module-sets'].includes(route) && <><label className={'search' + (searchExpanded ? ' is-open' : '')}><Icon name="search" size={15} /><input ref={searchRef} type="search" aria-label={route==='module-sets'?'Search module sets':'Search modules'} placeholder={route==='module-sets'?'Search sets':'Search modules'} value={query} onChange={(event) => setQuery(event.target.value)} onBlur={() => { if (!query) setSearchOpen(false) }} onKeyDown={(event) => { if (phoneLayout && event.key === 'Escape') closeSearch() }} /></label><button ref={searchToggleRef} type="button" className="toolbar-icon search-toggle" aria-label={route==='module-sets'?'Search module sets':'Search modules'} onClick={openSearch}><Icon name="search" size={20} /></button><button type="button" className="search-cancel" onClick={closeSearch}>Cancel</button></>}
           <MobileMenu route={route} selectedCount={selection.length} admin={session.admin} onSupport={PAYPAL_DONATION_URL ? () => setSupportOpen(true) : undefined} />
           <a className="configuration-button" href="#configuration" aria-label={"Open configuration, " + selection.length + " modules selected"}><Icon name="sliders" size={16} /><span>Configuration</span><span className="toolbar-count">{selection.length}</span></a>
         </header>
         <main className="workspace-content" id="main-content" ref={mainRef} tabIndex={-1}>
-          <aside className="project-notice" aria-label="Project independence"><p>{INDEPENDENCE_NOTICE}</p><a href={assetUrl('licenses/THIRD_PARTY_NOTICES.html')} target="_blank" rel="noreferrer">Copyright &amp; licence notices</a></aside>
+          {!phoneLayout && projectNotice}
           {workspace.storageError && <div className="file-error" role="alert">{workspace.storageError} Export important configurations before closing this tab.</div>}
           {route === 'faq' ? <FaqPage /> : !ready ? <div className="loading-panel" role="status">Opening your workspace…</div> : <>
           {missingRoute?<div className="no-results"><h1>{pausedModule ? 'Module temporarily unavailable' : 'Page not found'}</h1><p>{pausedModule ? pausedModule.name + ' has been temporarily removed due to reported audio crackling.' : 'This module or page is not in the current catalog.'}</p><a className="button button-quiet" href="#library">Open module library</a></div>:route==='module-sets'||route.startsWith('module-set/')?<ModuleSets query={query} id={route.startsWith('module-set/')?route.slice(11):undefined} onUse={(name,ids)=>{workspace.importConfiguration(name,ids);window.location.assign('#configuration')}}/>:route === 'privacy' ? <PrivacyPage /> : route === 'activity' ? <ActivityPage /> : route.startsWith('submit') ? <SubmissionPage key={route} moduleId={route.split('/')[1] ?? ''} /> : route === 'review'||route === 'admin' ? <AdminPage /> : communityModule ? <PublishedModulePage module={communityModule} /> : detailModule ? <ModuleDetail key={detailModule.id} module={detailModule} selected={selectedIds.includes(detailModule.id)} onToggle={() => toggleModule(detailModule.id)} /> : configuration ? (
@@ -211,6 +231,7 @@ export default function App() {
             </div>
           )}
           </>}
+          {phoneLayout && projectNotice}
         </main>
         <footer className="status-bar"><a className="privacy-link" href="#privacy">Privacy</a><span><span className={'status-dot ' + (firmware ? 'verified' : '')} />{firmware ? 'OS 1.40C verified' : 'No base firmware selected'}</span><span className="status-build" role="status">{workspace.saving ? "Saving…" : workspace.storageError ? "Changes not saved" : "Workspace saved on device"}</span><a href="#configuration" aria-live="polite">{selection.length} {selection.length === 1 ? 'module' : 'modules'} selected <Icon name="arrow" size={12} /></a></footer>
       </div>
