@@ -6,7 +6,7 @@ import { getModuleSource, resolveSelection } from './modules'
 import { createSelection, parseSelection } from '../config/selection'
 import { composeOs } from '../engine/compose-os'
 import { validateCompiledPackage } from '../engine/module-build'
-import { configurationVersionError, newConfiguration, validateConfiguration } from '../config/workspace'
+import { newConfiguration, validateConfiguration } from '../config/workspace'
 
 const imported = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer']
 const verified = imported.filter(id => id !== 'midi-scenes')
@@ -39,14 +39,14 @@ describe('reviewed imports with verified loader-free composition', () => {
     })
   })
 
-  it.each(['0.1.0-experimental', '0.1.1-experimental'])('preserves the explicit %s MIDI Scenes pin with an update-review message', version => {
+  it.each(['0.1.0-experimental', '0.1.1-experimental'])('updates the %s MIDI Scenes backup while retaining its verification gate', version => {
     const selection = { ...createSelection(['midi-scenes'], null), name: 'Older MIDI Scenes' }
     selection.modules[0].version = version
     const imported = parseSelection(JSON.stringify(selection))
     const old = validateConfiguration(newConfiguration('Older MIDI Scenes', imported.moduleIds, imported.keepStockFx2, imported.moduleVersions))
-    expect(old.moduleVersions['midi-scenes']).toBe(version)
-    expect(configurationVersionError(old)).toContain('MIDI Scenes ' + version + ' → 0.2.1-experimental')
-    expect(configurationVersionError(old)).toContain('Use current module versions')
+    expect(old.moduleVersions['midi-scenes']).toBe('0.2.1-experimental')
+    expect(moduleBuildError(old.moduleIds)).toContain('awaiting Octamod verification')
+    expect(checkSelection(old.moduleIds).checked).toBe(false)
   })
 
   it('rejects pending MIDI Scenes in single and mixed build selections', async () => {

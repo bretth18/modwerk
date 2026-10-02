@@ -28,16 +28,11 @@ export function validateConfiguration(value: unknown): Configuration {
 }
 
 export function pinModuleVersions(ids: readonly string[]): Record<string,string> {return Object.fromEntries(resolveSelection(ids).map(module=>[module.id,module.version]))}
-// Legacy configurations came from the initial fixed catalog; do not silently move them to a later version.
+// Saved configurations and backups select modules; builds always use the current catalog versions.
 export function normalizeModuleVersions(ids: readonly string[], value: unknown): Record<string,string> {
   const modules=resolveSelection(ids)
   if(value!==undefined&&(!value||typeof value!=='object'||Array.isArray(value)))throw new Error('Saved module versions are unreadable.')
   const pins=(value??{}) as Record<string,unknown>
   for(const key of Object.keys(pins))if(!ids.includes(key))throw new Error('Saved version belongs to an unselected module.')
-  return Object.fromEntries(modules.map(module=>{const version=pins[module.id]??'0.1.0-experimental';if(typeof version!=='string')throw new Error('Saved module version is unreadable.');compareModuleVersions(version,version);return [module.id,version]}))
-}
-export function configurationVersionError(configuration:Configuration|undefined):string {
-  if(!configuration)return ''
-  const changed=resolveSelection(configuration.moduleIds).filter(module=>configuration.moduleVersions[module.id]!==module.version)
-  return changed.length?'This configuration uses earlier module versions: '+changed.map(module=>module.name+' '+configuration.moduleVersions[module.id]+' → '+module.version).join(', ')+'. Review the module pages, then choose Use current module versions.':''
+  return Object.fromEntries(modules.map(module=>{const version=pins[module.id]??module.version;if(typeof version!=='string')throw new Error('Saved module version is unreadable.');compareModuleVersions(version,version);return [module.id,module.version]}))
 }
