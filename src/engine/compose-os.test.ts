@@ -13,7 +13,9 @@ describe('complete local OS composer', () => {
     expect(staticProofs.proofs).toHaveLength(256)
     expect(new Set(staticProofs.proofs.map(proof => [...proof.moduleIds].sort().join('+') + ':' + proof.keepStockFx2)).size).toBe(256)
     const accepted = staticProofs.proofs.filter(proof => !proof.error)
-    expect(accepted).toHaveLength(74)
+    expect(accepted).toHaveLength(144)
+    // Keeping the stock FX2 effects the modules do not need accepts exactly what the compact FX2 menu accepts.
+    expect(accepted.filter(proof => proof.keepStockFx2)).toHaveLength(72)
     for (const proof of accepted) {
       expect(proof.firmware?.sha256).toMatch(/^[a-f0-9]{64}$/)
       expect(proof.firmware?.containerSha256).toMatch(/^[a-f0-9]{64}$/)

@@ -3,6 +3,8 @@
 // selection is checked against native output (static-composition-proofs.json).
 import facts from './assets/static-dsp.json' with { type: 'json' }
 import stockMetadata from './assets/stock-dsp-metadata.json' with { type: 'json' }
+import dspPackages from './assets/dsp-packages.json' with { type: 'json' }
+import resident from './assets/resident-dsp.json' with { type: 'json' }
 import { CATALOG_SOURCE, resolveSelection } from '../catalog/modules.ts'
 import { readDspPackage, relocateDspPackage, type DspPackage } from './dsp-package.ts'
 import { readResidentCharacter } from './resident-dsp.ts'
@@ -54,6 +56,57 @@ export function staticModulePlan(ids: readonly string[]) {
   return facts.modules.filter(module => selected.has(module.id)).sort((a, b) => a.priority - b.priority)
 }
 
+type Helper = { host: string; start: number; end: number; callers: string[] }
+/** Stock routines inside one effect's code that another effect calls. On 1.40C, DARK REV calls 35 words at
+ *  SPRING REV+820 and PLATE REV calls 93 words at DARK REV+974. Taken from the native relocation recipes:
+ *  each caller's call operand moves by the same distance as the routine. */
+export function stockHelpers(tag: string): Helper[] {
+  const payload = stockMetadata.payloads.find(payload => payload.tag === tag)
+  if (!payload) throw new Error('Unknown DSP payload ' + tag + '.')
+  return payload.shared.flatMap(routine => {
+    const host = payload.packages.find(pkg => pkg.sourceAddress <= routine.sourceAddress && routine.sourceAddress < pkg.sourceAddress + pkg.words)
+    if (!host) return []
+    const shift = routine.destination - routine.sourceAddress
+    const callers = payload.packages.filter(pkg => pkg !== host && pkg.adjustments.some(adjustment => adjustment.delta === shift)).map(pkg => pkg.key)
+    return [{ host: host.key, start: routine.sourceAddress, end: routine.sourceAddress + routine.words, callers }]
+  })
+}
+/** A routine that placed code overwrites while an effect calling it is still listed. Native placement does not check this. */
+export function overwrittenHelper(tag: string, listed: ReadonlySet<string>, runs: readonly Run[]) {
+  return stockHelpers(tag).find(helper => !listed.has(helper.host) && helper.callers.some(caller => listed.has(caller))
+    && runs.some(run => run.base < helper.end && helper.start < run.cursor))
+}
+
+const moduleWords = (id: string) => id === 'character' ? resident.character.words : dspPackages.packages.find(pkg => pkg.id === id)!.words
+// Spring first, as upstream's Analog BD and the earlier Tape Echo; then Plate and Dark.
+const DONOR_PREFERENCE = ['SPRING REV', 'PLATE REV', 'DARK REV']
+/** The stock effects to take off FX2 so the selection's DSP code fits: the fewest, in donor preference, that
+ *  hold every module on both cores without breaking an effect that stays listed. Only effects with DSP code
+ *  that are on FX2 but not FX1 are candidates. When even all of them are too small, all of them, so that
+ *  placement reports the overrun. */
+export function stockFx2Donors(ids: readonly string[], profile: ChooserProfile, required: readonly string[] = []): string[] {
+  const plan = staticModulePlan(ids).map(module => ({ key: module.key, fxId: module.fxId, words: moduleWords(module.id) }))
+  const rank = (key: string) => DONOR_PREFERENCE.includes(key) ? DONOR_PREFERENCE.indexOf(key) : DONOR_PREFERENCE.length
+  const candidates = stockMetadata.payloads[0].packages.map(pkg => pkg.key)
+    .filter(key => profile.fx2.includes(key) && !profile.fx1.includes(key)).sort((a, b) => rank(a) - rank(b))
+  // Every subset, each in preference order; fewer effects first, then the preferred effect at the first difference.
+  const preferred = (a: string[], b: string[]) => {
+    const at = a.findIndex((key, i) => key !== b[i])
+    return a.length - b.length || (at < 0 ? 0 : rank(a[at]) - rank(b[at]))
+  }
+  const sets = candidates.reduce<string[][]>((all, key) => [...all, ...all.map(set => [...set, key])], [[]])
+    .filter(set => required.every(key => set.includes(key))).sort(preferred)
+  for (const set of sets) {
+    const listed = new Set([...profile.fx1, ...profile.fx2].filter(key => !set.includes(key)))
+    const fits = stockMetadata.payloads.every(payload => {
+      try { return !overwrittenHelper(payload.tag, listed, planStaticPlacement(payload.tag, payload.packages, listed, plan).runs) }
+      catch { return false }
+    })
+    if (fits) return set
+  }
+  return candidates
+}
+
 type DispatchTarget = { fxId: number; init: number; proc: number }
 /** Install selected entries and make NONE, omitted custom ids and overwritten donors resolve to stock's null stub. */
 export function applyStaticDispatch(memory: DspMemory, placed: readonly DispatchTarget[], donors: readonly { fxId: number }[], stub: { nullInit: number; nullProc: number }) {
@@ -80,6 +133,8 @@ export async function composeStaticDsp(cores: readonly StockDspCore[], ids: read
     const stock = stockMetadata.payloads.find(payload => payload.core === core.core)!, stub = facts.payloads.find(payload => payload.core === core.core)!
     if (!stock || !stub || core.tag !== stock.tag || stub.tag !== stock.tag || await sha(core.memory.bytes) !== stock.sha256) throw new Error('DSP composition needs the verified original payloads.')
     const layout = planStaticPlacement(stock.tag, stock.packages, listed, plan.map(module => ({ key: module.key, fxId: module.fxId, words: packages.get(module.id)!.words })))
+    const broken = overwrittenHelper(stock.tag, listed, layout.runs)
+    if (broken) throw new Error('payload ' + stock.tag + ': module code would overwrite a ' + broken.host + ' routine that ' + broken.callers.join(', ') + ' still calls.')
     const memory = parseDspMemory(new Uint8Array(core.memory.bytes))
     const dispatch: DispatchTarget[] = []
     for (const [index, module] of plan.entries()) {

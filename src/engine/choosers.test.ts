@@ -6,7 +6,7 @@ import { MODULES } from '../catalog/modules'
 import { moduleBuildPending } from '../catalog/build-support'
 describe('effect chooser composition', () => {
   it('preserves stock effects and puts selected effects in their working slots', () => {
-    const ids = MODULES.filter(module=>!moduleBuildPending(module.id)).map(module => module.id), profile = defaultChoosers(ids)
+    const ids = MODULES.filter(module=>!moduleBuildPending(module.id)).map(module => module.id), profile = defaultChoosers(ids, true, true)
     expect(profile.fx1.slice(0, metadata.stockFx1.length)).toEqual(metadata.stockFx1)
     expect(profile.fx2.slice(0, metadata.stockFx2.length)).toEqual(metadata.stockFx2)
     for (const key of ['SPECTRUM','MODULATION','CHARACTER']) {
@@ -19,6 +19,16 @@ describe('effect chooser composition', () => {
     const compact = defaultChoosers(ids, false)
     expect(compact.fx1).toEqual(profile.fx1)
     expect(compact.fx2).toEqual(['MINIVERB','TAPE ECHO','EUCLID'])
+  })
+  it('without the loader, leaves out only the stock FX2 effects whose code the modules take', () => {
+    const others = (ids: string[]) => metadata.stockFx2.filter(key => !defaultChoosers(ids).fx2.includes(key))
+    expect(defaultChoosers(['repitch'])).toEqual(defaultChoosers(['repitch'], true, true))
+    expect(others(['tapeecho'])).toEqual(['SPRING REV'])
+    expect(defaultChoosers(['tapeecho']).fx2).toEqual([...metadata.stockFx2.filter(key => key !== 'SPRING REV'), 'TAPE ECHO'])
+    expect(others(['miniverb', 'tapeecho', 'euclid'])).toEqual(['DARK REV'])
+    expect(others(['analog-bassdrum'])).toEqual(['SPRING REV'])
+    expect(defaultChoosers(['modulation']).fx1).toEqual([...metadata.stockFx1, 'MODULATION'])
+    expect(defaultChoosers(['euclid'], false).fx2).toEqual(['EUCLID'])
   })
   it('rejects wrong-slot, missing, duplicate and unavailable effect rows', () => {
     expect(() => validateChoosers(['miniverb'], { fx1: ['MINIVERB'], fx2: [] })).toThrow('FX2 only')

@@ -7,6 +7,8 @@ import { rollingHash, runtimeStageLayout, BOOTSTRAP_ADDRESS } from './bootstrap.
 import { packGka3, unpackGka3 } from './runtime-pack.ts'
 import { parseColdFireObject, relocateColdFireObject } from './coldfire-elf.ts'
 const UNCACHED = 0x08000000
+// The stock effect whose code holds the engine. Its routine that DARK REV calls is moved, not lost.
+export const ANALOG_BD_DONOR = 'SPRING REV'
 const align4 = (n: number) => Math.ceil(n / 4) * 4
 function payload(raw: Uint8Array, destination: number, stage: number) {
   const packed = packGka3(raw)
@@ -17,7 +19,7 @@ function payload(raw: Uint8Array, destination: number, stage: number) {
 }
 export async function composeAnalogBd(original: Uint8Array, patched: Uint8Array, ids: readonly string[], profile: { fx1: readonly string[]; fx2: readonly string[] }) {
   if (ids.some(id => ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid'].includes(id))) throw new Error('Analog BD currently composes with stock effects only.')
-  if ([...profile.fx1, ...profile.fx2].includes('SPRING REV')) throw new Error('Analog BD needs the space used by SPRING REV.')
+  if ([...profile.fx1, ...profile.fx2].includes(ANALOG_BD_DONOR)) throw new Error('Analog BD needs the space used by ' + ANALOG_BD_DONOR + '.')
   const uploads = [], writes: OsWrite[] = [], recipe = facts.analog
   for (const variant of recipe.variants) {
     const offset = variant.payloadAddress - OS_LOAD_ADDRESS

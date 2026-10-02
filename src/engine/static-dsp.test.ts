@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { applyStaticDispatch, planStaticPlacement, staticModulePlan } from './static-dsp'
+import { applyStaticDispatch, overwrittenHelper, planStaticPlacement, staticModulePlan, stockFx2Donors, stockHelpers } from './static-dsp'
 import { parseDspMemory, readDspWords } from './dsp-memory'
 import facts from './assets/static-dsp.json'
 import stockMetadata from './assets/stock-dsp-metadata.json'
@@ -69,6 +69,41 @@ describe('loader-free DSP placement (native static stock)', () => {
     // First-fit by address: Tape Echo (5 words) takes the lower run, Mini Verb (457) skips FILTER's 441 words.
     expect(planStaticPlacement('A', core('A'), listed, plan(['tapeecho'])).placed[0].address).toBe(0x7d1)
     expect(planStaticPlacement('A', core('A'), listed, plan(['miniverb'])).placed[0].address).toBe(0x1679)
+  })
+  it('knows the reverb routines that another reverb calls, on both cores', () => {
+    for (const tag of ['A', 'B']) {
+      const spans = Object.fromEntries(core(tag).map(effect => [effect.key, effect.sourceAddress]))
+      expect(stockHelpers(tag)).toEqual([
+        { host: 'SPRING REV', start: spans['SPRING REV'] + 820, end: spans['SPRING REV'] + 855, callers: ['DARK REV'] },
+        { host: 'DARK REV', start: spans['DARK REV'] + 974, end: spans['DARK REV'] + 1067, callers: ['PLATE REV'] },
+      ])
+    }
+  })
+  it('refuses placed code over a routine that a listed reverb still calls', () => {
+    const withoutSpring = new Set([...everyStock].filter(key => key !== 'SPRING REV'))
+    // 395 words stay below SPRING REV+820; Euclid and Mini Verb together (852) reach DARK REV's routine.
+    expect(overwrittenHelper('A', withoutSpring, planStaticPlacement('A', core('A'), withoutSpring, plan(['euclid'])).runs)).toBeUndefined()
+    expect(overwrittenHelper('A', withoutSpring, planStaticPlacement('A', core('A'), withoutSpring, plan(['euclid', 'miniverb'])).runs)?.callers).toEqual(['DARK REV'])
+    // With DARK REV off as well, nothing listed calls the routine.
+    const withoutBoth = new Set([...withoutSpring].filter(key => key !== 'DARK REV'))
+    expect(overwrittenHelper('A', withoutBoth, planStaticPlacement('A', core('A'), withoutBoth, plan(['euclid', 'miniverb'])).runs)).toBeUndefined()
+  })
+  it('gives up only the FX2 reverbs a selection needs, Spring first', () => {
+    const kept = { fx1: stockFx1, fx2: [...stockFx1, 'DELAY', 'PLATE REV', 'SPRING REV', 'DARK REV'] }
+    const donors = (ids: string[], required: string[] = []) => stockFx2Donors(ids, kept, required)
+    expect(donors([])).toEqual([]); expect(donors(['repitch'])).toEqual([])
+    for (const id of ['tapeecho', 'euclid', 'miniverb']) expect(donors([id])).toEqual(['SPRING REV'])
+    // Too large for Spring below DARK REV's routine and for Plate: Dark alone holds it below PLATE REV's routine.
+    expect(donors(['euclid', 'miniverb'])).toEqual(['DARK REV'])
+    expect(donors(['character'])).toEqual(['SPRING REV', 'PLATE REV'])
+    // Plate + Spring is large enough, but Modulation would reach DARK REV's routine in Spring.
+    expect(donors(['modulation'])).toEqual(['SPRING REV', 'DARK REV'])
+    expect(donors(['spectrum', 'character', 'tapeecho'])).toEqual(['SPRING REV', 'PLATE REV', 'DARK REV'])
+    // Nothing is large enough: every candidate, so placement names the overrun.
+    expect(donors(['spectrum', 'modulation'])).toEqual(['SPRING REV', 'PLATE REV', 'DARK REV'])
+    expect(donors([], ['SPRING REV'])).toEqual(['SPRING REV'])
+    // An effect still on FX1 keeps its code; DELAY has none to give.
+    expect(stockFx2Donors(['spectrum', 'modulation'], { fx1: [...stockFx1, 'PLATE REV'], fx2: kept.fx2 })).toEqual(['SPRING REV', 'DARK REV'])
   })
   it('fits Character with Mini Verb and Tape Echo, but not with Spectrum', () => {
     expect(planStaticPlacement('A', core('A'), fx2Off, plan(['character', 'miniverb', 'tapeecho'])).placed).toHaveLength(3)

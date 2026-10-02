@@ -125,15 +125,23 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
           "DARK REV"
         ],
         "hidden": [
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "8bd5ffb3662b758f225207f46e56a64fe4430d745c6f2704330ad301de53b64c",
+      "osSha256": "8bd5ffb3662b758f225207f46e56a64fe4430d745c6f2704330ad301de53b64c",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 445562,
+        "containerSha256": "ea1d50f4b53d995ee439d5101ad716044d86581230c1be4d081bdfe43d89286f",
+        "bytes": 445580,
+        "sha256": "b04546287632256fe14e7f14fed3f61fe0ad839e28803d3dcc7f0715db47167c"
+      }
     },
     {
       "moduleIds": [
@@ -202,15 +210,23 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "PLATE REV"
         ],
         "hidden": [
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "d2516f8383beb331f0e8ff7fc19ce9671f5e15a75076fca07c4f2611f2e90919",
+      "osSha256": "d2516f8383beb331f0e8ff7fc19ce9671f5e15a75076fca07c4f2611f2e90919",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 445744,
+        "containerSha256": "432c202916c485de99713697041ffdf10f1c519ef78598bf81412c23ccab8468",
+        "bytes": 445760,
+        "sha256": "689fcb4a9d61456c0130c696f4db8413500cbb59269981a229008a432c958ef0"
+      }
     },
     {
       "moduleIds": [
@@ -280,17 +296,14 @@
           "COMB FILTER",
           "COMPRESSOR",
           "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DELAY"
         ],
         "hidden": [
           "SPECTRUM",
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -352,15 +365,23 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
           "DARK REV"
         ],
         "hidden": [
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "3c87a11a690e8f5dc85229fa91bd118ea1beade71cfc5bd94fb79774347351bd",
+      "osSha256": "3c87a11a690e8f5dc85229fa91bd118ea1beade71cfc5bd94fb79774347351bd",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 445811,
+        "containerSha256": "527620e682e2607dca2f2998b1424daef0ba5d8cb43cd35cee03478e3ee33564",
+        "bytes": 445828,
+        "sha256": "c240cf02f5b18ee6f731dd42ed946893be047ed72d52ecd4a63a51ef3baa6e30"
+      }
     },
     {
       "moduleIds": [
@@ -430,17 +451,24 @@
           "COMB FILTER",
           "COMPRESSOR",
           "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DELAY"
         ],
         "hidden": [
           "SPECTRUM",
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "2395f198ab155619a429d9ad135b6721c301062b6127d0178ec796b84a9f0f4f",
+      "osSha256": "2395f198ab155619a429d9ad135b6721c301062b6127d0178ec796b84a9f0f4f",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 445681,
+        "containerSha256": "13947e2eb02283e1b8a4ae2c667f550f29517ff758979c512ec55f62f32ce6fe",
+        "bytes": 445700,
+        "sha256": "3f5c4f463a3c801a614ffc3bccd0804a8aa333a29836fb0ef2c307c60a3a32a6"
+      }
     },
     {
       "moduleIds": [
@@ -513,17 +541,24 @@
           "COMB FILTER",
           "COMPRESSOR",
           "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DELAY"
         ],
         "hidden": [
           "MODULATION",
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "58d02bfa705cccf8812ef57d8887a2be84868def9a99b1371c2764151339ccf8",
+      "osSha256": "58d02bfa705cccf8812ef57d8887a2be84868def9a99b1371c2764151339ccf8",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 445510,
+        "containerSha256": "970ca7231e394c49c55caa8dd58763d7fad3195aceab3cd5225e48da9657bafe",
+        "bytes": 445528,
+        "sha256": "70e834f95c2ec5f3af2e3f06265c7d392e154e13124e5691a4bd0477993ecc45"
+      }
     },
     {
       "moduleIds": [
@@ -598,10 +633,7 @@
           "COMB FILTER",
           "COMPRESSOR",
           "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DELAY"
         ],
         "hidden": [
           "SPECTRUM",
@@ -609,7 +641,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -674,13 +706,22 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "MINIVERB"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "6a30e32e4dca045d912bab50b6ffeae18fc3126834b20d5956a03314474e6079",
+      "osSha256": "6a30e32e4dca045d912bab50b6ffeae18fc3126834b20d5956a03314474e6079",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 445616,
+        "containerSha256": "dbc96f95d71d12a1f84be162268e643556d822b2ce99f57397ec2f84313589c6",
+        "bytes": 445632,
+        "sha256": "983bf9d22bab61639294bfdfe80cf6cb95579d93a1e5b9778bd8b3a1e6603d82"
+      }
     },
     {
       "moduleIds": [
@@ -750,15 +791,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "a6791203127a0a9e691901a6d92f3e88c23d3a9a2f50d6d6ab480061dff1e655",
+      "osSha256": "a6791203127a0a9e691901a6d92f3e88c23d3a9a2f50d6d6ab480061dff1e655",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 445750,
+        "containerSha256": "100f7ccfb5967d16d8127c0587a1b4a5876bbadf0bd629ac6020056bf2cd6091",
+        "bytes": 445768,
+        "sha256": "21ba40292c88a2e3f72961b9bbfd00c10be2a458c36cd3a132caf9f4b61a170c"
+      }
     },
     {
       "moduleIds": [
@@ -832,15 +881,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "7883c8df2eb03644b035f60b101ff63cb741efb432575cb523bb7137a35fd37a",
+      "osSha256": "7883c8df2eb03644b035f60b101ff63cb741efb432575cb523bb7137a35fd37a",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 445590,
+        "containerSha256": "2e26fcc133e3b15c290535dc65d19fd033830d4c0c008b858f4798adeb93e26c",
+        "bytes": 445608,
+        "sha256": "3d9e0832934fce1215b1ccf1ba442ba8bcd91b84d5358a24f643f7600aff177e"
+      }
     },
     {
       "moduleIds": [
@@ -915,9 +972,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
@@ -925,7 +979,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -992,15 +1046,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "10e7a9e4ededf8002a6041c13f91e739f667bcc6bacd74f0293b730202fe5e10",
+      "osSha256": "10e7a9e4ededf8002a6041c13f91e739f667bcc6bacd74f0293b730202fe5e10",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 445972,
+        "containerSha256": "1bd5e6e0aee2909a59736e22b94828c7a8cf5430b259529f3d7bda985ab2c4b1",
+        "bytes": 445988,
+        "sha256": "fa3154c827727db5d7269f89ca5875122b1467154cdcf424891722ee0a6eea00"
+      }
     },
     {
       "moduleIds": [
@@ -1075,9 +1137,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
@@ -1085,7 +1144,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (2837 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -1153,9 +1212,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
@@ -1163,7 +1219,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (3021 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -1233,9 +1289,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
@@ -1244,7 +1297,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -1312,13 +1365,22 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "TAPE ECHO"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "15ac7007514c15daef77d0a1de0b2c35bc9570df9ad0912bf30ec19e875a7515",
+      "osSha256": "89cb8bac1d3c79bdd8f01c723f5160ec107036c64f083279dcdc59c1f0261b8c",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 557972,
+        "containerSha256": "9c62782f1ec878caaaa4334dc788ddaf104e2c7f296ba4af354f68a551554d86",
+        "bytes": 557988,
+        "sha256": "12952859eb05450422701f298c7cfecd90596b7bbc0bc5c8d7017b0c06619219"
+      }
     },
     {
       "moduleIds": [
@@ -1387,8 +1449,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "TAPE ECHO"
         ],
@@ -1396,7 +1456,17 @@
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "4a74c1ed62449a08debdebe150b3b13e1778d9a6babe450c56a0fa8d9bd36041",
+      "osSha256": "a9e260ca28b35de1b6a18476aa7b6594b657e15ed14df68248ad92eda12bd686",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 557889,
+        "containerSha256": "dbab157264daaaf96751a1e1be3b92a152fab18d533825ced2fad7221dbb9e46",
+        "bytes": 557908,
+        "sha256": "a9f00a95db6f4d12d8da1d712bd59d7b4c59f833491132e357371fa5f6a00824"
+      }
     },
     {
       "moduleIds": [
@@ -1470,15 +1540,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO"
         ],
         "hidden": [
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "1c21de27021cac9c82560bcba28d63f572bf26ec018fd605a159d11722a9dbbe",
+      "osSha256": "177552d7e1dad746711123c6820c95c8c7735c490ecc73357bb3dfb49ed17e27",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558088,
+        "containerSha256": "6792f49abfae240c27801fc02bb682556c02f9dd5598f5d3cae9b16178e13130",
+        "bytes": 558104,
+        "sha256": "91cfd018f1d416639b635801dce7ef64b8fca45f1865a27d681063419c2428ab"
+      }
     },
     {
       "moduleIds": [
@@ -1553,9 +1631,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO"
         ],
         "hidden": [
@@ -1563,7 +1638,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -1629,8 +1704,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "TAPE ECHO"
         ],
@@ -1638,7 +1711,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "38ab81c74d715c9294116b52d75eeaf5c661162bf4acb1215283aadfd16cb9dd",
+      "osSha256": "71f0f008ddd39a17ff409bbbf9fbc58a086afa48f59c83bbee902b1c9e31efdf",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558134,
+        "containerSha256": "0127695487d449edf7a12fd86177a350978524ad19d653947976c1b450a16b46",
+        "bytes": 558152,
+        "sha256": "a9075c4593e0d67b880e9d2489cb0d00d7ae4652e6b430cec25d63a77abd8dc7"
+      }
     },
     {
       "moduleIds": [
@@ -1713,9 +1796,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO"
         ],
         "hidden": [
@@ -1723,7 +1803,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "a0b9a3a8949f5453986e06ff8c10ecc0610a1f47192fcf9fb4482b92e6f406dd",
+      "osSha256": "e04b47e11be9c393d65f7e2a783228541d46915ce16e2728264e7e9b4f609ad9",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 557999,
+        "containerSha256": "171a5f8ee3ded7f35b35826f41c4c06572fbcaf1d9f0c66e7903b334970cfbc3",
+        "bytes": 558016,
+        "sha256": "30d4fd580b6a7f595b787a91bd61d9bc891dee34fce9ea6d38f623a65bd40779"
+      }
     },
     {
       "moduleIds": [
@@ -1801,9 +1891,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO"
         ],
         "hidden": [
@@ -1811,7 +1898,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "f731e6f5e92f22623fe8ef4275d25f7831a142a831755e5eea7a464f44d2de4b",
+      "osSha256": "5ba162e42a3b57a8f069aec48e66a9c82c0e3b4766f817927d7501fe03e0b2e9",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 557820,
+        "containerSha256": "83b94741a1722830efe0c429520abbd4cfe280dcfde13aee60a8986a46c6732c",
+        "bytes": 557836,
+        "sha256": "b2511edfd413c86ed550d617da33c56a88453bb58a5b910322c83af00aa7dbdc"
+      }
     },
     {
       "moduleIds": [
@@ -1891,9 +1988,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO"
         ],
         "hidden": [
@@ -1902,7 +1996,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -1971,14 +2065,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "36bc81541a2d9cb839c71aff47fc53970e15ec1c29c9fb956fd7ebec9ed81744",
+      "osSha256": "4abc9c41d7e595b67a37960dd276c726d79db7e46c9e44e7fbab901a7c48aca4",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 557938,
+        "containerSha256": "97fe01814d43dbef531edc3b893a78a4f1d24a3b3060cf4b0e90710e0abe1a15",
+        "bytes": 557956,
+        "sha256": "d321a2753bd60b652de1e24f91d3d880838d172b815e6f5fa8e9fe53981dff6e"
+      }
     },
     {
       "moduleIds": [
@@ -2051,8 +2154,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -2060,7 +2161,17 @@
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "2fc0db0c3938adf7b5f75e6080f8352689c5de91fbb2535d742cb6639353b53d",
+      "osSha256": "1533583ec67e080c5ec257d48e3a2ea370bb15ba6691b30af5bcbac4dde2293d",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558078,
+        "containerSha256": "b8429f3f5fc8bcddbe6a293780040fb2390e8bb4a14f8649f2c220c62dc9cf0f",
+        "bytes": 558096,
+        "sha256": "86dc30153f5db0516780c5f7e2bbedc017d152a06976e81db421767d38a273e8"
+      }
     },
     {
       "moduleIds": [
@@ -2137,8 +2248,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -2146,7 +2255,17 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "45495f0345ff4f60a3e2ae83562649098f3ae41a10ba275c9ed495255c377698",
+      "osSha256": "57ef1b07cca01846ce04882bf115277bac105e560632a1e4d2abd09b8ae700ae",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 557910,
+        "containerSha256": "abb81e623afa6e1750f287034b717f414fac6cee416c902b6e066997370fc40d",
+        "bytes": 557928,
+        "sha256": "17fb042a994533ef066637b7edfea305c54c18ea25f87f96fb8338546787d280"
+      }
     },
     {
       "moduleIds": [
@@ -2224,9 +2343,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -2235,7 +2351,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -2305,8 +2421,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -2314,7 +2428,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "9cc66f2ff1b6d1ea5adb020fd5d8bfa338f91c20b341b17fe39c058efd69db1c",
+      "osSha256": "3776070a7d03ebcdf0a8edd681361a74658dac8f72b9966f2519748cbe89e301",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558299,
+        "containerSha256": "fa271927727c121ff5dbb6683403184a011dac0b743b9d55eddcfcba0801222b",
+        "bytes": 558316,
+        "sha256": "525a541f894765fe928415e2d422e83c4b500232649d437d8a10868df7a3d553"
+      }
     },
     {
       "moduleIds": [
@@ -2392,9 +2516,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -2403,7 +2524,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (2842 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -2474,9 +2595,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -2485,7 +2603,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (3026 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -2558,9 +2676,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -2570,7 +2685,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -2641,13 +2756,22 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "EUCLID"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "b33656a282895e07865f10f8bdd995271b1be20df8cfad9eb34fbb758680e725",
+      "osSha256": "47375925261f9e5e14d2cf42a4c306e42f7f9b803fb23834d8fbd6ee369cbd67",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 449108,
+        "containerSha256": "85bc3fbfa2f9c055bb7c068aef8270079c8f86d56933291967f22feeeca416d2",
+        "bytes": 449124,
+        "sha256": "2435c0b25a3e7e76765a2b09d758511096c26276245c31181286f1d26160a2a9"
+      }
     },
     {
       "moduleIds": [
@@ -2719,15 +2843,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "EUCLID"
         ],
         "hidden": [
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "b0b82d0d93501579e9dd347273d81357905cb337ac82511dede79b8799b28d30",
+      "osSha256": "f1007360477b31b9660b277a327619fdac3a795492d978ec006d201fe13e3460",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 449087,
+        "containerSha256": "481ac8c062791b03742d2049b6b35eb1592c86e7d45c83d02568105298432d85",
+        "bytes": 449104,
+        "sha256": "8fcc9fa6a2ec2ef8b68b15169baf948a1fb7e85bc2b7271a310f2deb3a9afe0d"
+      }
     },
     {
       "moduleIds": [
@@ -2803,15 +2935,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "EUCLID"
         ],
         "hidden": [
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "0e5af43b020d3ec7151326671e5fa48bd94a04bfa69c8378dd2f964803cf162b",
+      "osSha256": "fb7f54676213ddf3da87c16ce5f999da9809ce8a16fda16c6e966a7c1f680832",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 448978,
+        "containerSha256": "255fb1c15982575d1da2b1524038a5ab8e0a420cde76bb569e3f4b65f66311ad",
+        "bytes": 448996,
+        "sha256": "e387da7f0712f2d7bc2a0d8c49737a6df640fbe7a7be202d3048135eddc60beb"
+      }
     },
     {
       "moduleIds": [
@@ -2888,9 +3028,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "EUCLID"
         ],
         "hidden": [
@@ -2898,7 +3035,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -2966,8 +3103,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "EUCLID"
         ],
@@ -2975,7 +3110,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "4e6b3c98999fa5a95bf30ff43312729e92a8043bedb33987ce63c8c4cc54955a",
+      "osSha256": "c0460390b8079cb00ce3ffc6db6af060fa3d7d36f8880538afc56bddaa01644f",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 449065,
+        "containerSha256": "40f16ddd2670f5821aa861ce5e5a2d72f8f72cf53ad1d1009805f8fcd2ecfa7b",
+        "bytes": 449084,
+        "sha256": "4ff242a231965881703fd036d30550fd814902b10c76c4cb8cfb09b1907eaeda"
+      }
     },
     {
       "moduleIds": [
@@ -3052,9 +3197,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "EUCLID"
         ],
         "hidden": [
@@ -3062,7 +3204,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: EUCLID overruns the region (2775 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -3132,9 +3274,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "EUCLID"
         ],
         "hidden": [
@@ -3142,7 +3281,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: EUCLID overruns the region (2959 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -3214,9 +3353,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "EUCLID"
         ],
         "hidden": [
@@ -3225,7 +3361,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -3297,13 +3433,22 @@
           "DELAY",
           "PLATE REV",
           "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "0dfbff2e1939ff47ef2082056eca26973aac57f8d5fa629af8823850f92bb91b",
+      "osSha256": "fe6ed5b1ef88a9c2162f0c61031d648f61c8b1ac49d1cb711eabb522e67e4f61",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 449119,
+        "containerSha256": "0361677e2e84295faa6296d4298a0de2fe2c1b20cf9b4760c345bdd5a08266a9",
+        "bytes": 449136,
+        "sha256": "a1f298a74a94c06a18e87eccdfdd6976e5aa6919e18a7014202e8bb9c6e98c6f"
+      }
     },
     {
       "moduleIds": [
@@ -3377,9 +3522,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -3387,7 +3529,17 @@
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "f28775318aafc3b352b7e5c78641309fb681463b26b7a777ed328dd9db38377d",
+      "osSha256": "36454182eb50fa5b5fbce106263dddcac3ff1e564b837a2408cd17da549a78e3",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 448824,
+        "containerSha256": "6ba25ef8ee579f68aaea58eced98db347d94b5829a2eb11f63e6fb53926a131d",
+        "bytes": 448840,
+        "sha256": "c83f26e5771fb82976f41e2a4e13c28322ae3113585287903eae197f6c494534"
+      }
     },
     {
       "moduleIds": [
@@ -3465,9 +3617,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -3475,7 +3624,17 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "c679c58c4c788164d37990150ee145a2d6b99d7b305c0b659e9621b018ef6288",
+      "osSha256": "3abc1bf016638bf860114d49c89b1a75b98b215c2a5813b19bf2b222b608e005",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 448747,
+        "containerSha256": "b52ef2980a99775d01b157ab170bc5b6988fe9639c67a3c613ef127f23c4df79",
+        "bytes": 448764,
+        "sha256": "9ff10bbcb9df500d7deca140f2fd67a36e2f5629547dbcae4714b421958e6fc6"
+      }
     },
     {
       "moduleIds": [
@@ -3555,9 +3714,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -3566,7 +3722,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -3638,8 +3794,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -3647,7 +3801,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "4b48125645dc0a0bc9bff4adaf2e2ac8a1a7279a6948538bc407b7d0dde73b43",
+      "osSha256": "dc255cf99a8d5b1e581bd63e7a53868a3e06a6b364f95978210513cc8600d586",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 449254,
+        "containerSha256": "9bdafce616ab91009070c9dbee924baf864ce5fa2aca9a8278de92ffa6914b7b",
+        "bytes": 449272,
+        "sha256": "1a3416022a215cdd300c1a8a63f36673ee7f4db09ca0ff07374203ece89053f2"
+      }
     },
     {
       "moduleIds": [
@@ -3727,9 +3891,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -3738,7 +3899,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (2837 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -3811,9 +3972,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -3822,7 +3980,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (3021 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -3897,9 +4055,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -3909,7 +4064,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -3982,14 +4137,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "21bf598807bd2fe4a8a87f8bd3238daab4aaf3394bc87fb3522729cfb3b91c94",
+      "osSha256": "e202d5f7c36c9f018c782e6ce46057c2f9e96c9484ff34f7925445d733fea70f",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 560610,
+        "containerSha256": "f207127da35510eeccc43cda25f122e5603664e44940bf095dd5228240956dc8",
+        "bytes": 560628,
+        "sha256": "4c7277a9b6bf8baa92dd80ddcbe23e7d68655f9abddab6e1b453207bc823713b"
+      }
     },
     {
       "moduleIds": [
@@ -4064,8 +4228,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
@@ -4073,7 +4235,17 @@
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "5fbd38e180d9f8250d3c4b81fbe951a366131522ea1863ebb52df9b19ee69f94",
+      "osSha256": "3752486ed4eb8fd3308791f163b9c5b404265c2662912c9ba62353b3d6e93362",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 560590,
+        "containerSha256": "9684936cc6e4f5001d1addd7670eeaa45df54fa1fde06632e26b1665bb278c30",
+        "bytes": 560608,
+        "sha256": "2a7811fd7be4679e86cf46944991bbbaf1c25ec263047571d74ce880892cf3c9"
+      }
     },
     {
       "moduleIds": [
@@ -4152,8 +4324,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
@@ -4161,7 +4331,17 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "904b2e59c0b458b617088ce65ba87ae10440ecb90380fe6cde484a5699ebb893",
+      "osSha256": "a9e296a25d5fb5dfdd1056ed87fdaba4c6a9f15acd5aa3af637363500388a044",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 560494,
+        "containerSha256": "5ffaf2a6e5e1464f6b75782542a1af1622ba8ca549d1c558f5092626bae34643",
+        "bytes": 560512,
+        "sha256": "d1678179aafaba25ef26d835617335e0e639108bf9c0c0caf62b9ca539ab431e"
+      }
     },
     {
       "moduleIds": [
@@ -4241,9 +4421,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
@@ -4252,7 +4429,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -4323,8 +4500,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "TAPE ECHO",
           "EUCLID"
@@ -4333,7 +4508,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "bc85a728553a815a1a7d9977d5ae67aecfcbc0e30f36543ae397e1a5c1237074",
+      "osSha256": "dd93ced8cdb369e17e9f0cc92b681555ac83103f4877402d3c1202f9de3b4e23",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 560574,
+        "containerSha256": "6ac42a1b81096f335d74b274ac1af1d50a327fe2ef9f154025551fda6098748b",
+        "bytes": 560592,
+        "sha256": "519e4e4fd7d72ef55d67de2919b34742383dd2f9348c0d8227515e25b38587e9"
+      }
     },
     {
       "moduleIds": [
@@ -4413,9 +4598,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
@@ -4424,7 +4606,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: EUCLID overruns the region (2780 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -4497,9 +4679,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
@@ -4508,7 +4687,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: EUCLID overruns the region (2964 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -4583,9 +4762,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
@@ -4595,7 +4771,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -4670,14 +4846,23 @@
           "DELAY",
           "PLATE REV",
           "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "667cd7be40c163fb5bd6befbf6ff83e6309ceea6f44a6ada9344c5b57ea2d633",
+      "osSha256": "be888392d693fa0650d6f0532b8c07ca62337031ae1642250a70adfca185a1b9",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 560624,
+        "containerSha256": "46d73b9b90bd5ecba61a96e4bc25ab850a622d733c5aefc648566cb950be0d2c",
+        "bytes": 560640,
+        "sha256": "fd76fdba53bb29cf928d8b47ab635d3c740351c991f6142b261f81212184ba63"
+      }
     },
     {
       "moduleIds": [
@@ -4754,9 +4939,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
@@ -4765,7 +4947,17 @@
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "554c562bec66a77168c4e3a980c7fd9be6cb7dd245666cd2692c6aa635aa12f0",
+      "osSha256": "955282adb288f09fc421bfffb7adad9343255abad4922e1a3b6b3bc220fd606c",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 560341,
+        "containerSha256": "f276f9798b09c97c847a6915f876ed1b6689ce5294a4df405c8192ee694445cc",
+        "bytes": 560360,
+        "sha256": "a79047e47f6192ab4023e0b96538ddf68d4be8eaf848ff9b4b866285abfa6bb8"
+      }
     },
     {
       "moduleIds": [
@@ -4846,9 +5038,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
@@ -4857,7 +5046,17 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "3c7d0a46e6ff9abdba72bd65c7b48e7a0940bccf8777856988e328b0c162010f",
+      "osSha256": "50684a1f9f3b8c2fddeef76071b07e24451a862fe6a53bcad018fc5d0e59ecfb",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 560248,
+        "containerSha256": "ace6b9d1095437ee5ef95f28be9d82f23dd5e607922af0db662f2c1234f88a1a",
+        "bytes": 560264,
+        "sha256": "212c322d43abde799404ca2786ca295184f11ff06f0f76a16e76bf4907a64691"
+      }
     },
     {
       "moduleIds": [
@@ -4940,9 +5139,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
@@ -4952,7 +5148,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -5027,8 +5223,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
@@ -5037,7 +5231,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "e564696c9350f6857ad46b702b371ccea126ec02f3194e30994d6cff9f31c27a",
+      "osSha256": "b59a9acae8d7549fe7db920b22612db6d3bf841efa86382d09b14a447544b961",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 560760,
+        "containerSha256": "b35ce4642f0b2b955cad58cda292ec522fa21407f0f8682d33ce22478ebe3a06",
+        "bytes": 560776,
+        "sha256": "236c406739bec5d6016eb8599c8bbcdedb736b46c7d971536aaa4e91b4cacf85"
+      }
     },
     {
       "moduleIds": [
@@ -5120,9 +5324,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
@@ -5132,7 +5333,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (2842 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -5208,9 +5409,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
@@ -5220,7 +5418,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (3026 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -5298,9 +5496,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
@@ -5311,7 +5506,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB, MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -5466,15 +5661,23 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
           "DARK REV"
         ],
         "hidden": [
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "eebcfec02b815117dde060a4e182748dead4b263210aa47cb4d671c004e9b226",
+      "osSha256": "eebcfec02b815117dde060a4e182748dead4b263210aa47cb4d671c004e9b226",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 445982,
+        "containerSha256": "af2ae0a3b0c421bc285fc75ef31a0d22f9209fb92097974ac493c8a2762937da",
+        "bytes": 446000,
+        "sha256": "01c2e23fb31f618a7351f2d26d018575abed5e02e2e9a1aa3ab0c28fa1cbb2af"
+      }
     },
     {
       "moduleIds": [
@@ -5545,15 +5748,23 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "PLATE REV"
         ],
         "hidden": [
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "ab5eb499d921ce7ba8198ab1676fc64a5606748e35a71a75cc57168f0152f124",
+      "osSha256": "ab5eb499d921ce7ba8198ab1676fc64a5606748e35a71a75cc57168f0152f124",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 446165,
+        "containerSha256": "40d9ce19ec064d04f359e05eae8941b8ad33dd8680cd87204c2c410961c32910",
+        "bytes": 446184,
+        "sha256": "2e5c9a0919ff27f8c1e4d7d9cc39ba60aeca7f3c7eca481c11e5f89a3dcfe972"
+      }
     },
     {
       "moduleIds": [
@@ -5625,17 +5836,14 @@
           "COMB FILTER",
           "COMPRESSOR",
           "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DELAY"
         ],
         "hidden": [
           "SPECTRUM",
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -5699,15 +5907,23 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
           "DARK REV"
         ],
         "hidden": [
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "6aac4dda44acc5695a3dd5c0d7825bb3ca9155b9458cd7064e430725cf04ebcb",
+      "osSha256": "6aac4dda44acc5695a3dd5c0d7825bb3ca9155b9458cd7064e430725cf04ebcb",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 446230,
+        "containerSha256": "8ae97e1eaa1fa95c7c5562abb39a2b8fa43b6878a75d43bcc432483dd5fd9744",
+        "bytes": 446248,
+        "sha256": "19e128e6f1d360b1b3c09e3c880999d2585c0135002c058a5dc4c4f366bae2c5"
+      }
     },
     {
       "moduleIds": [
@@ -5779,17 +5995,24 @@
           "COMB FILTER",
           "COMPRESSOR",
           "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DELAY"
         ],
         "hidden": [
           "SPECTRUM",
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "3f503ada9451015e14266ae0dbfa63e65bb61f364284a7a55fc757349421c234",
+      "osSha256": "3f503ada9451015e14266ae0dbfa63e65bb61f364284a7a55fc757349421c234",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 446102,
+        "containerSha256": "cdbe759d80a5528319cbc680c80b154fba5881a472129764090d6db601a60f1a",
+        "bytes": 446120,
+        "sha256": "062b2419c425a35d016a116afef7d5444d39e560cf742dd507725f24c884791b"
+      }
     },
     {
       "moduleIds": [
@@ -5864,17 +6087,24 @@
           "COMB FILTER",
           "COMPRESSOR",
           "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DELAY"
         ],
         "hidden": [
           "MODULATION",
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "9bbf20759a3ce4a7b5c2deef3b650d59b3d7481dd3eefb144e277ab4285fd956",
+      "osSha256": "9bbf20759a3ce4a7b5c2deef3b650d59b3d7481dd3eefb144e277ab4285fd956",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 445922,
+        "containerSha256": "ecd868501645cfa92cf5982ffc832c25b1cafa9bf8840c09caa084e7485ee2a5",
+        "bytes": 445940,
+        "sha256": "6fc36daf32cd741cb18172a1855a7a9a504cc8c663143905386d684a3cc14733"
+      }
     },
     {
       "moduleIds": [
@@ -5951,10 +6181,7 @@
           "COMB FILTER",
           "COMPRESSOR",
           "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DELAY"
         ],
         "hidden": [
           "SPECTRUM",
@@ -5962,7 +6189,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -6029,13 +6256,22 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "MINIVERB"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "977e3f76cab23eb995e608ca4b75803f20870b972ae4353a83c313199d37c6b3",
+      "osSha256": "977e3f76cab23eb995e608ca4b75803f20870b972ae4353a83c313199d37c6b3",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 446036,
+        "containerSha256": "f06deec7bf0a619c6f49889650e0be81761fe91c7d405f5ebb07c7cb494a59d2",
+        "bytes": 446052,
+        "sha256": "450d7251d98f49ebef0e1232c555735b756b3ef077e36238daa00361d2b89e77"
+      }
     },
     {
       "moduleIds": [
@@ -6107,15 +6343,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "7ce7b79ad31e44746a3897728e6f1a070df1824e8b592346bd941aea75bbbf95",
+      "osSha256": "7ce7b79ad31e44746a3897728e6f1a070df1824e8b592346bd941aea75bbbf95",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 446171,
+        "containerSha256": "5ffefd709e8855b5bdbef5fcd7841e87f3e54450aa75ddc9a44d6c6f0730411e",
+        "bytes": 446188,
+        "sha256": "1da122bca2b8ca8133aee2c6c6e3f7e62c1eec2698cbd3e259abbb28be194aa4"
+      }
     },
     {
       "moduleIds": [
@@ -6191,15 +6435,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "e8f32ee0a55bec55e11b8c2607c6490933561b3517f0527cfddf2b3f86a8d57f",
+      "osSha256": "e8f32ee0a55bec55e11b8c2607c6490933561b3517f0527cfddf2b3f86a8d57f",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 446008,
+        "containerSha256": "4e32edc827e15d1e46ac9a05f0189a6afc064b03a38f3ebbd2610e3695e1fdb5",
+        "bytes": 446024,
+        "sha256": "2ae2a42e27f7a9567e445432a8c07e5f9b19ef4ef17984bc86f34d1b3b00da8d"
+      }
     },
     {
       "moduleIds": [
@@ -6276,9 +6528,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
@@ -6286,7 +6535,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -6355,15 +6604,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1112560,
+      "sha256": "f29208143b5131193f8c6078bef1d22cfcebed1b648a156c553f03bf019ed5e7",
+      "osSha256": "f29208143b5131193f8c6078bef1d22cfcebed1b648a156c553f03bf019ed5e7",
+      "appendSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 446392,
+        "containerSha256": "259649ac2cc44cd08324bdfe8b8b5683715504755ddf94778df795f4465f7f64",
+        "bytes": 446408,
+        "sha256": "d4ba72a2513096be2ca02f79b7281a301084e0cdf2d80b27ddf8be96fbd1e78a"
+      }
     },
     {
       "moduleIds": [
@@ -6440,9 +6697,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
@@ -6450,7 +6704,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (2837 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -6520,9 +6774,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
@@ -6530,7 +6781,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (3021 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -6602,9 +6853,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB"
         ],
         "hidden": [
@@ -6613,7 +6861,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -6683,13 +6931,22 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "TAPE ECHO"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "5091b9bb708e9d30d1d934e9534e29050e5d65fbaceaa1c8f41c59c5af2b219f",
+      "osSha256": "463d094ec509ad40511e0d2ba1053b0f1efdfcec5c7ca1c9b2c4303ffaed548b",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558392,
+        "containerSha256": "d047510623ea875f567b1895df93f394aee9e653925f7a2f1929aebb5bb86a65",
+        "bytes": 558408,
+        "sha256": "4fac9c4e26a52fe70c465c3a2569e2752cd6ab7c0cff2072795c6a6546ffb9a3"
+      }
     },
     {
       "moduleIds": [
@@ -6760,8 +7017,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "TAPE ECHO"
         ],
@@ -6769,7 +7024,17 @@
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "db28a594604a8acdfbad6a8ea74ab6dd0974d3a3cf8246bb23c9ccf4c35e6281",
+      "osSha256": "8ff8ea2a2cfad8395626de79c99e4c04e6ae1fe98bf1fa2d8e065f8360ef77df",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558303,
+        "containerSha256": "62dca83077ee364a08f5abcfcb190a67c3fff51e74c3198530a87e35ce1d21c8",
+        "bytes": 558320,
+        "sha256": "3f7aab32a1ebaf9f7b8866fe68f6d0f9bbf6a1b3f80a779d38decebc8343f862"
+      }
     },
     {
       "moduleIds": [
@@ -6845,15 +7110,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO"
         ],
         "hidden": [
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "b463d194a12ddb70a1e4c4b751f903bef5da44cf133bee3fe89b5bec2c55384c",
+      "osSha256": "1c66c90ee155670ec5e40781562c7471c55a535cc228a483f87254e7366c9f64",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558497,
+        "containerSha256": "51a9cae7d2915a8b203feccbca02aede2128a3b7d0e50d92f4bec0a2b257bddf",
+        "bytes": 558516,
+        "sha256": "5cdd853f081e2095dab0c89e492201fd94890089c7b62c9df0a7e95c7db61c1f"
+      }
     },
     {
       "moduleIds": [
@@ -6930,9 +7203,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO"
         ],
         "hidden": [
@@ -6940,7 +7210,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -7008,8 +7278,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "TAPE ECHO"
         ],
@@ -7017,7 +7285,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "3bf58ca205f9c09d21dd1d359ca25c0044d396a45fdeb2b807418639a82a820a",
+      "osSha256": "f662c28757a4e10f8b1d4636656c930609ca02b56eae533676995d3d1401db39",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558552,
+        "containerSha256": "8675b0a75049c977c523f1cd5acb09b0cf49eaf7b3a470066ef095f034b85bf7",
+        "bytes": 558568,
+        "sha256": "9f23300d6ee2f77b5a82d3bdc4f6a6a885441de0b4a3c87a234e0b2fa624e8b9"
+      }
     },
     {
       "moduleIds": [
@@ -7094,9 +7372,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO"
         ],
         "hidden": [
@@ -7104,7 +7379,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "7d4f326a839bc9abf9bc10b6b478beeb85f3f7fdd1b09f47c2d5954714cd1dcc",
+      "osSha256": "58f1ccd5d1b69786c1462501fb03bb35d15294b35fda087f69b85db2b3f5b550",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558419,
+        "containerSha256": "ac590cc49b4125942de4c9073858a80fc4dc3bef8d93551ac4feadbd703a9b96",
+        "bytes": 558436,
+        "sha256": "577c25ce6c9d489c7172da8e8b0b9403930b20b2274115d824219a5a534e4c0f"
+      }
     },
     {
       "moduleIds": [
@@ -7184,9 +7469,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO"
         ],
         "hidden": [
@@ -7194,7 +7476,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "74cc83f602ba3f312eaf6970fd5323426d6a9311d22dafd3a02823e5f589eebc",
+      "osSha256": "62a1bf620667fd5b943bdd1c5b7526928efc1559778bc441b77b1b81a2725c92",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558240,
+        "containerSha256": "405d7367bbd11e2dcd01e2e99b7a3ea30cbc5138452e49f6b6b796a82f4ad620",
+        "bytes": 558256,
+        "sha256": "583a5e0e990e010d4fe0761aff32072f3980d0a4050bb214720c01be1a68844b"
+      }
     },
     {
       "moduleIds": [
@@ -7276,9 +7568,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO"
         ],
         "hidden": [
@@ -7287,7 +7576,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -7358,14 +7647,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "95812125a2176c78e0ed3f6c8771301a26199c4ae948d51f5feedb194fc68f3e",
+      "osSha256": "db36a15b8c59ffa24bf9dd40efe1238bfd98008382fbe19afc873e61a4e4c1e2",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558356,
+        "containerSha256": "ca9c6bb4f24f6195b0958bbed36dfe059617b4ac4428ac0ffab0dd88f8510f78",
+        "bytes": 558372,
+        "sha256": "9b90e7da3c4944ea02cd08ae2946ac2960eced8bdb9affbc54ad1ee7b5e9b0bf"
+      }
     },
     {
       "moduleIds": [
@@ -7440,8 +7738,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -7449,7 +7745,17 @@
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "c7e71d04f766d1c3aaaa439eec3aaa3a2623f8b70f3b473d854005d55384f58e",
+      "osSha256": "1d4b28e8f0d3d5474a9a90bbc841e54ae19e8252cc95fc9a39ac5a489536316b",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558500,
+        "containerSha256": "38bcf956094f3b0788b9b2d80a99740ea779c66cb7cd966a0cb0c59abf7af89c",
+        "bytes": 558516,
+        "sha256": "6a2aeec7269c3b55c6bac9aba251cb2d3f2ab063408a54018d0df3fda689838d"
+      }
     },
     {
       "moduleIds": [
@@ -7528,8 +7834,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -7537,7 +7841,17 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "7b2dd84d0aaddae511557e276b8ca578fd272e689f996f332e3256c18802b9c4",
+      "osSha256": "dd80aaceabcc5fa47ef15dcc98323c816e87688ed9cd83ca0ac751f0090b96a4",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558329,
+        "containerSha256": "6ddc0ebc79c4942e408aaee3416ced4893de231a17c7ecc8772d3f943e561dd5",
+        "bytes": 558348,
+        "sha256": "36be37d2f7f32c545069de03e439fae3643ae53ebf0f7b13eb625092dfb47a5d"
+      }
     },
     {
       "moduleIds": [
@@ -7617,9 +7931,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -7628,7 +7939,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place MINIVERB, MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -7700,8 +8011,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -7709,7 +8018,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1215051,
+      "sha256": "d2f67962ec3665dcb19dca7d54093205a3fd012bf92420f6e4709bbc68f0f061",
+      "osSha256": "ab4432ce0725de4d1bf12e4ca4b75d46bd2eeb96e0d4c3a3603b645296f54f6f",
+      "appendSha256": "2ec657accb658eec3f4539d4203880b76bda7751c431e6fc59a04dd8c27bad65",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 558721,
+        "containerSha256": "6d2e2d6fadd8ec185df0857b3ea10b964dc5193014bccdf5632323354bb5579b",
+        "bytes": 558740,
+        "sha256": "492aeb523a10b22e6f5b292b551febb5eb5f63cbfa9c6b1df33b98f6e16fb266"
+      }
     },
     {
       "moduleIds": [
@@ -7789,9 +8108,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -7800,7 +8116,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (2842 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -7873,9 +8189,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -7884,7 +8197,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (3026 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -7959,9 +8272,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO"
         ],
@@ -7971,7 +8281,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, MINIVERB, MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -8044,13 +8354,22 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "EUCLID"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "5a13b2c0145c8cf5f3be5f17ff4eaa38e83523bf78214418c8495902797b8a4a",
+      "osSha256": "1e6b655bd646beeceb1455e9c413f671bfcff42110714b6baec8b0c6445dea44",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 449517,
+        "containerSha256": "a1c0e310f8e16c864aa679bf38083af5e9cf2cb294a1b80e626af0a8bc2bacad",
+        "bytes": 449536,
+        "sha256": "136a0b2cf7d4cc1b472e61fd2f12629dc4db68b74c6c872f08a7dca1458bc6ce"
+      }
     },
     {
       "moduleIds": [
@@ -8124,15 +8443,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "EUCLID"
         ],
         "hidden": [
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "bdd5001af4717e82905f1b48e3aab43aea03576a80a5e27f1783118fa88232e9",
+      "osSha256": "75a6e601bd766954cc56b9b73a4fdfa65f8e3bd2b363e5ad3ffe815691f9d5ec",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 449495,
+        "containerSha256": "af1c4d3cd585cc57ee6ecedacb29a6d1fc0e6f5f88f569665e89888b69815c0d",
+        "bytes": 449512,
+        "sha256": "b722f8933b5eb9084ccb66380cd94569894ec5bafb2400facbd0f0c5b45b4393"
+      }
     },
     {
       "moduleIds": [
@@ -8210,15 +8537,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "EUCLID"
         ],
         "hidden": [
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "e634f63699f3c8780ed5a978b8168f15a4eb6a4e2091f5f2609b2b2da1ac8721",
+      "osSha256": "3149da6a0a2c67ce19bfe6d9375704d44649acd9890bb75ef1f5d228f42dfb24",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 449381,
+        "containerSha256": "8909bbd7bd61ec19d4669fec9f7009f9f4691ea78c9b7d80bc2d0a86fe0a8475",
+        "bytes": 449400,
+        "sha256": "70adfd89dd4c22ee5ed7d34c81e6673a6201cf8b254ea4279e8a277d5f5c255c"
+      }
     },
     {
       "moduleIds": [
@@ -8297,9 +8632,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "EUCLID"
         ],
         "hidden": [
@@ -8307,7 +8639,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -8377,8 +8709,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "EUCLID"
         ],
@@ -8386,7 +8716,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "8e6e20a8dad3d699b7d32c2e4e1e98fcdf1d5b742285b9b9bce319dbf9935055",
+      "osSha256": "abe151c3b43baa93b38b472a9b4dd7be318f415fefb96ac4112486fb66db80ca",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 449471,
+        "containerSha256": "7fcf04abbb7bb8f652f1349b8b109d8cf750bf0aa4f09f6e6d8d1bc9d7f7aa7b",
+        "bytes": 449488,
+        "sha256": "4b38fc2a5fc726e2f065075b65061da859b6137af8bab262a4aa63cc65f7fc61"
+      }
     },
     {
       "moduleIds": [
@@ -8465,9 +8805,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "EUCLID"
         ],
         "hidden": [
@@ -8475,7 +8812,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: EUCLID overruns the region (2775 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -8547,9 +8884,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "EUCLID"
         ],
         "hidden": [
@@ -8557,7 +8891,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: EUCLID overruns the region (2959 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -8631,9 +8965,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "EUCLID"
         ],
         "hidden": [
@@ -8642,7 +8973,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -8716,13 +9047,22 @@
           "DELAY",
           "PLATE REV",
           "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "7481518be1e86655972574a971c7c0dbc6c650f0d181031fb8f58745b153e12e",
+      "osSha256": "4817d0fa7f61fef409c613c30ac85eb76de70eb03d865ca0c9b1795f244d3a7d",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 449530,
+        "containerSha256": "c53b215b0d76b2c6d70d567124db444bc47dc75a6e3d6f1b79ef07f7a2f4fd78",
+        "bytes": 449548,
+        "sha256": "a944d2f98a9a88ea0a8217f8bef20d2566146d320853a6e3be2b0b5269e4491c"
+      }
     },
     {
       "moduleIds": [
@@ -8798,9 +9138,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -8808,7 +9145,17 @@
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "ae91922f5feb53451a56feb9975b8af18c71531f9cf2293c87d5fdff19f9df38",
+      "osSha256": "e6f7077ac97d419dfbfe9859d3d2909eee569dbe29937d8fac999724852eb695",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 449226,
+        "containerSha256": "274fb2df00eb693b769a84bbaaf31cdc51e8e1d0d7f86336a3791740129179f7",
+        "bytes": 449244,
+        "sha256": "e337ae95bab9732b66502b9387ab0e14a574f3a55cf2c598ba96d5e49179afd4"
+      }
     },
     {
       "moduleIds": [
@@ -8888,9 +9235,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -8898,7 +9242,17 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "3991df358a0534d8f4e6b844a00b1e4f1b249e1230ce352a0892e7007c6f149d",
+      "osSha256": "b6c97151b154debb4fe68607afe3b79195eef64cb9b893e42595899e79080392",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 449148,
+        "containerSha256": "3ff78f57a1f842fb875759ce7f91aace463a052104f3be336c6a5d5bfdb4209e",
+        "bytes": 449164,
+        "sha256": "b42fe7f9c2e4416640feb70b2a3d7188d40b8f0df983635fe0cf3a34ba896abd"
+      }
     },
     {
       "moduleIds": [
@@ -8980,9 +9334,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -8991,7 +9342,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -9065,8 +9416,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -9074,7 +9423,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1114981,
+      "sha256": "8fade5bcb9a788a63badaa4565e3c6aa12f7b49bcc250d8448a8da4392a1f561",
+      "osSha256": "ebcce3b6c471fdb98bb4bc0c2b7c731af8ae7c873771a9a87beebbbd03de05f4",
+      "appendSha256": "d75586370bcc199de30e4c655b109506bf402e59629addfe1280f15667c6d868",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 449662,
+        "containerSha256": "7d1253452e466727236fedf9817ee0a10b7ae85aa217d053d5ebd66f7e071f61",
+        "bytes": 449680,
+        "sha256": "2ab98a48cdd42c34376102241c9395105b4ee233f41d4560fcafd5fdf7838631"
+      }
     },
     {
       "moduleIds": [
@@ -9156,9 +9515,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -9167,7 +9523,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (2837 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -9242,9 +9598,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -9253,7 +9606,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB, MODULATION. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (3021 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -9330,9 +9683,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "EUCLID"
         ],
@@ -9342,7 +9692,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB, MODULATION, SPECTRUM. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -9417,14 +9767,23 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "551c9eace1057fc5f18e2c831218a56d1e8aa85b9bd3df552e1f8094f1925059",
+      "osSha256": "2b95c20009aaa562a4dff5dc5fb8eda6fa3a16ced67368914e09ab5706879d06",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 561013,
+        "containerSha256": "b971561a595a1972264560beff68a0feafd3aad6da9f1670f2da8856dc343a7c",
+        "bytes": 561032,
+        "sha256": "8fd478185b3d67ed119f253a0a748964b8d4f110d3254accc8a4dc14aa164dea"
+      }
     },
     {
       "moduleIds": [
@@ -9501,8 +9860,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
@@ -9510,7 +9867,17 @@
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "cc02e117ffe3a53ac286aff0ec2eb6049bebfa61973e2910a29dd52ab85c0182",
+      "osSha256": "93291f864ba44e25d7d68236ad602ad816f4e383418c9381b13ef8c89bd92656",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 561006,
+        "containerSha256": "4b4fb7d9bee315e60c9de9a89eb7f0682f2d853aae0963ed239b78ac3df48819",
+        "bytes": 561024,
+        "sha256": "d77f59c4ed5c51c86a7b19cc84b443d563278e851b826cb3e110aa2196afa948"
+      }
     },
     {
       "moduleIds": [
@@ -9591,8 +9958,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
@@ -9600,7 +9965,17 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "f25187eacb9e104a31cbc9ca0b5427f00c1e0a7349fc256ccf65ac774ab39fd7",
+      "osSha256": "2e5b92ed108499ad53ebf5fea33881d58d0fa46bcc4421e6a29477549e63733d",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 560901,
+        "containerSha256": "ef5f932291862fbe201f5ece73d7ac2cda9fe63a819fc496cc2a3682324835f9",
+        "bytes": 560920,
+        "sha256": "d4921f8a264ca1c84dacb13834b8846bcb5dd8b9cbf5b43777d70671773d224d"
+      }
     },
     {
       "moduleIds": [
@@ -9682,9 +10057,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
@@ -9693,7 +10065,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -9766,8 +10138,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
           "DARK REV",
           "TAPE ECHO",
           "EUCLID"
@@ -9776,7 +10146,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "e6adc596ac6fa659401ad3cfb2dac8a30d123a80dc29a7a40f687d3cf2b5eda9",
+      "osSha256": "4bbcc5b3805ff5f9952c3b2d4b55a1a081a9e083f0206e0b391a533ebc2c3d54",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 560974,
+        "containerSha256": "465faad74bd469bf5f8fded1a186896837c050fb597c5ccffa4d3ae1ff686046",
+        "bytes": 560992,
+        "sha256": "e5e89aadd04d7046b085dadd917e964a69e791d41395681db82266812ba9c001"
+      }
     },
     {
       "moduleIds": [
@@ -9858,9 +10238,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
@@ -9869,7 +10246,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: EUCLID overruns the region (2780 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -9944,9 +10321,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
@@ -9955,7 +10329,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: EUCLID overruns the region (2964 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -10032,9 +10406,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "TAPE ECHO",
           "EUCLID"
         ],
@@ -10044,7 +10415,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (3955 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -10121,14 +10492,23 @@
           "DELAY",
           "PLATE REV",
           "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
         ],
         "hidden": []
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "7c682aba4eaec535e81be9a18b965a68e9928a93bad761750542b94a31e6f4a6",
+      "osSha256": "2a9b5624ea7504de1651b2ed7f830daebdaadd4a86445987aaaca0d713f7e5fe",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 561031,
+        "containerSha256": "319acc74df300c213eb29c5e179500ec4292bbc9f9da35ef4efa83945d2016a7",
+        "bytes": 561048,
+        "sha256": "d650b27c4e64567c511b2d6e863fcdbf762bcc34087fa5c8597991bf2b3b6ea7"
+      }
     },
     {
       "moduleIds": [
@@ -10207,9 +10587,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
@@ -10218,7 +10595,17 @@
           "SPECTRUM"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "e271027fdc5518c97368d3b84cec2e98d75203baec844726678f912378198944",
+      "osSha256": "4dcdb8f99dbc21741d4249d72eac668bb1f24d902c5b6e1f328c4af48e8ecb92",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 560771,
+        "containerSha256": "a65aeae41afc3e368a6152aa82ce42071b65622898078e57a37bb1a10c8396b8",
+        "bytes": 560788,
+        "sha256": "cf8b8e753237e3e7f936eec779c3fa854c80de1fa2957f21e884d563488f57e7"
+      }
     },
     {
       "moduleIds": [
@@ -10301,9 +10688,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
@@ -10312,7 +10696,17 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "43ff95b118028816b29babb0b41479c734a16a7e60a45ee97f90bf631d87f061",
+      "osSha256": "653b886b594882013a7cb7f42d99eef464494d502a249b0b52eb26bf18779046",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 560653,
+        "containerSha256": "3af11140a5b339630c6a63f4ba439011adedd4871382a4a67501263293d8fded",
+        "bytes": 560672,
+        "sha256": "ca923626dd60100c200cc54e9d5e46e9103f4b586a39c5f6b5ef80b99a2d4ce0"
+      }
     },
     {
       "moduleIds": [
@@ -10397,9 +10791,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
@@ -10409,7 +10800,7 @@
           "MODULATION"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place EUCLID, MINIVERB, MODULATION, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MODULATION overruns the region (2966 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -10486,8 +10877,6 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
@@ -10496,7 +10885,17 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "bytes": 1217159,
+      "sha256": "803e21883a44a8b60d84649114f8197feb6228c5a984855fa491622a061d054a",
+      "osSha256": "e70a13ecda8970ba5f551c55f35ce65b90e4c4142e85a4a223d2b77a89e7297b",
+      "appendSha256": "3f12b05dfd79db671e5a6ff7a3d3c496e805b36df50a922a921bfac2ef5ed278",
+      "firmware": {
+        "version": "OCTAMOD79",
+        "containerBytes": 561185,
+        "containerSha256": "5ac6648645f7f59752f63882e6af6adad9762ae0b3096db5ec5fdfa2a182444a",
+        "bytes": 561204,
+        "sha256": "9f5f59b8c11d7006a9dabd5c72625e036beeb147178bd14d57f7b40dfb60f62c"
+      }
     },
     {
       "moduleIds": [
@@ -10581,9 +10980,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
@@ -10593,7 +10989,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB, SPECTRUM, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (2842 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -10671,9 +11067,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
@@ -10683,7 +11076,7 @@
           "CHARACTER"
         ]
       },
-      "error": "payload A: nothing is harvested, so there is nowhere to place CHARACTER, EUCLID, MINIVERB, MODULATION, TAPE ECHO. Name the stock effects whose words this remix may take Take one off both choosers to give up its words."
+      "error": "payload A: MINIVERB overruns the region (3026 > 2724 words)"
     },
     {
       "moduleIds": [
@@ -10763,9 +11156,6 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID"
