@@ -112,3 +112,7 @@ unmeasured contention from module code costs. Hardware operation is supporting
 evidence, and maximum-load coverage must remain honestly labelled.
 
 Keep firmware, extracted stock, LCD/RAM dumps, cards and private raw logs local and temporary. Only original/licensed code, sanitized text evidence and reviewed media enter the PR. CI validates text records without firmware, native source execution or hardware access. Visitor configuration builds retain only lightweight compatibility/placement/packaging checks and never run this qualification suite.
+
+## Owner-approved CC Map / Preview Vol exception — 2 October 2026
+
+The owner explicitly approved `cc-map` and `previewvol` version `0.1.2-experimental` with software verification and real-chip timing marked unmeasured because physical hardware runs are unavailable. `sdk/module-release-waivers.json` binds only these two complete folder/native-source hashes. It is separate from the unchanged eleven-module baseline and immutable after this PR. Both manifests retain `hardwareStatus: "untested"`, null chip cycles, actual LCD provenance, complete tutorials and source-bound software reports. Ordinary submission validation still requires full measured qualification; a contributor cannot grant a waiver in metadata. Any folder/version change invalidates the exception. Source-only release compilation reproduces the locally native-parity-verified packages without firmware.

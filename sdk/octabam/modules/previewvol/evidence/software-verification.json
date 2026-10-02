@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "id": "previewvol",
+  "moduleVersion": "0.1.2-experimental",
+  "sourceSha256": "86deed960c094df1d0d2a4a9d3a955a62e804175f2f22d8ac53f5eff141aeaca",
+  "imageSha256": "3900e54e9154d66df6001b0f96da2ca07c42bf5c7be7f1157ddd9a071601f2cc",
+  "hardwareStatus": "untested",
+  "chipWorstCaseCycles": null,
+  "nativeBrowserParity": {
+    "status": "passed",
+    "selections": 1024,
+    "exactImages": 522,
+    "matchingRefusals": 502,
+    "proofSha256": "aa55da91332ac1b26e25ec27ebe6a3bfddbd665f4481aee3ade42fd3584b76d4",
+    "proofFile": "src/engine/assets/utility-composition-proofs.json",
+    "scope": "Every subset of all nine currently buildable frontend modules, with hidden stock FX2 and the current retained-stock menus (omitting only required DSP donors)."
+  },
+  "memory": {
+    "romBytes": 36,
+    "maxAlignmentBytes": 127,
+    "newHeapBytes": 0,
+    "newPersistentRamBytes": 0,
+    "newDspWords": 0,
+    "sharedInstances": 1,
+    "authoredStackPeakBytes": 0,
+    "stockState": "Reuses pending record 0x46c7dfda + 32*track, writing byte 15. No new state or stack allocation.",
+    "romRegions": {
+      "main": {
+        "allowedStart": "0x400d6b20",
+        "exclusiveEnd": "0x400d7c3c",
+        "retainedFx2ExclusiveEnd": "0x400d7bbc",
+        "alignmentBytes": 128,
+        "placementStart": "After selected descriptor clones: 0x400d6b20 + 0x1a0 * cloned effect count, then preceding native-linked ROM units/caves."
+      },
+      "overflow": null,
+      "placement": "Chosen after prior native-linked units/caves and checked as zero before writing; all profiles have native byte identities."
+    },
+    "romBytesIncludingMaximumPadding": 163,
+    "replacementBytes": 12,
+    "authoredStackRegion": "No pushes, calls or new stack frame.",
+    "allocationClasses": {
+      "sharedRom": 36,
+      "boundedAlignmentMaximum": 127,
+      "newHeap": 0,
+      "newPersistentCpuRam": 0,
+      "newSdram": 0,
+      "newDspPWords": 0,
+      "newDspXWords": 0,
+      "newDspYWords": 0
+    }
+  },
+  "capture": {
+    "recordedVersion": "0.1.1-experimental",
+    "recordedImageSha256": "a19a0bf4352a6ebf98546cf33f68e44cbd101757ec16b17ca44efdfa49215302",
+    "sameNativeSource": true,
+    "screenshots": 7
+  },
+  "limitations": [
+    "No physical hardware/audio/stress run.",
+    "No real-chip worst-case cycle count, scheduling or memory-contention headroom claim.",
+    "Actual monochrome LCD images establish access and the documented UI example, not all audio/control outcomes."
+  ],
+  "nativePackaging": {
+    "status": "passed",
+    "exactContainersAndUpgrades": 8,
+    "proofSha256": "b0ee6bfbf0621210df5abf2299a673a6a82aa9bd44bb854f6cbf36c46f2a6014",
+    "proofFile": "src/engine/assets/utility-packaging-proofs.json",
+    "scope": "Each utility, both together, both with Repitch + USB Audio/MIDI + Scale Quantizer, each with hidden/retained stock FX2."
+  },
+  "rejections": {
+    "status": "passed",
+    "checks": [
+      "altered MAIN OS",
+      "altered full upgrade",
+      "truncated upgrade",
+      "unknown module",
+      "native compatibility/space refusals"
+    ],
+    "originalInputsUnchanged": true
+  },
+  "browserWorkflow": {
+    "status": "passed",
+    "modules": [
+      "cc-map",
+      "previewvol"
+    ],
+    "checks": [
+      "desktop selection and build in actual browser worker",
+      "download matches native full upgrade for compact and retained stock FX2",
+      "saved configuration and firmware restore/revalidation",
+      "390px mobile cards/tutorial/screenshots without horizontal overflow",
+      "keyboard tutorial toggle"
+    ],
+    "downloadSha256": {
+      "hiddenStockFx2": "9919f5fee7160ce0d77696ffba3f8e1de19f7749b439d0741a9828a08afd7ee7",
+      "retainedStockFx2": "5800f3c4e1b20e748d84db604ba192a5c659db28dce0fd4e681541311259e285"
+    }
+  }
+}

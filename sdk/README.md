@@ -6,7 +6,7 @@ The developer entry point for the Octamod monorepo. The SDK, module source, web 
 
 The initial import includes **Spectrum, Modulation, Character, Mini Verb, Tape Echo, Euclid and Repitch**. It comes from a fresh upstream clone pinned to the exact fork revision in [UPSTREAM.json](UPSTREAM.json). On 1 October 2026, the owner expanded scope to Analog BD, MIDI Scenes, USB Audio (tracks + MAIN/CUE) and Scale Quantizer. Their latest source import and author pins are recorded in [imports/octabam-363861e.json](imports/octabam-363861e.json). USB MIDI is included as an internal dependency. On 2 October 2026, the owner also requested OctaKit; it is staged as a [source draft](drafts/octakit/README.md) outside native discovery and the public catalog until qualification and owner review are complete. Other octabam modules remain outside scope unless explicitly requested. Its required stock-loader infrastructure is isolated under `octabam/platform/`, outside the public module catalog. Two supported compositions and the crowded-selection rejection match the native builder byte for byte; the copied upstream Makefile is not yet a supported standalone firmware build command.
 
-CC Map, requested on 2 October 2026, is a pinned [source draft](drafts/cc-map/README.md) outside native discovery, source-package compilation and the public catalog. Its [import record](imports/cc-map-8d0ad6f.json) preserves Sam Banks’ MIT licence, exact source identities and the lazy stock-vector guard adaptation. An original thumbnail, tutorial and six actual monochrome MKII emulator LCD captures are included. Full qualification, native/browser integration and owner review remain required. The eleven-module baseline is unchanged; its upstream FX2 block targets BusDelay/BusVerb, which remain outside scope.
+[CC Map](octabam/modules/cc-map/README.md) and [Preview Vol](octabam/modules/previewvol/README.md), requested on 2 October 2026, are released as `0.1.2-experimental`. They are visible, selectable and buildable in Octamod. Their pinned import records preserve authorship, MIT licences, source identities and lazy stock guards. Both have original thumbnails, full tutorials and actual monochrome MKII LCD captures. The owner explicitly waived physical stress testing and real-chip cycle measurements for these exact two source versions; both remain honestly untested/unmeasured. The [two-version waiver](module-release-waivers.json) is separate from the unchanged eleven-module baseline; future versions require full qualification. CC Map’s upstream FX2 block targets BusDelay/BusVerb, which remain outside scope.
 
 TapeHead, requested on 2 October 2026, is an [experimental module](octabam/modules/tapehead/README.md): the JClones VladG TapeHead clone (MIT), ported to DSP56300 by devilfish707. It includes reference renders, both-core modulated/split benchmarks, exact memory/code-cycle records, a named tutorial and actual monochrome LCD captures. Hardware operation and parameter locks are author-reported; model, duration and maximum tested load were not supplied. The owner accepted that functional report and removed the mandatory one-hour stress requirement. Browser/native composition and packaging must pass before publication.
 
@@ -31,7 +31,7 @@ npm run modules:generate
 npm run check
 ```
 
-The eleven frontend pages read the generated catalog from these folders. Fields include controls, practical uses, compatibility, resource measurement methods/conditions, evidence revision, authors, licences and real media provenance. Read [the module contract](../docs/MODULE_REPOSITORIES.md) and [contribution rules](../CONTRIBUTING.md).
+The catalog pages read the generated catalog from these folders. Fields include controls, practical uses, compatibility, resource measurement methods/conditions, evidence revision, authors, licences and real media provenance. Read [the module contract](../docs/MODULE_REPOSITORIES.md) and [contribution rules](../CONTRIBUTING.md).
 
 ## Native development
 
@@ -61,7 +61,13 @@ Every module has a semantic version. Code, native declarations, web descriptions
 
 ## Requested source imports
 
-The four additions have `0.1.1-experimental` manifests and exact per-module source pins. Native comparison matched 156 byte identities and 132 refusals across all 288 requested profiles. Actual-browser complete files matched native packaging for the six-module and Analog BD five-module combinations; altered firmware was rejected. Their pending build markers are removed. The release compiler builds all eleven reviewed modules, binds the full SDK source inventory and emits nine source-package artifacts. Inherited USB spans are zero placeholders; stock helpers and tables are derived only from the user’s fingerprinted local firmware. The importer and frontend-only stamp enforce current versions and the same artifact scope. Owner merge remains publication approval.
+The utility release verifies every subset of the nine currently buildable frontend modules with both hidden and retained stock FX2: 1,024 profiles, 522 byte-identical MAIN OS images and 502 matching refusals. Eight complete native ELEK/ELUP upgrade identities also match. The actual browser worker builds both utilities; its downloads match the native full upgrades. No firmware enters the source-package compiler, application checks or repository.
+
+```sh
+node scripts/verify-utility-native.mjs /local/path/OCTATRACK_OS1.40C.bin src/engine/assets/utility-composition-proofs.json src/engine/assets/utility-packaging-proofs.json
+```
+
+The four earlier requested imports retain their approved publication and source pins. Historical comparison covered 288 requested profiles; the current verifier skips the pending MIDI Scenes update and compares the 144 buildable profiles. MIDI Scenes remains independently pending at `0.2.1-experimental`; it is not compiled or unlocked by this utility release. The release compiler covers twelve buildable catalog versions, binds the complete SDK source inventory and emits ten authored-source package artifacts. Inherited USB spans are zero placeholders; stock helpers and tables are derived only from the user’s fingerprinted local firmware. The importer and frontend-only stamp enforce versions, source identities and artifact scope. Owner merge remains publication approval.
 
 With Node 24 and your own original firmware kept outside the repository:
 

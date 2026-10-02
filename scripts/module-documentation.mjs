@@ -11,7 +11,9 @@ export function requireCompleteReadme(document, readme) {
     const index=headings.findIndex(heading=>heading[1].trim().toLowerCase()===title.toLowerCase())
     if(index<0||!readme.slice(headings[index].index+headings[index][0].length,headings[index+1]?.index).trim()) throw new Error(document.id+': README requires a populated '+title+' section')
   }
-  const tutorial=document.tests.qualification.documentation.tutorial
+  const documentation=document.tests.qualification?.documentation??document.tests.releaseWaiver?.documentation
+  if(!documentation) throw new Error(document.id+': complete release documentation is required')
+  const tutorial=documentation.tutorial
   const tutorialIndex=headings.findIndex(heading=>heading[1].trim()===tutorial.title)
   if(tutorialIndex<0) throw new Error(document.id+': README must contain the declared short tutorial heading')
   const tutorialText=readme.slice(headings[tutorialIndex].index+headings[tutorialIndex][0].length,headings[tutorialIndex+1]?.index)
@@ -21,7 +23,7 @@ export function requireCompleteReadme(document, readme) {
     if(index<0) throw new Error(document.id+': README and declared tutorial steps must match in order')
     position=index+step.length
   }
-  for(const path of document.tests.qualification.documentation.screenshots) if(!readme.includes(']('+path+')')) throw new Error(document.id+': README must link or embed the documentation screenshot '+path)
+  for(const path of documentation.screenshots) if(!readme.includes(']('+path+')')) throw new Error(document.id+': README must link or embed the documentation screenshot '+path)
 }
 
 /** Bounded decoding of ordinary lossless PNG captures, including grayscale/palette formats. */
@@ -73,7 +75,8 @@ export function requireMonochromePng(bytes) {
 export async function requireModuleDocumentation(folder, document) {
   requireModuleUiForPublication(document)
   requireCompleteReadme(document,await readFile(await resolveModuleFile(folder,'README.md'),'utf8'))
-  const paths=new Set([...document.access.screenshots,...document.tests.qualification.documentation.screenshots])
+  const documentation=document.tests.qualification?.documentation??document.tests.releaseWaiver?.documentation
+  const paths=new Set([...document.access.screenshots,...documentation.screenshots])
   for(const path of paths) {
     if(!path.endsWith('.png')) throw new Error(document.id+': release documentation screenshots must be black-and-white PNGs')
     try{requireMonochromePng(await readFile(await resolveModuleFile(folder,path)))}catch(error){throw new Error(document.id+'/'+path+': '+error.message,{cause:error})}

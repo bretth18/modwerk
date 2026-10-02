@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "id": "cc-map",
+  "moduleVersion": "0.1.2-experimental",
+  "sourceSha256": "85ac180b75837d7681c74325b29a3a78416d3b2a8890fb6394f033c27993393d",
+  "imageSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812",
+  "hardwareStatus": "untested",
+  "chipWorstCaseCycles": null,
+  "nativeBrowserParity": {
+    "status": "passed",
+    "selections": 1024,
+    "exactImages": 522,
+    "matchingRefusals": 502,
+    "proofSha256": "aa55da91332ac1b26e25ec27ebe6a3bfddbd665f4481aee3ade42fd3584b76d4",
+    "proofFile": "src/engine/assets/utility-composition-proofs.json",
+    "scope": "Every subset of all nine currently buildable frontend modules, with hidden stock FX2 and the current retained-stock menus (omitting only required DSP donors)."
+  },
+  "memory": {
+    "romBytes": 724,
+    "maxAlignmentBytes": 127,
+    "newHeapBytes": 0,
+    "newPersistentRamBytes": 0,
+    "newDspWords": 0,
+    "sharedInstances": 1,
+    "authoredStackPeakBytes": 56,
+    "stockState": "Reuses verified 1.40C channel map, Part/live/shadow and dirty flags; stock map-helper stack is not a new allocation.",
+    "romRegions": {
+      "main": {
+        "allowedStart": "0x400d6b20",
+        "exclusiveEnd": "0x400d7c3c",
+        "retainedFx2ExclusiveEnd": "0x400d7bbc",
+        "alignmentBytes": 128,
+        "placementStart": "After selected descriptor clones: 0x400d6b20 + 0x1a0 * cloned effect count, then preceding native-linked ROM units/caves."
+      },
+      "overflow": {
+        "allowedStart": "0x400d24d0",
+        "exclusiveEnd": "0x400d2ce0",
+        "alignmentBytes": 4
+      },
+      "placement": "Chosen after prior native-linked units/caves and checked as zero before writing; all profiles have native byte identities."
+    },
+    "romBytesIncludingMaximumPadding": 851,
+    "replacementBytes": 4,
+    "authoredStackRegion": "[entry SP - 56, entry SP); stock MAPBUILD helper uses its existing frame, whose physical worst-case headroom remains untested.",
+    "allocationClasses": {
+      "sharedRom": 724,
+      "boundedAlignmentMaximum": 127,
+      "newHeap": 0,
+      "newPersistentCpuRam": 0,
+      "newSdram": 0,
+      "newDspPWords": 0,
+      "newDspXWords": 0,
+      "newDspYWords": 0
+    }
+  },
+  "capture": {
+    "recordedVersion": "0.1.1-experimental",
+    "recordedImageSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812",
+    "sameNativeSource": true,
+    "screenshots": 6
+  },
+  "limitations": [
+    "No physical hardware/audio/stress run.",
+    "No real-chip worst-case cycle count, scheduling or memory-contention headroom claim.",
+    "Actual monochrome LCD images establish access and the documented UI example, not all audio/control outcomes."
+  ],
+  "nativePackaging": {
+    "status": "passed",
+    "exactContainersAndUpgrades": 8,
+    "proofSha256": "b0ee6bfbf0621210df5abf2299a673a6a82aa9bd44bb854f6cbf36c46f2a6014",
+    "proofFile": "src/engine/assets/utility-packaging-proofs.json",
+    "scope": "Each utility, both together, both with Repitch + USB Audio/MIDI + Scale Quantizer, each with hidden/retained stock FX2."
+  },
+  "rejections": {
+    "status": "passed",
+    "checks": [
+      "altered MAIN OS",
+      "altered full upgrade",
+      "truncated upgrade",
+      "unknown module",
+      "native compatibility/space refusals"
+    ],
+    "originalInputsUnchanged": true
+  },
+  "browserWorkflow": {
+    "status": "passed",
+    "modules": [
+      "cc-map",
+      "previewvol"
+    ],
+    "checks": [
+      "desktop selection and build in actual browser worker",
+      "download matches native full upgrade for compact and retained stock FX2",
+      "saved configuration and firmware restore/revalidation",
+      "390px mobile cards/tutorial/screenshots without horizontal overflow",
+      "keyboard tutorial toggle"
+    ],
+    "downloadSha256": {
+      "hiddenStockFx2": "9919f5fee7160ce0d77696ffba3f8e1de19f7749b439d0741a9828a08afd7ee7",
+      "retainedStockFx2": "5800f3c4e1b20e748d84db604ba192a5c659db28dce0fd4e681541311259e285"
+    }
+  }
+}

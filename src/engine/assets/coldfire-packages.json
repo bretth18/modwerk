@@ -203,6 +203,8 @@
     "tapehead": "0.1.1-experimental",
     "analog-bassdrum": "0.1.2-experimental",
     "usb-audio-out-tracks-main-cue": "0.1.2-experimental",
-    "quantizer": "0.1.2-experimental"
+    "quantizer": "0.1.2-experimental",
+    "previewvol": "0.1.2-experimental",
+    "cc-map": "0.1.2-experimental"
   }
 }

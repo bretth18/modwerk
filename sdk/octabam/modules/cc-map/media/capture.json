@@ -81,15 +81,15 @@
       24
     ],
     "scale": 6,
-    "method": "Direct rendering of actual 128\u00d764 1-bpp LCD pixels and firmware popup planes. Only the two-color renderer palette is changed; no pixel shapes, labels or controls are reconstructed."
+    "method": "Direct rendering of actual 128×64 1-bpp LCD pixels and firmware popup planes. Only the two-color renderer palette is changed; no pixel shapes, labels or controls are reconstructed."
   },
   "accessSteps": [
     "On the MKII panel, press PROJ. Select MIDI with UP/DOWN and press RIGHT to enter its list.",
     "Select CONTROL and press YES. Select AUDIO CC IN and turn LEVEL until its checkbox is enabled.",
-    "Press NO to return to MIDI, select CHANNELS and press YES. Match the target audio track\u2019s TRIG CH to the external controller. The captured T1 uses channel 1; AUTO CH 11 is a different setting.",
+    "Press NO to return to MIDI, select CHANNELS and press YES. Match the target audio track’s TRIG CH to the external controller. The captured T1 uses channel 1; AUTO CH 11 is a different setting.",
     "Press NO twice to return to the track. Press T1, then hold FUNC and press FX1 for FX1 SETUP. Turn LEVEL to FILTER and press YES to assign it.",
     "FILTER SETUP shows page-2 HP, LP, ENV, HOLD, Q and DIST. Send CC 68 value 1 on channel 1 to change HP from 12 dB to 24 dB.",
-    "Close SETUP with FX1 and reopen with FUNC+FX1 to refresh the displayed HP value. The cave omits the stock editor\u2019s redraw call.",
+    "Close SETUP with FX1 and reopen with FUNC+FX1 to refresh the displayed HP value. The cave omits the stock editor’s redraw call.",
     "These steps were verified only for the isolated MKII emulator UI. Qualify audio, Part save/reload, MKI access and real hardware separately before publication."
   ],
   "captureTool": {
@@ -99,7 +99,7 @@
   },
   "sessions": [
     {
-      "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6.",
+      "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6.",
       "keyMs": 150,
       "plan": [
         {
@@ -232,7 +232,7 @@
       ]
     },
     {
-      "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6.",
+      "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6.",
       "keyMs": 150,
       "plan": [
         {
@@ -334,5 +334,10 @@
     "CC68 value1 on channel1 changes FILTER HP from12dB to24dB after closing/reopening SETUP. Other effects, CCs and combinations remain unverified.",
     "No BusDelay/BusVerb, MODE DEFAULTS or SCENES KITS module imported.",
     "Firmware, generated native image/code, raw LCD/RAM dumps, temporary cards and private logs are not retained."
-  ]
+  ],
+  "releaseBinding": {
+    "moduleVersion": "0.1.2-experimental",
+    "nativeSourceSha256": "85ac180b75837d7681c74325b29a3a78416d3b2a8890fb6394f033c27993393d",
+    "reason": "The source instructions/native manifest are identical to the recorded 0.1.1 capture. This version adds documentation and browser integration only; no new capture date/image is claimed."
+  }
 }

@@ -31,7 +31,7 @@ for (const proof of facts.proofs) {
   let result, error
   try { result = await composeOs(original, proof.moduleIds, menus, { loader: false }) } catch (e) { error = e.message }
   if (proof.error) {
-    const reason = proof.error.includes('stock effects only') ? /stock effects only/ : /does not fit|do not fit|overruns the region|nowhere to place|exceeds its reserved region/
+    const reason = proof.error.includes('stock effects only') ? /stock effects only/ : /does not fit|do not fit|overruns the region|nowhere to place|exceeds its reserved region|choosers need more space/
     if (!reason.test(error ?? '')) failures.push(label + ': native refusal differs: ' + (error ?? 'browser accepted'))
     else refused++
   } else if (error || result.bytes.length !== proof.bytes || sha(result.bytes) !== proof.sha256) failures.push(label + ': native image differs: ' + (error ?? 'byte mismatch'))

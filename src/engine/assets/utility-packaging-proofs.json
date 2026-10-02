@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+  "sourceUpgradeSha256": "34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad",
+  "version": "OCTAMOD79",
+  "oracleSha256": "7c9cc005b48ae2cd14953c38159f592333a33b2db059604e0b2ca0ad1acb3414",
+  "sources": {
+    "main.c": "eedd11769bf3c4fa2b88107b49e83e654e600bffcd8be4ce019dd43e9710b165",
+    "compress.c": "f7af548480e9e49f571ffe4cf4d5b6957cde9d5eaaef123c73c2e951abf7a223",
+    "decompress.c": "9f2c1f3f7889544d34bfbe48731cc2d9d9024ce74a809b8b7a9ae374a8b930d0",
+    "integrity.c": "89d1d117331c63f499eef46bc4129079b894da8a38884ea5d9c0eb7c95d1c99f"
+  },
+  "proofs": [
+    {
+      "ids": [
+        "previewvol"
+      ],
+      "keepStockFx2": false,
+      "mainSha256": "687b86044f3638644c44f63a2765af9241885a8d49796ab7af8c3f57cc43b643",
+      "containerBytes": 445638,
+      "containerSha256": "3c5a80308dca300ce3b7d55a88c28d5bf132c8eb54961d1dd814d4d677bc32c1",
+      "bytes": 445656,
+      "sha256": "cd233d06c20148aff6bffb638dfbe121f551e3849166d89bb388f7e7c5517bf1"
+    },
+    {
+      "ids": [
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "mainSha256": "a5c97fe6734b9f39e4ba58d8b8ff61cb009fedea730697aa05e89d77b89f7429",
+      "containerBytes": 446016,
+      "containerSha256": "f289a7e15467cb3f0765a050ce8c09d0fdbd495628aae40431da87011316241b",
+      "bytes": 446032,
+      "sha256": "5f8148d5578970e98b83347a51de63d69e47e786877b4de785d3a0e4a3d95b37"
+    },
+    {
+      "ids": [
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "mainSha256": "9ae4594d92bdb56043a17b7fb0f7af22eeffc58d52b572fa633b3db95808c2ce",
+      "containerBytes": 446040,
+      "containerSha256": "f14b011e4815db7d10f3d56631b35ec4134858f682382a22029763ad97bca626",
+      "bytes": 446056,
+      "sha256": "9919f5fee7160ce0d77696ffba3f8e1de19f7749b439d0741a9828a08afd7ee7"
+    },
+    {
+      "ids": [
+        "repitch",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "mainSha256": "f5d6add143c575975a398777a93c95ac92293b1ed9e18e41205fcc37fc0af1a4",
+      "containerBytes": 451892,
+      "containerSha256": "779c3b6573d6b628944671ec32874d0070f50afbddcb616be4a4c0d3eb55417c",
+      "bytes": 451908,
+      "sha256": "8def12193eea42c5ed30309593454d6b7e75f15b21876fb7bcd1208830b28d07"
+    },
+    {
+      "ids": [
+        "previewvol"
+      ],
+      "keepStockFx2": true,
+      "mainSha256": "3900e54e9154d66df6001b0f96da2ca07c42bf5c7be7f1157ddd9a071601f2cc",
+      "containerBytes": 445640,
+      "containerSha256": "51ad29710e29c6b37e4b51f2841f74479c4582a3d5334476db71637349cfdbd9",
+      "bytes": 445656,
+      "sha256": "ca7f1c1e432b2d57206589b2c8a7bf227651fe12cc4ae2c2897a368851d3506b"
+    },
+    {
+      "ids": [
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "mainSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812",
+      "containerBytes": 446017,
+      "containerSha256": "b8598d6813827a0814c4ba0b22a57088b701786e1608fb38fb4f9909321a3d16",
+      "bytes": 446036,
+      "sha256": "3c86aa9dc3d718a21524911bf5a8748035de9acf5f77b0654130aba7c93dd44a"
+    },
+    {
+      "ids": [
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "mainSha256": "7fd104f7bc89addda33fc48f5a5f63fb71026e75693acf66858339e11af970f2",
+      "containerBytes": 446041,
+      "containerSha256": "8c9f429ce996c35e364893052f9021cd943e8b779a7ec396966c20dc2abade64",
+      "bytes": 446060,
+      "sha256": "5800f3c4e1b20e748d84db604ba192a5c659db28dce0fd4e681541311259e285"
+    },
+    {
+      "ids": [
+        "repitch",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "mainSha256": "e482396f4a421d846ed68916390593d4bb252c203dd6b914d446cbb144b0e94d",
+      "containerBytes": 451891,
+      "containerSha256": "cec8138d817020228e7db37012cdf6c2bd284955d7c48004475607a50607b208",
+      "bytes": 451908,
+      "sha256": "9220d3735c205188ecaf2ff4becfee2973c0ee9da82b6686bf4290c24b4a8cec"
+    }
+  ]
+}

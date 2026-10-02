@@ -1,13 +1,18 @@
 import { MODULE_DOCUMENTS } from './documents.ts'
 import { MODULE_ADDED_AT } from './module-additions.ts'
-import type { ModuleDocument } from './module-contract.ts'
 export const CATALOG_SOURCE = {
   repository: 'https://github.com/repeat98/octamad',
   revision: 'b8deefc88b2c3e5f3c6158e364eb741df1924e1d',
   branch: 'codex/dsp-dynload',
 } as const
 
-export type ModuleCategory = ModuleDocument['category']
+export const LIBRARY_CATEGORIES = ['effects', 'playback', 'machines', 'scenes', 'midi-usb', 'system'] as const
+export type ModuleCategory = typeof LIBRARY_CATEGORIES[number]
+// Library grouping can change without rewriting approved module metadata or qualification pins.
+const LIBRARY_CATEGORY_OVERRIDES: Readonly<Partial<Record<string, ModuleCategory>>> = {
+  quantizer: 'system',
+  repitch: 'system',
+}
 export type FirmwareModule = {
   id: string
   key: string
@@ -25,7 +30,7 @@ export type FirmwareModule = {
 }
 
 export const MODULES: readonly FirmwareModule[] = MODULE_DOCUMENTS.map(document=>({
-  id:document.id,key:document.key,name:document.name,category:document.category,
+  id:document.id,key:document.key,name:document.name,category:LIBRARY_CATEGORY_OVERRIDES[document.id]??document.category,
   description:document.presentation.summary,detail:document.compatibility.location,
   author:document.author.github,authorName:document.author.name??document.author.github,authorUrl:'https://github.com/'+document.author.github,
   sourcePath:'sdk/octabam/modules/'+document.id+'/manifest.py',version:document.version,addedAt:MODULE_ADDED_AT[document.id],fxId:document.compatibility.effectId??undefined,

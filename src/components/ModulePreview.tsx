@@ -111,6 +111,21 @@ export function ModulePreview({ id, compact = false }: { id: string; compact?: b
           {[28,65,103,141,179,217,254,291].map((x,i)=><circle key={x} className="signal-dot" cx={x} cy={140-i*14.6} r="3" />)}
           <text x="25" y="177">ROOT</text><text x="222" y="177">24 SCALES</text>
         </g>}
+        {id === 'cc-map' && <g>
+          {[0,1,2,3,4,5].map(i=><g key={i}>
+            <circle className="signal-secondary" cx="48" cy={46+i*21} r="4" />
+            <path className="signal-main" d={'M56 '+(46+i*21)+'H126L194 '+(46+i*21)+'H259'} />
+            <circle className="reel-outline" cx="274" cy={46+i*21} r="8" />
+            <path className="signal-secondary" d={'M274 '+(46+i*21)+'l4-4'} />
+          </g>)}
+          <text x="25" y="177">CC 68–73</text><text x="209" y="177">FX1 SETUP</text>
+        </g>}
+        {id === 'previewvol' && <g>
+          <path className="signal-ghost" d={sine(0, 12, 3)} />
+          <path className="signal-main" d={sine(0, 36, 3)} />
+          <path className="signal-secondary" d="M29 52H291M29 142H291" strokeDasharray="3 6" />
+          <text x="25" y="177">TRACK VOL ↓</text><text x="186" y="177">PREVIEW VOL 0</text>
+        </g>}
       </svg>
       <div className="preview-controls">{DETAILS[id].controls.slice(0, 3).map((control) => <span key={control}>{control}</span>)}</div>
     </div>

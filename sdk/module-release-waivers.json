@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "approvedBy": "repeat98",
+  "approvedOn": "2026-10-02",
+  "waived": [
+    "hardware-stress",
+    "chip-worst-case-cycles"
+  ],
+  "reason": "Explicit owner approval in the CC Map / Preview Vol frontend integration conversation: release these two with software verification and timing marked unmeasured. Future versions and other modules require ordinary qualification.",
+  "modules": [
+    {
+      "id": "cc-map",
+      "version": "0.1.2-experimental",
+      "sourceSha256": "85ac180b75837d7681c74325b29a3a78416d3b2a8890fb6394f033c27993393d",
+      "folderSha256": "c4e1bce94da7951b1eb7b6605f96ad7c83447e5fff230ca2e6e74b6c505f7103"
+    },
+    {
+      "id": "previewvol",
+      "version": "0.1.2-experimental",
+      "sourceSha256": "86deed960c094df1d0d2a4a9d3a955a62e804175f2f22d8ac53f5eff141aeaca",
+      "folderSha256": "7123802eb2e6d1e47ad2ecc8511842ee4a98be056cb10cf5069079cde870fab3"
+    }
+  ]
+}

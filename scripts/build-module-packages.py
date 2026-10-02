@@ -5,13 +5,14 @@ command executes reviewed native declarations in a disposable source copy.
 It assembles and proves relocation; it never boots, renders or stress-tests.
 """
 from pathlib import Path
-import argparse, hashlib, json, os, re, shutil, struct, subprocess, sys, tempfile
+import argparse, hashlib, importlib.util, json, os, re, shutil, struct, subprocess, sys, tempfile
 
 APP = Path(__file__).resolve().parents[1]
 ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead']
 REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer']
+UTILITIES = ['previewvol', 'cc-map']
 ASSET_NAMES = ['dsp-packages.json', 'coldfire-packages.json', 'resident-dsp.json', 'rom-packages.json',
-               'bootstrap-package.json', 'menu-recipes.json', 'descriptor-recipes.json', 'platform-writes.json', 'requested-packages.json']
+               'bootstrap-package.json', 'menu-recipes.json', 'descriptor-recipes.json', 'platform-writes.json', 'requested-packages.json', 'utility-packages.json']
 HASH = lambda data: hashlib.sha256(data).hexdigest()
 
 
@@ -60,8 +61,11 @@ def fingerprint(reference, address):
 
 def requested_release_scope(buildable):
     """Permit the reviewed scope with the MIDI Scenes update still pending."""
+    ordinary = [id for id in buildable if id not in UTILITIES]
+    if [id for id in buildable if id in UTILITIES] not in ([], UTILITIES):
+        raise ValueError('Unsupported utility module scope')
     scopes = (ORDER, ORDER + REQUESTED, ORDER + [id for id in REQUESTED if id != 'midi-scenes'])
-    if buildable not in scopes:
+    if ordinary not in scopes:
         raise ValueError('Unsupported reviewed module scope')
     return [id for id in REQUESTED if id in buildable]
 
@@ -178,14 +182,15 @@ def main():
     include_requested = bool(requested_ids)
     versions = {module['id']: module['version'] for module in buildable}
     revision = catalog['sourceRevision']
-    documents = {id: json_file(sdk / 'modules' / id / 'octamod.module.json') for id in ORDER + REQUESTED}
+    utility_ids = [id for id in UTILITIES if id in versions]
+    documents = {id: json_file(sdk / 'modules' / id / 'octamod.module.json') for id in ORDER + REQUESTED + utility_ids}
     provenance = {'sourceCommit': args.source_commit, 'moduleVersions': versions}
     products = {}
     with tempfile.TemporaryDirectory(prefix='octamod-source-build.') as temporary:
         root = Path(temporary)
         # Pending imports stay in the source fingerprint, but are never evaluated or compiled.
         (root / 'modules').mkdir()
-        for id in ORDER + requested_ids:
+        for id in ORDER + requested_ids + utility_ids:
             shutil.copytree(sdk / 'modules' / id, root / 'modules' / id, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '.DS_Store'))
         for group in ['platform', 'tools', 'dsp']:
             shutil.copytree(sdk / group, root / group, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '.DS_Store'))
@@ -203,7 +208,7 @@ def main():
         known = registry.modules()
         byid = {module.name: module for module in known.values()}
         public = sorted(module.name for module in known.values() if not module.is_stock and module.name not in registry.PLATFORM_NAMES)
-        if public != sorted(ORDER + requested_ids): raise ValueError('Unexpected module scope')
+        if public != sorted(ORDER + requested_ids + utility_ids): raise ValueError('Unexpected module scope')
         for id in ORDER:
             module, doc = byid[id], documents[id]
             if doc['version'] != versions[id] or doc['key'] != module.key or doc['author']['github'] != module.author or doc['compatibility']['effectId'] != (module.menu.fx2_id if module.menu else None):
@@ -413,6 +418,10 @@ def main():
         print('Every authored compiled package and receiver matches the existing browser/native baseline.', flush=True)
 
     os.chdir(APP)
+    if utility_ids:
+        spec = importlib.util.spec_from_file_location('octamod_utility_compiler', APP / 'scripts/build-utility-packages.py')
+        compiler = importlib.util.module_from_spec(spec); spec.loader.exec_module(compiler)
+        products['utility-packages.json'] = compiler.compile_packages(APP, provenance=provenance)
     destination.mkdir(parents=True)
     files = {}
     notice_name = 'THIRD_PARTY_NOTICES.txt'

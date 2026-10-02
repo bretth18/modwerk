@@ -71,6 +71,15 @@ for (const pkg of requested.objects) {
     if (!section || copy.bytes !== 23 || !Number.isSafeInteger(copy.offset) || copy.offset < 0 || copy.offset + copy.bytes > section.data.length || !hash(copy.sha256) || section.data.subarray(copy.offset, copy.offset + copy.bytes).some(byte => byte !== 0)) throw new Error('Inherited USB spans must contain only zero placeholders')
   }
 }
+const utility = packages.get('utility-packages.json')
+if(utility.stockRead!==false||utility.kind!=='authored-utility-packages'||utility.compilerSha256!==sha(await readFile(resolve(root,'scripts/build-utility-packages.py')))||JSON.stringify(utility.packages.map(p=>p.id).sort())!==JSON.stringify(['cc-map','previewvol'])) throw new Error('Invalid utility source compiler or scope')
+for(const pkg of utility.packages) {
+  if(!['cc-map','previewvol'].includes(pkg.id)||pkg.version!==versions[pkg.id]||!hash(pkg.sha256)||!Number.isSafeInteger(pkg.bytes)||pkg.bytes<52||pkg.bytes>65536||!(/^[a-f0-9]+$/).test(pkg.code)||pkg.code.length!==pkg.bytes*2||sha(Buffer.from(pkg.code,'hex'))!==pkg.sha256) throw new Error('Invalid utility authored object')
+  parseColdFireObject(new Uint8Array(Buffer.from(pkg.code,'hex')))
+  const document=parseModuleDocument(await json(resolve(native,'modules',pkg.id,'octamod.module.json')))
+  if(pkg.key!==document.key||pkg.author!==document.author.github||JSON.stringify(Object.keys(pkg.sources).sort())!==JSON.stringify([pkg.id==='cc-map'?'cc_map.s':'previewvol.s','manifest.py'].sort())) throw new Error('Utility identity or native source inventory differs from the catalog')
+  for(const [path,fingerprint] of Object.entries(pkg.sources)) if(report.sources['modules/'+pkg.id+'/'+path]!==fingerprint) throw new Error('Utility source provenance differs from the complete source inventory')
+}
 // Release automation never sees firmware, so it cannot prove native parity. Publish only packages that
 // reproduce the committed, locally parity-verified ones; provenance is the only permitted difference.
 if (!development) for (const [name, doc] of packages) {

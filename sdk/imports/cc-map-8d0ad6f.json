@@ -5,8 +5,8 @@
   "modules": [
     "cc-map"
   ],
-  "moduleVersion": "0.1.1-experimental",
-  "root": "sdk/drafts/cc-map",
+  "moduleVersion": "0.1.2-experimental",
+  "root": "sdk/octabam/modules/cc-map",
   "status": "draft; qualification, owner review and native/browser integration pending; actual MKII LCD captures included",
   "files": [
     {
@@ -69,5 +69,6 @@
     "The authored cave oracle is module source, not a copied stock routine. Address identities and a stock guard do not provide firmware bytes.",
     "Native discovery, public catalog, eleven-module qualification baseline and approved compiler inventory remain unchanged. CC 62-67 targets out-of-scope BusDelay/BusVerb only; no support for other FX2 effects is claimed.",
     "Historical upstream hardware/emulator notes do not qualify this Octamod version. Native source was evaluated only inside an isolated local container for explicitly requested UI captures; no qualification suite ran. Original thumbnail and actual monochrome MKII LCD captures are documented under media/capture.json. Contributor declaration and owner/reviewer verification remain required before publication."
-  ]
+  ],
+  "release": "Owner-approved software-only release; source files unchanged from 0.1.1; hardware and chip timing waived for exact version 0.1.2-experimental."
 }

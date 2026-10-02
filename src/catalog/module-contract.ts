@@ -17,6 +17,13 @@ export type ModuleQualification = {
   memory: { regions: { name: string; space: 'dsp-p' | 'dsp-x' | 'dsp-y' | 'cpu-flash' | 'cpu-ram' | 'sdram'; words: number; wordBits: 8 | 16 | 24 | 32; bytes: number; scope: 'instance' | 'shared' }[]; perInstanceBytes: number; sharedBytes: number; maxInstances: number; totalBytes: number; conditions: string; report: string }
   hardware: DetailedHardwareQualification | FunctionalHardwareQualification
 }
+// This declaration cannot approve a submission. Repository validation also
+// requires an owner record pinned to the complete, exact module folder.
+export type ModuleReleaseWaiver = {
+  moduleVersion: string; sourceSha256: string; imageSha256: string
+  approvedBy: 'repeat98'; approvedOn: '2026-10-02'; reason: string; report: string
+  documentation: ModuleQualification['documentation']
+}
 export const MODULE_CATEGORIES = ['effects', 'playback', 'machines', 'scenes', 'midi-usb'] as const
 export type ModuleDocument = {
   schemaVersion: 2; id: string; key: string; name: string; version: string; category: typeof MODULE_CATEGORIES[number]
@@ -26,9 +33,9 @@ export type ModuleDocument = {
   presentation: { label: string; family: string; summary: string; overview: string; highlights: string[]; usage: string[] }
   access?: { location: string; steps: string[]; screenshots: string[]; noUiReason?: string }
   controls: ModuleControl[]
-  compatibility: { firmware: '1.40C'; effectId: number | null; location: 'FX1' | 'FX2' | 'FX1 / FX2' | 'Flex / Static' | 'Track machine' | 'MIDI tracks' | 'Project sequencer' | 'USB'; conflicts: string[]; limitations: string[] }
+  compatibility: { firmware: '1.40C'; effectId: number | null; location: 'FX1' | 'FX2' | 'FX1 / FX2' | 'Flex / Static' | 'Track machine' | 'Audio tracks' | 'MIDI tracks' | 'Project sequencer' | 'USB'; conflicts: string[]; limitations: string[] }
   resources: { recorded: string; storage: ModuleMetric; processing: ModuleMetric; impact?: ModuleResourceImpact }
-  tests: { report: string; summary: string; hardwareStatus: 'untested' | 'historical' | 'reported' | 'verified'; evidenceRevision: string; gates: string[]; qualification?: ModuleQualification }
+  tests: { report: string; summary: string; hardwareStatus: 'untested' | 'historical' | 'reported' | 'verified'; evidenceRevision: string; gates: string[]; qualification?: ModuleQualification; releaseWaiver?: ModuleReleaseWaiver }
   license: { spdx: string; file: string; declaration: string }
   media: { path: string; captureType: 'hardware' | 'emulator' | 'audio'; caption: string; alt: string; credit: string; license: string; source: string; otUi?: ModuleUiCapture }[]
 }
@@ -72,16 +79,24 @@ function qualificationReport(value: unknown, path: string): string {
   if(file!=='TESTING.md'&&(!file.startsWith('evidence/')||!/\.(md|json|txt)$/.test(file))) fail(path,'use TESTING.md or a text report under evidence/, never firmware or a project/card dump')
   return file
 }
-function qualification(value: unknown): ModuleQualification {
-  const path='tests.qualification', q=object(value,path,['moduleVersion','sourceSha256','imageSha256','cycles','memory','hardware','documentation'])
-  const moduleVersion=text(q.moduleVersion,path+'.moduleVersion',80); compareModuleVersions(moduleVersion,moduleVersion)
-  const docs=object(q.documentation,path+'.documentation',['tutorial','screenshots','screenshotStyle'])
+function qualificationDocumentation(value: unknown, path: string): ModuleQualification['documentation'] {
+  const docs=object(value,path+'.documentation',['tutorial','screenshots','screenshotStyle'])
   const tutorial=object(docs.tutorial,path+'.documentation.tutorial',['title','steps'])
   const steps=texts(tutorial.steps,path+'.documentation.tutorial.steps',12)
   if(steps.length<3) fail(path+'.documentation.tutorial.steps','require at least three practical tutorial steps: setup/select, use controls and verify the result')
   const screenshots=list(docs.screenshots,path+'.documentation.screenshots',8).map((value,i)=>modulePath(value,path+'.documentation.screenshots['+i+']'))
   if(!screenshots.length||new Set(screenshots).size!==screenshots.length) fail(path+'.documentation.screenshots','require real documentation screenshots without duplicates')
-  const documentation={tutorial:{title:text(tutorial.title,path+'.documentation.tutorial.title',100),steps},screenshots,screenshotStyle:enumeration(docs.screenshotStyle,path+'.documentation.screenshotStyle',['black-and-white'])}
+  return {tutorial:{title:text(tutorial.title,path+'.documentation.tutorial.title',100),steps},screenshots,screenshotStyle:enumeration(docs.screenshotStyle,path+'.documentation.screenshotStyle',['black-and-white'])}
+}
+function releaseWaiver(value: unknown): ModuleReleaseWaiver {
+  const path='tests.releaseWaiver', q=object(value,path,['moduleVersion','sourceSha256','imageSha256','approvedBy','approvedOn','reason','report','documentation'])
+  const moduleVersion=text(q.moduleVersion,path+'.moduleVersion',80); compareModuleVersions(moduleVersion,moduleVersion)
+  return {moduleVersion,sourceSha256:sha256(q.sourceSha256,path+'.sourceSha256'),imageSha256:sha256(q.imageSha256,path+'.imageSha256'),approvedBy:enumeration(q.approvedBy,path+'.approvedBy',['repeat98']),approvedOn:enumeration(q.approvedOn,path+'.approvedOn',['2026-10-02']),reason:text(q.reason,path+'.reason'),report:qualificationReport(q.report,path+'.report'),documentation:qualificationDocumentation(q.documentation,path)}
+}
+function qualification(value: unknown): ModuleQualification {
+  const path='tests.qualification', q=object(value,path,['moduleVersion','sourceSha256','imageSha256','cycles','memory','hardware','documentation'])
+  const moduleVersion=text(q.moduleVersion,path+'.moduleVersion',80); compareModuleVersions(moduleVersion,moduleVersion)
+  const documentation=qualificationDocumentation(q.documentation,path)
   const cycles=list(q.cycles,path+'.cycles',2).map((value,i):ModuleQualification['cycles'][number]=>{
     const p=path+'.cycles['+i+']', c=object(value,p,['processor','worstCase','maxConfiguration','maxInstances','budget','unit','method','conditions','report'])
     const worstCase=integer(c.worstCase,p+'.worstCase',1), maxConfiguration=integer(c.maxConfiguration,p+'.maxConfiguration',1), budget=integer(c.budget,p+'.budget',1)
@@ -163,8 +178,10 @@ export function parseModuleDocument(value: unknown): ModuleDocument {
   if(c.firmware!=='1.40C') fail('compatibility.firmware','only 1.40C is supported')
   const r=object(d.resources,'resources',['recorded','storage','processing'],['impact'])
   const impact='impact' in r?parseModuleResourceImpact(r.impact):undefined
-  const t=object(d.tests,'tests',['report','summary','hardwareStatus','evidenceRevision','gates'],['qualification'])
+  const t=object(d.tests,'tests',['report','summary','hardwareStatus','evidenceRevision','gates'],['qualification','releaseWaiver'])
   const proof='qualification' in t?qualification(t.qualification):undefined
+  const waiver='releaseWaiver' in t?releaseWaiver(t.releaseWaiver):undefined
+  if(proof&&waiver) fail('tests','use measured qualification or an owner release waiver, never both')
   const evidenceRevision=text(t.evidenceRevision,'tests.evidenceRevision',40)
   if(!/^[a-f0-9]{40}$/.test(evidenceRevision)) fail('tests.evidenceRevision','pin the exact evidence source commit')
   const l=object(d.license,'license',['spdx','file','declaration'])
@@ -208,7 +225,7 @@ export function parseModuleDocument(value: unknown): ModuleDocument {
     if(noUiReason&&(controls.length||c.effectId!==null||c.location!=='USB'||screenshots.length)) fail('access.noUiReason','only automatic USB modules without OT controls or screenshots may declare no dedicated OT UI')
     access={location:text(a.location,'access.location',300),steps,screenshots,...(noUiReason?{noUiReason}:{})}
   }
-  return {schemaVersion:2,id,key:text(d.key,'key',60),name:text(d.name,'name',100),version,category:enumeration(d.category,'category',MODULE_CATEGORIES),...(source?{source}:{}),...(build?{build}:{}),...(access?{access}:{}),author:{github,...authorName,credits:texts(a.credits,'author.credits',30)},nativeManifest,presentation:{label:text(p.label,'presentation.label',80),family:text(p.family,'presentation.family',80),summary:text(p.summary,'presentation.summary',300),overview:text(p.overview,'presentation.overview'),highlights:texts(p.highlights,'presentation.highlights',12),usage:texts(p.usage,'presentation.usage',12)},controls,compatibility:{firmware:'1.40C',effectId:c.effectId as number|null,location:enumeration(c.location,'compatibility.location',['FX1','FX2','FX1 / FX2','Flex / Static','Track machine','MIDI tracks','Project sequencer','USB']),conflicts:texts(c.conflicts,'compatibility.conflicts',64),limitations:texts(c.limitations,'compatibility.limitations',24)},resources:{recorded:text(r.recorded,'resources.recorded',100),storage:metric(r.storage,'resources.storage'),processing:metric(r.processing,'resources.processing'),...(impact?{impact}:{})},tests:{report:modulePath(t.report,'tests.report'),summary:text(t.summary,'tests.summary'),hardwareStatus:enumeration(t.hardwareStatus,'tests.hardwareStatus',['untested','historical','reported','verified']),evidenceRevision,gates:texts(t.gates,'tests.gates',64),...(proof?{qualification:proof}:{})},license:{spdx:text(l.spdx,'license.spdx',100),file:modulePath(l.file,'license.file'),declaration:text(l.declaration,'license.declaration')},media}
+  return {schemaVersion:2,id,key:text(d.key,'key',60),name:text(d.name,'name',100),version,category:enumeration(d.category,'category',MODULE_CATEGORIES),...(source?{source}:{}),...(build?{build}:{}),...(access?{access}:{}),author:{github,...authorName,credits:texts(a.credits,'author.credits',30)},nativeManifest,presentation:{label:text(p.label,'presentation.label',80),family:text(p.family,'presentation.family',80),summary:text(p.summary,'presentation.summary',300),overview:text(p.overview,'presentation.overview'),highlights:texts(p.highlights,'presentation.highlights',12),usage:texts(p.usage,'presentation.usage',12)},controls,compatibility:{firmware:'1.40C',effectId:c.effectId as number|null,location:enumeration(c.location,'compatibility.location',['FX1','FX2','FX1 / FX2','Flex / Static','Track machine','Audio tracks','MIDI tracks','Project sequencer','USB']),conflicts:texts(c.conflicts,'compatibility.conflicts',64),limitations:texts(c.limitations,'compatibility.limitations',24)},resources:{recorded:text(r.recorded,'resources.recorded',100),storage:metric(r.storage,'resources.storage'),processing:metric(r.processing,'resources.processing'),...(impact?{impact}:{})},tests:{report:modulePath(t.report,'tests.report'),summary:text(t.summary,'tests.summary'),hardwareStatus:enumeration(t.hardwareStatus,'tests.hardwareStatus',['untested','historical','reported','verified']),evidenceRevision,gates:texts(t.gates,'tests.gates',64),...(proof?{qualification:proof}:{}),...(waiver?{releaseWaiver:waiver}:{})},license:{spdx:text(l.spdx,'license.spdx',100),file:modulePath(l.file,'license.file'),declaration:text(l.declaration,'license.declaration')},media}
 }
 
 /** New modules and updates need real UI evidence; unchanged legacy publications remain readable. */

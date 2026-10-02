@@ -5,7 +5,6 @@ import { assetUrl } from './hosting'
 import { ModuleSets } from './components/ModuleSets'
 import { ModuleComparison } from './components/ModuleComparison'
 import { MODULE_DOCUMENTS_BY_ID } from './catalog/documents'
-import { MODULE_CATEGORIES } from './catalog/module-contract'
 import { moduleBuildPending } from './catalog/build-support'
 import { api } from './community/api'
 import { compareModules, downloadCoverage, type ModuleStatistics } from './community/module-statistics'
@@ -20,7 +19,7 @@ import { PublishedModulePage } from './community/PublishedModulePage'
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import type { ChangeEvent, DragEvent } from 'react'
 import { flushSync } from 'react-dom'
-import { MODULES, resolveSelection } from './catalog/modules'
+import { LIBRARY_CATEGORIES, MODULES, resolveSelection } from './catalog/modules'
 import { AVAILABLE_MODULES, isModulePaused, moduleAvailabilityError } from './catalog/availability'
 import { DETAILS } from './catalog/details'
 import { ENGINE_AVAILABLE, DOWNLOADS_ENABLED, DSP_LOADER } from './engine/protocol'
@@ -39,6 +38,7 @@ import { PAYPAL_DONATION_URL } from './config/support'
 
 import { useWorkspace } from './hooks/useWorkspace'
 import { ConfigurationDialog } from './components/ConfigurationDialog'
+import { ConfigurationEffects } from './components/ConfigurationEffects'
 function subscribeRoute(callback: () => void) {
   window.addEventListener('hashchange', callback)
   return () => window.removeEventListener('hashchange', callback)
@@ -63,9 +63,9 @@ export default function App() {
   const { session, catalog } = useCommunity()
   const communityModule = route.startsWith('community-module/') ? catalog.find(item => item.module_id === route.slice(17) && !isModulePaused(item.module_id)) : undefined
   const communityRoute = route === 'activity' || route === 'review' || route === 'admin' || route.startsWith('submit') || !!communityModule
-  const missingRoute=!['library',...MODULE_CATEGORIES,'module-sets','configuration','faq','activity','review','admin','privacy'].includes(route)&&!route.startsWith('submit')&&!detailModule&&!communityModule&&!route.startsWith('module-set/')
-  const filter = MODULE_CATEGORIES.find(category => category === route) ?? 'all'
-  const categoryLabels = { effects:'Effects', playback:'Playback', machines:'Machines & sequencer', scenes:'Scenes', 'midi-usb':'MIDI & USB' }
+  const missingRoute=!['library',...LIBRARY_CATEGORIES,'module-sets','configuration','faq','activity','review','admin','privacy'].includes(route)&&!route.startsWith('submit')&&!detailModule&&!communityModule&&!route.startsWith('module-set/')
+  const filter = LIBRARY_CATEGORIES.find(category => category === route) ?? 'all'
+  const categoryLabels = { effects:'Effects', playback:'Playback', machines:'Machines & sequencer', scenes:'Scenes', 'midi-usb':'MIDI & USB', system:'System' }
   const workspace = useWorkspace()
   const { active, ready, firmware, fileState, fileError, firmwareSaved, readFile, clearFile } = workspace
   const selectedIds = active?.moduleIds ?? []
@@ -106,7 +106,7 @@ export default function App() {
     && (family==='all'||DETAILS[module.id].family===family)
     && (module.name + ' ' + module.description + ' ' + module.authorName + ' ' + module.author).toLowerCase().includes(query.toLowerCase().trim()),
   ).sort((a,b)=>compareModules(a,b,sort,statistics))
-  const displayedModules = detailModule ? [detailModule] : route === 'library' || MODULE_CATEGORIES.includes(route as typeof MODULE_CATEGORIES[number]) ? visibleModules : []
+  const displayedModules = detailModule ? [detailModule] : route === 'library' || LIBRARY_CATEGORIES.includes(route as typeof LIBRARY_CATEGORIES[number]) ? visibleModules : []
   const { viewed: viewedModuleVersions, baseline: moduleBaseline } = useModuleUpdates(displayedModules, MODULES, detailModule?.id)
 
   function toggleModule(id: string) { workspace.toggleModule(id); setSaved(false); setRiskAccepted({key:'',accepted:false}) }
@@ -155,9 +155,10 @@ export default function App() {
         <div className="sidebar-section-label">Library</div>
         <nav className="sidebar-nav" aria-label="Module library" ref={libraryNavRef}>
           <a href="#library" className={route === 'library' ? 'active' : ''} aria-current={route === 'library' ? 'page' : undefined}><Icon name="grid" /><span>All modules</span><small>{AVAILABLE_MODULES.length}</small></a>
-          <a href="#effects" onClick={()=>setFamily('all')} className={!detailModule && filter === 'effects' ? 'active' : ''} aria-current={!detailModule && filter === 'effects' ? 'page' : undefined}><Icon name="wave" /><span>Effects</span><small>{AVAILABLE_MODULES.filter((module) => module.category === 'effects').length}</small></a>
-          <a href="#playback" onClick={()=>setFamily('all')} className={!detailModule && filter === 'playback' ? 'active' : ''} aria-current={!detailModule && filter === 'playback' ? 'page' : undefined}><Icon name="sliders" /><span>Playback</span><small>{AVAILABLE_MODULES.filter(module=>module.category==='playback').length}</small></a>
-          {(['machines','scenes','midi-usb'] as const).map(category=><a key={category} href={'#'+category} onClick={()=>setFamily('all')} className={!detailModule && filter === category ? 'active' : ''} aria-current={!detailModule && filter === category ? 'page' : undefined}><Icon name={category==='scenes'?'grid':category==='midi-usb'?'wave':'sliders'} /><span>{category==='machines'?'Machines':categoryLabels[category]}</span><small>{AVAILABLE_MODULES.filter(module=>module.category===category).length}</small></a>)}
+          {LIBRARY_CATEGORIES.map(category => {
+            const count = AVAILABLE_MODULES.filter(module => module.category === category).length
+            return count > 0 && <a key={category} href={'#'+category} onClick={()=>setFamily('all')} className={!detailModule && filter === category ? 'active' : ''} aria-current={!detailModule && filter === category ? 'page' : undefined}><Icon name={category==='scenes'?'grid':category==='effects'||category==='midi-usb'?'wave':'sliders'} /><span>{category==='machines'?'Machines':categoryLabels[category]}</span><small>{count}</small></a>
+          })}
           <a href="#module-sets" className={route.startsWith('module-set')?'active':''}><Icon name="file"/><span>Module sets</span></a>
         </nav>
         <div className="sidebar-section-label configuration-label"><span>Configurations</span><button className="icon-button" aria-label="New configuration" disabled={!ready} onClick={() => setConfigDialog("create")}><Icon name="plus" size={18} /></button></div>
@@ -178,7 +179,7 @@ export default function App() {
         <header className="app-toolbar">
           <a className="toolbar-brand" href="#library"><img src={import.meta.env.BASE_URL + 'favicon.svg'} width="30" height="30" alt="" /><span>Octamod</span></a>
           <div className="toolbar-title"><Icon name={route === 'faq' ? 'help' : configuration ? 'file' : 'grid'} size={17} /><span>{route === 'faq' ? 'FAQ & flashing guide' : configuration ? 'Configuration' : route === 'privacy' ? 'Privacy' : communityRoute ? 'Community' : route.startsWith('module-set') ? 'Module sets' : 'Modules'}</span>{detailModule && <><span className="breadcrumb-divider">/</span><strong>{detailModule.name}</strong></>}<span className="preview-badge">Preview</span></div>
-          {['library',...MODULE_CATEGORIES,'module-sets'].includes(route) && <><label className={'search' + (searchExpanded ? ' is-open' : '')}><Icon name="search" size={15} /><input ref={searchRef} type="search" aria-label={route==='module-sets'?'Search module sets':'Search modules'} placeholder={route==='module-sets'?'Search sets':'Search modules'} value={query} onChange={(event) => setQuery(event.target.value)} onBlur={() => { if (!query) setSearchOpen(false) }} onKeyDown={(event) => { if (phoneLayout && event.key === 'Escape') closeSearch() }} /></label><button ref={searchToggleRef} type="button" className="toolbar-icon search-toggle" aria-label={route==='module-sets'?'Search module sets':'Search modules'} onClick={openSearch}><Icon name="search" size={20} /></button><button type="button" className="search-cancel" onClick={closeSearch}>Cancel</button></>}
+          {['library',...LIBRARY_CATEGORIES,'module-sets'].includes(route) && <><label className={'search' + (searchExpanded ? ' is-open' : '')}><Icon name="search" size={15} /><input ref={searchRef} type="search" aria-label={route==='module-sets'?'Search module sets':'Search modules'} placeholder={route==='module-sets'?'Search sets':'Search modules'} value={query} onChange={(event) => setQuery(event.target.value)} onBlur={() => { if (!query) setSearchOpen(false) }} onKeyDown={(event) => { if (phoneLayout && event.key === 'Escape') closeSearch() }} /></label><button ref={searchToggleRef} type="button" className="toolbar-icon search-toggle" aria-label={route==='module-sets'?'Search module sets':'Search modules'} onClick={openSearch}><Icon name="search" size={20} /></button><button type="button" className="search-cancel" onClick={closeSearch}>Cancel</button></>}
           <MobileMenu route={route} selectedCount={selection.length} admin={session.admin} onSupport={PAYPAL_DONATION_URL ? () => setSupportOpen(true) : undefined} />
           <a className="configuration-button" href="#configuration" aria-label={"Open configuration, " + selection.length + " modules selected"}><Icon name="sliders" size={16} /><span>Configuration</span><span className="toolbar-count">{selection.length}</span></a>
         </header>
@@ -206,7 +207,9 @@ export default function App() {
                 {availabilityError && <p className="file-error" role="alert">{availabilityError}</p>}
                 {selection.length ? <ul className="selected-list">{selection.map((module) => <li key={module.id}><a className="selected-module-link" href={'#module/' + module.id}><ModulePreview id={module.id} compact /><span><strong>{module.name}</strong><small>{isModulePaused(module.id) ? 'Temporarily unavailable' : module.detail} · {module.authorName}</small></span></a><button className="icon-button" aria-label={'Remove ' + module.name} onClick={() => toggleModule(module.id)}><Icon name="close" size={17} /></button></li>)}</ul> : <div className="selection-empty"><Icon name="grid" size={26} /><strong>No modules selected</strong><p>Find something in the library and add it to your configuration.</p><a className="button button-quiet" href="#library">Browse modules</a></div>}
               </section>
-              {DSP_LOADER && <section className="configuration-section chooser-options"><h2>Effect menus</h2><label><input type="checkbox" checked={active?.keepStockFx2??true} onChange={event=>workspace.setKeepStockFx2(event.target.checked)}/><span><strong>Keep stock FX2 effects</strong><small>Keep the original FX2 effects alongside your modules.</small></span></label></section>}<aside className="risk-note"><strong>Before you flash</strong><p>{FLASHING_RISKS} Back up your projects and samples, review the module test records, and keep the original OS. Flash at your own risk.</p><p>{FIRMWARE_SHARING_NOTICE}</p><label className="risk-accept"><input type="checkbox" checked={riskAccepted.key===firmwareBuild.key&&riskAccepted.accepted} onChange={event => setRiskAccepted({key:firmwareBuild.key,accepted:event.target.checked})} />I understand the risks of flashing custom firmware.</label></aside>
+              {DSP_LOADER && <section className="configuration-section chooser-options"><h2>Effect menus</h2><label><input type="checkbox" checked={active?.keepStockFx2??true} onChange={event=>workspace.setKeepStockFx2(event.target.checked)}/><span><strong>Keep stock FX2 effects</strong><small>Keep the original FX2 effects alongside your modules.</small></span></label></section>}
+              <ConfigurationEffects ids={selectedIds} keepStockFx2={active?.keepStockFx2 ?? true} build={firmwareBuild} />
+              <aside className="risk-note"><strong>Before you flash</strong><p>{FLASHING_RISKS} Back up your projects and samples, review the module test records, and keep the original OS. Flash at your own risk.</p><p>{FIRMWARE_SHARING_NOTICE}</p><label className="risk-accept"><input type="checkbox" checked={riskAccepted.key===firmwareBuild.key&&riskAccepted.accepted} onChange={event => setRiskAccepted({key:firmwareBuild.key,accepted:event.target.checked})} />I understand the risks of flashing custom firmware.</label></aside>
               <FirmwareBuildPanel build={firmwareBuild} available={ENGINE_AVAILABLE} downloadsEnabled={DOWNLOADS_ENABLED} firmwareReady={!!firmware} moduleCount={selection.length} riskAccepted={riskAccepted.key===firmwareBuild.key&&riskAccepted.accepted} configurationName={active?.name??'Octamod configuration'} onExport={saveSelection} exported={saved}/>
 
             </div>
