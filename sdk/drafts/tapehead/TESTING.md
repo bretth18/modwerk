@@ -147,11 +147,18 @@ chooser frame again still shows DELAY before YES and is not used.
 
 ### Hardware
 
-2 Oct 2026, devilfish707, OCTABAM6 (MAIN OS `2f1f9801…`): "yes this works"
-after comparing with the JSFX, which reported 0.1.1 saturating less. A
-listening report: model, project, duration and track count were not recorded,
-and no stress run was made. 0.1.2's image (OCTABAM7) differs from OCTABAM6 only
-by the bit-identical cycle payback and was not separately flashed.
+2 Oct 2026, devilfish707, Octatrack MKII:
+
+- OCTABAM6 (MAIN OS `2f1f9801…`, the level fix before the cycle payback):
+  "yes this works" after comparing with the JSFX, which 0.1.1 had
+  under-saturated.
+- OCTABAM7 (MAIN OS `774aa997…`, this source): "yes it sounds the same",
+  about three minutes with TapeHead on seven tracks under p-lock automation
+  and scene changes. No overload reported.
+
+A listening report, not a stress run: no measured timing, memory canary,
+recording or recovery test, and seven instances rather than the sixteen-insert
+maximum. Record: [hardware](evidence/hardware.md).
 
 ### Not done for 0.1.2
 

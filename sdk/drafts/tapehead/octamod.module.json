@@ -119,7 +119,7 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Native render matches the JClones reference within 5.4e-4 at the JSFX's own level, with the Octatrack's AMP VOL gain staging compensated (+12 dB in, -12 dB out). Both-core modulated/split benchmark, static cycle accounting and exact memory inventory are documented in TESTING.md. devilfish707 compared the level fix with the JSFX on an Octatrack and reported it working; model, duration and track/instance count were not reported. Browser packages and native parity proofs for 0.1.2 are pending.",
+    "summary": "Native render matches the JClones reference within 5.4e-4 at the JSFX's own level, with the Octatrack's AMP VOL gain staging compensated (+12 dB in, -12 dB out). Both-core modulated/split benchmark, static cycle accounting and exact memory inventory are documented in TESTING.md. devilfish707 compared the level fix with the JSFX on an Octatrack MKII and reported it working, then ran this build for about three minutes on seven tracks with p-lock automation and scenes. Browser packages and native parity proofs for 0.1.2 are pending.",
     "hardwareStatus": "reported",
     "evidenceRevision": "c7e27edf86218c592d667edacbdb98bb3ed96d31",
     "gates": [
@@ -197,16 +197,15 @@
       "hardware": {
         "kind": "functional",
         "status": "reported",
-        "model": null,
+        "model": "MKII",
         "testedOn": "2026-10-02",
         "tester": "devilfish707",
         "sourceRevision": "c7e27edf86218c592d667edacbdb98bb3ed96d31",
-        "imageSha256": "2f1f98015e7e8c61f01bbe8cf9b3038e6ef1b44aa2c6b5c205ca0c4f2d37e3b9",
-        "summary": "Having heard 0.1.1 saturate less than the JSFX, the author flashed the level fix (OCTABAM6), compared it with the JSFX again and reported it working. 0.1.2 differs from that image only by a bit-identical cycle payback.",
+        "imageSha256": "774aa99723625fb698e5f0bb6fc32ea3196996931f55beb10ce1ec53eccc328b",
+        "summary": "On an Octatrack MKII the author flashed OCTABAM7 (this source), played about three minutes with TapeHead on seven tracks under parameter-lock automation and scene changes, and reported it sounds the same as OCTABAM6, which had been compared with the JSFX and reported working after 0.1.1 saturated less.",
         "limitations": [
-          "MKI/MKII model, duration, track and instance counts were not reported.",
-          "A listening comparison only: no measured hardware cycle, memory-canary, recording, recovery or maximum-load stress report was supplied.",
-          "0.1.2's own image (BUILD=7) was not flashed; OCTABAM6 renders bit-identically in 684 emulator renders."
+          "A listening report of about three minutes on seven tracks: not a measured hardware cycle, memory-canary, recording, recovery or maximum-load stress test.",
+          "Seven instances, not the sixteen-insert maximum the cycle model prices; no overload was reported, but none was measured either."
         ],
         "report": "evidence/hardware.md"
       },

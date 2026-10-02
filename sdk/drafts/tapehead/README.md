@@ -7,7 +7,7 @@ Version: 0.1.2-experimental · author: @devilfish707 · algorithm: JClones (MIT)
 **Pending update of the released 0.1.1-experimental** (which stays in
 `sdk/octabam/modules/tapehead/` until this is integrated). It changes one
 thing: the level the tape model is driven at, so TapeHead on an Octatrack
-saturates as much as the JSFX does in a DAW. Heard on hardware by the author
+saturates as much as the JSFX does in a DAW. Heard on an MKII by the author
 (2 Oct 2026). Browser packages and native parity proofs are not yet
 regenerated; see TESTING.md.
 
@@ -143,10 +143,11 @@ See [TESTING.md](TESTING.md) for commands and numbers. In short:
 - **Composed build:** `tapehead-spring` builds, packs into
   `OCTATRACK_OCTABAM7.bin` with a valid checksum. `verify_menu`,
   `verify_initregs`, `verify_replaces --image` and `label_fmt` pass.
-- **On hardware:** the author flashed 0.1.1 (OCTABAM2) and the level fix
-  (OCTABAM6) on 2 Oct 2026. OCTABAM6 "works": it now saturates like the
-  JSFX. A listening test, not a stress run. 0.1.2's source renders
-  bit-identically to OCTABAM6's in 684 emulator renders.
+- **On hardware (MKII, 2 Oct 2026):** after 0.1.1 under-saturated, the level
+  fix (OCTABAM6) was compared with the JSFX and reported working. This
+  source's image (OCTABAM7) sounded the same over about three minutes with
+  TapeHead on seven tracks under p-lock automation and scenes. A listening
+  test, not a stress run.
 - **Hardware coverage:** author-reported operation and parameter locks, accepted by the owner. Model, duration and maximum tested load are unknown. The owner removed the mandatory one-hour stress run; the complete record is in [hardware evidence](evidence/hardware.md).
 
 ## Authorship and licences
