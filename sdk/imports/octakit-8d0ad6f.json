@@ -3,9 +3,9 @@
   "repository": "https://github.com/sambanks/octabam",
   "revision": "8d0ad6f4f82c2efbc10e1c65eefbce0ad1cec4bf",
   "module": "octakit",
-  "moduleVersion": "0.1.0-experimental",
+  "moduleVersion": "0.1.1-experimental",
   "root": "sdk/drafts/octakit",
-  "status": "draft; qualification, UI captures, owner review and browser/native integration pending",
+  "status": "draft; thumbnail, documentation/tutorial and actual MKII UI captures supplied; qualification, owner review and browser/native integration pending",
   "authorPin": {
     "repository": "https://github.com/emuyia/ems-octakit",
     "revision": "c6d3f3927b13fda0cf03711157237b837acdb1f9",
@@ -848,6 +848,6 @@
   "notes": [
     "Runtime source and the byte-free local build recipe are retained unchanged as text. Stock copies and relocations are derived from the owner's selected verified 1.40C locally, never committed or supplied to source-build automation.",
     "Source is outside native registry discovery and the public catalog. The frozen eleven-module qualification baseline has not been changed.",
-    "Historical upstream identity/hardware notes are supporting context, not qualification of this Octamod module version. No imported source was executed."
+    "Historical upstream identity/hardware notes are supporting context, not qualification of this Octamod module version. The initial text-only import did not execute source. The 0.1.1 UI-only build/capture ran later in an isolated local sandbox; see media/capture.json and TESTING.md."
   ]
 }

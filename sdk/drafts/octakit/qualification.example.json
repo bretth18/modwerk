@@ -1,15 +1,15 @@
 {
-  "moduleVersion": "0.1.0",
-  "sourceSha256": "REPLACE_WITH_NATIVE_SOURCE_SHA256",
-  "imageSha256": "REPLACE_WITH_LOCAL_TESTED_IMAGE_SHA256",
+  "moduleVersion": "0.1.1-experimental",
+  "sourceSha256": "88d85f23a073ea1c1d4e93b636a3976b3936f30a4a4d9b921346cdb3ee075687",
+  "imageSha256": "859b53a5fa9ac81ddf3a136878982014525c9e3b9b3c079af741f9a40f51680e",
   "cycles": [
     {
-      "processor": "dsp",
+      "processor": "coldfire",
       "worstCase": null,
       "maxConfiguration": null,
       "maxInstances": null,
       "budget": null,
-      "unit": "cycles/sample",
+      "unit": "cycles/event",
       "method": "emulator",
       "conditions": {
         "parameterExtremes": "Describe every minimum, maximum and branch boundary tested.",
@@ -25,9 +25,9 @@
     "regions": [
       {
         "name": "Replace with each code, state, table, buffer, stack/heap and padding allocation",
-        "space": "dsp-p",
+        "space": "sdram",
         "words": null,
-        "wordBits": 24,
+        "wordBits": 8,
         "bytes": null,
         "scope": "shared"
       }
@@ -71,14 +71,19 @@
   },
   "documentation": {
     "tutorial": {
-      "title": "Quick tutorial",
+      "title": "Quick tutorial: save and recall a Kit",
       "steps": [
-        "Explain setup and exactly where to select or enable the module.",
-        "Demonstrate the main controls with a useful example setting.",
-        "Explain what to hear/observe and how to stop, reset or bypass."
+        "Back up the project and open a disposable copy in an OctaKit build; old Parts migrate to the first 64 Kit slots.",
+        "On MKII, press PART to open LOAD KIT; on MKI, hold FUNC and press MIDI. Select a Kit with UP/DOWN or LEVEL and press YES.",
+        "Edit an audio track parameter, then open SAVE KIT with FUNC+PART on MKII or FUNC+BANK on MKI. Choose the destination and press YES; enter a name of up to seven characters and confirm.",
+        "Hold FUNC and press CUE to reload the saved Kit and discard subsequent unsaved edits. Use LOAD KIT > UNDO KIT to return to the last loaded Kit."
       ]
     },
-    "screenshots": [],
+    "screenshots": [
+      "media/ot-load-kit.png",
+      "media/ot-save-kit.png",
+      "media/ot-name-kit.png"
+    ],
     "screenshotStyle": "black-and-white"
   }
 }

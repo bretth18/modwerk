@@ -1,5 +1,7 @@
 # OT UI screenshots for module publication
 
+For agents, execute [the complete module-addition workflow](MODULE_ADDITION_WORKFLOW.md), including the actual captures; this document defines the capture contract.
+
 Every new module and update needs actual OT UI captures that explain where it
 lives and how to reach it. Capture the module's chooser or enable location and
 all relevant main, setup and control pages. One screenshot can cover both
@@ -86,6 +88,8 @@ For scene editing, `hold` keeps panel keys down while turning an encoder;
 `{"capture":"ot-scene-lock.png"}`, `{"release":["SCENE A"]}`.
 The supported UI keys also include `SCENE B`, `TRIG1`–`TRIG16`, MKII `AED`,
 `PUSH A`–`PUSH F` and `PUSH LEVEL` for physical encoder presses.
+Kit/pattern workflows also support `CUE`, `PTN`, `BANK`, `REC` (copy),
+`PLAY` (clear) and `STOP` (paste); hold FUNC for clipboard actions.
 
 Example effect plan:
 
@@ -125,9 +129,16 @@ By default the script stages an empty scratch card, boots the MKII panel, runs
 the DSP cores needed for normal effect selection, keeps transport stopped and
 exports the firmware LCD including popup windows through `lcd_view.py`.
 `--mki` selects the MKI panel; `--card` accepts a private local fixture.
+When actual project state is required, pass `--card`, `--set-name` and
+`--project-name` together. The tool mounts the disposable card, loads that
+project and refuses captures unless LOAD PROJECT completed. Never use an
+empty-card session as evidence of a project-dependent menu. The record includes
+only its card fingerprint and neutral fixture names; keep the actual card local.
 On macOS the emulator needs shared-memory access. Do not capture a failed load
 as a successful control page or bypass selection guards to manufacture it.
 
+The renderer preserves every real LCD pixel and uses two grayscale colors
+(24 and 240); this directly satisfies the monochrome style requirement.
 The output contains PNGs at six times the 128×64 LCD resolution and a
 `capture.json` record with image/emulator hashes, panel plan, setup and screenshot
 hashes. Review the pictures, then copy only these files into the module's

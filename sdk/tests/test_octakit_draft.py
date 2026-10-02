@@ -80,9 +80,16 @@ class OctakitDraft(unittest.TestCase):
         self.assertEqual(doc['build']['status'], 'pending')
         self.assertEqual(doc['tests']['hardwareStatus'], 'historical')
         self.assertNotIn('qualification', doc['tests'])
-        self.assertEqual(doc['access']['screenshots'], [])
+        self.assertEqual(len(doc['access']['screenshots']), 3)
         self.assertNotIn('noUiReason', doc['access'])
-        self.assertEqual(doc['media'], [])
+        self.assertEqual({entry['path'] for entry in doc['media']}, set(doc['access']['screenshots']))
+        capture = json.loads((DRAFT / 'media/capture.json').read_text())
+        self.assertEqual(capture['moduleVersion'], doc['version'])
+        for entry in doc['media']:
+            self.assertEqual(entry['captureType'], 'emulator')
+            self.assertEqual(entry['otUi']['moduleVersion'], doc['version'])
+            self.assertEqual(entry['otUi']['imageSha256'], capture['imageSha256'])
+            self.assertEqual(hashlib.sha256((DRAFT / entry['path']).read_bytes()).hexdigest(), capture['screenshots'][Path(entry['path']).name])
         for path in DRAFT.rglob('*'):
             self.assertFalse(path.is_symlink())
             self.assertNotIn(path.name, ['.git', 'out', 'downloads', 'vendor', '__pycache__'])

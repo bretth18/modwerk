@@ -21,6 +21,8 @@ KEYS = {'FUNC': 0x2d, 'SRC': 0x22, 'AMP': 0x23, 'LFO': 0x24,
         'FX1': 0x25, 'FX2': 0x26, 'YES': 0x31, 'NO': 0x32,
         'UP': 0x33, 'DOWN': 0x20, 'LEFT': 0x34, 'RIGHT': 0x21,
         'MENU': 0x1c, 'MIDI': 0x35, 'PART': 0x1d, 'PAGE': 0x1b,
+        'CUE': 0x2a, 'PTN': 0x2e, 'BANK': 0x2f,
+        'REC': 0x29, 'PLAY': 0x28, 'STOP': 0x27,
         'SCENE A': 0x19, 'SCENE B': 0x1a, 'AED': 0x1e,
         **{f'PUSH {name}': 0x38 + i for i, name in enumerate('ABCDEF')},
         'PUSH LEVEL': 0x3e,
@@ -44,11 +46,17 @@ def main():
     parser.add_argument('--plan', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True, help='New screenshot output directory')
     parser.add_argument('--card', type=Path, help='Optional local card; otherwise create an empty scratch card')
+    parser.add_argument('--set-name', help='Local card SET name; requires --card and --project-name')
+    parser.add_argument('--project-name', help='Load this disposable project before panel actions')
     parser.add_argument('--mki', action='store_true', help='Default panel is MKII')
     parser.add_argument('--key-ms', type=int, default=150, help='Key down/up interval, 20–500 ms; use 50 for double taps')
     args = parser.parse_args()
     if not 20 <= args.key_ms <= 500:
         parser.error('--key-ms must be 20–500 emulated milliseconds.')
+    if bool(args.set_name) != bool(args.project_name) or (args.project_name and not args.card):
+        parser.error('Project loading requires --card, --set-name and --project-name together.')
+    if any(name and (name in ('.', '..') or len(name) > 64 or '/' in name or '\\' in name or any(ord(c) < 32 for c in name)) for name in (args.set_name, args.project_name)):
+        parser.error('Use plain local card folder names, without paths.')
     image = args.image.resolve()
     if hashlib.sha256(image.read_bytes()).hexdigest() != args.image_sha256:
         parser.error('The local capture image differs from its expected fingerprint.')
@@ -92,11 +100,19 @@ def main():
     if output.exists():
         parser.error('Output exists; choose a new directory to preserve previous captures.')
     lcd = load('octamod_lcd', ROOT / 'sdk/octabam/tools/emu/lcd_view.py')
+    # Render the actual bitplane in the required monochrome documentation style.
+    # Preserve every LCD pixel; this changes only the two display colors.
+    lcd.ON, lcd.OFF = (240, 240, 240), (24, 24, 24)
     output.mkdir(parents=True)
     provenance = {'firmware': '1.40C', 'imageSha256': args.image_sha256,
                   'emulatorSha256': hashlib.sha256(args.emulator.read_bytes()).hexdigest(),
                   'setup': 'Headless ot_emu; ' + ('MKI' if args.mki else 'MKII') + ' panel; stopped transport; 128×64 LCD at integer scale 6.',
+                  'palette': {'on': list(lcd.ON), 'off': list(lcd.OFF)},
                   'keyMs': args.key_ms, 'plan': plan, 'screenshots': {}}
+    if args.card:
+        provenance['cardSha256'] = hashlib.sha256(args.card.read_bytes()).hexdigest()
+    if args.project_name:
+        provenance['project'] = {'set': args.set_name, 'name': args.project_name}
     # Discard emulator diagnostics: never retain RAM, firmware, card or private logs.
     with tempfile.TemporaryDirectory(prefix='octamod-ui-capture.') as directory:
         work = Path(directory)
@@ -109,6 +125,8 @@ def main():
         command = [str(args.emulator.resolve()), '--image', str(image), '--card', str(card),
                    '--dsp', '--frame', '--ms', '3000', '--interactive', '--lcd', str(plane),
                    '--main-level', 'off', '--rtc', 'host']
+        if args.project_name:
+            command.extend(['--mount', '--set', args.set_name, '--project', args.project_name])
         if not args.mki:
             command.append('--mkii')
         env = {key: value for key, value in os.environ.items() if not key.startswith('OT_')}
@@ -117,13 +135,16 @@ def main():
         poll = selectors.DefaultSelector()
         poll.register(port.stdout, selectors.EVENT_READ)
         pending = b''
+        project_loaded = False
 
-        def reply(prefixes):
-            nonlocal pending
-            deadline = time.monotonic() + 120
+        def reply(prefixes, timeout=120):
+            nonlocal pending, project_loaded
+            deadline = time.monotonic() + timeout
             while True:
                 while b'\n' in pending:
                     line, pending = pending.split(b'\n', 1)
+                    if b'load run ended: LOAD PROJECT handled' in line:
+                        project_loaded = True
                     if line.startswith(prefixes):
                         if line.startswith(b'err'):
                             raise RuntimeError('The emulator refused a capture command.')
@@ -145,7 +166,9 @@ def main():
 
         rows = [0] * 8
         try:
-            reply(b'ready ')
+            reply(b'ready ', timeout=600 if args.project_name else 120)
+            if args.project_name and not project_loaded:
+                raise RuntimeError('The disposable project did not finish loading; refuse misleading captures.')
             for action in plan:
                 key, value = next(iter(action.items()))
                 if key in ('press', 'hold', 'release'):

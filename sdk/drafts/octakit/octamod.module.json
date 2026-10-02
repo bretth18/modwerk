@@ -3,7 +3,7 @@
   "id": "octakit",
   "key": "OCTAKIT",
   "name": "OctaKit",
-  "version": "0.1.0-experimental",
+  "version": "0.1.1-experimental",
   "category": "scenes",
   "source": {
     "repository": "https://github.com/sambanks/octabam",
@@ -12,7 +12,7 @@
   },
   "build": {
     "status": "pending",
-    "reason": "Draft source import. Publication requires actual OT UI captures, worst-case cycles, exact memory accounting, a passed real-hardware stress project and owner review. Octamod packaging and browser/native composition are unverified."
+    "reason": "Draft source and documentation import. Publication requires worst-case cycles, exact memory accounting, a passed real-hardware stress project and owner review. Octamod packaging and browser/native composition are unverified."
   },
   "author": {
     "github": "emuyia",
@@ -56,7 +56,11 @@
       "PTN+FUNC+RIGHT saves the current Kit, copies it and the pattern to the next available slots, then loads the new pair.",
       "PTN+FUNC+TRIG manages inactive patterns. For other banks, use BANK+TRIG followed by BANK+FUNC+TRIG."
     ],
-    "screenshots": []
+    "screenshots": [
+      "media/ot-load-kit.png",
+      "media/ot-save-kit.png",
+      "media/ot-name-kit.png"
+    ]
   },
   "controls": [],
   "compatibility": {
@@ -96,7 +100,7 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Pinned upstream records standalone image identity, emulator boot and historical hardware use. No Octamod native/browser parity, current-version worst-case cycles, complete memory inventory, 60-minute eight-track hardware stress record or actual LCD captures are supplied.",
+    "summary": "Pinned upstream records standalone identity and historical hardware use. Current-version isolated native UI build and real monochrome emulator captures are recorded in media/capture.json. No Octamod native/browser parity, worst-case cycles, complete memory inventory or 60-minute eight-track hardware stress record is supplied.",
     "hardwareStatus": "historical",
     "evidenceRevision": "8d0ad6f4f82c2efbc10e1c65eefbce0ad1cec4bf",
     "gates": [
@@ -106,7 +110,59 @@
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "Imported source and documentation retain Sam Banks' and June Kiff's MIT licence notices and exact source pins. June Kiff's licence is also retained in upstream/LICENSE. Only authored source and the sparse local build recipe are included; firmware, extracted stock routines/tables, compiled images and media are excluded. This import makes no new rights or hardware qualification claim. Contributor declaration and owner/reviewer verification remain required before publication; review is not automatic legal clearance."
+    "declaration": "Imported source and documentation retain Sam Banks' and June Kiff's MIT licence notices and exact source pins. June Kiff's licence is also retained in upstream/LICENSE. Only authored source and the sparse local build recipe are included; firmware, extracted stock routines/tables, compiled images are excluded. This import makes no new rights or hardware qualification claim. Contributor declaration and owner/reviewer verification remain required before publication; review is not automatic legal clearance. Original SVG thumbnail: Octamod contributors, MIT. Actual LCD captures: media/LICENSE.md, LicenseRef-OT-UI-Documentation; underlying Elektron rights remain reserved. Owner/reviewer rights verification is required before publication."
   },
-  "media": []
+  "media": [
+    {
+      "path": "media/ot-load-kit.png",
+      "captureType": "emulator",
+      "caption": "MKII PART opens LOAD KIT, showing the assigned Kit, unassigned slot markers and UNDO KIT.",
+      "alt": "Actual Octatrack LOAD KIT LCD: UNDO KIT, selected 001 ONE and numbered Kit slots.",
+      "credit": "Octamod contributors",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "LOAD KIT",
+        "shows": "location-and-controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "859b53a5fa9ac81ddf3a136878982014525c9e3b9b3c079af741f9a40f51680e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Loaded disposable SET OCTAMOD / PROJECT KITDEMO from a 64 MiB card; no audio staged; stock FX plus OCTAKIT; monochrome pixels."
+      }
+    },
+    {
+      "path": "media/ot-save-kit.png",
+      "captureType": "emulator",
+      "caption": "MKII FUNC+PART opens SAVE KIT; choose a destination slot.",
+      "alt": "Actual Octatrack SAVE KIT LCD with 001 ONE selected and unassigned slots marked.",
+      "credit": "Octamod contributors",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "SAVE KIT",
+        "shows": "location-and-controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "859b53a5fa9ac81ddf3a136878982014525c9e3b9b3c079af741f9a40f51680e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Loaded disposable SET OCTAMOD / PROJECT KITDEMO from a 64 MiB card; no audio staged; stock FX plus OCTAKIT; monochrome pixels."
+      }
+    },
+    {
+      "path": "media/ot-name-kit.png",
+      "captureType": "emulator",
+      "caption": "YES on the selected SAVE KIT slot opens the seven-character name editor.",
+      "alt": "Actual Octatrack SAVE KIT name editor displaying ONE with the character cursor.",
+      "credit": "Octamod contributors",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "SAVE KIT name editor",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "859b53a5fa9ac81ddf3a136878982014525c9e3b9b3c079af741f9a40f51680e",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Loaded disposable SET OCTAMOD / PROJECT KITDEMO from a 64 MiB card; no audio staged; stock FX plus OCTAKIT; monochrome pixels."
+      }
+    }
+  ]
 }
