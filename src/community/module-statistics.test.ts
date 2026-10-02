@@ -1,3 +1,5 @@
+import { MODULES } from '../catalog/modules'
+import { MODULE_ADDED_AT } from '../catalog/module-additions'
 import { describe, expect, it } from 'vitest'
 import { compareModules, type ModuleStatistics } from './module-statistics'
 const modules=[{id:'a',name:'Alpha',authorName:'Zed'},{id:'b',name:'Beta',authorName:'Amy'},{id:'c',name:'Gamma',authorName:'Amy'}]
@@ -12,4 +14,24 @@ describe('module discovery ordering',()=>{
   expect([...filtered].sort((a,b)=>compareModules(a,b,'liked',null)).map(module=>module.id)).toEqual(['a','c'])
   expect(filtered.map(module=>module.id)).toEqual(['c','a'])
  })
+})
+
+
+it('sorts by the first addition date, with alphabetical ties and unknown dates last', () => {
+ const additions = [
+  { ...modules[0], addedAt: '2026-10-01T12:00:00Z', version: '9.0.0' },
+  { ...modules[2], addedAt: '2026-10-02T12:00:00Z', version: '0.1.0' },
+  { ...modules[1], addedAt: '2026-10-02T12:00:00Z', version: '0.2.0' },
+  { id: 'missing', name: 'Missing', authorName: 'Amy' },
+  { id: 'invalid', name: 'Invalid', authorName: 'Amy', addedAt: 'bad date' },
+ ]
+ expect([...additions].sort((a,b) => compareModules(a,b,'recent',null)).map(module => module.id)).toEqual(['b','c','a','invalid','missing'])
+ expect(additions.map(module => module.id)).toEqual(['a','c','b','missing','invalid'])
+ expect(additions.slice(0,2).sort((a,b) => compareModules(a,b,'recent',statistics)).map(module => module.id)).toEqual(['c','a'])
+})
+
+it('requires a valid addition date for every catalog entry and puts the four later additions first', () => {
+ expect(Object.keys(MODULE_ADDED_AT).sort()).toEqual(MODULES.map(module => module.id).sort())
+ expect(MODULES.every(module => Number.isFinite(Date.parse(module.addedAt)))).toBe(true)
+ expect([...MODULES].sort((a,b) => compareModules(a,b,'recent',null)).slice(0,4).map(module => module.id)).toEqual(['analog-bassdrum','midi-scenes','quantizer','usb-audio-out-tracks-main-cue'])
 })

@@ -32,4 +32,4 @@ export function post<T>(path: string, body: unknown, method = 'POST') { return a
 export type CommunityUser = { id: string; displayName: string }
 export type Session = { available: boolean; admin: boolean; user: CommunityUser | null }
 export type PublicMedia = { id: string; kind: 'image' | 'audio'; caption: string; capture_type: string }
-export type PublishedModule = { module_id: string; title: string; repository_url: string; description: string; usage: string; resource_notes: string; test_report_url: string; reviewed_at: string; author: string }
+export type PublishedModule = { module_id: string; title: string; repository_url: string; description: string; usage: string; resource_notes: string; test_report_url: string; reviewed_at: string; added_at?: string | null; author: string }

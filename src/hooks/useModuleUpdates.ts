@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { deviceStore, openDeviceDatabase } from '../storage/device'
 import { moduleViewsToRemember, type ModuleVersion } from '../catalog/module-updates'
 
-export function useModuleUpdates(modules: readonly ModuleVersion[], openedId?: string) {
+export function useModuleUpdates(modules: readonly ModuleVersion[], catalog: readonly ModuleVersion[], openedId?: string) {
   const [viewed, setViewed] = useState<Record<string, string>>({})
-  const [ready, setReady] = useState(false)
+  const [baseline, setBaseline] = useState<readonly string[] | null>(null)
   const storeRef = useRef<ReturnType<typeof deviceStore> | null>(null)
   const pendingRef = useRef(new Map<string, string>())
   const aliveRef = useRef(false)
@@ -20,18 +20,22 @@ export function useModuleUpdates(modules: readonly ModuleVersion[], openedId?: s
         database = db
         const store = deviceStore(db)
         storeRef.current = store
-        const restored = await store.readModuleViews()
-        if (!cancelled) setViewed(restored)
+        const [restored, rememberedBaseline] = await Promise.all([store.readModuleViews(), store.readModuleBaseline()])
+        if (cancelled) return
+        setViewed(restored)
+        setBaseline(rememberedBaseline ?? catalog.map(module => module.id))
+        if (!rememberedBaseline) await store.rememberModuleBaseline(catalog.map(module => module.id))
       } catch {
         // When device storage is unavailable, viewing history lasts this visit.
-      } finally { if (!cancelled) setReady(true) }
+        if (!cancelled) setBaseline(current => current ?? catalog.map(module => module.id))
+      }
     })()
     return () => { cancelled = true; aliveRef.current = false; storeRef.current = null; database?.close() }
-  }, [])
+  }, [catalog])
 
   useEffect(() => {
-    if (!ready) return
-    const records = moduleViewsToRemember(modules, viewed, openedId)
+    if (baseline === null) return
+    const records = moduleViewsToRemember(modules, viewed, baseline, openedId)
       .filter(module => pendingRef.current.get(module.id) !== module.version)
     if (!records.length) return
     const pending = pendingRef.current
@@ -40,7 +44,7 @@ export function useModuleUpdates(modules: readonly ModuleVersion[], openedId?: s
       for (const module of records) if (pending.get(module.id) === module.version) pending.delete(module.id)
       if (aliveRef.current) setViewed(current => ({ ...current, ...Object.fromEntries(records.map(module => [module.id, module.version])) }))
     })
-  }, [modules, viewed, openedId, ready])
+  }, [modules, viewed, openedId, baseline])
 
-  return viewed
+  return { viewed, baseline }
 }

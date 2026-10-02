@@ -343,3 +343,16 @@ describe('public module popularity',()=>{
   expect(db.prepare('SELECT value FROM module_download_meta').get()).toEqual(started)
  })
 })
+
+
+it('retains the first approved addition date when a community module is updated', async () => {
+ const { db, call } = await fixture()
+ const insert = db.prepare("INSERT INTO submissions(id,owner_id,module_id,title,repository_url,description,usage,test_report_url,stress_notes,quality_notes,resource_notes,license,rights_confirmed,status,reviewed_at) VALUES(?,'author','new-filter',?,'https://github.com/author/repo','Original','Usage','https://github.com/author/repo','Stress','Quality','Resources','MIT',1,?,?)")
+ insert.run('rejected', 'Rejected draft', 'rejected', '2026-09-29 12:00:00')
+ insert.run('initial', 'Version one', 'approved', '2026-10-01 12:00:00')
+ insert.run('update', 'Version two', 'approved', '2026-10-02 12:00:00')
+ db.prepare("INSERT INTO module_publications(module_id,submission_id) VALUES('new-filter','initial')").run()
+ expect((await (await call('/catalog')).json())[0].added_at).toBe('2026-10-01T12:00:00Z')
+ db.prepare("UPDATE module_publications SET submission_id='update' WHERE module_id='new-filter'").run()
+ expect((await (await call('/catalog')).json())[0]).toMatchObject({ title: 'Version two', reviewed_at: '2026-10-02 12:00:00', added_at: '2026-10-01T12:00:00Z' })
+})

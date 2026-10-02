@@ -42,6 +42,14 @@ export function deviceStore(db: IDBDatabase) {
     async deleteConfiguration(id: string) { await transaction('configurations', 'readwrite', store => store.delete(id)) },
     async activeConfiguration(): Promise<string | undefined> { return transaction('settings', 'readonly', store => store.get('active')) },
     async setActiveConfiguration(id: string) { await transaction('settings', 'readwrite', store => store.put(id, 'active')) },
+    async readModuleBaseline(): Promise<string[] | undefined> {
+      const ids: unknown = await transaction('settings', 'readonly', store => store.get('module-library-baseline'))
+      return Array.isArray(ids) && ids.every(id => typeof id === 'string' && /^[a-z][a-z0-9-]*$/.test(id)) ? [...new Set(ids)] : undefined
+    },
+    async rememberModuleBaseline(ids: readonly string[]) {
+      if (!ids.every(id => /^[a-z][a-z0-9-]*$/.test(id))) throw new Error('Invalid module library baseline.')
+      await transaction('settings', 'readwrite', store => store.put([...new Set(ids)], 'module-library-baseline'))
+    },
     async readModuleViews(): Promise<Record<string, string>> {
       const records: unknown[] = await transaction('settings', 'readonly', store => store.getAll(IDBKeyRange.bound('module-view/', 'module-view/\uffff')))
       const versions: Record<string, string> = {}
