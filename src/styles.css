@@ -1003,6 +1003,15 @@ h1 { font-size: 28px; }
   .module-popularity { margin-top: 8px; padding-top: 0; border-top: 0; }
   .card-proof { align-items: center; margin-top: 12px; padding-top: 2px; font-size: 12px; }
   .card-proof label { min-height: 40px; padding-left: 12px; }
+  /* The whole card opens the module page; its own controls stay on top. */
+  .module-card { position: relative; }
+  .module-card-heading > a::before { content: ""; position: absolute; inset: 0; }
+  .add-button, .card-credit a, .card-proof label { position: relative; z-index: 1; }
+  .module-card:has(.module-card-heading > a:active) { border-color: #53535f; background: #29292e; }
+  .module-card .preview-led, .selected-badge { display: none; }
+  .module-cover .hover-info, .module-cover:hover .hover-info { display: block; inset: 10px 10px auto auto; padding: 0; background: none; opacity: 1; transform: none; }
+  .hover-info > span { display: none; }
+  .hover-info strong { gap: 5px; padding: 5px 9px; border: 1px solid #ffffff1f; border-radius: 6px; background: #18181dcc; color: #d5d5df; font-size: 12px; }
 
   .status-bar { height: 44px; padding: 0 16px; }
   .status-bar .privacy-link { display: none; }
