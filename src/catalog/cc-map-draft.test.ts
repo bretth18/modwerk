@@ -7,13 +7,15 @@ import { parseQualificationBaseline, requireFolderQualification } from '../../sc
 import { MODULES, resolveSelection } from './modules'
 
 describe('CC Map source draft', () => {
-  it('preserves attribution and source pin while refusing publication without measured evidence and actual LCD captures', async () => {
+  it('preserves attribution and source pin with actual LCD evidence while refusing publication without measured qualification', async () => {
     const document = parseModuleDocument(draft)
     expect(document.author.github).toBe('sambanks')
     expect(document.source?.revision).toBe('8d0ad6f4f82c2efbc10e1c65eefbce0ad1cec4bf')
     expect(document.tests.hardwareStatus).toBe('historical')
     expect(document.build?.status).toBe('pending')
-    expect(() => requireModuleUiForPublication(document)).toThrow('actual screenshots')
+    expect(() => requireModuleUiForPublication(document)).not.toThrow()
+    expect(document.access?.screenshots).toHaveLength(6)
+    expect(document.media.every(item => item.otUi?.moduleVersion === document.version)).toBe(true)
     expect(() => requireModuleQualificationForPublication(document)).toThrow('worst-case cycles, exact memory and hardware')
     await expect(requireFolderQualification(resolve('sdk/drafts/cc-map'), document, parseQualificationBaseline(baseline))).rejects.toThrow('worst-case cycles, exact memory and hardware')
     expect(baseline.modules.some(module => module.id === document.id)).toBe(false)

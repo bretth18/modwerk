@@ -1,0 +1,338 @@
+{
+  "schemaVersion": 1,
+  "captured": "2026-10-02",
+  "moduleId": "cc-map",
+  "moduleVersion": "0.1.1-experimental",
+  "firmware": "1.40C",
+  "imageSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812",
+  "emulatorSha256": "f521565f3866947788d7c45507576a4ed386d2e4ef57e9683ab65fa0acc6a166",
+  "imageProfile": {
+    "modules": [
+      "FILTER",
+      "EQUALIZER",
+      "DJ EQ",
+      "PHASER",
+      "FLANGER",
+      "CHORUS",
+      "SPATIALIZER",
+      "COMB FILTER",
+      "COMPRESSOR",
+      "LO-FI",
+      "DELAY",
+      "PLATE REV",
+      "SPRING REV",
+      "DARK REV",
+      "CC MAP"
+    ],
+    "fx1": [
+      "FILTER",
+      "EQUALIZER",
+      "DJ EQ",
+      "PHASER",
+      "FLANGER",
+      "CHORUS",
+      "SPATIALIZER",
+      "COMB FILTER",
+      "COMPRESSOR",
+      "LO-FI"
+    ],
+    "staticStock": true
+  },
+  "sourcePins": {
+    "repository": "https://github.com/sambanks/octabam",
+    "revision": "8d0ad6f4f82c2efbc10e1c65eefbce0ad1cec4bf",
+    "path": "modules/cc-map"
+  },
+  "nativeToolsRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+  "sourceFiles": {
+    "manifest.py": "a776d7b7d072f96e013f8b43bbdbabaaa455955a594fda8a836d07cfba5c747e",
+    "cc_map.s": "da7280f1f14b09a211928da38aba5da084f3cd00690f150813ed274ea74cd104"
+  },
+  "linkedCaveBytes": 724,
+  "localBuild": {
+    "containerImage": "sha256:b6d07c32790744c38874da842380e766349a699103d2c1b88ff9d986b7a827fb",
+    "mc68kRevision": "4a6d0d17a1f2b30077ab726c27fe9bb770fa0456",
+    "nativeBuilderSha256": "93fa39b045f11efe53823337ad16c7aab962f7759a3286bea5a8d66c6fa75bfe",
+    "wrapperSha256": "60c62e93329ed313fb4478a4aba336e3756786429055ac5dc9b6b401b6dec35c",
+    "wrapperSource": "from pathlib import Path\nimport contextlib, hashlib, io, json, os, sys\nnative=Path(__file__).resolve().parent/'native'\nos.chdir(native)\nsys.path.insert(0,str(native/'tools'))\nimport toolpath\nfrom remix import registry\nfrom remix.schema import Remix\nknown=registry.modules()\nstock=[m.key for m in known.values() if m.is_stock]\nfx1=[key for key in stock if key not in ['DELAY','PLATE REV','SPRING REV','DARK REV']]\nprofile=Remix(name='cc-map-ui',doc='Local CC Map UI capture only; not a release.',modules=tuple(stock+['CC MAP']),fx1=tuple(fx1),fallback='NONE',static_stock=True)\nregistry.remix=lambda name: profile\nimport build_bus\nwith contextlib.redirect_stdout(io.StringIO()):\n    build_bus.main()\nimage=native/'out/mainos_bus.bin'\nrecord={'imageSha256':hashlib.sha256(image.read_bytes()).hexdigest(),'emulatorSha256':hashlib.sha256((native.parent/'out/emu/ot_emu').read_bytes()).hexdigest(),'modules':list(profile.modules),'fx1':list(profile.fx1),'staticStock':True,'nativeToolsRevision':'b8deefc88b2c3e5f3c6158e364eb741df1924e1d','sourceFiles':{name:hashlib.sha256((native/'modules/cc-map'/name).read_bytes()).hexdigest() for name in ['manifest.py','cc_map.s']}}\n(native.parent/'build.json').write_text(json.dumps(record,indent=2)+'\\n')\nprint('Local CC Map capture image built; native source/reference checks passed. Only hashes retained as evidence.')\n",
+    "environment": {
+      "REMIX": "cc-map-ui",
+      "XBUS": "1",
+      "SPEC": "1",
+      "DEV": "0",
+      "NOROUNDTRIP": "0",
+      "OCTABAM_STATIC_STOCK": "1",
+      "OCTABAM_NO_CACHE": "1",
+      "BUILD": "79"
+    },
+    "isolation": "Ephemeral local Docker container; network none; capabilities dropped; no-new-privileges; read-only container root; unprivileged UID; only private temporary capture workspace mounted; no host credentials. Firmware is local composition input only, never source-release automation.",
+    "emulatorBuild": "cmake -S native/tools/emu/ot_emu -B out/emu -DOT_VENDOR=<staged-cores> -DOT_LTO=OFF -DBUILD_TESTING=OFF -DCMAKE_BUILD_TYPE=Release; cmake --build out/emu --target ot_emu --parallel 4. No CTest/native qualification suite executed."
+  },
+  "renderer": {
+    "baseSourceSha256": "c1a9a61bd8d551fd7f15b5debcb5ff9b986e6a56ed0810d9d98c2627344594c1",
+    "onRgb": [
+      235,
+      235,
+      235
+    ],
+    "offRgb": [
+      24,
+      24,
+      24
+    ],
+    "scale": 6,
+    "method": "Direct rendering of actual 128\u00d764 1-bpp LCD pixels and firmware popup planes. Only the two-color renderer palette is changed; no pixel shapes, labels or controls are reconstructed."
+  },
+  "accessSteps": [
+    "On the MKII panel, press PROJ. Select MIDI with UP/DOWN and press RIGHT to enter its list.",
+    "Select CONTROL and press YES. Select AUDIO CC IN and turn LEVEL until its checkbox is enabled.",
+    "Press NO to return to MIDI, select CHANNELS and press YES. Match the target audio track\u2019s TRIG CH to the external controller. The captured T1 uses channel 1; AUTO CH 11 is a different setting.",
+    "Press NO twice to return to the track. Press T1, then hold FUNC and press FX1 for FX1 SETUP. Turn LEVEL to FILTER and press YES to assign it.",
+    "FILTER SETUP shows page-2 HP, LP, ENV, HOLD, Q and DIST. Send CC 68 value 1 on channel 1 to change HP from 12 dB to 24 dB.",
+    "Close SETUP with FX1 and reopen with FUNC+FX1 to refresh the displayed HP value. The cave omits the stock editor\u2019s redraw call.",
+    "These steps were verified only for the isolated MKII emulator UI. Qualify audio, Part save/reload, MKI access and real hardware separately before publication."
+  ],
+  "captureTool": {
+    "path": "scripts/capture-module-ui.py",
+    "baseSourceSha256": "470e13045a19d3b0a4ff7cee16c6a49eb07a840c5540f4754a1fe410a3b52527",
+    "localAdapter": "Load the unchanged capture script with ROOT set to the staged SDK. For the CC demonstration, additionally validate exactly one CC message (six lowercase hex digits, status b0..bf, two data bytes 00..7f); send midi followed by the three space-separated hex bytes, then run 200. No poke or firmware-memory edits are used."
+  },
+  "sessions": [
+    {
+      "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6.",
+      "keyMs": 150,
+      "plan": [
+        {
+          "wait": 3000
+        },
+        {
+          "press": [
+            "YES"
+          ]
+        },
+        {
+          "wait": 2000
+        },
+        {
+          "press": [
+            "NO"
+          ]
+        },
+        {
+          "press": [
+            "MENU"
+          ]
+        },
+        {
+          "press": [
+            "DOWN"
+          ]
+        },
+        {
+          "press": [
+            "DOWN"
+          ]
+        },
+        {
+          "press": [
+            "DOWN"
+          ]
+        },
+        {
+          "press": [
+            "RIGHT"
+          ]
+        },
+        {
+          "capture": "ot-midi-location.png"
+        },
+        {
+          "press": [
+            "YES"
+          ]
+        },
+        {
+          "capture": "ot-cc-input.png"
+        },
+        {
+          "encoder": {
+            "name": "LEVEL",
+            "delta": 1
+          }
+        },
+        {
+          "capture": "ot-cc-enabled.png"
+        },
+        {
+          "press": [
+            "NO"
+          ]
+        },
+        {
+          "press": [
+            "DOWN"
+          ]
+        },
+        {
+          "press": [
+            "DOWN"
+          ]
+        },
+        {
+          "capture": "channels-menu.png"
+        },
+        {
+          "press": [
+            "YES"
+          ]
+        },
+        {
+          "capture": "ot-channels.png"
+        },
+        {
+          "press": [
+            "NO"
+          ]
+        },
+        {
+          "press": [
+            "NO"
+          ]
+        },
+        {
+          "press": [
+            "T1"
+          ]
+        },
+        {
+          "press": [
+            "FX1"
+          ]
+        },
+        {
+          "capture": "ot-fx1-main.png"
+        },
+        {
+          "press": [
+            "FUNC",
+            "FX1"
+          ]
+        },
+        {
+          "capture": "ot-fx1-setup.png"
+        }
+      ],
+      "captureSourceSha256": "470e13045a19d3b0a4ff7cee16c6a49eb07a840c5540f4754a1fe410a3b52527",
+      "retainedScreenshots": [
+        "media/ot-midi-location.png",
+        "media/ot-cc-enabled.png",
+        "media/ot-channels.png",
+        "media/ot-fx1-main.png",
+        "media/ot-fx1-setup.png"
+      ]
+    },
+    {
+      "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6.",
+      "keyMs": 150,
+      "plan": [
+        {
+          "wait": 3000
+        },
+        {
+          "press": [
+            "YES"
+          ]
+        },
+        {
+          "wait": 2000
+        },
+        {
+          "press": [
+            "NO"
+          ]
+        },
+        {
+          "press": [
+            "T1"
+          ]
+        },
+        {
+          "press": [
+            "FX1"
+          ]
+        },
+        {
+          "capture": "ot-fx1-main.png"
+        },
+        {
+          "press": [
+            "FUNC",
+            "FX1"
+          ]
+        },
+        {
+          "capture": "ot-fx1-setup.png"
+        },
+        {
+          "midi": "b04401"
+        },
+        {
+          "press": [
+            "FX1"
+          ]
+        },
+        {
+          "press": [
+            "FUNC",
+            "FX1"
+          ]
+        },
+        {
+          "capture": "ot-cc68-filter.png"
+        }
+      ],
+      "captureSourceSha256": "2b5cdf9070d3c0cecd81cc9183c3249d9eebd3f21bfd3753cfd51a4e026c7904",
+      "retainedScreenshots": [
+        "media/ot-cc68-filter.png"
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "media/ot-midi-location.png",
+      "sha256": "2f3460f74879fef193da89a52c12d7387b52a55227f52b2d16c9290d871171b0",
+      "page": "PROJ > MIDI > CONTROL"
+    },
+    {
+      "path": "media/ot-cc-enabled.png",
+      "sha256": "55be90eedf64b11e12a70ba8b0245b49ad479505998f56a7efd62cd457d8dad1",
+      "page": "MIDI CONTROL: AUDIO CC IN"
+    },
+    {
+      "path": "media/ot-channels.png",
+      "sha256": "8a7581b048b18368009cf075a603353fe0575f7be1ce1fbdb82b33f437714b06",
+      "page": "MIDI CHANNELS: TRIG CH"
+    },
+    {
+      "path": "media/ot-fx1-main.png",
+      "sha256": "4f7eb7b22f891b370765caef2f6105b2c7bb2aa1887ecba8e0fdcf719653764a",
+      "page": "T1 FX1 FILTER main"
+    },
+    {
+      "path": "media/ot-fx1-setup.png",
+      "sha256": "409fa70f7fc510e8d909cf1565110f3d90e288df37d8f5eb7ad0505a1fef3eb5",
+      "page": "T1 FX1 FILTER SETUP before CC 68"
+    },
+    {
+      "path": "media/ot-cc68-filter.png",
+      "sha256": "fc2f383867b63bd12a575b5236a67571c72d730ad0f829be9bbb06d81aa632aa",
+      "page": "T1 FX1 FILTER SETUP after CC 68"
+    }
+  ],
+  "limitations": [
+    "UI-only MKII emulator documentation; no hardware, audio continuity, persistence, maximum-load/cycle/memory qualification or native/browser parity claim.",
+    "CC68 value1 on channel1 changes FILTER HP from12dB to24dB after closing/reopening SETUP. Other effects, CCs and combinations remain unverified.",
+    "No BusDelay/BusVerb, MODE DEFAULTS or SCENES KITS module imported.",
+    "Firmware, generated native image/code, raw LCD/RAM dumps, temporary cards and private logs are not retained."
+  ]
+}

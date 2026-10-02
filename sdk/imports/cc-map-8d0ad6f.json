@@ -5,9 +5,9 @@
   "modules": [
     "cc-map"
   ],
-  "moduleVersion": "0.1.0-experimental",
+  "moduleVersion": "0.1.1-experimental",
   "root": "sdk/drafts/cc-map",
-  "status": "draft; qualification, LCD captures, owner review and native/browser integration pending",
+  "status": "draft; qualification, owner review and native/browser integration pending; actual MKII LCD captures included",
   "files": [
     {
       "path": "OCTABAM.md",
@@ -60,7 +60,7 @@
   ],
   "exclusions": [
     "firmware, extracted stock routines/tables and generated native output",
-    "media, RAM/LCD dumps and project/card fixtures",
+    "raw RAM/LCD dumps, firmware-containing local images and project/card fixtures; only reviewed original PNGs/metadata retained",
     "BusDelay, BusVerb, MODE DEFAULTS, SCENES KITS and other unrequested modules",
     "upstream verification executables, toolchains and Git history"
   ],
@@ -68,6 +68,6 @@
     "Sam Banks authored CC Map; the full MIT licence, assembly and upstream notes are preserved. Manifest transformation is reversible and recorded with upstream/vendored hashes.",
     "The authored cave oracle is module source, not a copied stock routine. Address identities and a stock guard do not provide firmware bytes.",
     "Native discovery, public catalog, eleven-module qualification baseline and approved compiler inventory remain unchanged. CC 62-67 targets out-of-scope BusDelay/BusVerb only; no support for other FX2 effects is claimed.",
-    "Historical upstream hardware/emulator notes do not qualify this Octamod version. No imported source was executed. Contributor declaration and owner/reviewer verification remain required before publication."
+    "Historical upstream hardware/emulator notes do not qualify this Octamod version. Native source was evaluated only inside an isolated local container for explicitly requested UI captures; no qualification suite ran. Original thumbnail and actual monochrome MKII LCD captures are documented under media/capture.json. Contributor declaration and owner/reviewer verification remain required before publication."
   ]
 }

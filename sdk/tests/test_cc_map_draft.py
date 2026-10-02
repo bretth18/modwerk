@@ -64,13 +64,23 @@ class CcMapDraft(unittest.TestCase):
         self.assertEqual(doc['build']['status'], 'pending')
         self.assertEqual(doc['tests']['hardwareStatus'], 'historical')
         self.assertNotIn('qualification', doc['tests'])
-        self.assertEqual(doc['access']['screenshots'], [])
+        self.assertEqual(len(doc['access']['screenshots']), 6)
+        self.assertEqual(set(doc['access']['screenshots']), {item['path'] for item in doc['media']})
         self.assertNotIn('noUiReason', doc['access'])
-        self.assertEqual(doc['media'], [])
-        self.assertEqual({path.name for path in DRAFT.iterdir()}, set(item['path'] for item in RECORD['files']) | {'README.md', 'TESTING.md', 'octamod.module.json'})
+        capture = json.loads((DRAFT / 'media/capture.json').read_text())
+        self.assertEqual(capture['moduleVersion'], doc['version'])
+        for item in capture['screenshots']:
+            self.assertEqual(hashlib.sha256((DRAFT / item['path']).read_bytes()).hexdigest(), item['sha256'])
+        for item in doc['media']:
+            self.assertEqual(item['captureType'], 'emulator')
+            self.assertEqual(item['otUi']['moduleVersion'], doc['version'])
+            self.assertEqual(item['otUi']['imageSha256'], capture['imageSha256'])
+        for filename, digest in capture['sourceFiles'].items():
+            self.assertEqual(hashlib.sha256((DRAFT / filename).read_bytes()).hexdigest(), digest)
+        self.assertEqual({path.name for path in DRAFT.iterdir()}, set(item['path'] for item in RECORD['files']) | {'README.md', 'TESTING.md', 'octamod.module.json', 'thumbnail.svg', 'media'})
         for path in DRAFT.rglob('*'):
             self.assertFalse(path.is_symlink())
-            self.assertTrue(path.is_file())
+            self.assertTrue(path.is_file() or path.is_dir())
             self.assertNotIn(path.suffix.lower(), ['.bin', '.syx', '.o', '.elf', '.exe', '.dll', '.so', '.dylib', '.zip', '.wav'])
         self.assertNotIn('.incbin', (DRAFT / 'cc_map.s').read_text())
         upstream = json.loads((APP / 'sdk/UPSTREAM.json').read_text())

@@ -3,7 +3,7 @@
   "id": "cc-map",
   "key": "CC MAP",
   "name": "CC Map",
-  "version": "0.1.0-experimental",
+  "version": "0.1.1-experimental",
   "category": "midi-usb",
   "source": {
     "repository": "https://github.com/sambanks/octabam",
@@ -12,7 +12,7 @@
   },
   "build": {
     "status": "pending",
-    "reason": "Source draft. Publication requires actual LCD captures, worst-case cycles, exact memory, a passed hardware stress project and owner review. Native/browser integration is unverified; FX2 support targets out-of-scope BusDelay/BusVerb."
+    "reason": "Source draft. Actual monochrome LCD captures and a native reference match document local UI behavior only. Publication needs worst-case cycles, exact memory, passed hardware stress and owner review; Octamod packaging/browser parity and combinations remain unverified."
   },
   "author": {
     "github": "sambanks",
@@ -25,30 +25,39 @@
   "presentation": {
     "label": "MIDI CC to effect page 2",
     "family": "Incoming MIDI control",
-    "summary": "Map incoming MIDI CC 68–73 to FX1 page-2 parameters. The upstream FX2 block requires BusDelay or BusVerb, outside Octamod's scope.",
+    "summary": "Map incoming MIDI CC 68\u201373 to FX1 page-2 parameters. The upstream FX2 block requires BusDelay or BusVerb, outside Octamod's scope.",
     "overview": "CC Map maps incoming MIDI CCs on audio tracks' trig channels to effect page-2 parameters, respecting AUDIO CC IN and clamping values. It writes Part, live and shadow values and marks the Part changed. This source draft is unavailable until qualification, LCD evidence, integration and owner review are complete.",
     "highlights": [
-      "CC 68–73 address FX1 page-2 slots 6–11 for a non-NONE FX1.",
+      "CC 68\u201373 address FX1 page-2 slots 6\u201311 for a non-NONE FX1.",
       "Writes every audio track whose trig channel matches the message.",
       "Clamps values using the target effect's parameter limits.",
-      "Passes CCs outside 62–73 to the next handler."
+      "Passes CCs outside 62\u201373 to the next handler."
     ],
     "usage": [
-      "After qualification, enable AUDIO CC IN and match the controller's channel to the target audio track's trig channel.",
-      "Select a non-NONE FX1 and send CC 68–73 to its second-page slots; verify the parameter, sound and Part save/reload behavior.",
-      "Exact panel/menu paths and actual LCD captures remain required before publication."
+      "On the verified MKII emulator panel, press PROJ, choose MIDI, press RIGHT, choose CONTROL and press YES. Enable AUDIO CC IN with LEVEL.",
+      "In MIDI > CHANNELS, match the target audio track\u2019s TRIG CH to the controller. The captured T1 uses channel 1, independently of AUTO CH 11.",
+      "Select T1 and FILTER in FUNC+FX1 SETUP. Send CC 68 value 1 on channel 1, then close/reopen SETUP: HP changes from 12 dB to 24 dB. Hardware/audio/persistence qualification remains pending."
     ]
   },
   "access": {
-    "location": "Incoming MIDI control of audio-track FX1 page 2, enabled by AUDIO CC IN; exact panel/menu access awaits hardware/LCD verification.",
+    "location": "MKII: PROJ > MIDI > CONTROL enables AUDIO CC IN; MIDI > CHANNELS sets the audio track\u2019s TRIG CH. FUNC+FX1 opens effect page-2 SETUP.",
     "steps": [
-      "In a qualified local build, enable AUDIO CC IN in the project's MIDI control settings; confirm the exact button/menu path with actual LCD captures before publication.",
-      "Assign the target audio track a trig channel matching the external controller.",
-      "Select a non-NONE FX1 effect and inspect its second-page parameters; the exact effect-page button sequence remains unverified for this draft.",
-      "Send CC 68–73 to page-2 slots 6–11 with values within the selected effect's documented limits.",
-      "Verify the expected control and sound change and that Part save/reload retains the value."
+      "On the MKII panel, press PROJ. Select MIDI with UP/DOWN and press RIGHT to enter its list.",
+      "Select CONTROL and press YES. Select AUDIO CC IN and turn LEVEL until its checkbox is enabled.",
+      "Press NO to return to MIDI, select CHANNELS and press YES. Match the target audio track\u2019s TRIG CH to the external controller. The captured T1 uses channel 1; AUTO CH 11 is a different setting.",
+      "Press NO twice to return to the track. Press T1, then hold FUNC and press FX1 for FX1 SETUP. Turn LEVEL to FILTER and press YES to assign it.",
+      "FILTER SETUP shows page-2 HP, LP, ENV, HOLD, Q and DIST. Send CC 68 value 1 on channel 1 to change HP from 12 dB to 24 dB.",
+      "Close SETUP with FX1 and reopen with FUNC+FX1 to refresh the displayed HP value. The cave omits the stock editor\u2019s redraw call.",
+      "These steps were verified only for the isolated MKII emulator UI. Qualify audio, Part save/reload, MKI access and real hardware separately before publication."
     ],
-    "screenshots": []
+    "screenshots": [
+      "media/ot-midi-location.png",
+      "media/ot-cc-enabled.png",
+      "media/ot-channels.png",
+      "media/ot-fx1-main.png",
+      "media/ot-fx1-setup.png",
+      "media/ot-cc68-filter.png"
+    ]
   },
   "controls": [],
   "compatibility": {
@@ -57,10 +66,10 @@
     "location": "Project sequencer",
     "conflicts": [],
     "limitations": [
-      "Draft only: unavailable in the catalog and firmware builds pending qualification, LCD evidence, integration and owner approval.",
-      "CC 62–67 write FX2 page 2 only for BusDelay/BusVerb, which are outside scope and not imported. Current catalog/stock FX2 support is not claimed.",
-      "CC 62–73 are consumed even if AUDIO CC IN is disabled or the track's effect has no eligible target.",
-      "CC 64–67 overlap common sustain/portamento/sostenuto/soft-pedal messages.",
+      "Draft only: unavailable in the catalog and firmware builds pending full qualification, integration and owner approval. Actual MKII emulator UI captures are included.",
+      "CC 62\u201367 write FX2 page 2 only for BusDelay/BusVerb, which are outside scope and not imported. Current catalog/stock FX2 support is not claimed.",
+      "CC 62\u201373 are consumed even if AUDIO CC IN is disabled or the track's effect has no eligible target.",
+      "CC 64\u201367 overlap common sustain/portamento/sostenuto/soft-pedal messages.",
       "All Octamod combinations and hook/placement behavior are unverified, including MIDI Scenes, Scale Quantizer, OctaKit and USB MIDI/Audio.",
       "Upstream MODE DEFAULTS and SCENES KITS overrides are not imported or enabled.",
       "Upstream leaves hardware SCENES KITS chaining and FX1-to-DSP updates on THRU tracks open."
@@ -74,7 +83,7 @@
       "value": 724,
       "unit": "bytes",
       "method": "static",
-      "conditions": "The authored legacy oracle has 712 code bytes plus two six-byte count tables. This is not the linked allocation, stack/shared-state/placement inventory or maximum-load memory total; the four-byte dispatch poke replaces an existing vector.",
+      "conditions": "The isolated capture build linked 724 bytes, matching the authored 712-byte code oracle plus two six-byte count tables. This excludes complete placement/padding/stack/shared-state memory accounting; the four-byte dispatch poke replaces an existing vector.",
       "source": "manifest.py"
     },
     "processing": {
@@ -89,7 +98,7 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Historical upstream MKII use and emulator writes are recorded, but no Octamod parity/rejection proof, current-version worst-case cycles, exact memory inventory, 60-minute eight-track hardware stress record or actual LCD captures are supplied.",
+    "summary": "Historical upstream MKII use is retained. Current isolated emulator LCD captures document MIDI enable/channel settings and one CC68-to-FILTER HP write. Worst-case cycles, complete memory, a 60-minute eight-track hardware stress project, native/browser parity and combinations remain unqualified.",
     "hardwareStatus": "historical",
     "evidenceRevision": "8d0ad6f4f82c2efbc10e1c65eefbce0ad1cec4bf",
     "gates": [
@@ -99,7 +108,110 @@
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "Imported source and upstream notes preserve Sam Banks' full MIT licence and exact commit pin. One stock-vector expectation uses a lazy local hash guard; only authored code, source metadata and documentation are included. No firmware, extracted routines/tables, generated native outputs or media are included. Contributor declaration and owner/reviewer verification of rights and actual reports remain required before publication; review is not automatic legal clearance."
+    "declaration": "Sam Banks\u2019 full MIT licence and exact source pin are preserved; a lazy local stock-vector guard supplies no firmware bytes. The original Octamod thumbnail is MIT under media/LICENSE.md. Original emulator LCD captures use LicenseRef-OT-UI-Documentation with underlying Elektron rights reserved. No firmware, extracted routines/tables or generated native output is included. Contributor declaration and owner/reviewer verification of rights and actual reports remain required before publication; review is not automatic legal clearance."
   },
-  "media": []
+  "media": [
+    {
+      "path": "media/ot-midi-location.png",
+      "captureType": "emulator",
+      "caption": "PROJ > MIDI with CONTROL selected; press YES to open MIDI CONTROL.",
+      "alt": "PROJ > MIDI with CONTROL selected; press YES to open MIDI CONTROL.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "PROJ > MIDI > CONTROL",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812",
+        "setup": "Isolated Linux ot_emu; MKII panel; stopped transport; fresh empty scratch FAT card; actual 128\u00d764 LCD pixels at integer scale 6 with monochrome on/off palette. Stock effects plus CC MAP only; no audio/hardware qualification."
+      }
+    },
+    {
+      "path": "media/ot-cc-enabled.png",
+      "captureType": "emulator",
+      "caption": "AUDIO CC IN enabled in MIDI CONTROL. This setting permits incoming CC control of audio tracks.",
+      "alt": "AUDIO CC IN enabled in MIDI CONTROL. This setting permits incoming CC control of audio tracks.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "MIDI CONTROL: AUDIO CC IN",
+        "shows": "location-and-controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812",
+        "setup": "Isolated Linux ot_emu; MKII panel; stopped transport; fresh empty scratch FAT card; actual 128\u00d764 LCD pixels at integer scale 6 with monochrome on/off palette. Stock effects plus CC MAP only; no audio/hardware qualification."
+      }
+    },
+    {
+      "path": "media/ot-channels.png",
+      "captureType": "emulator",
+      "caption": "T1 TRIG CH is 1. AUTO CH 11 is a separate setting; match the controller to the audio track\u2019s trig channel.",
+      "alt": "T1 TRIG CH is 1. AUTO CH 11 is a separate setting; match the controller to the audio track\u2019s trig channel.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "MIDI CHANNELS: TRIG CH",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812",
+        "setup": "Isolated Linux ot_emu; MKII panel; stopped transport; fresh empty scratch FAT card; actual 128\u00d764 LCD pixels at integer scale 6 with monochrome on/off palette. Stock effects plus CC MAP only; no audio/hardware qualification."
+      }
+    },
+    {
+      "path": "media/ot-fx1-main.png",
+      "captureType": "emulator",
+      "caption": "T1 FILTER main controls. Hold FUNC and press FX1 to open its second-page SETUP controls.",
+      "alt": "T1 FILTER main controls. Hold FUNC and press FX1 to open its second-page SETUP controls.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "T1 FX1 FILTER main",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812",
+        "setup": "Isolated Linux ot_emu; MKII panel; stopped transport; fresh empty scratch FAT card; actual 128\u00d764 LCD pixels at integer scale 6 with monochrome on/off palette. Stock effects plus CC MAP only; no audio/hardware qualification."
+      }
+    },
+    {
+      "path": "media/ot-fx1-setup.png",
+      "captureType": "emulator",
+      "caption": "FILTER SETUP exposes HP, LP, ENV, HOLD, Q and DIST. HP initially reads 12 dB.",
+      "alt": "FILTER SETUP exposes HP, LP, ENV, HOLD, Q and DIST. HP initially reads 12 dB.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "T1 FX1 FILTER SETUP before CC 68",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812",
+        "setup": "Isolated Linux ot_emu; MKII panel; stopped transport; fresh empty scratch FAT card; actual 128\u00d764 LCD pixels at integer scale 6 with monochrome on/off palette. Stock effects plus CC MAP only; no audio/hardware qualification."
+      }
+    },
+    {
+      "path": "media/ot-cc68-filter.png",
+      "captureType": "emulator",
+      "caption": "After actual incoming CC 68 value 1 on channel 1 and reopening SETUP, FILTER HP reads 24 dB.",
+      "alt": "After actual incoming CC 68 value 1 on channel 1 and reopening SETUP, FILTER HP reads 24 dB.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "T1 FX1 FILTER SETUP after CC 68",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812",
+        "setup": "Isolated Linux ot_emu; MKII panel; stopped transport; fresh empty scratch FAT card; actual 128\u00d764 LCD pixels at integer scale 6 with monochrome on/off palette. Stock effects plus CC MAP only; no audio/hardware qualification."
+      }
+    }
+  ]
 }
