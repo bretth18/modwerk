@@ -15,8 +15,9 @@ if (!file || !['--packing=all', '--packing=representative'].includes(packingMode
   process.exit(2)
 }
 // OS composition and refusals always cover all 256 profiles. The optional shorter packing pass covers
-// stock-retaining ROM-only, compact DSP-only, resident DSP + ColdFire, and the four-module CPU runtime.
-const representative = new Set(['repitch:true', 'miniverb:false', 'character+miniverb+tapeecho:false', 'euclid+miniverb+repitch+tapeecho:false'])
+// stock-retaining ROM-only, compact DSP-only, resident DSP + ColdFire, the four-module CPU runtime, and the
+// stock-retaining menus visitors build: Tape Echo in SPRING REV's place, and the four modules in DARK REV's.
+const representative = new Set(['repitch:true', 'miniverb:false', 'character+miniverb+tapeecho:false', 'euclid+miniverb+repitch+tapeecho:false', 'tapeecho:true', 'euclid+miniverb+repitch+tapeecho:true'])
 const packs = proof => packingMode === '--packing=all' || representative.has([...proof.moduleIds].sort().join('+') + ':' + proof.keepStockFx2)
 const fixtures = JSON.parse(readFileSync(new URL('../src/engine/assets/static-composition-proofs.json', import.meta.url)))
 if (fixtures.schema !== 1 || fixtures.revision !== CATALOG_SOURCE.revision || fixtures.staticStock !== true) throw new Error('Static proofs do not match the pinned catalog.')

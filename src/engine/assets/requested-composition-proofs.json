@@ -2792,7 +2792,8 @@
         "analog-bassdrum"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1265549,
+      "sha256": "982575add24223705d1a074d8f7258bee3a25d0ae6552bfbaf1d7a56d574e9b5"
     },
     {
       "ids": [
@@ -2800,7 +2801,8 @@
         "analog-bassdrum"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1265549,
+      "sha256": "97ed839403e73efa1631cbb58c651934af38594220c1fa7278cc608923957284"
     },
     {
       "ids": [
@@ -2825,7 +2827,8 @@
         "midi-scenes"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1267881,
+      "sha256": "b7ff7c1d0c8635aa00db060ca5f8bde2254a51a93ebab77489244f8bec663328"
     },
     {
       "ids": [
@@ -2834,7 +2837,8 @@
         "midi-scenes"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1267881,
+      "sha256": "0d1f6a62b644841c92b98b98d8f72c59e1a715da260e11b6ba9dbb8f3eadea84"
     },
     {
       "ids": [
@@ -2859,7 +2863,8 @@
         "usb-audio-out-tracks-main-cue"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1267769,
+      "sha256": "113121521313ff9c19040b37801577c70c0fa2d060940e4c9d512de928b6e9e6"
     },
     {
       "ids": [
@@ -2868,7 +2873,8 @@
         "usb-audio-out-tracks-main-cue"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1267769,
+      "sha256": "5f1b6dc8658e3ffcbe5c05d2cbbeb1ac4d5c2801e8599ac2885a6b424ff89026"
     },
     {
       "ids": [
@@ -2896,7 +2902,8 @@
         "usb-audio-out-tracks-main-cue"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1270097,
+      "sha256": "cc13a1992a30783abac7c3f06724f9f7116778aa0f9df48698be9354328d5f07"
     },
     {
       "ids": [
@@ -2906,7 +2913,8 @@
         "usb-audio-out-tracks-main-cue"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1270097,
+      "sha256": "0394e0ae0468beb03c3d19094d3874c219e6d50396e3306c2e1317ad35fc56f7"
     },
     {
       "ids": [
@@ -2931,7 +2939,8 @@
         "quantizer"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1267729,
+      "sha256": "4b47cf3cafc0b64609846af2eaede1c0cfa4060d8b76d32f901f90f5c0ac43ce"
     },
     {
       "ids": [
@@ -2940,7 +2949,8 @@
         "quantizer"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1267729,
+      "sha256": "ea4e9c35893167b7e933a9fc8f26df171def709bae8acefe01c3165ff6460602"
     },
     {
       "ids": [
@@ -2968,7 +2978,8 @@
         "quantizer"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1270033,
+      "sha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e"
     },
     {
       "ids": [
@@ -2978,7 +2989,8 @@
         "quantizer"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1270033,
+      "sha256": "86be21d4fb8beb30bc938696d0efdc7b1e460b4e4d853823a38dd152bd012209"
     },
     {
       "ids": [
@@ -3006,7 +3018,8 @@
         "quantizer"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1269949,
+      "sha256": "f3a651fd22b759dfc72005b2af4766569c5a7f4b3b292f59c6b44343afcbe3d5"
     },
     {
       "ids": [
@@ -3016,7 +3029,8 @@
         "quantizer"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1269949,
+      "sha256": "5814d837f9d2b0af26a2f91a1a7c881ff32425fd9c1f4ee1450d26df53c3adbd"
     },
     {
       "ids": [
@@ -3047,7 +3061,8 @@
         "quantizer"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1272237,
+      "sha256": "9fd931ea179a7ba5b70c8408f6d0fe5aedbc00eff150412a2461d989b310c295"
     },
     {
       "ids": [
@@ -3058,7 +3073,8 @@
         "quantizer"
       ],
       "keepStockFx2": true,
-      "error": "ANALOG BD owns SPRING REV's code and both DSP uploads; remove SPRING REV / MACHINEDRUM from this remix"
+      "bytes": 1272237,
+      "sha256": "ae8068ce1263b060372903b3de169b49e41dd4a93429999c560f9db84b8c4e9b"
     }
   ]
 }

@@ -2,6 +2,8 @@ import type { FirmwareInspection } from './base'
 export type BuildReport = {
   version: string; revision: string; sourceCommit: string | null; sourceTreeSha256: string; moduleIds: string[]; moduleVersions: Record<string,string>; keepStockFx2: boolean
   osBytes: number; runtimeBytes: number; fx1Rows: number; fx2Rows: number
+  // Stock FX2 effects left out of this build's FX2 menu; FX1 keeps every stock effect.
+  omittedStockFx2: string[]
 }
 export type BuildProgress = 'composing' | 'packing' | 'verifying'
 export type EngineRequest =

@@ -5,12 +5,15 @@ import metadata from './assets/chooser-metadata.json' with { type: 'json' }
 import { CATALOG_SOURCE, resolveSelection } from '../catalog/modules.ts'
 import { composeModuleMenus, MENU_CAVE_END, MENU_LONG_LIST } from './module-menus.ts'
 import { applyGuardedOsWrites, OS_LOAD_ADDRESS, type OsWrite } from './os-patches.ts'
+import { stockFx2Donors } from './static-dsp.ts'
+import { ANALOG_BD_DONOR } from './analog-bd.ts'
+import { DSP_LOADER } from './protocol.ts'
 export type ChooserProfile = { fx1: readonly string[]; fx2: readonly string[] }
 async function hash(bytes: Uint8Array) {
   const digest = await crypto.subtle.digest('SHA-256', new Uint8Array(bytes).buffer)
   return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('')
 }
-export function defaultChoosers(ids: readonly string[], keepStockFx2 = true): ChooserProfile {
+export function defaultChoosers(ids: readonly string[], keepStockFx2 = true, loader = DSP_LOADER): ChooserProfile {
   if (metadata.schema !== 1 || metadata.revision !== CATALOG_SOURCE.revision) throw new Error('Chooser metadata does not match the pinned catalog.')
   const modules = resolveSelection(ids).map(module => {
     const entry = metadata.modules.find(entry => entry.id === module.id)
@@ -18,10 +21,14 @@ export function defaultChoosers(ids: readonly string[], keepStockFx2 = true): Ch
     if (!entry || entry.key !== module.key || entry.fxId !== (module.fxId ?? null)) throw new Error('The chooser declarations do not match this module version.')
     return entry
   })
-  return {
-    fx1: [...metadata.stockFx1, ...modules.filter(module => module.fx1).map(module => module.key)],
-    fx2: [...(keepStockFx2 ? metadata.stockFx2 : []), ...modules.filter(module => module.fxId !== null && !module.fx1Only).map(module => module.key)],
-  }
+  const fx1 = [...metadata.stockFx1, ...modules.filter(module => module.fx1).map(module => module.key)]
+  const own = modules.filter(module => module.fxId !== null && !module.fx1Only).map(module => module.key)
+  if (!keepStockFx2) return { fx1, fx2: own }
+  const kept = { fx1, fx2: [...metadata.stockFx2, ...own] }
+  if (loader) return kept
+  // Without the loader, module code takes the place of stock effects listed on neither menu: give up only those it needs.
+  const donors = stockFx2Donors(ids, kept, ids.includes('analog-bassdrum') ? [ANALOG_BD_DONOR] : [])
+  return { fx1, fx2: kept.fx2.filter(key => !donors.includes(key)) }
 }
 export function validateChoosers(ids: readonly string[], profile: ChooserProfile) {
   if (metadata.schema !== 1 || metadata.revision !== CATALOG_SOURCE.revision) throw new Error('Chooser metadata does not match the pinned catalog.')

@@ -33,17 +33,19 @@ def main():
         hidden=[m.key for m in selected if m.key in fx1 and m.claims and m.claims.fx1_only]
         fx2=stockFx2+[m.key for m in selected if m.menu and m.key not in hidden] if default else [m.key for m in selected if m.menu and m.key not in hidden]
         return {'fx1':fx1,'fx2':fx2,'hidden':hidden}
-    if a.static_stock:
-        # The site's own chooser rule (choosers.ts defaultChoosers): stock FX1 plus FX1-capable modules, and
-        # stock FX2 only when kept. Every subset, both ways, so each selection a visitor can make has an oracle.
-        def profile(ids,keep):
-            selected=[byid[id] for id in order if id in ids]
-            fx1=stockFx1+[m.key for m in selected if m.name in fx1Capable and m.menu and fx1_hazard(m) is None]
-            hidden=[m.key for m in selected if m.key in fx1 and m.claims and m.claims.fx1_only]
-            fx2=(stockFx2 if keep else [])+[m.key for m in selected if m.menu and m.key not in hidden]
-            return {'fx1':fx1,'fx2':fx2,'hidden':hidden}
     cases=[([],False),(['repitch'],False),(['tapeecho','euclid'],False),(order,False),([],True),(['spectrum','modulation','character','euclid'],True),(order[:-1],True),(['miniverb','tapeecho','euclid','repitch'],True),(order,True)]
-    if a.static_stock:cases=[([id for bit,id in enumerate(order) if mask>>bit&1],keep) for mask in range(1<<len(order)) for keep in (True,False)]
+    if a.static_stock:
+        # The site's own chooser rule, read from choosers.ts defaultChoosers (Node 24): stock FX1 plus FX1-capable
+        # modules; stock FX2 minus the effects whose code the modules take when kept, none when not. Every subset,
+        # both ways, so each selection a visitor can make has an oracle.
+        cases=[([id for bit,id in enumerate(order) if mask>>bit&1],keep) for mask in range(1<<len(order)) for keep in (True,False)]
+        site="const {defaultChoosers}=await import(process.argv[1]);console.log(JSON.stringify(JSON.parse(process.argv[2]).map(([ids,keep])=>defaultChoosers(ids,keep,false))))"
+        menus=json.loads(subprocess.check_output(['node','--input-type=module','-e',site,str(app/'src/engine/choosers.ts'),json.dumps(cases)],text=True))
+        siteMenus={(tuple(ids),keep):menu for (ids,keep),menu in zip(cases,menus)}
+        def profile(ids,keep):
+            menu=siteMenus[(tuple(ids),keep)];selected=[byid[id] for id in order if id in ids]
+            hidden=[m.key for m in selected if m.key in menu['fx1'] and m.claims and m.claims.fx1_only]
+            return {'fx1':menu['fx1'],'fx2':menu['fx2'],'hidden':hidden}
     proofs=[];originalRemix=registry.remix
     packTemp=None;packing=None
     if a.stock_bin:

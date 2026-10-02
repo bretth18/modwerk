@@ -2,7 +2,8 @@ import { compiledModuleSource } from './module-build.ts'
 import { moduleBuildError } from '../catalog/build-support.ts'
 // Complete local OS composition. Packaging / the download flow are enabled
 // separately only after full native output and rejection verification.
-import { composeChoosers, type ChooserProfile } from './choosers.ts'
+import { composeChoosers, defaultChoosers, type ChooserProfile } from './choosers.ts'
+import { isMenuSpaceFailure } from './build-errors.ts'
 import { recoverStockDsp } from './stock-dsp.ts'
 import { composeDynamicDsp } from './resident-dsp.ts'
 import { composeStaticOs } from './static-compose.ts'
@@ -24,4 +25,15 @@ export async function composeOs(original: Uint8Array, ids: readonly string[], pr
   const patched = await applyGuardedOsWrites(original, [...menus.writes, ...dsp.writes, ...createPlatformOsWrites(runtime, ids)])
   const bytes = new Uint8Array(patched.length + bootstrap.append.length); bytes.set(patched); bytes.set(bootstrap.append, patched.length)
   return { bytes, chooser: menus.chooser, dsp: dsp.layouts, runtime: { bytes: runtime.bytes.length, stage: bootstrap.layout.stage, stageEnd: bootstrap.layout.stageEnd }, caveCursor: menus.caveCursor, overflowCursor: menus.overflowCursor }
+}
+/** A visitor's build. The Keep stock FX2 switch exists only with the loader. Loader-free builds keep every
+ *  stock FX2 effect whose code the modules do not take; when that longer FX2 list leaves the module menus
+ *  too little room, they use the compact FX2 menu, as both menus are native-verified profiles. */
+export async function composeSelection(original: Uint8Array, ids: readonly string[], keepStockFx2: boolean) {
+  const keep = DSP_LOADER ? keepStockFx2 : true
+  try { return await composeOs(original, ids, defaultChoosers(ids, keep)) }
+  catch (error) {
+    if (DSP_LOADER || !(error instanceof Error) || !isMenuSpaceFailure(error.message)) throw error
+    return composeOs(original, ids, defaultChoosers(ids, false))
+  }
 }

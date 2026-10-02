@@ -17,7 +17,7 @@ assert.equal(createHash('sha256').update(readFileSync(file)).digest('hex'), fixt
 const hash = bytes => createHash('sha256').update(bytes).digest('hex')
 const stock = decodeFirmware(readFileSync(file)), original = stock.mainOs, before = hash(original)
 for (const proof of fixtures.proofs) {
-  if (proof.default) assert.deepEqual(defaultChoosers(proof.moduleIds), { fx1: proof.menu.fx1, fx2: proof.menu.fx2 })
+  if (proof.default) assert.deepEqual(defaultChoosers(proof.moduleIds, true, true), { fx1: proof.menu.fx1, fx2: proof.menu.fx2 })
   if (proof.error) {
     await assert.rejects(composeOs(original, proof.moduleIds, proof.menu, { loader: true }), /does not fit|do not fit|exceeds its reserved region|more space/)
     assert.equal(hash(original), before)
