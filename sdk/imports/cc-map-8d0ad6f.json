@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/sambanks/octabam",
+  "revision": "8d0ad6f4f82c2efbc10e1c65eefbce0ad1cec4bf",
+  "modules": [
+    "cc-map"
+  ],
+  "moduleVersion": "0.1.1-experimental",
+  "root": "sdk/drafts/cc-map",
+  "status": "draft; qualification, owner review and native/browser integration pending; actual MKII LCD captures included",
+  "files": [
+    {
+      "path": "OCTABAM.md",
+      "sourcePath": "modules/cc-map/README.md",
+      "sourceGitBlob": "2638527fbcdfe26a79405d943bfcba8e6521e887",
+      "sourceBytes": 6295,
+      "sourceSha256": "95071434efcd3da8795ecb8968cabc766f5ad760c74c30cc6a5106371e1f211e",
+      "vendoredSha256": "95071434efcd3da8795ecb8968cabc766f5ad760c74c30cc6a5106371e1f211e"
+    },
+    {
+      "path": "manifest.py",
+      "sourcePath": "modules/cc-map/manifest.py",
+      "sourceGitBlob": "41a92b1238aff8116d5eb2d5951ed22b36707023",
+      "sourceBytes": 6198,
+      "sourceSha256": "af3f16af94e1949c12c43b0c0d98c485eb1d6bc2dd948a00832f73368516676d",
+      "vendoredSha256": "a776d7b7d072f96e013f8b43bbdbabaaa455955a594fda8a836d07cfba5c747e"
+    },
+    {
+      "path": "cc_map.s",
+      "sourcePath": "modules/cc-map/cc_map.s",
+      "sourceGitBlob": "2002491be56cb43631c8cf6702ed493bf2ac0884",
+      "sourceBytes": 15624,
+      "sourceSha256": "da7280f1f14b09a211928da38aba5da084f3cd00690f150813ed274ea74cd104",
+      "vendoredSha256": "da7280f1f14b09a211928da38aba5da084f3cd00690f150813ed274ea74cd104"
+    },
+    {
+      "path": "LICENSE",
+      "sourcePath": "LICENSE",
+      "sourceGitBlob": "112114d5d319dc4a789dacf1e84b867420a03614",
+      "sourceBytes": 2112,
+      "sourceSha256": "f91a43799d9e31ccc3540f385f68c4d6ff5a096f93ae933be2ce98f6b3f7f113",
+      "vendoredSha256": "f91a43799d9e31ccc3540f385f68c4d6ff5a096f93ae933be2ce98f6b3f7f113"
+    }
+  ],
+  "transforms": [
+    {
+      "path": "manifest.py",
+      "reason": "Resolve the four-byte stock MIDI dispatch-vector expectation only from locally verified original 1.40C, using the existing lazy guard.",
+      "original": "    pokes = ((DISPATCH_CC, STOCK_CC.to_bytes(4, \"big\"), addr.to_bytes(4, \"big\")),)",
+      "replacement": "    from remix.stock_guard import stock_guard\n    pokes = ((DISPATCH_CC, stock_guard(0x400d64a0, 4, \"3dde54e2152a6e2da668d7e7d1f2b8d99ecb0949d19cd75ccf201b280d46dde0\"), addr.to_bytes(4, \"big\")),)"
+    }
+  ],
+  "stockGuards": [
+    {
+      "path": "manifest.py",
+      "address": 1074619552,
+      "bytes": 4,
+      "sha256": "3dde54e2152a6e2da668d7e7d1f2b8d99ecb0949d19cd75ccf201b280d46dde0"
+    }
+  ],
+  "exclusions": [
+    "firmware, extracted stock routines/tables and generated native output",
+    "raw RAM/LCD dumps, firmware-containing local images and project/card fixtures; only reviewed original PNGs/metadata retained",
+    "BusDelay, BusVerb, MODE DEFAULTS, SCENES KITS and other unrequested modules",
+    "upstream verification executables, toolchains and Git history"
+  ],
+  "notes": [
+    "Sam Banks authored CC Map; the full MIT licence, assembly and upstream notes are preserved. Manifest transformation is reversible and recorded with upstream/vendored hashes.",
+    "The authored cave oracle is module source, not a copied stock routine. Address identities and a stock guard do not provide firmware bytes.",
+    "Native discovery, public catalog, eleven-module qualification baseline and approved compiler inventory remain unchanged. CC 62-67 targets out-of-scope BusDelay/BusVerb only; no support for other FX2 effects is claimed.",
+    "Historical upstream hardware/emulator notes do not qualify this Octamod version. Native source was evaluated only inside an isolated local container for explicitly requested UI captures; no qualification suite ran. Original thumbnail and actual monochrome MKII LCD captures are documented under media/capture.json. Contributor declaration and owner/reviewer verification remain required before publication."
+  ]
+}
