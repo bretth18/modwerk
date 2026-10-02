@@ -8,6 +8,8 @@ The initial import includes **Spectrum, Modulation, Character, Mini Verb, Tape E
 
 CC Map, requested on 2 October 2026, is a pinned [source draft](drafts/cc-map/README.md) outside native discovery, source-package compilation and the public catalog. Its [import record](imports/cc-map-8d0ad6f.json) preserves Sam Banks’ MIT licence, exact source identities and the lazy stock-vector guard adaptation. An original thumbnail, tutorial and six actual monochrome MKII emulator LCD captures are included. Full qualification, native/browser integration and owner review remain required. The eleven-module baseline is unchanged; its upstream FX2 block targets BusDelay/BusVerb, which remain outside scope.
 
+TapeHead, requested on 2 October 2026, is an original [source draft](drafts/tapehead/README.md): JClones' TapeHead JSFX (MIT) on the DSP, brought over from a local octabam module. Its `verify.py` runs the assembled code in `dsp_host` with no firmware and compares it with the float JSFX; that render found and fixed three defects in the octabam build. `benchmark.py` measures it against stock SPRING REV, `hardware-test-remix.py` builds a test image with TapeHead in Spring Reverb's chooser row, and emulator LCD captures are included. It stays outside native discovery and the catalog until hardware qualification and owner review are complete.
+
 ## Start without firmware or native compilation
 
 Use Node 24 from the monorepo root:

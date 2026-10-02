@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 2,
+  "id": "tapehead",
+  "key": "TAPEHEAD",
+  "name": "TapeHead",
+  "version": "0.1.0-experimental",
+  "category": "effects",
+  "author": {
+    "github": "devilfish707",
+    "credits": [
+      "devilfish707: TapeHead DSP56300 port, octabam module and Octamod draft",
+      "JClones: TapeHead JSFX algorithm (MIT), from jsfxclones",
+      "octabam: Sam Banks; SDK, schema and harness (MIT)"
+    ]
+  },
+  "nativeManifest": "manifest.py",
+  "presentation": {
+    "label": "TAPE SATURATION",
+    "family": "Saturation",
+    "summary": "JClones TapeHead on the DSP: a small tape-style saturator with drive, trim and three tone colours.",
+    "overview": "TapeHead runs the input through a two-state recursion whose corner frequency COLOR sets, drives both states into cubic smoothstep curves and adds a clipped feedback term. Low DRIVE gives gentle rounding and a slight tilt; high DRIVE flattens peaks and thickens the low end. It is a buffer-free insert, so it runs on FX1 or FX2 of every track. This is a source draft: it is not in the catalog or the firmware builder.",
+    "highlights": [
+      "Port of JClones_TapeHead.jsfx, within 4.7e-4 of the float reference in a native render",
+      "DRIVE and TRIM as continuous 0-127 knobs over the JSFX ranges",
+      "COLOR: NORM, MED and BRGT corners at 2100, 3680 and 5000 Hz",
+      "No buffers: FX1 or FX2 on any track, 288 cycles/sample static"
+    ],
+    "usage": [
+      "Assign TAPEHEAD in FUNC + FX2 (or FX1) SETUP with LEVEL and YES. Defaults match the JSFX: DRIVE 36, TRIM 18 (-3 dB), COLOR NORM.",
+      "Raise DRIVE for more saturation; lower TRIM (towards 0) to bring the level back up, raise it to attenuate down to -21 dB.",
+      "Use COLOR for brightness: MED and BRGT move the recursion's corner up and let more top end through the saturator."
+    ]
+  },
+  "controls": [
+    {
+      "name": "DRIVE",
+      "default": 36,
+      "count": 128,
+      "doc": "Tape drive. 0-127 maps to the JSFX drive 1-10 (gain 0.8x to 8x into the curves); 36 is about the JSFX default 3.5.",
+      "labels": null
+    },
+    {
+      "name": "TRIM",
+      "default": 18,
+      "count": 128,
+      "doc": "Output trim. 0 is 0 dB, 127 is -21 dB; 18 is the JSFX default -3 dB. Higher values are quieter.",
+      "labels": null
+    },
+    {
+      "name": "COLOR",
+      "default": 0,
+      "count": 3,
+      "doc": "Corner frequency of the recursion: NORM 2100 Hz, MED 3680 Hz, BRGT 5000 Hz.",
+      "labels": [
+        "NORM",
+        "MED",
+        "BRGT"
+      ]
+    }
+  ],
+  "compatibility": {
+    "firmware": "1.40C",
+    "effectId": 31,
+    "location": "FX1 / FX2",
+    "conflicts": [],
+    "limitations": [
+      "Draft only: not in the catalog, configurator or firmware builder until qualification and owner review are complete.",
+      "The JSFX Clip switch is not exposed. Clip is always on (the JSFX default), because Q1.23 cannot carry the unclipped mode.",
+      "Corner frequencies assume 44.1 kHz, the rate every Octamod effect assumes.",
+      "This revision changes the sound of the octabam build that was heard on hardware on 12 Sep 2026: three defects were fixed (see TESTING.md). The OCTABAM2 test image has not been flashed yet.",
+      "Effect ID 0x1f, priority 17 and layout letter 4 were checked free against the eleven Octamod modules only."
+    ]
+  },
+  "resources": {
+    "recorded": "2 Oct 2026, static, emulator and benchmark.py",
+    "storage": {
+      "label": "DSP program",
+      "display": "416 words P, 31 words X per instance, no buffer",
+      "value": 416,
+      "unit": "words",
+      "method": "static",
+      "conditions": "Composed build report (both payloads place 416 words in the donor region). State and scratch use 31 words of the instance's own r7 block; no allocator buffer, no Y memory. SPRING REV: 1,063 words plus the 16,384-word FX2 instance buffer.",
+      "source": "TESTING.md"
+    },
+    "processing": {
+      "label": "DSP estimate",
+      "display": "288 cycles/sample",
+      "value": 288,
+      "unit": "cycles/sample",
+      "method": "static",
+      "conditions": "tools/build/cycle_count.py static word count, the same at every setting. benchmark.py, executed instructions: 268/sample for one instance (SPRING REV 262); four per core worst 17,616 per 16-sample block (SPRING REV 20,376). Not a hardware load figure.",
+      "source": "TESTING.md"
+    },
+    "impact": {
+      "conditions": "One active instance at any setting (no stage is skipped, COLOR only swaps constants); the static count covers the worst case.",
+      "cpu": {
+        "level": "minimal",
+        "basis": "source-estimate",
+        "rationale": "No ColdFire code: the module is a DSP insert with a cloned menu descriptor. The ColdFire only forwards three page-1 parameter values, as for any effect.",
+        "source": "TESTING.md"
+      },
+      "dsp": {
+        "level": "moderate",
+        "basis": "source-estimate",
+        "rationale": "288 cycles/sample per instance by the static counter. benchmark.py: one instance executes 2% more than stock SPRING REV (4,287 vs 4,186 instructions per block); four per core peak 14% lower (17,616 vs 20,376) because Spring's costlier types and splits are absent.",
+        "source": "TESTING.md"
+      },
+      "memory": {
+        "level": "low",
+        "basis": "source-estimate",
+        "rationale": "416 words of DSP program per payload and 31 words of state in each instance's existing r7 block. No allocator buffer, tables or Y memory, where SPRING REV takes 1,063 words and a 16,384-word instance buffer.",
+        "source": "TESTING.md"
+      }
+    }
+  },
+  "tests": {
+    "report": "TESTING.md",
+    "summary": "verify.py renders the assembled module in dsp_host against the float JSFX (peak error 4.7e-4); the composed hardware-test image renders it within 3.9e-5 of the JSFX at defaults. Benchmarked against stock SPRING REV with benchmark.py. Menu, init-register and replace gates pass; MKII emulator LCD captures included. Not flashed; no hardware stress test.",
+    "hardwareStatus": "untested",
+    "evidenceRevision": "433fa32c0f5b381cf5a71930dc45e121609b7f4d",
+    "gates": [
+      "verify.py",
+      "benchmark.py",
+      "Worst-case cycles under parameter modulation on hardware",
+      "Real hardware stress project: eight audio tracks, at least 60 minutes"
+    ]
+  },
+  "license": {
+    "spdx": "MIT",
+    "file": "LICENSE",
+    "declaration": "The TapeHead port, manifest, gate and documentation are MIT. The algorithm is JClones' TapeHead JSFX, MIT, whose full notice is in LICENSE and ../../octabam/licenses/jsfxclones.txt. The thumbnail is original and MIT. No firmware, extracted routines, tables or generated images are included."
+  },
+  "media": [
+    {
+      "path": "media/ot-location.png",
+      "captureType": "emulator",
+      "caption": "TAPEHEAD assigned in FX2 SETUP, in the row SPRING REV has on a stock unit. It has no SETUP controls.",
+      "alt": "TAPEHEAD assigned in FX2 SETUP, in the row SPRING REV has on a stock unit. It has no SETUP controls.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "FX2 SETUP",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
+        "setup": "ot_emu (MKII panel) on 1.40C composed with the tapehead-spring remix: stock effects, TAPEHEAD in SPRING REV's FX2 row, stock DSP code built in; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+      }
+    },
+    {
+      "path": "media/ot-controls.png",
+      "captureType": "emulator",
+      "caption": "TAPEHEAD on the main FX2 page: DRIVE, TRIM and COLOR at their defaults 36, 18 and NORM.",
+      "alt": "TAPEHEAD on the main FX2 page: DRIVE, TRIM and COLOR at their defaults 36, 18 and NORM.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "FX2 main",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
+        "setup": "ot_emu (MKII panel) on 1.40C composed with the tapehead-spring remix: stock effects, TAPEHEAD in SPRING REV's FX2 row, stock DSP code built in; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+      }
+    },
+    {
+      "path": "media/ot-color.png",
+      "captureType": "emulator",
+      "caption": "COLOR is a three-way select that prints its value: MED shown here, between NORM and BRGT.",
+      "alt": "COLOR is a three-way select that prints its value: MED shown here, between NORM and BRGT.",
+      "credit": "Octamod contributors (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "FX2 main, COLOR = MED",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
+        "setup": "ot_emu (MKII panel) on 1.40C composed with the tapehead-spring remix: stock effects, TAPEHEAD in SPRING REV's FX2 row, stock DSP code built in; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+      }
+    }
+  ],
+  "access": {
+    "location": "FUNC + FX1 or FUNC + FX2 SETUP on an audio track: the effect chooser (LEVEL selects, YES assigns). DRIVE, TRIM and COLOR are on the FX main page.",
+    "steps": [
+      "Select an audio track that plays a sample, transport stopped or running.",
+      "Hold FUNC and press FX2 (or FX1) to open its SETUP. Turn LEVEL to TAPEHEAD and press YES to assign it.",
+      "Press FX2 (or FX1) to show the main page: DRIVE, TRIM and COLOR. The SETUP page has no TapeHead controls.",
+      "Verified on the MKII panel of the emulator with the hardware test image; not yet on a unit."
+    ],
+    "screenshots": [
+      "media/ot-location.png",
+      "media/ot-controls.png",
+      "media/ot-color.png"
+    ]
+  }
+}
