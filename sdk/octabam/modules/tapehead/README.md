@@ -176,6 +176,8 @@ See [the actual report](evidence/hardware.md), [worst-case code-cycle model](evi
 The static model prices eight inserts per core, including split/reselection
 overhead; it is not a chip wall-clock measurement or a hardware maximum-load pass.
 Fresh actual monochrome LCD captures were reviewed in the MKII emulator.
+The [native/browser integration record](evidence/parity.md) includes complete
+composition and packaging identities, refusal coverage and reproduction steps.
 
 The algorithm is the **JClones VladG TapeHead clone**, pinned to JSFXClones
 `88a1503d668c378ced4c166e772378272f3b72ea`, [original JSFX](https://github.com/JClones/JSFXClones/blob/88a1503d668c378ced4c166e772378272f3b72ea/jsfx/JClones_TapeHead.jsfx).

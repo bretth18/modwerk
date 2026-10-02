@@ -19,7 +19,7 @@ A module is a folder under `sdk/octabam/modules/<id>/` containing native source,
 | compatibility | Original OS 1.40C, location, conflicts and explicit limitations |
 | resources | Storage/processing label, display, optional numeric value, unit, evidence method, exact conditions/source; unknown numbers are null |
 | tests | TESTING path, honest result summary, hardware status, exact evidence commit and declared gates |
-| tests.qualification | Mandatory for new modules/updates: this version/source/image identity, worst-case cycles under modulation, exact memory regions/totals passed hardware stress-project evidence, complete README/tutorial and real black-and-white documentation screenshots; see [qualification gates](MODULE_QUALIFICATION.md) |
+| tests.qualification | Mandatory for new modules/updates: this version/source/image identity, worst-case cycles under modulation, exact memory regions/totals, attributed owner-reviewed hardware evidence, complete README/tutorial and real black-and-white documentation screenshots; see [qualification gates](MODULE_QUALIFICATION.md) |
 | license | SPDX expression, local licence file and accurate source/media declaration |
 | media | Relative path, hardware/emulator/audio type, caption, alt text, credit, licence and original/source provenance; `otUi` page, version, local build hash and setup for OT captures |
 

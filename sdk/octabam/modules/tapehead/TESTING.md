@@ -58,7 +58,7 @@ What this gate cannot see: the composed image, the real dispatcher, the
 panel, placement beside other modules, and two cores. Those need `make check`
 with the source now integrated, and the reported hardware operation.
 
-### Static checks with a scratch remix
+### Contributor checks before the UI/qualification integration
 
 With the draft copied to `sdk/octabam/modules/tapehead/` and a scratch
 `remixes/test/tapehead/remix.py` (both removed afterwards):
@@ -257,3 +257,14 @@ The algorithm is the **JClones VladG TapeHead clone**, pinned to JSFXClones
 JClones is credited for the original implementation, devilfish707 for the port,
 and Sam Banks for the SDK. Full MIT notices accompany the source and site.
 The inspected source does not establish an Airwindows derivation.
+
+## Browser release integration
+
+The 0.1.1-experimental publication preserves the corrected DSP and manifest
+from c53daa9. The 512-profile original-module matrix, 224 requested-module
+profiles, 48 approved-utility profiles, actual browser build fingerprint and
+reproduction commands are recorded in [native/browser integration](evidence/parity.md).
+Those records contain only fingerprints, lengths, menu facts and refusal
+reasons. The contributor's initial missing-qualification rejection above is
+historical; the current version includes the required source/cycle/memory/UI
+records and the owner-accepted functional hardware report.

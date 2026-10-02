@@ -12,6 +12,8 @@ import { isModuleAvailable } from './availability'
 import { moduleBuildPending } from './build-support'
 import { selectionConflicts } from './selection-conflicts'
 import { defaultChoosers } from '../engine/choosers'
+import requestedProofs from '../engine/assets/tapehead-composition-proofs.json'
+import utilityProofs from '../engine/assets/tapehead-utility-proofs.json'
 
 const folder = resolve('sdk/octabam/modules/tapehead')
 const sha = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex')
@@ -52,5 +54,29 @@ describe('published TapeHead evidence', () => {
     expect(chooser.fx2).toContain('DARK REV')
     expect(selectionConflicts(['tapehead'], true)).toEqual([])
     expect(selectionConflicts(['tapehead', 'analog-bassdrum'])).toMatchObject([{ id: 'analog-bd-custom-dsp', moduleIds: ['analog-bassdrum', 'tapehead'] }])
+  })
+  it('retains complete native identity and refusal coverage for the new combinations without firmware bytes', () => {
+    for (const [proofs, scope, companions, expected] of [
+      [requestedProofs.proofs, ['miniverb','tapeecho','euclid','repitch','tapehead','analog-bassdrum','usb-audio-out-tracks-main-cue','quantizer'], ['analog-bassdrum','usb-audio-out-tracks-main-cue','quantizer'], 224],
+      [utilityProofs.proofs, ['tapehead','previewvol','cc-map','repitch','quantizer','usb-audio-out-tracks-main-cue'], ['previewvol','cc-map'], 48],
+    ] as const) {
+      const key = (ids: readonly string[], keep: boolean) => [...ids].sort().join('+') + ':' + keep
+      const actual = new Set(proofs.map(proof => key(proof.moduleIds, proof.keepStockFx2)))
+      expect(actual.size).toBe(expected)
+      expect(proofs).toHaveLength(expected)
+      for (let mask = 0; mask < 2 ** scope.length; mask++) for (const keep of [true, false]) {
+        const ids = scope.filter((_, bit) => mask >> bit & 1)
+        if (ids.includes('tapehead') && companions.some(id => ids.includes(id))) expect(actual.has(key(ids, keep))).toBe(true)
+      }
+      for (const proof of proofs) {
+        if ('error' in proof) expect(proof.error).toMatch(/stock effects only|do not fit|does not fit|chooser list/)
+        else {
+          expect(proof.sha256).toMatch(/^[a-f0-9]{64}$/)
+          expect(proof.firmware.sha256).toMatch(/^[a-f0-9]{64}$/)
+          expect(proof).not.toHaveProperty('code')
+          expect(proof).not.toHaveProperty('image')
+        }
+      }
+    }
   })
 })

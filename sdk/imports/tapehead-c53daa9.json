@@ -24,7 +24,7 @@
       "sourcePath": "sdk/drafts/tapehead/LICENSE",
       "sourceSha256": "c63027e4c8dce3285c25f89ebeb519f87b22b2dbb7f95ab350e564cd54a5380f",
       "vendoredSha256": "26e4667947ca26f5dcf1976bdbbca34e9fd088be68b4a15c70ad7fee7e11c4ce",
-      "note": "Imported unchanged"
+      "note": "Octamod documentation, path correction or integration evidence; native DSP and manifest unchanged"
     },
     {
       "path": "modules/tapehead/README.md",
@@ -32,8 +32,8 @@
       "revision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
       "sourcePath": "sdk/drafts/tapehead/README.md",
       "sourceSha256": "fb5dde691cfa89ff9e9973abc844ef863342f1329953ba97a72666436c1e75fe",
-      "vendoredSha256": "5dbd4fb44cbcb5ae4dd3892b7a2085254e8e898e06e277772ac3108f54cef2a0",
-      "note": "Octamod documentation/integration evidence"
+      "vendoredSha256": "81f2f31396061d7f11cfb8113fc26b4d3d12ed7e1bff86ce3d7bacbc23c256e7",
+      "note": "Octamod documentation, path correction or integration evidence; native DSP and manifest unchanged"
     },
     {
       "path": "modules/tapehead/TESTING.md",
@@ -41,8 +41,8 @@
       "revision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
       "sourcePath": "sdk/drafts/tapehead/TESTING.md",
       "sourceSha256": "c55bb051005aaa8a440bcea099d4399d637cccc61501872b216f3dff4f1478db",
-      "vendoredSha256": "60ef3bae762922e7373dc7f82dfecc2cb5d60721f3e58acf442b655463091b24",
-      "note": "Octamod documentation/integration evidence"
+      "vendoredSha256": "af7aee47f35f4089eb62b2b6e4f61b3203b4a603c80b0f6c8942e3f67b2c4478",
+      "note": "Octamod documentation, path correction or integration evidence; native DSP and manifest unchanged"
     },
     {
       "path": "modules/tapehead/benchmark.py",
@@ -51,7 +51,7 @@
       "sourcePath": "sdk/drafts/tapehead/benchmark.py",
       "sourceSha256": "a8f9821b3be7325bdaa322417e7bbb7d1e9592d60636beedf9e9476450e582d7",
       "vendoredSha256": "ae2a65f52238df0dae470a8d2320224094ee4d91417c3373265069f9b35f99ca",
-      "note": "Octamod documentation/integration evidence"
+      "note": "Octamod documentation, path correction or integration evidence; native DSP and manifest unchanged"
     },
     {
       "path": "modules/tapehead/evidence/benchmark.md",
@@ -60,7 +60,7 @@
       "sourcePath": "sdk/drafts/tapehead/evidence/benchmark.md",
       "sourceSha256": null,
       "vendoredSha256": "b4442f3beda29aac32e63ae0358186331d93c1c43e53b3bfb8fd6373cd256bfb",
-      "note": "Octamod documentation/integration evidence"
+      "note": "Octamod documentation, path correction or integration evidence; native DSP and manifest unchanged"
     },
     {
       "path": "modules/tapehead/evidence/cycles.md",
@@ -69,7 +69,7 @@
       "sourcePath": "sdk/drafts/tapehead/evidence/cycles.md",
       "sourceSha256": null,
       "vendoredSha256": "2f6bbe1c472c058f9c1a7352bb77c7ae00977e1ae0cf4295d472692d602ba84c",
-      "note": "Octamod documentation/integration evidence"
+      "note": "Octamod documentation, path correction or integration evidence; native DSP and manifest unchanged"
     },
     {
       "path": "modules/tapehead/evidence/hardware.md",
@@ -78,7 +78,7 @@
       "sourcePath": "sdk/drafts/tapehead/evidence/hardware.md",
       "sourceSha256": null,
       "vendoredSha256": "3bfd41c282fe043447c669e4f6e58bb4d704a57a655eaeb7756bc5cbb9b05c1e",
-      "note": "Octamod documentation/integration evidence"
+      "note": "Octamod documentation, path correction or integration evidence; native DSP and manifest unchanged"
     },
     {
       "path": "modules/tapehead/evidence/memory.md",
@@ -87,7 +87,7 @@
       "sourcePath": "sdk/drafts/tapehead/evidence/memory.md",
       "sourceSha256": null,
       "vendoredSha256": "38a008f028405abdc5de8d7afee5cb489c9e94e7858a4dc5172a9fcc2d094604",
-      "note": "Octamod documentation/integration evidence"
+      "note": "Octamod documentation, path correction or integration evidence; native DSP and manifest unchanged"
     },
     {
       "path": "modules/tapehead/gen_constants.py",
@@ -132,7 +132,7 @@
       "sourcePath": "sdk/drafts/tapehead/media/capture.json",
       "sourceSha256": "6c9e62d2b14a708f862da56b6208aa20651d7662f4f4b47cc0ef3b5d74dd5f59",
       "vendoredSha256": "8b18ed80d141047151691be0a5b56aed62f02bea2ded9b5dfbf32a3addb90285",
-      "note": "Octamod documentation/integration evidence"
+      "note": "Octamod documentation, path correction or integration evidence; native DSP and manifest unchanged"
     },
     {
       "path": "modules/tapehead/octamod.module.json",
@@ -141,7 +141,7 @@
       "sourcePath": "sdk/drafts/tapehead/octamod.module.json",
       "sourceSha256": "08f1d2402aa90277cf2dc6f7cc409821c26a953b21c6d43e3fbb27b288e01614",
       "vendoredSha256": "562e4e4efc9494f65bd0c8677752413f4b01bf850f6d31fc94a0297a956935f3",
-      "note": "Octamod documentation/integration evidence"
+      "note": "Octamod documentation, path correction or integration evidence; native DSP and manifest unchanged"
     },
     {
       "path": "modules/tapehead/presentation/thumbnail.svg",
@@ -187,6 +187,42 @@
       "sourceSha256": "6b02462491863709fffdf5411a42f3ccdb70781c33de179b96ed2f9cf6180029",
       "vendoredSha256": "6b02462491863709fffdf5411a42f3ccdb70781c33de179b96ed2f9cf6180029",
       "note": "Imported unchanged; original creator provenance"
+    },
+    {
+      "path": "modules/tapehead/evidence/parity.md",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
+      "sourcePath": "sdk/drafts/tapehead/evidence/parity.md",
+      "sourceSha256": null,
+      "vendoredSha256": "dc3928f045477880aa4540dacd9c1ebf1f93cdc236a1e20dd7afc9348938c4dc",
+      "note": "Octamod documentation, path correction or integration evidence; native DSP and manifest unchanged"
+    },
+    {
+      "path": "modules/tapehead/media/ot-color.png",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
+      "sourcePath": "sdk/drafts/tapehead/media/ot-color.png",
+      "sourceSha256": "3a332ec2af2420d9a914f6be081efb040880017fe52f1f0d064907089279eb23",
+      "vendoredSha256": "3a332ec2af2420d9a914f6be081efb040880017fe52f1f0d064907089279eb23",
+      "note": "Reviewed capture or Octamod integration evidence"
+    },
+    {
+      "path": "modules/tapehead/media/ot-controls.png",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
+      "sourcePath": "sdk/drafts/tapehead/media/ot-controls.png",
+      "sourceSha256": "21a1f1b3f276edcfe7e16836d63743e759c5a9f6cae58dd7f2d38ca6cc23fef3",
+      "vendoredSha256": "21a1f1b3f276edcfe7e16836d63743e759c5a9f6cae58dd7f2d38ca6cc23fef3",
+      "note": "Reviewed capture or Octamod integration evidence"
+    },
+    {
+      "path": "modules/tapehead/media/ot-location.png",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
+      "sourcePath": "sdk/drafts/tapehead/media/ot-location.png",
+      "sourceSha256": "1ce79afcc79eee6bd9473bafc0c0e7a6c84f7c1555fa0874255f11cbd3b09d61",
+      "vendoredSha256": "1ce79afcc79eee6bd9473bafc0c0e7a6c84f7c1555fa0874255f11cbd3b09d61",
+      "note": "Reviewed capture or Octamod integration evidence"
     }
   ]
 }

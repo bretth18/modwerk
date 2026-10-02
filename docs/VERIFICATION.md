@@ -304,3 +304,64 @@ checks, four licence checks, lint, application/server type checks and the static
 production build. Exact-base module validation and `git diff --check` pass.
 A clean-commit source-only container build reproduces all ten parity-verified
 authored package artifacts; only source-commit provenance differs.
+
+
+## TapeHead release integration — 2 October 2026
+
+TapeHead 0.1.1-experimental moves from PR #42's draft into native discovery,
+the approved-source compiler and the visible, buildable catalog. JClones' MIT
+TapeHead JSFX (the contributor-identified VladG clone) is pinned at
+88a1503d668c378ced4c166e772378272f3b72ea; the original MIT/NOTICE, devilfish707's
+port credit and Sam Banks' SDK credit are preserved. The corrected DSP and
+manifest are unchanged from c53daa9. Three fresh actual monochrome MKII LCD
+captures show FX2 assignment, defaults and COLOR MED, with a full tutorial.
+The premature chooser capture was rejected because it still showed DELAY.
+
+The isolated reference render passes (maximum float-reference error 4.68e-4),
+stereo isolation, silence, COLOR and signed-multiply checks. A full 2,048-block
+both-core benchmark covers moving parameters, extremes and all sixteen trigger
+splits, including stock Spring Reverb comparison. The static code-cycle model
+charges 6,000 per instance per block, 48,000 at eight inserts per core against a
+49,920 usable-work budget; this is not hardware wall-clock timing. The exact
+logical allocation is 2,972 shared bytes plus 93 per instance, 4,460 at sixteen
+inserts, with no additional X-slot reservation or Y/buffer/heap allocation.
+Source/code-cycle and memory reports describe bounds, overhead and limitations.
+
+The owner removed the mandatory 60-minute/eight-track hardware stress test and
+accepted the supplied author report: working audio and parameter locks without
+reported overloads, with perceived CPU similar to Spring Reverb. Hardware status
+is `reported`; model, duration and tested maximum load remain unknown. The
+locally reproduced test MAIN OS identity is bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7.
+The frozen eleven-module baseline and exact utility waivers are unchanged.
+
+All 512 original-module/TapeHead profiles match the native oracle: 264 complete
+MAIN OS images and 248 placement refusals; nine representative native containers
+and upgrades match. The 224 TapeHead/Analog BD/USB/Quantizer profiles match: 80
+complete images, 144 refusals, 22 complete native packages. TapeHead + Analog BD
+is rejected with an explanation because Analog BD requires stock DSP effects.
+All 48 TapeHead/approved-utility images match native, with six complete
+packages identical. Native export preserves canonical catalog order for ROM
+placement; an initial fixture using a different order was corrected and rerun. The original seven-module proof set is unchanged. The
+source-only compiler preserves all existing authored runtime/ROM/USB/utility
+code byte for byte; 4,096 new TapeHead declaration combinations are recorded.
+
+The real browser worker builds and verifies TapeHead, with complete upgrade
+SHA-256 247ec72998252f364908c2be7a2702425d83e8f8f1c2cd75963a29428056bdc3
+(445,548 bytes), identical to native. The desktop page shows the original
+creator, source licences, three actual LCD screenshots, controls and tutorial.
+No firmware download was saved; the disposable local browser's stored base was
+removed using its Remove from device control. Firmware, private cards, raw
+LCD/DSP/RAM dumps and composed images remain private and temporary.
+
+Reproduce using `scripts/export-composition-menus.mjs`, the reviewed vendored-SDK
+mode in `scripts/export-composition-proofs.py`, and the explicit private
+`verify-static-composition-native.mjs` / `verify-tapehead-native.mjs` commands.
+The native toolchain runs in a network-disabled container; developer verifiers
+read firmware only in memory. These checks never run in ordinary app tests,
+source-build CI or visitor flows.
+
+Final Node 24 validation passed 280 domain tests in 52 files, licence/SDK
+checks, lint, app/server type checks and the production build. Exact-base
+module validation and `git diff origin/main --check` pass. The source-only
+compiler's `--verify-existing` pass reproduces every authored package and
+receiver against the locally parity-verified baseline. No firmware is involved.

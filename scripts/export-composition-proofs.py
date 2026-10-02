@@ -5,7 +5,7 @@ def sha(data):return hashlib.sha256(data).hexdigest()
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('worktree',type=pathlib.Path);p.add_argument('destination',type=pathlib.Path);p.add_argument('--app',type=pathlib.Path,required=True);p.add_argument('--stock-bin',type=pathlib.Path);p.add_argument('--static-stock',action='store_true',help='Loader-free builds: stock DSP code stays built in; every module subset with and without stock FX2')
     p.add_argument('--vendored-sdk',action='store_true',help='Verify reviewed SDK sources against the app checkout instead of the legacy upstream worktree')
-    p.add_argument('--suite',choices=['original','tapehead'],default='original')
+    p.add_argument('--suite',choices=['original','tapehead','tapehead-utilities'],default='original')
     p.add_argument('--menus',type=pathlib.Path,help='Precomputed defaultChoosers JSON for containers without Node')
     p.add_argument('--shard',type=int,default=0);p.add_argument('--shards',type=int,default=1)
     p.add_argument('--packing-vendor',type=pathlib.Path,help='Reviewed local elektron-firmware-tool checkout')
@@ -23,7 +23,7 @@ def main():
         revision=subprocess.check_output(['git','-C',str(root),'rev-parse','HEAD'],text=True).strip()
         if revision!=json.loads((app/'src/catalog/native-metadata.json').read_text())['revision']:p.error('Use the pinned worktree.')
         if subprocess.run(['git','-C',str(root),'diff','--quiet','HEAD']).returncode:p.error('Native tracked sources must be clean.')
-    if a.suite=='tapehead' and not(a.vendored_sdk and a.static_stock):p.error('TapeHead suite requires the reviewed vendored SDK and static stock mode.')
+    if a.suite!='original' and not(a.vendored_sdk and a.static_stock):p.error('TapeHead suite requires the reviewed vendored SDK and static stock mode.')
     original=(root/'out/raw/section_3_MAIN_OS.bin').read_bytes();sourceHash=json.loads((app/'src/engine/assets/stock-dsp-metadata.json').read_text())['sourceSha256']
     if sha(original)!=sourceHash:p.error('Original OS fingerprint mismatch.')
     sys.path[:0]=[str(root/'tools/build'),str(root/'tools')];os.chdir(root)
@@ -35,6 +35,8 @@ def main():
     from build_bus import fx1_hazard
     known=registry.modules();order=['spectrum','modulation','character','miniverb','tapeecho','euclid','repitch']+(['tapehead'] if a.vendored_sdk else []);
     if a.suite=='tapehead':order=['miniverb','tapeecho','euclid','repitch','tapehead','analog-bassdrum','usb-audio-out-tracks-main-cue','quantizer']
+    if a.suite=='tapehead-utilities':order=['repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map']
+    if a.vendored_sdk:order=[row['id'] for row in json.loads((app/'sdk/catalog.json').read_text())['modules'] if row['id'] in order]
     byid={m.name:m for m in known.values()}
     stockKeys={m.menu.fx2_id:m.key for m in known.values() if m.is_stock and m.menu is not None}
     stockFx1=[stockKeys[id] for id in stock.fx1_order() if id];stockFx2=[stockKeys[id] for id in stock._chooser_order(stock.FX2_CHOOSER) if id]
@@ -66,6 +68,7 @@ def main():
             hidden=[m.key for m in selected if m.key in menu['fx1'] and m.claims and m.claims.fx1_only]
             return {'fx1':menu['fx1'],'fx2':menu['fx2'],'hidden':hidden}
     if a.suite=='tapehead':cases=[(ids,keep) for ids,keep in cases if 'tapehead' in ids and any(id in ids for id in ['analog-bassdrum','usb-audio-out-tracks-main-cue','quantizer'])]
+    if a.suite=='tapehead-utilities':cases=[(ids,keep) for ids,keep in cases if 'tapehead' in ids and any(id in ids for id in ['previewvol','cc-map'])]
     cases=cases[a.shard::a.shards]
     proofs=[];originalRemix=registry.remix
     packTemp=None;packing=None
