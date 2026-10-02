@@ -296,6 +296,10 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .compact-preview .signal-art text { display: none; }
 .selected-module-link strong { font-size: 13px; font-weight: 500; }
 .selected-module-link small { display: block; font-size: 12px; margin-top: 5px; color: #9292a5; }
+.stock-fx-summary p { font-size: 13px; line-height: 1.7; color: var(--muted); margin: 10px 0 0; }
+.stock-fx-summary .subtle { font-size: 12px; }
+.stock-fx-list { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 12px 0; }
+.stock-fx-list li { border: 1px solid var(--line); border-radius: 5px; padding: 6px 10px; font-size: 13px; }
 .icon-button { display: grid; place-items: center; border: 0; background: transparent; padding: 9px; border-radius: 5px; color: #9797aa; }
 .icon-button:hover { background: #35353e; }
 .selection-empty { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; padding: 20px 8px; color: #a5a5b6; }
