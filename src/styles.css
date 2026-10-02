@@ -948,3 +948,63 @@ h1 { font-size: 28px; }
 @media (min-width: 601px) and (pointer: coarse) {
   .sidebar-nav a, .configuration-nav button, .configuration-label .icon-button, .sidebar-footer .support-link { min-height: 44px; }
 }
+
+/* Phone polish: chip navigation, a compact project notice, tidier toolbars and module cards.
+   Everything here is scoped to the phone shell, so tablet and desktop layouts are unchanged. */
+@media (max-width: 600px) {
+  .sidebar-nav[aria-label="Module library"] { gap: 8px; padding: 2px 16px 12px; }
+  .sidebar-nav[aria-label="Module library"] a { min-height: 36px; padding: 0 14px; border: 1px solid #3a3a42; border-radius: 8px; color: #b8b8c4; }
+  .sidebar-nav[aria-label="Module library"] a.active { border-color: #505879; background: #353b52; color: #d4d7ff; box-shadow: none; }
+  .sidebar::after { bottom: 12px; width: 32px; height: 38px; }
+
+  .project-notice { display: block; margin-bottom: 18px; padding-bottom: 12px; border-bottom-color: var(--line); font-size: 11px; line-height: 1.6; color: #a9a7b5; }
+  .project-notice p { display: inline; }
+  .project-notice a { margin-left: 4px; color: #bdb8d4; white-space: nowrap; }
+
+  .page-heading { align-items: flex-start; margin-bottom: 16px; }
+  .page-heading h1 { font-size: 26px; letter-spacing: -.5px; }
+  .page-heading > .pill, .library-total { margin-top: 5px; }
+
+  .discovery-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 16px; }
+  .discovery-actions { grid-template-columns: auto minmax(0, 1fr); }
+  .discovery-actions .button { min-height: 44px; border-radius: 8px; font-size: 14px; }
+  .discovery-actions button:disabled { background: transparent; }
+
+  .module-grid { gap: 16px; }
+  .module-card { border-radius: 12px; }
+  .module-card .module-preview { height: 148px; }
+  .module-card-body { padding: 14px 16px 6px; }
+  .module-card-title { align-items: center; gap: 12px; }
+  .module-card-heading { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; }
+  .card-release { margin-top: 0; min-height: 0; }
+  .add-button { flex-shrink: 0; min-height: 40px; padding: 0 13px; gap: 5px; border-radius: 8px; font-size: 13px; }
+  .card-credit { margin-top: 4px; }
+  .card-description { margin-top: 10px; font-size: 14px; line-height: 1.6; color: #b8b8c5; }
+  .card-bottom { margin-top: 12px; }
+  .module-popularity { margin-top: 8px; padding-top: 0; border-top: 0; }
+  .card-proof { align-items: center; margin-top: 12px; padding-top: 2px; font-size: 12px; }
+  .card-proof label { min-height: 40px; padding-left: 12px; }
+
+  .status-bar { height: 44px; padding: 0 16px; }
+  .status-bar .privacy-link { display: none; }
+  .status-bar a[href="#configuration"] { font-size: 12px; }
+
+  .module-page-actions { margin-bottom: 16px; }
+  .module-issue-action { min-height: 38px; padding: 0 12px; border-radius: 8px; }
+  .detail-hero { gap: 18px; margin-bottom: 22px; }
+  .detail-hero > .module-preview { height: 180px; }
+  .detail-intro h1 { font-size: 28px; margin-bottom: 4px; }
+  .detail-intro > p { margin: 12px 0 8px; }
+  .detail-rating { margin-bottom: 16px; }
+  .detail-intro > .button { width: 100%; min-height: 46px; border-radius: 8px; font-size: 14px; }
+
+  .configuration-actions { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin: 0 0 20px; }
+  .configuration-actions select { grid-column: 1 / -1; min-height: 44px; border-radius: 8px; }
+  .configuration-actions .button { grid-column: span 2; min-width: 0; padding: 0 8px; border-radius: 8px; }
+  .configuration-actions .button:nth-last-child(-n+2) { grid-column: span 3; }
+  .configuration-section { margin-bottom: 16px; border-radius: 12px; }
+
+  .module-set-art .preview-label, .module-set-art .preview-controls, .module-set-art .signal-art text { display: none; }
+  .module-set-art .signal-art { height: 100%; }
+  .contribution-start p { font-size: 14px; }
+}

@@ -24,7 +24,10 @@ export function MobileMenu({ route, selectedCount, admin, onSupport }: { route: 
       { href: '#activity', label: 'Your activity', icon: 'message', current: route === 'activity' },
       ...(admin ? [{ href: '#admin', label: 'Admin workspace', icon: 'shield' as const, current: route === 'admin' || route === 'review' }] : []),
     ],
-    [{ href: '#faq', label: 'FAQ & flashing guide', icon: 'help', current: route === 'faq' }],
+    [
+      { href: '#faq', label: 'FAQ & flashing guide', icon: 'help', current: route === 'faq' },
+      { href: '#privacy', label: 'Privacy', icon: 'shield', current: route === 'privacy' },
+    ],
   ]
   return (
     <div className="mobile-menu">
