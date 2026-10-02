@@ -21,11 +21,13 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Require version increases against the exact PR base
+      - name: Require versions, qualification evidence and complete release documentation
         env:
           OCTAMOD_PR_BASE: ${{ github.event.pull_request.base.sha }}
         run: npm run modules:check -- --base "$OCTAMOD_PR_BASE"
       - run: npm run check
+      # Qualification records, complete docs/tutorials and monochrome screenshots are mandatory.
+      # The owner verifies actual measurement/hardware evidence before merge.
       # Metadata checks never execute submitted Python or run firmware gates.
   module-paths-windows:
     runs-on: windows-2025

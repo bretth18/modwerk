@@ -4,6 +4,14 @@ export type EvidenceMethod = 'unmeasured' | 'static' | 'emulator' | 'hardware'
 export type ModuleMetric = { label: string; display: string; value: number | null; unit: string; method: EvidenceMethod; conditions: string; source: string }
 export type ModuleControl = { name: string; default: number; count: number; doc: string; labels: string[] | null }
 export type ModuleUiCapture = { page: string; shows: 'location' | 'controls' | 'location-and-controls'; firmware: '1.40C'; moduleVersion: string; imageSha256: string; setup: string }
+export type QualificationConditions = { parameterExtremes: string; parameterModulation: string; modeSwitching: string; maxLoad: string; inputConditions: string }
+export type ModuleQualification = {
+  documentation: { tutorial: { title: string; steps: string[] }; screenshots: string[]; screenshotStyle: 'black-and-white' }
+  moduleVersion: string; sourceSha256: string; imageSha256: string
+  cycles: { processor: 'dsp' | 'coldfire'; worstCase: number; maxConfiguration: number; maxInstances: number; budget: number; unit: 'cycles/sample' | 'cycles/block' | 'cycles/event'; method: 'static' | 'emulator' | 'hardware'; conditions: QualificationConditions; report: string }[]
+  memory: { regions: { name: string; space: 'dsp-p' | 'dsp-x' | 'dsp-y' | 'cpu-flash' | 'cpu-ram' | 'sdram'; words: number; wordBits: 8 | 16 | 24 | 32; bytes: number; scope: 'instance' | 'shared' }[]; perInstanceBytes: number; sharedBytes: number; maxInstances: number; totalBytes: number; conditions: string; report: string }
+  hardware: { status: 'pending' | 'failed' | 'passed'; model: 'MKI' | 'MKII'; testedOn: string; tester: string; project: { name: string; sha256: string; recipe: string }; durationMinutes: number; audioTracks: number; midiTracks: number; maxInstances: number; conditions: QualificationConditions; checks: { audioContinuity: 'passed' | 'failed'; transport: 'passed' | 'failed'; controls: 'passed' | 'failed'; memoryIntegrity: 'passed' | 'failed'; recovery: 'passed' | 'failed' }; report: string }
+}
 export const MODULE_CATEGORIES = ['effects', 'playback', 'machines', 'scenes', 'midi-usb'] as const
 export type ModuleDocument = {
   schemaVersion: 2; id: string; key: string; name: string; version: string; category: typeof MODULE_CATEGORIES[number]
@@ -15,7 +23,7 @@ export type ModuleDocument = {
   controls: ModuleControl[]
   compatibility: { firmware: '1.40C'; effectId: number | null; location: 'FX1' | 'FX2' | 'FX1 / FX2' | 'Flex / Static' | 'Track machine' | 'MIDI tracks' | 'Project sequencer' | 'USB'; conflicts: string[]; limitations: string[] }
   resources: { recorded: string; storage: ModuleMetric; processing: ModuleMetric }
-  tests: { report: string; summary: string; hardwareStatus: 'untested' | 'historical' | 'verified'; evidenceRevision: string; gates: string[] }
+  tests: { report: string; summary: string; hardwareStatus: 'untested' | 'historical' | 'verified'; evidenceRevision: string; gates: string[]; qualification?: ModuleQualification }
   license: { spdx: string; file: string; declaration: string }
   media: { path: string; captureType: 'hardware' | 'emulator' | 'audio'; caption: string; alt: string; credit: string; license: string; source: string; otUi?: ModuleUiCapture }[]
 }
@@ -40,6 +48,58 @@ function list(value: unknown, path: string, maximum: number): unknown[] {
   return value
 }
 function texts(value: unknown, path: string, maximum: number): string[] { return list(value,path,maximum).map((v,i)=>text(v,path+'['+i+']')) }
+function integer(value: unknown, path: string, minimum=0, maximum=Number.MAX_SAFE_INTEGER): number {
+  if(typeof value!=='number'||!Number.isSafeInteger(value)||value<minimum||value>maximum) fail(path,'expected an exact integer between '+minimum+' and '+maximum)
+  return value
+}
+function sha256(value: unknown, path: string): string {
+  const hash=text(value,path,64)
+  if(!/^[a-f0-9]{64}$/.test(hash)) fail(path,'expected an exact SHA-256 identity')
+  return hash
+}
+function qualificationConditions(value: unknown, path: string): QualificationConditions {
+  const keys=['parameterExtremes','parameterModulation','modeSwitching','maxLoad','inputConditions'] as const
+  const c=object(value,path,keys)
+  return Object.fromEntries(keys.map(key=>[key,text(c[key],path+'.'+key)])) as QualificationConditions
+}
+function qualificationReport(value: unknown, path: string): string {
+  const file=modulePath(value,path)
+  if(file!=='TESTING.md'&&(!file.startsWith('evidence/')||!/\.(md|json|txt)$/.test(file))) fail(path,'use TESTING.md or a text report under evidence/, never firmware or a project/card dump')
+  return file
+}
+function qualification(value: unknown): ModuleQualification {
+  const path='tests.qualification', q=object(value,path,['moduleVersion','sourceSha256','imageSha256','cycles','memory','hardware','documentation'])
+  const moduleVersion=text(q.moduleVersion,path+'.moduleVersion',80); compareModuleVersions(moduleVersion,moduleVersion)
+  const docs=object(q.documentation,path+'.documentation',['tutorial','screenshots','screenshotStyle'])
+  const tutorial=object(docs.tutorial,path+'.documentation.tutorial',['title','steps'])
+  const steps=texts(tutorial.steps,path+'.documentation.tutorial.steps',12)
+  if(steps.length<3) fail(path+'.documentation.tutorial.steps','require at least three practical tutorial steps: setup/select, use controls and verify the result')
+  const screenshots=list(docs.screenshots,path+'.documentation.screenshots',8).map((value,i)=>modulePath(value,path+'.documentation.screenshots['+i+']'))
+  if(!screenshots.length||new Set(screenshots).size!==screenshots.length) fail(path+'.documentation.screenshots','require real documentation screenshots without duplicates')
+  const documentation={tutorial:{title:text(tutorial.title,path+'.documentation.tutorial.title',100),steps},screenshots,screenshotStyle:enumeration(docs.screenshotStyle,path+'.documentation.screenshotStyle',['black-and-white'])}
+  const cycles=list(q.cycles,path+'.cycles',2).map((value,i):ModuleQualification['cycles'][number]=>{
+    const p=path+'.cycles['+i+']', c=object(value,p,['processor','worstCase','maxConfiguration','maxInstances','budget','unit','method','conditions','report'])
+    const worstCase=integer(c.worstCase,p+'.worstCase',1), maxConfiguration=integer(c.maxConfiguration,p+'.maxConfiguration',1), budget=integer(c.budget,p+'.budget',1)
+    if(maxConfiguration<worstCase) fail(p+'.maxConfiguration','maximum configuration cannot cost less than one instance')
+    return {processor:enumeration(c.processor,p+'.processor',['dsp','coldfire']),worstCase,maxConfiguration,maxInstances:integer(c.maxInstances,p+'.maxInstances',1,16),budget,unit:enumeration(c.unit,p+'.unit',['cycles/sample','cycles/block','cycles/event']),method:enumeration(c.method,p+'.method',['static','emulator','hardware']),conditions:qualificationConditions(c.conditions,p+'.conditions'),report:qualificationReport(c.report,p+'.report')}
+  })
+  if(!cycles.length||new Set(cycles.map(c=>c.processor)).size!==cycles.length) fail(path+'.cycles','require one worst-case count for every processor used, without duplicates')
+  const p=path+'.memory', m=object(q.memory,p,['regions','perInstanceBytes','sharedBytes','maxInstances','totalBytes','conditions','report'])
+  const regions=list(m.regions,p+'.regions',64).map((value,i):ModuleQualification['memory']['regions'][number]=>{
+    const r=p+'.regions['+i+']', region=object(value,r,['name','space','words','wordBits','bytes','scope'])
+    const words=integer(region.words,r+'.words',1), wordBits=integer(region.wordBits,r+'.wordBits'), bytes=integer(region.bytes,r+'.bytes',1)
+    if(![8,16,24,32].includes(wordBits)||!Number.isSafeInteger(words*wordBits/8)||bytes!==words*wordBits/8) fail(r,'word count, word width and exact byte count must agree')
+    return {name:text(region.name,r+'.name',120),space:enumeration(region.space,r+'.space',['dsp-p','dsp-x','dsp-y','cpu-flash','cpu-ram','sdram']),words,wordBits:wordBits as 8|16|24|32,bytes,scope:enumeration(region.scope,r+'.scope',['instance','shared'])}
+  })
+  if(!regions.length||new Set(regions.map(r=>r.space+':'+r.name)).size!==regions.length) fail(p+'.regions','require an exact allocation inventory without duplicates')
+  const perInstanceBytes=integer(m.perInstanceBytes,p+'.perInstanceBytes'),sharedBytes=integer(m.sharedBytes,p+'.sharedBytes'),maxInstances=integer(m.maxInstances,p+'.maxInstances',1,16),totalBytes=integer(m.totalBytes,p+'.totalBytes',1)
+  if(regions.filter(r=>r.scope==='instance').reduce((sum,r)=>sum+r.bytes,0)!==perInstanceBytes||regions.filter(r=>r.scope==='shared').reduce((sum,r)=>sum+r.bytes,0)!==sharedBytes||perInstanceBytes*maxInstances+sharedBytes!==totalBytes) fail(p,'region sums and maximum-instance total must match the exact byte counts')
+  const hpath=path+'.hardware', h=object(q.hardware,hpath,['status','model','testedOn','tester','project','durationMinutes','audioTracks','midiTracks','maxInstances','conditions','checks','report'])
+  const project=object(h.project,hpath+'.project',['name','sha256','recipe']),checks=object(h.checks,hpath+'.checks',['audioContinuity','transport','controls','memoryIntegrity','recovery'])
+  const testedOn=text(h.testedOn,hpath+'.testedOn',10)
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(testedOn)||!Number.isFinite(Date.parse(testedOn))||new Date(testedOn).toISOString().slice(0,10)!==testedOn) fail(hpath+'.testedOn','record a valid YYYY-MM-DD test date')
+  return {documentation,moduleVersion,sourceSha256:sha256(q.sourceSha256,path+'.sourceSha256'),imageSha256:sha256(q.imageSha256,path+'.imageSha256'),cycles,memory:{regions,perInstanceBytes,sharedBytes,maxInstances,totalBytes,conditions:text(m.conditions,p+'.conditions'),report:qualificationReport(m.report,p+'.report')},hardware:{status:enumeration(h.status,hpath+'.status',['pending','failed','passed']),model:enumeration(h.model,hpath+'.model',['MKI','MKII']),testedOn,tester:text(h.tester,hpath+'.tester',100),project:{name:text(project.name,hpath+'.project.name',120),sha256:sha256(project.sha256,hpath+'.project.sha256'),recipe:text(project.recipe,hpath+'.project.recipe')},durationMinutes:integer(h.durationMinutes,hpath+'.durationMinutes'),audioTracks:integer(h.audioTracks,hpath+'.audioTracks',0,8),midiTracks:integer(h.midiTracks,hpath+'.midiTracks',0,8),maxInstances:integer(h.maxInstances,hpath+'.maxInstances',1,16),conditions:qualificationConditions(h.conditions,hpath+'.conditions'),checks:Object.fromEntries(Object.entries(checks).map(([key,value])=>[key,enumeration(value,hpath+'.checks.'+key,['passed','failed'])])) as ModuleQualification['hardware']['checks'],report:qualificationReport(h.report,hpath+'.report')}}
+}
 export function modulePath(value: unknown, path='file'): string {
   const result=text(value,path,240)
   if (!result.split('/').every(part=>/^[a-zA-Z0-9_.-]+$/.test(part)&&part!=='.'&&part!=='..') || result.startsWith('/') || /\.(bin|syx|exe|dll|so|dylib|zip)$/i.test(result)) fail(path,'expected a relative source/document/media path inside the module folder')
@@ -80,7 +140,8 @@ export function parseModuleDocument(value: unknown): ModuleDocument {
   if(c.effectId!==null&&(typeof c.effectId!=='number'||!Number.isInteger(c.effectId)||c.effectId<4||c.effectId>31))fail('compatibility.effectId','expected a valid effect ID or null for contributions without an effect slot')
   if(c.firmware!=='1.40C') fail('compatibility.firmware','only 1.40C is supported')
   const r=object(d.resources,'resources',['recorded','storage','processing'])
-  const t=object(d.tests,'tests',['report','summary','hardwareStatus','evidenceRevision','gates'])
+  const t=object(d.tests,'tests',['report','summary','hardwareStatus','evidenceRevision','gates'],['qualification'])
+  const proof='qualification' in t?qualification(t.qualification):undefined
   const evidenceRevision=text(t.evidenceRevision,'tests.evidenceRevision',40)
   if(!/^[a-f0-9]{40}$/.test(evidenceRevision)) fail('tests.evidenceRevision','pin the exact evidence source commit')
   const l=object(d.license,'license',['spdx','file','declaration'])
@@ -124,7 +185,7 @@ export function parseModuleDocument(value: unknown): ModuleDocument {
     if(noUiReason&&(controls.length||c.effectId!==null||c.location!=='USB'||screenshots.length)) fail('access.noUiReason','only automatic USB modules without OT controls or screenshots may declare no dedicated OT UI')
     access={location:text(a.location,'access.location',300),steps,screenshots,...(noUiReason?{noUiReason}:{})}
   }
-  return {schemaVersion:2,id,key:text(d.key,'key',60),name:text(d.name,'name',100),version,category:enumeration(d.category,'category',MODULE_CATEGORIES),...(source?{source}:{}),...(build?{build}:{}),...(access?{access}:{}),author:{github,...authorName,credits:texts(a.credits,'author.credits',30)},nativeManifest,presentation:{label:text(p.label,'presentation.label',80),family:text(p.family,'presentation.family',80),summary:text(p.summary,'presentation.summary',300),overview:text(p.overview,'presentation.overview'),highlights:texts(p.highlights,'presentation.highlights',12),usage:texts(p.usage,'presentation.usage',12)},controls,compatibility:{firmware:'1.40C',effectId:c.effectId as number|null,location:enumeration(c.location,'compatibility.location',['FX1','FX2','FX1 / FX2','Flex / Static','Track machine','MIDI tracks','Project sequencer','USB']),conflicts:texts(c.conflicts,'compatibility.conflicts',64),limitations:texts(c.limitations,'compatibility.limitations',24)},resources:{recorded:text(r.recorded,'resources.recorded',100),storage:metric(r.storage,'resources.storage'),processing:metric(r.processing,'resources.processing')},tests:{report:modulePath(t.report,'tests.report'),summary:text(t.summary,'tests.summary'),hardwareStatus:enumeration(t.hardwareStatus,'tests.hardwareStatus',['untested','historical','verified']),evidenceRevision,gates:texts(t.gates,'tests.gates',64)},license:{spdx:text(l.spdx,'license.spdx',100),file:modulePath(l.file,'license.file'),declaration:text(l.declaration,'license.declaration')},media}
+  return {schemaVersion:2,id,key:text(d.key,'key',60),name:text(d.name,'name',100),version,category:enumeration(d.category,'category',MODULE_CATEGORIES),...(source?{source}:{}),...(build?{build}:{}),...(access?{access}:{}),author:{github,...authorName,credits:texts(a.credits,'author.credits',30)},nativeManifest,presentation:{label:text(p.label,'presentation.label',80),family:text(p.family,'presentation.family',80),summary:text(p.summary,'presentation.summary',300),overview:text(p.overview,'presentation.overview'),highlights:texts(p.highlights,'presentation.highlights',12),usage:texts(p.usage,'presentation.usage',12)},controls,compatibility:{firmware:'1.40C',effectId:c.effectId as number|null,location:enumeration(c.location,'compatibility.location',['FX1','FX2','FX1 / FX2','Flex / Static','Track machine','MIDI tracks','Project sequencer','USB']),conflicts:texts(c.conflicts,'compatibility.conflicts',64),limitations:texts(c.limitations,'compatibility.limitations',24)},resources:{recorded:text(r.recorded,'resources.recorded',100),storage:metric(r.storage,'resources.storage'),processing:metric(r.processing,'resources.processing')},tests:{report:modulePath(t.report,'tests.report'),summary:text(t.summary,'tests.summary'),hardwareStatus:enumeration(t.hardwareStatus,'tests.hardwareStatus',['untested','historical','verified']),evidenceRevision,gates:texts(t.gates,'tests.gates',64),...(proof?{qualification:proof}:{})},license:{spdx:text(l.spdx,'license.spdx',100),file:modulePath(l.file,'license.file'),declaration:text(l.declaration,'license.declaration')},media}
 }
 
 /** New modules and updates need real UI evidence; unchanged legacy publications remain readable. */
@@ -136,4 +197,20 @@ export function requireModuleUiForPublication(document: ModuleDocument): void {
   if(captures.some(capture=>capture.moduleVersion!==document.version)) fail(document.id+'.access','OT UI captures must document this module version')
   if(!captures.some(capture=>capture.shows!=='controls')) fail(document.id+'.access','include a capture showing where the module is selected or enabled')
   if(document.controls.length&&!captures.some(capture=>capture.shows!=='location')) fail(document.id+'.access','include a capture of the module controls')
+}
+
+/** Publication requires complete measured evidence; draft parsing stays available. */
+export function requireModuleQualificationForPublication(document: ModuleDocument): void {
+  const q=document.tests.qualification, path=document.id+'.tests.qualification'
+  if(!q) fail(path,'publication requires worst-case cycles, exact memory and hardware stress-project evidence')
+  if(q.moduleVersion!==document.version) fail(path+'.moduleVersion','qualification must cover this module version')
+  if(q.cycles.some(c=>c.maxConfiguration>c.budget)) fail(path+'.cycles','worst-case maximum configuration exceeds the declared real-time budget')
+  if(document.tests.hardwareStatus!=='verified'||q.hardware.status!=='passed'||Object.values(q.hardware.checks).some(status=>status!=='passed')) fail(path+'.hardware','require passed hardware stress tests; historical, emulator-only, pending or failed results cannot qualify')
+  if(q.hardware.durationMinutes<60||q.hardware.audioTracks!==8) fail(path+'.hardware','require at least 60 minutes with all eight audio tracks running the stress project')
+  if(!document.presentation.usage.length||!document.presentation.highlights.length) fail(path+'.documentation','complete the usage, features and control documentation')
+  for(const path of q.documentation.screenshots) {
+    const image=document.media.find(item=>item.path===path)
+    if(!image||image.captureType==='audio'||!image.path.endsWith('.png')) fail(document.id+'.tests.qualification.documentation','tutorial screenshots must reference real PNG hardware/emulator images declared in media')
+  }
+  if(q.hardware.maxInstances!==q.memory.maxInstances||q.cycles.some(c=>c.maxInstances>q.hardware.maxInstances)) fail(path+'.hardware.maxInstances','hardware must exercise the supported maximum instance count declared in memory and cycle evidence')
 }

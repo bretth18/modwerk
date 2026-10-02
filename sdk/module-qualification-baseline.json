@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "recorded": "2026-10-02",
+  "modules": [
+    {
+      "id": "spectrum",
+      "version": "0.1.1-experimental",
+      "folderSha256": "bbca0843440aaf15bf142117f66899ae565e30b54a5f3950aac9742c4b8883e2"
+    },
+    {
+      "id": "modulation",
+      "version": "0.1.1-experimental",
+      "folderSha256": "6cbe46bd70d4203bb60473770e806dd6fc799c145c631630a0e4c3d8ddb8da01"
+    },
+    {
+      "id": "character",
+      "version": "0.1.1-experimental",
+      "folderSha256": "42722324ee66b4938cd0b94e80030b073a5f52fe620474c98325ab99f9383856"
+    },
+    {
+      "id": "miniverb",
+      "version": "0.1.2-experimental",
+      "folderSha256": "1c1cd67a3f7fc6abc81794c3ed8cac8e04b5d192234277d29fad5acbdc116e0c"
+    },
+    {
+      "id": "tapeecho",
+      "version": "0.1.2-experimental",
+      "folderSha256": "e587618e022bfba550c25af42eeff49625e7c37d535f4f7b7124e6f7ee2e4bbf"
+    },
+    {
+      "id": "euclid",
+      "version": "0.1.2-experimental",
+      "folderSha256": "b34f2ee628235450c6c042dd0680dca7f9a0f9c7a6afb170479ba65d89a2b0df"
+    },
+    {
+      "id": "repitch",
+      "version": "0.1.2-experimental",
+      "folderSha256": "26256e43daf48a022d5383a25f1a8095b57e56425d1be92a5a6065e93843bc60"
+    },
+    {
+      "id": "analog-bassdrum",
+      "version": "0.1.2-experimental",
+      "folderSha256": "615f382e2d158466cfaf3f313072083bd25912c986ed1b1210546fb51079143b"
+    },
+    {
+      "id": "midi-scenes",
+      "version": "0.2.1-experimental",
+      "folderSha256": "497606567f87551826870d55207cf996cd295311d8c3be474b0e739981b02f25"
+    },
+    {
+      "id": "usb-audio-out-tracks-main-cue",
+      "version": "0.1.2-experimental",
+      "folderSha256": "98aa9375047e35acd45501ebec09c4553036beaa46e9e96e190d9094e373a79f"
+    },
+    {
+      "id": "quantizer",
+      "version": "0.1.2-experimental",
+      "folderSha256": "a7dceba384b42ec494c8a3c6e64ea1fca85cf9edc26ad09a815be586ca7b5155"
+    }
+  ]
+}

@@ -4,11 +4,13 @@ import { assetUrl } from '../hosting'
 export function ModuleAccess({ id, showScreenshots = true }: { id: string; showScreenshots?: boolean }) {
   const document = MODULE_DOCUMENTS_BY_ID[id], access = document.access
   if (!access) return null
-  const screenshots = document.media.filter(item => access.screenshots.includes(item.path))
+  const documentation = document.tests.qualification?.documentation
+  const screenshots = document.media.filter(item => access.screenshots.includes(item.path) || documentation?.screenshots.includes(item.path))
   return <section className="detail-section module-access">
     <h2>Find it on your Octatrack</h2>
     <p>{access.location}</p>
     <ol>{access.steps.map((step, index) => <li key={index}>{step}</li>)}</ol>
+    {documentation && <><h3>{documentation.tutorial.title}</h3><ol>{documentation.tutorial.steps.map((step,index)=><li key={index}>{step}</li>)}</ol></>}
     {showScreenshots && <div className="media-gallery">{screenshots.map(item => {
       const url = assetUrl('module-media/' + id + '/' + document.version + '/' + item.path)
       return <figure key={item.path}>
