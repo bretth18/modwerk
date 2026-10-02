@@ -2,6 +2,8 @@
 
 Contribute modules, fixes, documentation, screenshots and audio through GitHub pull requests in this one repository. Guest site comments and author issue reports do not require registration or email. The owner merging your PR approves that module version; the website has no second approval queue.
 
+Agents adding or updating modules must execute [the standard module-addition workflow](docs/MODULE_ADDITION_WORKFLOW.md), including the thumbnail, complete documentation/tutorial and actual screenshots before reporting completion.
+
 ## First module
 
 1. Fork and clone the Octamod repository. Use Node 24 and `npm ci`.

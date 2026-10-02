@@ -15,7 +15,8 @@
     "midi-scenes",
     "usb-audio-out-tracks-main-cue",
     "quantizer",
-    "cc-map"
+    "cc-map",
+    "octakit"
   ],
   "transforms": [
     {
@@ -94,6 +95,17 @@
       "internalDependencies": [],
       "root": "drafts/cc-map",
       "status": "draft; qualification, owner review and native/browser integration pending; actual MKII LCD captures included"
+    },
+    {
+      "record": "imports/octakit-8d0ad6f.json",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "8d0ad6f4f82c2efbc10e1c65eefbce0ad1cec4bf",
+      "modules": [
+        "octakit"
+      ],
+      "internalDependencies": [],
+      "root": "drafts/octakit",
+      "status": "draft; thumbnail, documentation/tutorial and actual MKII LCD captures supplied; qualification, owner review and browser/native integration pending"
     }
   ]
 }
