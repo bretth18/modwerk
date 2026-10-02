@@ -10,6 +10,7 @@ export const LIBRARY_CATEGORIES = ['effects', 'playback', 'machines', 'scenes', 
 export type ModuleCategory = typeof LIBRARY_CATEGORIES[number]
 // Library grouping can change without rewriting approved module metadata or qualification pins.
 const LIBRARY_CATEGORY_OVERRIDES: Readonly<Partial<Record<string, ModuleCategory>>> = {
+  'midi-scenes': 'midi-usb',
   previewvol: 'system',
   quantizer: 'system',
   repitch: 'system',
