@@ -306,6 +306,20 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .build-section > div > p { color: #b0b0c0; font-size: 13px; line-height: 1.8; margin-bottom: 12px; }
 .build-section .subtle { font-size: 12px; line-height: 1.7; }
 .build-actions { display: flex; flex-direction: column; gap: 9px; }
+.build-progress { max-width: 520px; margin: 16px 0 18px; }
+.build-progress-caption { margin-bottom: 9px; color: #c7c7d7; font-size: 12px; }
+.build-progress-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; list-style: none; margin: 0; padding: 0; }
+.build-progress-steps li { min-width: 0; color: var(--muted); }
+.build-progress-track { display: block; height: 5px; margin-bottom: 9px; border-radius: 3px; background: #454550; }
+.build-progress-label { display: flex; align-items: baseline; gap: 5px; font-size: 12px; line-height: 1.5; }
+.build-progress-marker { display: inline-flex; justify-content: center; flex: 0 0 14px; font: 11px var(--mono); }
+.build-progress-steps .is-complete { color: #c7c7d7; }
+.build-progress-steps .is-complete .build-progress-track { background: var(--accent); }
+.build-progress-steps .is-complete .build-progress-marker { color: var(--accent); }
+.build-progress-steps .is-active { color: #d4d7ff; }
+.build-progress-steps .is-active .build-progress-track { background: var(--accent); animation: build-progress-pulse 1.5s ease-in-out infinite; }
+@keyframes build-progress-pulse { 0%, 100% { opacity: .4; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .build-progress-steps .is-active .build-progress-track { animation: none; } }
 .build-actions .button { font-size: 12px; }
 .build-actions > p.export-note { color: #9292a5; font-size: 12px; line-height: 1.7; text-align: center; margin-bottom: 0; }
 
