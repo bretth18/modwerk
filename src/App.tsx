@@ -64,7 +64,7 @@ export default function App() {
   const communityRoute = route === 'activity' || route === 'review' || route === 'admin' || route.startsWith('submit') || !!communityModule
   const missingRoute=!['library',...LIBRARY_CATEGORIES,'module-sets','configuration','faq','activity','review','admin','privacy'].includes(route)&&!route.startsWith('submit')&&!detailModule&&!communityModule&&!route.startsWith('module-set/')
   const filter = LIBRARY_CATEGORIES.find(category => category === route) ?? 'all'
-  const categoryLabels = { effects:'Effects', pitch:'Pitch', playback:'Playback', machines:'Machines & sequencer', scenes:'Scenes', 'midi-usb':'MIDI & USB' }
+  const categoryLabels = { effects:'Effects', playback:'Playback', machines:'Machines & sequencer', scenes:'Scenes', 'midi-usb':'MIDI & USB', system:'System' }
   const workspace = useWorkspace()
   const { active, ready, firmware, fileState, fileError, firmwareSaved, readFile, clearFile } = workspace
   const selectedIds = active?.moduleIds ?? []

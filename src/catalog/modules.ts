@@ -6,12 +6,12 @@ export const CATALOG_SOURCE = {
   branch: 'codex/dsp-dynload',
 } as const
 
-export const LIBRARY_CATEGORIES = ['effects', 'pitch', 'playback', 'machines', 'scenes', 'midi-usb'] as const
+export const LIBRARY_CATEGORIES = ['effects', 'playback', 'machines', 'scenes', 'midi-usb', 'system'] as const
 export type ModuleCategory = typeof LIBRARY_CATEGORIES[number]
 // Library grouping can change without rewriting approved module metadata or qualification pins.
 const LIBRARY_CATEGORY_OVERRIDES: Readonly<Partial<Record<string, ModuleCategory>>> = {
-  quantizer: 'pitch',
-  repitch: 'pitch',
+  quantizer: 'system',
+  repitch: 'system',
 }
 export type FirmwareModule = {
   id: string
