@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 2,
+  "id": "previewvol",
+  "key": "PREVIEW VOL",
+  "name": "Preview Vol",
+  "version": "0.1.0-experimental",
+  "category": "playback",
+  "source": {
+    "repository": "https://github.com/repeat98/octamad",
+    "revision": "906fc354536d9a1d6ccd90a87fcf3c1f6edb6488",
+    "path": "modules/previewvol"
+  },
+  "build": {
+    "status": "pending",
+    "reason": "Source draft awaiting actual OT UI captures, worst-case cycles, exact memory accounting, a passed real-hardware stress project and owner review. Octamod packaging and browser/native composition are unverified."
+  },
+  "author": {
+    "github": "repeat98",
+    "credits": [
+      "Sam Banks (@sambanks): octabam source and retained MIT copyright.",
+      "repeat98: pinned octamad snapshot and Octamod import. The native declaration has no author field; precise module authorship requires owner confirmation before publication."
+    ]
+  },
+  "nativeManifest": "manifest.py",
+  "presentation": {
+    "label": "Consistent sample previews",
+    "family": "Sample auditioning",
+    "summary": "Preview Flex and Static samples at the default AMP volume, even when the active track is turned down.",
+    "overview": "Preview Vol makes FUNC+YES and CUE+YES sample previews use the default AMP VOL (internal value 64, shown as 0). The active track's AMP volume is restored when the preview stops. Track FX, main/cue levels and mixer volumes still apply, so this is not loudness normalization. This source draft awaits qualification and owner review.",
+    "highlights": [
+      "Audition samples even when the active track's AMP VOL is turned down.",
+      "The same AMP volume override applies to Flex and Static previews.",
+      "Main and cue preview shortcuts use the same behavior.",
+      "The track's own AMP volume returns when the preview stops."
+    ],
+    "usage": [
+      "In a qualified local test build, select an audio track and open a Flex/Static sample slot list, file browser or audio editor.",
+      "Select a sample and press FUNC+YES to preview through the main outputs, or CUE+YES through the cue outputs.",
+      "Repeat with the active track's AMP VOL turned down; the preview uses its default AMP volume. Stop the preview and verify the track's own AMP volume is restored."
+    ]
+  },
+  "access": {
+    "location": "Automatic when included in a qualified build: Flex/Static sample slot lists, file browser and audio editor; FUNC+YES / CUE+YES previews.",
+    "steps": [
+      "Use a disposable project in a qualified local build; this draft is unavailable in the configurator.",
+      "Select an audio track and open a Flex/Static sample slot list, the file browser or the audio editor. Exact panel/menu navigation for each entry point still requires captured verification.",
+      "Select a sample and hold FUNC while pressing YES for a main-output preview.",
+      "Hold CUE while pressing YES for a cue-output preview.",
+      "Repeat at different AMP VOL settings, stop the preview and verify the track's stored AMP volume returns. Track FX and main/cue/mixer levels still affect what you hear."
+    ],
+    "screenshots": []
+  },
+  "controls": [],
+  "compatibility": {
+    "firmware": "1.40C",
+    "effectId": null,
+    "location": "Flex / Static",
+    "conflicts": [],
+    "limitations": [
+      "Draft only: unavailable in the configurator until qualification, actual OT UI evidence and owner approval are complete.",
+      "This changes preview AMP VOL only; it does not normalize sample loudness or bypass track FX, track levels or mixer settings.",
+      "No effect slot or dedicated module knob; the automatic USB no-UI exception does not apply.",
+      "Upstream emulator tests call preview routines directly. Panel shortcuts, complete entry/stop steps and hardware timing remain unverified.",
+      "Native hook placement and compatibility with the approved modules, including Repitch's playback changes, require native composition/rejection and browser byte-parity tests. An empty conflict list makes no tested compatibility claim."
+    ]
+  },
+  "resources": {
+    "recorded": "Pinned authored source; complete qualification measurements unavailable",
+    "storage": {
+      "label": "ColdFire allocation",
+      "display": "Exact memory unmeasured",
+      "value": null,
+      "unit": "bytes",
+      "method": "unmeasured",
+      "conditions": "Two linked preview stubs are declared, but no exact link/allocation map, stack bound, padding, reused stock memory or peak-total report was supplied. Source length is not a memory measurement.",
+      "source": "manifest.py"
+    },
+    "processing": {
+      "label": "ColdFire processing",
+      "display": "Worst-case cycles unmeasured",
+      "value": null,
+      "unit": "cycles/event",
+      "method": "unmeasured",
+      "conditions": "No worst-case event cycles or real-time budget covering rapid preview start/stop, Flex/Static changes, modulation, streaming and maximum audio/MIDI/USB load were supplied.",
+      "source": "TESTING.md"
+    }
+  },
+  "tests": {
+    "report": "TESTING.md",
+    "summary": "Pinned upstream reports equal Flex/Static preview levels at AMP VOL 0/64/127 and restoration after a Flex preview stops under the ColdFire emulator. No current Octamod qualification, hardware stress evidence, panel verification or actual LCD captures are supplied.",
+    "hardwareStatus": "untested",
+    "evidenceRevision": "906fc354536d9a1d6ccd90a87fcf3c1f6edb6488",
+    "gates": [
+      "tools/verify/verify_previewvol.py"
+    ]
+  },
+  "license": {
+    "spdx": "MIT",
+    "file": "LICENSE",
+    "declaration": "Imported authored source and documentation retain the pinned octamad MIT licence and Sam Banks copyright. Embedded stock expectations become local address/length/SHA-256 guards. No firmware, extracted routines/tables, upgrade images or media are included. Precise module authorship, contributor declaration and owner/reviewer verification of rights remain required before publication; this import and review are not automatic legal clearance."
+  },
+  "media": []
+}

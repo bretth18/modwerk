@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/repeat98/octamad",
+  "revision": "906fc354536d9a1d6ccd90a87fcf3c1f6edb6488",
+  "sourcePath": "modules/previewvol",
+  "destination": "sdk/drafts/previewvol",
+  "moduleVersion": "0.1.0-experimental",
+  "status": "source draft; qualification, OT UI evidence, authorship/rights review and Octamod integration pending",
+  "notes": [
+    "Requested local folder contains only __pycache__; authored files recovered from this published historical commit, not from compiled caches.",
+    "Assembly and original module README are unchanged; original full MIT licence and Sam Banks copyright retained.",
+    "The snapshot commit is maintained by repeat98. The native declaration has no per-module author field; confirm precise authorship with the owner before publication.",
+    "Only this module and its licence are imported; verification tooling and firmware-analysis documentation remain pinned references in the upstream tree.",
+    "No firmware, extracted spans/tables, build outputs, media, Git history, toolchains or other module sources are imported. Source was never evaluated.",
+    "Draft is outside native discovery, public catalog, source compiler inventory and the frozen eleven-module qualification baseline."
+  ],
+  "files": [
+    {
+      "path": "manifest.py",
+      "sourcePath": "modules/previewvol/manifest.py",
+      "sourceGitBlob": "3dfe5960883ab6c411fe75b30b5a4b1567cb9ef4",
+      "sourceSha256": "66b9ec06162ac2ee6ac7e727f99fe13531828e3d19ba9effc2bc365a641ec174",
+      "vendoredSha256": "cb1f33053d399c91b49a93a29936a48c266157ecc433f523150e3e4b659254aa",
+      "adaptation": "Replace both embedded stock expectations with lazy address/length/SHA-256 guards; no source execution or firmware read."
+    },
+    {
+      "path": "previewvol.s",
+      "sourcePath": "modules/previewvol/previewvol.s",
+      "sourceGitBlob": "838faf97f98ce1d67644b843f332cffbd41b3942",
+      "sourceSha256": "541c2b3ee3a889f182480e21d465f0833cc1076147a600bb2d4b4327868ecd5f",
+      "vendoredSha256": "541c2b3ee3a889f182480e21d465f0833cc1076147a600bb2d4b4327868ecd5f"
+    },
+    {
+      "path": "OCTAMAD.md",
+      "sourcePath": "modules/previewvol/README.md",
+      "sourceGitBlob": "735217ece8309784515ce12a1e94a88e931eaaa7",
+      "sourceSha256": "1381c3b4473be5b0296e0344ee1693983e3669f64002fc0afd19fc5257262b29",
+      "vendoredSha256": "1381c3b4473be5b0296e0344ee1693983e3669f64002fc0afd19fc5257262b29"
+    },
+    {
+      "path": "LICENSE",
+      "sourcePath": "LICENSE",
+      "sourceGitBlob": "112114d5d319dc4a789dacf1e84b867420a03614",
+      "sourceSha256": "f91a43799d9e31ccc3540f385f68c4d6ff5a096f93ae933be2ce98f6b3f7f113",
+      "vendoredSha256": "f91a43799d9e31ccc3540f385f68c4d6ff5a096f93ae933be2ce98f6b3f7f113"
+    }
+  ],
+  "stockGuards": [
+    {
+      "address": 1074348694,
+      "bytes": 6,
+      "sha256": "32a2ab9a39220b58512d746ec9f16c2999a366598f69ad7fb627de42302e051f"
+    },
+    {
+      "address": 1074359986,
+      "bytes": 6,
+      "sha256": "9145514de4d11863ed2260549f385eb8c4b9016d0bf64f68dfbfe29de3c1bf21"
+    }
+  ],
+  "evidenceReferences": [
+    {
+      "path": "docs/firmware/PREVIEW.md",
+      "sha256": "2a193f2b87fcf4c2c0b33d165e4f549a49099e3f6b4f350e6c2ccc22af0e4a31"
+    },
+    {
+      "path": "tools/verify/verify_previewvol.py",
+      "sha256": "a79cce38cf7be4cc2cca20bc7e8be166ba38301c5e8e661bf637ce34d3c528f6"
+    }
+  ]
+}
