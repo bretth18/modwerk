@@ -3,7 +3,8 @@ import { execFileSync, spawnSync } from 'node:child_process'
 import { mkdtempSync, readFileSync, existsSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
-import { parseModuleDocument, requireModuleUiForPublication, requireModuleQualificationForPublication } from './module-contract'
+import { parseModuleDocument, requireModuleUiForPublication, requireModuleQualificationForPublication, parseModuleResourceImpact } from './module-contract'
+import { requireModuleResourceImpact } from './resource-impact'
 
 describe('SDK developer scaffolds', () => {
   it('creates coherent DSP and CPU declarations with author attribution and a failing qualification gate', () => {
@@ -20,6 +21,8 @@ describe('SDK developer scaffolds', () => {
         expect(doc.access?.screenshots).toEqual([])
         expect(()=>requireModuleUiForPublication(doc)).toThrow('actual screenshots')
         expect(()=>requireModuleQualificationForPublication(doc)).toThrow('worst-case cycles, exact memory and hardware')
+        expect(()=>requireModuleResourceImpact(doc)).toThrow('release requires populated')
+        expect(()=>parseModuleResourceImpact(JSON.parse(readFileSync(resolve(folder,'resource-impact.example.json'),'utf8')))).toThrow('level')
         const pending=JSON.parse(readFileSync(resolve(folder,'qualification.example.json'),'utf8'))
         expect(pending.hardware.status).toBe('pending')
         expect(()=>parseModuleDocument({...doc,tests:{...doc.tests,qualification:pending}})).toThrow()
@@ -28,7 +31,7 @@ describe('SDK developer scaffolds', () => {
         expect(native).toContain('proof=Proof.UNTESTED')
         expect(native).toContain('modules/' + id + '/verify.py')
         expect(native).not.toContain('verify_template.py')
-        for (const file of ['README.md', 'TESTING.md', 'LICENSE', 'qualification.example.json', kind === 'dsp' ? 'engine.asm' : 'unit.s']) expect(existsSync(resolve(folder, file))).toBe(true)
+        for (const file of ['README.md', 'TESTING.md', 'LICENSE', 'qualification.example.json', 'resource-impact.example.json', kind === 'dsp' ? 'engine.asm' : 'unit.s']) expect(existsSync(resolve(folder, file))).toBe(true)
         const gate = spawnSync('python3', [resolve(folder, 'verify.py')], { encoding: 'utf8' })
         expect(gate.status).not.toBe(0)
         expect(gate.stderr).toContain('Untested development scaffold')

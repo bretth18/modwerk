@@ -7,6 +7,7 @@ import example from '../../public/module-repository.example.json'
 import { moduleFolderSha256, moduleNativeSourceSha256 } from '../../scripts/module-qualification.mjs'
 import { parseModuleDocument } from './module-contract'
 import { qualificationFixture, qualificationReadme } from './test-fixtures/qualification'
+import { resourceImpactFixture } from './test-fixtures/resource-impact'
 
 it('checks real PR publication changes without executing module source', async () => {
   const root=mkdtempSync(resolve(tmpdir(),'octamod-publication-test.'))
@@ -22,7 +23,7 @@ it('checks real PR publication changes without executing module source', async (
   const failure=()=>{const result=run('--base','HEAD','--write');expect(result.status).not.toBe(0);return result.stderr}
   const git=(...args:string[])=>execFileSync('git',args,{cwd:root,encoding:'utf8'})
   try {
-    for(const path of ['scripts/modules.mjs','scripts/module-qualification.mjs','scripts/module-documentation.mjs','src/catalog/module-contract.ts','src/catalog/versions.ts','src/catalog/module-folder.ts']){
+    for(const path of ['scripts/modules.mjs','scripts/module-qualification.mjs','scripts/module-documentation.mjs','src/catalog/module-contract.ts','src/catalog/versions.ts','src/catalog/module-folder.ts','src/catalog/resource-impact.ts']){
       mkdirSync(dirname(resolve(root,path)),{recursive:true})
       copyFileSync(resolve(path),resolve(root,path))
     }
@@ -32,12 +33,21 @@ it('checks real PR publication changes without executing module source', async (
     const baseline={schemaVersion:1,recorded:'2026-10-02',modules:[{id:document.id,version:document.version,folderSha256:await moduleFolderSha256(folder)}]}
     const baselineBytes=JSON.stringify(baseline)
     put(baselinePath,baselineBytes)
+    const impactsPath=resolve(root,'sdk/module-resource-estimates.json')
+    const impacts={schemaVersion:1,modules:[{...baseline.modules[0],impact:resourceImpactFixture()}]}
+    const impactBytes=JSON.stringify(impacts)
+    put(impactsPath,JSON.stringify({schemaVersion:1,modules:[]}))
+    expect(run('--write').stderr).toContain('release requires populated CPU, DSP core and memory gauges')
+    put(impactsPath,impactBytes)
     expect(run('--write').status).toBe(0)
     git('init','--quiet')
     git('add','.')
     git('-c','user.name=Publication test','-c','user.email=fixture@example.invalid','commit','--quiet','-m','Legacy publication fixture')
     // Existing publications remain readable while new media is being prepared.
     expect(run('--base','HEAD').status).toBe(0)
+    put(impactsPath,JSON.stringify({schemaVersion:1,modules:[]}))
+    expect(failure()).toContain('Initial resource estimates are pinned')
+    put(impactsPath,impactBytes)
     put(baselinePath,JSON.stringify({...baseline,modules:[{...baseline.modules[0],folderSha256:'f'.repeat(64)}]}))
     expect(failure()).toContain('baseline is frozen')
     put(baselinePath,baselineBytes)
@@ -67,6 +77,9 @@ it('checks real PR publication changes without executing module source', async (
     const qualified={...withMedia,tests:{...withMedia.tests,hardwareStatus:'verified',qualification:q}}
     q.sourceSha256=await moduleNativeSourceSha256(folder,parseModuleDocument(qualified))
     put(resolve(folder,'octamod.module.json'),JSON.stringify(qualified))
+    expect(run('--write').stderr).toContain('release requires populated CPU, DSP core and memory gauges')
+    const withImpact={...qualified,resources:{...qualified.resources,impact:resourceImpactFixture()}}
+    put(resolve(folder,'octamod.module.json'),JSON.stringify(withImpact))
     expect(run('--base','HEAD','--write').status).toBe(0)
     // Updating executable source invalidates the tested-source identity.
     put(resolve(folder,'manifest.py'),'raise AssertionError("changed module must never execute")')

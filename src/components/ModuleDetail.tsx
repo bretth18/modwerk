@@ -9,6 +9,7 @@ import { DETAILS } from '../catalog/details'
 import { Icon } from './Icon'
 import { ModulePreview } from './ModulePreview'
 import { ModuleResources } from './ModuleResources'
+import { ModuleResourceIndicators } from './ModuleResourceIndicators'
 import { MODULE_DOCUMENTS_BY_ID } from '../catalog/documents'
 
 type DetailTab = 'Overview' | 'Media' | 'Discussion'
@@ -27,7 +28,7 @@ export function ModuleDetail({ module, selected, onToggle }: { module: FirmwareM
         <a className="back-link" href="#library"><Icon name="back" size={15} /> All modules</a>
         <button type="button" className="button button-quiet module-issue-action" onClick={() => { setTab('Overview'); setIssueOpenRequest(request => request + 1) }}><Icon name="message" size={15} />Report an issue</button>
       </div>
-      <section className="detail-hero" aria-labelledby="module-title">
+      <section className="detail-hero detail-hero-with-resources" aria-labelledby="module-title">
         <ModulePreview id={module.id} />
         <div className="detail-intro">
           <div className="detail-tags"><span className="pill">{details.family}</span><span className="subtle">{module.detail}</span></div>
@@ -38,6 +39,7 @@ export function ModuleDetail({ module, selected, onToggle }: { module: FirmwareM
           <div className="detail-rating"><button className="text-button" onClick={showDiscussion}>Reviews & discussion</button></div>
           <button className={'button ' + (selected ? 'button-added' : 'button-primary')} onClick={onToggle} aria-pressed={selected}><Icon name={selected ? 'check' : 'plus'} size={16} />{selected ? 'Added to configuration' : 'Add to configuration'}</button>
         </div>
+        <ModuleResourceIndicators id={module.id} />
       </section>
       <div className="detail-tabs" role="tablist" aria-label="Module information">
         {(['Overview', 'Media', 'Discussion'] as const).map((value) => <button key={value} role="tab" id={'tab-' + value} aria-selected={tab === value} aria-controls="detail-content" tabIndex={tab === value ? 0 : -1} onClick={() => setTab(value)} onKeyDown={(event) => {

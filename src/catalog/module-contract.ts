@@ -2,6 +2,9 @@ import { compareModuleVersions } from './versions.ts'
 // Shared by the web catalog and stock-free PR validation. No Python is evaluated.
 export type EvidenceMethod = 'unmeasured' | 'static' | 'emulator' | 'hardware'
 export type ModuleMetric = { label: string; display: string; value: number | null; unit: string; method: EvidenceMethod; conditions: string; source: string }
+export type ResourceLoadLevel = 'minimal' | 'low' | 'moderate' | 'high'
+export type ResourceLoadEstimate = { level: ResourceLoadLevel; basis: 'source-estimate' | 'measured-comparison'; rationale: string; source: string }
+export type ModuleResourceImpact = { conditions: string; cpu: ResourceLoadEstimate; dsp: ResourceLoadEstimate; memory: ResourceLoadEstimate }
 export type ModuleControl = { name: string; default: number; count: number; doc: string; labels: string[] | null }
 export type ModuleUiCapture = { page: string; shows: 'location' | 'controls' | 'location-and-controls'; firmware: '1.40C'; moduleVersion: string; imageSha256: string; setup: string }
 export type QualificationConditions = { parameterExtremes: string; parameterModulation: string; modeSwitching: string; maxLoad: string; inputConditions: string }
@@ -22,7 +25,7 @@ export type ModuleDocument = {
   access?: { location: string; steps: string[]; screenshots: string[]; noUiReason?: string }
   controls: ModuleControl[]
   compatibility: { firmware: '1.40C'; effectId: number | null; location: 'FX1' | 'FX2' | 'FX1 / FX2' | 'Flex / Static' | 'Track machine' | 'MIDI tracks' | 'Project sequencer' | 'USB'; conflicts: string[]; limitations: string[] }
-  resources: { recorded: string; storage: ModuleMetric; processing: ModuleMetric }
+  resources: { recorded: string; storage: ModuleMetric; processing: ModuleMetric; impact?: ModuleResourceImpact }
   tests: { report: string; summary: string; hardwareStatus: 'untested' | 'historical' | 'verified'; evidenceRevision: string; gates: string[]; qualification?: ModuleQualification }
   license: { spdx: string; file: string; declaration: string }
   media: { path: string; captureType: 'hardware' | 'emulator' | 'audio'; caption: string; alt: string; credit: string; license: string; source: string; otUi?: ModuleUiCapture }[]
@@ -114,6 +117,14 @@ function metric(value: unknown, path: string): ModuleMetric {
   if (unit==='%' && typeof m.value==='number' && m.value>100) fail(path+'.value','percentage cannot exceed 100')
   return {label:text(m.label,path+'.label',100),display:text(m.display,path+'.display',100),value:m.value as number|null,unit,method,conditions:text(m.conditions,path+'.conditions'),source:modulePath(m.source,path+'.source')}
 }
+export function parseModuleResourceImpact(value: unknown, path='resources.impact'): ModuleResourceImpact {
+  const impact=object(value,path,['conditions','cpu','dsp','memory'])
+  const estimate=(key:'cpu'|'dsp'|'memory'):ResourceLoadEstimate=>{
+    const p=path+'.'+key, record=object(impact[key],p,['level','basis','rationale','source'])
+    return {level:enumeration(record.level,p+'.level',['minimal','low','moderate','high']),basis:enumeration(record.basis,p+'.basis',['source-estimate','measured-comparison']),rationale:text(record.rationale,p+'.rationale',1600),source:modulePath(record.source,p+'.source')}
+  }
+  return {conditions:text(impact.conditions,path+'.conditions',1000),cpu:estimate('cpu'),dsp:estimate('dsp'),memory:estimate('memory')}
+}
 export function parseModuleDocument(value: unknown): ModuleDocument {
   const d=object(value,'module',['schemaVersion','id','key','name','version','category','author','nativeManifest','presentation','controls','compatibility','resources','tests','license','media'],['source','build','access'])
   if(d.schemaVersion!==2) fail('schemaVersion','expected 2')
@@ -139,7 +150,8 @@ export function parseModuleDocument(value: unknown): ModuleDocument {
   const c=object(d.compatibility,'compatibility',['firmware','effectId','location','conflicts','limitations'])
   if(c.effectId!==null&&(typeof c.effectId!=='number'||!Number.isInteger(c.effectId)||c.effectId<4||c.effectId>31))fail('compatibility.effectId','expected a valid effect ID or null for contributions without an effect slot')
   if(c.firmware!=='1.40C') fail('compatibility.firmware','only 1.40C is supported')
-  const r=object(d.resources,'resources',['recorded','storage','processing'])
+  const r=object(d.resources,'resources',['recorded','storage','processing'],['impact'])
+  const impact='impact' in r?parseModuleResourceImpact(r.impact):undefined
   const t=object(d.tests,'tests',['report','summary','hardwareStatus','evidenceRevision','gates'],['qualification'])
   const proof='qualification' in t?qualification(t.qualification):undefined
   const evidenceRevision=text(t.evidenceRevision,'tests.evidenceRevision',40)
@@ -185,7 +197,7 @@ export function parseModuleDocument(value: unknown): ModuleDocument {
     if(noUiReason&&(controls.length||c.effectId!==null||c.location!=='USB'||screenshots.length)) fail('access.noUiReason','only automatic USB modules without OT controls or screenshots may declare no dedicated OT UI')
     access={location:text(a.location,'access.location',300),steps,screenshots,...(noUiReason?{noUiReason}:{})}
   }
-  return {schemaVersion:2,id,key:text(d.key,'key',60),name:text(d.name,'name',100),version,category:enumeration(d.category,'category',MODULE_CATEGORIES),...(source?{source}:{}),...(build?{build}:{}),...(access?{access}:{}),author:{github,...authorName,credits:texts(a.credits,'author.credits',30)},nativeManifest,presentation:{label:text(p.label,'presentation.label',80),family:text(p.family,'presentation.family',80),summary:text(p.summary,'presentation.summary',300),overview:text(p.overview,'presentation.overview'),highlights:texts(p.highlights,'presentation.highlights',12),usage:texts(p.usage,'presentation.usage',12)},controls,compatibility:{firmware:'1.40C',effectId:c.effectId as number|null,location:enumeration(c.location,'compatibility.location',['FX1','FX2','FX1 / FX2','Flex / Static','Track machine','MIDI tracks','Project sequencer','USB']),conflicts:texts(c.conflicts,'compatibility.conflicts',64),limitations:texts(c.limitations,'compatibility.limitations',24)},resources:{recorded:text(r.recorded,'resources.recorded',100),storage:metric(r.storage,'resources.storage'),processing:metric(r.processing,'resources.processing')},tests:{report:modulePath(t.report,'tests.report'),summary:text(t.summary,'tests.summary'),hardwareStatus:enumeration(t.hardwareStatus,'tests.hardwareStatus',['untested','historical','verified']),evidenceRevision,gates:texts(t.gates,'tests.gates',64),...(proof?{qualification:proof}:{})},license:{spdx:text(l.spdx,'license.spdx',100),file:modulePath(l.file,'license.file'),declaration:text(l.declaration,'license.declaration')},media}
+  return {schemaVersion:2,id,key:text(d.key,'key',60),name:text(d.name,'name',100),version,category:enumeration(d.category,'category',MODULE_CATEGORIES),...(source?{source}:{}),...(build?{build}:{}),...(access?{access}:{}),author:{github,...authorName,credits:texts(a.credits,'author.credits',30)},nativeManifest,presentation:{label:text(p.label,'presentation.label',80),family:text(p.family,'presentation.family',80),summary:text(p.summary,'presentation.summary',300),overview:text(p.overview,'presentation.overview'),highlights:texts(p.highlights,'presentation.highlights',12),usage:texts(p.usage,'presentation.usage',12)},controls,compatibility:{firmware:'1.40C',effectId:c.effectId as number|null,location:enumeration(c.location,'compatibility.location',['FX1','FX2','FX1 / FX2','Flex / Static','Track machine','MIDI tracks','Project sequencer','USB']),conflicts:texts(c.conflicts,'compatibility.conflicts',64),limitations:texts(c.limitations,'compatibility.limitations',24)},resources:{recorded:text(r.recorded,'resources.recorded',100),storage:metric(r.storage,'resources.storage'),processing:metric(r.processing,'resources.processing'),...(impact?{impact}:{})},tests:{report:modulePath(t.report,'tests.report'),summary:text(t.summary,'tests.summary'),hardwareStatus:enumeration(t.hardwareStatus,'tests.hardwareStatus',['untested','historical','verified']),evidenceRevision,gates:texts(t.gates,'tests.gates',64),...(proof?{qualification:proof}:{})},license:{spdx:text(l.spdx,'license.spdx',100),file:modulePath(l.file,'license.file'),declaration:text(l.declaration,'license.declaration')},media}
 }
 
 /** New modules and updates need real UI evidence; unchanged legacy publications remain readable. */
