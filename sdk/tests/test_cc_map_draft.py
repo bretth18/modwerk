@@ -6,7 +6,7 @@ from pathlib import Path
 import unittest
 
 APP = Path(__file__).resolve().parents[2]
-RECORD = json.loads((APP / 'sdk/imports/cc-map-8d0ad6f.json').read_text())
+RECORD = json.loads((APP / 'sdk/imports/cc-map-8d0ad6f.json').read_text(encoding='utf-8'))
 DRAFT = APP / RECORD['root']
 
 
@@ -29,7 +29,7 @@ class CcMapDraft(unittest.TestCase):
             self.assertEqual(hashlib.sha256(data).hexdigest(), item['sourceSha256'], item['path'])
             blob = hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
             self.assertEqual(blob, item['sourceGitBlob'], item['path'])
-        tree = ast.parse((DRAFT / 'manifest.py').read_text())
+        tree = ast.parse((DRAFT / 'manifest.py').read_text(encoding='utf-8'))
         declarations = [node for node in ast.walk(tree) if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == 'Module']
         self.assertEqual(len(declarations), 1)
         keywords = {keyword.arg: keyword.value for keyword in declarations[0].keywords}
@@ -38,7 +38,7 @@ class CcMapDraft(unittest.TestCase):
         self.assertEqual(ast.literal_eval(keywords['author']), 'sambanks')
 
     def test_vector_expectation_is_a_lazy_guard_and_reference_is_authored_code(self):
-        tree = ast.parse((DRAFT / 'manifest.py').read_text())
+        tree = ast.parse((DRAFT / 'manifest.py').read_text(encoding='utf-8'))
         calls = [node for node in ast.walk(tree) if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == 'stock_guard']
         self.assertEqual(len(calls), 1)
         self.assertEqual([ast.literal_eval(argument) for argument in calls[0].args], [0x400d64a0, 4, RECORD['stockGuards'][0]['sha256']])
@@ -48,7 +48,7 @@ class CcMapDraft(unittest.TestCase):
         assignments = {target.id: node.value for node in tree.body if isinstance(node, ast.Assign) for target in node.targets if isinstance(target, ast.Name)}
         code = bytes.fromhex(ast.literal_eval(assignments['CODE'].args[0]))
         tables = [ast.literal_eval(assignments[name].args[0]) for name in ['VERB_COUNTS', 'DLY_COUNTS']]
-        doc = json.loads((DRAFT / 'octamod.module.json').read_text())
+        doc = json.loads((DRAFT / 'octamod.module.json').read_text(encoding='utf-8'))
         self.assertEqual(len(code) + sum(map(len, tables)), doc['resources']['storage']['value'])
         self.assertIsNone(doc['resources']['processing']['value'])
         self.assertEqual(doc['resources']['processing']['method'], 'unmeasured')
@@ -57,8 +57,8 @@ class CcMapDraft(unittest.TestCase):
         self.assertEqual(RECORD['root'], 'sdk/drafts/cc-map')
         self.assertFalse((APP / 'sdk/octabam/modules/cc-map').exists())
         for rel in ['sdk/catalog.json', 'src/catalog/module-documents.json', 'sdk/module-qualification-baseline.json']:
-            self.assertNotIn('cc-map', {item['id'] for item in json.loads((APP / rel).read_text())['modules']})
-        doc = json.loads((DRAFT / 'octamod.module.json').read_text())
+            self.assertNotIn('cc-map', {item['id'] for item in json.loads((APP / rel).read_text(encoding='utf-8'))['modules']})
+        doc = json.loads((DRAFT / 'octamod.module.json').read_text(encoding='utf-8'))
         self.assertEqual(doc['version'], RECORD['moduleVersion'])
         self.assertEqual(doc['source']['revision'], RECORD['revision'])
         self.assertEqual(doc['build']['status'], 'pending')
@@ -67,7 +67,7 @@ class CcMapDraft(unittest.TestCase):
         self.assertEqual(len(doc['access']['screenshots']), 6)
         self.assertEqual(set(doc['access']['screenshots']), {item['path'] for item in doc['media']})
         self.assertNotIn('noUiReason', doc['access'])
-        capture = json.loads((DRAFT / 'media/capture.json').read_text())
+        capture = json.loads((DRAFT / 'media/capture.json').read_text(encoding='utf-8'))
         self.assertEqual(capture['moduleVersion'], doc['version'])
         for item in capture['screenshots']:
             self.assertEqual(hashlib.sha256((DRAFT / item['path']).read_bytes()).hexdigest(), item['sha256'])
@@ -82,8 +82,8 @@ class CcMapDraft(unittest.TestCase):
             self.assertFalse(path.is_symlink())
             self.assertTrue(path.is_file() or path.is_dir())
             self.assertNotIn(path.suffix.lower(), ['.bin', '.syx', '.o', '.elf', '.exe', '.dll', '.so', '.dylib', '.zip', '.wav'])
-        self.assertNotIn('.incbin', (DRAFT / 'cc_map.s').read_text())
-        upstream = json.loads((APP / 'sdk/UPSTREAM.json').read_text())
+        self.assertNotIn('.incbin', (DRAFT / 'cc_map.s').read_text(encoding='utf-8'))
+        upstream = json.loads((APP / 'sdk/UPSTREAM.json').read_text(encoding='utf-8'))
         self.assertIn('cc-map', upstream['scope'])
         self.assertEqual(sum(entry['record'] == 'imports/cc-map-8d0ad6f.json' for entry in upstream['imports']), 1)
 
