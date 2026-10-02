@@ -39,6 +39,7 @@ import { PAYPAL_DONATION_URL } from './config/support'
 
 import { useWorkspace } from './hooks/useWorkspace'
 import { ConfigurationDialog } from './components/ConfigurationDialog'
+import { ConfigurationEffects } from './components/ConfigurationEffects'
 function subscribeRoute(callback: () => void) {
   window.addEventListener('hashchange', callback)
   return () => window.removeEventListener('hashchange', callback)
@@ -206,7 +207,9 @@ export default function App() {
                 {availabilityError && <p className="file-error" role="alert">{availabilityError}</p>}
                 {selection.length ? <ul className="selected-list">{selection.map((module) => <li key={module.id}><a className="selected-module-link" href={'#module/' + module.id}><ModulePreview id={module.id} compact /><span><strong>{module.name}</strong><small>{isModulePaused(module.id) ? 'Temporarily unavailable' : module.detail} · {module.authorName}</small></span></a><button className="icon-button" aria-label={'Remove ' + module.name} onClick={() => toggleModule(module.id)}><Icon name="close" size={17} /></button></li>)}</ul> : <div className="selection-empty"><Icon name="grid" size={26} /><strong>No modules selected</strong><p>Find something in the library and add it to your configuration.</p><a className="button button-quiet" href="#library">Browse modules</a></div>}
               </section>
-              {DSP_LOADER && <section className="configuration-section chooser-options"><h2>Effect menus</h2><label><input type="checkbox" checked={active?.keepStockFx2??true} onChange={event=>workspace.setKeepStockFx2(event.target.checked)}/><span><strong>Keep stock FX2 effects</strong><small>Keep the original FX2 effects alongside your modules.</small></span></label></section>}<aside className="risk-note"><strong>Before you flash</strong><p>{FLASHING_RISKS} Back up your projects and samples, review the module test records, and keep the original OS. Flash at your own risk.</p><p>{FIRMWARE_SHARING_NOTICE}</p><label className="risk-accept"><input type="checkbox" checked={riskAccepted.key===firmwareBuild.key&&riskAccepted.accepted} onChange={event => setRiskAccepted({key:firmwareBuild.key,accepted:event.target.checked})} />I understand the risks of flashing custom firmware.</label></aside>
+              {DSP_LOADER && <section className="configuration-section chooser-options"><h2>Effect menus</h2><label><input type="checkbox" checked={active?.keepStockFx2??true} onChange={event=>workspace.setKeepStockFx2(event.target.checked)}/><span><strong>Keep stock FX2 effects</strong><small>Keep the original FX2 effects alongside your modules.</small></span></label></section>}
+              <ConfigurationEffects ids={selectedIds} keepStockFx2={active?.keepStockFx2 ?? true} build={firmwareBuild} />
+              <aside className="risk-note"><strong>Before you flash</strong><p>{FLASHING_RISKS} Back up your projects and samples, review the module test records, and keep the original OS. Flash at your own risk.</p><p>{FIRMWARE_SHARING_NOTICE}</p><label className="risk-accept"><input type="checkbox" checked={riskAccepted.key===firmwareBuild.key&&riskAccepted.accepted} onChange={event => setRiskAccepted({key:firmwareBuild.key,accepted:event.target.checked})} />I understand the risks of flashing custom firmware.</label></aside>
               <FirmwareBuildPanel build={firmwareBuild} available={ENGINE_AVAILABLE} downloadsEnabled={DOWNLOADS_ENABLED} firmwareReady={!!firmware} moduleCount={selection.length} riskAccepted={riskAccepted.key===firmwareBuild.key&&riskAccepted.accepted} configurationName={active?.name??'Octamod configuration'} onExport={saveSelection} exported={saved}/>
 
             </div>
