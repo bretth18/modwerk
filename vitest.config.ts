@@ -1,10 +1,13 @@
+import { availableParallelism } from 'node:os'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
     environment: 'node',
     include: ['src/**/*.test.ts', 'scripts/**/*.test.mjs'],
-    maxWorkers: 1,
-    fileParallelism: false,
+    pool: 'threads',
+    maxWorkers: Math.min(4, availableParallelism()),
+    fileParallelism: true,
+    isolate: true,
   },
 })

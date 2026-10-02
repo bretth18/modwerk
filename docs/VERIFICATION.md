@@ -19,6 +19,14 @@ Local parity and container round-trip checks do **not** qualify this catalog on 
 
 `npm run check` passed lint, 113 tests in 26 files, TypeScript app/server checks and the static production build on 1 October 2026, before the SDK import. Further changes require a new check.
 
+### Check performance — 2 October 2026
+
+In a clean checkout of main at `b324b50`, the original full `npm run check` passed in 16.68 seconds on Node 24.21.0. The updated check passed in 5.91 seconds with empty ESLint/TypeScript caches and 3.74 seconds warm. These are local measurements, not CI timing guarantees. All 274 original Vitest tests retained the same passing results; five additional runner tests brought the total to 279. The four separate licence-notice tests and 18 synthetic SDK tests still run. Lint, all three TypeScript projects and the static production build passed. `npm run modules:check -- --base origin/main` and standalone `npm run build` also passed.
+
+Runner fixtures prove licence/catalog freshness failures prevent generation, all independent checks remain mandatory, failures reach the command exit status, and type errors prevent bundling. Cached lint rejected a new error despite unchanged file size and timestamp; incremental TypeScript rejected a new server type error. Both temporary probes were removed and type checking passed again. No firmware, native DSP, emulator or hardware tests ran.
+
+After rebasing onto main at `979842c`, the full check passed again in 5.55 seconds with 285 Vitest tests, including six additional tests from main.
+
 ## Still required before completion
 
 first-time base selection and rejection in the browser; project-path frontend and separate-origin guest API and administrator access verification; responsive and keyboard coverage across routes; a clean SDK developer setup; approved source-to-package publication; actual licensed screenshots/audio where available; production service configuration. No public deployment has occurred.
