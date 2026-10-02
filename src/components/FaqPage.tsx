@@ -184,7 +184,7 @@ const SECTIONS: FaqSection[] = [
         keywords: 'compatibility placement memory capacity stock fx2 versions pending verification paused crackling',
         answer: <>
           <p>Follow the message in Configuration and use the suggested compatible choices. For a capacity error, remove a module and check the revised configuration again. {DSP_LOADER ? <>You can also turn off <strong>Keep stock FX2 effects</strong> for a shorter FX2 menu.</> : <>Custom effects use space freed by the original FX2 effects, which are omitted from the menu.</>} All original FX1 effects remain available.</p>
-          <p>Modules marked <strong>Build verification pending</strong> cannot be included in a build yet. A temporarily withdrawn module must be removed from an older saved configuration before building. If prompted, choose <strong>Use current module versions</strong> and review the updated module pages.</p>
+          <p>Saved configurations and imported backups automatically use the current module versions. Review the module pages for changes; each build checks the current selection again. Modules marked <strong>Build verification pending</strong> cannot be included in a build yet. A temporarily withdrawn module must be removed from an older saved configuration before building.</p>
         </>,
       },
       {

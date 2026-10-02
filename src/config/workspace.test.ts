@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { newConfiguration, validateConfiguration, configurationVersionError } from './workspace'
-import { MODULES } from '../catalog/modules'
+import { newConfiguration, validateConfiguration, pinModuleVersions } from './workspace'
 describe('persistent configuration version pins',()=>{
  it('starts empty with stock FX2 disabled while dynamic loading is unavailable',()=>{
   const configuration=newConfiguration('Empty')
@@ -8,18 +7,21 @@ describe('persistent configuration version pins',()=>{
   expect(configuration.moduleVersions).toEqual({})
   expect(configuration.keepStockFx2).toBe(false)
  })
- it('pins new configurations but retains saved older versions until the user updates them',()=>{
-  const current=newConfiguration('Current',['spectrum'])
-  expect(current.moduleVersions).toEqual({spectrum:MODULES.find(module=>module.id==='spectrum')!.version})
-  expect(configurationVersionError(current)).toBe('')
-  const old=validateConfiguration({...current,moduleVersions:{spectrum:'0.0.9'}})
-  expect(old.moduleVersions.spectrum).toBe('0.0.9')
-  expect(configurationVersionError(old)).toContain('Use current module versions')
-  expect(newConfiguration('Copy',old.moduleIds,old.keepStockFx2,old.moduleVersions).moduleVersions).toEqual(old.moduleVersions)
+ it('uses current versions for new, restored and duplicated configurations',()=>{
+  const current=newConfiguration('Current',['miniverb','tapeecho'],false)
+  const old={...current,moduleVersions:{miniverb:'0.1.1-experimental',tapeecho:'0.1.1-experimental'}}
+  expect(current.moduleVersions).toEqual(pinModuleVersions(current.moduleIds))
+  expect(validateConfiguration(old)).toEqual(current)
+  const copy=newConfiguration('Copy',old.moduleIds,old.keepStockFx2,old.moduleVersions)
+  expect(copy.moduleIds).toEqual(old.moduleIds)
+  expect(copy.keepStockFx2).toBe(false)
+  expect(copy.moduleVersions).toEqual(current.moduleVersions)
+  expect(old.moduleVersions.miniverb).toBe('0.1.1-experimental')
  })
- it('migrates pre-version configurations to the initial catalog without accepting malformed pins',()=>{
+ it('uses current versions for pre-version configurations without accepting malformed pins',()=>{
   const current=newConfiguration('Legacy',['repitch'])
-  expect(validateConfiguration({...current,moduleVersions:undefined}).moduleVersions).toEqual({repitch:'0.1.0-experimental'})
-  for(const pins of [[],null,{repitch:'latest'},{repitch:'0.1.0',spectrum:'0.1.0'}])expect(()=>validateConfiguration({...current,moduleVersions:pins})).toThrow()
+  expect(validateConfiguration({...current,moduleVersions:undefined}).moduleVersions).toEqual(current.moduleVersions)
+  expect(validateConfiguration({...current,moduleVersions:{}}).moduleVersions).toEqual(current.moduleVersions)
+  for(const pins of [[],null,{repitch:'latest'},{repitch:123},{repitch:'0.1.0',spectrum:'0.1.0'}])expect(()=>validateConfiguration({...current,moduleVersions:pins})).toThrow()
  })
 })

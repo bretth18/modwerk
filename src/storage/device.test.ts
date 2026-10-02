@@ -1,10 +1,29 @@
 import 'fake-indexeddb/auto'
 import { describe, expect, it } from 'vitest'
 import { deviceStore, openDeviceDatabase } from './device'
-import { newConfiguration, validateConfiguration } from '../config/workspace'
+import { newConfiguration, validateConfiguration, pinModuleVersions } from '../config/workspace'
 import { moduleHasUpdate, moduleIsNew, moduleViewsToRemember } from '../catalog/module-updates'
 
 describe('device persistence', () => {
+  it('restores the reported five-module configuration with current versions across sessions', async () => {
+    const name = 'test-' + crypto.randomUUID(), db = await openDeviceDatabase(name)
+    const ids = ['miniverb', 'tapeecho', 'euclid', 'usb-audio-out-tracks-main-cue', 'quantizer']
+    const config = { ...newConfiguration('Reported configuration', ids, false), moduleVersions: Object.fromEntries(ids.map(id => [id, '0.1.1-experimental'])) }
+    // Seed the pre-update record directly, as it was saved by an earlier site release.
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(['configurations', 'settings'], 'readwrite')
+      tx.objectStore('configurations').put(config)
+      tx.objectStore('settings').put(config.id, 'active')
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+    })
+    db.close()
+    const restoredDb = await openDeviceDatabase(name), restored = deviceStore(restoredDb)
+    expect(await restored.listConfigurations()).toEqual([{ ...config, moduleVersions: pinModuleVersions(ids) }])
+    expect(await restored.activeConfiguration()).toBe(config.id)
+    expect(await restored.readFirmware()).toBeUndefined()
+    restoredDb.close()
+  })
   it('remembers module views across sessions without changing saved configurations', async () => {
     const name = 'test-' + crypto.randomUUID()
     const db = await openDeviceDatabase(name), store = deviceStore(db)

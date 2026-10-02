@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { createSelection, parseSelection } from './selection'
 import { BASE_FIRMWARE } from '../engine/base'
+import { pinModuleVersions } from './workspace'
 
 describe('selection export', () => {
   it('rejects unknown modules instead of dropping them from a build plan', () => {
@@ -44,11 +45,18 @@ describe('configuration import and chooser persistence',()=>{
 
 
 describe('module versions in configuration backups',()=>{
- it('exports exact module versions and preserves older pins for explicit review',()=>{
+ it('records backup versions but imports the current catalog versions',()=>{
   const exported={...createSelection(['spectrum'],null,true,{spectrum:'0.0.9'}),name:'Older set'}
   expect(exported.schemaVersion).toBe(3)
   expect(exported.modules[0]).toMatchObject({id:'spectrum',version:'0.0.9'})
-  expect(parseSelection(JSON.stringify(exported)).moduleVersions).toEqual({spectrum:'0.0.9'})
+  expect(parseSelection(JSON.stringify(exported)).moduleVersions).toEqual(pinModuleVersions(['spectrum']))
   expect(()=>parseSelection(JSON.stringify({...exported,modules:[{id:'spectrum'}]}))).toThrow('missing module versions')
+  expect(()=>parseSelection(JSON.stringify({...exported,modules:[{id:'spectrum',version:'latest'}]}))).toThrow('semantic version')
+ })
+ it.each([1,2,3])('imports a schema %i backup with the current versions and unchanged selection',schemaVersion=>{
+  const ids=['miniverb','tapeecho','euclid','usb-audio-out-tracks-main-cue','quantizer']
+  const old=Object.fromEntries(ids.map(id=>[id,'0.1.1-experimental']))
+  const backup={...createSelection(ids,null,false,old),schemaVersion,name:'Reported configuration'}
+  expect(parseSelection(JSON.stringify(backup))).toEqual({name:backup.name,moduleIds:ids,moduleVersions:pinModuleVersions(ids),keepStockFx2:schemaVersion===1})
  })
 })
