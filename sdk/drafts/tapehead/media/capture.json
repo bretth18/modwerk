@@ -104,7 +104,7 @@
     }
   ],
   "moduleVersion": "0.1.2-experimental",
-  "sourceRevision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
+  "sourceRevision": "c7e27edf86218c592d667edacbdb98bb3ed96d31",
   "reviewedOn": "2026-10-02",
   "rejectedScreenshots": {
     "chooser.png": "Previous DELAY selection still shown before YES; not documentation evidence (same frame as the 0.1.1 run).",

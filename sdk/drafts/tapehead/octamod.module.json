@@ -121,7 +121,7 @@
     "report": "TESTING.md",
     "summary": "Native render matches the JClones reference within 5.4e-4 at the JSFX's own level, with the Octatrack's AMP VOL gain staging compensated (+12 dB in, -12 dB out). Both-core modulated/split benchmark, static cycle accounting and exact memory inventory are documented in TESTING.md. devilfish707 compared the level fix with the JSFX on an Octatrack and reported it working; model, duration and track/instance count were not reported. Browser packages and native parity proofs for 0.1.2 are pending.",
     "hardwareStatus": "reported",
-    "evidenceRevision": null,
+    "evidenceRevision": "c7e27edf86218c592d667edacbdb98bb3ed96d31",
     "gates": [
       "verify.py: reference error at two input levels, the AMP VOL level match, silence, COLOR and stereo isolation",
       "benchmark.py: both cores, moving controls and all 16 trigger splits",
@@ -200,7 +200,7 @@
         "model": null,
         "testedOn": "2026-10-02",
         "tester": "devilfish707",
-        "sourceRevision": null,
+        "sourceRevision": "c7e27edf86218c592d667edacbdb98bb3ed96d31",
         "imageSha256": "2f1f98015e7e8c61f01bbe8cf9b3038e6ef1b44aa2c6b5c205ca0c4f2d37e3b9",
         "summary": "Having heard 0.1.1 saturate less than the JSFX, the author flashed the level fix (OCTABAM6), compared it with the JSFX again and reported it working. 0.1.2 differs from that image only by a bit-identical cycle payback.",
         "limitations": [
@@ -302,7 +302,7 @@
   },
   "source": {
     "repository": "https://github.com/devilfish707/octamod",
-    "revision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
+    "revision": "c7e27edf86218c592d667edacbdb98bb3ed96d31",
     "path": "sdk/drafts/tapehead"
   }
 }

@@ -43,7 +43,7 @@ describe('TapeHead 0.1.2 pending update draft', () => {
     for (const media of document.media) {
       const bytes = await readFile(resolve(folder, media.path))
       requireMonochromePng(bytes)
-      expect(sha(bytes)).toBe(capture.screenshots[media.path.slice('media/'.length) as keyof typeof capture.screenshots])
+      expect(sha(bytes)).toBe(capture.screenshots.find(shot => shot.path === media.path)?.sha256)
       expect(media.otUi?.moduleVersion).toBe(document.version)
       expect(media.otUi?.imageSha256).toBe(q.imageSha256)
     }
