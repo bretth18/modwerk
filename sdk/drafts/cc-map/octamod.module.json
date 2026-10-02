@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 2,
+  "id": "cc-map",
+  "key": "CC MAP",
+  "name": "CC Map",
+  "version": "0.1.0-experimental",
+  "category": "midi-usb",
+  "source": {
+    "repository": "https://github.com/sambanks/octabam",
+    "revision": "8d0ad6f4f82c2efbc10e1c65eefbce0ad1cec4bf",
+    "path": "modules/cc-map"
+  },
+  "build": {
+    "status": "pending",
+    "reason": "Source draft. Publication requires actual LCD captures, worst-case cycles, exact memory, a passed hardware stress project and owner review. Native/browser integration is unverified; FX2 support targets out-of-scope BusDelay/BusVerb."
+  },
+  "author": {
+    "github": "sambanks",
+    "name": "Sam Banks",
+    "credits": [
+      "Sam Banks (@sambanks): CC Map ColdFire handler, native declaration and upstream documentation, MIT."
+    ]
+  },
+  "nativeManifest": "manifest.py",
+  "presentation": {
+    "label": "MIDI CC to effect page 2",
+    "family": "Incoming MIDI control",
+    "summary": "Map incoming MIDI CC 68–73 to FX1 page-2 parameters. The upstream FX2 block requires BusDelay or BusVerb, outside Octamod's scope.",
+    "overview": "CC Map maps incoming MIDI CCs on audio tracks' trig channels to effect page-2 parameters, respecting AUDIO CC IN and clamping values. It writes Part, live and shadow values and marks the Part changed. This source draft is unavailable until qualification, LCD evidence, integration and owner review are complete.",
+    "highlights": [
+      "CC 68–73 address FX1 page-2 slots 6–11 for a non-NONE FX1.",
+      "Writes every audio track whose trig channel matches the message.",
+      "Clamps values using the target effect's parameter limits.",
+      "Passes CCs outside 62–73 to the next handler."
+    ],
+    "usage": [
+      "After qualification, enable AUDIO CC IN and match the controller's channel to the target audio track's trig channel.",
+      "Select a non-NONE FX1 and send CC 68–73 to its second-page slots; verify the parameter, sound and Part save/reload behavior.",
+      "Exact panel/menu paths and actual LCD captures remain required before publication."
+    ]
+  },
+  "access": {
+    "location": "Incoming MIDI control of audio-track FX1 page 2, enabled by AUDIO CC IN; exact panel/menu access awaits hardware/LCD verification.",
+    "steps": [
+      "In a qualified local build, enable AUDIO CC IN in the project's MIDI control settings; confirm the exact button/menu path with actual LCD captures before publication.",
+      "Assign the target audio track a trig channel matching the external controller.",
+      "Select a non-NONE FX1 effect and inspect its second-page parameters; the exact effect-page button sequence remains unverified for this draft.",
+      "Send CC 68–73 to page-2 slots 6–11 with values within the selected effect's documented limits.",
+      "Verify the expected control and sound change and that Part save/reload retains the value."
+    ],
+    "screenshots": []
+  },
+  "controls": [],
+  "compatibility": {
+    "firmware": "1.40C",
+    "effectId": null,
+    "location": "Project sequencer",
+    "conflicts": [],
+    "limitations": [
+      "Draft only: unavailable in the catalog and firmware builds pending qualification, LCD evidence, integration and owner approval.",
+      "CC 62–67 write FX2 page 2 only for BusDelay/BusVerb, which are outside scope and not imported. Current catalog/stock FX2 support is not claimed.",
+      "CC 62–73 are consumed even if AUDIO CC IN is disabled or the track's effect has no eligible target.",
+      "CC 64–67 overlap common sustain/portamento/sostenuto/soft-pedal messages.",
+      "All Octamod combinations and hook/placement behavior are unverified, including MIDI Scenes, Scale Quantizer, OctaKit and USB MIDI/Audio.",
+      "Upstream MODE DEFAULTS and SCENES KITS overrides are not imported or enabled.",
+      "Upstream leaves hardware SCENES KITS chaining and FX1-to-DSP updates on THRU tracks open."
+    ]
+  },
+  "resources": {
+    "recorded": "Pinned authored oracle only; complete memory and cycle qualification absent",
+    "storage": {
+      "label": "Authored cave reference",
+      "display": "724 bytes; linked totals unmeasured",
+      "value": 724,
+      "unit": "bytes",
+      "method": "static",
+      "conditions": "The authored legacy oracle has 712 code bytes plus two six-byte count tables. This is not the linked allocation, stack/shared-state/placement inventory or maximum-load memory total; the four-byte dispatch poke replaces an existing vector.",
+      "source": "manifest.py"
+    },
+    "processing": {
+      "label": "ColdFire MIDI processing",
+      "display": "Worst-case cycles unmeasured",
+      "value": null,
+      "unit": "cycles/event",
+      "method": "unmeasured",
+      "conditions": "No current-version worst-case event counts or real-time budgets cover channel-map rebuilding, up to eight matching tracks, modulation, effect/Part/mode changes, MIDI bursts and maximum audio/MIDI/USB load.",
+      "source": "TESTING.md"
+    }
+  },
+  "tests": {
+    "report": "TESTING.md",
+    "summary": "Historical upstream MKII use and emulator writes are recorded, but no Octamod parity/rejection proof, current-version worst-case cycles, exact memory inventory, 60-minute eight-track hardware stress record or actual LCD captures are supplied.",
+    "hardwareStatus": "historical",
+    "evidenceRevision": "8d0ad6f4f82c2efbc10e1c65eefbce0ad1cec4bf",
+    "gates": [
+      "tools/verify/verify_ccmap.py"
+    ]
+  },
+  "license": {
+    "spdx": "MIT",
+    "file": "LICENSE",
+    "declaration": "Imported source and upstream notes preserve Sam Banks' full MIT licence and exact commit pin. One stock-vector expectation uses a lazy local hash guard; only authored code, source metadata and documentation are included. No firmware, extracted routines/tables, generated native outputs or media are included. Contributor declaration and owner/reviewer verification of rights and actual reports remain required before publication; review is not automatic legal clearance."
+  },
+  "media": []
+}

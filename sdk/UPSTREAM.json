@@ -14,7 +14,8 @@
     "analog-bassdrum",
     "midi-scenes",
     "usb-audio-out-tracks-main-cue",
-    "quantizer"
+    "quantizer",
+    "cc-map"
   ],
   "transforms": [
     {
@@ -82,6 +83,17 @@
         "usb-midi"
       ],
       "status": "source import; browser/native integration pending"
+    },
+    {
+      "record": "imports/cc-map-8d0ad6f.json",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "8d0ad6f4f82c2efbc10e1c65eefbce0ad1cec4bf",
+      "modules": [
+        "cc-map"
+      ],
+      "internalDependencies": [],
+      "root": "drafts/cc-map",
+      "status": "draft; qualification, LCD captures, owner review and native/browser integration pending"
     }
   ]
 }
