@@ -2120,7 +2120,7 @@
       "sourceSha256": "e83c639b3a6d51946b6cb5ae2af72d9376f2ff9cad75502396287c95c751927b"
     }
   ],
-  "sourceCommit": "396a670440e94eeaf985335650571509e600f24f",
+  "sourceCommit": "b91ea87fb5c938c044ab2cf66bc796919f2960ed",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
@@ -2131,6 +2131,8 @@
     "repitch": "0.1.2-experimental",
     "analog-bassdrum": "0.1.2-experimental",
     "usb-audio-out-tracks-main-cue": "0.1.2-experimental",
-    "quantizer": "0.1.2-experimental"
+    "quantizer": "0.1.2-experimental",
+    "previewvol": "0.1.2-experimental",
+    "cc-map": "0.1.2-experimental"
   }
 }

@@ -16,7 +16,8 @@
     "usb-audio-out-tracks-main-cue",
     "quantizer",
     "cc-map",
-    "octakit"
+    "octakit",
+    "previewvol"
   ],
   "transforms": [
     {
@@ -93,8 +94,8 @@
         "cc-map"
       ],
       "internalDependencies": [],
-      "root": "drafts/cc-map",
-      "status": "draft; qualification, owner review and native/browser integration pending; actual MKII LCD captures included"
+      "root": "octabam/modules/cc-map",
+      "status": "0.1.2-experimental software-verified release; owner waiver for physical stress/chip timing; exact source/version pin"
     },
     {
       "record": "imports/octakit-8d0ad6f.json",
@@ -106,6 +107,17 @@
       "internalDependencies": [],
       "root": "drafts/octakit",
       "status": "draft; thumbnail, documentation/tutorial and actual MKII LCD captures supplied; qualification, owner review and browser/native integration pending"
+    },
+    {
+      "record": "imports/previewvol-906fc354.json",
+      "repository": "https://github.com/repeat98/octamad",
+      "revision": "906fc354536d9a1d6ccd90a87fcf3c1f6edb6488",
+      "modules": [
+        "previewvol"
+      ],
+      "internalDependencies": [],
+      "root": "octabam/modules/previewvol",
+      "status": "0.1.2-experimental software-verified release; owner waiver for physical stress/chip timing; exact source/version pin"
     }
   ]
 }

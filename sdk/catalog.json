@@ -45,6 +45,14 @@
     {
       "id": "quantizer",
       "version": "0.1.2-experimental"
+    },
+    {
+      "id": "previewvol",
+      "version": "0.1.2-experimental"
+    },
+    {
+      "id": "cc-map",
+      "version": "0.1.2-experimental"
     }
   ]
 }

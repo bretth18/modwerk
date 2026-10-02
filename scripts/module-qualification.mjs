@@ -7,6 +7,7 @@ import { compareModuleVersions } from '../src/catalog/versions.ts'
 import { requireModuleDocumentation } from './module-documentation.mjs'
 
 export const BASELINE_PATH = 'sdk/module-qualification-baseline.json'
+export const WAIVERS_PATH = 'sdk/module-release-waivers.json'
 const sha = bytes => createHash('sha256').update(bytes).digest('hex')
 async function inventory(folder, prefix='') {
   const files=[]
@@ -28,7 +29,7 @@ async function fingerprint(folder, paths) {
 export async function moduleFolderSha256(folder) { return fingerprint(folder,await inventory(folder)) }
 export function qualificationReports(document) {
   const q=document.tests.qualification
-  return q?[...new Set([...q.cycles.map(c=>c.report),q.memory.report,q.hardware.report])]:[]
+  return q?[...new Set([...q.cycles.map(c=>c.report),q.memory.report,q.hardware.report])]:document.tests.releaseWaiver?[document.tests.releaseWaiver.report]:[]
 }
 export async function moduleNativeSourceSha256(folder, document) {
   const reports=new Set(qualificationReports(document))
@@ -45,9 +46,29 @@ export function parseQualificationBaseline(value) {
   }
   return result
 }
-export async function requireFolderQualification(folder, document, baseline) {
+// The owner's 2 October exception is limited to these exact releases. It is
+// separate from the frozen baseline and cannot be extended to another version.
+export function parseReleaseWaivers(value) {
+  if(!value||value.schemaVersion!==1||value.approvedBy!=='repeat98'||value.approvedOn!=='2026-10-02'||JSON.stringify(value.waived)!==JSON.stringify(['hardware-stress','chip-worst-case-cycles'])||!Array.isArray(value.modules)||value.modules.length!==2||Object.keys(value).some(k=>!['schemaVersion','approvedBy','approvedOn','waived','reason','modules'].includes(k))||typeof value.reason!=='string'||!value.reason.trim()) throw new Error('Invalid owner release waiver')
+  const records=new Map()
+  for(const entry of value.modules) {
+    if(!entry||!['cc-map','previewvol'].includes(entry.id)||entry.version!=='0.1.2-experimental'||records.has(entry.id)||Object.keys(entry).sort().join(',')!=='folderSha256,id,sourceSha256,version'||![entry.folderSha256,entry.sourceSha256].every(h=>typeof h==='string'&&/^[a-f0-9]{64}$/.test(h))) throw new Error('Release waivers cover only the two exact owner-approved utility versions')
+    records.set(entry.id,entry)
+  }
+  return records
+}
+export async function requireFolderQualification(folder, document, baseline, waivers=new Map()) {
   const existing=baseline.get(document.id)
   if(existing?.version===document.version&&existing.folderSha256===await moduleFolderSha256(folder)) return 'retained'
+  const waiver=waivers.get(document.id), declaration=document.tests.releaseWaiver
+  if(waiver?.version===document.version&&declaration) {
+    if(declaration.moduleVersion!==document.version||declaration.sourceSha256!==waiver.sourceSha256||await moduleNativeSourceSha256(folder,document)!==waiver.sourceSha256||await moduleFolderSha256(folder)!==waiver.folderSha256) throw new Error(document.id+': owner waiver does not cover this exact source and complete module folder')
+    if(document.tests.hardwareStatus!=='untested'||document.tests.qualification||document.build||document.resources.processing.value!==null||document.resources.processing.method!=='unmeasured') throw new Error(document.id+': owner-waived hardware and chip timing must remain explicitly untested/unmeasured')
+    const report=JSON.parse(await readFile(resolve(folder,declaration.report),'utf8'))
+    if(report.schemaVersion!==1||report.id!==document.id||report.moduleVersion!==document.version||report.sourceSha256!==waiver.sourceSha256||report.imageSha256!==declaration.imageSha256||report.hardwareStatus!=='untested'||report.chipWorstCaseCycles!==null||report.nativeBrowserParity?.status!=='passed'||report.nativeBrowserParity.selections!==1024||report.nativeBrowserParity.exactImages!==522||report.nativeBrowserParity.matchingRefusals!==502||report.nativePackaging?.status!=='passed'||report.nativePackaging.exactContainersAndUpgrades!==8||report.rejections?.status!=='passed'||!report.memory?.romBytes) throw new Error(document.id+': incomplete or stale software verification report')
+    await requireModuleDocumentation(folder,document)
+    return 'owner-waived'
+  }
   requireModuleQualificationForPublication(document)
   if(document.tests.qualification.sourceSha256!==await moduleNativeSourceSha256(folder,document)) throw new Error(document.id+': qualification source SHA-256 differs from current native source; remeasure and retest this source')
   for(const path of qualificationReports(document)) {

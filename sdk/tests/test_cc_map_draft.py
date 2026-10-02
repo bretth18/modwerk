@@ -54,21 +54,22 @@ class CcMapDraft(unittest.TestCase):
         self.assertEqual(doc['resources']['processing']['method'], 'unmeasured')
 
     def test_draft_stays_outside_discovery_catalog_baseline_and_binary_inputs(self):
-        self.assertEqual(RECORD['root'], 'sdk/drafts/cc-map')
-        self.assertFalse((APP / 'sdk/octabam/modules/cc-map').exists())
-        for rel in ['sdk/catalog.json', 'src/catalog/module-documents.json', 'sdk/module-qualification-baseline.json']:
+        self.assertEqual(RECORD['root'], 'sdk/octabam/modules/cc-map')
+        self.assertTrue((APP / 'sdk/octabam/modules/cc-map').exists())
+        for rel in ['sdk/module-qualification-baseline.json']:
             self.assertNotIn('cc-map', {item['id'] for item in json.loads((APP / rel).read_text(encoding='utf-8'))['modules']})
         doc = json.loads((DRAFT / 'octamod.module.json').read_text(encoding='utf-8'))
         self.assertEqual(doc['version'], RECORD['moduleVersion'])
         self.assertEqual(doc['source']['revision'], RECORD['revision'])
-        self.assertEqual(doc['build']['status'], 'pending')
-        self.assertEqual(doc['tests']['hardwareStatus'], 'historical')
+        self.assertNotIn('build', doc)
+        self.assertEqual(doc['tests']['hardwareStatus'], 'untested')
         self.assertNotIn('qualification', doc['tests'])
         self.assertEqual(len(doc['access']['screenshots']), 6)
         self.assertEqual(set(doc['access']['screenshots']), {item['path'] for item in doc['media']})
         self.assertNotIn('noUiReason', doc['access'])
         capture = json.loads((DRAFT / 'media/capture.json').read_text(encoding='utf-8'))
-        self.assertEqual(capture['moduleVersion'], doc['version'])
+        self.assertEqual(capture['releaseBinding']['moduleVersion'], doc['version'])
+        self.assertEqual(capture['moduleVersion'], '0.1.1-experimental')
         for item in capture['screenshots']:
             self.assertEqual(hashlib.sha256((DRAFT / item['path']).read_bytes()).hexdigest(), item['sha256'])
         for item in doc['media']:
@@ -77,7 +78,7 @@ class CcMapDraft(unittest.TestCase):
             self.assertEqual(item['otUi']['imageSha256'], capture['imageSha256'])
         for filename, digest in capture['sourceFiles'].items():
             self.assertEqual(hashlib.sha256((DRAFT / filename).read_bytes()).hexdigest(), digest)
-        self.assertEqual({path.name for path in DRAFT.iterdir()}, set(item['path'] for item in RECORD['files']) | {'README.md', 'TESTING.md', 'octamod.module.json', 'thumbnail.svg', 'media'})
+        self.assertEqual({path.name for path in DRAFT.iterdir()}, set(item['path'] for item in RECORD['files']) | {'README.md', 'TESTING.md', 'octamod.module.json', 'thumbnail.svg', 'media', 'evidence'})
         for path in DRAFT.rglob('*'):
             self.assertFalse(path.is_symlink())
             self.assertTrue(path.is_file() or path.is_dir())

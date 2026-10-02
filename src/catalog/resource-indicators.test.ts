@@ -13,7 +13,7 @@ const rated = () => parseModuleDocument({ ...example, resources: { ...example.re
 
 describe('required relative module resource gauges', () => {
   it('populates CPU, DSP and memory for every current version without inventing measurements', () => {
-    expect(MODULE_DOCUMENTS).toHaveLength(11)
+    expect(MODULE_DOCUMENTS).toHaveLength(13)
     for (const document of MODULE_DOCUMENTS) {
       const indicators = moduleResourceIndicators(document)
       expect(indicators.map(indicator => indicator.id)).toEqual(['cpu', 'dsp', 'memory'])
