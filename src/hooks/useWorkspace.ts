@@ -156,5 +156,5 @@ export function useWorkspace() {
     persist(store => store.forgetFirmware())
     void clientRef.current?.clear().catch(() => setFileError('The firmware reader stopped. Reload the page.'))
   }
-  return { updateModuleVersions: () => { const current=configsRef.current.find(item=>item.id===activeRef.current); if(current)updateActive({moduleVersions:pinModuleVersions(current.moduleIds)}) }, firmwareClient: clientRef, setKeepStockFx2: (keepStockFx2: boolean) => updateActive({ keepStockFx2 }), importConfiguration, configurations, active, ready, saving, storageError, selectConfiguration, createConfiguration, renameConfiguration, deleteConfiguration, toggleModule, firmware, fileState, fileError, setFileError, firmwareSaved, readFile, clearFile }
+  return { firmwareClient: clientRef, setKeepStockFx2: (keepStockFx2: boolean) => updateActive({ keepStockFx2 }), importConfiguration, configurations, active, ready, saving, storageError, selectConfiguration, createConfiguration, renameConfiguration, deleteConfiguration, toggleModule, firmware, fileState, fileError, setFileError, firmwareSaved, readFile, clearFile }
 }

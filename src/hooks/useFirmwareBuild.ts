@@ -2,7 +2,6 @@ import { trackUsage } from '../community/usage'
 import { useEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import type { Configuration } from '../config/workspace'
-import { configurationVersionError } from '../config/workspace'
 import { moduleAvailabilityError } from '../catalog/availability'
 import { selectionConflictError } from '../catalog/selection-conflicts'
 import { moduleBuildError } from '../catalog/build-support'
@@ -13,7 +12,7 @@ import type { BuildProgress, BuildReport } from '../engine/protocol'
 export type BuildView = { key: string; state: 'empty' | 'validating' | 'valid' | 'building' | 'built' | 'error'; error?: string; report?: BuildReport; phase?: BuildProgress; result?: { buffer: ArrayBuffer; sha256: string } }
 export function useFirmwareBuild(client: RefObject<FirmwareClient | null>, active: Configuration | undefined, firmware: FirmwareInspection | null) {
   const ids = active?.moduleIds ?? [], keepStock = DSP_LOADER && (active?.keepStockFx2 ?? true)
-  const configurationError=moduleAvailabilityError(ids)||selectionConflictError(ids,keepStock)||moduleBuildError(ids)||configurationVersionError(active)
+  const configurationError=moduleAvailabilityError(ids)||selectionConflictError(ids,keepStock)||moduleBuildError(ids)
   const key = JSON.stringify([active?.id, ids, active?.moduleVersions, keepStock, firmware?.sha256])
   const [view, setView] = useState<BuildView>({ key: '', state: 'empty' })
   const operation = useRef(0), building = useRef(false)

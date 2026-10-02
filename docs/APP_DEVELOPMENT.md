@@ -62,7 +62,7 @@ Spectrum, Modulation, Character, Mini Verb, Tape Echo, Euclid and Repitch are th
 
 Create a development skeleton with `npm run module:new -- my-filter --kind dsp --author your-github-login`, or `--kind coldfire`. A scaffold is untested and does not enter the configurator automatically. Read [CONTRIBUTING.md](../CONTRIBUTING.md) before implementation.
 
-Saved configurations and schema-3 JSON backups retain exact module versions. Legacy saves are tied to the initial catalog version. When a version differs, the builder asks users to review module pages and explicitly use current versions. Duplicates and exported JSON retain those pins; firmware never enters an export. Configurations live only on the device: without visitor accounts there are no cloud copies, so use Export to move one to another device.
+Saved configurations, duplicates and imported JSON backups automatically select the current catalog versions. Legacy saves also use current versions; supplied version metadata is still validated before replacing it. Exported JSON records the active versions, but importing an older backup updates its selection to the current catalog. Availability, compatibility and build-verification gates still apply, and every build validates the current selection. Firmware never enters an export. Configurations live only on the device: without visitor accounts there are no cloud copies, so use Export to move one to another device.
 
 ## Community without registration
 
