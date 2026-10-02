@@ -31,8 +31,11 @@ class PreviewVolDraft(unittest.TestCase):
             self.assertFalse(path.is_symlink())
             self.assertNotIn(path.name, ['.git', 'out', 'downloads', 'vendor', '__pycache__'])
             if path.is_file():
-                self.assertIn(path.suffix, ['', '.md', '.json', '.py', '.s'])
-                path.read_text(encoding='utf-8')
+                self.assertIn(path.suffix, ['', '.md', '.json', '.py', '.s', '.svg', '.png'])
+                if path.suffix == '.png':
+                    self.assertTrue(path.read_bytes().startswith(b'\x89PNG\r\n\x1a\n'))
+                else:
+                    path.read_text(encoding='utf-8')
         self.assertIn('Copyright (c) 2026 Sam Banks', (DRAFT / 'LICENSE').read_text())
 
     def test_both_preview_detours_use_local_fingerprint_guards(self):

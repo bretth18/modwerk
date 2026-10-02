@@ -1,0 +1,233 @@
+{
+  "firmware": "1.40C",
+  "imageSha256": "a19a0bf4352a6ebf98546cf33f68e44cbd101757ec16b17ca44efdfa49215302",
+  "emulatorSha256": "93484e4b71c70f48f795825103146a36ef95ef9ac06ee627e28608ae3e3bb3eb",
+  "fixture": {
+    "set": "OCTABAM",
+    "project": "RIG",
+    "cardSha256": "25555b644b5a6a6034d03b16e41d779a8b6ebdb741e72907f86fcad449ea6b05",
+    "templateSha256": "6a02ada1f77497b7df0b3fc108392cca14e2205066d12a53cfba4088b2e5c3c6",
+    "projectSha256": "e7e0a1003b141bb8f429121b4e074df87eb0ed67cd339e4cb5e7f8814441a6b8",
+    "sampleSha256": "38689100ddef5590328865bfc74e57925988ced4f89a1aa9e146bed8d89a188f",
+    "recipe": "Reviewed verify_repitch make_loop/build_project helpers; original 2 s stereo 440 Hz sine, amplitude 16000, 44100 Hz, 16 bit, 120 BPM. T1 Flex slot 1 and T2 Static slot 1 in bank A Parts; exactly one entry per machine/slot pointing to ../AUDIO/PREVIEW_440_120.wav; trim 0..88200, loop point 0, no slices, loop enabled, first T1/T2 trig disabled. Stock disposable project, 32 MiB card, stopped transport. Details in TESTING.md.",
+    "helperSha256": {
+      "tools/verify/verify_repitch.py": "f86a4402fb079623191a82e1aa30ae91d53b6cbe3fca5ca4f11f0a3be07f8427",
+      "tools/hw/ot_project.py": "7dfb49b9c6ed6a289bd2472d484f408fd40297325012897e5173f1210add2eb4",
+      "tools/emu/emu_card.py": "b3877cd541467665f0f0d335f4baf5fc92fc088e53de62b50220bf991a606a55",
+      "tools/emu/lcd_view.py": "c1a9a61bd8d551fd7f15b5debcb5ff9b986e6a56ed0810d9d98c2627344594c1"
+    }
+  },
+  "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6.",
+  "keyMs": 50,
+  "lcdStyle": "black-and-white",
+  "plan": [
+    {
+      "press": [
+        "AMP"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "encoder": {
+        "name": "D",
+        "delta": -127
+      }
+    },
+    {
+      "wait": 500
+    },
+    {
+      "capture": "ot-amp-volume.png"
+    },
+    {
+      "press": [
+        "T1"
+      ]
+    },
+    {
+      "press": [
+        "T1"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "capture": "ot-flex-slot.png"
+    },
+    {
+      "hold": [
+        "FUNC",
+        "YES"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "capture": "ot-main-preview.png"
+    },
+    {
+      "release": [
+        "FUNC",
+        "YES"
+      ]
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "press": [
+        "T1"
+      ]
+    },
+    {
+      "press": [
+        "T1"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "hold": [
+        "CUE",
+        "YES"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "capture": "ot-cue-preview.png"
+    },
+    {
+      "release": [
+        "CUE",
+        "YES"
+      ]
+    },
+    {
+      "press": [
+        "YES"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "capture": "ot-file-browser.png"
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "press": [
+        "AED"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "capture": "ot-audio-editor.png"
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "press": [
+        "T2"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "press": [
+        "T2"
+      ]
+    },
+    {
+      "press": [
+        "T2"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "press": [
+        "UP"
+      ]
+    },
+    {
+      "capture": "ot-static-slot.png"
+    }
+  ],
+  "screenshots": {
+    "ot-amp-volume.png": "1b71d6e5f1007f22ff6bac92b91f75e742a523e991c2f98d924902abffcd1096",
+    "ot-flex-slot.png": "c0d2a6ce79587ac1c510f6f7000567645c77e60ea8786ed1b4ac5d81fc4318e6",
+    "ot-main-preview.png": "1d96978240d87e1896f47291390c0b7995a3ee8a561aa0b216a75bc4bec36127",
+    "ot-cue-preview.png": "1d96978240d87e1896f47291390c0b7995a3ee8a561aa0b216a75bc4bec36127",
+    "ot-file-browser.png": "0525b7046254e663c970a96e107ca1a8afd5e26b9f74a5b617f0aefd88e9a882",
+    "ot-audio-editor.png": "ae77e5f1f6fa4cf7419d717f7096cbcb0ff199c6e6024b92bee72c26f1a3f859",
+    "ot-static-slot.png": "c7111565b1f79a2377897776877fc9e6b0a4cd1c56fb46bb19635f57afefb1b0"
+  },
+  "preflight": {
+    "loadHandled": true,
+    "bankParsed": true,
+    "startupDialogsCleared": true
+  },
+  "schemaVersion": 1,
+  "moduleId": "previewvol",
+  "moduleVersion": "0.1.1-experimental",
+  "capturedOn": "2026-10-02",
+  "credit": "@repeat98",
+  "sourceRevision": "906fc354536d9a1d6ccd90a87fcf3c1f6edb6488",
+  "nativeSourceSha256": "86deed960c094df1d0d2a4a9d3a955a62e804175f2f22d8ac53f5eff141aeaca",
+  "nativeFiles": {
+    "manifest.py": "cb1f33053d399c91b49a93a29936a48c266157ecc433f523150e3e4b659254aa",
+    "previewvol.s": "541c2b3ee3a889f182480e21d465f0833cc1076147a600bb2d4b4327868ecd5f"
+  },
+  "build": {
+    "imageSha256": "a19a0bf4352a6ebf98546cf33f68e44cbd101757ec16b17ca44efdfa49215302",
+    "baseOsSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+    "modules": [
+      "previewvol"
+    ],
+    "stockEffectsRetained": true,
+    "dynamicLoader": false,
+    "hookReadback": "Both native detours resolve to linked stubs that queue default AMP VOL and return to the expected continuation.",
+    "hardwareQualification": false,
+    "sdkRevision": "504b602a770a085016a8a1b9fd1d5a4a3ba19981",
+    "containerImage": "sha256:b6d07c32790744c38874da842380e766349a699103d2c1b88ff9d986b7a827fb",
+    "profile": {
+      "XBUS": 0,
+      "SPEC": 0,
+      "DEV": 0,
+      "BUILD": 84,
+      "STATIC_STOCK": 1
+    },
+    "isolation": "No network; capabilities dropped; no new privileges; read-only container root; unprivileged UID/GID; temporary filesystem; CPU/memory/PID limits. Only the private capture workspace was mounted."
+  },
+  "limitations": [
+    "No current audio-level, restoration or output-routing measurement; main/cue held-key captures have identical pixels.",
+    "MKII editor tabs and selected sample name are shown; waveform/audio rendering is not validated.",
+    "No MKI capture, worst-case cycle/memory measurement, real-hardware stress run or full browser/native parity.",
+    "Documentation/media remain owner/rights-review drafts; native module is excluded from discovery and public packages."
+  ]
+}

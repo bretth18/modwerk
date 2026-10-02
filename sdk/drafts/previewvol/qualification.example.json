@@ -1,0 +1,97 @@
+{
+  "moduleVersion": "0.1.1-experimental",
+  "sourceSha256": "86deed960c094df1d0d2a4a9d3a955a62e804175f2f22d8ac53f5eff141aeaca",
+  "imageSha256": "a19a0bf4352a6ebf98546cf33f68e44cbd101757ec16b17ca44efdfa49215302",
+  "cycles": [
+    {
+      "processor": "coldfire",
+      "worstCase": null,
+      "maxConfiguration": null,
+      "maxInstances": null,
+      "budget": null,
+      "unit": "cycles/event",
+      "method": "emulator",
+      "conditions": {
+        "parameterExtremes": "Describe every minimum, maximum and branch boundary tested.",
+        "parameterModulation": "Describe simultaneous LFOs, p-locks, MIDI CC and scene sweeps; justify each inapplicable mechanism.",
+        "modeSwitching": "Describe repeated/interrupted mode, bypass and Part changes.",
+        "maxLoad": "Describe maximum voices/instances, both cores, FX slots, streaming and USB/MIDI load.",
+        "inputConditions": "Describe silence, impulses, full-scale inputs, feedback and other worst-case signal conditions."
+      },
+      "report": "TESTING.md"
+    }
+  ],
+  "memory": {
+    "regions": [
+      {
+        "name": "Pending linked preview code and alignment",
+        "space": "cpu-flash",
+        "words": null,
+        "wordBits": 8,
+        "bytes": null,
+        "scope": "shared"
+      },
+      {
+        "name": "Pending reused stock AMP state, stack and shared memory",
+        "space": "cpu-ram",
+        "words": null,
+        "wordBits": 8,
+        "bytes": null,
+        "scope": "shared"
+      }
+    ],
+    "perInstanceBytes": null,
+    "sharedBytes": null,
+    "maxInstances": null,
+    "totalBytes": null,
+    "conditions": "State exact build options, alignment, accounting convention, allocator/stack bounds and reused stock/shared memory; justify every absent allocation class.",
+    "report": "TESTING.md"
+  },
+  "hardware": {
+    "status": "pending",
+    "model": "MKII",
+    "testedOn": "YYYY-MM-DD",
+    "tester": "Your credited tester handle; no email",
+    "project": {
+      "name": "Your local stress project",
+      "sha256": "REPLACE_WITH_PROJECT_FINGERPRINT",
+      "recipe": "Record generator/tool revision and command, local source template fingerprint, sample recipe, all settings and modifications needed to reproduce this stress project. Keep the project/card/firmware local."
+    },
+    "durationMinutes": null,
+    "audioTracks": 8,
+    "midiTracks": null,
+    "conditions": {
+      "parameterExtremes": "Describe every minimum, maximum and branch boundary tested.",
+      "parameterModulation": "Describe simultaneous LFOs, p-locks, MIDI CC and scene sweeps; justify each inapplicable mechanism.",
+      "modeSwitching": "Describe repeated/interrupted mode, bypass and Part changes.",
+      "maxLoad": "Describe maximum voices/instances, both cores, FX slots, streaming and USB/MIDI load.",
+      "inputConditions": "Describe silence, impulses, full-scale inputs, feedback and other worst-case signal conditions."
+    },
+    "checks": {
+      "audioContinuity": "failed",
+      "transport": "failed",
+      "controls": "failed",
+      "memoryIntegrity": "failed",
+      "recovery": "failed"
+    },
+    "report": "TESTING.md",
+    "maxInstances": null
+  },
+  "documentation": {
+    "tutorial": {
+      "title": "Quick tutorial",
+      "steps": [
+        "Select a Flex or Static audio track, load a sample and double-tap its TRACK key to open the slot list.",
+        "Press AMP and turn encoder D to reduce the track AMP VOL; return to the sample list and hold FUNC while pressing YES to preview through main. Use CUE+YES to audition through cue.",
+        "Press NO to stop/leave preview access. Verify normal track playback uses the stored AMP VOL; compare both Flex and Static, then repeat from the file browser and MKII audio editor."
+      ]
+    },
+    "screenshots": [
+      "media/ot-amp-volume.png",
+      "media/ot-flex-slot.png",
+      "media/ot-file-browser.png",
+      "media/ot-static-slot.png"
+    ],
+    "screenshotStyle": "black-and-white"
+  }
+}

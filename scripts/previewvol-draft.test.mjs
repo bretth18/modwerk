@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { resolve } from 'node:path'
 import { readFile } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
 import { parseModuleDocument, requireModuleUiForPublication } from '../src/catalog/module-contract.ts'
 import { resolveModuleFile } from '../src/catalog/module-folder.ts'
-import { parseQualificationBaseline, requireFolderQualification } from './module-qualification.mjs'
+import { moduleNativeSourceSha256, parseQualificationBaseline, requireFolderQualification } from './module-qualification.mjs'
+import { requireModuleDocumentation } from './module-documentation.mjs'
 import { compiledModuleVersions, moduleSourcePaths } from './module-source.mjs'
 
 const json = async path => JSON.parse(await readFile(resolve(path), 'utf8'))
@@ -33,12 +35,26 @@ describe('Preview Vol source draft', () => {
     }
   })
 
-  it('fails publication without current qualification and actual preview UI captures', async () => {
+  it('checks actual version-bound monochrome UI documentation while rejecting incomplete qualification', async () => {
     const document = parseModuleDocument(draft)
-    expect(document.access?.screenshots).toEqual([])
+    const capture = await json('sdk/drafts/previewvol/media/capture.json')
+    const template = await json('sdk/drafts/previewvol/qualification.example.json')
+    expect(document.access?.screenshots).toHaveLength(7)
     expect(document.access?.noUiReason).toBeUndefined()
     expect(document.tests.qualification).toBeUndefined()
-    expect(() => requireModuleUiForPublication(document)).toThrow('actual screenshots')
+    expect(() => requireModuleUiForPublication(document)).not.toThrow()
+    await requireModuleDocumentation(folder, { ...document, tests: { ...document.tests, qualification: template } })
+    expect(() => parseModuleDocument({ ...draft, tests: { ...draft.tests, qualification: template } })).toThrow()
+    expect(capture.moduleVersion).toBe(document.version)
+    expect(capture.nativeSourceSha256).toBe(await moduleNativeSourceSha256(folder, document))
+    expect(template.sourceSha256).toBe(capture.nativeSourceSha256)
+    expect(capture.preflight).toEqual({ loadHandled: true, bankParsed: true, startupDialogsCleared: true })
+    for (const item of document.media) {
+      expect(item.otUi.moduleVersion).toBe(capture.moduleVersion)
+      expect(item.otUi.imageSha256).toBe(capture.imageSha256)
+      const bytes = await readFile(await resolveModuleFile(folder, item.path))
+      expect(createHash('sha256').update(bytes).digest('hex')).toBe(capture.screenshots[item.path.slice('media/'.length)])
+    }
     await expect(requireFolderQualification(folder, document, parseQualificationBaseline(baseline))).rejects.toThrow('worst-case cycles, exact memory and hardware')
   })
 

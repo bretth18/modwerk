@@ -4,15 +4,15 @@
   "revision": "906fc354536d9a1d6ccd90a87fcf3c1f6edb6488",
   "sourcePath": "modules/previewvol",
   "destination": "sdk/drafts/previewvol",
-  "moduleVersion": "0.1.0-experimental",
-  "status": "source draft; qualification, OT UI evidence, authorship/rights review and Octamod integration pending",
+  "moduleVersion": "0.1.1-experimental",
+  "status": "source draft with original thumbnail, documentation and actual MKII UI captures; hardware/resource qualification, authorship/rights review and browser integration pending",
   "notes": [
     "Requested local folder contains only __pycache__; authored files recovered from this published historical commit, not from compiled caches.",
     "Assembly and original module README are unchanged; original full MIT licence and Sam Banks copyright retained.",
     "The snapshot commit is maintained by repeat98. The native declaration has no per-module author field; confirm precise authorship with the owner before publication.",
     "Only this module and its licence are imported; verification tooling and firmware-analysis documentation remain pinned references in the upstream tree.",
-    "No firmware, extracted spans/tables, build outputs, media, Git history, toolchains or other module sources are imported. Source was never evaluated.",
-    "Draft is outside native discovery, public catalog, source compiler inventory and the frozen eleven-module qualification baseline."
+    "No firmware, extracted spans/tables, build outputs, Git history, toolchains or other module sources are imported. Source execution was confined to an isolated container for the private capture build.",
+    "Draft remains outside native discovery, public catalog, compiler source inventory and the frozen eleven-module qualification baseline. A private isolated build was used only for native hook readback and UI capture."
   ],
   "files": [
     {

@@ -3,7 +3,7 @@
   "id": "previewvol",
   "key": "PREVIEW VOL",
   "name": "Preview Vol",
-  "version": "0.1.0-experimental",
+  "version": "0.1.1-experimental",
   "category": "playback",
   "source": {
     "repository": "https://github.com/repeat98/octamad",
@@ -12,7 +12,7 @@
   },
   "build": {
     "status": "pending",
-    "reason": "Source draft awaiting actual OT UI captures, worst-case cycles, exact memory accounting, a passed real-hardware stress project and owner review. Octamod packaging and browser/native composition are unverified."
+    "reason": "Draft with documentation and actual MKII emulator UI captures. Publication still requires worst-case cycles, exact memory accounting, a passed real-hardware stress project and owner review. Browser/native package integration is unverified."
   },
   "author": {
     "github": "repeat98",
@@ -34,21 +34,30 @@
       "The track's own AMP volume returns when the preview stops."
     ],
     "usage": [
-      "In a qualified local test build, select an audio track and open a Flex/Static sample slot list, file browser or audio editor.",
-      "Select a sample and press FUNC+YES to preview through the main outputs, or CUE+YES through the cue outputs.",
-      "Repeat with the active track's AMP VOL turned down; the preview uses its default AMP volume. Stop the preview and verify the track's own AMP volume is restored."
+      "Select a Flex or Static audio track and double-tap its TRACK key to open the sample slot list. Select a sample with UP/DOWN or LEVEL.",
+      "Hold FUNC and press YES for a main preview, or hold CUE and press YES for a cue preview. Only preview AMP VOL uses the default; sample loudness, FX and track/mixer levels still vary.",
+      "Press NO to stop previewing and leave the list. Return to AMP and verify normal track playback retains the stored AMP VOL. Hardware audio restoration remains a qualification requirement."
     ]
   },
   "access": {
-    "location": "Automatic when included in a qualified build: Flex/Static sample slot lists, file browser and audio editor; FUNC+YES / CUE+YES previews.",
+    "location": "Automatic when included in a qualified build: double-tap a Flex/Static TRACK key for its sample list; YES opens the file browser; MKII AED opens the loaded sample editor.",
     "steps": [
-      "Use a disposable project in a qualified local build; this draft is unavailable in the configurator.",
-      "Select an audio track and open a Flex/Static sample slot list, the file browser or the audio editor. Exact panel/menu navigation for each entry point still requires captured verification.",
-      "Select a sample and hold FUNC while pressing YES for a main-output preview.",
-      "Hold CUE while pressing YES for a cue-output preview.",
-      "Repeat at different AMP VOL settings, stop the preview and verify the track's stored AMP volume returns. Track FX and main/cue/mixer levels still affect what you hear."
+      "Use a disposable project in a qualified local build. This source draft is unavailable in the configurator.",
+      "Select a Flex or Static audio track and double-tap its TRACK key to open the sample slot list. Use UP/DOWN or LEVEL to select a sample.",
+      "Hold FUNC and press YES for a main-output preview, or hold CUE and press YES for a cue-output preview. Press NO to stop/leave preview access.",
+      "From the sample list, press YES to open LOAD FILE TO FLEX/STATIC. Select a file with UP/DOWN or LEVEL; the same preview shortcuts apply in the file browser.",
+      "With a loaded sample on the active track, press AED on MKII to open the audio editor. Use the same preview shortcuts. The corresponding MKI editor route still requires panel verification.",
+      "Press AMP to view ATK, HOLD, REL, VOL and BAL. Encoder D changes the track AMP VOL. Preview Vol overrides only preview AMP VOL; track FX, MAIN/CUE LEVEL and mixer volumes remain effective."
     ],
-    "screenshots": []
+    "screenshots": [
+      "media/ot-amp-volume.png",
+      "media/ot-flex-slot.png",
+      "media/ot-main-preview.png",
+      "media/ot-cue-preview.png",
+      "media/ot-file-browser.png",
+      "media/ot-audio-editor.png",
+      "media/ot-static-slot.png"
+    ]
   },
   "controls": [],
   "compatibility": {
@@ -57,11 +66,11 @@
     "location": "Flex / Static",
     "conflicts": [],
     "limitations": [
-      "Draft only: unavailable in the configurator until qualification, actual OT UI evidence and owner approval are complete.",
+      "Draft only: unavailable in the configurator until qualification and owner approval are complete.",
       "This changes preview AMP VOL only; it does not normalize sample loudness or bypass track FX, track levels or mixer settings.",
       "No effect slot or dedicated module knob; the automatic USB no-UI exception does not apply.",
-      "Upstream emulator tests call preview routines directly. Panel shortcuts, complete entry/stop steps and hardware timing remain unverified.",
-      "Native hook placement and compatibility with the approved modules, including Repitch's playback changes, require native composition/rejection and browser byte-parity tests. An empty conflict list makes no tested compatibility claim."
+      "Actual MKII emulator captures show loaded Flex/Static access, file browser, editor and AMP pages. Audio behavior, MKI navigation, hardware timing and restoration after interruption remain unqualified.",
+      "Native two-hook readback was checked in the isolated capture build. Compatibility/placement/rejection and browser byte parity with approved module combinations remain unverified."
     ]
   },
   "resources": {
@@ -87,7 +96,7 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Pinned upstream reports equal Flex/Static preview levels at AMP VOL 0/64/127 and restoration after a Flex preview stops under the ColdFire emulator. No current Octamod qualification, hardware stress evidence, panel verification or actual LCD captures are supplied.",
+    "summary": "The isolated local capture build passes native two-hook readback and loaded-project preflight. Actual MKII LCD captures document preview access and AMP settings. Historical equal-level/restore tests remain upstream evidence; no current hardware stress, cycle/memory qualification or browser parity is claimed.",
     "hardwareStatus": "untested",
     "evidenceRevision": "906fc354536d9a1d6ccd90a87fcf3c1f6edb6488",
     "gates": [
@@ -97,7 +106,127 @@
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "Imported authored source and documentation retain the pinned octamad MIT licence and Sam Banks copyright. Embedded stock expectations become local address/length/SHA-256 guards. No firmware, extracted routines/tables, upgrade images or media are included. Precise module authorship, contributor declaration and owner/reviewer verification of rights remain required before publication; this import and review are not automatic legal clearance."
+    "declaration": "Imported authored source retains the pinned octamad MIT licence and Sam Banks copyright. The original thumbnail is MIT; documentary LCD captures preserve Elektron UI attribution and require reuse-rights review. See MEDIA_RIGHTS.md. No firmware, extracted stock or upgrade images are included. Precise authorship, contributor declaration and owner/reviewer verification of rights and actual reports remain required before publication; review is not automatic legal clearance."
   },
-  "media": []
+  "media": [
+    {
+      "path": "media/ot-amp-volume.png",
+      "captureType": "emulator",
+      "caption": "Track AMP VOL -64 set with encoder D. Preview Vol affects audition AMP VOL only.",
+      "alt": "Actual AMP page showing ATK, HOLD, REL, VOL -64 and BAL.",
+      "credit": "@repeat98: original capture; Elektron Music Machines: underlying OT interface.",
+      "license": "Documentary capture; underlying Elektron rights retained. Reuse review pending: MEDIA_RIGHTS.md.",
+      "source": "original",
+      "otUi": {
+        "page": "Track AMP",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "a19a0bf4352a6ebf98546cf33f68e44cbd101757ec16b17ca44efdfa49215302",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Original 440 Hz fixture; project-load/date preflight passed; black-and-white actual pixels."
+      }
+    },
+    {
+      "path": "media/ot-flex-slot.png",
+      "captureType": "emulator",
+      "caption": "Double-tap T1 to open its Flex slot list; original generated tone is loaded in slot 1.",
+      "alt": "Actual MACHINE:FLEX list with PREVIEW_440 tone in slot 1.",
+      "credit": "@repeat98: original capture; Elektron Music Machines: underlying OT interface.",
+      "license": "Documentary capture; underlying Elektron rights retained. Reuse review pending: MEDIA_RIGHTS.md.",
+      "source": "original",
+      "otUi": {
+        "page": "Flex sample slot list",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "a19a0bf4352a6ebf98546cf33f68e44cbd101757ec16b17ca44efdfa49215302",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Original 440 Hz fixture; project-load/date preflight passed; black-and-white actual pixels."
+      }
+    },
+    {
+      "path": "media/ot-main-preview.png",
+      "captureType": "emulator",
+      "caption": "Flex slot list during FUNC+YES hold. The panel action is recorded; audio routing/levels are not measured.",
+      "alt": "Actual Flex slot list while FUNC and YES are held.",
+      "credit": "@repeat98: original capture; Elektron Music Machines: underlying OT interface.",
+      "license": "Documentary capture; underlying Elektron rights retained. Reuse review pending: MEDIA_RIGHTS.md.",
+      "source": "original",
+      "otUi": {
+        "page": "Flex preview access: FUNC+YES",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "a19a0bf4352a6ebf98546cf33f68e44cbd101757ec16b17ca44efdfa49215302",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Original 440 Hz fixture; project-load/date preflight passed; black-and-white actual pixels."
+      }
+    },
+    {
+      "path": "media/ot-cue-preview.png",
+      "captureType": "emulator",
+      "caption": "Flex slot list during CUE+YES hold. Its LCD pixels match the main capture; the keys differ in the plan.",
+      "alt": "Actual Flex slot list while CUE and YES are held.",
+      "credit": "@repeat98: original capture; Elektron Music Machines: underlying OT interface.",
+      "license": "Documentary capture; underlying Elektron rights retained. Reuse review pending: MEDIA_RIGHTS.md.",
+      "source": "original",
+      "otUi": {
+        "page": "Flex preview access: CUE+YES",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "a19a0bf4352a6ebf98546cf33f68e44cbd101757ec16b17ca44efdfa49215302",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Original 440 Hz fixture; project-load/date preflight passed; black-and-white actual pixels."
+      }
+    },
+    {
+      "path": "media/ot-file-browser.png",
+      "captureType": "emulator",
+      "caption": "YES from the slot list opens the file browser. The original generated 440 Hz WAV is available for preview.",
+      "alt": "Actual LOAD FILE TO FLEX 1 browser with PREVIEW_440_120.WAV.",
+      "credit": "@repeat98: original capture; Elektron Music Machines: underlying OT interface.",
+      "license": "Documentary capture; underlying Elektron rights retained. Reuse review pending: MEDIA_RIGHTS.md.",
+      "source": "original",
+      "otUi": {
+        "page": "LOAD FILE TO FLEX 1",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "a19a0bf4352a6ebf98546cf33f68e44cbd101757ec16b17ca44efdfa49215302",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Original 440 Hz fixture; project-load/date preflight passed; black-and-white actual pixels."
+      }
+    },
+    {
+      "path": "media/ot-audio-editor.png",
+      "captureType": "emulator",
+      "caption": "MKII AED opens this actual editor page for the selected Flex slot. Waveform/audio rendering is not validated.",
+      "alt": "Actual Flex editor with selected slot name and TRIM, SLICE, EDIT, ATTR and FILE tabs.",
+      "credit": "@repeat98: original capture; Elektron Music Machines: underlying OT interface.",
+      "license": "Documentary capture; underlying Elektron rights retained. Reuse review pending: MEDIA_RIGHTS.md.",
+      "source": "original",
+      "otUi": {
+        "page": "MKII Flex audio editor",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "a19a0bf4352a6ebf98546cf33f68e44cbd101757ec16b17ca44efdfa49215302",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Original 440 Hz fixture; project-load/date preflight passed; black-and-white actual pixels."
+      }
+    },
+    {
+      "path": "media/ot-static-slot.png",
+      "captureType": "emulator",
+      "caption": "Select T2 and double-tap its TRACK key to open the Static slot list; the original tone is assigned to slot 1.",
+      "alt": "Actual MACHINE:STATIC list with the original preview tone assigned to slot 1.",
+      "credit": "@repeat98: original capture; Elektron Music Machines: underlying OT interface.",
+      "license": "Documentary capture; underlying Elektron rights retained. Reuse review pending: MEDIA_RIGHTS.md.",
+      "source": "original",
+      "otUi": {
+        "page": "Static sample slot list",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.1-experimental",
+        "imageSha256": "a19a0bf4352a6ebf98546cf33f68e44cbd101757ec16b17ca44efdfa49215302",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Original 440 Hz fixture; project-load/date preflight passed; black-and-white actual pixels."
+      }
+    }
+  ]
 }

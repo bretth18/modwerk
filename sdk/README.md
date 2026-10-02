@@ -61,10 +61,11 @@ Every module has a semantic version. Code, native declarations, web descriptions
 
 Preview Vol, requested on 2 October 2026, is a [source draft](drafts/previewvol/README.md)
 recovered from a pinned octamad snapshot. It makes sample previews use the
-default AMP volume and restores the track's own volume afterward. Missing
-qualification, actual OT UI captures and owner verification keep it outside
-native discovery, the public catalog and firmware packages. Its import does
-not change the existing eleven-module qualification baseline.
+default AMP volume; upstream reports restoration of the track volume afterward.
+The draft includes an original thumbnail, documentation and actual MKII emulator
+UI captures. Missing resource/hardware qualification and owner verification keep
+it outside native discovery, the public catalog and firmware packages. Its
+import does not change the existing eleven-module qualification baseline.
 
 The four additions have `0.1.1-experimental` manifests and exact per-module source pins. Native comparison matched 156 byte identities and 132 refusals across all 288 requested profiles. Actual-browser complete files matched native packaging for the six-module and Analog BD five-module combinations; altered firmware was rejected. Their pending build markers are removed. The release compiler builds all eleven reviewed modules, binds the full SDK source inventory and emits nine source-package artifacts. Inherited USB spans are zero placeholders; stock helpers and tables are derived only from the user’s fingerprinted local firmware. The importer and frontend-only stamp enforce current versions and the same artifact scope. Owner merge remains publication approval.
 

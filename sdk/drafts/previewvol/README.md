@@ -1,74 +1,140 @@
 # Preview Vol
 
-Version: `0.1.0-experimental`. Source repository: [repeat98/octamad](https://github.com/repeat98/octamad/tree/906fc354536d9a1d6ccd90a87fcf3c1f6edb6488/modules/previewvol).
+Version: `0.1.1-experimental`. Source repository: [repeat98/octamad](https://github.com/repeat98/octamad/tree/906fc354536d9a1d6ccd90a87fcf3c1f6edb6488/modules/previewvol).
 
-Requested on 2 October 2026. **Source draft only.** This module is outside native
-discovery, the public catalog and firmware package compilation until the current
-qualification/UI gates and owner review are complete. The existing eleven
-module versions and frozen baseline are unchanged.
+**Source draft; publication and firmware builds remain blocked pending resource
+qualification, real-hardware stress evidence and owner review.** The thumbnail,
+complete documentation and actual MKII emulator screenshots are included for
+review. The draft remains outside native discovery, the public catalog and
+compiled packages; the eleven-module qualification baseline is unchanged.
 
-Sample previews use the default AMP VOL (internal value 64, displayed as 0),
-regardless of the active track's AMP VOL. FUNC+YES previews through main;
-CUE+YES previews through cue. The track's own AMP VOL returns when the preview
-stops. Track FX (unless PREVIEW WITHOUT FX), main/cue LEVEL and mixer volumes
+![Original Preview Vol thumbnail, showing track AMP settings leading to a default preview volume](media/thumbnail.svg)
+
+## Overview
+
+Preview Vol makes Flex/Static sample previews use the default AMP VOL (internal
+value 64, shown as 0), regardless of the active track's AMP VOL. FUNC+YES routes
+previews to main; CUE+YES routes to cue. Upstream reports that the track's own
+AMP VOL returns when the preview stops. The source changes only preview AMP VOL:
+track FX (unless PREVIEW WITHOUT FX), track MAIN/CUE LEVEL and mixer volumes
 still apply. Samples with different recorded loudness can still sound different.
+This is not loudness normalization, a limiter or a new effect algorithm.
 
-## Source, licence and attribution
+## Controls
 
-The requested local folder contained only `__pycache__`. The three authored
-module files were recovered from published octamad commit
-`906fc354536d9a1d6ccd90a87fcf3c1f6edb6488`; no compiled Python cache was used.
-[The import record](../../imports/previewvol-906fc354.json) binds original Git
-blob/SHA-256 identities to each vendored file and records the two stock guards.
-[OCTAMAD.md](OCTAMAD.md) preserves the original README; [LICENSE](LICENSE)
-preserves the full MIT notice, including Sam Banks' copyright. `repeat98` is
-the source repository maintainer and snapshot committer. The native declaration
-does not identify a module author; confirm precise authorship and issue routing
-with the owner before publication, and retain all required credits.
+There is no module enable menu, effect slot or dedicated knob. Including a
+qualified version in a build enables its two preview hooks automatically.
 
-`previewvol.s` is unchanged. In `manifest.py`, the two embedded stock expectation
-spans become lazy address/length/SHA-256 reads through the existing
-`remix.stock_guard` helper. The native oracle must verify this adaptation against
-the user's own local 1.40C. Only authored source, documentation, licence and
-fingerprints are included. No imported source was evaluated; no firmware,
-extracted stock, build outputs, screenshots or other modules were imported.
-Native paths describe the eventual `modules/previewvol/` location: the draft
-is deliberately not a standalone runnable module.
+| Existing control | How to reach it | Relationship to Preview Vol |
+| --- | --- | --- |
+| Sample preview to main | FUNC+YES on the selected sample | Uses default preview AMP VOL |
+| Sample preview to cue | CUE+YES on the selected sample | Same AMP override, cue routing |
+| Track AMP VOL | AMP page, encoder D | Still controls ordinary track playback; not a preview-level knob |
+| Track MAIN/CUE LEVEL and mixer volume | Existing track/mixer controls | Still affect preview output; not overridden |
+| PREVIEW WITHOUT FX | Existing PERSONALIZE setting | Still determines whether track FX apply |
 
-## Quick tutorial and access
+The captures confirm the shown MKII navigation and settings. They do not measure
+audio output, establish hardware support or prove every interrupted-stop case.
 
-These instructions reflect the pinned upstream notes, not a new panel test.
-Exact navigation and stop steps for each entry point and supported panel must
-be captured and verified before publication.
+## Usage
 
-1. In a qualified local test build, select an audio track and open a Flex/Static
-   sample slot list, the file browser or audio editor. Select a sample.
-2. Press FUNC+YES for a main preview, or CUE+YES for a cue preview. Turn the
-   active track's AMP VOL down and repeat; auditioning uses the default AMP VOL.
-   Track FX, track levels and mixer volumes still affect the output.
-3. Stop the preview and verify that playback uses the track's own AMP VOL again.
-   Repeat with both Flex and Static samples, main/cue routing and each entry
-   point. Do not infer hardware or panel support from direct emulator calls.
+Select a Flex or Static audio track and double-tap its TRACK key to open the
+sample slot list. Use UP/DOWN or LEVEL to select a sample. FUNC+YES previews to
+main; CUE+YES previews to cue. From the slot list, YES opens LOAD FILE TO FLEX
+or LOAD FILE TO STATIC; the same shortcuts audition files before assigning them.
+With a loaded sample, AED on MKII opens the audio editor, another preview entry
+point. Press NO to stop/leave preview access. The MKI editor route still requires
+panel verification and must not be inferred from the MKII AED key.
 
-There is no separate effect chooser entry, enable menu or module knob. Actual
-captures of the preview entry points, AMP page and relevant preview settings
-are still required. The automatic USB no-UI exception does not apply.
+Keep auditioning levels sensible: Preview Vol preserves sample loudness,
+track/mixer levels and FX. Test ordinary track playback after stopping a preview
+to verify AMP VOL restoration; a screen capture alone cannot prove the sound.
 
-## Promotion requirements
+### Quick tutorial
 
-[TESTING.md](TESTING.md) separates historical emulator observations from missing
-Octamod qualification. Before promotion, supply measured worst-case ColdFire
-cycles, an exact memory map/total, at least 60 minutes of real MKI/MKII stress
-testing with all eight audio tracks active, and actual black-and-white OT UI
-PNG captures with version/build/setup provenance. Complete the
-[qualification template](../../../public/module-qualification.example.json)
-from actual results and synchronize its tutorial/screenshots with this README.
-Record contributor rights declarations and owner verification of authorship,
-source/media and reports. Review is not automatic legal clearance.
+1. Select a Flex or Static audio track, load a sample and double-tap its TRACK key to open the slot list.
+2. Press AMP and turn encoder D to reduce the track AMP VOL; return to the sample list and hold FUNC while pressing YES to preview through main. Use CUE+YES to audition through cue.
+3. Press NO to stop/leave preview access. Verify normal track playback uses the stored AMP VOL; compare both Flex and Static, then repeat from the file browser and MKII audio editor.
 
-Verify hook ownership, placement/rejections and actual browser/native byte
-parity for supported combinations before adding the version to the catalog or
-enabling firmware builds. Move to `sdk/octabam/modules/previewvol/` only through
-a qualified owner-reviewed PR; owner merge approves that version. Every later
-source, documentation or media change requires a strictly increased semantic
-version. Never expand or regenerate the frozen qualification baseline.
+The fixture uses an original two-second 440 Hz stereo tone at 44.1 kHz, 16-bit,
+120 BPM. T1 is Flex, T2 is Static, both use slot 1, and transport stays stopped.
+The ordinary AMP page is captured with VOL reduced; no audio qualification is
+claimed for this draft.
+
+## Compatibility and limitations
+
+- Base OS: locally verified 1.40C. Current UI captures use the MKII emulator.
+  Real MKI/MKII audio behavior and the MKI editor route remain unqualified.
+- No DSP algorithm or FX slot is added. The two linked ColdFire stubs override
+  the pending AMP VOL byte in the Flex and Static preview starters.
+- The isolated capture build retains stock effects and has no dynamic loader.
+  Both hook targets, the added VOL write and the continuations were read back.
+- Browser packaging, native composition/placement/rejection and byte parity
+  with approved module combinations remain unverified, including Repitch's
+  playback changes. An empty conflict list does not establish compatibility.
+- Preview startup/stop under modulation, Part/machine changes, interruption,
+  reselection and maximum audio/MIDI/USB load still needs qualification.
+- Public availability requires actual cycle/memory reports, a passed one-hour
+  real-hardware stress project, rights verification and owner approval.
+
+## Tests and measurements
+
+[TESTING.md](TESTING.md) records exact source/build/emulator identities, the
+isolated capture procedure, fixture recipe, actual panel plan and limitations.
+The current evidence establishes native hook readback and real LCD access
+captures only. Worst-case cycles, full allocation/stack/peak totals and real
+hardware stress remain unmeasured/untested. `tests.qualification` stays absent.
+The incomplete `qualification.example.json` has populated documentation fields
+for reuse, but its pending/null measurement fields deliberately fail validation.
+
+`npm run check` performs static source integrity, draft/publication-boundary,
+README/PNG and synthetic capture-preflight checks plus ordinary app validation.
+It does not run firmware, DSP, emulator, audio or hardware qualification suites.
+
+## Authorship and licences
+
+The requested local folder contained only `__pycache__`; the authored source was
+recovered from published commit `906fc354536d9a1d6ccd90a87fcf3c1f6edb6488`.
+[The import record](../../imports/previewvol-906fc354.json) records original Git
+blob/SHA-256 identities and both local stock guards. [OCTAMAD.md](OCTAMAD.md)
+preserves the original README, and [LICENSE](LICENSE) retains the full MIT
+notice and Sam Banks' copyright. `repeat98` maintains the snapshot repository;
+precise module authorship and issue routing require owner confirmation because
+the pinned native declaration has no per-module author field.
+
+`previewvol.s` is unchanged. The two embedded stock expectations in the native
+manifest become lazy address/length/SHA-256 reads through `remix.stock_guard`.
+The original thumbnail is MIT. Documentary LCD screenshots retain Elektron UI
+attribution; see [MEDIA_RIGHTS.md](MEDIA_RIGHTS.md). Contributor declarations,
+permitted reuse and owner verification are required before publication. Review
+is not automatic legal clearance.
+
+## Screens and audio
+
+These are actual firmware LCD pixels from the local Preview Vol build, rendered
+at integer scale 6 in black-and-white. They are not mockups or reconstructed
+labels. Exact PNG/build/emulator/source/fixture identities and panel actions are
+in [the capture record](media/capture.json). The SVG above is an original
+illustration, separate from the OT evidence. No audio preview is supplied.
+
+![AMP page: track VOL turned down with encoder D](media/ot-amp-volume.png)
+
+![Flex sample slot list: loaded original preview tone](media/ot-flex-slot.png)
+
+![Flex preview location while holding FUNC and YES](media/ot-main-preview.png)
+
+![Cue preview location while holding CUE and YES](media/ot-cue-preview.png)
+
+![LOAD FILE TO FLEX browser: original generated tone selected](media/ot-file-browser.png)
+
+![MKII audio editor tabs and selected Flex slot name; waveform/audio rendering unvalidated](media/ot-audio-editor.png)
+
+![Static sample slot list on track 2](media/ot-static-slot.png)
+
+Keep firmware, extracted stock, raw LCD/RAM dumps and project/card fixtures local
+and temporary. Only reviewed screenshots and sanitized metadata enter this
+folder. Before promotion, complete the current qualification/UI/rights gates
+and verify supported combinations. Move the module into `sdk/octabam/modules/`
+and add its exact catalog version only through an owner-reviewed PR. Owner merge
+approves the qualified version; later source, documentation or media changes
+require a strictly greater semantic version. Never expand the frozen baseline.
