@@ -3,13 +3,13 @@
   "id": "tapehead",
   "key": "TAPEHEAD",
   "name": "TapeHead",
-  "version": "0.1.0-experimental",
+  "version": "0.1.1-experimental",
   "category": "effects",
   "author": {
     "github": "devilfish707",
     "credits": [
-      "devilfish707: TapeHead DSP56300 port, octabam module and Octamod draft",
-      "JClones: TapeHead JSFX algorithm (MIT), from jsfxclones",
+      "devilfish707: DSP56300 port, module, reference tests and documentation (MIT)",
+      "JClones: original TapeHead JSFX (MIT), the VladG clone; JSFXClones commit 88a1503d668c378ced4c166e772378272f3b72ea",
       "octabam: Sam Banks; SDK, schema and harness (MIT)"
     ]
   },
@@ -18,7 +18,7 @@
     "label": "TAPE SATURATION",
     "family": "Saturation",
     "summary": "JClones TapeHead on the DSP: a small tape-style saturator with drive, trim and three tone colours.",
-    "overview": "TapeHead runs the input through a two-state recursion whose corner frequency COLOR sets, drives both states into cubic smoothstep curves and adds a clipped feedback term. Low DRIVE gives gentle rounding and a slight tilt; high DRIVE flattens peaks and thickens the low end. It is a buffer-free insert, so it runs on FX1 or FX2 of every track. This is a source draft: it is not in the catalog or the firmware builder.",
+    "overview": "TapeHead runs the input through a two-state recursion whose corner frequency COLOR sets, drives both states into cubic smoothstep curves and adds a clipped feedback term. Low DRIVE gives gentle rounding and a slight tilt; high DRIVE flattens peaks and thickens the low end. It is a buffer-free insert, so it runs on FX1 or FX2 of every track.",
     "highlights": [
       "Port of JClones_TapeHead.jsfx, within 4.7e-4 of the float reference in a native render",
       "DRIVE and TRIM as continuous 0-127 knobs over the JSFX ranges",
@@ -62,13 +62,17 @@
     "firmware": "1.40C",
     "effectId": 31,
     "location": "FX1 / FX2",
-    "conflicts": [],
+    "conflicts": [
+      "analog-bassdrum"
+    ],
     "limitations": [
-      "Draft only: not in the catalog, configurator or firmware builder until qualification and owner review are complete.",
       "The JSFX Clip switch is not exposed. Clip is always on (the JSFX default), because Q1.23 cannot carry the unclipped mode.",
       "Corner frequencies assume 44.1 kHz, the rate every Octamod effect assumes.",
       "This revision changes the sound of the octabam build heard on 12 Sep 2026: three defects were fixed (see TESTING.md). The OCTABAM2 test image of this revision was flashed and listened to on 2 Oct 2026; it has not been stress-tested.",
-      "Effect ID 0x1f, priority 17 and layout letter 4 were checked free against the eleven Octamod modules only."
+      "Effect ID 0x1f, priority 17 and layout letter 4 were checked free against the eleven Octamod modules only.",
+      "Hardware operation and parameter locks are author-reported; the Octatrack model, duration and maximum tested load were not specified.",
+      "As with other modules, a crowded selection can exceed DSP or menu space and is refused by the builder.",
+      "Analog BD currently requires stock DSP effects; the builder refuses TapeHead together with Analog BD."
     ]
   },
   "resources": {
@@ -115,20 +119,118 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "verify.py renders the assembled module in dsp_host against the float JSFX (peak error 4.7e-4); the composed hardware-test image renders it within 3.9e-5 of the JSFX at defaults. Benchmarked against stock SPRING REV with benchmark.py. Menu, init-register and replace gates pass; MKII emulator LCD captures included. Flashed by the author on 2 Oct 2026 (OCTABAM2 test image) and reported working; no hardware stress test.",
-    "hardwareStatus": "untested",
-    "evidenceRevision": "433fa32c0f5b381cf5a71930dc45e121609b7f4d",
+    "summary": "Native render matches the JClones reference within 4.7e-4. Both-core modulated/split benchmark, static cycle accounting and exact memory inventory are documented in TESTING.md. The local test image reproduces the image devilfish707 tested on an Octatrack: working audio, parameter locks and no reported overloads. Model, duration and track/instance count were not reported.",
+    "hardwareStatus": "reported",
+    "evidenceRevision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
     "gates": [
-      "verify.py",
-      "benchmark.py",
-      "Worst-case cycles under parameter modulation on hardware",
-      "Real hardware stress project: eight audio tracks, at least 60 minutes"
-    ]
+      "verify.py: reference error, silence, COLOR and stereo isolation",
+      "benchmark.py: both cores, moving controls and all 16 trigger splits",
+      "Static worst-case cycle and exact memory accounting",
+      "Native/browser byte parity and placement/rejection checks",
+      "Owner-reviewed functional hardware report"
+    ],
+    "qualification": {
+      "moduleVersion": "0.1.1-experimental",
+      "sourceSha256": "e3ad652cac1554ea9c1d9f3c4db51b4368942b1600c19a2b0e575c459f971897",
+      "imageSha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
+      "cycles": [
+        {
+          "processor": "dsp",
+          "worstCase": 6000,
+          "maxConfiguration": 48000,
+          "maxInstances": 8,
+          "budget": 49920,
+          "unit": "cycles/block",
+          "method": "static",
+          "conditions": {
+            "parameterExtremes": "DRIVE/TRIM endpoints and defaults, every COLOR: reference render; straight-line stereo loop costs 288 code cycles/sample at all settings.",
+            "parameterModulation": "Both-core benchmark changes every active parameter at every 16-sample block; all 16 trigger splits. LFO, p-lock, CC and scene edits converge on these same parameter words. Hardware p-lock operation is author-reported.",
+            "modeSwitching": "COLOR branch paths are bounded; two processing calls per block cover a trigger split, with reselection init charged separately. NONE bypass reduces work. Part/recovery behavior was not measured on hardware.",
+            "maxLoad": "Eight inserts per core, FX1 and FX2 on each of four tracks, sixteen total. The static model includes control updates, a split and initialization; eight-FX2-instance render covers both cores. Standard dispatcher/streaming reserve is deducted from the core budget. Bus stalls are not measured.",
+            "inputConditions": "Reference render covers silence, impulses, steps and 220 Hz\u201312 kHz tones. The sample loop and saturating stores contain no signal-dependent control transfers; full-scale input has the same instruction path."
+          },
+          "report": "evidence/cycles.md"
+        }
+      ],
+      "memory": {
+        "regions": [
+          {
+            "name": "Program: 416 logical P words on each DSP core",
+            "space": "dsp-p",
+            "words": 832,
+            "wordBits": 24,
+            "bytes": 2496,
+            "scope": "shared"
+          },
+          {
+            "name": "Descriptor clone including its 14-byte stride padding",
+            "space": "cpu-flash",
+            "words": 416,
+            "wordBits": 8,
+            "bytes": 416,
+            "scope": "shared"
+          },
+          {
+            "name": "COLOR formatter code and labels",
+            "space": "cpu-flash",
+            "words": 60,
+            "wordBits": 8,
+            "bytes": 60,
+            "scope": "shared"
+          },
+          {
+            "name": "State and scratch: r7 +00..12, +20..25, +30..35",
+            "space": "dsp-x",
+            "words": 31,
+            "wordBits": 24,
+            "bytes": 93,
+            "scope": "instance"
+          }
+        ],
+        "perInstanceBytes": 93,
+        "sharedBytes": 2972,
+        "maxInstances": 16,
+        "totalBytes": 4460,
+        "conditions": "Both-core logical allocation, including descriptor stride and COLOR formatter. Each 31-word state/scratch subset reuses an existing 256-word dispatcher block. No new Y buffer, heap, sample table, SDRAM or CPU RAM. Existing chooser/dispatcher scaffolding is accounted separately in evidence/memory.md; firmware storage packs DSP records into 3-byte words.",
+        "report": "evidence/memory.md"
+      },
+      "hardware": {
+        "kind": "functional",
+        "status": "reported",
+        "model": null,
+        "testedOn": "2026-10-02",
+        "tester": "devilfish707",
+        "sourceRevision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
+        "imageSha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
+        "summary": "The author reports testing TapeHead on an Octatrack, using parameter locks without overloads; perceived CPU load was similar to Spring Reverb. The owner supplied and accepted this report.",
+        "limitations": [
+          "MKI/MKII model, duration, track and instance counts were not reported.",
+          "No measured hardware cycle, memory-canary, recording, recovery or maximum-load stress report was supplied."
+        ],
+        "report": "evidence/hardware.md"
+      },
+      "documentation": {
+        "tutorial": {
+          "title": "Quick tutorial: saturate a drum loop",
+          "steps": [
+            "On a track playing a drum loop, hold FUNC and press FX2, turn LEVEL to TAPEHEAD and press YES. Press FX2 to see DRIVE 36, TRIM 18 and COLOR NORM.",
+            "Turn DRIVE to 100: the peaks flatten and the kick thickens. Turn TRIM to about 40 to bring the level down. Switch COLOR to BRGT for more top end, NORM for a darker tone.",
+            "Choose NONE in FX2 SETUP to compare with the dry track. Re-selecting TAPEHEAD clears its internal state."
+          ]
+        },
+        "screenshots": [
+          "media/ot-location.png",
+          "media/ot-controls.png",
+          "media/ot-color.png"
+        ],
+        "screenshotStyle": "black-and-white"
+      }
+    }
   },
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "The TapeHead port, manifest, gate and documentation are MIT. The algorithm is JClones' TapeHead JSFX, MIT, whose full notice is in LICENSE and ../../octabam/licenses/jsfxclones.txt. The thumbnail is original and MIT. No firmware, extracted routines, tables or generated images are included."
+    "declaration": "The TapeHead port, manifest, gate and documentation are MIT. The algorithm is JClones' TapeHead JSFX, MIT, whose full notice is in LICENSE and ../../licenses/jsfxclones.txt. The thumbnail is original and MIT. No firmware, extracted routines, tables or generated images are included."
   },
   "media": [
     {
@@ -143,7 +245,7 @@
         "page": "FX2 SETUP",
         "shows": "location",
         "firmware": "1.40C",
-        "moduleVersion": "0.1.0-experimental",
+        "moduleVersion": "0.1.1-experimental",
         "imageSha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
         "setup": "ot_emu (MKII panel) on 1.40C composed with the tapehead-spring remix: stock effects, TAPEHEAD in SPRING REV's FX2 row, stock DSP code built in; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
       }
@@ -160,7 +262,7 @@
         "page": "FX2 main",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.1.0-experimental",
+        "moduleVersion": "0.1.1-experimental",
         "imageSha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
         "setup": "ot_emu (MKII panel) on 1.40C composed with the tapehead-spring remix: stock effects, TAPEHEAD in SPRING REV's FX2 row, stock DSP code built in; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
       }
@@ -177,7 +279,7 @@
         "page": "FX2 main, COLOR = MED",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.1.0-experimental",
+        "moduleVersion": "0.1.1-experimental",
         "imageSha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
         "setup": "ot_emu (MKII panel) on 1.40C composed with the tapehead-spring remix: stock effects, TAPEHEAD in SPRING REV's FX2 row, stock DSP code built in; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
       }
@@ -189,12 +291,17 @@
       "Select an audio track that plays a sample, transport stopped or running.",
       "Hold FUNC and press FX2 (or FX1) to open its SETUP. Turn LEVEL to TAPEHEAD and press YES to assign it.",
       "Press FX2 (or FX1) to show the main page: DRIVE, TRIM and COLOR. The SETUP page has no TapeHead controls.",
-      "Verified on the MKII panel of the emulator with the hardware test image; not yet on a unit."
+      "The documented controls were captured on the emulator MKII panel; the author also reports working audio and parameter locks on an Octatrack of unspecified model."
     ],
     "screenshots": [
       "media/ot-location.png",
       "media/ot-controls.png",
       "media/ot-color.png"
     ]
+  },
+  "source": {
+    "repository": "https://github.com/devilfish707/octamod",
+    "revision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
+    "path": "sdk/drafts/tapehead"
   }
 }

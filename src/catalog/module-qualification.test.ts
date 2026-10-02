@@ -10,7 +10,7 @@ import catalog from './module-documents.json'
 
 import { qualificationFixture, qualificationMedia, qualificationReadme, qualificationPng } from './test-fixtures/qualification'
 
-function measured(q=qualificationFixture()) { return parseModuleDocument({...example,media:[qualificationMedia],access:{...example.access,screenshots:[qualificationMedia.path]},tests:{...example.tests,hardwareStatus:'verified',qualification:q}}) }
+function measured(q:ModuleQualification=qualificationFixture()) { return parseModuleDocument({...example,media:[qualificationMedia],access:{...example.access,screenshots:[qualificationMedia.path]},tests:{...example.tests,hardwareStatus:'verified',qualification:q}}) }
 
 describe('module qualification hard gates',()=>{
   it('keeps drafts parseable but requires complete worst-case, memory and hardware evidence for publication',()=>{
@@ -47,11 +47,11 @@ describe('module qualification hard gates',()=>{
       (q:ModuleQualification)=>{q.memory.regions=[]}
     ]) { const q=qualificationFixture();mutate(q);expect(()=>measured(q)).toThrow() }
   })
-  it('requires current-version passed hardware stress evidence at full load for at least an hour',()=>{
+  it('requires current-version evidence and preserves detailed hardware failures',()=>{
     for(const status of ['historical','untested']) expect(()=>requireModuleQualificationForPublication(parseModuleDocument({...example,media:[qualificationMedia],tests:{...example.tests,hardwareStatus:status,qualification:qualificationFixture()}}))).toThrow('passed hardware')
     for(const status of ['pending','failed'] as const) { const q=qualificationFixture();q.hardware.status=status;expect(()=>requireModuleQualificationForPublication(measured(q))).toThrow('passed hardware') }
     for(const check of ['audioContinuity','transport','controls','memoryIntegrity','recovery'] as const) { const q=qualificationFixture();q.hardware.checks[check]='failed';expect(()=>requireModuleQualificationForPublication(measured(q))).toThrow('passed hardware') }
-    for(const change of [{durationMinutes:59},{audioTracks:7}]) { const q=qualificationFixture();Object.assign(q.hardware,change);expect(()=>requireModuleQualificationForPublication(measured(q))).toThrow('60 minutes') }
+    for(const change of [{durationMinutes:59},{audioTracks:7}]) { const q=qualificationFixture();Object.assign(q.hardware,change);expect(()=>requireModuleQualificationForPublication(measured(q))).not.toThrow() }
     const underloaded=qualificationFixture();underloaded.hardware.maxInstances=1
     expect(()=>requireModuleQualificationForPublication(measured(underloaded))).toThrow('maximum instance count')
     const q=qualificationFixture();q.moduleVersion='0.0.1'
@@ -62,6 +62,19 @@ describe('module qualification hard gates',()=>{
     for(const report of ['firmware.bin','octamod.module.json','qualification.example.json','README.md','../TESTING.md']) {
       const q=qualificationFixture();q.hardware.report=report;expect(()=>measured(q)).toThrow()
     }
+  })
+  it('accepts an attributed functional report without inventing a stress pass and binds its identities',()=>{
+    const q:ModuleQualification={...qualificationFixture(),hardware:{kind:'functional',status:'reported',model:null,testedOn:'2026-10-02',tester:'contributor',sourceRevision:example.tests.evidenceRevision,imageSha256:qualificationFixture().imageSha256,summary:'Owner-reviewed hardware operation report.',limitations:['Duration, model and maximum load were not reported.'],report:'TESTING.md'}}
+    const reported=()=>parseModuleDocument({...example,media:[qualificationMedia],tests:{...example.tests,hardwareStatus:'reported',qualification:q}})
+    expect(()=>requireModuleQualificationForPublication(reported())).not.toThrow()
+    const hardware=q.hardware
+    if(!('kind' in hardware)) throw new Error('Expected functional fixture')
+    hardware.imageSha256='f'.repeat(64)
+    expect(()=>requireModuleQualificationForPublication(reported())).toThrow('tested source and image')
+    hardware.imageSha256=q.imageSha256;hardware.sourceRevision='e'.repeat(40)
+    expect(()=>requireModuleQualificationForPublication(reported())).toThrow('tested source and image')
+    hardware.sourceRevision=example.tests.evidenceRevision;hardware.limitations=[]
+    expect(reported).toThrow('limits of the reported hardware test')
   })
   it('retains exactly the existing eleven versions and their honest evidence without filling in measurements',async()=>{
     expect(baseline.modules).toHaveLength(11)

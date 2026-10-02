@@ -4,25 +4,43 @@ import argparse,contextlib,hashlib,importlib,io,json,os,pathlib,shutil,subproces
 def sha(data):return hashlib.sha256(data).hexdigest()
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('worktree',type=pathlib.Path);p.add_argument('destination',type=pathlib.Path);p.add_argument('--app',type=pathlib.Path,required=True);p.add_argument('--stock-bin',type=pathlib.Path);p.add_argument('--static-stock',action='store_true',help='Loader-free builds: stock DSP code stays built in; every module subset with and without stock FX2')
+    p.add_argument('--vendored-sdk',action='store_true',help='Verify reviewed SDK sources against the app checkout instead of the legacy upstream worktree')
+    p.add_argument('--suite',choices=['original','tapehead'],default='original')
+    p.add_argument('--menus',type=pathlib.Path,help='Precomputed defaultChoosers JSON for containers without Node')
+    p.add_argument('--shard',type=int,default=0);p.add_argument('--shards',type=int,default=1)
+    p.add_argument('--packing-vendor',type=pathlib.Path,help='Reviewed local elektron-firmware-tool checkout')
     a=p.parse_args();root=a.worktree.resolve();app=a.app.resolve();dest=a.destination.resolve();dest.mkdir(parents=True,exist_ok=True)
-    revision=subprocess.check_output(['git','-C',str(root),'rev-parse','HEAD'],text=True).strip()
-    if revision!=json.loads((app/'src/catalog/native-metadata.json').read_text())['revision']:p.error('Use the pinned worktree.')
-    if subprocess.run(['git','-C',str(root),'diff','--quiet','HEAD']).returncode:p.error('Native tracked sources must be clean.')
+    if not 0<=a.shard<a.shards:p.error('Invalid shard index/count.')
+    if a.vendored_sdk:
+        revision=json.loads((app/'sdk/catalog.json').read_text())['sourceRevision']
+        # Run only in the private isolated container, after source review. Fingerprint
+        # every executable source against the reviewed checkout before importing it.
+        for directory in ['modules','platform','tools','dsp','licenses']:
+            expected={str(path.relative_to(app/'sdk/octabam')):sha(path.read_bytes()) for path in (app/'sdk/octabam'/directory).rglob('*') if path.is_file() and '__pycache__' not in path.parts and path.suffix!='.pyc'}
+            actual={str(path.relative_to(root)):sha(path.read_bytes()) for path in (root/directory).rglob('*') if path.is_file() and '__pycache__' not in path.parts and path.suffix!='.pyc'}
+            if actual!=expected:p.error('Private SDK differs from reviewed source: '+directory)
+    else:
+        revision=subprocess.check_output(['git','-C',str(root),'rev-parse','HEAD'],text=True).strip()
+        if revision!=json.loads((app/'src/catalog/native-metadata.json').read_text())['revision']:p.error('Use the pinned worktree.')
+        if subprocess.run(['git','-C',str(root),'diff','--quiet','HEAD']).returncode:p.error('Native tracked sources must be clean.')
+    if a.suite=='tapehead' and not(a.vendored_sdk and a.static_stock):p.error('TapeHead suite requires the reviewed vendored SDK and static stock mode.')
     original=(root/'out/raw/section_3_MAIN_OS.bin').read_bytes();sourceHash=json.loads((app/'src/engine/assets/stock-dsp-metadata.json').read_text())['sourceSha256']
     if sha(original)!=sourceHash:p.error('Original OS fingerprint mismatch.')
     sys.path[:0]=[str(root/'tools/build'),str(root/'tools')];os.chdir(root)
-    os.environ.update(REMIX='miniverb',XBUS='1',SPEC='1',DEV='0',NOROUNDTRIP='0',OCTABAM_STATIC_STOCK='1' if a.static_stock else '0',OCTABAM_NO_CACHE='1',BUILD='79')
+    os.environ.update(REMIX='tapehead-spring' if a.vendored_sdk else 'miniverb',XBUS='1',SPEC='1',DEV='0',NOROUNDTRIP='0',OCTABAM_STATIC_STOCK='1' if a.static_stock else '0',OCTABAM_NO_CACHE='1',BUILD='79')
     import toolpath,dsp_modmap as dm
     dm.IMG=root/'out/raw/section_3_MAIN_OS.bin'
     from remix import registry,stock
     from remix.schema import Remix
     from build_bus import fx1_hazard
-    known=registry.modules();order=['spectrum','modulation','character','miniverb','tapeecho','euclid','repitch'];byid={m.name:m for m in known.values()}
+    known=registry.modules();order=['spectrum','modulation','character','miniverb','tapeecho','euclid','repitch']+(['tapehead'] if a.vendored_sdk else []);
+    if a.suite=='tapehead':order=['miniverb','tapeecho','euclid','repitch','tapehead','analog-bassdrum','usb-audio-out-tracks-main-cue','quantizer']
+    byid={m.name:m for m in known.values()}
     stockKeys={m.menu.fx2_id:m.key for m in known.values() if m.is_stock and m.menu is not None}
     stockFx1=[stockKeys[id] for id in stock.fx1_order() if id];stockFx2=[stockKeys[id] for id in stock._chooser_order(stock.FX2_CHOOSER) if id]
     # CPU Tape Echo is a post-FX2 contribution; a hazard-free DSP shim alone
     # does not establish that its ColdFire effect runs on FX1.
-    fx1Capable={'spectrum','modulation','character','euclid'}
+    fx1Capable={'spectrum','modulation','character','euclid','tapehead'}
     modules=[]
     for id in order:
         m=byid[id]
@@ -40,16 +58,19 @@ def main():
         # both ways, so each selection a visitor can make has an oracle.
         cases=[([id for bit,id in enumerate(order) if mask>>bit&1],keep) for mask in range(1<<len(order)) for keep in (True,False)]
         site="const {defaultChoosers}=await import(process.argv[1]);console.log(JSON.stringify(JSON.parse(process.argv[2]).map(([ids,keep])=>defaultChoosers(ids,keep,false))))"
-        menus=json.loads(subprocess.check_output(['node','--input-type=module','-e',site,str(app/'src/engine/choosers.ts'),json.dumps(cases)],text=True))
+        menus=json.loads(a.menus.read_text()) if a.menus else json.loads(subprocess.check_output(['node','--input-type=module','-e',site,str(app/'src/engine/choosers.ts'),json.dumps(cases)],text=True))
+        if len(menus)!=len(cases):p.error('Incomplete precomputed menu matrix.')
         siteMenus={(tuple(ids),keep):menu for (ids,keep),menu in zip(cases,menus)}
         def profile(ids,keep):
             menu=siteMenus[(tuple(ids),keep)];selected=[byid[id] for id in order if id in ids]
             hidden=[m.key for m in selected if m.key in menu['fx1'] and m.claims and m.claims.fx1_only]
             return {'fx1':menu['fx1'],'fx2':menu['fx2'],'hidden':hidden}
+    if a.suite=='tapehead':cases=[(ids,keep) for ids,keep in cases if 'tapehead' in ids and any(id in ids for id in ['analog-bassdrum','usb-audio-out-tracks-main-cue','quantizer'])]
+    cases=cases[a.shard::a.shards]
     proofs=[];originalRemix=registry.remix
     packTemp=None;packing=None
     if a.stock_bin:
-        packTemp=tempfile.TemporaryDirectory(prefix='octamod-native-pack.')
+        packTemp=tempfile.TemporaryDirectory(prefix='octamod-native-pack.',dir=root/'out')
         try:
             packRoot=pathlib.Path(packTemp.name);payload=packRoot/'payload.bin'
             subprocess.run([sys.executable,str(root/'tools/build/bin_decode.py'),str(a.stock_bin.resolve()),'-o',str(payload)],check=True,capture_output=True)
@@ -57,7 +78,7 @@ def main():
             if size<26 or size+4>len(data) or len(data)-size-4>3 or any(data[size+4:]):raise ValueError('Native decoded container length / padding invalid.')
             stockContainer=packRoot/'stock-container.bin';stockContainer.write_bytes(data[4:4+size]);payload.unlink()
             oracle=packRoot/'oracle.c';oracle.write_text((pathlib.Path(__file__).resolve().parent/'native-container-oracle.c').read_text());executable=packRoot/'oracle'
-            vendor=root/'vendor/elektron-firmware-tool'
+            vendor=a.packing_vendor.resolve() if a.packing_vendor else root/'vendor/elektron-firmware-tool'
             subprocess.run(['cc','-O2','-I',str(vendor),str(oracle),*[str(vendor/name) for name in ['compress.c','decompress.c','integrity.c']],'-o',str(executable)],check=True,capture_output=True)
             seed=int.from_bytes(a.stock_bin.read_bytes()[4:8],'big')
             packing={'version':'OCTAMOD79','sourceUpgradeSha256':sha(a.stock_bin.read_bytes()),'oracleSha256':sha(oracle.read_bytes()),'sources':{str(path.relative_to(root)):sha(path.read_bytes()) for path in [vendor/name for name in ['main.c','compress.c','decompress.c','integrity.c']]+[root/'tools/build/bin_decode.py',root/'tools/build/make_bin.py']}}
@@ -65,11 +86,12 @@ def main():
     try:
         for ids,default in cases:
             menu=profile(ids,default);keys=[k for k in menu['fx2'] if known[k].is_stock]+[byid[id].key for id in order if id in ids]
+            if 'usb-audio-out-tracks-main-cue' in ids:keys.append('USB MIDI')
             remix=registry.with_platform(Remix(name='octamod-composition-proof',doc='Disposable local full-image identity; never flashed.',modules=tuple(keys),fx1=tuple(menu['fx1']),hidden=tuple(menu['hidden']),fallback='NONE'),known)
             registry.remix=lambda _:remix
             with tempfile.TemporaryDirectory(prefix='octamod-composition.') as tmp:
                 work=pathlib.Path(tmp)
-                for name in ['modules','dsp','vendor']:os.symlink(root/name,work/name,target_is_directory=True)
+                for name in ['modules','platform','dsp','vendor']:os.symlink(root/name,work/name,target_is_directory=True)
                 (work/'out').mkdir();os.chdir(work);sys.modules.pop('build_bus',None);build=importlib.import_module('build_bus');build.IMG=root/'out/raw/section_3_MAIN_OS.bin';build.OUT=work/'out/image.bin';log=io.StringIO()
                 if build.ORDER!=menu['fx2']:raise ValueError('Native carried / hidden order does not match the declared FX2 chooser.')
                 try:
@@ -83,7 +105,7 @@ def main():
                     proofs.append(proof)
                     print(f"{ids or ['stock']} default={default}: {len(image)} bytes, full native identity captured.")
                 except SystemExit as error:
-                    if a.static_stock and any(word in str(error) for word in ('overruns the region','nowhere to place','does not fit')):
+                    if a.static_stock and any(word in str(error) for word in ('overruns the region','nowhere to place','does not fit','do not fit','chooser list of','currently composes with stock effects only')):
                         proofs.append({'moduleIds':ids,'keepStockFx2':default,'menu':menu,'error':str(error)});print(f"{ids or ['stock']} keep={default}: refused: {str(error)[:90]}")
                     elif ids==order and default and ('does not fit' in str(error) or 'do not fit' in str(error)):
                         proofs.append({'moduleIds':ids,'default':default,'menu':menu,'error':str(error)});print('Crowded all-module / stock-chooser selection rejects placement, as expected.')

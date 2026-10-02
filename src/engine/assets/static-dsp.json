@@ -39,6 +39,12 @@
       "key": "EUCLID",
       "fxId": 29,
       "priority": 16
+    },
+    {
+      "id": "tapehead",
+      "key": "TAPEHEAD",
+      "fxId": 31,
+      "priority": 17
     }
   ],
   "customIds": [
@@ -51,7 +57,8 @@
     15,
     23,
     26,
-    29
+    29,
+    31
   ],
   "payloads": [
     {

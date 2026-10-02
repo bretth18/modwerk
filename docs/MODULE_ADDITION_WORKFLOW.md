@@ -133,8 +133,9 @@ substitute for measured qualification. Do not add new modules to the companion
 estimates reserved for frozen existing versions.
 
 Document actual worst-case cycles during parameter modulation, mode changes
-and maximum load, exact memory regions and totals, and a passed real-hardware
-stress project lasting at least 60 minutes with all eight audio tracks active.
+and maximum load, exact memory regions and totals, and attributed real-hardware
+operation evidence under the current qualification policy. A 60-minute,
+eight-track stress run is not required. Keep unreported details explicit.
 The starting generator is `tools/harness/stress_project.py`; adapt its workload
 to this module. Bind actual reports to version/native-source/local-image hashes
 using `scripts/module-qualification.mjs`. The owner verifies the real reports.
@@ -163,5 +164,6 @@ parallel changes. Generated catalog/licence files must be reproducible.
 Commit and push the focused branch; create/update and attach its PR. Use a draft
 PR while qualification/integration remains incomplete. Describe the concrete
 module behavior, completed assets, validation and exact remaining gates. Owner
-merge is approval; do not merge or deploy as part of adding a module. Link the
+merge is approval. Merge or deploy only when the owner has authorized it;
+complete the reviewable implementation and verification first. Link the
 PR, workflow and any material limitation in the final response.

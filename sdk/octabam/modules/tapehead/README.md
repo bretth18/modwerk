@@ -1,12 +1,12 @@
 # TapeHead
 
-Version: 0.1.0-experimental · author: @devilfish707 · algorithm: JClones (MIT)
+Version: 0.1.1-experimental · author: @devilfish707 · algorithm: JClones (MIT)
 
 ![TapeHead: the smoothstep curve, and a sine before and after](presentation/thumbnail.svg)
 
-**Source draft.** It is outside native discovery, the catalog and the
-firmware builder until hardware qualification and owner review are done
-(see [Tests and measurements](#tests-and-measurements)).
+Experimental module. Hardware operation and parameter locks are reported by
+the author; model, duration and tested maximum load were not specified.
+Native render, cycles, memory and browser parity evidence are in TESTING.md.
 
 ## Overview
 
@@ -122,8 +122,7 @@ See [TESTING.md](TESTING.md) for commands and numbers. In short:
   `verify_replaces --image` and `label_fmt` pass.
 - **On hardware:** the author flashed the OCTABAM2 test image on 2 Oct 2026
   and reported it works well (a listening test, not a stress run).
-- **Not done:** the 60-minute eight-track hardware stress project
-  and worst-case cycles measured on hardware.
+- **Hardware coverage:** author-reported operation and parameter locks, accepted by the owner. Model, duration and maximum tested load are unknown. The owner removed the mandatory one-hour stress run; the complete record is in [hardware evidence](evidence/hardware.md).
 
 ## Authorship and licences
 
@@ -131,7 +130,7 @@ See [TESTING.md](TESTING.md) for commands and numbers. In short:
   @devilfish707, MIT ([LICENSE](LICENSE)).
 - Algorithm: `JClones_TapeHead.jsfx`, Copyright (c) 2026 JClones, MIT. The
   full notice is in [LICENSE](LICENSE) and
-  [`../../octabam/licenses/jsfxclones.txt`](../../octabam/licenses/jsfxclones.txt).
+  [`../../licenses/jsfxclones.txt`](../../licenses/jsfxclones.txt).
 - Built and verified with the octabam SDK, Copyright (c) 2026 Sam Banks, MIT.
 - The thumbnail is original, drawn from `reference.py`'s output. It is an
   illustration, not an Octatrack screenshot.
@@ -162,5 +161,24 @@ reconstruction. No audio is included.
 | `hardware-test-remix.py` | the remix the OCTABAM2 test image was built from |
 | `media/` | emulator LCD captures and their provenance |
 | `octamod.module.json` | website metadata |
-| `qualification.example.json` | the qualification record, incomplete |
+| `evidence/` | cycles, exact memory, benchmark and attributed hardware reports |
 | `presentation/thumbnail.svg` | the card illustration |
+
+
+## Publication evidence, 2 October 2026
+
+The owner accepted the author-reported listening/parameter-lock test and removed
+the mandatory 60-minute, eight-track stress requirement. This version includes
+the exact same DSP instructions as the reported hardware image; its hash was
+reproduced locally. Model, duration and maximum hardware workload remain unknown.
+See [the actual report](evidence/hardware.md), [worst-case code-cycle model](evidence/cycles.md),
+[exact memory inventory](evidence/memory.md) and [reproduced full benchmark](evidence/benchmark.md).
+The static model prices eight inserts per core, including split/reselection
+overhead; it is not a chip wall-clock measurement or a hardware maximum-load pass.
+Fresh actual monochrome LCD captures were reviewed in the MKII emulator.
+
+The algorithm is the **JClones VladG TapeHead clone**, pinned to JSFXClones
+`88a1503d668c378ced4c166e772378272f3b72ea`, [original JSFX](https://github.com/JClones/JSFXClones/blob/88a1503d668c378ced4c166e772378272f3b72ea/jsfx/JClones_TapeHead.jsfx).
+JClones is credited for the original implementation, devilfish707 for the port,
+and Sam Banks for the SDK. Full MIT notices accompany the source and site.
+The inspected source does not establish an Airwindows derivation.

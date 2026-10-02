@@ -24,7 +24,7 @@ SOFTWARE.
 
 This licence covers this module's own source, gate, reference model,
 documentation and thumbnail. It was written against the octabam SDK
-(Copyright (c) 2026 Sam Banks, MIT; ../../octabam/LICENSE), whose tools build
+(Copyright (c) 2026 Sam Banks, MIT; ../../LICENSE), whose tools build
 and verify it. It does not extend to any Elektron Music Machines firmware,
 which is not distributed here.
 

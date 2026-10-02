@@ -1,4 +1,4 @@
-"""Compile the eleven reviewed SDK modules without stock firmware.
+"""Compile the owner-reviewed SDK modules without stock firmware.
 
 Run untrusted changes only in the isolated build container. This developer
 command executes reviewed native declarations in a disposable source copy.
@@ -8,7 +8,7 @@ from pathlib import Path
 import argparse, hashlib, json, os, re, shutil, struct, subprocess, sys, tempfile
 
 APP = Path(__file__).resolve().parents[1]
-ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch']
+ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead']
 REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer']
 ASSET_NAMES = ['dsp-packages.json', 'coldfire-packages.json', 'resident-dsp.json', 'rom-packages.json',
                'bootstrap-package.json', 'menu-recipes.json', 'descriptor-recipes.json', 'platform-writes.json', 'requested-packages.json']
@@ -238,7 +238,7 @@ def main():
             packages.append(package(module, text))
         products['dsp-packages.json'] = {'schema': 1, 'revision': revision, 'license': '/licenses/octabam.txt', **provenance,
             'packages': packages, 'excluded': [{'id': 'character', 'reason': 'Native resident placement.'}]}
-        print('Compiled five loadable DSP modules with four-origin relocation proofs.', flush=True)
+        print('Compiled loadable DSP modules with four-origin relocation proofs.', flush=True)
 
         character = byid['character']
         text = (root / character.dsp.asm).read_text()
@@ -386,7 +386,7 @@ def main():
         products['platform-writes.json'] = dict(baseline['platform-writes.json'], **provenance, groups=groups)
         if include_requested:
             requested = compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler, requested_ids)
-            products['requested-packages.json'] = retain_pending_requested(requested, baseline['requested-packages.json'], requested_ids) if args.source_commit else requested
+            products['requested-packages.json'] = retain_pending_requested(requested, baseline['requested-packages.json'], requested_ids) if not args.include_requested else requested
         if stock_guard._cache is not None: raise RuntimeError('Stock must never be read during source compilation')
         if native._SCRATCH is not None: shutil.rmtree(native._SCRATCH, ignore_errors=True)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """TapeHead against stock SPRING REV: executed DSP instructions and memory.
 
-    cd sdk/octabam && REMIX=<remix carrying TAPEHEAD> python3 ../drafts/tapehead/benchmark.py
+    cd sdk/octabam && REMIX=<remix carrying TAPEHEAD> python3 modules/tapehead/benchmark.py
 
 Needs your own local 1.40C extraction (out/raw/section_3_MAIN_OS.bin) and a
 built image at out/mainos_bus.bin that carries TAPEHEAD; nothing here leaves

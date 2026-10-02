@@ -2,7 +2,7 @@
 
 ## Commands and exact revision
 
-All results below are for this draft's files on top of Octamod `main` at
+Contributor results below used PR #42 source on top of Octamod `main` at
 `433fa32c0f5b381cf5a71930dc45e121609b7f4d` (2 Oct 2026), with the vendored
 DSP56300 tree built from `sdk/octabam/scripts/vendor.sh dsp56300` (pin
 `8ccdd843`, `tools/patches/dsp56300.patch` applied) on Linux x86-64.
@@ -19,7 +19,7 @@ cd sdk/octabam
 bash scripts/vendor.sh dsp56300
 cmake -S vendor/dsp56300 -B vendor/dsp56300/build -DCMAKE_BUILD_TYPE=Release
 cmake --build vendor/dsp56300/build --target dsp56kDisassemble dsp_asm dsp_host -j8
-python3 ../drafts/tapehead/verify.py
+python3 modules/tapehead/verify.py
 ```
 
 No firmware is read. `verify.py` assembles `tapehead.asm` at P:0x2000 and
@@ -56,7 +56,7 @@ loudest.
 
 What this gate cannot see: the composed image, the real dispatcher, the
 panel, placement beside other modules, and two cores. Those need `make check`
-once the module leaves `sdk/drafts`, and hardware.
+with the source now integrated, and the reported hardware operation.
 
 ### Static checks with a scratch remix
 
@@ -112,32 +112,30 @@ now; at DRIVE 100 it hit full scale against 0.91 now.
 
 ## Stress and audio quality
 
-Not run. Required before publication: at least 60 minutes on real MKI or
-MKII hardware with all eight audio tracks active, TapeHead on FX1 and FX2,
-DRIVE/TRIM swept by LFOs and p-locks, COLOR changed by scenes, Part changes
-and FX reselection, at maximum DRIVE. Record tester, date, project
-fingerprint, local image SHA-256, source SHA-256 and results.
+A maximum-load hardware stress test was not run. The owner removed the mandatory
+60-minute/eight-track requirement and accepted the contributor's functional
+operation report. See [hardware evidence](evidence/hardware.md) for the statement
+and its unknown model, duration, track count and coverage limitations.
 
 ## Resources
 
 - DSP cycles: 288 cycles/sample per instance, static (`cycle_count.py`), the
   same at every setting. dsp_host meter: 268.2 instructions/sample. Neither
   is a hardware measurement; worst case under modulation in a composed image
-  is pending.
+  is reproduced in evidence/benchmark.md.
 - DSP program: 416 words (1,248 bytes at 24 bits) in each payload's donor
   region (composed build report).
 - DSP X: 31 words per instance (r7 + $00–$12, $20–$25, $30–$35), inside the
   dispatcher's own 256-word r7 block. No allocator buffer, no Y memory, no
   tables beyond immediates.
-- ColdFire: none beyond the cloned menu descriptor.
+- ColdFire: 402-byte descriptor in a 416-byte stride and 60-byte COLOR formatter; no audio processing.
 
 ## Hardware
 
 2 Oct 2026: the author flashed `OCTATRACK_OCTABAM2.bin` (SHA-256 above)
 and reported that TapeHead works well on the unit. That is a listening
 report: the panel model, project, duration and track count were not
-recorded, and it is not the 60-minute eight-track stress project
-publication requires. The octabam build heard on 12 Sep 2026 had different
+recorded, and it is not a measured maximum-load stress pass. The octabam build heard on 12 Sep 2026 had different
 arithmetic (see above).
 
 ## The hardware test image
@@ -188,7 +186,7 @@ on this remix:
 
 ```sh
 cd sdk/octabam
-REMIX=tapehead-spring python3 ../drafts/tapehead/benchmark.py
+REMIX=tapehead-spring python3 modules/tapehead/benchmark.py
 ```
 
 It reuses `tools/harness/benchmark_reverbs.py`'s runner, which measured Mini
@@ -227,7 +225,7 @@ Memory:
 
 ## OT UI capture evidence
 
-`scripts/capture-module-ui.py` on `ot_emu` (SHA-256 `2360ffb2…5115`, built
+`scripts/capture-module-ui.py` on `ot_emu` (SHA-256 the exact hash in `media/capture.json`, built
 from `tools/emu/ot_emu` with the pinned `vendor/mc68k`), MKII panel, empty
 scratch card, transport stopped, the image above. Plan and hashes:
 `media/capture.json`. Reviewed:
@@ -240,3 +238,22 @@ scratch card, transport stopped, the image above. Plan and hashes:
 
 The emulator boots the image and draws the chooser and page. This is UI
 evidence only: it is not a hardware or audio test.
+
+
+## Publication evidence, 2 October 2026
+
+The owner accepted the author-reported listening/parameter-lock test and removed
+the mandatory 60-minute, eight-track stress requirement. This version includes
+the exact same DSP instructions as the reported hardware image; its hash was
+reproduced locally. Model, duration and maximum hardware workload remain unknown.
+See [the actual report](evidence/hardware.md), [worst-case code-cycle model](evidence/cycles.md),
+[exact memory inventory](evidence/memory.md) and [reproduced full benchmark](evidence/benchmark.md).
+The static model prices eight inserts per core, including split/reselection
+overhead; it is not a chip wall-clock measurement or a hardware maximum-load pass.
+Fresh actual monochrome LCD captures were reviewed in the MKII emulator.
+
+The algorithm is the **JClones VladG TapeHead clone**, pinned to JSFXClones
+`88a1503d668c378ced4c166e772378272f3b72ea`, [original JSFX](https://github.com/JClones/JSFXClones/blob/88a1503d668c378ced4c166e772378272f3b72ea/jsfx/JClones_TapeHead.jsfx).
+JClones is credited for the original implementation, devilfish707 for the port,
+and Sam Banks for the SDK. Full MIT notices accompany the source and site.
+The inspected source does not establish an Airwindows derivation.

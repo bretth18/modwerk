@@ -514,7 +514,7 @@
       "sha256": "5d44ce960d87d22af41166c529bfa5e84c0427b8e4afb3d6d2ca8d880f5dcfd7"
     }
   ],
-  "sourceCommit": "396a670440e94eeaf985335650571509e600f24f",
+  "sourceCommit": null,
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
@@ -523,6 +523,7 @@
     "tapeecho": "0.1.2-experimental",
     "euclid": "0.1.2-experimental",
     "repitch": "0.1.2-experimental",
+    "tapehead": "0.1.1-experimental",
     "analog-bassdrum": "0.1.2-experimental",
     "usb-audio-out-tracks-main-cue": "0.1.2-experimental",
     "quantizer": "0.1.2-experimental"
