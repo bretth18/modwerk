@@ -133,9 +133,12 @@ fingerprint, local image SHA-256, source SHA-256 and results.
 
 ## Hardware
 
-Untested at this revision. The octabam build (different arithmetic, see
-above) was heard on the author's unit on 12 Sep 2026; that is not evidence
-for this version.
+2 Oct 2026: the author flashed `OCTATRACK_OCTABAM2.bin` (SHA-256 above)
+and reported that TapeHead works well on the unit. That is a listening
+report: the panel model, project, duration and track count were not
+recorded, and it is not the 60-minute eight-track stress project
+publication requires. The octabam build heard on 12 Sep 2026 had different
+arithmetic (see above).
 
 ## The hardware test image
 

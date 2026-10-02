@@ -67,7 +67,7 @@
       "Draft only: not in the catalog, configurator or firmware builder until qualification and owner review are complete.",
       "The JSFX Clip switch is not exposed. Clip is always on (the JSFX default), because Q1.23 cannot carry the unclipped mode.",
       "Corner frequencies assume 44.1 kHz, the rate every Octamod effect assumes.",
-      "This revision changes the sound of the octabam build that was heard on hardware on 12 Sep 2026: three defects were fixed (see TESTING.md). The OCTABAM2 test image has not been flashed yet.",
+      "This revision changes the sound of the octabam build heard on 12 Sep 2026: three defects were fixed (see TESTING.md). The OCTABAM2 test image of this revision was flashed and listened to on 2 Oct 2026; it has not been stress-tested.",
       "Effect ID 0x1f, priority 17 and layout letter 4 were checked free against the eleven Octamod modules only."
     ]
   },
@@ -115,7 +115,7 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "verify.py renders the assembled module in dsp_host against the float JSFX (peak error 4.7e-4); the composed hardware-test image renders it within 3.9e-5 of the JSFX at defaults. Benchmarked against stock SPRING REV with benchmark.py. Menu, init-register and replace gates pass; MKII emulator LCD captures included. Not flashed; no hardware stress test.",
+    "summary": "verify.py renders the assembled module in dsp_host against the float JSFX (peak error 4.7e-4); the composed hardware-test image renders it within 3.9e-5 of the JSFX at defaults. Benchmarked against stock SPRING REV with benchmark.py. Menu, init-register and replace gates pass; MKII emulator LCD captures included. Flashed by the author on 2 Oct 2026 (OCTABAM2 test image) and reported working; no hardware stress test.",
     "hardwareStatus": "untested",
     "evidenceRevision": "433fa32c0f5b381cf5a71930dc45e121609b7f4d",
     "gates": [

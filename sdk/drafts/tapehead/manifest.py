@@ -27,9 +27,9 @@ MODULE = Module(
     kind=Kind.DSP_EFFECT,
     doc="Analog tape saturation: JClones TapeHead's recursion and cubic waveshapers.",
     category=Category.TRACK, author="devilfish707", author_url="https://github.com/devilfish707",
-    proof=Proof.RENDER,
-    proof_note="verify.py vs the float JSFX; benchmark.py vs SPRING REV; 2 Oct 2026; "
-               "this revision not flashed",
+    proof=Proof.HARDWARE,
+    proof_note="devilfish707's unit, image OCTABAM2 (tapehead-spring), 2 Oct 2026: "
+               "listening test; verify.py and benchmark.py in the emulator",
 
     menu=MenuEntry(
         fx2_id=0x1f,

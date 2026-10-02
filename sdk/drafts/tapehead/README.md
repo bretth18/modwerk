@@ -120,7 +120,9 @@ See [TESTING.md](TESTING.md) for commands and numbers. In short:
   `OCTATRACK_OCTABAM2.bin` with a valid checksum, boots in the emulator and
   draws the chooser and page above. `verify_menu`, `verify_initregs`,
   `verify_replaces --image` and `label_fmt` pass.
-- **Not done:** a flash, the 60-minute eight-track hardware stress project
+- **On hardware:** the author flashed the OCTABAM2 test image on 2 Oct 2026
+  and reported it works well (a listening test, not a stress run).
+- **Not done:** the 60-minute eight-track hardware stress project
   and worst-case cycles measured on hardware.
 
 ## Authorship and licences
