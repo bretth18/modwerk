@@ -167,6 +167,51 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .detail-hero .preview-controls { padding: 0 23px 18px; height: 29px; font-size: 12px; }
 .detail-hero .signal-art { height: calc(100% - 62px); }
 .detail-intro { min-width: 0; }
+.detail-hero-with-resources { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 150px; gap: 26px; }
+.module-resource-summary { position: relative; min-width: 0; padding-left: 22px; border-left: 1px solid var(--line); }
+.module-resource-summary > h2 { margin-bottom: 15px; color: var(--muted); font-size: 11px; font-weight: 500; text-align: center; }
+.module-resource-gauges { display: grid; gap: 14px; margin: 0; }
+.resource-gauge { display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.resource-gauge dt { order: 1; color: #d1cede; font-size: 12px; margin-top: 5px; }
+.resource-gauge dd { display: contents; }
+.resource-gauge-dial { position: relative; width: 84px; height: 48px; color: var(--accent); }
+.resource-gauge-dsp .resource-gauge-dial { color: #82bcb2; }
+.resource-gauge-memory .resource-gauge-dial { color: #c2a1d7; }
+.resource-gauge-dial svg { display: block; width: 100%; height: 100%; }
+.resource-gauge-dial .resource-gauge-track, .resource-gauge-dial .resource-gauge-fill { stroke-width: 5; }
+.resource-gauge-track { stroke: #686873; }
+.resource-gauge-fill { stroke: currentColor; }
+.resource-gauge-dial strong { position: absolute; inset: auto 0 0; text-align: center; font-size: 14px; font-weight: 550; letter-spacing: -.3px; color: #d4d7f1; }
+.resource-gauge-status { order: 2; margin-top: 3px; color: var(--muted); font-size: 11px; line-height: 1.4; text-align: center; }
+.module-resource-evidence { margin-top: 12px; }
+.module-resource-evidence > summary { display: flex; align-items: center; justify-content: center; gap: 4px; min-height: 32px; color: var(--muted); font-size: 11px; list-style: none; cursor: pointer; white-space: nowrap; }
+.module-resource-evidence > summary::-webkit-details-marker { display: none; }
+.module-resource-evidence > summary:hover { color: #d4d7f1; }
+.module-resource-evidence > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.module-resource-evidence[open] > summary svg { transform: rotate(45deg); }
+.resource-evidence-panel { position: absolute; top: 0; right: calc(100% + 12px); z-index: 5; width: 360px; max-width: calc(100vw - 36px); max-height: 360px; overflow-y: auto; padding: 18px; border: 1px solid #45454f; border-radius: 8px; background: #242429; box-shadow: 0 12px 32px #0006; font-size: 12px; line-height: 1.7; }
+.resource-evidence-panel h3 { margin: 0; color: #ececf1; font-size: 14px; font-weight: 550; }
+.resource-evidence-panel:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.resource-evidence-panel p { color: #b3b3c2; margin-top: 10px; }
+.resource-evidence-panel .resource-evidence-date { color: var(--muted); font-size: 11px; margin-top: 3px; }
+.resource-evidence-panel dl { margin: 15px 0 0; }
+.resource-evidence-panel dl > div + div { border-top: 1px solid var(--line); margin-top: 12px; padding-top: 12px; }
+.resource-evidence-panel dt { color: #d4d7f1; font-weight: 550; }
+.resource-evidence-panel dt span { margin-left: 6px; font-weight: 400; font-size: 11px; color: var(--muted); }
+.resource-evidence-panel dd { margin: 4px 0 0; color: #b3b3c2; }
+.resource-evidence-panel a { color: #a8b0ff; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+@media (min-width: 821px) and (max-width: 1100px) {
+  .detail-hero-with-resources { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .detail-hero-with-resources > .module-resource-summary { grid-column: 1 / -1; }
+}
+@media (max-width: 1100px) {
+  .module-resource-summary { border-left: 0; border-top: 1px solid var(--line); padding: 15px 0 0; }
+  .module-resource-summary > h2 { text-align: left; margin-bottom: 12px; }
+  .module-resource-gauges { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .module-resource-evidence { margin-top: 8px; }
+  .module-resource-evidence > summary { min-height: 44px; }
+  .resource-evidence-panel { position: static; width: 100%; max-width: none; max-height: none; margin-top: 8px; box-shadow: none; }
+}
 .detail-tags { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .detail-tags .subtle { font-size: 12px; }
 .detail-intro h1 { font-size: 32px; margin-bottom: 8px; }
