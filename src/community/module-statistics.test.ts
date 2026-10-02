@@ -33,5 +33,5 @@ it('sorts by the first addition date, with alphabetical ties and unknown dates l
 it('requires a valid addition date for every catalog entry and puts the four later additions first', () => {
  expect(Object.keys(MODULE_ADDED_AT).sort()).toEqual(MODULES.map(module => module.id).sort())
  expect(MODULES.every(module => Number.isFinite(Date.parse(module.addedAt)))).toBe(true)
- expect([...MODULES].sort((a,b) => compareModules(a,b,'recent',null)).slice(0,4).map(module => module.id)).toEqual(['analog-bassdrum','midi-scenes','quantizer','usb-audio-out-tracks-main-cue'])
+ expect([...MODULES].sort((a,b) => compareModules(a,b,'recent',null)).slice(0,6).map(module => module.id)).toEqual(['cc-map','previewvol','analog-bassdrum','midi-scenes','quantizer','usb-audio-out-tracks-main-cue'])
 })

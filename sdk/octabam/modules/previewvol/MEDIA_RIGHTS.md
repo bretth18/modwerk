@@ -1,7 +1,7 @@
 # Preview Vol media attribution
 
 `media/thumbnail.svg` is an original vector illustration created for this
-Octamod draft by @repeat98, licensed under MIT. It illustrates the preview
+Octamod release by @repeat98, licensed under MIT. It illustrates the preview
 AMP-volume override; it is not an OT screenshot, a measurement or loudness
 normalization. The full source licence is in [LICENSE](LICENSE).
 
@@ -14,9 +14,9 @@ the source-code MIT licence does not grant ownership of those UI elements.
 No personal images, purchased audio, third-party thumbnail or reconstructed
 labels were used. The sample is an original generated 440 Hz tone.
 
-The capture contributor must confirm the right to reuse the documentary
-screenshots, and the owner/reviewer must verify attribution and permitted
-reuse before publication. This draft makes no automatic legal-clearance
-claim. See the exact build/emulator/source/plan/PNG identities in
+Contributor declaration: these are original captures produced for the owner’s
+requested documentation, with permission to use the original capture contribution
+in Octamod. Elektron retains the underlying interface rights. Owner merge reviews
+this attribution and documentary use; it is not automatic legal clearance. See the exact build/emulator/source/plan/PNG identities in
 `media/capture.json`; firmware, cards, projects and LCD/RAM dumps remain local
 and temporary.

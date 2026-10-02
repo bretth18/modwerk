@@ -3,7 +3,7 @@ import { compiledModuleSource, validateCompiledModules } from './module-build'
 describe('source-built module identity', () => {
   it('binds verified compiled modules while excluding pending MIDI Scenes', () => {
     const source = compiledModuleSource()
-    expect(Object.keys(source.moduleVersions)).toHaveLength(10)
+    expect(Object.keys(source.moduleVersions)).toHaveLength(12)
     expect(source.moduleVersions).not.toHaveProperty('midi-scenes')
     expect(source.sourceTreeSha256).toMatch(/^[a-f0-9]{64}$/)
   })

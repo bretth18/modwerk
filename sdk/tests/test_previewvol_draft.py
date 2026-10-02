@@ -15,7 +15,7 @@ class PreviewVolDraft(unittest.TestCase):
         self.assertEqual(REPORT['repository'], 'https://github.com/repeat98/octamad')
         self.assertEqual(REPORT['revision'], '906fc354536d9a1d6ccd90a87fcf3c1f6edb6488')
         self.assertEqual(REPORT['sourcePath'], 'modules/previewvol')
-        self.assertEqual(REPORT['destination'], 'sdk/drafts/previewvol')
+        self.assertEqual(REPORT['destination'], 'sdk/octabam/modules/previewvol')
         self.assertEqual({item['path'] for item in REPORT['files']},
                          {'manifest.py', 'previewvol.s', 'OCTAMAD.md', 'LICENSE'})
         for item in REPORT['files']:

@@ -1,4 +1,5 @@
 import { requestedRom, requestedTables, requestedHooks } from './requested-modules.ts'
+import { composeUtilityRom } from './utility-modules.ts'
 import type { CfRuntimeLink } from './coldfire-link.ts'
 import recipes from './assets/menu-recipes.json' with { type: 'json' }
 import { CATALOG_SOURCE, resolveSelection } from '../catalog/modules.ts'
@@ -51,6 +52,8 @@ export async function composeModuleMenus(original: Uint8Array, ids: readonly str
   }
   const rom = await requestedRom(ids, cursor, overflow, caveLimit, cave)
   cursor = rom.cursor; overflow = rom.overflow
+  const utilityUnits = await composeUtilityRom(ids, cursor, overflow, caveLimit, cave, 'linked')
+  cursor = utilityUnits.cursor; overflow = utilityUnits.overflow; writes.push(...utilityUnits.writes)
   const requestedSymbols = new Map([...(runtime?.symbols ?? []), ...rom.symbols])
   if (modules.some(module => module.id === 'spectrum')) {
     const descriptor = baseline.descriptors.find(descriptor => descriptor.id === 'spectrum')!
@@ -68,6 +71,8 @@ export async function composeModuleMenus(original: Uint8Array, ids: readonly str
     if (inside) cursor = address + linked.bytes.length
     else overflow = align(address + linked.bytes.length, 4)
   }
+  const utilityCaves = await composeUtilityRom(ids, cursor, overflow, caveLimit, cave, 'caves')
+  cursor = utilityCaves.cursor; overflow = utilityCaves.overflow; writes.push(...utilityCaves.writes)
   const tables = await requestedTables(original, ids, cursor, cave, requestedSymbols)
   cursor = tables.cursor; writes.push(...tables.writes)
   writes.push(...await requestedHooks(original, ids, requestedSymbols, runtime))

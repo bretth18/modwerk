@@ -5,7 +5,7 @@ import { newConfiguration, validateConfiguration } from '../config/workspace'
 
 describe('temporary module availability', () => {
   it('offers the requested imports alongside the four existing modules and retains their GitHub identity', () => {
-    expect(AVAILABLE_MODULES.map(module => module.id)).toEqual(['miniverb', 'tapeecho', 'euclid', 'repitch', 'analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer'])
+    expect(AVAILABLE_MODULES.map(module => module.id)).toEqual(['miniverb', 'tapeecho', 'euclid', 'repitch', 'analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer','previewvol','cc-map'])
     for (const module of AVAILABLE_MODULES.filter(module=>['miniverb','tapeecho','euclid','repitch','analog-bassdrum'].includes(module.id))) {
       expect(module.authorName).toBe('Jannik Aßfalg')
       expect(module.author).toBe('repeat98')

@@ -3,8 +3,8 @@
   "repository": "https://github.com/repeat98/octamad",
   "revision": "906fc354536d9a1d6ccd90a87fcf3c1f6edb6488",
   "sourcePath": "modules/previewvol",
-  "destination": "sdk/drafts/previewvol",
-  "moduleVersion": "0.1.1-experimental",
+  "destination": "sdk/octabam/modules/previewvol",
+  "moduleVersion": "0.1.2-experimental",
   "status": "source draft with original thumbnail, documentation and actual MKII UI captures; hardware/resource qualification, authorship/rights review and browser integration pending",
   "notes": [
     "Requested local folder contains only __pycache__; authored files recovered from this published historical commit, not from compiled caches.",
@@ -66,5 +66,6 @@
       "path": "tools/verify/verify_previewvol.py",
       "sha256": "a79cce38cf7be4cc2cca20bc7e8be166ba38301c5e8e661bf637ce34d3c528f6"
     }
-  ]
+  ],
+  "release": "Owner-approved software-only release; source files unchanged from 0.1.1; hardware and chip timing waived for exact version 0.1.2-experimental."
 }

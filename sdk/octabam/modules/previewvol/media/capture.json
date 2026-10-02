@@ -17,7 +17,7 @@
       "tools/emu/lcd_view.py": "c1a9a61bd8d551fd7f15b5debcb5ff9b986e6a56ed0810d9d98c2627344594c1"
     }
   },
-  "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6.",
+  "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6.",
   "keyMs": 50,
   "lcdStyle": "black-and-white",
   "plan": [
@@ -229,5 +229,10 @@
     "MKII editor tabs and selected sample name are shown; waveform/audio rendering is not validated.",
     "No MKI capture, worst-case cycle/memory measurement, real-hardware stress run or full browser/native parity.",
     "Documentation/media remain owner/rights-review drafts; native module is excluded from discovery and public packages."
-  ]
+  ],
+  "releaseBinding": {
+    "moduleVersion": "0.1.2-experimental",
+    "nativeSourceSha256": "86deed960c094df1d0d2a4a9d3a955a62e804175f2f22d8ac53f5eff141aeaca",
+    "reason": "The source instructions/native manifest are identical to the recorded 0.1.1 capture. This version adds documentation and browser integration only; no new capture date/image is claimed."
+  }
 }

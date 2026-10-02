@@ -1,34 +1,29 @@
 # Preview Vol testing
 
-Draft version: `0.1.1-experimental`. Authored source pin:
-`906fc354536d9a1d6ccd90a87fcf3c1f6edb6488`
-([repeat98/octamad](https://github.com/repeat98/octamad/tree/906fc354536d9a1d6ccd90a87fcf3c1f6edb6488/modules/previewvol)).
-Capture date: 2 October 2026; contributor handle: @repeat98.
+Release version: `0.1.2-experimental`. Native source SHA-256: `86deed960c094df1d0d2a4a9d3a955a62e804175f2f22d8ac53f5eff141aeaca`.
+Native reference image (stock effects retained, BUILD=79): `3900e54e9154d66df6001b0f96da2ca07c42bf5c7be7f1157ddd9a071601f2cc`.
 
-## Current evidence and release status
+## Release evidence and owner waiver
 
-A private isolated native build passed readback of both preview detours and
-produced the actual MKII emulator LCD captures in `media/`. The capture preflight
-confirmed the requested project loaded and its bank parsed, dismissed the date
-prompt using NO, and required closed startup dialogs. The original thumbnail,
-README tutorial and actual black-and-white PNGs have ordinary static checks.
-These results establish source integrity, hook wiring and the documented UI
-navigation. They do not establish audio level/restoration, full native/browser
-parity, worst-case resources or real-hardware qualification.
+Released with the owner’s 2 October 2026 waiver for these exact source versions. Physical hardware stress and real-chip worst-case cycles are **untested/unmeasured**. The frozen eleven-module baseline is unchanged; later versions require ordinary qualification.
 
-`tests.hardwareStatus` remains `untested`; `tests.qualification` stays absent.
-Publication must still fail. The module stays outside native discovery, public
-catalog, compiler source inventory and the frozen eleven-module baseline. The
-`qualification.example.json` documentation fields are populated; its null
-measurements and pending hardware fields deliberately fail strict parsing.
-The image identity there refers to the UI build, not a passed hardware run.
+[The source-bound software report](evidence/software-verification.json) is paired with `tests.releaseWaiver` and the immutable two-entry [owner waiver record](../../../module-release-waivers.json). Folder and native-source hashes must match exactly. The manifest alone cannot approve a submission; public contributions still require full qualification. No passed hardware status, measured cycles or one-hour stress project is claimed. Authored source files and capture provenance remain unchanged; this release raises the version for documentation/browser integration.
 
-`npm run check` runs source identities/AST checks, draft exclusion and publication
-rejection, README/PNG checks, synthetic protocol startup regressions and the
-ordinary application checks/build. It never imports the draft native manifest
-or runs firmware, DSP, audio, emulator or hardware qualification suites. The
-synthetic capture tests use original fake input/card data and a small fake
-protocol process; no Elektron firmware is involved.
+## Native/browser composition and rejection
+
+The native `build_bus` oracle ran in the existing source-tools container with no network or credentials, read-only inputs/root, dropped capabilities, unprivileged UID/GID and resource limits. Only the user's SHA-256-verified local MAIN OS was supplied. 512 subsets of miniverb, tapeecho, euclid, repitch, analog-bassdrum, usb-audio-out-tracks-main-cue, quantizer, previewvol and cc-map use hidden stock FX2; the same 512 subsets also use main’s stock-retaining menus, omitting only the required DSP donors. Browser composition matches all 522 successful complete MAIN OS byte identities; all 502 native compatibility/space refusals agree. Proof identities live in `src/engine/assets/utility-composition-proofs.json`, never firmware bytes.
+
+Source-only utility compilation checks upstream/vendored assembly and manifest identities, disallows includes/binary transclusion, assembles authored ELF, compares relocations at 0x400d6b80, 0x400d7080 and 0x400d24d0, and compares CC Map with its native authored oracle. Source compilation cannot read firmware. Preview Vol follows native linked-unit ordering after Repitch/Scale Quantizer; CC Map follows native cave ordering after Tape TIME. Eight complete native ELEK containers and ELUP upgrades match byte for byte, including both utilities with Repitch, USB Audio/MIDI and Scale Quantizer. Altered/truncated base and unknown-module rejections pass, and original inputs remain unchanged. The actual browser worker built both utilities with compact and retained-stock FX2 menus; both downloads match the native full-upgrade identities. Saved selections and base restore/revalidation, 390px mobile layout/media/tutorials and keyboard tutorial toggling pass. No firmware/DSP/audio/stress suite runs in ordinary application checks or visitor builds.
+
+## Memory accounting and control bounds
+
+The linked text is 36 bytes: two 18-byte stubs, one shared allocation. Each stub contains four instructions, reproduces the overwritten envelope write, adds default AMP VOL and jumps back to its exact continuation. No loop, call, stack frame, new heap/persistent RAM or DSP allocation is introduced. Native main-cave placement aligns to 128 bytes, adding 0..127 padding bytes. The two six-byte detours replace existing flash and allocate no additional flash. Pending stock state at 0x46c7dfda + 32*track reuses byte 15; no per-track buffer is allocated. Free-space, source and hook guards must match the original firmware. Existing stop paths restore ordinary Part values; physical audio/restoration remains untested.
+
+The selected build's free-space writer verifies each address/length and zero guard before the transaction. Actual padding/placement depends on the selected modules, not track count. Both utilities together add 760 authored ROM bytes; each allocation's alignment is priced separately. These are exact authored allocation bounds, not a whole-chip free-memory or hardware timing claim. CPU/DSP/memory gauges use source estimates of incremental workload; chip worst-case cycles remain null.
+
+## Ordinary validation
+
+Use Node 24: `npm run check`, `npm run modules:check -- --base origin/main`, `git diff --check`. These read data and run domain checks; no submitted native Python is evaluated. The private developer parity command is `node scripts/verify-utility-native.mjs <local-1.40C.bin> <native-proof.json> <native-packaging-proof.json>`; it writes no firmware. Module source/version changes invalidate this release waiver and need new full qualification.
 
 ## Capture build identities and isolation
 
@@ -46,7 +41,7 @@ file hashes, excluding documentation, licences, media, the website manifest and
 the incomplete qualification template. Assembly is unchanged from upstream;
 the textual import replaces two embedded stock spans with lazy local
 address/length/SHA-256 guards. See the original/vendored file identities in
-[the import record](../../imports/previewvol-906fc354.json).
+[the import record](../../../imports/previewvol-906fc354.json).
 
 Only Preview Vol and reviewed SDK tooling were staged into the private build
 workspace. The draft manifest/assembly were evaluated and compiled inside the
@@ -93,7 +88,7 @@ python3 -B scripts/capture-module-ui.py \
   --emulator /local/reviewed/ot_emu \
   --image /local/private/mainos_bus.bin \
   --image-sha256 a19a0bf4352a6ebf98546cf33f68e44cbd101757ec16b17ca44efdfa49215302 \
-  --card /local/private/capture-card.img --set OCTABAM --project RIG \
+  --card /local/private/capture-card.img --set-name OCTABAM --project-name RIG \
   --key-ms 50 --plan /local/private/plan.json \
   --output /local/reviewed-screenshots
 ```
@@ -133,33 +128,4 @@ a skip is not passing evidence. Direct routine calls cannot establish physical
 panel shortcuts or hardware timing. That upstream suite was not run for this
 draft; it remains a reference, not an installed SDK gate.
 
-## Evidence required before publication
 
-- Worst-case ColdFire cycles per preview event and maximum supported load,
-  with deadline/budget, scheduling overhead and headroom. Cover rapid preview
-  start/stop, interrupted Flex/Static or Part/machine changes, all AMP endpoints,
-  p-lock/LFO/MIDI CC/scene modulation and maximum streaming/audio/MIDI/USB load.
-  Justify inapplicable controls without exempting affected stock control paths.
-- Exact code/state/buffer/table/stack/heap/padding and shared regions, local
-  build/link-map reconciliation, supported instances/events and peak lifetime
-  totals. Account for reused stock pending AMP records; demonstrate bounded
-  stack use and memory guards. Source length is not an allocation report.
-- At least 60 continuous minutes on each claimed real MKI/MKII model with all
-  eight audio tracks active. Bind actual tester/date, reproducible stress
-  project, native source, module version and local tested image. Exercise
-  maximum applicable MIDI/USB/FX/streaming load, modulation, repeated previews,
-  mode/Part transitions, stop/start and cold-boot recovery. Require passed
-  audio continuity, transport, controls, memory integrity and recovery checks.
-- Confirm FUNC+YES/CUE+YES audio routes, Flex/Static level equality and ordinary
-  track AMP VOL restoration after stop/interruption/reselection. Verify MKI
-  editor access and owner review of all current captures/instructions. Screens
-  establish access; they cannot substitute for audio or hardware observations.
-- Native composition/placement/rejection and browser complete-file byte-parity
-  for supported combinations, including approved playback modules. Preserve
-  current published packages and the download pause while pending.
-
-Populate `tests.qualification` only from actual sanitized local reports under
-`evidence/` or TESTING.md. Recompute the native hash after final source changes.
-Keep firmware, raw dumps, cards/projects and private logs temporary. Complete
-contributor/rights/authorship verification with the owner. Owner inspection of
-actual reports and PR merge remain required for release.

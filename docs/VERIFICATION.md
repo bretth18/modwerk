@@ -266,3 +266,41 @@ The unmodified native builder at `b8deefc` re-exported all 256 seven-module prof
 The browser worker's engine session built flashable updates for Tape Echo; Mini Verb + Tape Echo + Euclid + Repitch; Repitch; Analog BD; and USB Audio + Scale Quantizer. The first three updates equal native's complete ELEK/ELUP identities, and all five decoded OS images equal native's OS identities. Each decoded OS booted in the headless `ot_emu` (MKII, DSP running, emulator `93484e4b…`). The actual LCD showed the expected FX2 chooser (only the omitted reverbs missing). Every kept reverb, Tape Echo, Mini Verb, Euclid, Analog BD, Repitch's SRC SETUP and Scale Quantizer's SCALE setting loaded with their own controls and no error popup. A DSP render gate adapted from octabam's `verify_analog_bd_reverbs.py` rendered every kept reverb in five images on both cores, with fixed and moving controls. Every one is bit-identical to stock. A negative control that zeroes DARK REV's routine inside SPRING REV changed DARK REV's output.
 
 Firmware, decoded OS images, DSP memory dumps and LCD captures stayed local and temporary and were deleted. Only hashes and this record were kept. This is emulator and render evidence, not hardware qualification.
+
+
+## CC Map and Preview Vol frontend release — 2 October 2026
+
+Both utilities are visible, selectable and buildable at `0.1.2-experimental`.
+Their complete tutorials, original thumbnails and thirteen reviewed monochrome
+MKII LCD screenshots retain original capture versions/builds and bind the
+unchanged native source to this release. Attribution and import provenance are
+preserved. The owner's explicit two-version waiver records physical hardware
+stress as untested and real-chip worst-case cycles as unmeasured. It does not
+expand the frozen eleven-module baseline or relax future submission gates.
+
+The native oracle ran in a network-disabled, read-only source-tools container
+with no credentials, dropped capabilities, an unprivileged UID/GID and bounded
+resources. Across every subset of the nine currently buildable frontend modules,
+with compact and current stock-retaining FX2 menus, all 1,024 profiles agree:
+522 complete MAIN OS identities and 502 compatibility/space refusals. Eight
+complete native ELEK containers and ELUP upgrades match byte for byte. These
+cover each utility, both together and both with Repitch, USB Audio/MIDI and Scale
+Quantizer, under each menu profile. Changed/truncated base and unknown-module
+rejections pass; original inputs remain unchanged. Only hash proofs are retained.
+The explicit private verifier is `scripts/verify-utility-native.mjs`; it is
+never part of application checks or visitor builds.
+
+The actual browser worker built both utilities under both menu profiles. Its
+compact upgrade hash was `9919f5fee7160ce0d77696ffba3f8e1de19f7749b439d0741a9828a08afd7ee7`;
+its stock-retaining upgrade hash was `5800f3c4e1b20e748d84db604ba192a5c659db28dce0fd4e681541311259e285`.
+Both match native output. Saved selections and base restore/revalidation passed.
+Cards and tutorials fit a 390px viewport without horizontal overflow, all
+thirteen LCD images load, and keyboard disclosure toggling works. Firmware,
+private cards, samples and LCD/RAM dumps stay local; no hardware/audio/stress
+qualification is claimed.
+
+Final Node 24 validation passed: 269 domain tests in 50 files, 18 synthetic SDK
+checks, four licence checks, lint, application/server type checks and the static
+production build. Exact-base module validation and `git diff --check` pass.
+A clean-commit source-only container build reproduces all ten parity-verified
+authored package artifacts; only source-commit provenance differs.
