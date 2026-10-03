@@ -17,12 +17,12 @@ export type EngineResponse =
   | { id: number; type: 'built'; buffer: ArrayBuffer; report: BuildReport; sha256: string }
   | { id: number; type: 'cleared' }
   | { id: number; type: 'error'; message: string }
-// Local compatibility checks remain available while the changed core logger
-// awaits renewed full-image browser/native verification.
+// The owner authorized the logger-enabled release on 3 October 2026.
+// The logger exception and remaining measurement limits are in docs/VERIFICATION.md.
 export const ENGINE_AVAILABLE = true
-// The always-installed core logger changes the image. Prior module proofs do
-// not approve it: renew full native/browser parity and owner hardware review.
-export const DOWNLOADS_ENABLED = false
+// Explicit owner exception for this core logger addition; keep firmware local
+// and preserve compatibility, stock guards and packaging rejection checks.
+export const DOWNLOADS_ENABLED = true
 // The dynamic DSP loader (stock effects and modules uploaded on demand) has not been proven on hardware.
 // Off: stock DSP code stays built in and modules use the space of stock effects left off both menus.
 export const DSP_LOADER = false

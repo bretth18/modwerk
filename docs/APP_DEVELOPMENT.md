@@ -10,6 +10,10 @@ The configurator supports module discovery, filtering, comparisons and module se
 
 The browser composes real firmware with the dynamic DSP loader disabled. **Downloads are available for verified loader-free selections**, including Analog BD, MIDI Scenes, USB Audio (tracks + MAIN/CUE) and Scale Quantizer at `0.1.1-experimental`. Spectrum, Modulation and Character remain temporarily paused in the public library. The original 256 profiles retain 74 byte-identical images and 182 matching refusals; the requested 288 profiles add 156 byte identities and 132 matching refusals. Actual-browser full-file identities and altered-firmware rejection passed for the supported six- and five-module combinations. Read [verification and remaining work](VERIFICATION.md) for evidence and hardware limits. Approved releases rebuild authored packages in isolation and require them to reproduce the locally verified packages.
 
+## Preserve public firmware availability
+
+Every visible module must support firmware generation and download in a compatible configuration. Pending updates stay on their branches; failed builds keep the approved deployment. Do not set the global download flag to false while an update awaits review. The public download policy regression test is part of `npm run check`; fix or isolate the pending change instead of weakening that check. MIDI Scenes remains standalone and ordinary compatibility/placement failures still explain how to fix a selection.
+
 ## Run locally
 
 Use Node.js 24:

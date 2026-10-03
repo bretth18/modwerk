@@ -32,10 +32,10 @@ describe('mandatory core logger',()=>{
    expect(runtimeStageLayout(runtime.bytes.length,8192,runtime.reserveBytes-8192).stageEnd).toBeLessThan(ceiling)
   }
  })
- it('keeps downloads gated until full native/browser and owner verification is renewed',()=>{
-  expect(DOWNLOADS_ENABLED).toBe(false)
+ it('allows downloads under the explicit owner-approved logger exception',()=>{
+  expect(DOWNLOADS_ENABLED).toBe(true)
  })
- it('refuses the standalone MIDI Scenes image whose arena has not been integrated with logging',async()=>{
-  await expect(composeOs(new Uint8Array(4),['midi-scenes'])).rejects.toThrow('verification with the built-in logger')
+ it('routes standalone MIDI Scenes to its guarded reconstruction and still refuses changed firmware',async()=>{
+  await expect(composeOs(new Uint8Array(4),['midi-scenes'])).rejects.toThrow('unmodified original OS 1.40C')
  })
 })
