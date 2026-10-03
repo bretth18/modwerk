@@ -27,10 +27,10 @@ async function files(prefix = ''): Promise<string[]> {
 }
 
 describe('MIDISC2.0 draft release boundary', () => {
-  it('has a strictly newer source pin but cannot qualify or replace the public catalog', () => {
+  it('preserves the measured historical draft separately from the newer approved publication', () => {
     expect(document.source?.revision).toBe('4f9a89453fdcdd39a3cd57f010ffa489cac721cd')
     const publicVersion = catalog.modules.find(row => row.id === document.id)!.version
-    expect(compareModuleVersions(document.version, publicVersion)).toBeGreaterThan(0)
+    expect(compareModuleVersions(document.version, publicVersion)).toBeLessThan(0)
     expect(document.build?.status).toBe('pending')
     expect(() => requireModuleQualificationForPublication(document)).toThrow('qualification')
     expect(document.tests.qualification).toBeUndefined()

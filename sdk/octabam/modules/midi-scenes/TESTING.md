@@ -1,94 +1,157 @@
-# MIDI Scenes testing
+# MIDISC2.0 build verification
 
-Version: `0.2.1-experimental`.
+Version `0.2.4-experimental`; source `bkkbrls-del/midisc`
+`4f9a89453fdcdd39a3cd57f010ffa489cac721cd`, `tools/midisc/release20.json`.
+The native remixer still pins the old 8.2 author dependency; this release
+cannot inherit that port's acceptance, relocation or selection matrix.
 
-## Standalone author evidence (not Octamod qualification)
+## Completed local checks
 
-| Field | Value |
-|-------|-------|
-| Product | MIDISC2.0 standalone (author midisc repo) |
-| Revision | `4f9a89453fdcdd39a3cd57f010ffa489cac721cd` |
-| Reporter | module author (`bkkbrls-del`) — **author-reported** |
-| Date | 1 October 2026 |
-| Hardware | Elektron Octatrack (author unit; MK model not separately logged in this note) |
-| Image | Desktop `MIDISC8.20.bin` / GitHub MIDISC2.0 rebuild path (`release20.json`) |
-| Scenarios | Sequencer pattern commit / Direct Jump next-step; MIDI scenes follow ACT pattern Part immediately; no sequencer freeze after JSR+RTS sync cave |
-| Result | Author reports expected Part/scene behaviour restored; sequencer no longer bricks |
-| Limits | Author-reported only. No Octamod owner witness log, no MK serial, no automated on-device capture in this repo. Does **not** qualify Octamod browser/native composition of this module version. |
+The author release recipe SHA-256 is
+`a2dbe20d82de8bd3a4f010c1e94c4b2ebf080ca3f7203521053f747b52dc24a1`.
+The local original MAIN OS is 1,112,560 bytes with SHA-256
+`164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e`.
+The author's 843 sparse writes were applied in a private network-disabled
+macOS sandbox. The full result matched his pinned MAIN OS SHA-256:
+`debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87`.
 
-## Octamod pin (relocatable gas)
+The converted stock-free recipe uses 85 disjoint guarded regions. It references
+unchanged destination bytes and matching stock spans instead of retaining
+their contents. Its 5,848 literal changed bytes and 3,179 locally reconstructed
+bytes produce exactly the same full author image. Every protected destination,
+inherited span, input and output is fingerprinted. The native adapter resolves only against local stock during private verification.
+Source-build automation binds the recipe inventory without evaluating it.
 
-Octabam evidence pin: `363861e31ee963c478fab2b190a0fabe1d7ce37b` (1.40MIDISC8.2-derived gas). Historical OKMS1 / 0.1.1 loader-free matrix results apply to that earlier pin only.
+The native adapter's 85 guarded Pokes were separately resolved and applied
+inside the restricted sandbox. Their result equals the direct reconstruction
+and the author's full MAIN hash; a changed base was refused. For the historical 0.2.3 draft, re-importing the
+pinned raw author recipe with `scripts/import-midi-scenes-recipe.py` reproduces
+the committed stock-free recipe SHA-256
+`0172203121018ca77ec62cac038c8e5edf4b0070db20e0e213435180ff95b4ed`.
 
-## Integration status
+`scripts/verify-midi-scenes-native.mjs` compares the browser reconstruction
+against that exact author identity, refuses modified stock and three corrupt
+recipes, and verifies the original input is unchanged. It writes no firmware.
+An actual in-app-browser worker repeated standalone reconstruction and changed
+base/corrupt-guard rejection on 2 October 2026: full MAIN byte parity passed;
+output bytes were not downloaded, uploaded or retained by the page.
 
-Catalog/docs updated to MIDISC2.0; firmware builds remain pending for `0.2.0-experimental`. The existing relocatable packages still implement the earlier 8.2-derived pin and cannot qualify the documented 2.0 changes. Standalone MIDISC2.0 remains author-reported and separate from Octamod qualification. A relocatable 2.0 port and actual browser/native parity and rejection evidence are prerequisites for enabling this version.
+Full standalone update packaging passed in Node and the actual browser worker
+on 3 October 2026. The reviewed `scripts/native-container-oracle.c` with the
+unchanged native firmware tool encoded the ELEK container; the SDK's independent
+`tools/build/make_bin.py` encoded ELUP with the original stock seed. The browser
+engine matched both full byte arrays. Version header: `MIDISC2.0`.
+ELEK: 449,404 bytes, SHA-256
+`569368499581905c33e9874b87678acd1c2fc571ca6171c0e20b3e39b74892f8`.
+ELUP: 449,420 bytes, SHA-256
+`d7c792e0ec9b28e1b674e92526b2fa9a8a8279655dbd66a7b59495e5d5c54007`.
+Round-trip MAIN equality, corrupted/truncated update rejection and unchanged
+input checks passed. [packaging.json](evidence/packaging.json) retains tool and
+output identities only; private firmware outputs are removed after verification.
 
-## Historical gates
+The same private diagnostic checks thirteen current selectable single-module
+companions against the 2.0 fixed regions. Every companion overlaps at least
+one author region. See [compatibility.json](evidence/compatibility.json).
+This detects collisions; it does not approve a mixed configuration or establish
+that removing those writes would preserve behavior. No overlap was bypassed.
 
-- `tools/verify/verify_midiscenes.py` (upstream record; not run for this metadata update).
+Reproduce privately using Node 24:
 
-## Before enabling firmware builds
-
-- Port MIDISC2.0 into relocatable units (or equivalent stock-free recipe) for this SDK.
-- Prove actual browser/native byte parity and rejection for each supported selection.
-- Supply and review actual OT LCD captures with version/build/setup provenance and exact access instructions before publishing the UI update.
-- Keep standalone author results separate from Octamod qualification.
-
-## Review follow-up validation
-
-The earlier contributor run used Windows / Node.js 22.22.0 and is not the required Node.js 24 validation. The later CI run at `0967b198925eb9b249d8f2c54efb144b0c46e2ba` failed a Windows-path assertion on Ubuntu; it did not complete the production build.
-
-This follow-up retains exact README byte hashes using LF checkouts rather than weakening hashing with newline normalization. Path tests explicitly exercise POSIX and Windows rules on every host; filesystem tests cover nested/two-dot names, traversal and symlink/junction escapes. A Windows Node.js 24 job also validates module paths and source integrity.
-
-Validated on macOS with Node.js `v24.21.0`, 1 October 2026, after integrating approved main `789de00a9cf189f16635af80569595b5b8dc6209`:
-
-```text
-npm run modules:check -- --base 3207fe39be49628f889938a44f82ea0410c6431b
-# PASS: exact base recorded on PR #10; 11 module folders and version pins
-npm run modules:check -- --base 789de00a9cf189f16635af80569595b5b8dc6209
-# PASS: current approved main; only MIDI Scenes advances to 0.2.0-experimental
-npm run check
-# PASS: licence checks, module contracts, 7 SDK integrity/stock-guard tests,
-# lint, 212 Vitest tests in 40 files, TypeScript checks and production build
+```sh
+node scripts/verify-midi-scenes-native.mjs /private/local/1.40C-MAIN.bin --compatibility
+node scripts/verify-midi-scenes-packaging.mjs /private/local/OCTATRACK_OS1.40C.bin
+python3 -B scripts/import-midi-scenes-recipe.py /private/local/release20.json /private/local/1.40C-MAIN.bin --output /private/local/source-recipe.json
 ```
 
-The production preview was inspected in the actual browser at `#module/midi-scenes`: both `bkkbrls-del` and Sam Banks credits, `0.2.0-experimental`, the standalone MIDISC2.0 feature text and the pending-build notice were present. No firmware was selected or uploaded. POSIX/Windows lexical cases and real macOS symlink escapes passed locally; actual Windows junction coverage is checked by the dedicated CI job.
+Use the captured author pin and stock fingerprint. Keep native module/source
+execution inside the documented network-disabled temporary sandbox; read
+access is restricted to source/tools/local base and writes to the private work
+directory. No firmware-dependent command runs during `npm run check`.
 
-The vendored standalone README's exact SHA-256 (`d804ce0ae05bf69ffc63537606f9374358cdc1da3e6d864ef0dbdeba250e142e`) also matches the author's GitHub README at `4f9a89453fdcdd39a3cd57f010ffa489cac721cd`. The 8.2 assembly files and native manifest are unchanged. No submitted firmware source, firmware image, DSP/emulator/stress suite, relocatable 2.0 build or hardware test ran for this metadata follow-up.
+## Real OT UI
 
-## Actual OT UI captures — 1 October 2026
+`scripts/capture-module-ui.py` drove the actual MIDISC2.0 image at the exact
+hash above, using a reviewed local `ot_emu`, MKII panel, stopped transport,
+empty disposable FAT card, 50 ms key down/up and integer scale 6. Eight
+visually reviewed monochrome exports show channel setup, controller 74,
+enabled CC1 at 0, Scene A held at 64, release back to 0, ARP, LFO and
+CONTROL 2. The complete capture run was made on 3 October 2026.
 
-Publication version: `0.2.1-experimental` (captured draft `0.1.1-experimental`; native sources unchanged). The owner explicitly authorized pending-source execution
-solely for local UI capture builds. A temporary SDK source snapshot combined
-ANALOG BD, MIDI SCENES and SCALE QUANTIZER with stock FX, excluding SPRING REV
-for Analog BD. `static_stock=True` retained stock DSP without the dynamic
-stock-effect loader. The native builder was `tools/build/build_bus.py` from
-the SDK tool pin; `media/capture.json` records the profile, exact module/author
-pins, source-file hashes, build environment and local image/emulator hashes.
+```sh
+python3 -B scripts/capture-module-ui.py --emulator /private/local/ot_emu \
+  --image /private/local/mainos.bin \
+  --image-sha256 debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87 \
+  --key-ms 50 --plan /private/local/panel-plan.json --output /private/local/captures
+```
 
-Build: a local wrapper supplies that `remix.schema.Remix` profile to
-`remix.registry.remix`, then calls `build_bus.main()`. It ran under a macOS
-sandbox with network access denied, user/shared temporary reads restricted,
-writes confined to the private capture workspace and a clean environment.
-Only a local verified 1.40C file was available to the native image builder.
-No source-build automation received firmware.
+The exact plan, emulator identity, image identity and PNG hashes are in
+[media/capture.json](media/capture.json). No RAM patches or internal menu calls
+were used to manufacture screens. CHAN remains OFF; no external MIDI receiver
+or physical OT is connected. The CTRL 1 SETUP screen includes SCNCTRL5, a
+version-specific difference that needs complete control documentation/testing.
 
-Capture: `python3 -B scripts/capture-module-ui.py --emulator <local-ot_emu>
---image <private-mainos> --image-sha256 2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e
---key-ms 50 --plan <recorded-panel-plan.json> --output <new-directory>`.
-The exact plan and PNG hashes are retained in [media/capture.json](media/capture.json).
-MKII panel, actual 128×64 LCD pixels at integer scale 6, stopped transport,
-empty scratch FAT card, no samples, user projects or hardware connection.
+## Measured emulator evidence
 
-- Actual MIDI CTRL 1 UI and scene-held value only; CHAN remains OFF with no external MIDI receiver.
-- The capture does not qualify MIDI output, crossfader morphing, other pages, persistence, hardware or browser/native firmware parity.
+The explicitly requested emulator measurements are in
+[evidence/emulator.md](evidence/emulator.md), with per-fixture counters in
+[evidence/focused.json](evidence/focused.json) and exact tool/build identities
+in [evidence/emulator.json](evidence/emulator.json). The private harness measures
+360 helper fixtures, compares measurement/reference behavior, drives the actual
+panel and playback, and records audio stems and MIDI UART0 counters. It also
+verifies the 73,728-byte scratch boundary change at two independent operands.
+Read the workload/coverage and timing-model limits before interpreting maxima.
+No firmware-dependent command was added to application checks.
 
-Screenshots document the UI only; this documentation update does not change
-existing composition support, pending status or hardware qualification.
-Temporary stock-containing outputs, card/framebuffer files and logs are removed
-after capture review; only PNGs and metadata are retained.
+The promoted version `0.2.4-experimental` retains the identical author MAIN and
+screenshot pixels. The unchanged emulator reports retain their historical
+`0.2.3-experimental` identity; the new build approval binds this release.
 
-Publication metadata was synchronized with current main without changing native code.
-The capture record preserves the original draft version and records the source-file
-comparison binding these exact pixels to this documentation/media-only update.
+## Hardware report
+
+The owner accepts reported operation on a real unit; see
+[evidence/hardware.md](evidence/hardware.md). No maximum-load, cycle, stack,
+canary or direct physical-unit measurement was supplied to this task. Keep
+reported evidence distinct from verified measured hardware qualification.
+
+## Remaining evidence limits
+
+The emulator observations do not bound hardware timing or all memory use.
+SCNCTRL5, arbitrary control endpoints and persistence paths are not fully
+qualified. The owner's exact build approval below accepts the documented
+hardware timing and full memory unknowns without changing those claims.
+The standalone restriction resolves the known composition collisions.
+`qualification.example.json` retains unknown results. The eleven-module
+baseline and two existing utility waivers remain untouched.
+
+## Exact owner-approved build release
+
+On 3 October 2026 the owner explicitly approved enabling firmware building
+without hardware timing and complete memory bounds. This is recorded in
+[evidence/build-approval.json](evidence/build-approval.json) and independently
+pinned by `sdk/midi-scenes-build-approval.json`. It covers only
+`0.2.4-experimental`, this complete module folder and the unchanged author MAIN.
+The historical `0.2.3-experimental` measurements remain labelled as measured;
+metadata-only promotion changes no author instructions or image identity.
+Unknown timing and full memory bounds remain unknown. The original monochrome
+captures identify the same image. Native 8.2 sources are archived outside
+module discovery; browser/native proofs for that port are not reused here.
+
+The supported configuration contains only MIDI Scenes. The shared worker
+reconstructs the guarded author recipe before existing ELEK/ELUP packaging,
+uses version header MIDISC2.0, and refuses every mixed configuration before
+writing bytes. It applies no chooser, generic runtime or DSP remixer overlays.
+Stock remains local and is never present in source-build automation. This
+explicit owner approval does not alter the frozen baseline, utility waivers
+or requirements for other modules or future MIDI Scenes versions.
+
+## Shared production-worker proof
+
+The private `scripts/verify-midi-scenes-worker.html` harness imports the actual
+production worker, reads local original 1.40C through its file picker and saves
+no firmware. On 3 October the validate/build requests passed with both stock
+menu options; MAIN and full update identities matched the independent native
+oracles above. All thirteen mixed selections, modified and truncated bases,
+a build after failed inspection and a build after clear were refused. The
+input remained unchanged. The final release identities and this result are in
+[evidence/build-approval.json](evidence/build-approval.json). This developer
+harness is excluded from the production build and ordinary application checks.

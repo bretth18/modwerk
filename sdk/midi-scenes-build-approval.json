@@ -1,0 +1,14 @@
+{
+  "id": "midi-scenes",
+  "version": "0.2.4-experimental",
+  "sourceSha256": "5116aa89e8ff9086126313c260fb0b10ca5e1b0bb521238955dc0888b27c4d11",
+  "folderSha256": "8ff983de2c0baf5e5f732f68311d02f9265bb43371da3a362a3a462cb34d0180",
+  "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
+  "approvedBy": "repeat98",
+  "approvedOn": "2026-10-03",
+  "waived": [
+    "hardware-timing",
+    "complete-memory-bounds"
+  ],
+  "ownerStatement": "I explicitely approve enabling firmware building without hardware timing and complete memory bounds"
+}

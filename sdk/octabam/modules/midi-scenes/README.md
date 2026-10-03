@@ -1,100 +1,162 @@
-# `midi-scenes` — MIDI SCENES
+# MIDI Scenes — MIDISC2.0
 
-MIDI-driven scene locks from
-[bkkbrls-del/midisc](https://github.com/bkkbrls-del/midisc) **MIDISC2.0**
-(standalone documentation in `upstream/README.md`). Octamod still packages the
-relocatable GNU assembly units derived from the earlier `1.40MIDISC8.2` pin
-(`upstream/gas/`) until a full MIDISC2.0 relocatable port lands. `Kind.CF_PATCH`:
-twelve linker-placed units in DRAM, 38 detours, four pokes. No DSP code, no
-menu row.
+Version: `0.2.4-experimental`. Original author: **bkkbrls-del**. Source pin:
+[`4f9a89453fdcdd39a3cd57f010ffa489cac721cd`](https://github.com/bkkbrls-del/midisc/tree/4f9a89453fdcdd39a3cd57f010ffa489cac721cd).
 
-Stock 1.40C has no per-scene parameter lock over MIDI: XF morph reads one live
-8×30 lock table that only the panel writes. midisc adds a second, addressable
-table (`MSC`, `scene<<8 | track<<5 | flat`, 4 KB) and rewires scene hold, XF
-morph, part save/reload and the scene clear/copy/paste rows to read and write
-it when a MIDI event is driving. The panel path is untouched.
+## Overview
 
-MIDISC2.0 standalone behaviour (author firmware line) also includes pre-trig
-scenes/XF, pattern/Part boundary timing, unscened lock hold, CC-before-notes,
-descriptor/scratch crash fixes, and Part sync at sequencer ACT commit.
+MIDISC2.0 adds scene locks to Octatrack MIDI tracks. Hold Scene A or B while
+editing an enabled MIDI parameter; the crossfader morphs the two assigned
+scenes. The author documents pre-playback scene operation, pattern/Part
+boundary timing, preservation of active trig locks, CC-before-note ordering,
+descriptor/scratch repairs and immediate Part sync at sequencer ACT commit.
 
-Not carried into this Octamod package: MIDI → CONTROL CC48/55/56 tick rows
-(UI-table pokes; off since 8.1); CCs behave as stock in an octabam image.
+This owner-approved standalone release implements the actual **2.0 author recipe**.
+Select MIDI Scenes on its own in the existing configurator and build from your
+verified local original OS 1.40C. Other module combinations are unsupported.
+The owner explicitly approves building without hardware timing and complete
+memory bounds; those quantities remain unknown. The archived native 8.2 port
+is preserved separately and is never substituted for this release.
 
-## Measured
+![Original scene-morph thumbnail](presentation/thumbnail.svg)
 
-- Under the ColdFire port: the boot detour reaches the loader, the loader's
-  hash gates pass, the window reads back equal to the linked image except his
-  own state words, i.e. his code ran from DRAM during boot. Arms the control
-  fixture's five tracks.
-- Standalone MIDISC2.0 (midisc `4f9a894`): **author-reported** hardware check
-  on 1 October 2026 (see TESTING.md). Not an Octamod composition qualification.
-- The Octamod native gas pin remains the relocatable 8.2-derived units from
-  the octabam import; it is not yet a byte port of MIDISC2.0.
+## Controls
 
-## On the unit
+The module operates through the existing MIDI parameter pages rather than a
+new effect chooser row. Select MIDI mode and a MIDI track. SRC opens NOTE,
+AMP opens ARP, LFO opens MIDI LFO, FX1 opens CONTROL 1 and FX2 opens CONTROL 2.
+FUNC plus the page key opens its setup. Assign and confirm the MIDI channel
+and controller numbers before expecting output from an external receiver.
 
-- Standalone MIDISC2.0 — author-reported, 1 Oct 2026 (see TESTING.md).
-- Earlier OKMS1 remix (`ok-ms`, with Octakit) — 14 Sep 2026 (8.2-line port;
-  historical; does not qualify this 0.2.0 catalog revision).
+The captured ARP page exposes TRAN, LEG, MODE, SPD, RNGE and NLEN; MODE is
+OFF in the fixture. Its setup holds the arpeggiator note offsets. The MIDI
+LFO page exposes SPD1–3 and DEP1–3, with LFO destinations and waveforms in
+setup. CONTROL 1 exposes PB, AT and CC1–4; CONTROL 2 exposes CC5–10. CC
+assignment happens in each CONTROL setup; unassigned/disabled CC values
+display OFF. The captured CONTROL 2 values are all OFF, so that page alone
+does not demonstrate active scene locks. NOTE/setup retain the stock MIDI
+note and channel controls. This patch adds the held-scene editing path;
+it does not introduce replacement MIDI track selection or receiver setup.
 
-## Open
+For the captured example, CC1 is encoder C on CONTROL 1. FUNC + FX1 opens
+its assignment page: turn C to controller **74**, then press YES. Press FX1
+to return. An inactive CC displays OFF; hold FUNC and press encoder C to
+activate it. Its value is 0–127. The capture uses base **0** and scene lock
+**64**. Scene-held edits change the scene value; releasing the scene key
+shows the base value. OFF is an inactive state, not a numeric scene value.
 
-- Relocatable MIDISC2.0 packaging for Octamod composition (native gas still
-  8.2-derived). Firmware builds remain pending for this 0.2.0 catalog version;
-  standalone MIDISC2.0 behaviour is documented from the author line.
-- The apply_part entry (`0x40009094`) stays stock since his 1.40MSCN6, so
-  Octakit owns it alone and nothing bridges the two.
-- His MIDI CONTROL tick rows, if wanted, need a menu-table mechanism.
+Hold SCENE A or SCENE B and press a TRIG key to assign that scene to the
+side. Keep the scene key held while turning the parameter's encoder. Release
+the key and sweep the crossfader. An unlocked side uses the active trig lock,
+or the track value when no trig lock applies. Use the stock scene clear,
+copy and paste actions, Part Save/Reload and project save/load operations.
 
-## Gates
+The actual 2.0 CTRL 1 SETUP screen also contains **SCNCTRL5**. Its detailed
+behavior, per-control endpoint matrix, controller filter options and persistence paths
+have not been independently qualified by this task. The earlier 8.2
+port's assertion that all CC48/55/56 filter rows are excluded must not be
+copied into a 2.0 release. A complete control/endpoint matrix remains unverified; unknown behavior is
+not represented as verified.
 
-- `tools/verify/verify_midiscenes.py` (in `make verify`): every region
-  assembles and links to his encoder's bytes at his addresses, and the
-  committed `gas/*.s` are what `gas_port.py` regenerates.
+## Usage
 
-## How it is built
+Connect the receiver, assign an output channel and enable the parameter
+before creating a scene lock. Use the example below to verify a visible
+held-scene edit, then test the receiver with the crossfader.
 
-His caves are written in his Python encoder (`upstream/tools/ot3_asm.py`) and placed
-at fixed addresses by his `build.py`. His `upstream/tools/gas_port.py` drives the same
-builders with an encoder subclass that records one GNU-as line per
-instruction, writes `gas/*.s`, then assembles and links every region at his
-address and compares. Cross-cave references are linker symbols, so octabam
-places each unit where it chooses: every unit is `dram=True`, linked into the
-platform runtime, appended behind octabam's loader and depacked at boot into
-the arena reserve (`docs/contributing/PLACEMENT.md`). Inside the OS the module
-changes only the detour and poke sites, plus the boot redirect when no other
-module supplies it.
+### Quick tutorial: morph a MIDI filter CC
 
-## Octamod update — 1 October 2026
+1. Press MIDI and select a MIDI track. Set and confirm its output channel in FUNC + SRC. In FUNC + FX1, assign CC1 to controller 74 with encoder C and confirm with YES; the receiver must use that controller for its filter.
+2. Return to FX1. Hold FUNC and press encoder C to enable CC1, then set its base to 0. Hold SCENE A, assign a scene with a TRIG key, and turn C to 64; the scene-held value should read 64.
+3. Release SCENE A: the base value should read 0. Sweep the crossfader between your assigned scenes to hear the receiver change; clear the scene lock or disable CC1 to stop this example. The retained captures verify the values and release behavior without a connected receiver.
 
-Module version: `0.2.0-experimental`. Catalog/docs updated to author
-**MIDISC2.0** ([bkkbrls-del/midisc@4f9a894](https://github.com/bkkbrls-del/midisc/commit/4f9a89453fdcdd39a3cd57f010ffa489cac721cd)).
-Native relocatable units and octabam source pin remain the earlier import
-([sambanks/octabam@363861e](https://github.com/sambanks/octabam/tree/363861e31ee963c478fab2b190a0fabe1d7ce37b/modules/midi-scenes)).
-Firmware builds are enabled for this catalog revision (verified 8.2-derived packages). See [TESTING.md](TESTING.md).
+Set the external instrument's MIDI channel to match the OT and connect MIDI
+OUT to its MIDI IN. The screenshot fixture has CHAN OFF and no receiver.
+Pre-trig scene operation, simultaneous trig locks, rapid Part changes,
+Direct Jump and CC/note ordering need their own measured verification;
+successful static screenshots cannot demonstrate those timing behaviors.
 
-## Access and actual OT UI captures
+## Compatibility and limitations
 
-MIDI track parameter pages: hold SCENE A or SCENE B and edit an enabled parameter; the example uses MIDI CTRL 1.
+Requires original OS **1.40C**. MKII UI captures are recorded; the model of
+the reported real unit is unspecified. The reconstructed MAIN OS exactly
+matches the author's standalone release hash. No firmware is distributed.
 
-1. Press MIDI to enter MIDI mode and select a track with its TRACK key.
-2. For an external receiver, open MIDI NOTE SETUP with FUNC + SRC, choose CHAN with encoder A and press YES to confirm. The capture fixture has no connected receiver and leaves CHAN off.
-3. For the illustrated CC example, hold FUNC and press FX1 to open MIDI CTRL 1 SETUP. Assign controller 74 to CC1 with encoder C and press YES to confirm.
-4. Press FX1 to return to MIDI CTRL 1. Hold FUNC and press encoder C to enable CC1; its default OFF state cannot be edited as a normal active control.
-5. Hold SCENE A or SCENE B and press a TRIG key to assign a scene to that side. Keep the scene key held and turn encoder C to set its CC1 scene lock. The pictured example locks CC1 to 64 while the base value is 0.
-6. Release the scene key. Move the crossfader to morph the assigned scenes. Other supported MIDI parameter pages use the same hold-and-edit pattern.
+The author's fixed regions overlap Octamod's chooser/ROM allocations, including
+`0x400d6954` and `0x400d7600`. All thirteen checked single-module companions overlap
+at least one region. Blindly overlaying this recipe onto an existing composition
+is therefore unsupported. Mixed selections require a reviewed relocation or
+an independently verified composition strategy; they must not reuse the old
+8.2 compatibility proofs. OctaKit remains outside this integration.
 
-![MIDI CTRL 1 SETUP: CC1 is assigned to controller 74 using encoder C and confirmed with YES.](media/ot-setup.png)
+Standalone MAIN and full ELEK/ELUP update parity and rejection pass in Node
+and an actual browser worker. Exact total memory/stack accounting, defensible
+worst-case cycle bounds and complete 2.0 control qualification remain pending.
+Standalone selection uses the existing configurator and shared firmware builder.
+No separate MIDI Scenes download flow is added.
 
-![MIDI CONTROL 1 with CC1 enabled at its base value of 0. Hold FUNC and press encoder C to enable it.](media/ot-location.png)
+## Tests and measurements
 
-![Scene A held on MIDI CONTROL 1: the CC1 scene lock reads 64; releasing Scene A returns to the base value of 0.](media/ot-scene-lock.png)
+See [TESTING.md](TESTING.md), [software identities](evidence/software.json) and
+[actual emulator measurements](evidence/emulator.md).
+The recipe has 85 guarded regions: 9,027 written bytes consist of 5,848
+literal changed bytes and 3,179 bytes recovered from hashed local-stock spans.
+These are **recipe storage counts**, not code/RAM/stack totals or CPU cycles.
+Do not equate them with a complete memory qualification.
 
-These are actual firmware-rendered emulator LCD captures. See [TESTING.md](TESTING.md),
-[capture provenance](media/capture.json) and [media rights](media/LICENSE.md).
+The 3 October emulator harness exercises 360 focused helper fixtures and the
+actual panel/playback paths. The focused crossfader maximum is 47,642 modeled
+cycles and 156 bytes of observed stack; the exact additional scratch
+reservation is 73,728 bytes. These are observations under the declared
+conditions, not complete chip timing or memory bounds.
 
-The standard MIDI channel confirmation and FUNC + encoder activation steps
-follow Elektron’s [MKII manual, MIDI track parameters](https://www.elektron.se/wp-content/uploads/2024/09/Octatrack-MKII-User-Manual_ENG_OS1.40A_210414.pdf#page=94).
-MIDI scene locks are supplied by the pinned module; stock firmware does not
-provide them. The capture leaves CHAN off because no receiver is connected.
+The owner accepts a reported standalone MIDISC2.0 hardware test. Its model,
+duration, workload, measured timing and memory guards were not supplied here.
+That report is recorded honestly in [hardware.md](evidence/hardware.md).
+No real-unit test was performed by this task. Synthetic application tests
+cover malformed recipes, provenance, range/overlap guards, stock-reference
+checksums, changed inputs, output identity and input immutability.
+
+## Authorship and licences
+
+MIDISC2.0 implementation and author recipe: bkkbrls-del, MIT; retain
+[LICENSE](LICENSE). Sam Banks authored the earlier relocatable 8.2 octabam
+port, which is archived outside discovery and is not relabelled as 2.0.
+The stock-free recipe adapter, browser reconstruction and thumbnail are
+original Octamod contributions under MIT. Exact origin/transformation hashes
+are recorded in `sdk/imports/midi-scenes-release-4f9a894.json`.
+
+Stock instructions, descriptors and unchanged gaps are recovered from the
+user's fingerprinted local image. Only authored delta data and stock offsets,
+lengths and hashes are retained. Keep reconstructed output, upstream raw patch
+material, cards and framebuffer dumps temporary and private. Firmware must
+never enter source-build automation, community uploads or source control.
+
+Original LCD exports have separate [media rights](media/LICENSE.md).
+Underlying Elektron and third-party rights remain reserved. A contributor
+declaration requires reviewer verification and is not automatic legal clearance.
+
+## Screens and audio
+
+Actual firmware-rendered MIDISC2.0 LCD, MKII panel, stopped transport, empty
+scratch card, integer scale 6, monochrome. No audio preview is supplied.
+
+![MIDI NOTE SETUP; channel OFF in the fixture without an external receiver.](media/ot-channel.png)
+
+![MIDISC2.0 MIDI CTRL 1 SETUP; CC1 assigned to 74 and SCNCTRL5 visible.](media/ot-setup.png)
+
+![MIDI CONTROL 1; enabled CC1 base value 0.](media/ot-location.png)
+
+![Scene A held; CC1 scene-lock value 64 before playback.](media/ot-scene-lock.png)
+
+![Scene A released; CC1 returns to base value 0.](media/ot-released.png)
+
+![MIDI ARPEGGIATOR with MODE OFF; TRAN, LEG, SPD, RNGE and NLEN controls.](media/ot-arp.png)
+
+![MIDI LFO with SPD1–3 and DEP1–3 controls.](media/ot-lfo.png)
+
+![MIDI CONTROL 2 with CC5–10 inactive at OFF.](media/ot-control2.png)
+
+These screens prove their displayed setup/edit/release states. They do not
+prove MIDI wire output, timing, hardware operation or arbitrary compositions.
+See [capture provenance](media/capture.json).
