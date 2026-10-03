@@ -643,5 +643,26 @@
     "tested": false,
     "worstCaseCycles": null,
     "resetRetention": null
+  },
+  "noCardEmulator": {
+    "imageSha256": "e13b47dd73143b5f1d790a5b1d5df6fa65b8a61831eb3dde0ee42a0465458b0b",
+    "deliveredBinSha256": "a96c2602930fd3aa50118f2df32fd192f697f4df37a998cd94a1e291b8a03333",
+    "model": "MKII emulator",
+    "bootGate": "M6a PASS",
+    "cardAttached": false,
+    "mountKindBeforeAfter": [
+      0,
+      0
+    ],
+    "ringCountBeforeAfter": [
+      1,
+      1
+    ],
+    "flushedHeadBeforeAfter": [
+      0,
+      0
+    ],
+    "continuedAfterPanelInput": true,
+    "hardwareTest": false
   }
 }
