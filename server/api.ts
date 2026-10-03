@@ -4,6 +4,7 @@ import { moduleStatistics } from './module-statistics'
 import { adminInsights } from './admin-insights'
 import recipes from '../src/catalog/module-sets.json'
 import type { Database, Env, Media, User } from './platform'
+import { reviewAccountRequest } from './account-requests'
 import { ADMIN_ACTOR, authentication, currentUser, needMember, isAdmin, throttle } from './auth'
 import { boundedBody, checkOrigin, HttpError, jsonBody, required, response } from './security'
 import { MODULES } from '../src/catalog/modules'
@@ -109,6 +110,9 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     }
     if (path.startsWith('/api/admin/')) {
       if (!admin) throw new HttpError(403,'Administrator access is required.')
+      if(path==='/api/admin/account-requests'&&request.method==='GET')return response((await db.prepare('SELECT r.id,r.user_id,r.status,r.created_at,r.updated_at,r.review_note,u.username FROM account_removal_requests r JOIN users u ON u.id=r.user_id ORDER BY r.created_at DESC,r.rowid DESC LIMIT 100').all()).results)
+      if(path==='/api/admin/account-mail'&&request.method==='GET')return response((await db.prepare('SELECT day,purpose,accepted,failed,limited FROM account_mail_daily ORDER BY day DESC,purpose LIMIT 60').all()).results)
+      if((match=path.match(/^\/api\/admin\/account-requests\/([a-zA-Z0-9-]+)$/))&&request.method==='PATCH')return reviewAccountRequest(request,db,match[1])
       if (path === '/api/admin/insights' && request.method === 'GET') return response(await adminInsights(db))
       if (path === '/api/admin/statistics' && request.method === 'GET') return await usageStatistics(db,Number(url.searchParams.get('days') ?? 7))
       if (path === '/api/admin/overview' && request.method === 'GET') return response(await db.prepare("SELECT (SELECT COUNT(*) FROM submissions WHERE status='pending') AS pending,(SELECT COUNT(*) FROM module_publications) AS published,(SELECT COUNT(*) FROM comments) AS comments,(SELECT COUNT(*) FROM issues WHERE status='open') AS issues,(SELECT COALESCE(SUM(bytes),0) FROM media) AS mediaBytes").first())

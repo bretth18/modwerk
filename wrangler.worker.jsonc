@@ -6,6 +6,7 @@
   // Production values. Local development overrides vars through the ignored .dev.vars file.
   "vars": {
     "APP_URL": "https://octamod.app/",
+    "REGISTRATION_OPEN": "false",
     "SESSION_TRANSPORT": "bearer"
   },
   "d1_databases": [

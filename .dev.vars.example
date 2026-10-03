@@ -1,5 +1,7 @@
 APP_URL=http://127.0.0.1:5173
 SESSION_TRANSPORT=bearer
+# Open only for controlled testing or an explicitly approved public launch.
+REGISTRATION_OPEN=false
 # Separate administrator access. Generate with `npm run admin:key`; store only the SHA-256 here or as a Worker secret.
 # Leave blank to keep the admin workspace closed.
 ADMIN_KEY_SHA256=

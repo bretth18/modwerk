@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AccountInbox } from './AccountInbox'
+import { AccountRemovalRequest } from './AccountRequests'
 import { api, post } from './api'
 import { useCommunity } from './context'
 type DeviceSession = { id:string; current:boolean; expires:number }
@@ -7,6 +8,7 @@ export function AccountPage({route}:{route:string}) {
   const {session,refresh}=useCommunity(), [busy,setBusy]=useState(false), [error,setError]=useState(''), [message,setMessage]=useState(''), [devices,setDevices]=useState<DeviceSession[]>([])
   const [,action='login',linkToken='']=route.split('/'), mode=['login','register','resend','forgot','verify','reset'].includes(action)?action:'login'
   const member=!!session.user?.verified
+  const emailAvailable=session.emailAvailable??session.registrationAvailable
   useEffect(()=>{let cancelled=false;if(member)void api<DeviceSession[]>('/auth/sessions').then(value=>{if(!cancelled)setDevices(value)}).catch(error=>{if(!cancelled)setError(error.message)});return()=>{cancelled=true}},[member])
   async function submit(form:HTMLFormElement) {
     setBusy(true);setError('');setMessage('')
@@ -26,17 +28,19 @@ export function AccountPage({route}:{route:string}) {
       {!session.available?<p className="service-note" role="status">Community services are unavailable. You can still use your local configurations.</p>:<>
       {session.user&&!session.user.username&&<p className="service-note">This browser holds a previous guest identity. Its private reports appear below until you sign in. Guest names do not reserve account usernames.</p>}
       {!(mode==='verify'||mode==='reset')&&<nav className="forum-actions" aria-label="Account actions"><a aria-current={mode==='login'?'page':undefined} href="#account/login">Sign in</a><a aria-current={mode==='register'?'page':undefined} href="#account/register">Create account</a></nav>}
-      {!session.registrationAvailable&&mode!=='login'&&<p className="service-note" role="status">Account email is not available yet. Registration and recovery will open once it is connected.</p>}
+      {mode==='register'&&!session.registrationAvailable&&<p className="service-note" role="status">New registrations are temporarily closed. Existing accounts can still sign in.</p>}
+      {!emailAvailable&&['forgot','resend'].includes(mode)&&<p className="service-note" role="status">Account email is not available yet. Please try again later.</p>}
       {message&&(mode==='verify'||mode==='reset')?<a className="button button-primary" href="#account/login">Continue to sign in</a>:<form className="community-form" onSubmit={event=>{event.preventDefault();void submit(event.currentTarget)}}>
         {mode==='register'&&<label>Public username<input name="username" required minLength={3} maxLength={24} pattern="[A-Za-z0-9_]+" autoComplete="username" spellCheck={false}/><small>3–24 letters, numbers or underscores.</small></label>}
         {mode!=='verify'&&mode!=='reset'&&<label>Email address<input type="email" name="email" required maxLength={254} autoComplete="email"/></label>}
         {['register','login','verify','reset'].includes(mode)&&<label>{mode==='verify'?'Password you chose when registering':mode==='reset'?'New password':'Password'}<input type="password" name="password" required minLength={15} maxLength={128} autoComplete={mode==='register'||mode==='reset'?'new-password':'current-password'}/>{(mode==='register'||mode==='reset')&&<small>At least 15 characters. Try a few unrelated words.</small>}</label>}
         {mode==='register'&&<p className="service-note">Verify your email before posting, rating or reporting issues. Your username and posts are public; your email is private. <a href="#privacy">Privacy details</a>.</p>}
         {mode==='verify'&&<p className="service-note">Only continue if you created this account. If you did not, you can ignore this message.</p>}
-        <button className="button button-primary" disabled={busy||(!session.registrationAvailable&&!['login','verify','reset'].includes(mode))}>{busy?'Please wait…':mode==='login'?'Sign in':mode==='register'?'Create account':mode==='verify'?'Verify email':mode==='reset'?'Save new password':'Send email'}</button>
+        <button className="button button-primary" disabled={busy||(mode==='register'&&!session.registrationAvailable)||(['forgot','resend'].includes(mode)&&!emailAvailable)}>{busy?'Please wait…':mode==='login'?'Sign in':mode==='register'?'Create account':mode==='verify'?'Verify email':mode==='reset'?'Save new password':'Send email'}</button>
       </form>}
       <div className="forum-actions"><a href="#account/forgot">Reset password</a><a href="#account/resend">Resend verification</a></div></>}
     </section>}
+    {member&&<AccountRemovalRequest key={'removal-'+session.user!.id}/>}
     {session.user&&<AccountInbox key={session.user.id}/>}
     {message&&<p className="success-note" role="status">{message}</p>}{error&&<p className="file-error" role="alert">{error}</p>}
   </div>

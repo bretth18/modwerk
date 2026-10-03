@@ -6,8 +6,9 @@ import { isAPIError } from 'better-auth/api'
 import type { BetterAuthOptions } from 'better-auth'
 import type { Env, Database, User } from './platform'
 import { throttle } from './auth'
-import { appOrigin, digest, HttpError, jsonBody, response } from './security'
-import { emailReady, sendAccountEmail } from './email'
+import { appOrigin, digest, HttpError, jsonBody, response, token as randomToken } from './security'
+import { AccountMailError, emailReady, sendAccountEmail } from './email'
+import { accountRequest } from './account-requests'
 
 export function authReady(env: Env) { return !!env.AUTH_SECRET && env.AUTH_SECRET.length >= 32 }
 export function accountAuth(env: Env, db: Database) {
@@ -30,8 +31,11 @@ export function accountAuth(env: Env, db: Database) {
     },
     emailVerification:{sendOnSignUp:true,sendOnSignIn:false,expiresIn:86400,autoSignInAfterVerification:false,
       sendVerificationEmail:async({user,token})=>{
-        await db.batch([db.prepare('DELETE FROM account_tokens WHERE user_id=? AND purpose=\'verify\'').bind(user.id),db.prepare('INSERT INTO account_tokens(token_hash,user_id,purpose,expires) VALUES(?,?,\'verify\',?)').bind(await digest(token),user.id,Math.floor(Date.now()/1000)+86400)])
-        await sendAccountEmail(env,db,user.email,'verify',token)
+        // Library JWTs can repeat within one second. A fresh nonce makes every
+        // resend distinct, and only the hashed complete action link is accepted.
+        const actionToken=token+'~'+randomToken()
+        await db.batch([db.prepare('DELETE FROM account_tokens WHERE user_id=? AND purpose=\'verify\'').bind(user.id),db.prepare('INSERT INTO account_tokens(token_hash,user_id,purpose,expires) VALUES(?,?,\'verify\',?)').bind(await digest(actionToken),user.id,Math.floor(Date.now()/1000)+86400)])
+        await sendAccountEmail(env,db,user.email,'verify',actionToken)
       },
     },
     plugins:[bearer({requireSignature:true}),username({minUsernameLength:3,maxUsernameLength:24,usernameValidator:value=>/^[a-z0-9_]{3,24}$/.test(value)&&!/^(admin|administrator|moderator|octamod|support|system|guest)$/.test(value)})],
@@ -54,9 +58,11 @@ export async function accountUser(request: Request, env: Env, db: Database): Pro
 function emailAddress(value:unknown){if(typeof value!=='string'||value.trim().length>254||!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(value.trim()))throw new HttpError(400,'Enter a valid email address.');return value.trim().toLowerCase()}
 const genericMessage='If the address is eligible, an email will arrive shortly. Check your spam folder. You can request another message or reset your password if you already have an account.'
 export async function accountRoutes(request: Request, env: Env, db: Database, path: string): Promise<Response|null> {
+  if(path==='/api/auth/account-removal')return accountRequest(request,db,await accountUser(request,env,db))
   const route=path.match(/^\/api\/auth\/(register|login|resend|forgot|verify|reset|sessions|logout)$/)
   if(!route)return null
   const action=route[1]
+  if(action==='register'&&env.REGISTRATION_OPEN!=='true')throw new HttpError(503,'New registrations are temporarily closed. Existing accounts can still sign in and recover access.')
   if(action==='logout'&&!authReady(env))return null
   if(action==='logout'&&!request.headers.get('Authorization')?.includes('.')&&!request.headers.get('Cookie')?.includes('octamod-account'))return null
   const auth=accountAuth(env,db),headers=request.headers
@@ -88,7 +94,7 @@ export async function accountRoutes(request: Request, env: Env, db: Database, pa
         if(!record||!await verifyPassword({hash:record.password,password:body.password}))throw new HttpError(400,'The link or password was not accepted. Use your registration password, or request a reset.')
         const consumed=await db.prepare('DELETE FROM account_tokens WHERE token_hash=? AND expires>? RETURNING user_id').bind(tokenHash,now).first()
         if(!consumed)throw new HttpError(400,'This link has already been used.')
-        await auth.api.verifyEmail({query:{token:body.token},headers})
+        await auth.api.verifyEmail({query:{token:body.token.split('~')[0]},headers})
       }else await auth.api.resetPassword({body:{token:body.token,newPassword:body.password},headers})
       return response({ok:true,message:action==='verify'?'Email verified. You can now sign in.':'Password updated. All previous sessions have ended. Sign in with your new password.'})
     }
@@ -112,6 +118,8 @@ export async function accountRoutes(request: Request, env: Env, db: Database, pa
     else await auth.api.sendVerificationEmail({body:{email},headers})
     return response({message:genericMessage},202)
   }catch(error){
+    // Delivery outcomes must not disclose whether an address owns an account.
+    if(error instanceof AccountMailError)return response({message:genericMessage},202)
     if(isAPIError(error))throw new HttpError(error.statusCode,error.body?.message??'This account request was not accepted.')
     throw error
   }

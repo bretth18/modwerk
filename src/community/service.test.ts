@@ -99,7 +99,7 @@ describe('community access and review',()=>{
   expect((await call('/modules/remix-miniverb/rating','POST',{value:4},session)).status).toBe(200)
   expect((await call('/auth/email','POST',{email:'unused@example.test'})).status).toBe(404)
   const own=await (await call('/auth/session','GET',undefined,session)).json()
-  expect(own).toEqual({available:true,registrationAvailable:false,admin:false,user:{id:own.user.id,displayName:'Author guest',username:'author',verified:true}})
+  expect(own).toEqual({available:true,emailAvailable:false,registrationAvailable:false,admin:false,user:{id:own.user.id,displayName:'Author guest',username:'author',verified:true}})
  })
  it('keeps previously uploaded private media restricted without offering new upload routes',async()=>{
   const {call,db,env,tokens}=await fixture(),auth='octamod_session='+tokens.author,other='octamod_session='+tokens.other
