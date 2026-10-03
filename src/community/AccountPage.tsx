@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { AccountInbox } from './AccountInbox'
 import { api, post } from './api'
 import { useCommunity } from './context'
 type DeviceSession = { id:string; current:boolean; expires:number }
@@ -20,10 +21,10 @@ export function AccountPage({route}:{route:string}) {
   }
   async function endSessions(all:boolean){setBusy(true);setError('');try{if(all){await api('/auth/sessions',{method:'DELETE'});setDevices(await api<DeviceSession[]>('/auth/sessions'));setMessage('Other sessions signed out.')}else{await post('/auth/logout',{});await refresh();window.location.assign('#account/login')}}catch(error){setError(error instanceof Error?error.message:'Unable to sign out.')}finally{setBusy(false)}}
   const titles:Record<string,string>={login:'Welcome back',register:'Join the community',resend:'Verify your email',forgot:'Forgot your password?',verify:'Confirm your email',reset:'Choose a new password'}
-  return <div className="community-page account-page"><a className="back-link" href="#forum">← Community forum</a><div className="page-heading"><div><p className="page-kicker">OCTAMOD / ACCOUNT</p><h1>{member?'Your account':titles[mode]}</h1><p>{member?'Manage where you are signed in.':'A place to exchange ideas, find help and share configurations.'}</p></div></div>
-    {member?<section className="configuration-section"><h2>@{session.user!.username}</h2><p>Your email address is private. Your username appears alongside your posts.</p><div className="forum-actions"><a className="button button-quiet" href={'#forum/profile/'+session.user!.username}>Your public profile</a><a className="button button-quiet" href="#activity">Notifications & reports</a><button className="button button-quiet" disabled={busy} onClick={()=>void endSessions(false)}>Sign out</button></div><h3>Active sessions</h3>{devices.map((device,index)=><p key={device.id}>{device.current?'This session':'Other session '+(index+1)} · expires {new Date(device.expires*1000).toLocaleDateString()}</p>)}<button className="button button-quiet" disabled={busy||devices.length<2} onClick={()=>void endSessions(true)}>Sign out other sessions</button></section>:<section className="configuration-section">
+  return <div className="community-page account-page"><a className="back-link" href="#forum">← Community forum</a><div className="page-heading"><div><p className="page-kicker">OCTAMOD / ACCOUNT</p><h1>{member?'Your account':titles[mode]}</h1><p>{member?'Your notifications, private reports and signed-in sessions.':'A place to exchange ideas, find help and share configurations.'}</p></div></div>
+    {member?<section className="configuration-section"><h2>@{session.user!.username}</h2><p>Your email address is private. Your username appears alongside your posts.</p><div className="forum-actions"><a className="button button-quiet" href={'#forum/profile/'+session.user!.username}>Your public profile</a><a className="button button-quiet" href="#forum?saved=1">Your bookmarks</a><button className="button button-quiet" disabled={busy} onClick={()=>void endSessions(false)}>Sign out</button></div><h3>Active sessions</h3>{devices.map((device,index)=><p key={device.id}>{device.current?'This session':'Other session '+(index+1)} · expires {new Date(device.expires*1000).toLocaleDateString()}</p>)}<button className="button button-quiet" disabled={busy||devices.length<2} onClick={()=>void endSessions(true)}>Sign out other sessions</button></section>:<section className="configuration-section">
       {!session.available?<p className="service-note" role="status">Community services are unavailable. You can still use your local configurations.</p>:<>
-      {session.user&&!session.user.username&&<p className="service-note">This browser holds a previous guest identity. Its private reports remain in Your activity until you sign in. Guest names do not reserve account usernames.</p>}
+      {session.user&&!session.user.username&&<p className="service-note">This browser holds a previous guest identity. Its private reports appear below until you sign in. Guest names do not reserve account usernames.</p>}
       {!(mode==='verify'||mode==='reset')&&<nav className="forum-actions" aria-label="Account actions"><a aria-current={mode==='login'?'page':undefined} href="#account/login">Sign in</a><a aria-current={mode==='register'?'page':undefined} href="#account/register">Create account</a></nav>}
       {!session.registrationAvailable&&mode!=='login'&&<p className="service-note" role="status">Account email is not available yet. Registration and recovery will open once it is connected.</p>}
       {message&&(mode==='verify'||mode==='reset')?<a className="button button-primary" href="#account/login">Continue to sign in</a>:<form className="community-form" onSubmit={event=>{event.preventDefault();void submit(event.currentTarget)}}>
@@ -36,6 +37,7 @@ export function AccountPage({route}:{route:string}) {
       </form>}
       <div className="forum-actions"><a href="#account/forgot">Reset password</a><a href="#account/resend">Resend verification</a></div></>}
     </section>}
+    {session.user&&<AccountInbox key={session.user.id}/>}
     {message&&<p className="success-note" role="status">{message}</p>}{error&&<p className="file-error" role="alert">{error}</p>}
   </div>
 }

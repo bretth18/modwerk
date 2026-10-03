@@ -23,7 +23,6 @@ export function MobileMenu({ route, selectedCount, admin, onSupport }: { route: 
       { href: '#forum', label: 'Forum', icon: 'message', current: route.startsWith('forum') },
       { href: '#account', label: 'Account / sign in', icon: 'shield', current: route.startsWith('account') },
       { href: '#submit', label: 'Submit a module', icon: 'plus', current: route.startsWith('submit') },
-      { href: '#activity', label: 'Your activity', icon: 'message', current: route === 'activity' },
       ...(admin ? [{ href: '#admin', label: 'Admin workspace', icon: 'shield' as const, current: route === 'admin' || route === 'review' }] : []),
     ],
     [

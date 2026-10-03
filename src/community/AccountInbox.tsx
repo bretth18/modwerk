@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
 import { api, post } from './api'
 import { useCommunity } from './context'
-import { MemberPrompt } from './MemberPrompt'
 type Report={id:string;module_id:string;author_login:string;title:string;body:string;status:string;created_at:string}
 type Notification={id:string;thread_id:string;title:string;seen:number;created_at:string}
-export function ActivityPage(){
+export function AccountInbox(){
  const {session}=useCommunity(),[reports,setReports]=useState<Report[]|null>(null),[notifications,setNotifications]=useState<Notification[]>([]),[error,setError]=useState('')
  useEffect(()=>{let cancelled=false;void Promise.all([api<Report[]>('/issues/mine'),session.user?.verified?api<Notification[]>('/forum/notifications'):Promise.resolve([])]).then(([reports,notifications])=>{if(!cancelled){setReports(reports);setNotifications(notifications)}}).catch(error=>{if(!cancelled)setError(error.message)});return()=>{cancelled=true}},[session.user?.id,session.user?.verified])
  async function markRead(){try{await post('/forum/notifications',{},'PATCH');setNotifications(items=>items.map(item=>({...item,seen:1})))}catch(error){setError(error instanceof Error?error.message:'Unable to mark notifications read.')}}
- return <div className="community-page"><div className="page-heading"><div><p className="page-kicker">OCTAMOD / COMMUNITY</p><h1>Your activity</h1><p>Replies to followed threads and your private issue reports.</p></div><a className="button button-quiet" href="#account">Your account</a></div><MemberPrompt/>
+ return <>
   {session.user?.verified&&<section className="configuration-section"><div className="section-title"><h2>Forum replies</h2><button className="text-button" disabled={!notifications.some(item=>!item.seen)} onClick={()=>void markRead()}>Mark all read</button></div>{notifications.length?notifications.map(item=><article key={item.id} className="inbox-issue"><a href={'#forum/thread/'+item.thread_id}>{!item.seen&&<span className="pill">New</span>} {item.title}</a><small>{item.created_at}</small></article>):<p className="service-note">Follow a thread to see new replies here.</p>}<a href="#forum?saved=1">Your bookmarks →</a></section>}
   <section className="configuration-section"><h2>Private issue reports</h2>{error?<p className="file-error" role="alert">{error}</p>:reports===null?<p role="status">Loading reports…</p>:reports.length?reports.map(item=><article className="inbox-issue" key={item.id}><div className="section-title"><h3>{item.title}</h3><span className="pill">{item.status==='open'?'Open':'Resolved'}</span></div><small>{item.module_id} · for @{item.author_login}</small><p>{item.body}</p></article>):<p className="service-note">No private reports. Use “Report an issue” on a module page for a private report, or start a public bug-report thread in the forum.</p>}<p className="service-note">Private reports are visible only to you and the administrator, who can pass them to the module author. Older guest reports remain accessible only to the browser identity that created them. Accounts do not claim guest content by name.</p></section>
-  <section className="configuration-section"><h2>Contributing modules</h2><p>Source, documentation and reviewed module media continue through GitHub pull requests.</p><a href="#submit">Module contribution guide →</a></section></div>
+  </>
 }
