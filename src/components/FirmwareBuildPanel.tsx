@@ -1,13 +1,14 @@
 import { trackFirmwareDownload } from '../community/usage'
+import { firmwareFilename } from '../config/firmware-filename'
 import { FLASHING_RISKS, FIRMWARE_SHARING_NOTICE } from '../firmware-notices'
 import { assetUrl } from '../hosting'
 import { useState } from 'react'
 import type { useFirmwareBuild } from '../hooks/useFirmwareBuild'
 import { BuildProgressIndicator } from './BuildProgressIndicator'
 import { Icon } from './Icon'
-function saveFirmware(buffer:ArrayBuffer,name:string) {
+function saveFirmware(buffer:ArrayBuffer,name:string,sha256:string) {
   const url=URL.createObjectURL(new Blob([buffer],{type:'application/octet-stream'})),link=document.createElement('a')
-  link.href=url;link.download=(name.replace(/[^a-zA-Z0-9_-]+/g,'-').replace(/^-|-$/g,'')||'octamod')+'-OCTAMOD79.bin'
+  link.href=url;link.download=firmwareFilename(name,sha256)
   document.body.append(link);link.click();link.remove();window.setTimeout(()=>URL.revokeObjectURL(url),1000)
 }
 // Only the FX2-only reverbs give up their space selectively; any other omission is the compact FX2 menu.
@@ -23,7 +24,7 @@ export function FirmwareBuildPanel({build,available,downloadsEnabled,firmwareRea
     <section className="build-section" aria-labelledby="build-title" aria-busy={build.state==='building'||build.state==='validating'}>
       <div><h2 id="build-title">{finished?'Firmware ready':'Build firmware'}</h2><p id="engine-status" role={build.state==='error'?'alert':'status'}>{message}</p>{(build.state==='building'||finished)&&<BuildProgressIndicator phase={build.phase} finished={finished}/>}<span className="subtle">No firmware upload. Local validation does not qualify this configuration on hardware.</span></div>
       <div className="build-actions">
-        {build.state==='building'?<button className="button button-quiet" onClick={build.cancel}>Cancel build</button>:finished&&!downloadsEnabled?null:finished?<button className="button button-primary" disabled={!riskAccepted} aria-describedby="engine-status" onClick={()=>{saveFirmware(build.result!.buffer,configurationName);setDownloadedKey(build.key);trackFirmwareDownload(build.report?.moduleIds??[])}}><Icon name="download" size={16}/>Download .bin</button>:<button className="button button-primary" disabled={!available||!ready||!riskAccepted} onClick={()=>void build.build()} aria-describedby="engine-status"><Icon name="sliders" size={16}/>Build firmware</button>}
+        {build.state==='building'?<button className="button button-quiet" onClick={build.cancel}>Cancel build</button>:finished&&!downloadsEnabled?null:finished?<button className="button button-primary" disabled={!riskAccepted} aria-describedby="engine-status" onClick={()=>{saveFirmware(build.result!.buffer,configurationName,build.result!.sha256);setDownloadedKey(build.key);trackFirmwareDownload(build.report?.moduleIds??[])}}><Icon name="download" size={16}/>Download .bin</button>:<button className="button button-primary" disabled={!available||!ready||!riskAccepted} onClick={()=>void build.build()} aria-describedby="engine-status"><Icon name="sliders" size={16}/>Build firmware</button>}
         {build.state==='error'&&build.canRetry&&<button className="button button-quiet" onClick={build.retry}>Check again</button>}
         <button className="button button-quiet" onClick={onExport}><Icon name="download" size={16}/>Export configuration</button><p className="export-note" aria-live="polite">{exported?'Configuration exported as JSON.':'JSON backup · no firmware included'}</p>
       </div>
