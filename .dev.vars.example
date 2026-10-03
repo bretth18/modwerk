@@ -3,3 +3,9 @@ SESSION_TRANSPORT=bearer
 # Separate administrator access. Generate with `npm run admin:key`; store only the SHA-256 here or as a Worker secret.
 # Leave blank to keep the admin workspace closed.
 ADMIN_KEY_SHA256=
+# Optional: mirror issue reports to GitHub issues (fine-grained token, Issues: read and write on one repository).
+# Leave blank to keep reports in the admin inbox only.
+GITHUB_TOKEN=
+GITHUB_REPOSITORY=repeat98/octamod
+# Secret of the repository webhook (Issues events) that syncs closed/reopened status back to reporters.
+GITHUB_WEBHOOK_SECRET=

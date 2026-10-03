@@ -50,3 +50,14 @@ jobs:
         run: npm run sdk:check
       - name: Exercise paths and directory junctions on Windows
         run: npm run test -- src/catalog/module-folder.test.ts
+  core-logger-host:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check bounded logger ring, controller and card adapter without firmware
+        run: sh sdk/runtime/logging/tests/run_host.sh

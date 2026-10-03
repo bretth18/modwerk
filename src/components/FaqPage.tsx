@@ -59,7 +59,7 @@ const SECTIONS: FaqSection[] = [
           </ol>
           <p>Emulator results cannot replace hardware testing. Existing modules retain their recorded evidence; read each module’s test conditions and limitations rather than assuming every configuration has been tested.</p>
           <p><strong>Always test your own configuration before relying on it.</strong> Start with a fresh Octatrack project after installing a new build, then rehearse your actual track count, module combinations, modulation, recording, streaming and transitions for a sustained run. Repeat after changing modules or versions, and keep a tested fallback for performances or important recordings.</p>
-          {!DOWNLOADS_ENABLED && <p>Firmware downloads remain paused. Wait for the current hardware issue to be resolved before installing a custom build from Octamod.</p>}
+          {!DOWNLOADS_ENABLED && <p>Firmware downloads remain paused. Wait for the updated build to complete verification before installing a custom build from Octamod.</p>}
         </>,
       },
       {
@@ -68,7 +68,7 @@ const SECTIONS: FaqSection[] = [
         keywords: 'compatibility supported model hardware device 1.40c',
         answer: <>
           <p>Both models use the official OS {BASE_FIRMWARE.version} base file. That does not establish that every custom module or configuration works on both models. Review each module’s test records for evidence on your model.</p>
-          <p>{DOWNLOADS_ENABLED ? 'A successful build checks that the configuration fits and the file is intact; it does not qualify your configuration on hardware.' : 'Octamod firmware downloads are currently paused following a failed hardware test. Neither model is cleared for flashing the current Octamod build.'}</p>
+          <p>{DOWNLOADS_ENABLED ? 'A successful build checks that the configuration fits and the file is intact; it does not qualify your configuration on hardware.' : 'Octamod firmware downloads are paused while the built-in logger completes verification on both models.'}</p>
         </>,
       },
       {
@@ -81,7 +81,7 @@ const SECTIONS: FaqSection[] = [
             <li>Open <a href="#configuration">Configuration</a> and choose your original <code>{BASE_FIRMWARE.filename}</code>.</li>
             <li>Review compatibility messages and use the suggested fixes to resolve any errors before building.</li>
             <li>Read the flashing risks, tick the acknowledgement and choose <strong>Build firmware</strong>. Keep the tab open until it finishes.</li>
-            <li>{DOWNLOADS_ENABLED ? <>Choose <strong>Download .bin</strong> when the finished file is ready.</> : 'Downloads are paused. You can check that a supported configuration builds, but Octamod will not offer a firmware file until a fix has been confirmed on hardware.'}</li>
+            <li>{DOWNLOADS_ENABLED ? <>Choose <strong>Download .bin</strong> when the finished file is ready.</> : 'Downloads are paused. You can check that a supported configuration builds, but Octamod will not offer a firmware file until verification is complete.'}</li>
           </ol>
           <p><strong>Export configuration</strong> saves a JSON backup of your choices. It is not a firmware file and cannot be flashed.</p>
         </>,
@@ -166,7 +166,7 @@ const SECTIONS: FaqSection[] = [
         title: 'Why is there no firmware download button?',
         keywords: 'paused disabled missing ready built hardware audio effects load failed',
         answer: <>
-          <p>{DOWNLOADS_ENABLED ? 'The download button appears only after a successful build. Choose the original base firmware, add supported modules, resolve configuration errors and acknowledge the flashing risks first.' : 'Firmware downloads are paused. A real Octatrack test of the effect-loading method used by these builds failed: effects did not load and no audio played. Downloads will resume after a fix has been confirmed on hardware.'}</p>
+          <p>{DOWNLOADS_ENABLED ? 'The download button appears only after a successful build. Choose the original base firmware, add supported modules, resolve configuration errors and acknowledge the flashing risks first.' : 'Firmware downloads are paused. The built-in logger is undergoing verification. Downloads will resume after the updated builds have passed review.'}</p>
           <p>A build that fits and passes local file checks is not proof that it will work on hardware. You can still export your configuration as JSON.</p>
         </>,
       },
@@ -226,7 +226,7 @@ const SECTIONS: FaqSection[] = [
         title: 'Do I need an account? How do I report a module issue?',
         keywords: 'guest comments ratings likes email sign in bug author community github contribution',
         answer: <>
-          <p>Octamod does not require visitor accounts or email addresses. When community services are connected, you can comment, rate, like and use <strong>Report an issue</strong> on a module page as a guest. Follow your reports in <a href="#activity">Your activity</a>.</p>
+          <p>Octamod does not require visitor accounts or email addresses. When community services are connected, you can comment, rate, like and use <strong>Report an issue</strong> on a module page as a guest. A report attaches your configuration and the <code>OCTAMOD.LOG</code> file from your CF card; the form shows how to copy it. Reports become public GitHub issues so the module author is notified and can answer. Follow your reports in <a href="#activity">Your activity</a>.</p>
           <p>Describe the module, your Octatrack model, the displayed OS version and how to reproduce the problem. Never attach firmware. Module contributions and updates go through GitHub pull requests and owner review; see <a href="#submit">Submit a module</a>.</p>
         </>,
       },
@@ -260,7 +260,7 @@ export function FaqPage() {
 
   return <div className="faq-page">
     <div className="page-heading"><div><p className="page-kicker">OCTAMOD / HELP</p><h1>Frequently asked questions</h1><p>From your first firmware file to flashing, recovery and sharing.</p></div></div>
-    {!DOWNLOADS_ENABLED && <aside className="risk-note" role="note"><strong>Octamod firmware downloads are paused</strong><p>A hardware test failed to load effects and played no audio. You can explore modules and check supported builds while a fix awaits hardware confirmation. The official Elektron OS remains available from Elektron.</p></aside>}
+    {!DOWNLOADS_ENABLED && <aside className="risk-note" role="note"><strong>Octamod firmware downloads are paused</strong><p>The built-in logger is undergoing verification. You can explore modules and check supported configurations while the updated builds await review. The official Elektron OS remains available from Elektron.</p></aside>}
     <div className="faq-tools">
       <label className="faq-search"><Icon name="search" size={17} /><input type="search" aria-label="Search FAQ" placeholder="Search firmware, flashing, recovery…" value={query} onChange={event => setQuery(event.target.value)} /></label>
       <a className="button button-quiet" href="#configuration">Open configuration <Icon name="arrow" size={15} /></a>

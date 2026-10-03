@@ -1,3 +1,4 @@
+import { installCoreLogger, LOGGER_RETAINED_BYTES } from './core-logger.ts'
 import { compiledModuleSource } from './module-build.ts'
 import { moduleBuildError } from '../catalog/build-support.ts'
 // Complete local OS composition. Packaging / the download flow are enabled
@@ -11,8 +12,6 @@ import { createColdFireRuntime } from './coldfire-runtime.ts'
 import { createRuntimeBootstrap, BOOTSTRAP_ADDRESS } from './bootstrap.ts'
 import { createPlatformOsWrites } from './platform-writes.ts'
 import { applyGuardedOsWrites, OS_LOAD_ADDRESS } from './os-patches.ts'
-import midiScenesRecipe from '../../sdk/octabam/modules/midi-scenes/recipe.json' with { type: 'json' }
-import { reconstructMidiScenes, type MidiScenesPatch } from './midi-scenes-patch.ts'
 import { DSP_LOADER } from './protocol.ts'
 export async function composeOs(original: Uint8Array, ids: readonly string[], profile?: ChooserProfile, { loader = DSP_LOADER }: { loader?: boolean } = {}) {
   const pending = moduleBuildError(ids)
@@ -20,18 +19,20 @@ export async function composeOs(original: Uint8Array, ids: readonly string[], pr
   compiledModuleSource()
   if (ids.includes('midi-scenes')) {
     if (ids.length !== 1) throw new Error('MIDI Scenes supports standalone firmware only. Remove the other modules.')
-    const bytes = await reconstructMidiScenes(original, midiScenesRecipe as MidiScenesPatch)
-    return { bytes, chooser: defaultChoosers([], true), dsp: [], runtime: { bytes: 0, stage: 0, stageEnd: 0 }, caveCursor: 0, overflowCursor: 0 }
+    // Its pinned standalone image owns the same arena as the logger. Do not
+    // return a logger-free image or overwrite either runtime's reservation.
+    throw new Error('MIDI Scenes builds are awaiting verification with the built-in logger. You can save this configuration while verification is pending.')
   }
   if (!loader) return composeStaticOs(original, ids, profile)
   if (ids.some(id => ['analog-bassdrum','midi-scenes','usb-audio-out-tracks-main-cue','quantizer'].includes(id))) throw new Error('These modules require the verified loader-free engine.')
   const menus = await composeChoosers(original, ids, profile), cores = await recoverStockDsp(original)
   const dsp = await composeDynamicDsp(cores, ids), runtime = await createColdFireRuntime(cores, ids)
-  const bootstrap = await createRuntimeBootstrap(runtime.bytes)
+  const logging = await installCoreLogger(runtime, original, ids, menus.chooser)
+  const bootstrap = await createRuntimeBootstrap(runtime.bytes, runtime.reserveBytes - LOGGER_RETAINED_BYTES)
   if (OS_LOAD_ADDRESS + original.length !== BOOTSTRAP_ADDRESS) throw new Error('The runtime loader does not follow the original OS extent.')
-  const patched = await applyGuardedOsWrites(original, [...menus.writes, ...dsp.writes, ...createPlatformOsWrites(runtime, ids)])
+  const patched = await applyGuardedOsWrites(original, [...menus.writes, ...dsp.writes, ...createPlatformOsWrites(runtime, ids, {reserveBytes:runtime.reserveBytes}), ...logging.writes])
   const bytes = new Uint8Array(patched.length + bootstrap.append.length); bytes.set(patched); bytes.set(bootstrap.append, patched.length)
-  return { bytes, chooser: menus.chooser, dsp: dsp.layouts, runtime: { bytes: runtime.bytes.length, stage: bootstrap.layout.stage, stageEnd: bootstrap.layout.stageEnd }, caveCursor: menus.caveCursor, overflowCursor: menus.overflowCursor }
+  return { bytes, chooser: menus.chooser, dsp: dsp.layouts, runtime: { reservedBytes: runtime.reserveBytes, bytes: runtime.bytes.length, stage: bootstrap.layout.stage, stageEnd: bootstrap.layout.stageEnd }, caveCursor: menus.caveCursor, overflowCursor: menus.overflowCursor }
 }
 /** A visitor's build. The Keep stock FX2 switch exists only with the loader. Loader-free builds keep every
  *  stock FX2 effect whose code the modules do not take; when that longer FX2 list leaves the module menus
