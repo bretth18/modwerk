@@ -68,7 +68,24 @@ Saved configurations, duplicates and imported JSON backups automatically select 
 
 Visitors can comment, rate, like and report module issues without an account or email. An opaque session saved on this device identifies guest ownership across the separate Pages and API domains. It travels in an authorization header; the same-origin fallback can use an HttpOnly cookie. Names are unverified and ratings are per browser. Clearing site data loses ownership access. Rate limits retain hashed time-bucket keys, not raw IP addresses.
 
-Comments, ratings and likes are public. Issue reports name the module author but are private: only the administrator and the reporting device can read them. The administrator passes reports on to authors; GitHub Issues stay disabled and no outbound notifications are sent. **Octamod has no website sign-in or visitor accounts** and never requests or stores email. The *Your activity* page explains what this device holds, shows your own reports and can forget the guest identity.
+Comments, ratings and likes are public. **Octamod has no website sign-in or visitor accounts** and never requests or stores email. The *Your activity* page explains what this device holds, shows your own reports with their GitHub links and can forget the guest identity.
+
+### Issue reports
+
+Reports are structured, so authors can reproduce a problem across this many modules and configurations. Each report carries:
+
+- a title, steps to reproduce, the expected result and the actual result;
+- the Octatrack model and what it is running (an Octamod build, not flashed yet, or back on stock);
+- the active configuration's module ids and versions, the FX2 chooser setting, the base OS and, when the image was built in this browser session, its SHA-256 (never the image itself);
+- `OCTAMOD.LOG` from the card root, written by the on-device logger ([draft](../sdk/drafts/octamod-log/README.md)).
+
+The form explains step by step how to copy the log (save the project, or power-cycle after a crash; then USB DISK MODE or a card reader). The log is **required**. The only way around it is to tick “I can’t attach” and pick a reason that fits the report: the build has no logger, the unit does not boot, the card is unreadable, the problem happens before flashing, or another reason with a short explanation. While no catalog module with id `octamod-log` exists, the form preselects “no logger”. The Worker rejects “no logger” when the reported configuration contains the logger, and “before flashing” when the reporter says the unit runs an Octamod build.
+
+The browser and the Worker validate the log with the same strict parser (`src/community/ot-log.ts`, format in [FORMAT.md](../sdk/drafts/octamod-log/FORMAT.md)). It accepts only printable ASCII in the OCTAMOD.LOG v1 grammar, at most 64 KiB, so firmware, samples and project files are refused. Shared rules live in `src/community/issue-context.ts`.
+
+**Authors see their reports on GitHub.** When `GITHUB_TOKEN` is configured, every stored report also opens a public issue in `GITHUB_REPOSITORY` (default `repeat98/octamod`). The issue is titled `[module-id] title`, labelled `issue-report` and `module:<id>`, mentions the module author so GitHub notifies them, and includes the configuration table and the log in a collapsed block (the newest part if the issue body would exceed GitHub's limit). Mentions and `#` references in reporter text are made inert and markup is escaped, so a report cannot ping people or link other issues. Module pages link to the module's label filter as “Known issues”. If GitHub fails, the report is still kept, marked failed, and can be retried from the admin inbox. Totals are capped at 60 reports per hour across the site and 10 per IP per hour.
+
+Closing or reopening the GitHub issue updates the reporter's status through a signed `issues` webhook at `/api/github/webhook`, verified with `GITHUB_WEBHOOK_SECRET` and the configured repository. Resolving a report in the admin inbox also closes or reopens the GitHub issue. The admin inbox shows the context, a log summary, a log download and the GitHub link. Reports, contexts and logs are also kept in D1.
 
 ## PR approval and administration
 
@@ -78,7 +95,7 @@ Module manifests import plain-text descriptions, controls, evidence and rights m
 
 The website contribution route provides SDK/PR instructions and uses `VITE_REPOSITORY_URL` for the actual repository links. Until a repository is configured, it clearly says the repository is being prepared. The former submission, repository-import and website-review API routes return 410. Existing database publication/history records and media reads remain for migration; no new version can bypass PR approval.
 
-The private administrator workspace provides GitHub contribution entry points, published-record withdrawal, comment moderation, author issues and history. Administration is separate from guest participation: the backend owner configures `ADMIN_KEY_SHA256` (the SHA-256 of a random key from `npm run admin:key`), and the administrator exchanges that key for an eight-hour session kept only in the current tab. Every `/api/admin/` route checks it on the server; without a configured key the workspace stays closed. Rotating the key revokes all administrator sessions. A provider-specific gate such as Cloudflare Access can replace this during backend setup. Reviewer checks must cover behavior, evidence, resources, authorship, licences and original/media rights; review is not automatic legal clearance.
+The private administrator workspace provides GitHub contribution entry points, published-record withdrawal, comment moderation, the issue inbox (with GitHub mirroring status and retry) and history. Administration is separate from guest participation: the backend owner configures `ADMIN_KEY_SHA256` (the SHA-256 of a random key from `npm run admin:key`), and the administrator exchanges that key for an eight-hour session kept only in the current tab. Every `/api/admin/` route checks it on the server; without a configured key the workspace stays closed. Rotating the key revokes all administrator sessions. A provider-specific gate such as Cloudflare Access can replace this during backend setup. Reviewer checks must cover behavior, evidence, resources, authorship, licences and original/media rights; review is not automatic legal clearance.
 
 ## GitHub Pages and community API setup
 
@@ -89,10 +106,11 @@ The community runs separately through `worker.ts` and `wrangler.worker.jsonc`, u
 Production setup (completed 1 October 2026; repeat these steps for another environment):
 
 1. Enable GitHub Pages with GitHub Actions as its publishing source and protect `main` (required PR, owner review, required checks; no merge queue, which would change the merging account). Set the repository variables `MODULE_APPROVER_GITHUB_ID` to the owner's numeric GitHub user ID (`gh api users/<login> --jq .id`) and `COMMUNITY_API_URL` to the deployed backend URL ending in `/api`. For a custom domain, verify it for Pages and set it in the Pages settings; with Actions publishing no `CNAME` file is needed.
-2. Create a D1 database with `npx wrangler d1 create octamod-community`, put its ID in `wrangler.worker.jsonc` and apply migrations 0001–0007 with `npx wrangler d1 migrations apply octamod-community --config wrangler.worker.jsonc --remote`.
+2. Create a D1 database with `npx wrangler d1 create octamod-community`, put its ID in `wrangler.worker.jsonc` and apply all migrations (currently 0001–0010) with `npx wrangler d1 migrations apply octamod-community --config wrangler.worker.jsonc --remote`.
 3. Set `APP_URL` in `wrangler.worker.jsonc` to the full frontend URL with its trailing slash (`https://octamod.app/`; include the repository path for a `github.io` project URL). Keep `SESSION_TRANSPORT=bearer` for separate domains.
 4. Run `npm run admin:key` locally. Keep the printed key in a password manager and store only its digest as the Worker secret `ADMIN_KEY_SHA256`; never as a frontend `VITE_` value.
-5. Deploy the Worker with `npx wrangler deploy --config wrangler.worker.jsonc` (or `npm run deploy`), then run the frontend workflow so the site is rebuilt with `COMMUNITY_API_URL`. Publishing the frontend never approves a module update.
+5. To mirror issue reports to GitHub, enable Issues on the repository and create a fine-grained personal access token limited to that repository with **Issues: read and write**. Store it as the Worker secret `GITHUB_TOKEN` (`npx wrangler secret put GITHUB_TOKEN --config wrangler.worker.jsonc`); set `GITHUB_REPOSITORY` only if it differs from `repeat98/octamod`. Then add a repository webhook: payload URL `<community API>/github/webhook`, content type `application/json`, a random secret stored as the Worker secret `GITHUB_WEBHOOK_SECRET`, and only the **Issues** event. Without the token, reports stay in the admin inbox only.
+6. Deploy the Worker with `npx wrangler deploy --config wrangler.worker.jsonc` (or `npm run deploy`), then run the frontend workflow so the site is rebuilt with `COMMUNITY_API_URL`. Publishing the frontend never approves a module update.
 
 Cross-origin requests do not depend on third-party cookies. Guest sessions are opaque tokens saved on the frontend origin and sent in an `Authorization` header; administrator sessions use a separate `X-Octamod-Admin` header and tab-scoped storage. CORS allows only the configured frontend origin and exposes only the guest session response header. No session token appears in a URL. All GitHub Pages sites of one account share the `<owner>.github.io` origin, so use a custom domain or a dedicated account/organization if other Pages sites live there.
 

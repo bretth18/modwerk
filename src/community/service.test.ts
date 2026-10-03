@@ -7,6 +7,7 @@ import { cleanupUsage } from '../../server/usage'
 import { handleApi } from '../../server/api'
 import { handleCommunity } from '../../server/transport'
 import { digest } from '../../server/security'
+import { signGithubPayload } from '../../server/github'
 import type { Database, Statement, Env } from '../../server/platform'
 const databases:DatabaseSync[]=[]
 function adapter(db:DatabaseSync):Database{
@@ -26,6 +27,7 @@ async function fixture(){
  db.exec(readFileSync(new URL('../../migrations/0007_guest_only_admin.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0008_private_usage.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0009_module_downloads.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0010_issue_reports.sql',import.meta.url),'utf8'))
  const env:Env={DB:adapter(db),APP_URL:'https://octamod.test',ADMIN_KEY_SHA256:await digest(adminKey)}
  const objects=new Map<string,ArrayBuffer>()
  env.MEDIA={async put(key,bytes){objects.set(key,bytes)},async get(key){const bytes=objects.get(key);return bytes?{body:new ReadableStream({start(controller){controller.enqueue(new Uint8Array(bytes));controller.close()}})}:null},async delete(key){objects.delete(key)}}
@@ -44,6 +46,9 @@ async function fixture(){
  return {db,env,call,tokens,admin,openAdmin}
 }
 const adminKey='e'.repeat(64)
+const issueContext={model:'mk2',flash:'flashed',os:'1.40C',modules:[{id:'spectrum',version:'0.1.0'}],keepStockFx2:true,build:'c'.repeat(64)}
+const otLog=readFileSync(new URL('../../sdk/drafts/octamod-log/tests/expected.log',import.meta.url),'utf8')
+const issue=(extra:Record<string,unknown>={})=>({title:'Knob issue',steps:'Load spectrum, turn knob A',expected:'Sweep',actual:'Freeze',displayName:'Listener',context:issueContext,log:otLog,...extra})
 afterEach(()=>{vi.useRealTimers();for(const db of databases.splice(0))db.close()})
 const details={moduleId:'new-filter',title:'New filter',repositoryUrl:'https://github.com/sambanks/example/tree/main/modules/filter',description:'Original filter',usage:'Choose the filter',testReportUrl:'https://github.com/sambanks/example/blob/main/TESTS.md',stressNotes:'Eight tracks under stress',qualityNotes:'Emulator only; hardware untested',resourceNotes:'100 words; CPU not measured',license:'Original code, MIT; own capture',rightsConfirmed:true}
 describe('community access and review',()=>{
@@ -99,7 +104,7 @@ describe('community access and review',()=>{
  })
  it('keeps account-free issue reports private to the administrator and the reporting device',async()=>{
   const {call,tokens,admin}=await fixture()
-  const result=await call('/modules/spectrum/issues','POST',{title:'Knob issue',body:'Steps and revision',displayName:'Listener'});expect(result.status).toBe(201);expect((await result.json()).author).toBe('sambanks')
+  const result=await call('/modules/spectrum/issues','POST',issue());expect(result.status).toBe(201);expect(await result.json()).toMatchObject({author:'sambanks',github:'none'})
   const reporter=result.headers.get('set-cookie')!.split(';')[0],other='octamod_session='+tokens.other,author='octamod_session='+tokens.author
   for(const session of ['',other,author,reporter])expect((await call('/admin/issues','GET',undefined,session)).status).toBe(403)
   expect((await call('/issues','GET',undefined,reporter)).status).toBe(404)
@@ -107,9 +112,70 @@ describe('community access and review',()=>{
   expect(await (await call('/issues/mine','GET',undefined,other)).json()).toEqual([])
   const mine=await (await call('/issues/mine','GET',undefined,reporter)).json();expect(mine).toHaveLength(1);expect(mine[0]).toMatchObject({author_login:'sambanks',status:'open'})
   const inbox=await (await call('/admin/issues','GET',undefined,'',undefined,admin)).json();expect(inbox).toHaveLength(1);expect(inbox[0].reporter).toBe('Listener')
+  expect(inbox[0]).toMatchObject({context:issueContext,github_state:'none',log:{records:259,dropped:44}});expect(inbox[0].body).toContain('Load spectrum, turn knob A')
+  for(const session of ['',reporter])expect((await call('/admin/issues/'+inbox[0].id+'/log','GET',undefined,session)).status).toBe(403)
+  const log=await call('/admin/issues/'+inbox[0].id+'/log','GET',undefined,'',undefined,admin);expect(log.status).toBe(200);expect(await log.text()).toBe(otLog)
   expect((await call('/admin/issues/'+inbox[0].id,'PATCH',{status:'closed'},reporter)).status).toBe(403)
   expect((await call('/admin/issues/'+inbox[0].id,'PATCH',{status:'closed'},'',undefined,admin)).status).toBe(200)
   expect((await (await call('/issues/mine','GET',undefined,reporter)).json())[0].status).toBe('closed')
+ })
+ it('requires OCTAMOD.LOG or a reason that fits the report, and accepts only the log format',async()=>{
+  const {call,db}=await fixture()
+  const status=async(body:Record<string,unknown>)=>(await call('/modules/spectrum/issues','POST',body)).status
+  expect(await status({title:'Old form',body:'Free text'})).toBe(400)
+  expect(await status(issue({log:undefined}))).toBe(400)
+  expect(await status(issue({log:undefined,logMissing:{reason:'other',note:'no'}}))).toBe(400)
+  expect(await status(issue({log:undefined,logMissing:{reason:'not-flashed'}}))).toBe(400)
+  expect(await status(issue({log:undefined,logMissing:{reason:'logger-not-in-build'},context:{...issueContext,modules:[{id:'octamod-log',version:'0.1.0'}]}}))).toBe(400)
+  expect(await status(issue({log:'\u007fELF firmware'}))).toBe(400)
+  expect(await status(issue({log:otLog.replace('# os=1.40C\n','')}))).toBe(400)
+  expect(await status(issue({log:42}))).toBe(400)
+  expect(await status(issue({context:{...issueContext,build:'not-a-hash'}}))).toBe(400)
+  expect(await status(issue({context:{...issueContext,model:'mk3'}}))).toBe(400)
+  expect(await status(issue({steps:''}))).toBe(400)
+  expect(db.prepare('SELECT COUNT(*) AS count FROM issues').get()).toEqual({count:0})
+  expect(await status(issue({log:undefined,logMissing:{reason:'device-does-not-boot',note:'Blank screen'}}))).toBe(201)
+  expect(db.prepare('SELECT log_missing,log_missing_note FROM issues').get()).toEqual({log_missing:'device-does-not-boot',log_missing_note:'Blank screen'})
+  expect(db.prepare('SELECT COUNT(*) AS count FROM issue_logs').get()).toEqual({count:0})
+ })
+ it('mirrors reports to GitHub for the module author and follows the GitHub status',async()=>{
+  const {call,db,env,admin}=await fixture()
+  Object.assign(env,{GITHUB_TOKEN:'github_pat_test',GITHUB_REPOSITORY:'repeat98/octamod',GITHUB_WEBHOOK_SECRET:'hook-secret'})
+  const requests:{url:string;method:string;body:Record<string,unknown>;auth:string|null}[]=[]
+  let failNext=true,number=40
+  vi.stubGlobal('fetch',async(input:string,init:RequestInit)=>{
+   requests.push({url:String(input),method:String(init.method),body:JSON.parse(String(init.body)),auth:new Headers(init.headers).get('Authorization')})
+   if(failNext){failNext=false;return Response.json({message:'Bad credentials'},{status:401})}
+   return Response.json({number:++number,html_url:'https://github.com/repeat98/octamod/issues/'+number},{status:init.method==='POST'?201:200})
+  })
+  try{
+   const failed=await call('/modules/spectrum/issues','POST',issue({steps:'Ping @someone about #12 <img src=x>'}))
+   expect(failed.status).toBe(201);expect(await failed.json()).toMatchObject({github:'failed',githubUrl:null})
+   const reporter=failed.headers.get('set-cookie')!.split(';')[0]
+   const created=requests[0];expect(created).toMatchObject({url:'https://api.github.com/repos/repeat98/octamod/issues',method:'POST',auth:'Bearer github_pat_test'})
+   expect(created.body.title).toBe('[spectrum] Knob issue');expect(created.body.labels).toEqual(['issue-report','module:spectrum'])
+   const markdown=String(created.body.body)
+   expect(markdown).toContain('module author @sambanks');expect(markdown).toContain('@\u200bsomeone');expect(markdown).toContain('#\u200b12');expect(markdown).not.toContain('<img')
+   expect(markdown).toContain('```text\n# OCTAMOD-LOG v1');expect(markdown).toContain('259 records · 2 boots · 1 fault');expect(markdown).toContain('`'+'c'.repeat(64)+'`')
+   const [row]=await (await call('/admin/issues','GET',undefined,'',undefined,admin)).json();expect(row).toMatchObject({github_state:'failed',github_error:'GitHub answered 401: Bad credentials.'})
+   expect((await call('/admin/issues/'+row.id+'/github','POST',{},reporter)).status).toBe(403)
+   const retried=await (await call('/admin/issues/'+row.id+'/github','POST',{},'',undefined,admin)).json();expect(retried).toEqual({state:'synced',url:'https://github.com/repeat98/octamod/issues/41'})
+   expect(await (await call('/admin/issues/'+row.id+'/github','POST',{},'',undefined,admin)).json()).toEqual({state:'synced'});expect(requests).toHaveLength(2)
+   expect((await (await call('/issues/mine','GET',undefined,reporter)).json())[0]).toMatchObject({status:'open',github_url:'https://github.com/repeat98/octamod/issues/41'})
+   // The author closes the GitHub issue: only a correctly signed delivery for this repository counts.
+   const hook=async(payload:unknown,signature?:string,event='issues')=>{const body=new TextEncoder().encode(JSON.stringify(payload)).buffer as ArrayBuffer;return handleApi(new Request(env.APP_URL+'/api/github/webhook',{method:'POST',headers:{'Content-Type':'application/json','X-GitHub-Event':event,'X-Hub-Signature-256':signature??await signGithubPayload('hook-secret',body)},body}),env)}
+   const closed={action:'closed',issue:{number:41},repository:{full_name:'repeat98/octamod'}}
+   expect((await hook(closed,'sha256='+'0'.repeat(64))).status).toBe(401)
+   expect(await (await hook({...closed,repository:{full_name:'someone/else'}})).json()).toEqual({ok:true,handled:false})
+   expect(await (await hook({zen:'hi'},undefined,'ping')).json()).toEqual({ok:true,handled:false})
+   expect((await (await call('/issues/mine','GET',undefined,reporter)).json())[0].status).toBe('open')
+   expect(await (await hook(closed)).json()).toEqual({ok:true,handled:true})
+   expect((await (await call('/issues/mine','GET',undefined,reporter)).json())[0].status).toBe('closed')
+   // Reopening from the admin inbox reopens the GitHub issue too.
+   expect(await (await call('/admin/issues/'+row.id,'PATCH',{status:'open'},'',undefined,admin)).json()).toEqual({ok:true,github:'synced'})
+   expect(requests.at(-1)).toMatchObject({url:'https://api.github.com/repos/repeat98/octamod/issues/41',method:'PATCH',body:{state:'open'}})
+   expect(db.prepare('SELECT status FROM issues').get()).toEqual({status:'open'})
+  }finally{vi.unstubAllGlobals()}
  })
  it('retires account-bound cloud configuration copies; configurations stay on the device',async()=>{
   const {call,tokens}=await fixture(),auth='octamod_session='+tokens.author

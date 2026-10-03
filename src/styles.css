@@ -673,6 +673,18 @@ h1 { font-size: 28px; }
 .issue-report summary span { color: #9997ad; font-size: 12px; margin-left: 12px; }
 .issue-report .community-form { max-width: 620px; gap: 14px; margin-top: 15px; }
 .issue-report button { align-self: flex-start; }
+.issue-report select { width: 100%; color: #e5e5ef; border: 1px solid #4a4a57; border-radius: 6px; background: #1e1e24; padding: 10px 12px; font-size: 14px; }
+.issue-report-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.issue-report fieldset { padding: 16px; gap: 12px; }
+.issue-report fieldset .service-note { margin: 0; }
+.issue-report-steps { margin: 0; padding-left: 20px; color: #c9c9d6; font-size: 13px; line-height: 1.7; display: flex; flex-direction: column; gap: 6px; }
+.issue-report kbd { font: inherit; font-size: 11px; border: 1px solid #4a4a57; border-radius: 4px; padding: 1px 5px; color: #dddde9; }
+.issue-report .community-form label.issue-report-escape { flex-direction: row; align-items: center; gap: 9px; }
+.inbox-issue dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 10px 0; font-size: 12px; color: #a7a7b9; }
+.inbox-issue dt { color: #c9c9d6; }
+.inbox-issue dd { margin: 0; overflow-wrap: anywhere; }
+.inbox-actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+@media (max-width: 600px) { .issue-report-row { grid-template-columns: 1fr; } }
 .guest-name { display: flex; align-items: center; gap: 12px; font-size: 12px; color: #a7a7b9; margin: 18px 0 10px; }
 .guest-name input { min-width: 0; width: 180px; border: 1px solid #444450; background: #222227; border-radius: 5px; padding: 8px; color: #dedeea; }
 .inbox-issue { border-top: 1px solid var(--line); padding: 18px 0; }

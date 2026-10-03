@@ -42,7 +42,9 @@ Require original or properly licensed sources and media, attribution, contributo
 
 Comments, reviews, ratings, likes and author-directed issues require no visitor account or email. GitHub authentication is used on GitHub itself for pull requests; Octamod has no website GitHub sign-in.
 
-Administration uses separate server-side authorization. Every administrator route must reject access without valid backend authorization. Issue reports and moderation history remain private; reporters can read only their own reports. Do not expose private routes or use frontend-only access checks.
+Administration uses separate server-side authorization. Every administrator route must reject access without valid backend authorization. Moderation history remains private; reporters can list only their own reports on the site. Do not expose private routes or use frontend-only access checks.
+
+On 3 October 2026 the owner chose to mirror issue reports to public GitHub issues so module authors see and answer them directly. Before that, reports were private and passed on by the administrator. The owner also chose to require the on-device `OCTAMOD.LOG` in reports, with an explicit stated-reason escape (for example, a unit that does not boot), and a step-by-step tutorial in the form. Reports carry structured configuration context. The form tells reporters that their name, report, module list and log are public. Logs must pass the strict OCTAMOD.LOG grammar, so firmware can never be uploaded. Authors still need no website sign-in: GitHub provides identity and notifications. The on-device logger is a [draft](../sdk/drafts/octamod-log/README.md) outside the catalog until its firmware hooks, card write and qualification are established.
 
 ## Catalog scope and pins
 
