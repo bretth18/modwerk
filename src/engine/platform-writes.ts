@@ -14,11 +14,11 @@ function call(target: number, kind: string, length: number) {
   return result
 }
 /** `loader: false` leaves out the dynamic DSP loader's hooks (native static stock). */
-export function createPlatformOsWrites(runtime: RuntimeText, ids: readonly string[], { loader = true, reserveBytes = 1707 * 6144 }: { loader?: boolean; reserveBytes?: number } = {}): OsWrite[] {
+export function createPlatformOsWrites(runtime: RuntimeText, ids: readonly string[], { loader = true, reserveBytes = 1707 * 6144, runtimeBase = PLATFORM_RUNTIME_BASE }: { loader?: boolean; reserveBytes?: number; runtimeBase?: number } = {}): OsWrite[] {
   const selected = new Set(resolveSelection(ids).map(module => module.id))
   if (metadata.schema !== 1 || metadata.revision !== CATALOG_SOURCE.revision || metadata.osBase !== OS_LOAD_ADDRESS) throw new Error('The platform write metadata does not match the catalog.')
   const text = runtime.sections.find(section => section.name === '.text')
-  if (!text || text.address !== PLATFORM_RUNTIME_BASE || text.size < 1) throw new Error('The platform writes require the linked runtime text.')
+  if (!text || text.address !== runtimeBase || text.size < 1) throw new Error('The platform writes require the linked runtime text.')
   if (!Number.isInteger(reserveBytes) || reserveBytes % 6144 || reserveBytes < 6144 || reserveBytes / 6144 > 14602 - 2048) throw new Error('Invalid platform arena reservation.')
   const delta = reserveBytes - 1707 * 6144
   const arenaValue = (row: typeof metadata.arena[number]) => {

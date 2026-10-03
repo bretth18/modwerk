@@ -15,9 +15,10 @@ export async function loggerHash(bytes: Uint8Array) {
   return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new Uint8Array(bytes).buffer)), byte => byte.toString(16).padStart(2,'0')).join('')
 }
 const encode = (s: string) => new TextEncoder().encode(s)
-export function loggerExternals(reserveBytes: number) {
+export function loggerExternals(reserveBytes: number, base = BASE) {
   if (!Number.isInteger(reserveBytes) || reserveBytes < LOGGER_RESERVE_BYTES || reserveBytes % 6144) throw new Error('Invalid core logger reservation.')
-  const retained = BASE + reserveBytes - LOGGER_RETAINED_BYTES
+  if (!Number.isInteger(base) || base < BASE || (base - BASE) % 6144 || base + reserveBytes > 0x46025de0) throw new Error('Invalid core logger base.')
+  const retained = base + reserveBytes - LOGGER_RETAINED_BYTES
   return new Map([['octamod_log_retained', retained], ['octamod_log_io', Math.ceil((retained + 6144) / 512) * 512 + 0x08000000]])
 }
 export async function readCoreLogger() {
@@ -33,10 +34,13 @@ export async function installCoreLogger(runtime: CfRuntimeLink, original: Uint8A
   const configuration = {fx1:['NONE',...(chooser.fx1.length?chooser.fx1:chooserMetadata.stockFx1)],fx2:['NONE',...chooser.fx2],hidden:[...chooser.hidden],logger:pkg.version,modules,os:'1.40C',source,stockfx2:chooser.fx2.some(key=>!own.has(key))}
   const hash = await loggerHash(encode(JSON.stringify(configuration)))
   const values = {build:hash.slice(0,16),os:configuration.os,modules:modules.map(m=>m.id+'@'+m.version).join(';'),configuration:hash,source,fx1:configuration.fx1.join(';'),fx2:configuration.fx2.join(';'),hidden:configuration.hidden.join(';')}
+  const text = runtime.sections.find(section => section.name === '.text')
+  if (!text) throw new Error('Core logger runtime text is missing.')
+  const base = text.address
   function offset(name: string, size: number) {
     const address = runtime.symbols.get(name)
-    if (address === undefined || address < BASE || address + size > BASE + runtime.bytes.length) throw new Error('Core logger symbol is outside the runtime: '+name)
-    return address - BASE
+    if (address === undefined || address < base || address + size > base + runtime.bytes.length) throw new Error('Core logger symbol is outside the runtime: '+name)
+    return address - base
   }
   for (const [name,size] of Object.entries(pkg.fields)) {
     const value = encode(values[name as keyof typeof values])
