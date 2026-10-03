@@ -47,7 +47,7 @@ async function fixture(){
 }
 const adminKey='e'.repeat(64)
 const issueContext={model:'mk2',flash:'flashed',os:'1.40C',modules:[{id:'spectrum',version:'0.1.0'}],keepStockFx2:true,build:'c'.repeat(64)}
-const otLog=readFileSync(new URL('../../sdk/drafts/octamod-log/tests/expected.log',import.meta.url),'utf8')
+const otLog=readFileSync(new URL('../../sdk/runtime/logging/tests/expected.log',import.meta.url),'utf8')
 const issue=(extra:Record<string,unknown>={})=>({title:'Knob issue',steps:'Load spectrum, turn knob A',expected:'Sweep',actual:'Freeze',displayName:'Listener',context:issueContext,log:otLog,...extra})
 afterEach(()=>{vi.useRealTimers();for(const db of databases.splice(0))db.close()})
 const details={moduleId:'new-filter',title:'New filter',repositoryUrl:'https://github.com/sambanks/example/tree/main/modules/filter',description:'Original filter',usage:'Choose the filter',testReportUrl:'https://github.com/sambanks/example/blob/main/TESTS.md',stressNotes:'Eight tracks under stress',qualityNotes:'Emulator only; hardware untested',resourceNotes:'100 words; CPU not measured',license:'Original code, MIT; own capture',rightsConfirmed:true}
@@ -126,7 +126,6 @@ describe('community access and review',()=>{
   expect(await status(issue({log:undefined}))).toBe(400)
   expect(await status(issue({log:undefined,logMissing:{reason:'other',note:'no'}}))).toBe(400)
   expect(await status(issue({log:undefined,logMissing:{reason:'not-flashed'}}))).toBe(400)
-  expect(await status(issue({log:undefined,logMissing:{reason:'logger-not-in-build'},context:{...issueContext,modules:[{id:'octamod-log',version:'0.1.0'}]}}))).toBe(400)
   expect(await status(issue({log:'\u007fELF firmware'}))).toBe(400)
   expect(await status(issue({log:otLog.replace('# os=1.40C\n','')}))).toBe(400)
   expect(await status(issue({log:42}))).toBe(400)
@@ -156,7 +155,8 @@ describe('community access and review',()=>{
    expect(created.body.title).toBe('[spectrum] Knob issue');expect(created.body.labels).toEqual(['issue-report','module:spectrum'])
    const markdown=String(created.body.body)
    expect(markdown).toContain('module author @sambanks');expect(markdown).toContain('@\u200bsomeone');expect(markdown).toContain('#\u200b12');expect(markdown).not.toContain('<img')
-   expect(markdown).toContain('```text\n# OCTAMOD-LOG v1');expect(markdown).toContain('259 records · 2 boots · 1 fault');expect(markdown).toContain('`'+'c'.repeat(64)+'`')
+   expect(markdown).toContain('```text\n# OCTAMOD-LOG v2');expect(markdown).toContain('259 records · 2 boots · 1 fault');expect(markdown).toContain('`'+'c'.repeat(64)+'`')
+   expect(markdown).toContain('### Device log configuration');expect(markdown).toContain('`repitch@0.1.0`');expect(markdown).toContain('FX2 order: `MINIVERB`, `DELAY`');expect(markdown).toContain('### Browser configuration')
    const [row]=await (await call('/admin/issues','GET',undefined,'',undefined,admin)).json();expect(row).toMatchObject({github_state:'failed',github_error:'GitHub answered 401: Bad credentials.'})
    expect((await call('/admin/issues/'+row.id+'/github','POST',{},reporter)).status).toBe(403)
    const retried=await (await call('/admin/issues/'+row.id+'/github','POST',{},'',undefined,admin)).json();expect(retried).toEqual({state:'synced',url:'https://github.com/repeat98/octamod/issues/41'})

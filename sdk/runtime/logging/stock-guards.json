@@ -1,0 +1,60 @@
+{
+  "idle": {
+    "name": "idle",
+    "address": 1074284622,
+    "length": 6,
+    "sha256": "d355f8d6cb1b5bf2b6618ea8419e7501aafcfeac5c0616b645646734c0878428"
+  },
+  "job": {
+    "name": "job",
+    "address": 1074284638,
+    "length": 6,
+    "sha256": "0bc2ef188c68224486591693fb94e822b6cc59b94e31323c678457ef5363120e"
+  },
+  "transport": {
+    "name": "transport",
+    "address": 1074379108,
+    "length": 8,
+    "sha256": "0a19a633070732de69815e030ca0d25aaa0823017b5e957942c8a8835582aab1"
+  },
+  "open": {
+    "name": "open",
+    "address": 1073834084,
+    "length": 132,
+    "sha256": "b0d50a20c38ca72574bf02696d1ad15ed78c607506e2e231f67122cf8d795156",
+    "patchLength": 8
+  },
+  "read": {
+    "name": "read",
+    "address": 1073833316,
+    "length": 168,
+    "sha256": "03f882499bc4c37c788aed133f56efc1263c866aae0970c8d10c6124a9864c4d",
+    "patchLength": 8
+  },
+  "write": {
+    "name": "write",
+    "address": 1073833656,
+    "length": 196,
+    "sha256": "0c135a389dca84d266651dafd42830f5129f8b1efdbcca61fc842163b3dd6ff3",
+    "patchLength": 8
+  },
+  "close": {
+    "name": "close",
+    "address": 1073833852,
+    "length": 232,
+    "sha256": "f90af45ab7b27534d4b8740ec02f55c728b7d2b147acc7797ad0dfddbf45863a",
+    "patchLength": 8
+  },
+  "exception": {
+    "name": "exception",
+    "address": 1073745272,
+    "length": 44,
+    "sha256": "bfdb222ca36924f9a0821bb1f5478005a1464ba166c8cd372984e5095be81473"
+  },
+  "recorder": {
+    "name": "recorder-state-dispatch",
+    "address": 1073768756,
+    "length": 48,
+    "sha256": "5e34bdde4cb6724f1cfd6521806b7a6d8e9f60852fb25a8be52c388021eafdbf"
+  }
+}

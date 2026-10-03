@@ -13,7 +13,10 @@ static char file[OCTAMOD_LOG_FILE_SIZE];
 static int failures;
 #define CHECK(x) do { if (!(x)) { fprintf(stderr, "FAIL %s:%d %s\n", __FILE__, __LINE__, #x); ++failures; } } while (0)
 
-static const struct octamod_log_identity identity = { "0123456789abcdef", "1.40C", "repitch@0.1.0;miniverb@0.1.2" };
+static const struct octamod_log_identity identity = { "0123456789abcdef", "1.40C", "repitch@0.1.0;miniverb@0.1.2",
+    "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "FILTER;REPITCH", "MINIVERB;DELAY", "", 1 };
 
 int main(int argc, char **argv)
 {
@@ -51,10 +54,27 @@ int main(int argc, char **argv)
     bad = identity; bad.modules = "has space";
     CHECK(octamod_log_format(&ring, &previous, &bad, file) == 0);
 
+    bad = identity; bad.modules = "no-version";
+    CHECK(octamod_log_format(&ring, &previous, &bad, file) == 0);
+    bad = identity; bad.modules = "x@1.2.3;";
+    CHECK(octamod_log_format(&ring, &previous, &bad, file) == 0);
+    bad = identity; bad.configuration = "short";
+    CHECK(octamod_log_format(&ring, &previous, &bad, file) == 0);
+    bad = identity; bad.modules = "x@1.0.0;x@1.0.1";
+    CHECK(octamod_log_format(&ring, &previous, &bad, file) == 0);
+    struct octamod_log_ring snap;
+    CHECK(octamod_log_snapshot(&ring, &snap) == 1 && snap.head == ring.head);
+    scratch = ring; scratch.head = UINT32_MAX; scratch.count = 256;
+    scratch.dropped = UINT32_MAX; octamod_log_seal(&scratch);
+    octamod_log(&scratch, 99, OLOG_E, OLOG_TAG('W','R','A','P'), 1, 0, 0);
+    CHECK(scratch.head == 0 && scratch.count == 256 && scratch.dropped == UINT32_MAX);
+    CHECK(octamod_log_format(&scratch, 0, &identity, file) > 0);
+    CHECK(strstr(file, "E WRAP 0001") != NULL);
+
     uint32_t used = octamod_log_format(&ring, &previous, &identity, file);
     CHECK(used > 0 && used < OCTAMOD_LOG_FILE_SIZE);
     for (uint32_t i = used; i < OCTAMOD_LOG_FILE_SIZE; ++i) CHECK(file[i] == '\n');
-    CHECK(memcmp(file, "# OCTAMOD-LOG v1\n", 17) == 0);
+    CHECK(memcmp(file, "# OCTAMOD-LOG v2\n", 17) == 0);
     CHECK(strstr(file, "# dropped=44\n") != NULL);
     CHECK(strstr(file, "# recovered=1\n") != NULL);
 

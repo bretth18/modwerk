@@ -42,7 +42,7 @@ describe('configuration stock FX summary', () => {
     const report: BuildReport = {
       version: 'OCTAMOD79', revision: 'test', sourceCommit: null, sourceTreeSha256: 'test',
       moduleIds: ['tapeecho'], moduleVersions: { tapeecho: '1.0.0' }, keepStockFx2: false,
-      osBytes: 0, runtimeBytes: 0, fx1Rows: 10, fx2Rows: 1, omittedStockFx2: metadata.stockFx2,
+      osBytes: 0, runtimeBytes: 0, reservedBytes: 0, fx1Rows: 10, fx2Rows: 1, omittedStockFx2: metadata.stockFx2,
     }
     const html = render(['tapeecho'], { key: 'selection', state: 'valid', report })
     expect(html).toContain('Checked for this build')

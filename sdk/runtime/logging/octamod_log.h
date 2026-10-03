@@ -21,7 +21,7 @@
 #define OCTAMOD_LOG_MODULES_MAX 2048u   /* longest modules= header value */
 #define OCTAMOD_LOG_PATH      "/OCTAMOD.LOG"
 #define OCTAMOD_LOG_MAGIC     0x4F4C4F47u /* "OLOG" */
-#define OCTAMOD_LOG_VERSION   1u
+#define OCTAMOD_LOG_VERSION   2u /* retained RAM layout and text version */
 
 enum octamod_log_level { OLOG_D = 'D', OLOG_I = 'I', OLOG_W = 'W', OLOG_E = 'E', OLOG_F = 'F' };
 
@@ -43,7 +43,8 @@ struct octamod_log_ring {
     uint32_t magic, version;
     uint32_t boot;        /* boot counter, carried across recovery */
     uint32_t head;        /* records written this session; text seq = index % 100000 */
-    uint32_t reserved;
+    uint32_t count;       /* valid records, independent of head wrapping */
+    uint32_t dropped;     /* saturating overwritten-record counter */
     uint32_t flushed;     /* head value at the last successful flush */
     uint32_t check;       /* header checksum: see octamod_log_seal */
     struct octamod_log_record records[OCTAMOD_LOG_RECORDS];
@@ -54,6 +55,13 @@ struct octamod_log_identity {
     const char *build;    /* 16 lowercase hex (configuration hash) or "unknown" */
     const char *os;       /* e.g. "1.40C" */
     const char *modules;  /* "id@version;id@version" */
+    /* v2 headers. Build is a configuration identity, never the digest of an
+     * image containing its own digest. Source fingerprints original logger
+     * and selected module sources. Chooser order is significant. */
+    const char *configuration; /* full SHA-256 */
+    const char *source;        /* full SHA-256 */
+    const char *fx1, *fx2, *hidden; /* semicolon-separated native keys */
+    uint32_t stock_fx2;
 };
 
 /* Boot: if the ring header survived the reset, copy that session to
@@ -76,5 +84,11 @@ uint32_t octamod_log_format(const struct octamod_log_ring *ring, const struct oc
 
 /* Recompute the header checksum after changing header fields. */
 void octamod_log_seal(struct octamod_log_ring *ring);
+
+/* Copy a stable view using one short interrupt-masked copy per record.
+ * Return 0 when writers keep changing the ring; caller retries at a later
+ * safe point. Never format the live ring. */
+int octamod_log_snapshot(const struct octamod_log_ring *ring, struct octamod_log_ring *snapshot);
+void octamod_log_flushed(struct octamod_log_ring *ring, uint32_t head);
 
 #endif

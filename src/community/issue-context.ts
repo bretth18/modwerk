@@ -4,16 +4,10 @@
  * report rarely reproduces; every report therefore carries the configuration it
  * was built from and, when the device can write one, an OCTAMOD.LOG.
  */
-import { MODULES } from '../catalog/modules'
-
-/** Catalog id of the on-device logger. While it is not in the catalog no build can write a log. */
-export const LOGGER_MODULE_ID = 'octamod-log'
-export const loggerInCatalog = (ids: readonly string[] = MODULES.map(module => module.id)) => ids.includes(LOGGER_MODULE_ID)
-
 export const OT_MODELS = { mk2: 'Octatrack MKII', mk1: 'Octatrack MKI', unknown: 'Not sure' } as const
 export const FLASH_STATES = { flashed: 'Running an Octamod build', 'not-flashed': 'Not flashed yet (website/build problem)', stock: 'Back on the stock OS' } as const
 export const LOG_MISSING_REASONS = {
-  'logger-not-in-build': 'My build does not include the OCTAMOD logger',
+  'logger-not-in-build': 'I am using an older build without logging',
   'device-does-not-boot': 'The Octatrack does not boot',
   'card-unreadable': 'The card or OCTAMOD.LOG cannot be read',
   'not-flashed': 'The problem happens before flashing',
@@ -64,7 +58,6 @@ export function validateLogMissing(value: unknown, context: IssueContext): LogMi
   const note = typeof value.note === 'string' ? value.note.trim() : ''
   if (note.length > 500) fail('Keep the reason under 500 characters.')
   if (reason === 'other' && note.length < 10) fail('Describe in a few words why you cannot attach OCTAMOD.LOG.')
-  if (reason === 'logger-not-in-build' && context.modules.some(item => item.id === LOGGER_MODULE_ID)) fail('Your configuration includes the OCTAMOD logger. Attach OCTAMOD.LOG from the card.')
   if (reason === 'not-flashed' && context.flash === 'flashed') fail('You said the Octatrack runs an Octamod build. Attach OCTAMOD.LOG, or choose another reason.')
   return { reason, note }
 }

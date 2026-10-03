@@ -1,0 +1,24 @@
+# Core logger verification
+
+Verified locally on 3 October 2026. Machine-readable fingerprints and numerical regions are in [evidence/verification.json](evidence/verification.json). That file contains no firmware, captured RAM, card image or extracted stock code. The local stock input is identified only by SHA-256 `164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e`.
+
+| Check | Result and scope |
+| --- | --- |
+| `sh sdk/runtime/logging/tests/run_host.sh` | Pass, Apple Clang/C99 with warnings as errors. Ring overflow, wraparound, header corruption, validated same-configuration recovery, strict text/CRC, bounded snapshots, deferred/error saves, concurrent append, failure backoff, all transport/recorder/USB/task gates, short writes/close/readback failures, file ownership, alternating preservation, full/prefix/shrinking writes. No firmware. |
+| `python3 sdk/runtime/logging/package.py --output …` | Pass, m68k-elf GCC 16.2.0 / binutils 2.47. Original sources only; stock replay spans remain zero. Committed package inventory and placeholders are checked by the domain suite. |
+| Native core-only probe vs browser composition functions | Byte-identical GNU-linked runtime, configuration identity, packed payload and native loader append. Runtime 66,204 bytes; total core reservation 98,304 bytes. The final 8,192 bytes are excluded from runtime/staging. Exact addresses are in the evidence. This is Node execution of the browser code, not an actual browser-worker full-image proof. |
+| `node scripts/verify-core-logger-native.mjs <own-main-os> <new-private-output>` | Nine runtime link cases match GNU bytes and symbols: core only, Tape Echo, Euclid, Tape Echo+Euclid, Analog BD, Scale Quantizer, USB Audio, Quantizer+USB Audio and all five together. Three cases containing the existing uncompiled MIDI Scenes update refuse the stale version. Metadata/staging bounds checked. No DSP execution. |
+| Isolated MKII emulator, core-only image and synthetic 64 MiB FAT16 card | M6a boot gate PASS. A real engine directory job wrote a complete 32,768-byte checkpoint with valid CRC and an empty module list. 65 sectors written, including metadata. A subsequent 2,000 ms idle interval wrote zero additional sectors. The unrelated sentinel file remained byte-identical. |
+| Earlier directed prefix-write probe, same file-writer source | Two first-use writes: 99 sectors (create) then 65 sectors. Reusing a slot with 1,318 meaningful text bytes added four sectors including metadata. Both checkpoints retained valid CRCs. Flush request and clock were explicitly driven by the test; this is not normal-workload timing evidence. |
+| Website and API | Shared parser accepts C-generated v2 plus legacy v1 and rejects malformed/binary/torn/edited checkpoints. Service tests cover required-log escape reasons, GitHub creator mention, separate browser/device configurations, retry and signed webhook handling. |
+| Browser report flow | Actual rendered desktop/mobile form checked with synthetic logs and a local fake backend. Attachment preview, 390 px layout, successful submission, focused confirmation and GitHub fallback link passed. The embedded test browser blocked the new tab, exercising the fallback. No real issue or upload was created. |
+
+The emulator/native checks were explicitly authorized logger-only exceptions to the ordinary firmware test restriction. They ran without network or credentials, with private-file reads restricted and writes confined to a disposable directory. Stock, linked runtime/loader images, emulator/card files and intermediate inherited USB descriptors must remain local and temporary.
+
+## Release gates still open
+
+`DOWNLOADS_ENABLED` is false for this changed engine, enforced in both the UI and worker. Existing production deployment is unchanged. Do not interpret the older module/full-image proof files as verification of the new always-installed core.
+
+Before releasing firmware, complete full native-remixer image/packaging parity and rejection coverage through the actual browser worker for supported configurations. Review the new memory reservation with every preboot payload. Measure worst-case interrupt-masked event cycles, task stack use, stopped-state checkpoint duration and real-time behavior under parameter modulation, mode changes and maximum load. Verify on real MKI/MKII hardware for at least 60 minutes with all eight audio tracks active, including independently running tracks/recorders, card errors, USB disk mode and crash/reset behavior. Warm-reset retention, hard-lockup capture and crash-tail durability remain unproven. No hardware run or cycle count is claimed by this PR.
+
+The logger is core infrastructure and does not alter any catalog module folder, module version, qualification exemption or the frozen eleven-module baseline. Detailed per-module DSP traces would require separately bounded instrumentation and the usual module review/qualification.

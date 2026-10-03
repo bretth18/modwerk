@@ -1,5 +1,7 @@
 # Verification record
 
+**Core logger update (3 October 2026):** the always-installed logger changes runtime, arena and OS-hook bytes. Historical full-image proofs below describe the earlier engine. Downloads are gated pending renewed full native/browser coverage and hardware review. See [core logger evidence](../sdk/runtime/logging/TESTING.md).
+
 ## Browser firmware flow — 1 October 2026
 
 Verified in the actual local frontend using the browser worker and a locally saved original OS 1.40C file. Stock and output bytes stayed local; this record contains identities only.

@@ -1,7 +1,13 @@
-# OCTAMOD-LOG v1
+# OCTAMOD-LOG v2
 # build=0123456789abcdef
 # os=1.40C
 # modules=repitch@0.1.0;miniverb@0.1.2
+# configuration=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+# source=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+# fx1=FILTER;REPITCH
+# fx2=MINIVERB;DELAY
+# hidden=
+# stockfx2=1
 # boot=1
 # recovered=1
 # dropped=44
@@ -265,3 +271,4 @@
 00000 0000000A I BOOT 0001 00000140 00000000
 00001 00000019 I CARD 0002 00000000 00000000
 00002 00000028 E DSP 0010 0000002A 00000001
+# complete=C4678143

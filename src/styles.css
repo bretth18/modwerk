@@ -1111,3 +1111,13 @@ h1 { font-size: 28px; }
   .module-set-art .signal-art { height: 100%; }
   .contribution-start p { font-size: 14px; }
 }
+.issue-report .community-form > fieldset { display: flex; flex-direction: column; min-width: 0; }
+.issue-report .community-form legend { font-size: 14px; font-weight: 600; padding: 0 6px; }
+.issue-report-help summary { margin-bottom: 12px; }
+.issue-report-help .service-note { padding-top: 12px; }
+.issue-report-log-preview { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.issue-report-log-preview pre { max-height: 260px; overflow: auto; padding: 12px; background: #111115; font-size: 11px; border: 1px solid var(--line); border-radius: 6px; }
+.issue-report-success { max-width: 620px; padding: 20px 0 6px; color: #d1cede; font-size: 14px; line-height: 1.7; }
+.issue-report-success:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.issue-report input[type=file] { width: 100%; min-width: 0; padding: 10px 0; font-size: 13px; }
+.issue-report input[type=file]::file-selector-button { padding: 9px 12px; border: 1px solid #656575; border-radius: 6px; background: #28282f; color: #eeeef7; cursor: pointer; margin-right: 10px; }

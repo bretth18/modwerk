@@ -54,7 +54,7 @@ export function issueMarkdown(issue: MirroredIssue) {
   const lines = ['Reported on octamod.app for **`' + issue.module_id + '`** · module author ' + author, '', 'Reporter: ' + inert(issue.reporter), '', issue.body ? quote(issue.body) : '', '']
   const context = issue.context
   if (context) {
-    lines.push('### Configuration', '', '| | |', '| --- | --- |',
+    lines.push('### Browser configuration', '', '| | |', '| --- | --- |',
       '| Device | ' + OT_MODELS[context.model] + ' |',
       '| State | ' + FLASH_STATES[context.flash] + ' |',
       '| Base OS | ' + context.os + ' |',
@@ -63,6 +63,16 @@ export function issueMarkdown(issue: MirroredIssue) {
       '', context.modules.length ? context.modules.map(item => '- `' + item.id + '` ' + item.version).join('\n') : '_No modules selected._', '')
   }
   if (issue.log) {
+    const summary = issue.log.summary
+    lines.push('### Device log configuration', '', 'These values came from the device log; the browser selection above may differ.', '',
+      '- OS: `' + summary.os + '`',
+      '- Configuration: `' + (summary.configuration || summary.build) + '`',
+      '- Modules: ' + (summary.modules.map(item => '`' + item.id + '@' + item.version + '`').join(', ') || 'none'), '')
+    if (summary.version === 2) lines.push('- Source SHA-256: `' + summary.source + '`',
+      '- FX1 order: ' + summary.fx1.map(key => '`' + key + '`').join(', '),
+      '- FX2 order: ' + summary.fx2.map(key => '`' + key + '`').join(', '),
+      '- Hidden modules: ' + (summary.hidden.map(key => '`' + key + '`').join(', ') || 'none'),
+      '- Stock FX2 kept: ' + (summary.stockFx2 ? 'yes' : 'no'), '')
     // The grammar admits no backticks, so a fence cannot be broken out of.
     const text = issue.log.text.replace(/\n+$/, '\n')
     const used = lines.join('\n').length + 400
