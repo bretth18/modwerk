@@ -12,25 +12,24 @@ scope, retain = r['requested_release_scope'], r['retain_pending_requested']
 `
   return execFileSync(python, ['-B', '-c', setup + body], { cwd: root, encoding: 'utf8' }).trim()
 }
-describe('release planning with pending MIDI Scenes', () => {
-  it('excludes the pending source from discovery while retaining the three reviewed requested modules', () => {
+describe('source compilation with standalone MIDISC2.0', () => {
+  it('excludes the local-stock recipe from compilation while retaining the three reviewed requested modules', () => {
     const actual = metadataCheck(`catalog = json.load(open('sdk/catalog.json'))
 ids = [m['id'] for m in catalog['modules'] if json.load(open('sdk/octabam/modules/' + m['id'] + '/octamod.module.json')).get('build', {}).get('status') != 'pending']
 print(json.dumps(scope(ids)))
 `)
     expect(JSON.parse(actual)).toEqual(['analog-bassdrum', 'usb-audio-out-tracks-main-cue', 'quantizer'])
   })
-  it('retains inactive verified rows verbatim, in their original order, and never pins the pending version', () => {
+  it('removes legacy 8.2 objects and preserves the other authored package inventory', () => {
     expect(metadataCheck(`baseline = json.load(open('src/engine/assets/requested-packages.json'))
 ids = [id for id in REQUESTED if id != 'midi-scenes']
-compiled = {field: [dict(row, compiled=True) for row in baseline[field] if row['moduleId'] != 'midi-scenes'] for field in ['objects', 'groups']}
-result = retain(compiled, baseline, ids)
+compiled = {field: [dict(row, compiled=True) for row in baseline[field]] for field in ['objects', 'groups']}
 for field in ['objects', 'groups']:
-    assert len(result[field]) == len(baseline[field])
-    for row, old in zip(result[field], baseline[field]):
-        if row['moduleId'] == 'midi-scenes': assert row == old
-        else: assert row['compiled'] is True
-assert 'midi-scenes' not in baseline['moduleVersions']
+    baseline[field].append({'moduleId': 'midi-scenes', 'label': 'legacy-8.2'})
+result = retain(compiled, baseline, ids, standalone=True)
+for field in ['objects', 'groups']:
+    assert all(row['moduleId'] != 'midi-scenes' and row['compiled'] is True for row in result[field])
+    assert len(result[field]) == len(baseline[field]) - 1
 print('preserved')
 `)).toBe('preserved')
   })

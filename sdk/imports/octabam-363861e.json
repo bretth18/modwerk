@@ -1134,5 +1134,8 @@
       "bytes": 4,
       "sha256": "a3e547e08c1f288e512f2e52ac9becc3502ccd0dcfcf55e5ab9863859f34e2bc"
     }
-  ]
+  ],
+  "archivedModules": {
+    "midi-scenes": "sdk/archive/midi-scenes-8.2"
+  }
 }

@@ -11,6 +11,13 @@ export function selectionConflicts(ids: readonly string[], keepStockFx2 = false)
   const modules = resolveSelection(ids), selected = new Set(modules.map(module => module.id))
   const dsp = modules.filter(module => customDspIds.includes(module.id))
   const conflicts: SelectionConflict[] = []
+  if (selected.has('midi-scenes') && modules.length > 1) {
+    const companions = modules.filter(module => module.id !== 'midi-scenes')
+    conflicts.push({ id: 'midi-scenes-standalone', title: 'Build MIDI Scenes on its own',
+      description: 'MIDI Scenes currently supports standalone firmware. Remove the other modules to build this configuration.',
+      moduleIds: modules.map(module => module.id),
+      fixes: [{ label: 'Keep MIDI Scenes', removeIds: companions.map(module => module.id) }, { label: 'Remove MIDI Scenes', removeIds: ['midi-scenes'] }] })
+  }
   const keepEffectsRemoves = ['analog-bassdrum', ...(crowdedMenuIds.every(id => selected.has(id)) ? ['euclid'] : [])]
   if (selected.has('analog-bassdrum') && dsp.length) conflicts.push({
     id: 'analog-bd-custom-dsp', title: 'Choose Analog BD or custom effects',

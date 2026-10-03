@@ -60,18 +60,20 @@ def fingerprint(reference, address):
 
 
 def requested_release_scope(buildable):
-    """Permit the reviewed scope with the MIDI Scenes update still pending."""
+    """Permit the reviewed scope; MIDISC2.0 is a standalone local-stock recipe."""
     ordinary = [id for id in buildable if id not in UTILITIES]
     if [id for id in buildable if id in UTILITIES] not in ([], UTILITIES):
         raise ValueError('Unsupported utility module scope')
     scopes = (ORDER, ORDER + REQUESTED, ORDER + [id for id in REQUESTED if id != 'midi-scenes'])
     if ordinary not in scopes:
         raise ValueError('Unsupported reviewed module scope')
-    return [id for id in REQUESTED if id in buildable]
+    return [id for id in REQUESTED if id in buildable and id != 'midi-scenes']
 
 
-def retain_pending_requested(compiled, baseline, ids):
+def retain_pending_requested(compiled, baseline, ids, standalone=False):
     """Keep inactive, previously verified objects unchanged; never compile their pending source."""
+    if standalone:
+        baseline = dict(baseline, objects=[r for r in baseline['objects'] if r['moduleId'] != 'midi-scenes'], groups=[r for r in baseline['groups'] if r['moduleId'] != 'midi-scenes'], moduleVersions={k:v for k,v in baseline['moduleVersions'].items() if k != 'midi-scenes'})
     pending = set(REQUESTED) - set(ids)
     if pending & set(baseline['moduleVersions']):
         raise ValueError('Pending modules must be absent from verified version pins')
@@ -178,7 +180,9 @@ def main():
         approved_requested = requested_release_scope([module['id'] for module in buildable])
     except ValueError as error:
         parser.error(str(error))
-    requested_ids = REQUESTED if args.include_requested else approved_requested
+    standalone = 'midi-scenes' in [module['id'] for module in buildable]
+    if standalone and catalog_documents['midi-scenes']['version'] != '0.2.4-experimental': parser.error('Unknown standalone MIDI Scenes release')
+    requested_ids = [id for id in REQUESTED if id != 'midi-scenes'] if args.include_requested else approved_requested
     include_requested = bool(requested_ids)
     versions = {module['id']: module['version'] for module in buildable}
     revision = catalog['sourceRevision']
@@ -391,7 +395,7 @@ def main():
         products['platform-writes.json'] = dict(baseline['platform-writes.json'], **provenance, groups=groups)
         if include_requested:
             requested = compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler, requested_ids)
-            products['requested-packages.json'] = retain_pending_requested(requested, baseline['requested-packages.json'], requested_ids) if not args.include_requested else requested
+            products['requested-packages.json'] = retain_pending_requested(requested, baseline['requested-packages.json'], requested_ids, standalone=standalone) if not args.include_requested else requested
         if stock_guard._cache is not None: raise RuntimeError('Stock must never be read during source compilation')
         if native._SCRATCH is not None: shutil.rmtree(native._SCRATCH, ignore_errors=True)
 

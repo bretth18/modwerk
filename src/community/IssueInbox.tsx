@@ -9,10 +9,12 @@ type Issue = {
   context: IssueContext | null; log: OtLogSummary | null; log_missing: LogMissingReason | null; log_missing_note: string
   github_state: 'none' | 'pending' | 'syncing' | 'synced' | 'failed'; github_url: string | null; github_error: string
 }
-export function IssueInbox() {
+export function IssueInbox({moduleId = '',onClearModule}: {moduleId?: string;onClearModule?: () => void}) {
+  const [status,setStatus] = useState(moduleId ? 'open' : 'all')
+  const path = '/admin/issues?status='+status+(moduleId ? '&moduleId='+encodeURIComponent(moduleId) : '')
   const [items, setItems] = useState<Issue[]>([]), [error, setError] = useState(''), [loading, setLoading] = useState(true), [busy, setBusy] = useState('')
-  useEffect(() => { let cancelled = false; void api<Issue[]>('/admin/issues').then(items => { if (!cancelled) setItems(items) }).catch(error => { if (!cancelled) setError(error.message) }).finally(() => { if (!cancelled) setLoading(false) }); return () => { cancelled = true } }, [])
-  async function act(item: Issue, action: () => Promise<unknown>, failure: string) { setBusy(item.id); setError(''); try { await action(); setItems(await api<Issue[]>('/admin/issues')) } catch (error) { setError(error instanceof Error ? error.message : failure) } finally { setBusy('') } }
+  useEffect(() => { let cancelled = false; void api<Issue[]>(path).then(items => { if (!cancelled) setItems(items) }).catch(error => { if (!cancelled) { setItems([]); setError(error.message) } }).finally(() => { if (!cancelled) setLoading(false) }); return () => { cancelled = true } }, [path])
+  async function act(item: Issue, action: () => Promise<unknown>, failure: string) { setBusy(item.id); setError(''); try { await action(); setItems(await api<Issue[]>(path)) } catch (error) { setError(error instanceof Error ? error.message : failure) } finally { setBusy('') } }
   const resolve = (item: Issue) => act(item, () => post('/admin/issues/' + item.id, { status: item.status === 'open' ? 'closed' : 'open' }, 'PATCH'), 'Unable to update issue.')
   const mirror = (item: Issue) => act(item, async () => { const result = await post<{ state: string; error?: string }>('/admin/issues/' + item.id + '/github', {}); if (result.state === 'failed') throw new Error(result.error ?? 'GitHub mirroring failed.') }, 'Unable to mirror issue.')
   async function download(item: Issue) {
@@ -28,6 +30,8 @@ export function IssueInbox() {
   }
   return <section className="configuration-section"><div className="section-title"><h2>Author-directed issues</h2><span className="pill">{items.filter(item => item.status === 'open').length} open</span></div>
     <p className="service-note">With GitHub mirroring configured, every report also opens a public issue labelled <code>module:&lt;id&gt;</code> that mentions the module author. Closing it on GitHub or here updates the reporter’s status. Reports that failed to mirror can be retried.</p>
+    <div className="statistics-controls inbox-controls"><label>Issue status<select value={status} disabled={!!busy} onChange={event => { setStatus(event.target.value); setLoading(true); setError('') }}><option value="all">All reports</option><option value="open">Open reports</option><option value="closed">Resolved reports</option></select></label>{moduleId && <span className="service-note">Module: {moduleId} <button className="text-button" onClick={onClearModule}>Clear module filter</button></span>}</div>
+    {items.length===200 && <p className="service-note">Showing the latest 200 matching reports.</p>}
     {loading ? <p role="status">Loading reports…</p> : items.length ? items.map(item => <article className="inbox-issue" key={item.id}>
       <div className="section-title"><h3>{item.title}</h3><span className="pill">{item.status}</span></div>
       <small>{item.module_id} · from {item.reporter} · for @{item.author_login}</small>
@@ -40,9 +44,9 @@ export function IssueInbox() {
         <dt>GitHub</dt><dd>{item.github_url ? <a href={item.github_url} target="_blank" rel="noreferrer">{item.github_url.replace('https://github.com/', '')} ↗</a> : item.github_state === 'none' ? 'Not mirrored' : item.github_state === 'failed' ? 'Failed: ' + item.github_error : 'Mirroring…'}</dd>
       </dl>
       <div className="inbox-actions">
-        <button className="text-button" disabled={busy === item.id} onClick={() => void resolve(item)}>{busy === item.id ? 'Saving…' : item.status === 'open' ? 'Mark resolved' : 'Reopen'}</button>
+        <button className="text-button" disabled={!!busy} onClick={() => void resolve(item)}>{busy === item.id ? 'Saving…' : item.status === 'open' ? 'Mark resolved' : 'Reopen'}</button>
         {item.log && <button className="text-button" onClick={() => void download(item)}>Download log</button>}
-        {item.github_state !== 'synced' && <button className="text-button" disabled={busy === item.id} onClick={() => void mirror(item)}>{item.github_state === 'none' ? 'Mirror to GitHub' : 'Retry GitHub'}</button>}
+        {item.github_state !== 'synced' && <button className="text-button" disabled={!!busy} onClick={() => void mirror(item)}>{item.github_state === 'none' ? 'Mirror to GitHub' : 'Retry GitHub'}</button>}
       </div>
-    </article>) : !error && <p className="service-note">No reports yet.</p>}{error && <p className="file-error" role="alert">{error}</p>}</section>
+    </article>) : !error && <p className="service-note">No reports match these filters.</p>}{error && <p className="file-error" role="alert">{error}</p>}</section>
 }

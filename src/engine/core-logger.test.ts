@@ -6,6 +6,7 @@ import {readCoreLogger,loggerExternals,LOGGER_RESERVE_BYTES} from './core-logger
 import {createStaticColdFireRuntime} from './coldfire-runtime'
 import {runtimeStageLayout} from './bootstrap'
 import {DOWNLOADS_ENABLED} from './protocol'
+import {composeOs} from './compose-os'
 const sha=(b:string|Uint8Array)=>createHash('sha256').update(b).digest('hex')
 describe('mandatory core logger',()=>{
  it('pins the original source inventory and contains only zero stock replay placeholders',async()=>{
@@ -33,5 +34,8 @@ describe('mandatory core logger',()=>{
  })
  it('keeps downloads gated until full native/browser and owner verification is renewed',()=>{
   expect(DOWNLOADS_ENABLED).toBe(false)
+ })
+ it('refuses the standalone MIDI Scenes image whose arena has not been integrated with logging',async()=>{
+  await expect(composeOs(new Uint8Array(4),['midi-scenes'])).rejects.toThrow('verification with the built-in logger')
  })
 })

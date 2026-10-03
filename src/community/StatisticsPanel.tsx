@@ -1,87 +1,112 @@
 import { useEffect, useState } from 'react'
 import { api } from './api'
-import type { UsageDay, UsageStatistics } from './usage-contract'
+import { CommunityInsights } from './CommunityInsights'
+import { usageCsv, usageInsights, usageMetrics } from './statistics-insights'
+import type { UsageMetric } from './statistics-insights'
+import type { UsageStatistics } from './usage-contract'
+import type { AdminInsights } from './admin-insights-contract'
 
-const format = (value: number) => value.toLocaleString()
-const metrics = [
-  ['page_views', 'Page views'],
-  ['configurations', 'Configurations started'],
-  ['builds', 'Successful builds'],
-  ['downloads', 'Firmware download requests'],
-  ['exports', 'Configuration exports'],
-] as const
+const format = (value: number) => value.toLocaleString(undefined,{maximumFractionDigits:1})
+const dateLabel = (value: string) => new Date(value+'T00:00:00Z').toLocaleDateString(undefined,{month:'short',day:'numeric',timeZone:'UTC'})
 
-function dailyRows(data: UsageStatistics): { day: string; counts: UsageDay | null }[] {
-  return Array.from({ length: data.days }, (_, index) => {
-    const date = new Date(data.from + 'T00:00:00Z')
-    date.setUTCDate(date.getUTCDate() + index)
-    const day = date.toISOString().slice(0, 10)
-    const counts = !data.collectionStarted || day < data.collectionStarted.slice(0, 10)
-      ? null
-      : data.rows.find(row => row.day === day) ?? { day, visitors: 0, page_views: 0, configurations: 0, builds: 0, downloads: 0, exports: 0 }
-    return { day, counts }
-  })
+function Comparison({value}: {value: ReturnType<ReturnType<typeof usageInsights>['compare']>}) {
+  if (!value) return <small>Comparison unavailable</small>
+  const change = value.current-value.previous
+  return <small className="statistics-change">{value.percent === null
+    ? change ? '+'+format(change)+' · previous period: 0' : 'No change · both periods: 0'
+    : change === 0 ? 'No change from previous period' : (change>0 ? '+' : '')+format(value.percent)+'% from previous period'}</small>
 }
 
-export function StatisticsPanel() {
-  const [days, setDays] = useState(7)
-  const [data, setData] = useState<UsageStatistics | null>(null)
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [refresh, setRefresh] = useState(0)
-  useEffect(() => {
-    let active = true
-    void api<UsageStatistics>('/admin/statistics?days=' + days)
-      .then(value => { if (active) setData(value) })
-      .catch(error => { if (active) { setData(null); setError(error.message) } })
-      .finally(() => { if (active) setLoading(false) })
-    return () => { active = false }
-  }, [days, refresh])
+function UsageDashboard({data}: {data: UsageStatistics}) {
+  const [metric,setMetric] = useState<UsageMetric>('visitors')
+  const [selectedDay,setSelectedDay] = useState('')
+  const insights = usageInsights(data), covered = !!data.collectionStarted
+  const selected = insights.rows.find(row => row.day===selectedDay)??insights.rows.at(-1)
+  const label = usageMetrics.find(([key]) => key===metric)![1]
+  const max = Math.max(1,...insights.rows.map(row => row.counts?.[metric]??0))
+  const comparisonNote = data.comparison?.unavailableReason === 'retention'
+    ? 'Previous-period comparison is unavailable: only 90 days of daily totals are retained.'
+    : data.comparison && !data.comparison.unavailableReason
+      ? 'Changes compare '+(data.days-1)+' completed days ('+dateLabel(data.from)+'–'+dateLabel(insights.rows.at(-2)!.day)+') with the previous '+(data.days-1)+' days. Today is excluded.'
+      : 'Previous-period comparison needs two fully collected windows. Earlier traffic is unavailable.'
 
-  const current = data?.days === days ? data : null
-  const covered = !!current?.collectionStarted
-  const rows = current ? dailyRows(current) : []
-  const max = Math.max(1, ...rows.map(row => row.counts?.visitors ?? 0))
-  const today = current?.rows.find(row => row.day === current.to)?.visitors ?? 0
+  function exportDaily() {
+    const url = URL.createObjectURL(new Blob([usageCsv(data)],{type:'text/csv;charset=utf-8'}))
+    const link = document.createElement('a')
+    link.href=url; link.download='octamod-usage-'+data.from+'-'+data.to+'.csv'
+    document.body.append(link); link.click(); link.remove()
+    setTimeout(() => URL.revokeObjectURL(url),1000)
+  }
 
-  return <section className="configuration-section usage-statistics" aria-busy={loading}>
-    <div className="section-title">
-      <div><h2>Site statistics</h2><p className="service-note">Anonymous browser-reported counts · UTC days</p></div>
-      <div className="statistics-controls">
-        <label>Period<select value={days} onChange={event => { setDays(Number(event.target.value)); setLoading(true); setError('') }}>
-          <option value={7}>Last 7 days</option><option value={30}>Last 30 days</option><option value={90}>Last 90 days</option>
-        </select></label>
-        <button className="button button-quiet" disabled={loading} onClick={() => { setRefresh(value => value + 1); setLoading(true); setError('') }}>Refresh</button>
-      </div>
-    </div>
-    {error ? <p role="alert" className="file-error">{error}</p> : loading ? <p role="status">Loading usage counts…</p> : current && <>
-      <dl className="admin-overview statistics-cards">
-        <div><dt>Visitors today</dt><dd>{covered ? format(today) : '—'}</dd><small>Unique daily browser identifiers</small></div>
-        {metrics.map(([key, label]) => <div key={key}><dt>{label}</dt><dd>{covered ? format(current.rows.reduce((sum, row) => sum + row[key], 0)) : '—'}</dd><small>Selected period</small></div>)}
-      </dl>
-      {covered ? <>
-        <p className="service-note">Collection began {new Date(current.collectionStarted!).toLocaleString(undefined, { timeZone: 'UTC' })} UTC · Updated {new Date(current.generatedAt).toLocaleTimeString(undefined, { timeZone: 'UTC' })} UTC. Earlier traffic is unavailable.</p>
+  return <>
+    <dl className="admin-overview statistics-cards">
+      <div><dt>Visitors today</dt><dd>{covered ? format(insights.today) : '—'}</dd><small>Daily browser identifiers · today is partial</small></div>
+      {usageMetrics.slice(1).map(([key,title]) => <div key={key}><dt>{title}</dt><dd>{covered ? format(insights.totals[key]) : '—'}</dd><small>Selected period · includes today</small>{covered && <Comparison value={insights.compare(key)}/>}</div>)}
+    </dl>
+    {covered ? <>
+      <p className="service-note statistics-coverage">{data.from} – {data.to} UTC · Updated {new Date(data.generatedAt).toLocaleTimeString(undefined,{timeZone:'UTC'})} UTC.<br/>{comparisonNote}</p>
+      <div className="statistics-analysis">
         <figure className="visitors-chart">
-          <figcaption>Daily visitors · {days} days</figcaption>
-          <div className="visitors-bars" role="img" aria-label="Daily visitor counts; exact values are in the table below.">
-            {rows.map(({ day, counts }) => <span key={day} title={counts ? day + ': ' + counts.visitors + ' visitors' : 'Before collection began'} className={counts ? '' : 'uncollected'} style={{ height: counts ? (counts.visitors ? Math.max(2, counts.visitors / max * 100) : 0) + '%' : '2%' }} />)}
+          <div className="statistics-chart-heading"><figcaption>Daily activity</figcaption><label><span className="sr-only">Chart metric</span><select value={metric} onChange={event => setMetric(event.target.value as UsageMetric)}>{usageMetrics.map(([key,title]) => <option key={key} value={key}>{title}</option>)}</select></label></div>
+          <p className="statistics-scale">{label} · scale 0–{format(max)}</p>
+          <div className="visitors-bars" role="group" aria-label={label+' by UTC day; use arrow keys to inspect days'}>
+            {insights.rows.map(({day,counts},index) => <button key={day} type="button" className={!counts ? 'uncollected' : day===data.to ? 'is-today' : ''}
+              aria-label={day+': '+(counts ? format(counts[metric])+' '+label.toLowerCase() : 'collection had not begun')+(day===data.to ? ', partial day' : day===data.collectionStarted?.slice(0,10) ? ', partial collection day' : '')}
+              aria-pressed={selected?.day===day} tabIndex={selected?.day===day ? 0 : -1} onClick={() => setSelectedDay(day)}
+              onKeyDown={event => {
+                const next = event.key==='ArrowRight' ? Math.min(index+1,insights.rows.length-1) : event.key==='ArrowLeft' ? Math.max(index-1,0) : event.key==='Home' ? 0 : event.key==='End' ? insights.rows.length-1 : null
+                if (next!==null) { event.preventDefault(); setSelectedDay(insights.rows[next].day); (event.currentTarget.parentElement?.children[next] as HTMLButtonElement)?.focus() }
+              }}><span style={{height:counts ? Math.max(2,counts[metric]/max*100)+'%' : '2%'}}/></button>)}
           </div>
-          <div className="chart-dates"><span>{current.from}</span><span>{current.to}</span></div>
+          <div className="chart-dates"><span>{dateLabel(data.from)}</span><span>{dateLabel(data.to)} · partial</span></div>
+          <p className="statistics-selected" aria-live="polite">{selected && <>{dateLabel(selected.day)} · {selected.counts ? format(selected.counts[metric])+' '+label.toLowerCase() : 'Not collected'}{selected.counts && (selected.day===data.to || selected.day===data.collectionStarted?.slice(0,10)) ? ' · partial day' : ''}</>}</p>
         </figure>
-        <div className="statistics-table" role="region" aria-label="Daily usage counts" tabIndex={0}>
-          <table>
-            <caption>Daily counts · UTC · — means collection had not begun</caption>
-            <thead><tr><th scope="col">Date</th><th scope="col">Visitors</th>{metrics.map(([key, label]) => <th scope="col" key={key}>{label}</th>)}</tr></thead>
-            <tbody>{rows.map(({ day, counts }) => <tr key={day}><th scope="row">{day}</th><td>{counts ? format(counts.visitors) : '—'}</td>{metrics.map(([key]) => <td key={key}>{counts ? format(counts[key]) : '—'}</td>)}</tr>)}</tbody>
-          </table>
-        </div>
-      </> : <p className="service-note" role="status">Waiting for the first recorded visit. Collection starts with this release; earlier traffic is unavailable.</p>}
-      <details className="statistics-definitions">
-        <summary>How these counts work</summary>
-        <p>Visitors are distinct browser identifiers within one UTC day. The identifier changes daily, so daily visitors cannot be added together to count unique people across a period.</p>
-        <p>A configuration starts when its first module is added, or when a nonempty configuration is imported or duplicated. Only successful completed local builds count. Download requests count clicks; they do not prove the file was saved or flashed.</p>
-        <p>Blocked tracking, browser privacy preferences, offline use and automated traffic affect coverage. Today is incomplete. No firmware, configuration contents, guest identity, IP address, user agent or referrer is stored with these counts.</p>
-      </details>
-    </>}
-  </section>
+        <dl className="statistics-highlights">
+          <div><dt>Average daily visitors</dt><dd>{insights.averageVisitors===null ? '—' : format(insights.averageVisitors)}</dd><small>Across {insights.completedDays} fully collected days</small></div>
+          <div><dt>Busiest completed day</dt><dd>{insights.peak ? dateLabel(insights.peak.day) : '—'}</dd><small>{insights.peak ? format(insights.peak.visitors)+' daily browser identifiers' : 'No completed day with visitors yet'}</small></div>
+          <div><dt>Days with visitors</dt><dd>{insights.completedDays ? insights.activeDays+' / '+insights.completedDays : '—'}</dd><small>Completed days in this period</small></div>
+        </dl>
+      </div>
+      <details className="statistics-daily"><summary>Daily counts and CSV export</summary><button className="button button-quiet" onClick={exportDaily}>Export daily CSV</button><div className="statistics-table" role="region" aria-label="Daily usage counts" tabIndex={0}>
+        <table><caption>UTC days · today and the collection start day are partial · — means not collected</caption>
+          <thead><tr><th scope="col">Date</th>{usageMetrics.map(([key,title]) => <th scope="col" key={key}>{title}</th>)}</tr></thead>
+          <tbody>{insights.rows.map(({day,counts}) => <tr key={day}><th scope="row">{day}{day===data.to || day===data.collectionStarted?.slice(0,10) ? ' *' : ''}</th>{usageMetrics.map(([key]) => <td key={key}>{counts ? format(counts[key]) : '—'}</td>)}</tr>)}</tbody>
+        </table>
+      </div></details>
+    </> : <p className="service-note" role="status">Waiting for the first recorded visit. Earlier traffic is unavailable.</p>}
+    <details className="statistics-definitions"><summary>Coverage and metric definitions</summary>
+      <p>{data.collectionStarted ? 'Collection began '+new Date(data.collectionStarted).toLocaleString(undefined,{timeZone:'UTC'})+' UTC. ' : ''}Today and the collection start day are incomplete. Missing days after collection began count as zero; earlier days are unavailable. Daily totals are kept for 90 days.</p>
+      <p>Visitors are distinct browser identifiers within one UTC day. Identifiers rotate daily; adding daily visitors does not give unique people across a period. Average visitors and peak days exclude partial days.</p>
+      <p>A configuration starts when its first module is added, or when a nonempty configuration is imported or duplicated. Builds count only successful completed local builds. Downloads and exports count requests, not saved or flashed files. These are separate event totals, not a linked conversion funnel.</p>
+      <p>Offline use, privacy preferences, blocked requests and automated traffic affect coverage. No firmware, configuration contents, guest identity, IP address, user agent or referrer is stored with these usage counts.</p>
+    </details>
+  </>
+}
+
+export function StatisticsPanel({onNavigate}: {onNavigate: (tab: 'issues'|'comments'|'modules', moduleId?: string) => void}) {
+  const [days,setDays] = useState(7), [refresh,setRefresh] = useState(0)
+  const [data,setData] = useState<UsageStatistics|null>(null), [community,setCommunity] = useState<AdminInsights|null>(null)
+  const [error,setError] = useState(''), [communityError,setCommunityError] = useState(''), [loading,setLoading] = useState(true)
+  useEffect(() => {
+    const controller = new AbortController()
+    void Promise.allSettled([api<UsageStatistics>('/admin/statistics?days='+days,{signal:controller.signal}),api<AdminInsights>('/admin/insights',{signal:controller.signal})]).then(([usage,insights]) => {
+      if (controller.signal.aborted) return
+      if (usage.status==='fulfilled') { setData(usage.value); setError('') } else { setData(null); setError(usage.reason instanceof Error ? usage.reason.message : 'Unable to load usage statistics.') }
+      if (insights.status==='fulfilled') { setCommunity(insights.value); setCommunityError('') } else { setCommunity(null); setCommunityError(insights.reason instanceof Error ? insights.reason.message : 'Unable to load community insights.') }
+      setLoading(false)
+    })
+    return () => controller.abort()
+  },[days,refresh])
+  const current = data?.days===days ? data : null
+  return <div className="admin-statistics" aria-busy={loading}>
+    <section className="configuration-section usage-statistics"><div className="section-title"><div><h2>Site statistics</h2><p className="service-note">Anonymous browser-reported usage · UTC days</p></div>
+      <div className="statistics-controls"><label>Usage period<select value={days} onChange={event => {setDays(Number(event.target.value));setLoading(true);setError('')}}><option value={7}>Last 7 days</option><option value={30}>Last 30 days</option><option value={90}>Last 90 days</option></select></label><button className="button button-quiet" disabled={loading} onClick={() => {setRefresh(value => value+1);setLoading(true);setError('');setCommunityError('')}}>{loading ? 'Updating…' : 'Refresh statistics'}</button></div>
+    </div>
+      {error && <p role="alert" className="file-error">{error}</p>}
+      {loading && <p role="status" className="service-note">{current ? 'Refreshing statistics…' : 'Loading statistics…'}</p>}
+      {current && <UsageDashboard data={current}/>}
+    </section>
+    {communityError && <section className="configuration-section"><h2>Community insights</h2><p role="alert" className="file-error">{communityError}</p><p className="service-note">Use Refresh statistics to try again.</p></section>}
+    {community && <CommunityInsights data={community} onNavigate={onNavigate}/>}
+  </div>
 }

@@ -82,7 +82,7 @@ describe('module qualification hard gates',()=>{
     for(const module of catalog.modules.filter(m=>!['cc-map','previewvol'].includes(m.id))) {
       const folder=resolve('sdk/octabam/modules',module.id),record=frozen.get(module.id)
       const unchanged=record?.version===module.version&&record.folderSha256===await moduleFolderSha256(folder)
-      expect(await requireFolderQualification(folder,parseModuleDocument(module),frozen)).toBe(unchanged?'retained':'qualified')
+      expect(await requireFolderQualification(folder,parseModuleDocument(module),frozen)).toBe(unchanged?'retained':module.id==='midi-scenes'?'owner-approved-standalone':'qualified')
     }
   })
   it('binds exemptions to complete folder contents and qualification to the native source',async()=>{

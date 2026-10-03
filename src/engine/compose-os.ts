@@ -17,6 +17,12 @@ export async function composeOs(original: Uint8Array, ids: readonly string[], pr
   const pending = moduleBuildError(ids)
   if (pending) throw new Error(pending)
   compiledModuleSource()
+  if (ids.includes('midi-scenes')) {
+    if (ids.length !== 1) throw new Error('MIDI Scenes supports standalone firmware only. Remove the other modules.')
+    // Its pinned standalone image owns the same arena as the logger. Do not
+    // return a logger-free image or overwrite either runtime's reservation.
+    throw new Error('MIDI Scenes builds are awaiting verification with the built-in logger. You can save this configuration while verification is pending.')
+  }
   if (!loader) return composeStaticOs(original, ids, profile)
   if (ids.some(id => ['analog-bassdrum','midi-scenes','usb-audio-out-tracks-main-cue','quantizer'].includes(id))) throw new Error('These modules require the verified loader-free engine.')
   const menus = await composeChoosers(original, ids, profile), cores = await recoverStockDsp(original)

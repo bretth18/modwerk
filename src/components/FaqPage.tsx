@@ -58,8 +58,8 @@ const SECTIONS: FaqSection[] = [
             <li>Complete module documentation, a short practical tutorial and real screenshots matching the online modules’ black-and-white style. The owner reviews the documentation and test evidence before release.</li>
           </ol>
           <p>Emulator results cannot replace hardware testing. Existing modules retain their recorded evidence; read each module’s test conditions and limitations rather than assuming every configuration has been tested.</p>
-          <p><strong>Always test your own configuration before relying on it.</strong> Use a backed-up copy of your project and rehearse your actual track count, module combinations, modulation, recording, streaming and transitions for a sustained run. Repeat after changing modules or versions, and keep a tested fallback for performances or important recordings.</p>
-          {!DOWNLOADS_ENABLED && <p>Firmware downloads remain paused. Wait for the built-in logger to complete verification before installing a custom build from Octamod.</p>}
+          <p><strong>Always test your own configuration before relying on it.</strong> Start with a fresh Octatrack project after installing a new build, then rehearse your actual track count, module combinations, modulation, recording, streaming and transitions for a sustained run. Repeat after changing modules or versions, and keep a tested fallback for performances or important recordings.</p>
+          {!DOWNLOADS_ENABLED && <p>Firmware downloads remain paused. Wait for the updated build to complete verification before installing a custom build from Octamod.</p>}
         </>,
       },
       {
@@ -97,7 +97,8 @@ const SECTIONS: FaqSection[] = [
         keywords: 'backup projects banks samples card sync restore safety risk memory',
         answer: <>
           <p>In the PROJECT menu’s PROJECT section, save your project and choose <strong>SYNC TO CARD</strong>. Then copy the entire CompactFlash card to your computer, including projects, banks and samples. Keep both the official .bin and .syx files available, and read the recovery procedure before installing custom firmware.</p>
-          <p>Use a stable power supply and allow the update and startup to finish completely. Review module limitations and test with a copy of a project before using custom firmware in a live set. Some module configurations reserve about 10 MB of sample memory. The finished build explains whether your selection uses this reservation.</p>
+          <p>After installing a new firmware build, create and open a fresh project on your Octatrack. Older projects that use stock effects replaced by your modules are not compatible with the modified firmware. Removing stock FX2 effects can also make existing projects incompatible. Keep your original project backups.</p>
+          <p>Use a stable power supply and allow the update and startup to finish completely. Review module limitations and test your fresh project before using custom firmware in a live set. Some module configurations reserve about 10 MB of sample memory. The finished build explains whether your selection uses this reservation.</p>
           <p className="faq-source"><OfficialLink href={RELEASE_NOTES}>Elektron OS 1.40C update and backup instructions</OfficialLink></p>
         </>,
       },
