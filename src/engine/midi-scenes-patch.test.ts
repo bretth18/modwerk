@@ -24,7 +24,8 @@ describe('MIDISC2.0 stock-free candidate', () => {
   })
   it('reconstructs without changing the input, and checks every guard and the final output', async () => {
     const { original, output, recipe } = synthetic()
-    expect(await reconstructMidiScenes(original, recipe)).toEqual(output)
+    // Hash comparison avoids a million-element assertion walk on shared CI runners.
+    expect(sha(await reconstructMidiScenes(original, recipe))).toBe(sha(output))
     expect(original.some(Boolean)).toBe(false)
     const altered = original.slice(); altered[12] = 1
     await expect(reconstructMidiScenes(altered, recipe)).rejects.toThrow('unmodified')
