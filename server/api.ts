@@ -1,6 +1,7 @@
 import { forum } from './forum'
 import { recordUsage, recordModuleDownload, usageStatistics } from './usage'
 import { moduleStatistics } from './module-statistics'
+import { adminInsights } from './admin-insights'
 import recipes from '../src/catalog/module-sets.json'
 import type { Database, Env, Media, User } from './platform'
 import { ADMIN_ACTOR, authentication, currentUser, needMember, isAdmin, throttle } from './auth'
@@ -86,10 +87,15 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     }
     if (path.startsWith('/api/admin/')) {
       if (!admin) throw new HttpError(403,'Administrator access is required.')
+      if (path === '/api/admin/insights' && request.method === 'GET') return response(await adminInsights(db))
       if (path === '/api/admin/statistics' && request.method === 'GET') return await usageStatistics(db,Number(url.searchParams.get('days') ?? 7))
       if (path === '/api/admin/overview' && request.method === 'GET') return response(await db.prepare("SELECT (SELECT COUNT(*) FROM submissions WHERE status='pending') AS pending,(SELECT COUNT(*) FROM module_publications) AS published,(SELECT COUNT(*) FROM comments) AS comments,(SELECT COUNT(*) FROM issues WHERE status='open') AS issues,(SELECT COALESCE(SUM(bytes),0) FROM media) AS mediaBytes").first())
       if (path === '/api/admin/history' && request.method === 'GET') return response((await db.prepare('SELECT e.id,e.module_id,e.action,e.note,e.created_at,u.display_name AS actor FROM review_events e JOIN users u ON u.id=e.actor_id ORDER BY e.rowid DESC LIMIT 100').all()).results)
-      if (path === '/api/admin/issues' && request.method === 'GET') return response((await db.prepare('SELECT i.id,i.module_id,i.author_login,i.title,i.body,i.status,i.created_at,u.display_name AS reporter FROM issues i JOIN users u ON u.id=i.reporter_id ORDER BY i.created_at DESC LIMIT 200').all()).results)
+      if (path === '/api/admin/issues' && request.method === 'GET') {
+        const moduleId = url.searchParams.has('moduleId') ? required(url.searchParams.get('moduleId'),'Module ID',100) : '', status = url.searchParams.get('status')??'all'
+        if (!['all','open','closed'].includes(status)) throw new HttpError(400,'Choose all, open or closed issues.')
+        return response((await db.prepare("SELECT i.id,i.module_id,i.author_login,i.title,i.body,i.status,i.created_at,u.display_name AS reporter FROM issues i JOIN users u ON u.id=i.reporter_id WHERE (?='' OR i.module_id=?) AND (?='all' OR i.status=?) ORDER BY i.created_at DESC,i.rowid DESC LIMIT 200").bind(moduleId,moduleId,status,status).all()).results)
+      }
       if ((match=path.match(/^\/api\/admin\/issues\/([^/]+)$/)) && request.method === 'PATCH') {
         const body=await jsonBody(request)
         if(!['open','closed'].includes(String(body.status)))throw new HttpError(400,'Choose open or closed.')

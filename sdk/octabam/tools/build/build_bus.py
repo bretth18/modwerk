@@ -567,18 +567,14 @@ def assemble_syms(src_text, org, label=""):
     if _SCRATCH is None:
         import tempfile
         _SCRATCH = pathlib.Path(tempfile.mkdtemp(prefix="build_bus."))
-    tmp, binf, symf = (_SCRATCH / n for n in ("src.asm", "out.bin", "out.sym"))
-    tmp.write_text(src_text)
-    r = subprocess.run([str(DIS), "-in", str(tmp), "-org", f"{org:x}",
-                        "-out", str(binf), "-sym", str(symf), "-list"],
-                       check=True, capture_output=True, text=True)
-    blob = binf.read_bytes()
+    from remix.compile_cache import assemble_dsp
+    blob, symbol_text, listing = assemble_dsp(src_text, org, DIS, _SCRATCH)
     words = [blob[i] | (blob[i + 1] << 8) | (blob[i + 2] << 16)
              for i in range(0, len(blob), 3)]
     syms = dict((k, int(v, 16)) for k, v in
-                (l.split() for l in symf.read_text().split("\n") if l))
+                (l.split() for l in symbol_text.split("\n") if l))
     if DISASM.exists() and os.environ.get("NOROUNDTRIP") != "1":
-        _roundtrip(r.stdout, blob, org, label)
+        _roundtrip(listing, blob, org, label)
     # The SDK carries no copy of the stock null routine. Its verified words
     # are recovered only while composing the developer's own local image.
     marker = "; OCTAMOD_LOCAL_NULL_STUB"
@@ -1007,8 +1003,12 @@ def main():
               [f"--defsym={n}=0x{v:x}" for n, v in defsyms] + ["-o", e, o]
         _oc = ["m68k-elf-objcopy", "-O", "binary"] + \
               [x for s in sections for x in ("-j", s)] + [e, b]
-        _as = ["m68k-elf-as", f"-mcpu={cpu}"] + (["-I", incdir] if incdir else []) + ["-o", o, src]
-        for _args in (_as, _ld, _oc):
+        from remix.compile_cache import assemble_coldfire
+        try:
+            assemble_coldfire(src, cpu, o, incdir)
+        except subprocess.CalledProcessError as error:
+            sys.exit(f"{src}: m68k-elf-as failed\n{error.stderr[-2000:]}")
+        for _args in (_ld, _oc):
             _r = subprocess.run([str(a) for a in _args], capture_output=True, text=True)
             if _r.returncode:
                 sys.exit(f"{src}: {_args[0]} failed\n{_r.stderr[-2000:]}")

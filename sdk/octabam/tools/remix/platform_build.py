@@ -67,7 +67,11 @@ def link_runtime(units, work: pathlib.Path, defsyms: dict, base: int, includes=N
         # the whole link, and an ISA-C assembly of ISA-A/B text is the same
         # bytes (refhash: every runtime bit-identical, 25 Sep 2026).
         # `Linked.cpu` still governs the ROM-cave form.
-        _run(["m68k-elf-as", "-mcpu=54455", *inc, "-o", obj, ROOT / u.source], work)
+        from remix.compile_cache import assemble_coldfire
+        try:
+            assemble_coldfire(ROOT / u.source, '54455', obj, incdir=inc[1] if inc else None, cwd=work)
+        except subprocess.CalledProcessError as error:
+            sys.exit(f"platform build: m68k-elf-as failed\n{error.stderr[-3000:]}")
         objs.append(obj)
     elf, raw = work / "runtime.elf", work / "runtime.bin"
     _run(["m68k-elf-ld", f"-Ttext=0x{base:x}",

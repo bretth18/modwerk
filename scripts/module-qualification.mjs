@@ -2,6 +2,8 @@
 import { readFile, readdir } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { requireRetainedEvidence } from './retained-evidence.mjs'
 import { requireModuleQualificationForPublication } from '../src/catalog/module-contract.ts'
 import { compareModuleVersions } from '../src/catalog/versions.ts'
 import { requireModuleDocumentation } from './module-documentation.mjs'
@@ -57,7 +59,11 @@ export function parseReleaseWaivers(value) {
   }
   return records
 }
-export async function requireFolderQualification(folder, document, baseline, waivers=new Map()) {
+export async function requireFolderQualification(folder, document, baseline, waivers=new Map(), options={}) {
+  if(document.tests.retainedEvidence) {
+    const root=options.root??fileURLToPath(new URL('../',import.meta.url))
+    return requireRetainedEvidence(root,folder,document,baseline,waivers,requireFolderQualification,options)
+  }
   const existing=baseline.get(document.id)
   if(existing?.version===document.version&&existing.folderSha256===await moduleFolderSha256(folder)) return 'retained'
   const declaration=document.tests.releaseWaiver

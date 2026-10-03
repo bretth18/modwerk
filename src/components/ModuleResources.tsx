@@ -1,9 +1,10 @@
 import { FLASHING_RISKS, FIRMWARE_SHARING_NOTICE } from '../firmware-notices'
 import { RESOURCES, resourceSource } from '../catalog/resources'
+import { MODULE_DOCUMENTS_BY_ID } from '../catalog/documents'
 import { Icon } from './Icon'
 import { ModuleAccess } from './ModuleAccess'
 export function ModuleResources({ id }: { id: string }) {
-  const data = RESOURCES[id]
+  const data = RESOURCES[id], retained = MODULE_DOCUMENTS_BY_ID[id].tests.retainedEvidence
   return <>
     <details className="module-disclosure"><summary><span>How to use it</span><Icon name="plus" size={16} /></summary><div className="disclosure-content">
       <ModuleAccess id={id} showScreenshots={false} />
@@ -11,7 +12,7 @@ export function ModuleResources({ id }: { id: string }) {
     </div></details>
     <details className="module-disclosure"><summary><span>Technical details & safety<small>Resources, tests, flashing</small></span><Icon name="plus" size={16} /></summary><div className="disclosure-content">
     <section className="detail-section resource-section"><div className="section-title"><h2>Storage & processing</h2><span className="subtle">Recorded: {data.measured}</span></div><div className="resource-grid">{[data.memory, data.compute].map(metric => <div className="resource-card" key={metric.label}><span>{metric.label}</span><strong>{metric.value}</strong><p>{metric.note}</p></div>)}</div><p className="resource-note">Final firmware size and combined load depend on the selected modules and active tracks. The builder must measure the complete configuration. <a href={resourceSource(id)} target="_blank" rel="noreferrer">Read the measurement record ↗</a></p></section>
-    <section className="quality-note"><h2>Test evidence & hardware status</h2><p>{data.quality}</p><a href={resourceSource(id)} target="_blank" rel="noreferrer">Source and test details ↗</a></section>
+    <section className="quality-note"><h2>Test evidence & hardware status</h2><p>{data.quality}</p>{retained && <p>Test evidence comes from version {retained.moduleVersion}. This update changes documentation or media; module behavior and resource limits are unchanged.</p>}<a href={resourceSource(id)} target="_blank" rel="noreferrer">Source and test details ↗</a></section>
     <aside className="risk-note"><strong>Custom firmware · flash at your own risk</strong><p>{FLASHING_RISKS} Back up your projects and samples, read the module’s compatibility notes, and keep the original firmware. Passing tests does not guarantee safe operation on every device or configuration.</p><p>{FIRMWARE_SHARING_NOTICE}</p></aside>
     </div></details>
   </>
