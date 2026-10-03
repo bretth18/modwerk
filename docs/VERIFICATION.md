@@ -1,5 +1,7 @@
 # Verification record
 
+**Core logger update (3 October 2026):** the always-installed logger changes runtime, arena and OS-hook bytes. Historical full-image proofs below describe the earlier engine. Downloads are gated pending renewed full native/browser coverage and hardware review. See [core logger evidence](../sdk/runtime/logging/TESTING.md).
+
 ## Browser firmware flow — 1 October 2026
 
 Verified in the actual local frontend using the browser worker and a locally saved original OS 1.40C file. Stock and output bytes stayed local; this record contains identities only.
@@ -52,7 +54,7 @@ The full lightweight application check passed 116 tests in 28 files, lint, TypeS
 
 Website GitHub sign-in was removed: no OAuth routes, grants, callback cookies, GitHub identity in the session contract, or frontend sign-in code remain. Former `/api/auth/github`, `/callback` and `/complete` return 410 without redirects or cookies. Account-bound cloud configuration copies are retired (410); configurations stay on the device and move by export. Migration 0007 drops the one-use grant table and adds administrator sessions.
 
-Administration is separate from guest identity. The backend owner configures `ADMIN_KEY_SHA256`; the administrator exchanges the key for an eight-hour, tab-scoped session sent in `X-Octamod-Admin`. Every `/api/admin/` route checks it on the server. Without a valid configured digest, access fails closed. Key attempts are throttled, sign-out revokes the session and rotating the key revokes all sessions. Issue reports, comment moderation and history are only under `/api/admin/`; reporters see their own reports through `/api/issues/mine`.
+Administration is separate from guest identity. The backend owner configures `ADMIN_KEY_SHA256`; the administrator exchanges the key for an eight-hour, tab-scoped session sent in `X-Octamod-Admin`. Every `/api/admin/` route checks it on the server. Without a valid configured digest, access fails closed. Key attempts are throttled, sign-out revokes the session and rotating the key revokes all sessions. Comment moderation, history and the issue inbox (log downloads, GitHub retries) are only under `/api/admin/`; reporters see their own reports through `/api/issues/mine`. Issue reports are mirrored to public GitHub issues when `GITHUB_TOKEN` is configured. The status webhook accepts only HMAC-signed deliveries for the configured repository (`src/community/service.test.ts`).
 
 `npm run check` passed 125 tests in 30 files (including the four owner-merge approval tests and new administrator/guest isolation tests), the four synthetic SDK tests, lint, app/server TypeScript and the static build. Against the actual local Worker runtime (workerd) the retired routes returned 410, admin routes 403 and an unconfigured key 503. A disposable second Worker with its own D1 state and a temporary key accepted the correct key, refused a wrong one, kept a guest out of the admin inbox, showed the reporter only their own report and refused the revoked session. The temporary key and state were deleted. The new pages were not yet exercised in a browser.
 

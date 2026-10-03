@@ -14,12 +14,20 @@ function call(target: number, kind: string, length: number) {
   return result
 }
 /** `loader: false` leaves out the dynamic DSP loader's hooks (native static stock). */
-export function createPlatformOsWrites(runtime: RuntimeText, ids: readonly string[], { loader = true }: { loader?: boolean } = {}): OsWrite[] {
+export function createPlatformOsWrites(runtime: RuntimeText, ids: readonly string[], { loader = true, reserveBytes = 1707 * 6144 }: { loader?: boolean; reserveBytes?: number } = {}): OsWrite[] {
   const selected = new Set(resolveSelection(ids).map(module => module.id))
   if (metadata.schema !== 1 || metadata.revision !== CATALOG_SOURCE.revision || metadata.osBase !== OS_LOAD_ADDRESS) throw new Error('The platform write metadata does not match the catalog.')
   const text = runtime.sections.find(section => section.name === '.text')
   if (!text || text.address !== PLATFORM_RUNTIME_BASE || text.size < 1) throw new Error('The platform writes require the linked runtime text.')
-  const plan: OsWrite[] = metadata.arena.map(row => ({ address: row.address, guardLength: row.length, guardSha256: row.sha256, bytes: long(row.value), note: row.note }))
+  if (!Number.isInteger(reserveBytes) || reserveBytes % 6144 || reserveBytes < 6144 || reserveBytes / 6144 > 14602 - 2048) throw new Error('Invalid platform arena reservation.')
+  const delta = reserveBytes - 1707 * 6144
+  const arenaValue = (row: typeof metadata.arena[number]) => {
+    if (row.note.startsWith('arena base')) return row.value + delta
+    if (row.note === 'arena clear length') return row.value - delta
+    if (['page count','free-list fill limit','recorder page cap'].includes(row.note)) return row.value - delta / 6144
+    throw new Error('Unknown native arena write.')
+  }
+  const plan: OsWrite[] = metadata.arena.map(row => ({ address: row.address, guardLength: row.length, guardSha256: row.sha256, bytes: long(arenaValue(row)), note: row.note }))
   plan.push({ address: metadata.boot.address, guardLength: metadata.boot.length, guardSha256: metadata.boot.sha256, bytes: call(BOOTSTRAP_ADDRESS, 'jsr', 6), note: metadata.boot.note })
   for (const group of metadata.groups) {
     if (group.moduleId === 'dsp-dynload-stock') {

@@ -1,4 +1,6 @@
-// Loader-free composition kernel, byte-verified against the native module selection matrix.
+import { installCoreLogger, LOGGER_RETAINED_BYTES } from './core-logger.ts'
+// Loader-free composition with mandatory logging. Historical module-matrix
+// proofs predate the core; downloads stay gated until full images are reverified.
 import { composeAnalogBd, createAnalogBootstrap } from './analog-bd.ts'
 import { defaultChoosers, composeChoosers } from './choosers.ts'
 import { recoverStockDsp } from './stock-dsp.ts'
@@ -10,12 +12,12 @@ import { applyGuardedOsWrites, OS_LOAD_ADDRESS } from './os-patches.ts'
 export async function composeStaticOs(original: Uint8Array, ids: readonly string[], profile = defaultChoosers(ids)) {
   const cores = await recoverStockDsp(original), runtime = await createStaticColdFireRuntime(ids, original)
   const menus = await composeChoosers(original, ids, profile, runtime), dsp = await composeStaticDsp(cores, ids, menus.chooser)
-  let patched = await applyGuardedOsWrites(original, [...menus.writes, ...dsp.writes, ...(runtime ? createPlatformOsWrites(runtime, ids, { loader: false }) : [])])
-  if (!runtime) return { bytes: patched, chooser: menus.chooser, dsp: dsp.layouts, runtime: { bytes: 0, stage: 0, stageEnd: 0 }, caveCursor: menus.caveCursor, overflowCursor: menus.overflowCursor }
+  const logging = await installCoreLogger(runtime, original, ids, menus.chooser)
+  let patched = await applyGuardedOsWrites(original, [...menus.writes, ...dsp.writes, ...createPlatformOsWrites(runtime, ids, { loader: false, reserveBytes: runtime.reserveBytes }), ...logging.writes])
   const analog = ids.includes('analog-bassdrum') ? await composeAnalogBd(original, patched, ids, profile) : null
   if (analog) patched = analog.bytes
-  const bootstrap = analog ? await createAnalogBootstrap(runtime.bytes, analog.uploads) : await createRuntimeBootstrap(runtime.bytes)
+  const bootstrap = analog ? await createAnalogBootstrap(runtime.bytes, analog.uploads, runtime.reserveBytes - LOGGER_RETAINED_BYTES) : await createRuntimeBootstrap(runtime.bytes, runtime.reserveBytes - LOGGER_RETAINED_BYTES)
   if (OS_LOAD_ADDRESS + original.length !== BOOTSTRAP_ADDRESS) throw new Error('The runtime loader does not follow the original OS extent.')
   const bytes = new Uint8Array(patched.length + bootstrap.append.length); bytes.set(patched); bytes.set(bootstrap.append, patched.length)
-  return { bytes, chooser: menus.chooser, dsp: dsp.layouts, runtime: { bytes: runtime.bytes.length, stage: bootstrap.layout.stage, stageEnd: bootstrap.layout.stageEnd }, caveCursor: menus.caveCursor, overflowCursor: menus.overflowCursor }
+  return { bytes, chooser: menus.chooser, dsp: dsp.layouts, runtime: { reservedBytes: runtime.reserveBytes, bytes: runtime.bytes.length, stage: bootstrap.layout.stage, stageEnd: bootstrap.layout.stageEnd }, caveCursor: menus.caveCursor, overflowCursor: menus.overflowCursor }
 }

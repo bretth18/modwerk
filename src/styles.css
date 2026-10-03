@@ -673,6 +673,18 @@ h1 { font-size: 28px; }
 .issue-report summary span { color: #9997ad; font-size: 12px; margin-left: 12px; }
 .issue-report .community-form { max-width: 620px; gap: 14px; margin-top: 15px; }
 .issue-report button { align-self: flex-start; }
+.issue-report select { width: 100%; color: #e5e5ef; border: 1px solid #4a4a57; border-radius: 6px; background: #1e1e24; padding: 10px 12px; font-size: 14px; }
+.issue-report-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.issue-report fieldset { padding: 16px; gap: 12px; }
+.issue-report fieldset .service-note { margin: 0; }
+.issue-report-steps { margin: 0; padding-left: 20px; color: #c9c9d6; font-size: 13px; line-height: 1.7; display: flex; flex-direction: column; gap: 6px; }
+.issue-report kbd { font: inherit; font-size: 11px; border: 1px solid #4a4a57; border-radius: 4px; padding: 1px 5px; color: #dddde9; }
+.issue-report .community-form label.issue-report-escape { flex-direction: row; align-items: center; gap: 9px; }
+.inbox-issue dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 10px 0; font-size: 12px; color: #a7a7b9; }
+.inbox-issue dt { color: #c9c9d6; }
+.inbox-issue dd { margin: 0; overflow-wrap: anywhere; }
+.inbox-actions { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+@media (max-width: 600px) { .issue-report-row { grid-template-columns: 1fr; } }
 .guest-name { display: flex; align-items: center; gap: 12px; font-size: 12px; color: #a7a7b9; margin: 18px 0 10px; }
 .guest-name input { min-width: 0; width: 180px; border: 1px solid #444450; background: #222227; border-radius: 5px; padding: 8px; color: #dedeea; }
 .inbox-issue { border-top: 1px solid var(--line); padding: 18px 0; }
@@ -1140,3 +1152,13 @@ h1 { font-size: 28px; }
   .module-set-art .signal-art { height: 100%; }
   .contribution-start p { font-size: 14px; }
 }
+.issue-report .community-form > fieldset { display: flex; flex-direction: column; min-width: 0; }
+.issue-report .community-form legend { font-size: 14px; font-weight: 600; padding: 0 6px; }
+.issue-report-help summary { margin-bottom: 12px; }
+.issue-report-help .service-note { padding-top: 12px; }
+.issue-report-log-preview { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.issue-report-log-preview pre { max-height: 260px; overflow: auto; padding: 12px; background: #111115; font-size: 11px; border: 1px solid var(--line); border-radius: 6px; }
+.issue-report-success { max-width: 620px; padding: 20px 0 6px; color: #d1cede; font-size: 14px; line-height: 1.7; }
+.issue-report-success:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.issue-report input[type=file] { width: 100%; min-width: 0; padding: 10px 0; font-size: 13px; }
+.issue-report input[type=file]::file-selector-button { padding: 9px 12px; border: 1px solid #656575; border-radius: 6px; background: #28282f; color: #eeeef7; cursor: pointer; margin-right: 10px; }

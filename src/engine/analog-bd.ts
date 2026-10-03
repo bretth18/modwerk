@@ -59,10 +59,10 @@ export async function composeAnalogBd(original: Uint8Array, patched: Uint8Array,
   }
   return { bytes: await applyGuardedOsWrites(patched, writes), uploads }
 }
-export async function createAnalogBootstrap(runtime: Uint8Array, uploads: Awaited<ReturnType<typeof composeAnalogBd>>['uploads']) {
+export async function createAnalogBootstrap(runtime: Uint8Array, uploads: Awaited<ReturnType<typeof composeAnalogBd>>['uploads'], reserveBytes?: number) {
   const template = facts.bootstrap, encoded = Uint8Array.from({ length: template.bytes }, (_, i) => parseInt(template.code.slice(i * 2, i * 2 + 2), 16))
   if (uploads.length !== 2 || await bytesHash(encoded) !== template.sha256) throw new Error('Invalid Analog BD bootstrap template.')
-  const runtimePayload = payload(runtime, 0, 0), layout = runtimeStageLayout(runtime.length, runtimePayload.blob.length)
+  const runtimePayload = payload(runtime, 0, 0), layout = runtimeStageLayout(runtime.length, runtimePayload.blob.length, reserveBytes)
   runtimePayload.destination = layout.base; runtimePayload.stage = layout.stage
   const object = parseColdFireObject(encoded), text = object.sections.find(s => s.name === '.text')!
   const find = (name: string) => { const s = object.symbols.find(s => s.name === name); if (!s || s.section !== text.index) throw new Error('Invalid Analog BD bootstrap symbol.'); return s }

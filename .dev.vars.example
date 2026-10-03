@@ -9,3 +9,9 @@ AUTH_SECRET=
 # Resend sending-only key scoped to your verified domain; leave blank to disable registration/recovery.
 RESEND_API_KEY=
 EMAIL_FROM=
+# Optional: mirror issue reports to GitHub issues (fine-grained token, Issues: read and write on one repository).
+# Leave blank to keep reports in the admin inbox only.
+GITHUB_TOKEN=
+GITHUB_REPOSITORY=repeat98/octamod
+# Secret of the repository webhook (Issues events) that syncs closed/reopened status back to reporters.
+GITHUB_WEBHOOK_SECRET=

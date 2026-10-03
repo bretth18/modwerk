@@ -40,10 +40,10 @@ export async function boundedBody(request: Request, limit: number): Promise<Arra
   for (const chunk of chunks) { joined.set(chunk, position); position += chunk.length }
   return joined.buffer
 }
-export async function jsonBody(request: Request): Promise<Record<string, unknown>> {
+export async function jsonBody(request: Request, limit = 32 * 1024): Promise<Record<string, unknown>> {
   if (!request.headers.get('content-type')?.startsWith('application/json')) throw new HttpError(415, 'Send JSON for this request.')
   try {
-    const value: unknown = JSON.parse(new TextDecoder().decode(await boundedBody(request, 32 * 1024)))
+    const value: unknown = JSON.parse(new TextDecoder().decode(await boundedBody(request, limit)))
     if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error()
     return value as Record<string, unknown>
   } catch (error) { if (error instanceof HttpError) throw error; throw new HttpError(400, 'The request is not valid JSON.') }

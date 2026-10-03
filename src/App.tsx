@@ -26,6 +26,7 @@ import { AVAILABLE_MODULES, isModulePaused, moduleAvailabilityError } from './ca
 import { DETAILS } from './catalog/details'
 import { ENGINE_AVAILABLE, DOWNLOADS_ENABLED, DSP_LOADER } from './engine/protocol'
 import { useFirmwareBuild } from './hooks/useFirmwareBuild'
+import { setWorkspaceReportContext } from './community/report-context'
 import { FirmwareBuildPanel } from './components/FirmwareBuildPanel'
 import { downloadSelection, parseSelection } from './config/selection'
 import { Icon } from './components/Icon'
@@ -74,6 +75,11 @@ export default function App() {
   const { active, ready, firmware, fileState, fileError, firmwareSaved, readFile, clearFile } = workspace
   const selectedIds = active?.moduleIds ?? []
   const firmwareBuild = useFirmwareBuild(workspace.firmwareClient, active, firmware)
+  const builtSha = firmwareBuild.state === 'built' ? firmwareBuild.result?.sha256 ?? '' : ''
+  useEffect(() => {
+    // Issue reports attach the active configuration and, once built here, the image hash (never the image).
+    setWorkspaceReportContext({ configurationName: active?.name ?? '', modules: (active?.moduleIds ?? []).map(id => ({ id, version: active?.moduleVersions[id] ?? '' })).filter(item => item.version), keepStockFx2: DSP_LOADER ? active?.keepStockFx2 ?? true : null, build: builtSha })
+  }, [active, builtSha])
   const [query, setQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)

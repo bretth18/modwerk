@@ -8,7 +8,7 @@ import { explainBuildFailure } from './build-errors'
 import { checkSelection } from '../catalog/compatibility'
 import { moduleAvailabilityError } from '../catalog/availability'
 import { CATALOG_SOURCE, resolveSelection } from '../catalog/modules'
-import { DSP_LOADER, FIRMWARE_VERSION, type BuildReport, type EngineRequest, type EngineResponse } from './protocol'
+import { DOWNLOADS_ENABLED, DSP_LOADER, FIRMWARE_VERSION, type BuildReport, type EngineRequest, type EngineResponse } from './protocol'
 export function createEngineSession(reply: (response: EngineResponse, transfer?: Transferable[]) => void) {
   let base: DecodedFirmware | null = null, generation = 0
   return async (request: EngineRequest) => {
@@ -38,11 +38,12 @@ export function createEngineSession(reply: (response: EngineResponse, transfer?:
       const report: BuildReport = {
         version: request.moduleIds.includes('midi-scenes') ? 'MIDISC2.0' : FIRMWARE_VERSION, revision: CATALOG_SOURCE.revision, sourceCommit: source.sourceCommit, sourceTreeSha256: source.sourceTreeSha256,
         moduleIds: modules.map(module => module.id), moduleVersions: Object.fromEntries(modules.map(module=>[module.id,module.version])), keepStockFx2: request.keepStockFx2,
-        osBytes: result.bytes.length, runtimeBytes: result.runtime.bytes,
+        osBytes: result.bytes.length, runtimeBytes: result.runtime.bytes, reservedBytes: result.runtime.reservedBytes,
         fx1Rows: result.chooser.fx1.length, fx2Rows: result.chooser.fx2.length,
         omittedStockFx2: chooserMetadata.stockFx2.filter(key => !result.chooser.fx2.includes(key)),
       }
       if (request.type === 'validate') { reply({ id: request.id, type: 'validated', report }); return }
+      if (!DOWNLOADS_ENABLED) throw new Error('Firmware downloads are paused while the built-in logger completes verification.')
       reply({ id: request.id, type: 'progress', phase: 'packing' })
       const update = encodeFirmware(original, result.bytes, report.version)
       reply({ id: request.id, type: 'progress', phase: 'verifying' })
