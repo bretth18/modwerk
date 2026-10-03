@@ -133,7 +133,7 @@ class CompileMemo(unittest.TestCase):
     def builder(self):
         # Extract only the integration function; importing build_bus would load
         # native manifests and require firmware. No submitted source is evaluated.
-        tree = ast.parse((NATIVE / 'tools/build/build_bus.py').read_text())
+        tree = ast.parse((NATIVE / 'tools/build/build_bus.py').read_text(encoding='utf-8'))
         function, = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == 'assemble_syms']
         decoder = self.root / 'fake-decoder'; decoder.write_text('synthetic identity')
         audit = Mock()
