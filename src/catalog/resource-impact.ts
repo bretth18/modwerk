@@ -19,9 +19,9 @@ export function parseRetainedResourceImpacts(value: unknown, pins: readonly Reso
   return records
 }
 
-export function requireModuleResourceImpact(document: ModuleDocument, retained?: ReadonlyMap<string, RetainedResourceImpact>): ModuleResourceImpact {
+export function requireModuleResourceImpact(document: ModuleDocument, retained?: ReadonlyMap<string, RetainedResourceImpact>, retainedVersion?: string): ModuleResourceImpact {
   if (document.resources.impact) return parseModuleResourceImpact(document.resources.impact)
   const record = retained?.get(document.id)
-  if (record?.version === document.version) return record.impact
+  if (record && (record.version === document.version || record.version === retainedVersion)) return record.impact
   throw new Error(document.id + ': release requires populated CPU, DSP core and memory gauges in resources.impact, with a load tier, basis, rationale, source and workload; rough source estimates are accepted')
 }

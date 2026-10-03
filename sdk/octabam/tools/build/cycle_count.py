@@ -175,18 +175,18 @@ def prep(name):
 def assemble(src, tag):
     with tempfile.TemporaryDirectory() as d:
         d = pathlib.Path(d)
-        (d / "s.asm").write_text(src)
-        r = subprocess.run([str(ASM), "-in", str(d / "s.asm"), "-org", "1000",
-                            "-out", str(d / "s.bin"), "-sym", str(d / "s.sym")],
-                           capture_output=True, text=True)
-        if r.returncode:
-            sys.exit(f"{tag}: assembler failed\n{r.stderr}")
+        from remix.compile_cache import assemble_dsp
+        try:
+            blob, symbol_text, _ = assemble_dsp(src, 0x1000, ASM, d, listing=False)
+        except subprocess.CalledProcessError as error:
+            sys.exit(f"{tag}: assembler failed\n{error.stderr}")
         syms = {}
-        for line in (d / "s.sym").read_text().split("\n"):
+        for line in symbol_text.split("\n"):
             if line.strip():
                 k, v = line.split()
                 syms[k] = int(v, 16)
-        return (d / "s.bin").read_bytes(), syms
+        return blob, syms
+
 
 
 def measure(name):
