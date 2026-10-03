@@ -29,5 +29,6 @@ export function ConfigurationEffects({ ids, keepStockFx2, build }: { ids: readon
         {!checked && ids.length > 0 && <p className="subtle">The final FX menus are confirmed after your base firmware is checked.</p>}
       </>}
     </div>
+    <p className="subtle">A DSP memory optimization is coming soon, allowing you to combine many more modules.</p>
   </section>
 }

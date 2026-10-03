@@ -27,7 +27,7 @@ document.querySelector<HTMLInputElement>('#firmware')!.onchange = async event =>
     assert(inputSha === '34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad', 'Original local 1.40C update required')
     const inspect = () => request({type:'inspect',name:file.name,buffer:original.slice().buffer})
     assert((await inspect()).type === 'inspection','Inspection failed')
-    const expected = 'd7c792e0ec9b28e1b674e92526b2fa9a8a8279655dbd66a7b59495e5d5c54007'
+    const expected = '62da520eb0a22f8b3bf8edcdf97cc99c0647566d59df0dc53dc44fbeee17e002'
     let mainSha = '', builtReport
     for(const keepStockFx2 of [false,true]) {
       const validated = await request({type:'validate',moduleIds:['midi-scenes'],keepStockFx2})
@@ -36,9 +36,10 @@ document.querySelector<HTMLInputElement>('#firmware')!.onchange = async event =>
       if(built.type !== 'built') throw new Error(JSON.stringify(built))
       mainSha = await sha(decodeFirmware(new Uint8Array(built.buffer)).mainOs)
       assert(built.sha256 === expected && await sha(new Uint8Array(built.buffer)) === expected, 'Native update mismatch')
-      assert(mainSha === 'debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87', 'Native MAIN mismatch')
+      assert(mainSha === 'a5af848dfcb3d4b9e060e8385666330cb2f1e5b0dcbb0531e555b6417b7e7805', 'Native logged MAIN mismatch')
       assert(built.report.version === 'MIDISC2.0' && built.report.moduleVersions['midi-scenes'] === '0.2.4-experimental', 'Release version mismatch')
-      assert(built.report.runtimeBytes === 0, 'Unexpected generic runtime overlay')
+      assert(built.report.runtimeBytes === 60572 && built.report.reservedBytes === 178176, 'Logger runtime or protected reservation mismatch')
+      assert(built.report.omittedStockFx2.length === 0 && built.report.fx1Rows === 10 && built.report.fx2Rows === 14, 'Stock effects changed')
       builtReport = built.report
     }
     let mixedSelectionsRefused = 0
@@ -57,6 +58,6 @@ document.querySelector<HTMLInputElement>('#firmware')!.onchange = async event =>
     await request({type:'clear'})
     assert((await request({type:'build',moduleIds:['midi-scenes'],keepStockFx2:false})).type === 'error','Clear retained firmware')
     assert(await sha(original) === inputSha, 'Input changed')
-    result.textContent = JSON.stringify({status:'passed',mainSha256:mainSha,updateSha256:expected,mixedSelectionsRefused,changedBaseRefused:true,truncatedBaseRefused:true,failedInspectionClearsBase:true,clearRefusesBuild:true,originalUnchanged:true,stockMenuOptionsEquivalent:true,firmwareSaved:false,firmwareUploaded:false,report:builtReport},null,2)
+    result.textContent = JSON.stringify({status:'passed',mainSha256:mainSha,updateSha256:expected,mixedSelectionsRefused,changedBaseRefused:true,truncatedBaseRefused:true,failedInspectionClearsBase:true,clearRefusesBuild:true,originalUnchanged:true,stockMenuOptionsEquivalent:true,loggerIncluded:true,guardPageReserved:true,firmwareSaved:false,firmwareUploaded:false,report:builtReport},null,2)
   } catch(error) { result.textContent = JSON.stringify({status:'failed',message:error instanceof Error?error.message:String(error)}) }
 }
