@@ -16,16 +16,17 @@ describe('release package scope and reviewed source inventory', () => {
     expect(record.compilerSha256).toBe(createHash('sha256').update(await readFile(resolve(root, 'scripts/build-module-packages.py'))).digest('hex'))
     expect(record.moduleVersions).toEqual(await compiledModuleVersions(root, catalog))
   })
-  it('compiles verified modules, keeps pending MIDI Scenes in source inventory, and includes USB infrastructure', async () => {
+  it('binds approved standalone MIDI Scenes without compiling its archived 8.2 port', async () => {
     const versions = await compiledModuleVersions(root, catalog), paths = await moduleSourcePaths(root)
-    expect(Object.keys(versions)).toEqual(['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', ...verifiedRequested,'previewvol','cc-map'])
-    expect(versions).not.toHaveProperty('midi-scenes')
+    expect(Object.keys(versions)).toEqual(['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', ...requested,'previewvol','cc-map'])
+    expect(versions['midi-scenes']).toBe('0.2.4-experimental')
     expect(versions.miniverb).toBe('0.1.2-experimental')
     for (const id of verifiedRequested) {
       expect(versions[id]).toBe('0.1.2-experimental')
       expect(paths).toContain('modules/' + id + '/manifest.py')
     }
-    expect(paths).toContain('modules/midi-scenes/manifest.py')
+    expect(paths).toContain('modules/midi-scenes/recipe.json')
+    expect(paths.some(path=>path.startsWith('modules/midi-scenes/upstream/'))).toBe(false)
     expect(paths).toContain('platform/usb-midi/manifest.py')
   })
   it('refuses stale and duplicate catalog pins for requested imports', async () => {

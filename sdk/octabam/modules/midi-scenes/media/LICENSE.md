@@ -1,7 +1,7 @@
 # OT UI capture rights and attribution
 
 These original LCD framebuffer captures were produced locally for Octamod
-documentation at the owner's request on 1 October 2026. Credit: Octamod
+documentation at the owner's request on 2–3 October 2026. Credit: Octamod
 contributors (headless capture). The native emulator is octabam's ot_emu;
 its original MIT source attribution remains in the SDK.
 

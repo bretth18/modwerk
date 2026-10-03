@@ -36,7 +36,7 @@ export function createEngineSession(reply: (response: EngineResponse, transfer?:
       if (current !== generation) throw new Error('The selected firmware changed. Build again.')
       const source = compiledModuleSource()
       const report: BuildReport = {
-        version: FIRMWARE_VERSION, revision: CATALOG_SOURCE.revision, sourceCommit: source.sourceCommit, sourceTreeSha256: source.sourceTreeSha256,
+        version: request.moduleIds.includes('midi-scenes') ? 'MIDISC2.0' : FIRMWARE_VERSION, revision: CATALOG_SOURCE.revision, sourceCommit: source.sourceCommit, sourceTreeSha256: source.sourceTreeSha256,
         moduleIds: modules.map(module => module.id), moduleVersions: Object.fromEntries(modules.map(module=>[module.id,module.version])), keepStockFx2: request.keepStockFx2,
         osBytes: result.bytes.length, runtimeBytes: result.runtime.bytes,
         fx1Rows: result.chooser.fx1.length, fx2Rows: result.chooser.fx2.length,
@@ -44,7 +44,7 @@ export function createEngineSession(reply: (response: EngineResponse, transfer?:
       }
       if (request.type === 'validate') { reply({ id: request.id, type: 'validated', report }); return }
       reply({ id: request.id, type: 'progress', phase: 'packing' })
-      const update = encodeFirmware(original, result.bytes, FIRMWARE_VERSION)
+      const update = encodeFirmware(original, result.bytes, report.version)
       reply({ id: request.id, type: 'progress', phase: 'verifying' })
       const digest = await crypto.subtle.digest('SHA-256', new Uint8Array(update).buffer)
       if (current !== generation) throw new Error('The selected firmware changed. Build again.')

@@ -11,11 +11,18 @@ import { createColdFireRuntime } from './coldfire-runtime.ts'
 import { createRuntimeBootstrap, BOOTSTRAP_ADDRESS } from './bootstrap.ts'
 import { createPlatformOsWrites } from './platform-writes.ts'
 import { applyGuardedOsWrites, OS_LOAD_ADDRESS } from './os-patches.ts'
+import midiScenesRecipe from '../../sdk/octabam/modules/midi-scenes/recipe.json' with { type: 'json' }
+import { reconstructMidiScenes, type MidiScenesPatch } from './midi-scenes-patch.ts'
 import { DSP_LOADER } from './protocol.ts'
 export async function composeOs(original: Uint8Array, ids: readonly string[], profile?: ChooserProfile, { loader = DSP_LOADER }: { loader?: boolean } = {}) {
   const pending = moduleBuildError(ids)
   if (pending) throw new Error(pending)
   compiledModuleSource()
+  if (ids.includes('midi-scenes')) {
+    if (ids.length !== 1) throw new Error('MIDI Scenes supports standalone firmware only. Remove the other modules.')
+    const bytes = await reconstructMidiScenes(original, midiScenesRecipe as MidiScenesPatch)
+    return { bytes, chooser: defaultChoosers([], true), dsp: [], runtime: { bytes: 0, stage: 0, stageEnd: 0 }, caveCursor: 0, overflowCursor: 0 }
+  }
   if (!loader) return composeStaticOs(original, ids, profile)
   if (ids.some(id => ['analog-bassdrum','midi-scenes','usb-audio-out-tracks-main-cue','quantizer'].includes(id))) throw new Error('These modules require the verified loader-free engine.')
   const menus = await composeChoosers(original, ids, profile), cores = await recoverStockDsp(original)

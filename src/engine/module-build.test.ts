@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { compiledModuleSource, validateCompiledModules } from './module-build'
 describe('source-built module identity', () => {
-  it('binds verified compiled modules while excluding pending MIDI Scenes', () => {
+  it('binds compiled packages and the guarded standalone MIDI Scenes recipe', () => {
     const source = compiledModuleSource()
-    expect(Object.keys(source.moduleVersions)).toHaveLength(13)
-    expect(source.moduleVersions).not.toHaveProperty('midi-scenes')
+    expect(Object.keys(source.moduleVersions)).toHaveLength(14)
+    expect(source.moduleVersions['midi-scenes']).toBe('0.2.4-experimental')
     expect(source.sourceTreeSha256).toMatch(/^[a-f0-9]{64}$/)
   })
   it('rejects stale or missing compiled versions before firmware composition', () => {

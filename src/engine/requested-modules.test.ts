@@ -4,7 +4,8 @@ import { parseColdFireObject } from './coldfire-elf'
 import { linkColdFireRuntime } from './coldfire-link'
 import proofs from './assets/requested-link-proofs.json'
 describe('reviewed requested runtime packages', () => {
-  for (const proof of proofs.proofs) it('matches stock-free GNU link: ' + proof.ids.join(', '), async () => {
+  // Historical 8.2 link fixtures remain archived evidence; MIDISC2.0 uses no relocatable units.
+  for (const proof of proofs.proofs.filter(proof=>!proof.ids.includes('midi-scenes'))) it('matches stock-free GNU link: ' + proof.ids.join(', '), async () => {
     const units = proof.labels.map(label => {
       const pkg = requestedFacts.objects.find(p => p.label === label)!
       return { label, object: parseColdFireObject(Uint8Array.from(pkg.code.match(/../g)!, b => parseInt(b, 16))) }
