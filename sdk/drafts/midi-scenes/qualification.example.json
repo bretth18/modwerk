@@ -1,6 +1,6 @@
 {
-  "moduleVersion": "0.2.2-experimental",
-  "sourceSha256": "6c5c0e91ae95398dd77f31948cb2ebfd3892a74c1f44f73211d5815dd9f09259",
+  "moduleVersion": "0.2.3-experimental",
+  "sourceSha256": "5e0a7ab89c739e50cd52af04facebfb64cef73e1f1298cb87f2f6eff132e4147",
   "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
   "cycles": [
     {
@@ -10,15 +10,15 @@
       "maxInstances": null,
       "budget": null,
       "unit": "cycles/event",
-      "method": "static",
+      "method": "emulator",
       "conditions": {
-        "parameterExtremes": "Describe every minimum, maximum and branch boundary tested.",
-        "parameterModulation": "Describe simultaneous LFOs, p-locks, MIDI CC and scene sweeps; justify each inapplicable mechanism.",
-        "modeSwitching": "Describe repeated/interrupted mode, bypass and Part changes.",
-        "maxLoad": "Describe maximum voices/instances, both cores, FX slots, streaming and USB/MIDI load.",
-        "inputConditions": "Describe silence, impulses, full-scale inputs, feedback and other worst-case signal conditions."
+        "parameterExtremes": "Measured: clamp pages 0-4 / slots 12-17 at nine branch/extreme values; sparse count 0/1/32/46/47/255; crossfader 0/1/63/64/126/127. Full matrix remains incomplete.",
+        "parameterModulation": "Measured crossfader fixtures and panel CC input; playback audio/LFO load status is in emulator.json. MIDI LFO/active trig-lock branch bounds remain incomplete.",
+        "modeSwitching": "Measured real panel mode entry, four pattern selections and ACT commit helper. Complete repeated/interrupted persistence paths remain incomplete.",
+        "maxLoad": "Eight-FLEX-track fixture with 24 audio LFOs; both FX slots NONE. See actual per-track stem results. Maximum stock effects/ARP/MIDI load not established.",
+        "inputConditions": "Generated deterministic stereo fixture; not a full worst-case input/signal matrix."
       },
-      "report": "TESTING.md"
+      "report": "evidence/emulator.md"
     }
   ],
   "memory": {
@@ -36,8 +36,8 @@
     "sharedBytes": null,
     "maxInstances": null,
     "totalBytes": null,
-    "conditions": "State exact build options, alignment, accounting convention, allocator/stack bounds and reused stock/shared memory; justify every absent allocation class.",
-    "report": "TESTING.md"
+    "conditions": "Exact additional scratch reservation 73,728 bytes; partition table, observed write extents and stack in emulator reports. Complete reused-memory ownership, code/state split and stack/heap upper bounds remain incomplete.",
+    "report": "evidence/emulator.md"
   },
   "hardware": {
     "kind": "functional",

@@ -12,7 +12,7 @@ const integer = (value: number, minimum: number, maximum: number) => Number.isSa
 const keys = (value: object, names: string[]) => Object.keys(value).sort().join(',') === names.sort().join(',')
 
 export function validateMidiScenesPatch(recipe: MidiScenesPatch) {
-  if (!recipe || !keys(recipe, ['schemaVersion', 'id', 'moduleVersion', 'upstream', 'osBytes', 'stockSha256', 'mainSha256', 'writes']) || recipe.schemaVersion !== 1 || recipe.id !== 'midi-scenes' || recipe.moduleVersion !== '0.2.2-experimental' || recipe.osBytes !== 1112560 || !digest(recipe.stockSha256) || !digest(recipe.mainSha256) || !Array.isArray(recipe.writes) || !recipe.writes.length || recipe.writes.length > 1024) throw new Error('Invalid MIDISC2.0 source recipe.')
+  if (!recipe || !keys(recipe, ['schemaVersion', 'id', 'moduleVersion', 'upstream', 'osBytes', 'stockSha256', 'mainSha256', 'writes']) || recipe.schemaVersion !== 1 || recipe.id !== 'midi-scenes' || recipe.moduleVersion !== '0.2.3-experimental' || recipe.osBytes !== 1112560 || !digest(recipe.stockSha256) || !digest(recipe.mainSha256) || !Array.isArray(recipe.writes) || !recipe.writes.length || recipe.writes.length > 1024) throw new Error('Invalid MIDISC2.0 source recipe.')
   if (!recipe.upstream || !keys(recipe.upstream, ['repository', 'revision', 'path', 'sha256']) || recipe.upstream.repository !== 'https://github.com/bkkbrls-del/midisc' || recipe.upstream.revision !== '4f9a89453fdcdd39a3cd57f010ffa489cac721cd' || recipe.upstream.path !== 'tools/midisc/release20.json' || recipe.upstream.sha256 !== 'a2dbe20d82de8bd3a4f010c1e94c4b2ebf080ca3f7203521053f747b52dc24a1') throw new Error('MIDISC2.0 provenance does not match the pinned author release.')
   let previousEnd = 0
   for (const row of recipe.writes) {

@@ -77,7 +77,7 @@ def convert(upstream_bytes, stock):
                 position += 1
         flush()
         entries.append({'offset': start, 'bytes': end - start, 'guardSha256': digest(stock[start:end]), 'segments': tokens})
-    recipe = {'schemaVersion': 1, 'id': 'midi-scenes', 'moduleVersion': '0.2.2-experimental',
+    recipe = {'schemaVersion': 1, 'id': 'midi-scenes', 'moduleVersion': '0.2.3-experimental',
               'upstream': {'repository': 'https://github.com/bkkbrls-del/midisc', 'revision': PIN,
                            'path': 'tools/midisc/release20.json', 'sha256': UPSTREAM_SHA256},
               'osBytes': len(stock), 'stockSha256': STOCK_SHA256, 'mainSha256': MAIN_SHA256, 'writes': entries}

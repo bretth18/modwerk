@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "moduleVersion": "0.2.2-experimental",
+  "moduleVersion": "0.2.3-experimental",
   "sourceRevision": "4f9a89453fdcdd39a3cd57f010ffa489cac721cd",
   "method": "Read-only comparison of actual composed companion bytes with guarded MIDISC2.0 author regions; detects overlap, does not establish safe composition.",
   "companions": [

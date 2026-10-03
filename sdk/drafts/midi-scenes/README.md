@@ -1,6 +1,6 @@
 # MIDI Scenes — MIDISC2.0 candidate
 
-Version: `0.2.2-experimental`. Original author: **bkkbrls-del**. Source pin:
+Version: `0.2.3-experimental`. Original author: **bkkbrls-del**. Source pin:
 [`4f9a89453fdcdd39a3cd57f010ffa489cac721cd`](https://github.com/bkkbrls-del/midisc/tree/4f9a89453fdcdd39a3cd57f010ffa489cac721cd).
 
 ## Overview
@@ -90,15 +90,24 @@ an independently verified composition strategy; they must not reuse the old
 Standalone MAIN and full ELEK/ELUP update parity and rejection pass in Node
 and an actual browser worker. Exact total memory/stack accounting, defensible
 worst-case cycle bounds and complete 2.0 control qualification remain pending.
-The existing catalog and download restriction are preserved.
+The existing catalog and build restriction are preserved. A future supported
+standalone selection uses the existing configurator and shared firmware builder.
+No separate MIDI Scenes download flow is required.
 
 ## Tests and measurements
 
-See [TESTING.md](TESTING.md) and [software identities](evidence/software.json).
+See [TESTING.md](TESTING.md), [software identities](evidence/software.json) and
+[actual emulator measurements](evidence/emulator.md).
 The recipe has 85 guarded regions: 9,027 written bytes consist of 5,848
 literal changed bytes and 3,179 bytes recovered from hashed local-stock spans.
 These are **recipe storage counts**, not code/RAM/stack totals or CPU cycles.
 Do not equate them with a complete memory qualification.
+
+The 3 October emulator harness exercises 360 focused helper fixtures and the
+actual panel/playback paths. The focused crossfader maximum is 47,642 modeled
+cycles and 156 bytes of observed stack; the exact additional scratch
+reservation is 73,728 bytes. These are observations under the declared
+conditions, not complete chip timing or memory bounds.
 
 The owner accepts a reported standalone MIDISC2.0 hardware test. Its model,
 duration, workload, measured timing and memory guards were not supplied here.

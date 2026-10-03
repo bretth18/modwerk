@@ -178,7 +178,7 @@
     "ot-control2.png": "a7b43f851089ec888ecea40c98ea458c2d394f461a33cae804bc27b23c356f1d"
   },
   "moduleId": "midi-scenes",
-  "moduleVersion": "0.2.2-experimental",
+  "moduleVersion": "0.2.3-experimental",
   "captured": "2026-10-03",
   "sourceRevision": "4f9a89453fdcdd39a3cd57f010ffa489cac721cd",
   "upstreamRecipeSha256": "a2dbe20d82de8bd3a4f010c1e94c4b2ebf080ca3f7203521053f747b52dc24a1",

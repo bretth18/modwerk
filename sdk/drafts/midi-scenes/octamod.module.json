@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.2.2-experimental",
+  "version": "0.2.3-experimental",
   "nativeManifest": "manifest.py",
   "media": [
     {
@@ -15,9 +15,9 @@
         "page": "MIDI NOTE SETUP",
         "shows": "location",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.2-experimental",
+        "moduleVersion": "0.2.3-experimental",
         "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
-        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
     {
@@ -32,9 +32,9 @@
         "page": "MIDI CTRL 1 SETUP",
         "shows": "location",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.2-experimental",
+        "moduleVersion": "0.2.3-experimental",
         "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
-        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
     {
@@ -49,9 +49,9 @@
         "page": "MIDI CONTROL 1",
         "shows": "location-and-controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.2-experimental",
+        "moduleVersion": "0.2.3-experimental",
         "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
-        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
     {
@@ -66,9 +66,9 @@
         "page": "MIDI CONTROL 1, Scene A held",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.2-experimental",
+        "moduleVersion": "0.2.3-experimental",
         "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
-        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
     {
@@ -83,9 +83,9 @@
         "page": "MIDI CONTROL 1, Scene A released",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.2-experimental",
+        "moduleVersion": "0.2.3-experimental",
         "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
-        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
     {
@@ -100,16 +100,16 @@
         "page": "MIDI ARPEGGIATOR",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.2-experimental",
+        "moduleVersion": "0.2.3-experimental",
         "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
-        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
     {
       "path": "media/ot-lfo.png",
       "captureType": "emulator",
-      "caption": "MIDI LFO: SPD1–3 and DEP1–3.",
-      "alt": "MIDI LFO: SPD1–3 and DEP1–3.",
+      "caption": "MIDI LFO: SPD1\u20133 and DEP1\u20133.",
+      "alt": "MIDI LFO: SPD1\u20133 and DEP1\u20133.",
       "credit": "Octamod contributors (headless capture)",
       "license": "LicenseRef-OT-UI-Documentation",
       "source": "original",
@@ -117,16 +117,16 @@
         "page": "MIDI LFO",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.2-experimental",
+        "moduleVersion": "0.2.3-experimental",
         "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
-        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
     {
       "path": "media/ot-control2.png",
       "captureType": "emulator",
-      "caption": "MIDI CONTROL 2: CC5–10 inactive at OFF.",
-      "alt": "MIDI CONTROL 2: CC5–10 inactive at OFF.",
+      "caption": "MIDI CONTROL 2: CC5\u201310 inactive at OFF.",
+      "alt": "MIDI CONTROL 2: CC5\u201310 inactive at OFF.",
       "credit": "Octamod contributors (headless capture)",
       "license": "LicenseRef-OT-UI-Documentation",
       "source": "original",
@@ -134,9 +134,9 @@
         "page": "MIDI CONTROL 2",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.2-experimental",
+        "moduleVersion": "0.2.3-experimental",
         "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
-        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     }
   ],
@@ -197,34 +197,35 @@
     ]
   },
   "resources": {
-    "recorded": "3 Oct 2026: standalone MAIN and full update parity; qualification pending",
+    "recorded": "3 Oct 2026: emulator observations, exact scratch reservation; bounds pending",
     "storage": {
-      "label": "Lock state",
-      "display": "Full accounting pending",
-      "value": null,
+      "label": "Additional scratch reservation",
+      "display": "73,728 bytes reserved",
+      "value": 73728,
       "unit": "bytes",
-      "method": "unmeasured",
-      "conditions": "Recipe writes 9,027 bytes using 5,848 authored changed bytes and 3,179 locally recovered stock bytes. These are storage/patch counts, not exact total code/state/stack memory. See TESTING.md.",
-      "source": "README.md"
+      "method": "static",
+      "conditions": "Two exact 2.0 scratch boundary operands reserve 73,728 additional bytes. This excludes reused stock storage and an unproven stack bound; it is not complete module memory accounting.",
+      "source": "evidence/emulator.md"
     },
     "processing": {
-      "label": "CPU load",
-      "display": "Not measured",
-      "value": null,
-      "unit": "bytes",
-      "method": "unmeasured",
-      "conditions": "No worst-case ColdFire cycle bound or chip timing measurement supplied for this 2.0 source.",
-      "source": "README.md"
+      "label": "Focused crossfader observation",
+      "display": "47,642 modeled cycles/event",
+      "value": 47642,
+      "unit": "modeled cycles/event",
+      "method": "emulator",
+      "conditions": "Largest of 60 direct helper fixtures; 31,863 instructions and 156 observed stack bytes. MCF5206E/68020 hybrid model, no V4e chip/cache/DMA timing or proven complete control bound. Inclusive RTOS intervals are separate.",
+      "source": "evidence/emulator.md"
     }
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Author MIDISC2.0 MAIN and full ELEK/ELUP update reconstructed byte for byte in Node and an actual browser worker. Changed stock, corrupt recipe and damaged update rejection passed; eight real monochrome LCD captures retained. All thirteen selectable companions overlap fixed regions. Owner-accepted hardware report retained; cycles, complete memory and release integration pending.",
+    "summary": "Author MIDISC2.0 MAIN and full ELEK/ELUP update reconstructed byte for byte in Node and an actual browser worker. Changed stock, corrupt recipe and damaged update rejection passed; eight real monochrome LCD captures retained. All thirteen selectable companions overlap fixed regions. Owner-accepted hardware report retained; cycles, complete memory and release integration pending. Explicit private emulator measurements cover 360 helper fixtures, instrumentation parity and panel/playback; modeled counts and 73,728-byte scratch reservation do not establish publication bounds.",
     "hardwareStatus": "reported",
     "evidenceRevision": "4f9a89453fdcdd39a3cd57f010ffa489cac721cd",
     "gates": [
       "scripts/verify-midi-scenes-native.mjs",
-      "scripts/verify-midi-scenes-packaging.mjs"
+      "scripts/verify-midi-scenes-packaging.mjs",
+      "scripts/midi-scenes-emulator/run.py"
     ]
   },
   "source": {

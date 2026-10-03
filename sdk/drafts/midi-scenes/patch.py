@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 PIN = '4f9a89453fdcdd39a3cd57f010ffa489cac721cd'
-RECIPE_SHA256 = 'cbd64494716cb609dc73c9f95fb917c3ed2ff9fc9b3387b2c9eecafc63c0ed96'
+RECIPE_SHA256 = '0172203121018ca77ec62cac038c8e5edf4b0070db20e0e213435180ff95b4ed'
 
 
 def recipe():

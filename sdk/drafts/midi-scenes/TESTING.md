@@ -1,6 +1,6 @@
 # MIDISC2.0 verification candidate
 
-Version `0.2.2-experimental`; source `bkkbrls-del/midisc`
+Version `0.2.3-experimental`; source `bkkbrls-del/midisc`
 `4f9a89453fdcdd39a3cd57f010ffa489cac721cd`, `tools/midisc/release20.json`.
 The native remixer still pins the old 8.2 author dependency; this candidate
 cannot inherit that port's acceptance, relocation or selection matrix.
@@ -27,7 +27,7 @@ inside the restricted sandbox. Their result equals the direct reconstruction
 and the author's full MAIN hash; a changed base was refused. Re-importing the
 pinned raw author recipe with `scripts/import-midi-scenes-recipe.py` reproduces
 the committed stock-free recipe SHA-256
-`cbd64494716cb609dc73c9f95fb917c3ed2ff9fc9b3387b2c9eecafc63c0ed96`.
+`0172203121018ca77ec62cac038c8e5edf4b0070db20e0e213435180ff95b4ed`.
 
 `scripts/verify-midi-scenes-native.mjs` compares the browser reconstruction
 against that exact author identity, refuses modified stock and three corrupt
@@ -89,6 +89,21 @@ The exact plan, emulator identity, image identity and PNG hashes are in
 were used to manufacture screens. CHAN remains OFF; no external MIDI receiver
 or physical OT is connected. The CTRL 1 SETUP screen includes SCNCTRL5, a
 version-specific difference that needs complete control documentation/testing.
+
+## Measured emulator evidence
+
+The explicitly requested emulator measurements are in
+[evidence/emulator.md](evidence/emulator.md), with per-fixture counters in
+[evidence/focused.json](evidence/focused.json) and exact tool/build identities
+in [evidence/emulator.json](evidence/emulator.json). The private harness measures
+360 helper fixtures, compares measurement/reference behavior, drives the actual
+panel and playback, and records audio stems and MIDI UART0 counters. It also
+verifies the 73,728-byte scratch boundary change at two independent operands.
+Read the workload/coverage and timing-model limits before interpreting maxima.
+No firmware-dependent command was added to application checks.
+
+Metadata/evidence version `0.2.3-experimental` retains the identical author
+MAIN and screenshot pixels; the version increase covers the new reports.
 
 ## Hardware report
 
