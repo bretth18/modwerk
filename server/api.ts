@@ -1,12 +1,13 @@
+import { forum } from './forum'
 import { recordUsage, recordModuleDownload, usageStatistics } from './usage'
 import { moduleStatistics } from './module-statistics'
 import recipes from '../src/catalog/module-sets.json'
 import type { Database, Env, Media, User } from './platform'
-import { ADMIN_ACTOR, authentication, currentUser, guest, isAdmin, throttle } from './auth'
+import { ADMIN_ACTOR, authentication, currentUser, needMember, isAdmin, throttle } from './auth'
 import { checkOrigin, HttpError, jsonBody, required, response } from './security'
 import { MODULES } from '../src/catalog/modules'
 
-function needUser(user: User | null): User { if (!user) throw new HttpError(401,'No guest session is saved on this device.'); return user }
+function needUser(user: User | null): User { if (!user) throw new HttpError(401,'Sign in to manage your activity.'); return user }
 async function knownModule(db: Database, id: string) {
   if (MODULES.some(module => module.id === id)||recipes.some(recipe=>'remix-'+recipe.id===id)) return
   if (!await db.prepare("SELECT submission_id FROM module_publications WHERE module_id=?").bind(id).first()) throw new HttpError(404,'Module not found.')
@@ -23,8 +24,10 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if (!db) throw new HttpError(503,'Community services are not connected yet. Your device workspace still works.')
     if (path === '/api/usage/events' && request.method === 'POST') return await recordUsage(request,env,db)
     if (path === '/api/usage/module-downloads' && request.method === 'POST') return await recordModuleDownload(request,env,db)
-    const user = await currentUser(request,db)
+    const user = await currentUser(request,db,env)
     const admin = await isAdmin(request,env,db)
+    const discussion = await forum(request,db,user,admin)
+    if(discussion)return discussion
     let match: RegExpMatchArray | null
     if ((match = path.match(/^\/api\/media\/([^/]+)$/)) && request.method === 'GET') {
       const item = await db.prepare('SELECT m.*,s.status,s.owner_id,p.submission_id AS published FROM media m JOIN submissions s ON s.id=m.submission_id LEFT JOIN module_publications p ON p.submission_id=s.id WHERE m.id=?').bind(match[1]).first<Media & {status:string;owner_id:string;published:string|null}>()
@@ -52,12 +55,12 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       await throttle(db,'community-ip:'+(request.headers.get('CF-Connecting-IP')??'local'),30)
       if(match[2]==='comments')required(body.body,'Comment',2000)
       else if(match[2]==='rating'&&(!Number.isInteger(body.value)||Number(body.value)<1||Number(body.value)>5))throw new HttpError(400,'Choose a rating from 1 to 5.')
-      const visitor=await guest(request,env,db,typeof body.displayName==='string'&&body.displayName.trim()?required(body.displayName,'Display name',60):'Guest'),owner=visitor.user
+      const owner=needMember(user)
       await throttle(db,'community:' + owner.id,30)
       if (match[2] === 'comments') { await db.prepare('INSERT INTO comments(id,module_id,user_id,body) VALUES(?,?,?,?)').bind(crypto.randomUUID(),match[1],owner.id,required(body.body,'Comment',2000)).run() }
       else if(match[2]==='like'){if(typeof body.liked!=='boolean')throw new HttpError(400,'Choose liked or unliked.');if(body.liked)await db.prepare('INSERT INTO likes(module_id,user_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(match[1],owner.id).run();else await db.prepare('DELETE FROM likes WHERE module_id=? AND user_id=?').bind(match[1],owner.id).run()}
       else { const rating = Number(body.value); if (!Number.isInteger(rating) || rating < 1 || rating > 5) throw new HttpError(400,'Choose a rating from 1 to 5.'); await db.prepare('INSERT INTO ratings(module_id,user_id,value) VALUES(?,?,?) ON CONFLICT(module_id,user_id) DO UPDATE SET value=excluded.value').bind(match[1],owner.id,rating).run() }
-      const result=response({ok:true});if(visitor.cookie)result.headers.append('Set-Cookie',visitor.cookie);if(visitor.sessionToken)result.headers.set('X-Octamod-Session',visitor.sessionToken);return result
+      return response({ok:true})
     }
     if ((match = path.match(/^\/api\/comments\/([^/]+)$/)) && request.method === 'DELETE') {
       if (admin) await db.prepare('DELETE FROM comments WHERE id=?').bind(match[1]).run()
@@ -73,9 +76,9 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       const published=core||recipe?null:await db.prepare("SELECT u.github_login FROM module_publications p JOIN submissions s ON s.id=p.submission_id JOIN users u ON u.id=s.owner_id WHERE p.module_id=?").bind(match[1]).first<{github_login:string}>()
       const author=core?.author??recipe?.author??published?.github_login
       if(!author)throw new HttpError(400,'No author is registered for this module.')
-      const visitor=await guest(request,env,db,typeof body.displayName==='string'&&body.displayName.trim()?required(body.displayName,'Display name',60):'Guest')
-      await db.prepare('INSERT INTO issues(id,module_id,author_login,reporter_id,title,body) VALUES(?,?,?,?,?,?)').bind(crypto.randomUUID(),match[1],author,visitor.user.id,title,details).run()
-      const result=response({ok:true,author},201);if(visitor.cookie)result.headers.append('Set-Cookie',visitor.cookie);if(visitor.sessionToken)result.headers.set('X-Octamod-Session',visitor.sessionToken);return result
+      const owner=needMember(user)
+      await db.prepare('INSERT INTO issues(id,module_id,author_login,reporter_id,title,body) VALUES(?,?,?,?,?,?)').bind(crypto.randomUUID(),match[1],author,owner.id,title,details).run()
+      return response({ok:true,author},201)
     }
     if(path==='/api/issues/mine'&&request.method==='GET'){
       if(!user)return response([])
