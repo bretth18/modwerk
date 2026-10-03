@@ -11,7 +11,7 @@ export function requireCompleteReadme(document, readme) {
     const index=headings.findIndex(heading=>heading[1].trim().toLowerCase()===title.toLowerCase())
     if(index<0||!readme.slice(headings[index].index+headings[index][0].length,headings[index+1]?.index).trim()) throw new Error(document.id+': README requires a populated '+title+' section')
   }
-  const documentation=document.tests.qualification?.documentation??document.tests.releaseWaiver?.documentation
+  const documentation=document.tests.retainedEvidence?.documentation??document.tests.qualification?.documentation??document.tests.releaseWaiver?.documentation
   if(!documentation) throw new Error(document.id+': complete release documentation is required')
   const tutorial=documentation.tutorial
   const tutorialIndex=headings.findIndex(heading=>heading[1].trim()===tutorial.title)
@@ -72,10 +72,14 @@ export function requireMonochromePng(bytes) {
   }
 }
 
-export async function requireModuleDocumentation(folder, document) {
-  requireModuleUiForPublication(document)
+export async function requireModuleDocumentation(folder, document, retainedVersion) {
+  requireModuleUiForPublication(document, retainedVersion)
   requireCompleteReadme(document,await readFile(await resolveModuleFile(folder,'README.md'),'utf8'))
-  const documentation=document.tests.qualification?.documentation??document.tests.releaseWaiver?.documentation
+  const documentation=document.tests.retainedEvidence?.documentation??document.tests.qualification?.documentation??document.tests.releaseWaiver?.documentation
+  for(const path of documentation.screenshots) {
+    const media=document.media.find(item=>item.path===path)
+    if(!media||media.captureType==='audio'||!path.endsWith('.png')) throw new Error(document.id+': tutorial screenshots must reference declared hardware/emulator PNG media')
+  }
   const paths=new Set([...document.access.screenshots,...documentation.screenshots])
   for(const path of paths) {
     if(!path.endsWith('.png')) throw new Error(document.id+': release documentation screenshots must be black-and-white PNGs')

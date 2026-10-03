@@ -15,6 +15,15 @@ Read the repository instructions, [module contract](MODULE_REPOSITORIES.md),
 [resource-gauge contract](MODULE_RESOURCE_GAUGES.md). Those contracts remain the
 publication authority; this workflow does not waive them.
 
+Classify an update before running extensive native or hardware tests. For a
+documentation/media/display-only update, use the checked `tests.retainedEvidence`
+path in the qualification contract. Preserve original test reports, hardware
+status, measured version and real capture provenance; reuse reviewed thumbnails
+and captures when their content still applies. Finish and inspect any requested
+documentation or media changes. New modules and changes to runtime behavior,
+stability, cycles, memory, load or compatibility require full qualification.
+Unknown or mixed changes use the full path.
+
 ## 1. Isolate the requested work
 
 Inspect Git status, attached worktrees, current main and existing PRs. Reuse the
@@ -36,7 +45,7 @@ new module cannot yet meet publication gates. Imported pending modules also live
 in `sdk/drafts/<id>/`, outside native discovery and the public catalog. Preserve
 an existing approved version while its update is pending. Increase semantic
 version for source, documentation and media changes; synchronize every version
-pin and evidence binding. Never expand the frozen eleven-module baseline.
+pin; retained evidence keeps its original tested-version binding. Never expand the frozen eleven-module baseline.
 
 ## 2. Build a useful module page and thumbnail
 
@@ -49,7 +58,8 @@ Keep `octamod.module.json` synchronized with the native controls and README.
 Include a short named tutorial with at least three ordered steps: setup and
 selection; a useful control example; expected result and reset/stop/bypass.
 Synchronize it with `qualification.example.json.documentation` while pending,
-and with `tests.qualification.documentation` once fully qualified. Never add
+with `tests.qualification.documentation` once fully qualified, or with
+`tests.retainedEvidence.documentation` for a verified editorial update. Never add
 invented qualification results just to display the tutorial.
 
 Inspect `src/components/ModulePreview.tsx` and `src/styles.css`. Create an
@@ -132,7 +142,8 @@ These are relative estimates, not utilization/headroom percentages or a
 substitute for measured qualification. Do not add new modules to the companion
 estimates reserved for frozen existing versions.
 
-Document actual worst-case cycles during parameter modulation, mode changes
+For new modules and runtime-impacting updates, document actual worst-case cycles
+during parameter modulation, mode changes
 and maximum load, exact memory regions and totals, and attributed real-hardware
 operation evidence under the current qualification policy. A 60-minute,
 eight-track stress run is not required. Keep unreported details explicit.
@@ -143,7 +154,11 @@ An emulator UI capture is not hardware qualification. If hardware or measured
 reports are unavailable, leave those fields pending and explain the precise
 remaining work; still finish the thumbnail, documentation and screenshots.
 
-Only a fully qualified, reviewed module can move into
+An existing editorial update must pass the retained-evidence comparison instead
+of repeating extensive qualification. Its reports and status still describe the
+original tested version; no measurements or hardware passes are invented.
+
+Only a fully qualified, reviewed new module can move into
 `sdk/octabam/modules/<id>/` and be added to `sdk/catalog.json`. Build/import
 approved stock-free packages with `npm run modules:build` and
 `npm run modules:import`, integrate runtime stock reconstruction locally, and

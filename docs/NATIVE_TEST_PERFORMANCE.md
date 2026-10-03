@@ -1,0 +1,17 @@
+# Native test performance
+
+The compiler memo reduces repeated assembly across gates while all test cases and validation still run. `build_bus`, the cycle counter and platform runtime assembler reuse exact assembler outputs; links, symbol resolution, placement/overlap checks, static cycle analysis, assembler/disassembler round-trip audits and local stock fingerprint/geometry checks execute again. No test pass, firmware image, hardware result or emulator state is reused by this memo.
+
+Entries under ignored local `sdk/octabam/out/cache/{dsp-assembly,cf-assembly}` bind exact source text, address/CPU/options, executable bytes and relevant environment. Sources with external file/environment/time directives and executable script wrappers are conservatively compiled every time. Entries carry integrity hashes and use atomic writes; corruption, missing tools, failed compiles or an unavailable cache fall back to compilation or the original failure. Object restoration writes independent copies per gate/shard. Never upload the cache; remove it when the local test session ends.
+
+Use `OCTABAM_NO_CACHE=1` for a fully uncached comparison. A source, compiler, options or relevant environment change invalidates the corresponding entry. Caching does not authorize skipping round-trip checks or using `reach` QUICK mode as full acceptance. The inherited native Makefile still needs adaptation to the trimmed monorepo and is not a supported standalone firmware build command.
+
+## Verification scope
+
+The firmware-free regressions use fake compiler processes and arbitrary synthetic bytes, never native DSP execution. Twenty identical calls invoke the fake compiler once instead of twenty times and return exactly the same bytes, symbols and listing. Regressions cover changed source/origin/CPU/listing/tool bytes/environment, same-size/same-timestamp tool replacement, uncached mode, external dependencies, missing tools, corruption, failed compilation, stale outputs and unavailable cache. Integration tests prove that cache hits still run the round-trip audit and local stock guard, including rejection on the second call.
+
+The updated tooling also compiled all approved stock-free authored packages in the existing isolated toolchain, with no firmware mounted and stock access explicitly denied. Cold and warm builds both passed `--verify-existing`: every authored package, receiver, runtime object, descriptor/menu recipe and bootstrap matched the committed native/browser baseline. The import changed only the tooling source-tree fingerprint; generated payload files stayed identical.
+
+The quick source-package build did not show a reliable wall-time gain (1.40 s cold, 1.54 s warm in one pair). The synthetic regression measures eliminated compiler invocations, not end-to-end native wall time. Complete firmware image parity and before/after suite timings must be checked locally with the owner's own firmware before treating the optimization as fully qualified. No firmware/DSP/emulator/hardware suite ran as part of application checks. Hardware qualification remains separate.
+
+For non-runtime updates, [risk-based qualification](MODULE_QUALIFICATION.md#risk-based-update-checks--3-october-2026) removes the extensive test rerun entirely when approved history and protected inputs prove unchanged runtime behavior and resource limits. New modules and runtime/resource changes still require full qualification.

@@ -1,6 +1,6 @@
 # Module qualification gates
 
-From 2 October 2026, new modules and all module updates must provide **worst-case cycle counts, exact memory accounting, attributed real-hardware test evidence and complete documentation**. These are publication requirements. Missing measurements, nominal/average CPU percentages, emulator-only evidence, historical evidence for another source and failed detailed hardware checks cannot qualify a submission. On 2 October 2026 the owner removed the mandatory 60-minute, eight-track stress run. A clearly labelled functional hardware report is accepted alongside the cycle, memory, source, UI and integration evidence below.
+From 2 October 2026, new modules and updates affecting runtime behavior, stability, cycles, memory or load must provide **worst-case cycle counts, exact memory accounting, attributed real-hardware test evidence and complete documentation**. These are publication requirements. Missing measurements, nominal/average CPU percentages, emulator-only evidence, historical evidence for another source and failed detailed hardware checks cannot qualify a submission. On 2 October 2026 the owner removed the mandatory 60-minute, eight-track stress run. A clearly labelled functional hardware report is accepted alongside the cycle, memory, source, UI and integration evidence below.
 
 `npm run modules:check`, `npm run modules:generate`, PR CI and release validation enforce the record. PR CI also checks version increases against the exact base commit. Configure `module-contract` as a required status check on protected main. The owner verifies the actual reports and merges the PR to approve the version; there is no extra website approval. Metadata checks do not run submitted source or perform physical hardware tests. A contributor declaration cannot replace reviewer verification.
 
@@ -10,7 +10,37 @@ Every release also requires populated CPU, DSP core and memory gauges. These use
 
 The eleven module folders present when this policy was requested remain included at their current versions, with their existing measurements and historical/status labels intact. [The frozen baseline](../sdk/module-qualification-baseline.json) records each exact version and complete folder SHA-256. This preserves the owner's acceptance of the existing tests without inventing cycle counts or changing earlier qualification claims. Existing availability, build and download restrictions remain intact.
 
-An exemption applies only while **every file in that module folder and its version are unchanged**. Source, documentation, evidence or media updates require the new qualification record and the usual semantic version increase and OT UI evidence. New IDs cannot inherit an exemption. PR checks reject changes to the baseline once it exists on the base branch. Do not add modules to it or regenerate it as a way of making a failed gate pass.
+The original baseline exemption applies only while **every file in that module folder and its version are unchanged**. Runtime-impacting updates require a new qualification record. Editorial updates can retain the original evidence through the separate, checked path below; they still need a semantic version increase, complete documentation, actual UI/media provenance and owner PR approval. New IDs cannot inherit an exemption. PR checks reject changes to the baseline once it exists on the base branch. Do not add modules to it or regenerate it as a way of making a failed gate pass.
+
+## Risk-based update checks — 3 October 2026
+
+Do not repeat extensive native compatibility, cycle/memory or hardware qualification for a documentation/media/display-only update whose runtime inputs are unchanged. Local generation, PR checks and release validation verify that condition without running native source. New modules always need full qualification.
+
+| Change | Required validation |
+| --- | --- |
+| README, documentation, tutorial, original/licensed media, attribution, presentation copy or control explanations | Schema, files, media signatures/monochrome pixels, complete documentation, version/catalog pins, approved-history and byte-identity checks; retain existing evidence |
+| Executable source, native manifests, runtime data, control defaults/ranges/labels, IDs, compatibility, source pins, build support, resource/load claims, test results/reports, shared native runtime/build code or browser engine code/payloads | Full qualification and relevant native composition/parity/rejection/integration checks; measure worst-case cycles, memory and maximum load, and retain required real-hardware evidence |
+| Unknown or mixed changes | Full qualification; no contributor-declared risk override |
+
+For an editorial update, add `tests.retainedEvidence`:
+
+```json
+{
+  "commit": "<full SHA of a commit already in approved main history>",
+  "moduleVersion": "<the originally tested, published module version>",
+  "documentation": {
+    "tutorial": { "title": "Quick tutorial", "steps": ["Setup and select.", "Use the controls.", "Check and stop."] },
+    "screenshots": ["media/ui.png"],
+    "screenshotStyle": "black-and-white"
+  }
+}
+```
+
+Keep the original `tests.qualification` or `tests.releaseWaiver`, reports, hardware status, source/image hashes and tested version unchanged; do not relabel them as new measurements. Current tutorial text can be recorded in `retainedEvidence.documentation`. Existing real UI captures can keep their original version/build provenance when the checked runtime is identical. Changed/new images still require authenticity/rights review and media validation. Baseline resource gauges may retain their original version under this same checked path, with no change to the estimates or limits.
+
+The validator reads the original module from the named approved Git commit, verifies that it was already in the catalog, revalidates its original qualification/baseline/owner exception, and compares protected inputs with the update. It also compares shared DSP/platform/build code and browser engine source/payloads. Rebuilt package commit/version labels and derived inventory hashes may change; code bytes, addresses, recipes, limits and test verdicts must remain identical. Refer directly to the original evidence commit rather than chaining retained-evidence updates. Any protected addition, deletion or byte change blocks reuse. The eleven-module baseline and exact owner exceptions are never expanded or rewritten; untested, historical, waived or suspended status stays honest.
+
+PR validation anchors approval to the exact `--base` commit. Local generation/release validation uses `origin/main`; fetch full approved history before validation. Missing history or a commit only on a submitted branch fails closed. No firmware, emulator state or hardware result enters CI or this comparison.
 
 ## Complete documentation and screenshot style
 
