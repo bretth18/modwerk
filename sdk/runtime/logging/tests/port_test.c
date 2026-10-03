@@ -62,5 +62,7 @@ int main(void){
  disk[0][0]='X';before=writes;CHECK(!octamod_log_write_checkpoint(0,data,sizeof data,100));CHECK(writes==before);
  memcpy(disk[0],data,17);lengths[0]=0;CHECK(!octamod_log_write_checkpoint(0,data,sizeof data,100));CHECK(writes==before);
  CHECK(!octamod_log_write_checkpoint(2,data,sizeof data,100));
- if(failures)return 1;puts("octamod-log port test: ok");return 0;
+ if (failures) return 1;
+ puts("octamod-log port test: ok");
+ return 0;
 }
