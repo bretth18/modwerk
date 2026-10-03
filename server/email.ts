@@ -1,6 +1,7 @@
 import type { Env, Database } from './platform'
 import { digest, HttpError } from './security'
 import { throttle } from './auth'
+import { SUPPORT_EMAIL } from '../src/support'
 export class AccountMailError extends HttpError {}
 
 export function emailReady(env: Env) { return !!env.RESEND_API_KEY && !!env.EMAIL_FROM && !/[\r\n]/.test(env.EMAIL_FROM) }
@@ -22,7 +23,7 @@ export async function sendAccountEmail(env: Env, db: Database, to: string, purpo
   const result = await fetch('https://api.resend.com/emails', {
     method: 'POST', signal: AbortSignal.timeout(10000),
     headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json', 'Idempotency-Key': purpose + '-' + await digest(value) },
-    body: JSON.stringify({ from: env.EMAIL_FROM, to: [to], subject: action + ' · Octamod', text }),
+    body: JSON.stringify({ from: env.EMAIL_FROM, to: [to], reply_to: SUPPORT_EMAIL, subject: action + ' · Octamod', text }),
   }).catch(() => null)
   // Never expose provider bodies, recipient addresses, API credentials or links in logs/errors.
   await record(result?.ok?'accepted':'failed')

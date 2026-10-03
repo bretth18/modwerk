@@ -3,12 +3,17 @@ import { AccountInbox } from './AccountInbox'
 import { AccountRemovalRequest } from './AccountRequests'
 import { api, post } from './api'
 import { useCommunity } from './context'
+import { SUPPORT_EMAIL, SUPPORT_MAILTO } from '../support'
 type DeviceSession = { id:string; current:boolean; expires:number }
 export function AccountPage({route}:{route:string}) {
   const {session,refresh}=useCommunity(), [busy,setBusy]=useState(false), [error,setError]=useState(''), [message,setMessage]=useState(''), [devices,setDevices]=useState<DeviceSession[]>([])
   const [,action='login',linkToken='']=route.split('/'), mode=['login','register','resend','forgot','verify','reset'].includes(action)?action:'login'
-  const member=!!session.user?.verified
+  const linkAction=mode==='verify'||mode==='reset',member=!!session.user?.verified&&!linkAction
   const emailAvailable=session.emailAvailable??session.registrationAvailable
+  const [lastLink,setLastLink]=useState(linkToken)
+  // A fresh emailed link starts a fresh form; stripping a consumed token keeps
+  // the successful confirmation visible without retaining the sensitive URL.
+  if(linkAction&&linkToken&&linkToken!==lastLink){setLastLink(linkToken);setMessage('');setError('')}
   useEffect(()=>{let cancelled=false;if(member)void api<DeviceSession[]>('/auth/sessions').then(value=>{if(!cancelled)setDevices(value)}).catch(error=>{if(!cancelled)setError(error.message)});return()=>{cancelled=true}},[member])
   async function submit(form:HTMLFormElement) {
     setBusy(true);setError('');setMessage('')
@@ -41,7 +46,8 @@ export function AccountPage({route}:{route:string}) {
       <div className="forum-actions"><a href="#account/forgot">Reset password</a><a href="#account/resend">Resend verification</a></div></>}
     </section>}
     {member&&<AccountRemovalRequest key={'removal-'+session.user!.id}/>}
-    {session.user&&<AccountInbox key={session.user.id}/>}
+    {session.user&&!linkAction&&<AccountInbox key={session.user.id}/>}
     {message&&<p className="success-note" role="status">{message}</p>}{error&&<p className="file-error" role="alert">{error}</p>}
+    <p className="service-note">Need help with your account? <a href={SUPPORT_MAILTO}>{SUPPORT_EMAIL}</a>. Never send passwords, recovery links or firmware.</p>
   </div>
 }
