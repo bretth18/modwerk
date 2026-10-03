@@ -53,7 +53,11 @@ export async function usageStatistics(db: Database, days: number, now = new Date
   const from = before(now,days-1), to = day(now)
   const collectionStarted = (await db.prepare("SELECT value FROM usage_meta WHERE key='collection_started'").first<{value:string}>())?.value ?? null
   const rows = (await db.prepare('SELECT day,visitors,page_views,configurations,builds,downloads,exports FROM usage_daily WHERE day>=? AND day<=? ORDER BY day').bind(from,to).all<UsageDay>()).results
-  return response({generatedAt:now.toISOString(),collectionStarted,from,to,days,rows})
+  // Compare equal windows of completed days; today and the first partial collection day are excluded.
+  const previousFrom = before(now,2 * (days-1)), previousTo = before(now,days)
+  const unavailableReason = previousFrom < before(now,89) ? 'retention' : !collectionStarted || previousFrom <= collectionStarted.slice(0,10) ? 'collection' : null
+  const previousRows = unavailableReason ? [] : (await db.prepare('SELECT day,visitors,page_views,configurations,builds,downloads,exports FROM usage_daily WHERE day>=? AND day<=? ORDER BY day').bind(previousFrom,previousTo).all<UsageDay>()).results
+  return response({generatedAt:now.toISOString(),collectionStarted,from,to,days,rows,comparison:{from:previousFrom,to:previousTo,rows:previousRows,unavailableReason}})
 }
 
 /** Each request names one build-integrated module; no configuration grouping is stored. */
