@@ -55,7 +55,7 @@ export function MachineSwitcher({ current, all, counts, compact = false, active 
   // The phone tab row scrolls horizontally; render its dropdown outside that clipping container.
   const menu = <div ref={panelRef} id={panelId} className={'machine-menu' + (compact ? ' library-machine-menu' : '')} style={compact ? { position: 'fixed', ...position } : undefined} role="navigation" aria-label="Machines" onKeyDown={moveFocus}>
     <div className="machine-menu-group">
-      <a href={deviceHref(ALL_MACHINES)} aria-current={all ? 'true' : undefined} onClick={selectMachine}><AllMachinesArt /><span><strong>{compact ? 'All modules' : 'All machines'}</strong><small>Every mod in one library</small></span><small className="machine-menu-count">{total}</small>{all && <Icon name="check" size={14} />}</a>
+      <a href={deviceHref(ALL_MACHINES)} aria-current={all ? 'true' : undefined} onClick={selectMachine}><AllMachinesArt /><span><strong>{compact ? 'All mods' : 'All machines'}</strong><small>All mods in one library</small></span><small className="machine-menu-count">{total}</small>{all && <Icon name="check" size={14} />}</a>
     </div>
     {GROUPS.map(group => <div key={group.title} className="machine-menu-group">
       <div className="machine-menu-label">{group.title}</div>
@@ -69,8 +69,8 @@ export function MachineSwitcher({ current, all, counts, compact = false, active 
   </div>
   return (
     <div className={compact ? 'library-machine-switcher' : 'machine-switcher'}>
-      <button ref={buttonRef} type="button" className={compact ? 'library-machine-button' + (active ? ' active' : '') : 'sidebar-device'} aria-label={compact ? (all ? 'All modules' : current.name) + ', choose machine' : undefined} aria-current={compact && active ? 'page' : undefined} aria-expanded={open} aria-controls={panelId} onClick={toggleMenu} onKeyDown={event => { if (!open && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) { event.preventDefault(); toggleMenu() } }}>
-        {compact ? <span>{all ? 'All modules' : current.name}</span> : <>
+      <button ref={buttonRef} type="button" className={compact ? 'library-machine-button' + (active ? ' active' : '') : 'sidebar-device'} aria-label={compact ? (all ? 'All mods' : current.name) + ', choose machine' : undefined} aria-current={compact && active ? 'page' : undefined} aria-expanded={open} aria-controls={panelId} onClick={toggleMenu} onKeyDown={event => { if (!open && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) { event.preventDefault(); toggleMenu() } }}>
+        {compact ? <span>{all ? 'All mods' : current.name}</span> : <>
           {all ? <AllMachinesArt /> : <DeviceImage device={current} />}
           <span><small>Machine</small><strong>{all ? 'All machines' : current.name}</strong></span>
         </>}
