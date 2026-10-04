@@ -4,7 +4,10 @@ import { describe, expect, it } from 'vitest'
 import { AVAILABLE_MODULES } from '../catalog/availability'
 import { selectionConflicts } from '../catalog/selection-conflicts'
 import { LibraryTools } from '../components/LibraryTools'
-import { AllMachinesLibrary } from './MachinePages'
+import { ModuleComparison } from '../components/ModuleComparison'
+import { DEVICES_BY_ID } from './registry'
+import { DIGI_MODS } from './digi-mods'
+import { AllMachinesLibrary, DigiLibrary } from './MachinePages'
 
 const noop = () => {}
 const props = {
@@ -32,7 +35,7 @@ describe('All machines library parity', () => {
     expect(html).toContain('Build firmware')
     expect(html).toContain('<h1>All mods</h1>')
     expect(html.slice(html.indexOf('class="discovery-tools"'), html.indexOf('id="machine-octatrack"'))).toContain('Build firmware')
-    expect(html.slice(html.indexOf('id="machine-octatrack"'))).not.toContain('Build firmware')
+    expect(html.slice(html.indexOf('id="machine-octatrack"'),html.indexOf('id="machine-digitakt"'))).not.toContain('Build firmware')
     expect(html).toContain('aria-label="Build firmware for Octatrack"')
     expect(html).toContain('4.5 (2)')
     expect(html).toContain('7 likes')
@@ -55,13 +58,13 @@ describe('All machines library parity', () => {
     expect(html).toContain('aria-label="Build firmware for Octatrack"')
   })
 
-  it('keeps unavailable counts distinct from zero and does not offer Digi firmware builds', () => {
+  it('keeps unavailable counts distinct from zero and offers a build link for each machine', () => {
     const html = renderToStaticMarkup(createElement(AllMachinesLibrary, {...props, statistics: null}))
     expect(html).toContain('— likes')
     expect(html).toContain('— downloads')
     expect(html).not.toContain('0 downloads')
     expect(html).toContain('counts are not available yet')
-    expect(html.match(/aria-label="Build firmware for/g)).toHaveLength(1)
+    expect(html.match(/aria-label="Build firmware for/g)).toHaveLength(3)
     expect(html).toContain('href="#digitakt/configuration"')
     expect(html).toContain('href="#digitone/configuration"')
   })
@@ -75,5 +78,47 @@ describe('All machines library parity', () => {
     expect(html.indexOf('View DIGISLICER')).toBeLessThan(html.indexOf('View NEIGHBOR'))
     expect(html).not.toContain('View SOPHIE')
     expect(html).not.toContain('View digihealth')
+  })
+})
+
+
+describe('Digi library parity', () => {
+  const digiProps = { device: {...DEVICES_BY_ID.digitakt, id: 'digitakt' as const}, category: undefined, query: '', selectedIds: [], onToggle: noop, family: 'all', onFamilyChange: noop, sort: 'collection', onSortChange: noop, comparison: [], onCompare: noop, onOpenComparison: noop }
+
+  it('uses the OT toolbar and sends each machine to its own builder', () => {
+    for (const device of ['digitakt', 'digitone'] as const) {
+      const html = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, device: {...DEVICES_BY_ID[device], id: device}}))
+      const toolbar = renderToStaticMarkup(createElement(LibraryTools, { ...digiProps, families: Array.from(new Set(DIGI_MODS.filter(mod=>mod.device===device).map(mod=>mod.category))), comparisonCount: 0, buildHref: '#'+device+'/configuration', buildLabel: 'Build firmware for '+DEVICES_BY_ID[device].name }))
+      expect(html).toContain(toolbar)
+      expect(html).toContain('Compare<span class="sr-only">')
+      expect(html).not.toContain('href="#configuration"')
+    }
+  })
+
+  it('filters type together with search and sorts the Digi library by name', () => {
+    const html = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, family: 'Sampling', sort: 'name'}))
+    expect(html.indexOf('View DIGISLICER')).toBeLessThan(html.indexOf('View NEIGHBOR'))
+    expect(html).not.toContain('View SOPHIE')
+    expect(html).not.toContain('View digihealth')
+    const search = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, family: 'Sampling', query: 'neighbor'}))
+    expect(search).toContain('View NEIGHBOR')
+    expect(search).not.toContain('View DIGISLICER')
+    const switched = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, family: 'Octatrack-only type'}))
+    expect(switched).toContain('View SOPHIE')
+  })
+
+  it('limits comparison to three cards while permitting removal and scopes matching module IDs by machine', () => {
+    const html = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, comparison: ['digitakt-digihealth','digitone-digihealth','miniverb']}))
+    expect(html).toContain('Compare (3)')
+    expect(html).toContain('type="checkbox" checked=""')
+    expect(html).toContain('type="checkbox" disabled=""')
+    const other = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, comparison: ['digitone-digihealth']}))
+    expect(other).not.toContain('type="checkbox" checked=""')
+    const dialog = renderToStaticMarkup(createElement(ModuleComparison, {ids:['digitakt-digihealth','digitone-digihealth'], selected: [], digiSelected:{digitakt:['digihealth'],digitone:[]}, onToggle:noop,onToggleDigi:noop,onClose:noop}))
+    expect(dialog).toContain('href="#digitakt/module/digihealth"')
+    expect(dialog).toContain('href="#digitone/module/digihealth"')
+    expect(dialog).toContain('aria-pressed="true"')
+    expect(dialog).toContain('aria-pressed="false"')
+    expect(dialog).toContain('Not measured')
   })
 })
