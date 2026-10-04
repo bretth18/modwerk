@@ -30,7 +30,7 @@ export async function buildCoreProbes({ root, output, sourceCommit, compiler, cf
     const work = resolve('/tmp/modwerk-compile/core', device.machine)
     await mkdir(work, { recursive: true })
     // Host tests execute only inside the network-disabled, unprivileged wrapper.
-    const hostTest = resolve(work, 'event-bus-test')
+    const hostTest = resolve('/test', device.machine + '-event-bus-test')
     execFileSync('gcc', ['-std=c11', '-O2', '-Wall', '-Wextra', '-Werror', ...defs, '-I', shared, resolve(shared, 'event-bus.c'), resolve(shared, 'tests/event-bus-test.c'), '-o', hostTest])
     execFileSync(hostTest, [], { timeout: 10_000 })
     const bus = resolve(work, 'event-bus.o')

@@ -51,6 +51,10 @@ describe('source-only m68k ELF conversion', () => {
     const type = fixture(), rela = type.readUInt32BE(52 + 3 * 40 + 16); type.writeUInt32BE(2 * 256 + 2, rela + 4); expect(() => elfToElemod(type, doc, build, {})).toThrow('unsupported relocation')
     const missing = fixture(); missing.writeUInt32BE(99 * 256 + 1, rela + 4); expect(() => readElemodElf(missing)).toThrow('missing symbol')
   })
+  it('keeps the core independent while requiring it for ordinary modules', () => {
+    expect(elfToElemod(fixture(), { ...doc, id: 'core' }, { ...build, weak: [], subscribe: [] }, {}).requires).toEqual([])
+    expect(elfToElemod(fixture(), doc, build, {}).requires).toEqual(['core'])
+  })
   it('refuses allocated sections that the linker cannot place and relocations outside data', () => {
     const raw = fixture(); raw.writeUInt32BE(29, 52 + 40); expect(() => elfToElemod(raw, doc, build, {})).toThrow('unplaced allocated section')
     const bounds = fixture(), rela = bounds.readUInt32BE(52 + 3 * 40 + 16); bounds.writeUInt32BE(23, rela); expect(() => elfToElemod(bounds, doc, build, {})).toThrow('outside initialized section')
