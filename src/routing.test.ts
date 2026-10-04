@@ -3,7 +3,7 @@ import { canonicalRouteUrl, routeFromUrl } from './routing'
 
 const moduleIds = ['analog-bassdrum', 'miniverb', 'tapeecho']
 
-describe.each(['https://octamod.app/', 'https://example.github.io/octamod/'])('module links at %s', root => {
+describe.each(['https://modwerk.app/', 'https://example.github.io/octamod/'])('module links at %s', root => {
   const appUrl = new URL(root)
   it('opens a direct module URL and its index.html on static hosting', () => {
     expect(routeFromUrl(new URL('module/analog-bassdrum/', appUrl), appUrl)).toBe('module/analog-bassdrum')

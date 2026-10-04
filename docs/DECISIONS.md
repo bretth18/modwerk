@@ -65,3 +65,11 @@ CC Map and Preview Vol, requested on 2 October 2026, are released at `0.1.2-expe
 USB Audio uses the output-only TRACKS MAIN CUE implementation and its internal USB MIDI dependency under `sdk/octabam/platform/usb-midi/`. This choice follows documented MKI/MKII hardware coverage, sustained multitrack captures and concurrent MIDI traffic; it is not a new comparative hardware test. USB input and other output layouts are outside scope. Preserve documented startup artifacts, host coverage gaps and alignment limits.
 
 The additions retain their own source pins and separate loader-free composition, packaging and rejection evidence; the original seven modules' historical proofs do not cover later integrations by themselves. No firmware/DSP/emulator/stress tests ran during the source import. See [the import record](../sdk/imports/octabam-363861e.json), each module's TESTING.md and the [current verification record](VERIFICATION.md).
+
+## Domain and mail: modwerk.app — 4 October 2026
+
+The owner bought modwerk.app on 4 October 2026. It stays registered, with its DNS, at Hetzner, like octamod.app; the earlier decision about mail stands: Resend sends verification and recovery messages only, with its key and sender as Worker secrets and its DNS records at the registrar.
+
+The community API keeps trusting exactly one origin, set by `APP_URL`; the launch moves it from octamod.app to modwerk.app with the Worker, the sender and the Pages custom domain in one ordered cutover. octamod.app is not retired: it keeps answering and hands visitors to modwerk.app with their path and fragment, so shared links and mail links already sent keep working.
+
+Whether the public support contact becomes a `support@modwerk.app` forwarder is left to the owner; the Gmail contact chosen on 3 October stays until a forwarder is proven. Nothing in the repository edits DNS or a provider account. The order, records and checks are in [DOMAIN_AND_MAIL.md](DOMAIN_AND_MAIL.md); `npm run domain:check` reads public DNS and pages to report progress.
