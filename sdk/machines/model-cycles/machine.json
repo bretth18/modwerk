@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "model-cycles",
+  "order": 150,
+  "name": "Model:Cycles",
+  "status": "open",
+  "summary": "Six-track FM groovebox. No public firmware research yet.",
+  "steps": {
+    "format": "open",
+    "rebuild": "open",
+    "boot": "open",
+    "core": "open",
+    "mods": "open"
+  },
+  "art": {
+    "body": "model",
+    "encoders": 0,
+    "trigs": 16,
+    "pads": 6,
+    "knobs": 6
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "machinedrum",
+  "order": 160,
+  "name": "Machinedrum",
+  "status": "open",
+  "summary": "Classic digital drum machine. No public firmware research yet.",
+  "steps": {
+    "format": "open",
+    "rebuild": "open",
+    "boot": "open",
+    "core": "open",
+    "mods": "open"
+  },
+  "art": {
+    "body": "wide",
+    "encoders": 8,
+    "trigs": 16
+  }
+}

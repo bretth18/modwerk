@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "analog-four-mki",
+  "order": 110,
+  "name": "Analog Four",
+  "variants": [
+    "MKI"
+  ],
+  "status": "open",
+  "summary": "The original Four. No public firmware research yet.",
+  "steps": {
+    "format": "open",
+    "rebuild": "open",
+    "boot": "open",
+    "core": "open",
+    "mods": "open"
+  },
+  "art": {
+    "body": "wide",
+    "encoders": 10,
+    "trigs": 16
+  }
+}

@@ -1,4 +1,17 @@
-# Octamod SDK
+# Modwerk SDK
+
+The developer entry point for every machine. Start with [the SDK guide](../docs/SDK.md): machine profiles, module contract v3, evidence tiers and checks.
+
+| Machine | Platform | Guide |
+| --- | --- | --- |
+| Octatrack MKI/MKII | octabam | [machines/octatrack](machines/octatrack/README.md) and the Octatrack section below |
+| Digitakt mk1 | elemod (preview) | [machines/digitakt](machines/digitakt/README.md) |
+| Digitone mk1 and Keys | elemod (preview) | [machines/digitone](machines/digitone/README.md) |
+| Every other machine | — | [Add a machine](../docs/ADD_A_MACHINE.md) |
+
+Machine profiles live in [machines/](machines/README.md).
+
+## Octatrack (octabam)
 
 For agent-driven additions and updates, execute [the standard module-addition workflow](../docs/MODULE_ADDITION_WORKFLOW.md). It includes source review/isolation, thumbnail, complete documentation/tutorial, actual LCD capture and qualification before the focused PR.
 

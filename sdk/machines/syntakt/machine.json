@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "syntakt",
+  "order": 60,
+  "name": "Syntakt",
+  "status": "open",
+  "summary": "Twelve analog and digital tracks. No public firmware research yet.",
+  "steps": {
+    "format": "open",
+    "rebuild": "open",
+    "boot": "open",
+    "core": "open",
+    "mods": "open"
+  },
+  "art": {
+    "body": "wide",
+    "encoders": 8,
+    "trigs": 16,
+    "knobs": 2
+  }
+}

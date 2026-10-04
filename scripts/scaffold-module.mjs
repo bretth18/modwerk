@@ -5,6 +5,27 @@ import { parseModuleDocument } from '../src/catalog/module-contract.ts'
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..'),args=process.argv.slice(2),id=args[0]
 const option=(name,fallback)=>{const i=args.indexOf(name);return i<0?fallback:args[i+1]}
 const kind=option('--kind','dsp'),author=option('--author',''),output=option('--output',null)
+const machine=option('--machine','octatrack')
+if(machine!=='octatrack'){
+  // Machines on contract v3 (elemod) scaffold from sdk/templates/elemod with the machine profile's releases and core.
+  const {parseMachineProfile}=await import('../src/devices/machine-contract.ts'),{parseModwerkModule,parseElemodBuild}=await import('../src/catalog/module-contract-v3.ts')
+  if(!id||!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(id)||!author)throw new Error('Usage: npm run module:new -- my-mod --machine '+machine+' --author github-login')
+  const profile=parseMachineProfile(JSON.parse(await readFile(resolve(root,'sdk/machines',machine,'machine.json'),'utf8')))
+  if(profile.sdk?.platform!=='elemod')throw new Error(profile.name+' has no elemod SDK yet; see docs/ADD_A_MACHINE.md')
+  const name=id.split('-').map(word=>word[0]?.toUpperCase()+word.slice(1)).join(' '),release=profile.firmware.releases.at(-1).version
+  const fill=text=>text.replaceAll('__ID__',id).replaceAll('__NAME__',name).replaceAll('__KEY__',id.toUpperCase().replaceAll('-',' ')).replaceAll('__MACHINE_NAME__',profile.name).replaceAll('__MACHINE__',machine).replaceAll('__AUTHOR__',author).replaceAll('__RELEASE__',release).replaceAll('__CORE__',profile.sdk.core?.version??'1.0')
+  const destination=output?resolve(output,id):resolve(root,profile.sdk.modules,id),template=resolve(root,'sdk/templates/elemod')
+  try{await access(destination);throw new Error('Destination exists; refusing to replace a module: '+destination)}catch(error){if(error.code!=='ENOENT')throw error}
+  const document=parseModwerkModule(JSON.parse(fill(await readFile(resolve(template,'modwerk.module.json'),'utf8'))),[profile])
+  parseElemodBuild(JSON.parse(fill(await readFile(resolve(template,'build.json'),'utf8'))),document)
+  await mkdir(resolve(destination,'src'),{recursive:true});await mkdir(resolve(destination,'media'))
+  for(const file of ['modwerk.module.json','build.json','src/main.c','media/thumbnail.svg'])await writeFile(resolve(destination,file),fill(await readFile(resolve(template,file),'utf8')))
+  await copyFile(resolve(root,'LICENSE'),resolve(destination,'LICENSE'))
+  await writeFile(resolve(destination,'README.md'),`# ${name}\n\nA ${profile.name} mod by @${author}. Version ${document.version}.\n\nDescribe what it does, every control, how to reach it on the unit, and a short tutorial. Follow docs/SDK.md and the ${profile.name} guide (${profile.sdk.guide}).\n`)
+  await writeFile(resolve(destination,'TESTING.md'),`# ${name} testing\n\nNo checks have been run. For each tier in docs/SDK.md, record the source commit, the exact build, the OS release, the machine model and every result. Keep firmware, dumps and build outputs out of this folder.\n`)
+  console.log('Created '+destination+'\nImplement src/, measure memory and load, add real screenshots, then raise evidence.tier with actual reports (docs/SDK.md).')
+  process.exit(0)
+}
 if(!id||!['dsp','coldfire'].includes(kind)||!author)throw new Error('Usage: npm run module:new -- my-filter --kind dsp|coldfire --author github-login')
 const document=JSON.parse(await readFile(resolve(root,'public/module-repository.example.json'),'utf8'))
 document.id=id;document.key=id.toUpperCase().replaceAll('-',' ');document.name=id.split('-').map(word=>word[0]?.toUpperCase()+word.slice(1)).join(' ');document.author={github:author,credits:[author]}

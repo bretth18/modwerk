@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "analog-rytm-mki",
+  "order": 90,
+  "name": "Analog Rytm",
+  "variants": [
+    "MKI"
+  ],
+  "status": "open",
+  "summary": "The original Rytm. No public firmware research yet.",
+  "steps": {
+    "format": "open",
+    "rebuild": "open",
+    "boot": "open",
+    "core": "open",
+    "mods": "open"
+  },
+  "art": {
+    "body": "wide",
+    "encoders": 8,
+    "trigs": 16,
+    "pads": 12
+  }
+}

@@ -70,7 +70,7 @@ export default function App() {
   const communityRoute = forumRoute || accountRoute || route === 'review' || route === 'admin' || route.startsWith('submit') || !!communityModule
   const missingRoute=!forumRoute&&!accountRoute&&!['library',...LIBRARY_CATEGORIES,'module-sets','configuration','faq','review','admin','privacy'].includes(route)&&!route.startsWith('submit')&&!detailModule&&!communityModule&&!route.startsWith('module-set/')
   const filter = LIBRARY_CATEGORIES.find(category => category === route) ?? 'all'
-  const categoryLabels = { effects:'Effects', playback:'Playback', machines:'Machines & sequencer', scenes:'Scenes', 'midi-usb':'MIDI & USB', system:'System' }
+  const categoryLabels = { effects:'Effects', playback:'Playback', machines:'Machines & sequencer', scenes:'Scenes', 'midi-usb':'MIDI & USB', system:'System', standalone:'Standalone firmware' }
   const workspace = useWorkspace()
   const { active, ready, firmware, fileState, fileError, firmwareSaved, readFile, clearFile } = workspace
   const selectedIds = active?.moduleIds ?? []

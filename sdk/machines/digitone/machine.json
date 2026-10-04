@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "id": "digitone",
+  "order": 30,
+  "name": "Digitone",
+  "variants": [
+    "mk1",
+    "Digitone Keys"
+  ],
+  "status": "preview",
+  "summary": "Parameter slots, mod pages, project data and a Mod Menu for FM mods.",
+  "firmware": {
+    "releases": [
+      {
+        "version": "1.43",
+        "files": [
+          {
+            "name": "Digitone_and_Digitone_Keys_OS1.43.syx",
+            "sha256": "c5a54cc05b921f2e4bd814834c5365c2a5aa01d7772a9a2961fac1c3095bf9aa"
+          }
+        ]
+      },
+      {
+        "version": "1.44",
+        "files": [
+          {
+            "name": "Digitone_and_Digitone_Keys_OS1.44.syx",
+            "sha256": "d4f200d04484333d82822db7744e6484d0def8f2db8ddf55ee2b780cc13c9659"
+          }
+        ]
+      }
+    ],
+    "flash": "Send the .syx with Elektron Transfer and confirm on the unit.",
+    "recovery": "Hold FUNC while powering on, choose OS UPGRADE and send the stock .syx."
+  },
+  "steps": {
+    "format": "done",
+    "rebuild": "done",
+    "boot": "done",
+    "core": "done",
+    "mods": "done"
+  },
+  "research": [
+    {
+      "label": "elekloader",
+      "url": "https://github.com/irpina/elekloader",
+      "note": "Device profile, OS file writer and a core with shared hooks, verified in an emulator and on units by the mods’ authors."
+    }
+  ],
+  "sdk": {
+    "platform": "elemod",
+    "modules": "sdk/digitone/modules",
+    "catalog": null,
+    "guide": "sdk/machines/digitone/README.md",
+    "core": {
+      "version": "2.2",
+      "path": "sdk/digitone/core"
+    },
+    "toolchain": "m68k-elf GCC and binutils for ColdFire, and Modwerk’s .elemod linker and OS writer (in development).",
+    "budgets": [
+      {
+        "name": "Shared mod memory",
+        "unit": "bytes",
+        "value": 131072,
+        "note": "DDR 0x47BE0000–0x47C00000 below the audio DMA ring, shared by the core and every mod (public research: elekloader, digikit)."
+      },
+      {
+        "name": "Parameter slots",
+        "unit": "slots",
+        "value": 3,
+        "note": "Parameter ids 182–184, handled by the stock UI with knobs, values and p-locks."
+      },
+      {
+        "name": "Mod pages",
+        "unit": "slots",
+        "value": 4,
+        "note": "Pages 27–30, each placed after a stock page in its key’s list."
+      }
+    ]
+  },
+  "art": {
+    "body": "compact",
+    "encoders": 8,
+    "trigs": 16
+  }
+}

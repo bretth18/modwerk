@@ -65,3 +65,22 @@ CC Map and Preview Vol, requested on 2 October 2026, are released at `0.1.2-expe
 USB Audio uses the output-only TRACKS MAIN CUE implementation and its internal USB MIDI dependency under `sdk/octabam/platform/usb-midi/`. This choice follows documented MKI/MKII hardware coverage, sustained multitrack captures and concurrent MIDI traffic; it is not a new comparative hardware test. USB input and other output layouts are outside scope. Preserve documented startup artifacts, host coverage gaps and alignment limits.
 
 The additions retain their own source pins and separate loader-free composition, packaging and rejection evidence; the original seven modules' historical proofs do not cover later integrations by themselves. No firmware/DSP/emulator/stress tests ran during the source import. See [the import record](../sdk/imports/octabam-363861e.json), each module's TESTING.md and the [current verification record](VERIFICATION.md).
+
+## Every Elektron machine — 4 October 2026
+
+The owner expanded the project from the Octatrack to every Elektron machine. The site will move to modwerk.app in one combined launch with the forum. Recorded decisions:
+
+- **One standard for every machine** ([SDK guide](SDK.md)):
+  - Each machine has a validated profile in `sdk/machines/<id>/machine.json`, which generates the site's machine registry.
+  - Modules for elemod machines use contract v3 (`modwerk.module.json`). Octatrack modules keep contract v2 and the frozen eleven-module baseline until their next version.
+- **Library categories** are shared by every machine. **Standalone firmware** is an exclusive category for complete builds that never combine with other mods.
+- **Digitakt and Digitone:**
+  - Modwerk builds their firmware with its own TypeScript engine and its own core, implementing the documented core interface (`sdk/<machine>/core/interface.json`).
+  - elekloader is used only locally, to compare bytes.
+  - Module source lives in Modwerk module folders (or a pinned commit) and is compiled by Modwerk CI.
+  - The existing mods are imported under their licences, with attribution ([import record](../sdk/imports/elemod-2026-10-04.json)).
+- **Patch sites** name an address, a length and the SHA-256 of the expected stock bytes; stock bytes never enter the repository. Steps that need the stock OS run only in the owner's local build.
+- **Evidence on new machines is tiered.** Publication needs measured memory and load, the author's hardware report and actual screenshots. Owner verification is a badge.
+- **Downloads** for a machine stay disabled until its engine and core pass verification. Digitakt and Digitone builds must work at the combined launch.
+- **Contributions** remain pull requests reviewed and merged by the owner. Maintainers named in a manifest are a module's contacts. There are no automatic merges for now.
+- **Licence:** Modwerk's own code is GPL-3.0-or-later. Vendored components and modules keep their licences.

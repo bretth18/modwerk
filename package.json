@@ -1,5 +1,6 @@
 {
   "name": "octamod",
+  "license": "GPL-3.0-or-later",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -18,6 +19,8 @@
     "db:local": "wrangler d1 migrations apply octamod-community --config wrangler.worker.jsonc --local",
     "admin:key": "node scripts/admin-key.mjs",
     "deploy:pages": "npm run build && wrangler pages deploy",
+    "machines:generate": "node scripts/machines.mjs --write",
+    "machines:check": "node scripts/machines.mjs",
     "modules:generate": "node scripts/modules.mjs --write",
     "modules:check": "node scripts/modules.mjs",
     "licenses:generate": "node scripts/licenses.mjs --write",

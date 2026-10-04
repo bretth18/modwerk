@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "id": "octatrack",
+  "order": 10,
+  "name": "Octatrack",
+  "variants": [
+    "MKI",
+    "MKII"
+  ],
+  "status": "available",
+  "summary": "Effects, machines, MIDI and USB modules built on octabam.",
+  "firmware": {
+    "releases": [
+      {
+        "version": "1.40C",
+        "files": [
+          {
+            "name": "OCTATRACK_OS1.40C.bin",
+            "sha256": "34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad"
+          }
+        ]
+      }
+    ],
+    "flash": "Copy the .bin to the card root, then PROJECT › SYSTEM › OS UPGRADE.",
+    "recovery": "Hold FUNC while powering on, choose MIDI UPGRADE and send the stock .syx over DIN MIDI."
+  },
+  "steps": {
+    "format": "done",
+    "rebuild": "done",
+    "boot": "done",
+    "core": "done",
+    "mods": "done"
+  },
+  "sdk": {
+    "platform": "octabam",
+    "modules": "sdk/octabam/modules",
+    "catalog": "sdk/catalog.json",
+    "guide": "sdk/machines/octatrack/README.md",
+    "core": {
+      "version": "octabam",
+      "path": "sdk/octabam/platform"
+    },
+    "toolchain": "GNU binutils 2.47 (m68k-elf) and the dsp56300 assembler, run in the pinned build container (sdk/build/Dockerfile).",
+    "budgets": [
+      {
+        "name": "Reserved module memory",
+        "unit": "bytes",
+        "value": 10487808,
+        "note": "The bottom 1,707 pages (6,144 B each) of the audio page arena that the octabam platform reserves for modules."
+      }
+    ]
+  },
+  "art": {
+    "body": "wide",
+    "encoders": 6,
+    "trigs": 16,
+    "fader": true
+  }
+}
