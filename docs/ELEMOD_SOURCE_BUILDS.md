@@ -8,7 +8,7 @@ Build the toolchain with `docker build --file sdk/build/Dockerfile --tag modwerk
 
 The wrapper archives only tracked source, mounts it read-only, runs as an unprivileged user with no network/capabilities and a read-only filesystem, and limits CPU, RAM, process count and scratch space. It never mounts a developer's ignored files. Compilation parses manifests as data, rejects binary and symlink inputs and invokes the assembler/compiler with argument arrays. It does not execute the compiled module.
 
-PR checks compile twice and compare every output byte. The source job emits recipes and a final `elemod-build.json` inventory containing versions, release identities, source fingerprints, compiler versions and artifact hashes. A failed build never writes a complete inventory. These are review artifacts; this workflow does not publish or enable firmware downloads. The approved Octatrack release pipeline remains independent.
+PR checks compile twice and compare every output byte. The source job emits recipes and a final `elemod-build.json` inventory containing versions, release identities, source fingerprints, compiler versions and artifact hashes. A failed build never writes a complete inventory. The [original core foundation](../sdk/elemod/core/README.md) additionally emits an explicitly incomplete `core-build.json` and boot-only probes for local evidence. Its firmware-free event tests execute in a separate 16 MiB executable scratch mount; compilation uses a 256 MiB non-executable scratch mount. These are review artifacts; this workflow does not publish or enable firmware downloads. The approved Octatrack release pipeline remains independent.
 
 ## ELF conversion and local work
 

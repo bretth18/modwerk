@@ -16,7 +16,7 @@ export async function buildCoreProbes({ root, output, sourceCommit, compiler, cf
       if (entry.isSymbolicLink() || !entry.isFile() && !entry.isDirectory()) throw new Error('Core needs regular source files')
       if (entry.isDirectory()) await scan(resolve(folder, entry.name), path + '/')
       else {
-        if (!/\.(c|h|s)$/.test(path)) throw new Error('Unexpected core source file: ' + path)
+        if (!/\.(c|h|s|py|md)$/.test(path)) throw new Error('Unexpected core source file: ' + path)
         sourceFiles[path] = sha(await readFile(resolve(folder, entry.name)))
       }
     }
