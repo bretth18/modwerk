@@ -7,7 +7,8 @@
 mw_boot:
         lea -64(%sp), %sp
         movem.l %d0-%d7/%a0-%a6, (%sp)
-        move.w %sr, 60(%sp)
+        move.w %sr, %d0
+        move.l %d0, 60(%sp)
         movea.l #__run_load, %a0
         movea.l #__run_start, %a1
         move.l #__run_words, %d0
@@ -27,7 +28,8 @@ mw_boot:
         subq.l #1, %d0
         bne.s .Lclear
 .Ldone:
-        move.w 60(%sp), %sr
+        move.l 60(%sp), %d0
+        move.w %d0, %sr
         movem.l (%sp), %d0-%d7/%a0-%a6
         lea 64(%sp), %sp
         jmp mw_stock_boot
