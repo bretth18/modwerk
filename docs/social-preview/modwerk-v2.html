@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Modwerk link preview</title>
+<!--
+  Source of public/modwerk-social-preview-v2.jpg: a 1200 × 630 vector drawing, rendered by
+  scripts/render-social-preview.mjs. Original artwork; no firmware, photographs or captures.
+  Machines follow the site's schematic DeviceArt rules (generic boxes, not product likenesses).
+  Fonts: Archivo and JetBrains Mono (SIL Open Font License 1.1), pinned @fontsource builds.
+-->
+<style>
+  @font-face { font-family: 'Archivo'; src: url(https://cdn.jsdelivr.net/npm/@fontsource-variable/archivo@5.3.0/files/archivo-latin-standard-normal.woff2) format('woff2'); font-weight: 100 900; font-stretch: 62% 125%; }
+  @font-face { font-family: 'JetBrains Mono'; src: url(https://cdn.jsdelivr.net/npm/@fontsource-variable/jetbrains-mono@5.3.0/files/jetbrains-mono-latin-wght-normal.woff2) format('woff2'); font-weight: 100 800; }
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: #19191c; }
+  svg { display: block; }
+  .sans { font-family: 'Archivo', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+<svg id="art" xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img"
+  aria-label="Modwerk. Mods for every Elektron machine. A hub links Elektron machines to the mod library, firmware builder, forum and developer SDK."></svg>
+<script>
+// Site palette (src/styles.css, src/devices/devices.css).
+const C = {
+  ink: '#ececf1', soft: '#c3c3ce', muted: '#8d8d9a', kicker: '#9c9caa', faint: '#55555f',
+  body: '#8f8f9d', accent: '#929bff', apricot: '#d0a46a', mint: '#83c7bc',
+}
+const W = 1200, M = 56
+const out = []
+const el = s => out.push(s)
+const f = n => +n.toFixed(2)
+
+// ---- Machines: one of each silhouette, drawn with the site's DeviceArt rules ----
+const MACHINES = [
+  ['Octatrack', { body: 'wide', encoders: 6, trigs: 16, fader: true }],
+  ['Digitakt', { body: 'compact', encoders: 8, trigs: 16 }],
+  ['Syntakt', { body: 'wide', encoders: 8, trigs: 16, knobs: 2 }],
+  ['Analog Rytm', { body: 'wide', encoders: 8, trigs: 16, pads: 12 }],
+  ['Analog Keys', { body: 'keys', encoders: 10, trigs: 16 }],
+  ['Analog Heat', { body: 'box', encoders: 0, trigs: 0, knobs: 8 }],
+  ['Model:Cycles', { body: 'model', encoders: 0, trigs: 16, pads: 6, knobs: 6 }],
+]
+function bodySize(art) {
+  const width = art.body === 'compact' ? 200 : art.body === 'box' ? 150 : art.body === 'model' ? 180 : 240
+  return { width, height: art.body === 'keys' ? 150 : 120 }
+}
+// Top-left at (x, y), scaled by s; strokes keep their pixel width.
+function machine(art, x, y, s) {
+  const { width, height } = bodySize(art)
+  const keys = art.body === 'keys', model = art.body === 'model', box = art.body === 'box'
+  const inner = width - 24
+  const screenWidth = box ? 44 : model ? 36 : 54
+  const encoderStep = art.encoders ? Math.min(18, (inner - screenWidth - 14) / Math.ceil(art.encoders / 2)) : 0
+  const trigStep = art.trigs ? inner / art.trigs : 0
+  const ns = 'vector-effect="non-scaling-stroke"'
+  const g = []
+  g.push(`<rect x="0" y="0" width="${width}" height="${height}" rx="9" fill="#202025" stroke="${C.body}" stroke-width="1.5" ${ns}/>`)
+  g.push(`<rect x="12" y="12" width="${screenWidth}" height="26" rx="2" fill="#262a4a" stroke="${C.accent}" stroke-width="1.3" ${ns}/>`)
+  for (let i = 0; i < art.encoders; i++) {
+    const row = i % 2, col = Math.floor(i / 2)
+    g.push(`<circle cx="${12 + screenWidth + 16 + col * encoderStep}" cy="${17 + row * 16}" r="5" fill="#2c2c33" stroke="#a4a4b2" stroke-width="1.1" ${ns}/>`)
+  }
+  for (let i = 0; i < (art.knobs ?? 0); i++) {
+    // Model bodies carry their knobs beside the screen, so the pad row stays clear.
+    const perRow = box ? 4 : art.knobs
+    const step = box ? (inner - 8) / perRow : model ? 18 : 16
+    const startX = box ? 12 + step / 2 + 4 : model ? 12 + screenWidth + 20 : width - 12 - art.knobs * 16 + 8
+    const startY = box ? 58 : model ? 25 : 50
+    g.push(`<circle cx="${startX + (i % perRow) * step}" cy="${startY + Math.floor(i / perRow) * 28}" r="${box ? 9 : 5.5}" fill="#2c2c33" stroke="#a4a4b2" stroke-width="1.1" ${ns}/>`)
+  }
+  for (let i = 0; i < (art.pads ?? 0); i++) {
+    const size = model ? 18 : 12, gap = model ? 6 : 4
+    const startX = model ? 12 : width - 12 - 6 * (size + gap) + gap
+    g.push(`<rect x="${startX + (i % 6) * (size + gap)}" y="${50 + Math.floor(i / 6) * (size + gap)}" width="${size}" height="${size}" rx="2" fill="#2f2f37" stroke="${C.body}" stroke-width="1" ${ns}/>`)
+  }
+  if (art.fader) g.push(`<path d="M18 62h46" stroke="#6d6d7a" stroke-width="1.2" ${ns}/><rect x="34" y="56" width="12" height="12" rx="2" fill="#2b2b31" stroke="${C.apricot}" stroke-width="1.2" ${ns}/>`)
+  for (let i = 0; i < art.trigs; i++) {
+    g.push(`<rect x="${12 + i * trigStep + 1}" y="${height - (keys ? 52 : 22)}" width="${Math.max(3, trigStep - 3)}" height="${model ? 6 : 8}" rx="1.5" fill="${i % 4 === 0 ? C.apricot : '#3a3a43'}"/>`)
+  }
+  if (keys) for (let i = 0; i < 22; i++) g.push(`<rect x="${12 + i * (inner / 22)}" y="${height - 38}" width="${inner / 22}" height="28" fill="#2a2a30" stroke="#6d6d7a" stroke-width="1" ${ns}/>`)
+  return `<g transform="translate(${f(x)} ${f(y)}) scale(${s})">${g.join('')}</g>`
+}
+
+// ---- Feature pictograms, drawn inside a 64 px tile ----
+const TILE = 64
+function icon(kind, x, y) {
+  const g = []
+  const cx = x + TILE / 2, cy = y + TILE / 2
+  if (kind === 'library') {
+    // Four module covers: wave, decay, rhythm, tape.
+    const s = 20, gap = 4, ox = cx - s - gap / 2, oy = cy - s - gap / 2
+    ;[[0, 0, C.accent], [1, 0, C.mint], [0, 1, C.apricot], [1, 1, C.soft]].forEach(([col, row, color], k) => {
+      const X = ox + col * (s + gap), Y = oy + row * (s + gap)
+      g.push(`<rect x="${X}" y="${Y}" width="${s}" height="${s}" rx="3" fill="#18181c" stroke="${C.faint}" stroke-width="1"/>`)
+      if (k === 0) {
+        let d = ''
+        for (let i = 0; i <= 20; i++) d += (i ? 'L' : 'M') + f(X + 3 + i * .7) + ' ' + f(Y + s / 2 - Math.sin(i / 20 * Math.PI * 2) * 5)
+        g.push(`<path d="${d}" stroke="${color}" stroke-width="1.5" fill="none" stroke-linecap="round"/>`)
+      }
+      if (k === 1) for (let i = 0; i < 6; i++) g.push(`<path d="M${X + 4 + i * 2.4} ${Y + s - 4}v${-12 * Math.exp(-i / 2.4)}" stroke="${color}" stroke-width="1.3" stroke-linecap="round"/>`)
+      if (k === 2) for (let i = 0; i < 8; i++) {
+        const a = i / 8 * Math.PI * 2 - Math.PI / 2
+        g.push(`<circle cx="${f(X + s / 2 + Math.cos(a) * 6)}" cy="${f(Y + s / 2 + Math.sin(a) * 6)}" r="1.4" fill="${[0, 3, 5].includes(i) ? color : '#4a4a55'}"/>`)
+      }
+      if (k === 3) g.push(`<circle cx="${X + 6.5}" cy="${Y + 10}" r="3.6" fill="none" stroke="${color}" stroke-width="1.2"/><circle cx="${X + 13.5}" cy="${Y + 10}" r="3.6" fill="none" stroke="${color}" stroke-width="1.2"/><path d="M${X + 3} ${Y + 15.5}h14" stroke="${color}" stroke-width="1.2"/>`)
+    })
+  } else if (kind === 'firmware') {
+    // The owner's stock OS (hatched) with mod blocks composed into it.
+    const bx = x + 12, by = y + 36, bw = 40, bh = 13
+    g.push(`<defs><pattern id="hatch" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V4" stroke="#6d6d7a" stroke-width="1.2"/></pattern></defs>`)
+    g.push(`<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="2" fill="url(#hatch)" stroke="${C.body}" stroke-width="1.2"/>`)
+    g.push(`<rect x="${bx + 9}" y="${by + 1.5}" width="7" height="${bh - 3}" fill="${C.accent}"/><rect x="${bx + 22}" y="${by + 1.5}" width="5" height="${bh - 3}" fill="${C.mint}"/>`)
+    g.push(`<rect x="${bx + 30}" y="${by - 22}" width="7" height="10" rx="1" fill="${C.apricot}"/>`)
+    g.push(`<path d="M${bx + 33.5} ${by - 9}v6m-3 -3l3 3l3 -3" stroke="${C.apricot}" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`)
+    g.push(`<path d="M${bx} ${by - 6}h24" stroke="${C.faint}" stroke-width="1"/>`)
+    g.push(`<text x="${bx}" y="${by - 11}" class="mono" font-size="7.5" fill="${C.muted}">OS.bin</text>`)
+  } else if (kind === 'forum') {
+    g.push(`<path d="M${x + 12} ${y + 15}h26a4 4 0 0 1 4 4v13a4 4 0 0 1 -4 4h-17l-6 6v-6h-3a4 4 0 0 1 -4 -4v-13a4 4 0 0 1 4 -4z" fill="#18181c" stroke="${C.soft}" stroke-width="1.5" stroke-linejoin="round"/>`)
+    g.push(`<path d="M${x + 46} ${y + 26}h4a4 4 0 0 1 4 4v11a4 4 0 0 1 -4 4h-2v5l-5 -5h-12a4 4 0 0 1 -4 -4v-1" fill="none" stroke="${C.accent}" stroke-width="1.5" stroke-linejoin="round"/>`)
+    for (let i = 0; i < 3; i++) g.push(`<circle cx="${x + 19 + i * 6}" cy="${y + 25.5}" r="1.7" fill="${C.soft}"/>`)
+  } else if (kind === 'sdk') {
+    // Braces around code lines and a cursor.
+    const l = x + 14, r = x + TILE - 14, t = y + 17, b = y + TILE - 17, m = (t + b) / 2
+    const brace = `stroke="${C.ink}" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"`
+    g.push(`<path d="M${l + 7} ${t}h-2a3 3 0 0 0 -3 3v${m - t - 6}a3 3 0 0 1 -3 3a3 3 0 0 1 3 3v${b - m - 6}a3 3 0 0 0 3 3h2" ${brace}/>`)
+    g.push(`<path d="M${r - 7} ${t}h2a3 3 0 0 1 3 3v${m - t - 6}a3 3 0 0 0 3 3a3 3 0 0 0 -3 3v${b - m - 6}a3 3 0 0 1 -3 3h-2" ${brace}/>`)
+    g.push(`<path d="M${l + 12} ${m - 5}h12M${l + 16} ${m + 1}h10" stroke="${C.accent}" stroke-width="2" stroke-linecap="round"/>`)
+    g.push(`<rect x="${l + 12}" y="${m + 5}" width="6" height="2.4" fill="${C.apricot}"/>`)
+  }
+  return g.join('')
+}
+
+// ---- Crop marks ----
+for (const [x, y, dx, dy] of [[24, 24, 1, 1], [1176, 24, -1, 1], [24, 606, 1, -1], [1176, 606, -1, -1]]) {
+  el(`<path d="M${x} ${y + dy * 12}V${y}H${x + dx * 12}" stroke="${C.faint}" stroke-width="1" fill="none"/>`)
+}
+
+// ---- Wordmark and descriptor ----
+el(`<text x="${M - 5}" y="140" class="sans" font-size="112" font-weight="720" letter-spacing="-4.5" fill="${C.ink}" style="font-stretch:104%">Modwerk</text>`)
+el(`<text x="${M}" y="214" class="sans" font-size="41" font-weight="480" letter-spacing="-1.1" fill="${C.soft}">Mods for every</text>`)
+el(`<text x="${M}" y="263" class="sans" font-size="41" font-weight="480" letter-spacing="-1.1" fill="${C.soft}">Elektron machine.</text>`)
+
+// ---- Hub: the eight-tile mark (public/favicon.svg) as a component ----
+const HUB = { x: 620, y: 232, size: 92 }
+el(`<rect x="${HUB.x - HUB.size / 2}" y="${HUB.y - HUB.size / 2}" width="${HUB.size}" height="${HUB.size}" rx="16" fill="#23244a" stroke="${C.accent}" stroke-width="2"/>`)
+const pad = 20, padGap = 7, padStart = (3 * pad + 2 * padGap) / 2
+for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
+  const x = HUB.x - padStart + c * (pad + padGap), y = HUB.y - padStart + r * (pad + padGap)
+  if (r === 2 && c === 2) el(`<rect x="${x + .75}" y="${y + .75}" width="${pad - 1.5}" height="${pad - 1.5}" rx="3.5" fill="none" stroke="${C.accent}" stroke-width="1.5" stroke-dasharray="3 3"/>`)
+  else el(`<rect x="${x}" y="${y}" width="${pad}" height="${pad}" rx="4" fill="${C.ink}"/>`)
+}
+
+// ---- Four features, fanned out from the hub ----
+const FEATURES = [
+  { n: '01', title: 'Mod library', kicker: 'EVERY MOD, ONE CATALOG', icon: 'library' },
+  { n: '02', title: 'Firmware builder', kicker: 'YOUR STOCK OS + YOUR MODS', icon: 'firmware' },
+  { n: '03', title: 'Forum', kicker: 'A BOARD FOR EACH MACHINE', icon: 'forum' },
+  { n: '04', title: 'Developer SDK', kicker: 'ONE STANDARD FOR EVERY MACHINE', icon: 'sdk' },
+]
+const SPINE_X = 720, TILE_X = 770, PITCH = 86, ELBOW = 10
+const firstY = HUB.y - PITCH * 1.5
+const trace = `stroke="${C.accent}" stroke-width="2" fill="none"`
+el(`<path d="M${HUB.x + HUB.size / 2} ${HUB.y}H${SPINE_X}" ${trace}/>`)
+el(`<path d="M${SPINE_X} ${firstY + ELBOW}V${firstY + PITCH * 3 - ELBOW}" ${trace}/>`)
+FEATURES.forEach((feature, i) => {
+  const cy = firstY + i * PITCH
+  if (i === 0) el(`<path d="M${SPINE_X} ${cy + ELBOW}Q${SPINE_X} ${cy} ${SPINE_X + ELBOW} ${cy}H${TILE_X}" ${trace}/>`)
+  else if (i === FEATURES.length - 1) el(`<path d="M${SPINE_X} ${cy - ELBOW}Q${SPINE_X} ${cy} ${SPINE_X + ELBOW} ${cy}H${TILE_X}" ${trace}/>`)
+  else el(`<path d="M${SPINE_X} ${cy}H${TILE_X}" ${trace}/><circle cx="${SPINE_X}" cy="${cy}" r="3.5" fill="${C.accent}"/>`)
+  el(`<text x="${SPINE_X + 14}" y="${cy - 7}" class="mono" font-size="10" letter-spacing=".5" fill="${C.accent}">${feature.n}</text>`)
+  el(`<rect x="${TILE_X}" y="${cy - TILE / 2}" width="${TILE}" height="${TILE}" rx="9" fill="#202024" stroke="#4c4c57" stroke-width="1.5"/>`)
+  el(icon(feature.icon, TILE_X, cy - TILE / 2))
+  el(`<text x="${TILE_X + TILE + 20}" y="${cy + 6}" class="sans" font-size="34" font-weight="620" letter-spacing="-.9" fill="${C.ink}">${feature.title}</text>`)
+  el(`<text x="${TILE_X + TILE + 21}" y="${cy + 27}" class="mono" font-size="11.5" letter-spacing="1.1" fill="${C.kicker}">${feature.kicker}</text>`)
+})
+
+// ---- Machines on one bus, joined to the hub ----
+const BUS_Y = 420, MACHINE_TOP = 440, SCALE = .56
+el(`<path d="M${HUB.x} ${HUB.y + HUB.size / 2}V${BUS_Y}" ${trace}/>`)
+const widths = MACHINES.map(([, art]) => bodySize(art).width * SCALE)
+const machineGap = (W - 2 * M - widths.reduce((a, b) => a + b, 0)) / (MACHINES.length - 1)
+const centers = []
+let left = M
+MACHINES.forEach(([name, art], i) => {
+  const cx = left + widths[i] / 2
+  centers.push(cx)
+  el(machine(art, left, MACHINE_TOP, SCALE))
+  el(`<path d="M${f(cx)} ${BUS_Y}V${MACHINE_TOP}" stroke="${C.accent}" stroke-width="1.5" opacity=".7"/>`)
+  el(`<text x="${f(cx)}" y="${MACHINE_TOP + 150 * SCALE + 22}" text-anchor="middle" class="mono" font-size="10" letter-spacing="1" fill="${C.muted}">${name.toUpperCase()}</text>`)
+  left += widths[i] + machineGap
+})
+el(`<path d="M${f(centers[0])} ${BUS_Y}H${f(centers.at(-1))}" stroke="${C.accent}" stroke-width="2"/>`)
+el(`<circle cx="${HUB.x}" cy="${BUS_Y}" r="4" fill="${C.accent}"/>`)
+
+// ---- Footer ----
+el(`<text x="${M}" y="596" class="sans" font-size="23" font-weight="620" letter-spacing="-.4" fill="${C.accent}">modwerk.app</text>`)
+el(`<text x="${W - M}" y="592" text-anchor="end" class="mono" font-size="10" letter-spacing="1" fill="${C.faint}">INDEPENDENT · NOT AFFILIATED WITH ELEKTRON</text>`)
+
+document.getElementById('art').innerHTML = out.join('\n')
+// Refuse to report a render with fallback fonts.
+document.fonts.ready.then(() => {
+  const ok = document.fonts.check('720 112px Archivo') && document.fonts.check('400 10px "JetBrains Mono"')
+    && [...document.fonts].every(face => face.status === 'loaded')
+  document.documentElement.dataset.rendered = ok ? 'true' : 'font-error'
+})
+</script>
+</body>
+</html>
