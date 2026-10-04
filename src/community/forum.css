@@ -162,6 +162,21 @@
 }
 
 .forum-machines { margin: 6px 0 30px; }
+.developer-page > .page-heading { flex-wrap: wrap; align-items: flex-start; }
+.developer-module-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.developer-module-grid .inbox-issue { padding: 16px; border: 1px solid var(--line); border-radius: 8px; }
+.private-report-context { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 10px 18px; margin: 20px 0; font-size: 13px; line-height: 1.6; }
+.private-report-context dt { color: var(--muted); }
+.private-report-context dd { margin: 0; overflow-wrap: anywhere; }
+.private-report-reply-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; }
+.private-report > .issue-report-escape { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.6; margin: 18px 0; }
+.private-report > .issue-report-escape input { flex-shrink: 0; margin-top: 4px; }
+.private-report > h3 { margin-top: 24px; }
+@media (max-width: 600px) {
+  .developer-module-grid { grid-template-columns: minmax(0, 1fr); }
+  .private-report-context { grid-template-columns: minmax(0, 1fr); gap: 3px; }
+  .private-report-context dd { margin-bottom: 10px; }
+}
 .forum-machine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(212px, 1fr)); gap: 10px; }
 .forum-machine-card { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid #36363e; border-radius: 9px; background: #252529; min-height: 62px; transition: border-color .15s, background .15s; }
 .forum-machine-card:hover, .forum-machine-card:focus-visible { border-color: #53535f; background: #2a2a2f; }

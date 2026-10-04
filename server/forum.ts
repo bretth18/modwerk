@@ -2,7 +2,7 @@ import type { Database, User } from './platform'
 import { ADMIN_ACTOR, needMember, throttle } from './auth'
 import { HttpError, jsonBody, required, response } from './security'
 import { FORUM_CATEGORIES, forumMachine, sharedConfiguration } from '../src/community/forum-contract'
-import { MODULES } from '../src/catalog/modules'
+import { communityModule } from '../src/community/modules'
 
 type Thread = {id:string;user_id:string;locked:number;hidden:number;configuration_json:string|null;issue_json:string|null}
 function page(url: URL) { const value = Number(url.searchParams.get('page') ?? 0); if (!Number.isInteger(value) || value < 0 || value > 10000) throw new HttpError(400,'Invalid page.'); return value }
@@ -16,7 +16,7 @@ function bool(value: unknown) { if (typeof value !== 'boolean') throw new HttpEr
 function cleanBody(value: unknown) { return required(value,'Post',12000) }
 function moduleId(value: unknown) {
   if (value === '' || value === undefined || value === null) return null
-  if (typeof value !== 'string' || !MODULES.some(module => module.id === value)) throw new HttpError(400,'Choose a known module.')
+  if (typeof value !== 'string' || !communityModule(value)) throw new HttpError(400,'Choose a known module.')
   return value
 }
 export async function forum(request: Request, db: Database, user: User|null, admin: boolean): Promise<Response|null> {
@@ -36,7 +36,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
       const result = await db.batch([
         db.prepare(`UPDATE ${table} SET ${body.action}=? WHERE id=?`).bind(value,target),
         db.prepare(`INSERT INTO forum_moderation(id,actor_id,target,action,reason) SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM ${table} WHERE id=?)`).bind(crypto.randomUUID(),ADMIN_ACTOR,target,`${body.action}:${value}`,reason,target),
-        ...(body.action === 'suspended' && value ? [db.prepare('DELETE FROM sessions WHERE user_id=?').bind(target),db.prepare('DELETE FROM auth_sessions WHERE userId=?').bind(target)] : []),
+        ...(body.action === 'suspended' && value ? [db.prepare('DELETE FROM sessions WHERE user_id=?').bind(target),db.prepare('DELETE FROM auth_sessions WHERE userId=?').bind(target),db.prepare('DELETE FROM developer_sessions WHERE user_id=?').bind(target),db.prepare('DELETE FROM developer_auth_codes WHERE user_id=?').bind(target)] : []),
       ])
       if (!(result[0] as {meta:{changes:number}}).meta.changes) throw new HttpError(404,'Item not found.')
       return response({ok:true})
@@ -87,20 +87,22 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     const title=required(body.title,'Title',160), content=cleanBody(body.body), module=moduleId(body.moduleId), id=crypto.randomUUID(), postId=crypto.randomUUID()
     let machine: string | null
     try { machine = forumMachine(body.machine) } catch (error) { throw new HttpError(400, error instanceof Error ? error.message : 'Unknown machine.') }
-    if (module && machine && machine !== 'octatrack') throw new HttpError(400,'Octatrack modules belong to Octatrack threads.')
-    if (body.category==='configs' && machine && machine !== 'octatrack') throw new HttpError(400,'Shared configurations are available for the Octatrack for now.')
+    const moduleMachine = module ? communityModule(module)!.machine : null
+    if (moduleMachine && machine && machine !== moduleMachine) throw new HttpError(400,'The module belongs to a different machine.')
     let config=null,issue=null
     if(body.category==='configs'){try{config=sharedConfiguration(body.configuration)}catch(error){throw new HttpError(400,error instanceof Error?error.message:'Invalid configuration.')}}
     else if(body.configuration!==undefined)throw new HttpError(400,'Shared configurations belong in the configurations category.')
     if(body.category==='issues'){
-      if(!module&&(!machine||machine==='octatrack'))throw new HttpError(400,'Choose the affected module.')
+      if(!module&&(!machine||['octatrack','digitakt','digitone'].includes(machine)))throw new HttpError(400,'Choose the affected module.')
       if(!body.issue||typeof body.issue!=='object'||Array.isArray(body.issue))throw new HttpError(400,'Include the device, module version and reproduction steps.')
       const item=body.issue as Record<string,unknown>
       if(Object.keys(item).some(key=>!['device','version','steps','expected','actual'].includes(key)))throw new HttpError(400,'Unexpected issue field. Attachments are not accepted.')
       issue={device:required(item.device,'Device',80),version:required(item.version,'Module version',80),steps:required(item.steps,'Steps',4000),expected:required(item.expected,'Expected result',2000),actual:required(item.actual,'Actual result',2000)}
     }
+    const configMachine = config ? config.device ?? 'octatrack' : null
+    if (configMachine && ((machine && machine !== configMachine) || (moduleMachine && moduleMachine !== configMachine))) throw new HttpError(400,'The configuration belongs to a different machine.')
     await db.batch([
-      db.prepare('INSERT INTO forum_threads(id,user_id,title,category,machine,module_id,configuration_json,issue_json) VALUES(?,?,?,?,?,?,?,?)').bind(id,member.id,title,body.category,machine ?? (module || config ? 'octatrack' : null),module,config?JSON.stringify(config):null,issue?JSON.stringify(issue):null),
+      db.prepare('INSERT INTO forum_threads(id,user_id,title,category,machine,module_id,configuration_json,issue_json) VALUES(?,?,?,?,?,?,?,?)').bind(id,member.id,title,body.category,machine ?? moduleMachine ?? configMachine,module,config?JSON.stringify(config):null,issue?JSON.stringify(issue):null),
       db.prepare('INSERT INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').bind(postId,id,member.id,content),
       db.prepare('INSERT INTO forum_follows(thread_id,user_id) VALUES(?,?)').bind(id,member.id),
     ])

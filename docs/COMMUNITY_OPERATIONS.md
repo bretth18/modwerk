@@ -6,7 +6,7 @@ These procedures accompany the forum draft. They do not authorize a production d
 
 Both Wrangler configurations default `REGISTRATION_OPEN` to `false`. The server rejects new registrations unless it is exactly `true`; hiding the frontend form is not the control. Closing registration keeps existing sign-in, verification, recovery and moderation available. The session endpoint reports mail availability separately from registration availability.
 
-Deploy the reviewed backend and apply migrations 0011–0014 only after owner authorization. Keep registration closed while checking health, existing content, administrator access and the frontend/API origin. Open it only after the controlled runtime and real-mail tests in [FORUM_LAUNCH.md](FORUM_LAUNCH.md) pass and the owner approves public launch. An operator can pause signups by deploying the reviewed configuration with registration closed. Do not improvise changes to hashing parameters or provider billing to solve capacity problems.
+Deploy the reviewed backend and apply migrations 0011–0016 only after owner authorization. Keep registration closed while checking health, existing content, administrator access and the frontend/API origin. Open it only after the controlled runtime and real-mail tests in [FORUM_LAUNCH.md](FORUM_LAUNCH.md) pass and the owner approves public launch. An operator can pause signups by deploying the reviewed configuration with registration closed. Do not improvise changes to hashing parameters or provider billing to solve capacity problems.
 
 ## Backups and recovery
 
@@ -47,11 +47,11 @@ Submission and review never delete data. There is no automatic deletion endpoint
 
 1. Verify control of the account and confirm the exact scope with the member through an approved private support channel. Choose and record how public discussion, comments, attribution, configuration snapshots, reactions and any externally published GitHub issues will be handled. Do not infer consent to erase contributions from a bare account request.
 2. Prepare a reviewed transaction and a recovery point for that exact account ID. Require separate authorization for the destructive operator action. Prefer suspension/session revocation before the approved removal to prevent concurrent writes.
-3. Remove private authentication records and action tokens, private reports including their device logs, saved configurations, follows/bookmarks/notifications and moderation reports as approved. Address user references in submissions/media and review/moderation history as applicable. Inventory the current schema rather than relying on an outdated table list.
-4. Apply the approved public-content handling and retain an inert `users` projection when needed for discussion/attribution foreign keys: no username, unverified, suspended, display name `Deleted member`. Do not grant the old identity to a new account. Preserve other contributors' posts and source attribution as agreed. Provider logs, existing public GitHub issues and recovery archives need separate handling; database changes cannot erase those copies.
+3. Remove private authentication records and action tokens, private reports including their device logs/replies, developer sessions/handoff codes, maintainer claims and developer audit rows, saved configurations, follows/bookmarks/notifications and moderation reports as approved. Address user references in submissions/media and review/moderation history as applicable. Inventory the current schema rather than relying on an outdated table list.
+4. Apply the approved public-content handling and retain an inert `users` projection when needed for discussion/attribution foreign keys: no username or GitHub identity/handle, unverified, suspended, display name `Deleted member`. Do not grant the old identity to a new account. Preserve other contributors' posts and source attribution as agreed. Provider logs, existing public GitHub issues and recovery archives need separate handling; database changes cannot erase those copies.
 5. Verify the original credentials and sessions fail, private APIs cannot recover the removed data, other members still work, references are valid and retained content matches the approved scope. Only then mark the request complete and record a minimal private audit note.
 
-The server rejects completion while authentication, account tokens, legacy sessions, private reports/configurations, follows/bookmarks/notifications/reports or the active user projection remain. This is a minimum technical check; it cannot inspect provider logs, archives, public free text or externally published copies. The operator must verify those separately.
+The server rejects completion while authentication, account tokens, legacy/developer sessions and codes, claims/replies/developer events, private reports/configurations, follows/bookmarks/notifications/reports or the active user projection remain. This is a minimum technical check; it cannot inspect provider logs, archives, public free text or externally published copies. The operator must verify those separately.
 
 The owner chose `jannik.assfalg@gmail.com` as the public receiving support contact on 3 October 2026. Sign-in, privacy and account-removal pages link to it, and transactional email sets it as Reply-To. `accounts@octamod.app` remains the sending identity; it is not presented as a receiving mailbox. Confirm support-message receipt and the response procedure before public launch. Never ask a member to email passwords, recovery links or firmware.
 
@@ -62,7 +62,8 @@ Current implemented retention is deliberately stated in public privacy copy:
 | Data | Current behavior |
 | --- | --- |
 | Verification / recovery links | Expire after 24 hours / 30 minutes; one use |
-| Member / administrator sessions | Up to seven days / eight hours; revocable |
+| Member / developer / administrator sessions | Up to seven days / seven days / eight hours; revocable |
+| GitHub OAuth state / browser handoff | Up to ten minutes / 60 seconds; one use |
 | Expired sessions, action tokens and rate-limit buckets | Removed by the hourly Worker cleanup |
 | Aggregate site usage | Existing 90-day daily retention |
 | Accounts and unverified registrations | Retained until operator removal |
@@ -81,6 +82,8 @@ The sender has a ten-second request timeout and an idempotency key derived from 
 
 During the initial launch period, the assigned operator should review the private forum reports/account requests and mail counters daily and check Cloudflare request errors, CPU limits and D1 failures after releases. Use provider aggregate metrics; do not enable request-body, credential, action-link or address logging. Alerts/scheduled checks are not configured by this draft. Record the operator and escalation route before opening registration.
 
-Forum reports, hiding, locking, suspending and private moderation history are available behind separate administrator authorization. For spam, suspend the offending account and hide the affected content with a concise private reason. Suspension revokes member/legacy sessions. Do not publish private reports or device logs as part of moderation.
+Forum reports, hiding, locking, suspending and private moderation history are available behind separate administrator authorization. For spam, suspend the offending account and hide the affected content with a concise private reason. Suspension revokes member, legacy and developer sessions plus pending developer handoffs. Do not publish private reports or device logs as part of moderation.
 
 For suspected credential compromise, pause registrations and affected writes through an approved deployment, capture minimal aggregate evidence, rotate the affected Worker secrets and revoke compromised sessions/action tokens. Rotating `AUTH_SECRET` alone does not replace the need to review stored sessions and action tokens. Administrator key rotation invalidates administrator sessions. Revoke/replace a compromised Resend key using domain-restricted sending-only permissions. Recover from the last verified database/Worker version with owner approval, preserve approved removal records, and test access boundaries before reopening. Keep security advisories reviewed and dependencies pinned; ordinary application checks never run firmware/DSP tests.
+
+Developer OAuth setup and report-consent boundaries are documented in [DEVELOPER_WORKSPACE.md](DEVELOPER_WORKSPACE.md). Rotating the GitHub OAuth client secret invalidates developer sessions; claims are retained for independent revocation/review. GitHub-only identities use the support contact for removal requests rather than a password-based member request.
