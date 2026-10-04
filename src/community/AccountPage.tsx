@@ -65,4 +65,4 @@ function AccountContent({route}:{route:string}) {
   </div>
 }
 
-export function AccountPage({route}:{route:string}) { return route.startsWith('account/sso/')?<SocialReturn code={route.split('/')[2]??''}/>:<AccountContent route={route}/> }
+export function AccountPage({route}:{route:string}) { return route==='account/sso'||route.startsWith('account/sso/')?<SocialReturn code={route.split('/')[2]??''}/>:<AccountContent route={route}/> }
