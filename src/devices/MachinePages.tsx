@@ -103,7 +103,7 @@ export function DigiLibrary({ device, category, query, selectedIds, onToggle }: 
     <div className="library-page">
       <div className="page-heading"><div><p className="page-kicker">MODWERK / {device.name.toUpperCase()}</p><h1>{label ?? 'Module library'}</h1><p>{category === 'standalone' ? STANDALONE_NOTE : device.summary}</p></div><span className="library-total">{mods.length} modules</span></div>
       <p className="device-preview-note"><Icon name="lock" size={14} />Preview: plan configurations now. Modwerk cannot build {device.name} firmware yet.</p>
-      {(!estimate.fits || estimate.clashes.length > 0) && <a className="selection-conflict-link" href={deviceHref(device.id, 'configuration')}><Icon name="sliders" size={18} /><span><strong>Your selection needs a change</strong><small>{estimate.fits ? 'Two selected mods claim the same resource.' : 'The selected mods need more memory than the ' + device.name + ' shares with mods.'}</small></span><Icon name="arrow" size={18} /></a>}
+      {(!estimate.fits || estimate.clashes.length > 0) && <a className="selection-conflict-link" href={deviceHref(device.id, 'configuration')}><Icon name="sliders" size={18} /><span><strong>Your selection needs a change</strong><small>{estimate.fits ? 'The selected mods cannot be used together.' : 'The selected mods need more memory than the ' + device.name + ' shares with mods.'}</small></span><Icon name="arrow" size={18} /></a>}
       <div className="library-subheading"><span>{term ? 'Results for “' + query.trim() + '”' : 'Explore the collection'}</span><span className="subtle">{device.name} · OS {device.firmware?.releases.join(' / ')}</span></div>
       <div className="module-grid">{mods.map(mod => <DigiModCard key={mod.id} mod={mod} selected={selectedIds.includes(mod.id)} onToggle={() => onToggle(mod.id)} />)}</div>
       {!mods.length && <div className="no-results"><Icon name="search" size={30} /><h2>{term ? 'No modules found' : 'No ' + device.name + ' modules here yet'}</h2><p>{term ? 'Try another name or author.' : 'Browse all ' + device.name + ' modules, or help write the first one.'}</p><a className="button button-quiet" href={deviceHref(device.id)}>All {device.name} modules</a></div>}
@@ -129,13 +129,13 @@ export function DigiModDetail({ device, mod, selected, onToggle }: { device: Dig
         </div>
       </section>
       <section className="detail-section"><h2>Resources</h2>
-        <dl className="device-facts"><dt>Memory</dt><dd>{kib(mod.ramBytes)} of the {kib(core.areaBytes)} all mods share (core {core.version} uses {kib(core.ramBytes)})</dd><dt>Claims</dt><dd>{mod.claims.join(', ')}</dd><dt>Source</dt><dd><a className="author-link" href={mod.repository} target="_blank" rel="noreferrer">{mod.repository.replace('https://github.com/', '')} ↗</a></dd><dt>Hardware</dt><dd>{mod.hardware ?? 'No hardware report yet.'}</dd></dl>
+        <dl className="device-facts"><dt>Memory</dt><dd>{kib(mod.ramBytes)} of the {kib(core.areaBytes)} all mods share ({kib(core.ramBytes)} reserved for the core and alignment)</dd><dt>Claims</dt><dd>{mod.claims.join(', ')}</dd><dt>Source</dt><dd><a className="author-link" href={mod.repository} target="_blank" rel="noreferrer">{mod.repository.replace('https://github.com/', '')} ↗</a></dd><dt>Hardware</dt><dd>{mod.hardware ?? 'No hardware report yet.'}</dd></dl>
       </section>
       {others.length > 0 && <section className="detail-section"><h2>Combines with</h2>
         <ul className="feature-list">{others.map(other => {
           const estimate = estimateCombination(device.id, [mod.id, other.id])
           const ok = estimate.fits && !estimate.clashes.length
-          return <li key={other.id}><Icon name={ok ? 'check' : 'close'} size={15} /><a href={deviceHref(device.id, 'module/' + other.id)}>{other.title}</a><span className="subtle">{ok ? 'fits together (' + kib(estimate.usedBytes) + ')' : estimate.fits ? 'claims the same resource' : 'too large together (' + kib(estimate.usedBytes) + ')'}</span></li>
+          return <li key={other.id}><Icon name={ok ? 'check' : 'close'} size={15} /><a href={deviceHref(device.id, 'module/' + other.id)}>{other.title}</a><span className="subtle">{ok ? 'fits together (' + kib(estimate.usedBytes) + ')' : estimate.fits ? 'cannot be used together' : 'too large together (' + kib(estimate.usedBytes) + ')'}</span></li>
         })}</ul>
         <p className="combination-footnote">Estimated from code and data sizes. The build’s own check decides.</p>
       </section>}
@@ -166,7 +166,7 @@ export function DigiConfiguration({ device, configuration, configurations, onSel
           <div className="resource-meter-track"><span style={{ width: percent + '%' }} /></div>
           <small>{estimate.fits ? 'Estimated from each mod’s code and data sizes; the build’s own check decides.' : 'Over the shared area: this set will not link. Remove a mod.'}</small>
         </div>
-        {estimate.clashes.map(clash => <p key={clash.claim} className="file-error" role="alert">{clash.mods.join(' and ')} both claim {clash.claim}.</p>)}
+        {estimate.clashes.map((clash, index) => <p key={clash.claim + index} className="file-error" role="alert">{clash.mods.join(' and ')} cannot be used together: {clash.claim}.</p>)}
       </section>
       <section className="configuration-section" aria-labelledby="digi-firmware-title"><div className="section-title"><h2 id="digi-firmware-title">Base firmware</h2><span className="subtle">Coming soon</span></div>
         <div className="firmware-drop is-disabled"><span className="file-symbol"><Icon name="lock" size={24} /></span><div className="file-copy"><strong>{device.name} OS {device.firmware?.releases.join(' or ')}</strong><span>Modwerk will read your own <code>.syx</code> on this device, as it does for the Octatrack. Building is not available yet.</span></div></div>
