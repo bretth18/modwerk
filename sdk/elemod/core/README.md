@@ -1,5 +1,7 @@
 # Modwerk core foundation
 
+**Frozen on 4 October 2026.** The owner paused this original core at the SETTINGS/render stage and chose elekloader's builder for the launch. Work resumes later; the target is a builder that matches elekloader's online builder. The state at the freeze, including what remains unverified, is in [VERIFICATION.md](../../../docs/VERIFICATION.md).
+
 This is Modwerk's original implementation of the public elemod boot and event ABI. It was written from the documented contracts, not from elekloader's core assembly. [core-api.h](core-api.h) records the 32-bit descriptor layouts and actual helper signatures; target compilation checks their sizes. Credit: irpina's GPL-2.0-or-later [FORMAT](https://github.com/irpina/elekloader/blob/main/docs/FORMAT.md) and [ADAPTING](https://github.com/irpina/elekloader/blob/main/docs/ADAPTING.md) guides. Modwerk's source is GPL-3.0-or-later.
 
 `boot.s` saves the incoming general registers, status and stack, copies the linker's complete RAM image, clears BSS and tail-calls the boot routine the verified stock site originally called. Zero-length copy and clear loops are supported. It contains no stock instruction bytes or extracted firmware routine. The target address and patch guard live in each machine's `core/probe.json`.
