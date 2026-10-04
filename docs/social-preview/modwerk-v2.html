@@ -6,6 +6,7 @@
 <!--
   Source of public/modwerk-social-preview-v2.jpg: a 1200 × 630 vector drawing, rendered by
   scripts/render-social-preview.mjs. Original artwork; no firmware, photographs or captures.
+  The mark is public/modwerk-mark.svg, embedded as-is.
   Machines follow the site's schematic DeviceArt rules (generic boxes, not product likenesses).
   Fonts: Archivo and JetBrains Mono (SIL Open Font License 1.1), pinned @fontsource builds.
 -->
@@ -20,7 +21,7 @@
 </head>
 <body>
 <svg id="art" xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img"
-  aria-label="Modwerk. Mods for every Elektron machine. A hub links Elektron machines to the mod library, firmware builder, forum and developer SDK."></svg>
+  aria-label="Modwerk. Mods for every Elektron machine. Four highlighted steps of a sequencer row show the mod library, firmware builder, forum and developer SDK, above a row of Elektron machines."></svg>
 <script>
 // Site palette (src/styles.css, src/devices/devices.css).
 const C = {
@@ -137,77 +138,61 @@ for (const [x, y, dx, dy] of [[24, 24, 1, 1], [1176, 24, -1, 1], [24, 606, 1, -1
   el(`<path d="M${x} ${y + dy * 12}V${y}H${x + dx * 12}" stroke="${C.faint}" stroke-width="1" fill="none"/>`)
 }
 
-// ---- Wordmark and descriptor ----
-el(`<text x="${M - 5}" y="140" class="sans" font-size="112" font-weight="720" letter-spacing="-4.5" fill="${C.ink}" style="font-stretch:104%">Modwerk</text>`)
-el(`<text x="${M}" y="214" class="sans" font-size="41" font-weight="480" letter-spacing="-1.1" fill="${C.soft}">Mods for every</text>`)
-el(`<text x="${M}" y="263" class="sans" font-size="41" font-weight="480" letter-spacing="-1.1" fill="${C.soft}">Elektron machine.</text>`)
+// ---- Lockup: the mark file, verbatim, beside the wordmark ----
+const MARK = 92
+el(`<image href="../../public/modwerk-mark.svg" x="${M}" y="44" width="${MARK}" height="${MARK}"/>`)
+el(`<text x="${M + MARK + 22}" y="124" class="sans" font-size="104" font-weight="720" letter-spacing="-4.2" fill="${C.ink}" style="font-stretch:104%">Modwerk</text>`)
+el(`<text x="${M}" y="200" class="sans" font-size="40" font-weight="480" letter-spacing="-1.1" fill="${C.soft}">Mods for every Elektron machine.</text>`)
 
-// ---- Hub: the eight-tile mark (public/favicon.svg), slot-in variant: the ninth tile is the mod ----
-const HUB = { x: 620, y: 232, size: 92 }
-el(`<rect x="${HUB.x - HUB.size / 2}" y="${HUB.y - HUB.size / 2}" width="${HUB.size}" height="${HUB.size}" rx="16" fill="#23244a" stroke="${C.accent}" stroke-width="2"/>`)
-const pad = 20, padGap = 7, padStart = (3 * pad + 2 * padGap) / 2, SLOT_IN = 6
-for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
-  const x = HUB.x - padStart + c * (pad + padGap), y = HUB.y - padStart + r * (pad + padGap)
-  if (r === 2 && c === 2) {
-    // Its empty slot, and the apricot mod on its way in.
-    el(`<rect x="${x + .75}" y="${y + .75}" width="${pad - 1.5}" height="${pad - 1.5}" rx="3.5" fill="none" stroke="${C.accent}" stroke-width="1.5" stroke-dasharray="3 3"/>`)
-    el(`<rect x="${x + SLOT_IN - 2}" y="${y + SLOT_IN - 2}" width="${pad + 4}" height="${pad + 4}" rx="6" fill="#23244a"/>`)
-    el(`<rect x="${x + SLOT_IN}" y="${y + SLOT_IN}" width="${pad}" height="${pad}" rx="4" fill="${C.apricot}"/>`)
-  } else el(`<rect x="${x}" y="${y}" width="${pad}" height="${pad}" rx="4" fill="${C.ink}"/>`)
+// ---- Sixteen trig keys; the four beat steps are the four features ----
+const FEATURES = [
+  { title: 'Mod library', kicker: 'EVERY MOD, ONE CATALOG', icon: 'library' },
+  { title: 'Firmware builder', kicker: 'YOUR STOCK OS + YOUR MODS', icon: 'firmware' },
+  { title: 'Forum', kicker: 'A BOARD FOR EACH MACHINE', icon: 'forum' },
+  { title: 'Developer SDK', kicker: 'ONE STANDARD FOR EVERY MACHINE', icon: 'sdk' },
+]
+const KEY_GAP = 10, KEY = (W - 2 * M - 15 * KEY_GAP) / 16, KEY_Y = 316
+for (let i = 0; i < 16; i++) {
+  const x = M + i * (KEY + KEY_GAP)
+  const beat = i % 4 === 0
+  if (beat) {
+    const feature = FEATURES[i / 4]
+    el(`<text x="${x}" y="${KEY_Y - 34}" class="sans" font-size="31" font-weight="620" letter-spacing="-.8" fill="${C.ink}">${feature.title}</text>`)
+    el(`<text x="${x + 1}" y="${KEY_Y - 13}" class="mono" font-size="10.5" letter-spacing="1" fill="${C.kicker}">${feature.kicker}</text>`)
+    el(`<rect x="${f(x)}" y="${KEY_Y}" width="${f(KEY)}" height="${f(KEY)}" rx="9" fill="#202024" stroke="${C.apricot}" stroke-width="2"/>`)
+    el(`<g transform="translate(${f(x)} ${KEY_Y}) scale(${f(KEY / TILE)}) translate(${-x} ${-KEY_Y})">${icon(feature.icon, x, KEY_Y)}</g>`)
+  } else {
+    el(`<rect x="${f(x)}" y="${KEY_Y}" width="${f(KEY)}" height="${f(KEY)}" rx="9" fill="#232328" stroke="#3a3a43" stroke-width="1.5"/>`)
+  }
+  el(`<text x="${f(x + KEY / 2)}" y="${f(KEY_Y + KEY + 22)}" text-anchor="middle" class="mono" font-size="10" letter-spacing=".5" fill="${beat ? C.apricot : C.faint}">${i + 1}</text>`)
 }
 
-// ---- Four features, fanned out from the hub ----
-const FEATURES = [
-  { n: '01', title: 'Mod library', kicker: 'EVERY MOD, ONE CATALOG', icon: 'library' },
-  { n: '02', title: 'Firmware builder', kicker: 'YOUR STOCK OS + YOUR MODS', icon: 'firmware' },
-  { n: '03', title: 'Forum', kicker: 'A BOARD FOR EACH MACHINE', icon: 'forum' },
-  { n: '04', title: 'Developer SDK', kicker: 'ONE STANDARD FOR EVERY MACHINE', icon: 'sdk' },
-]
-const SPINE_X = 720, TILE_X = 770, PITCH = 86, ELBOW = 10
-const firstY = HUB.y - PITCH * 1.5
-const trace = `stroke="${C.accent}" stroke-width="2" fill="none"`
-el(`<path d="M${HUB.x + HUB.size / 2} ${HUB.y}H${SPINE_X}" ${trace}/>`)
-el(`<path d="M${SPINE_X} ${firstY + ELBOW}V${firstY + PITCH * 3 - ELBOW}" ${trace}/>`)
-FEATURES.forEach((feature, i) => {
-  const cy = firstY + i * PITCH
-  if (i === 0) el(`<path d="M${SPINE_X} ${cy + ELBOW}Q${SPINE_X} ${cy} ${SPINE_X + ELBOW} ${cy}H${TILE_X}" ${trace}/>`)
-  else if (i === FEATURES.length - 1) el(`<path d="M${SPINE_X} ${cy - ELBOW}Q${SPINE_X} ${cy} ${SPINE_X + ELBOW} ${cy}H${TILE_X}" ${trace}/>`)
-  else el(`<path d="M${SPINE_X} ${cy}H${TILE_X}" ${trace}/><circle cx="${SPINE_X}" cy="${cy}" r="3.5" fill="${C.accent}"/>`)
-  el(`<text x="${SPINE_X + 14}" y="${cy - 7}" class="mono" font-size="10" letter-spacing=".5" fill="${C.accent}">${feature.n}</text>`)
-  el(`<rect x="${TILE_X}" y="${cy - TILE / 2}" width="${TILE}" height="${TILE}" rx="9" fill="#202024" stroke="#4c4c57" stroke-width="1.5"/>`)
-  el(icon(feature.icon, TILE_X, cy - TILE / 2))
-  el(`<text x="${TILE_X + TILE + 20}" y="${cy + 6}" class="sans" font-size="34" font-weight="620" letter-spacing="-.9" fill="${C.ink}">${feature.title}</text>`)
-  el(`<text x="${TILE_X + TILE + 21}" y="${cy + 27}" class="mono" font-size="11.5" letter-spacing="1.1" fill="${C.kicker}">${feature.kicker}</text>`)
-})
-
-// ---- Machines on one bus, joined to the hub ----
-const BUS_Y = 420, MACHINE_TOP = 440, SCALE = .56
-el(`<path d="M${HUB.x} ${HUB.y + HUB.size / 2}V${BUS_Y}" ${trace}/>`)
+// ---- One of each machine, standing on one baseline ----
+const MACHINE_BASE = 511, SCALE = .42
 const widths = MACHINES.map(([, art]) => bodySize(art).width * SCALE)
 const machineGap = (W - 2 * M - widths.reduce((a, b) => a + b, 0)) / (MACHINES.length - 1)
-const centers = []
 let left = M
-MACHINES.forEach(([name, art], i) => {
-  const cx = left + widths[i] / 2
-  centers.push(cx)
-  el(machine(art, left, MACHINE_TOP, SCALE))
-  el(`<path d="M${f(cx)} ${BUS_Y}V${MACHINE_TOP}" stroke="${C.accent}" stroke-width="1.5" opacity=".7"/>`)
-  el(`<text x="${f(cx)}" y="${MACHINE_TOP + 150 * SCALE + 22}" text-anchor="middle" class="mono" font-size="10" letter-spacing="1" fill="${C.muted}">${name.toUpperCase()}</text>`)
+MACHINES.forEach(([, art], i) => {
+  el(machine(art, left, MACHINE_BASE - bodySize(art).height * SCALE, SCALE))
   left += widths[i] + machineGap
 })
-el(`<path d="M${f(centers[0])} ${BUS_Y}H${f(centers.at(-1))}" stroke="${C.accent}" stroke-width="2"/>`)
-el(`<circle cx="${HUB.x}" cy="${BUS_Y}" r="4" fill="${C.accent}"/>`)
 
 // ---- Footer ----
 el(`<text x="${M}" y="596" class="sans" font-size="23" font-weight="620" letter-spacing="-.4" fill="${C.accent}">modwerk.app</text>`)
 el(`<text x="${W - M}" y="592" text-anchor="end" class="mono" font-size="10" letter-spacing="1" fill="${C.faint}">INDEPENDENT · NOT AFFILIATED WITH ELEKTRON</text>`)
 
 document.getElementById('art').innerHTML = out.join('\n')
-// Refuse to report a render with fallback fonts.
-document.fonts.ready.then(() => {
-  const ok = document.fonts.check('720 112px Archivo') && document.fonts.check('400 10px "JetBrains Mono"')
+// Refuse to report a render with fallback fonts or without the mark.
+const markLoaded = new Promise(resolve => {
+  const probe = new Image()
+  probe.onload = () => resolve(true)
+  probe.onerror = () => resolve(false)
+  probe.src = '../../public/modwerk-mark.svg'
+})
+Promise.all([document.fonts.ready, markLoaded]).then(([, mark]) => {
+  const fonts = document.fonts.check('720 104px Archivo') && document.fonts.check('400 10px "JetBrains Mono"')
     && [...document.fonts].every(face => face.status === 'loaded')
-  document.documentElement.dataset.rendered = ok ? 'true' : 'font-error'
+  document.documentElement.dataset.rendered = fonts && mark ? 'true' : fonts ? 'mark-error' : 'font-error'
 })
 </script>
 </body>

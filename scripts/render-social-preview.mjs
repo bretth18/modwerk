@@ -51,13 +51,13 @@ await page.route(url => url.protocol !== 'file:', route => {
   return route.abort()
 })
 await page.goto('file://' + source)
-// The page sets data-rendered to 'true' once both fonts have loaded, or 'font-error'.
+// The page sets data-rendered to 'true' once its fonts and mark have loaded, otherwise to the error.
 const rendered = 'document.documentElement.dataset.rendered'
 await page.waitForFunction(rendered, null, { timeout: 30000 })
 const state = await page.evaluate(rendered)
 if (routeError || state !== 'true') {
   await browser.close()
-  throw routeError ?? new Error(`Artwork did not render with its fonts (${state}).`)
+  throw routeError ?? new Error(`Artwork did not render with its fonts and mark (${state}).`)
 }
 const capture = await page.screenshot({ clip: { x: 0, y: 0, width: 1200, height: 630 } })
 await browser.close()

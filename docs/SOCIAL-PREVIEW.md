@@ -18,23 +18,33 @@ services can fetch the new asset.
 ## Modwerk launch artwork
 
 `public/modwerk-social-preview-v2.jpg` is the prepared homepage link preview for the
-Modwerk rebrand: 1200 × 630, progressive sRGB JPEG, quality 95, 4:4:4. It reads as a
-signal diagram: the eight-tile mark, its ninth tile an apricot mod sliding into its
-slot, is a hub that fans out to the four features (Mod
-library, Firmware builder, Forum, Developer SDK) and connects down to a bus of
-Elektron machines. The copy is “Mods for every Elektron machine.” The feature labels
-are sized to stay legible at 600 × 315 and 400 × 210.
+Modwerk rebrand: 1200 × 630, progressive sRGB JPEG, quality 95, 4:4:4. The Modwerk
+lockup and “Mods for every Elektron machine.” sit above a sixteen-step trig row whose
+four beat steps are the four features: Mod library, Firmware builder, Forum and
+Developer SDK. One of each machine silhouette stands below. The feature labels are
+sized to stay legible at 600 × 315 and 400 × 210.
 
-The machines are one of each silhouette (Octatrack, Digitakt, Syntakt, Analog Rytm,
-Analog Keys, Analog Heat, Model:Cycles), drawn with the site's schematic `DeviceArt`
-rules. They are generic line drawings, not product likenesses or captures, and say
-nothing about which machines have mods yet. Product names identify the machines only;
-the artwork states that Modwerk is independent and not affiliated with Elektron.
+The machines (Octatrack, Digitakt, Syntakt, Analog Rytm, Analog Keys, Analog Heat,
+Model:Cycles) are drawn with the site's schematic `DeviceArt` rules. They are generic
+line drawings, not product likenesses or captures, and say nothing about which
+machines have mods yet. The artwork states that Modwerk is independent and not
+affiliated with Elektron.
+
+### Mark
+
+`public/modwerk-mark.svg` (dark backgrounds) and `public/modwerk-mark-on-light.svg`
+(light backgrounds) are the Modwerk mark: eight tiles centred in a frame that opens
+at one corner, where an apricot ninth tile, the mod, slides in. The artwork embeds
+`modwerk-mark.svg` as-is, so a change to the mark changes the preview on its next
+export. `public/favicon.svg` is still the Octamod mark; switching it belongs to the
+rebrand.
+
+### Source and export
 
 The source is the vector drawing [`social-preview/modwerk-v2.html`](social-preview/modwerk-v2.html).
 It uses Archivo and JetBrains Mono (SIL Open Font License 1.1), pinned
-`@fontsource-variable` 5.3.0 builds; no images, photographs, firmware or generated
-artwork go into it. To re-export:
+`@fontsource-variable` 5.3.0 builds, and the mark file; no photographs, firmware or
+generated images go into it. To re-export:
 
 ```sh
 npm install --no-save playwright@1.56.1 @fontsource-variable/archivo@5.3.0 @fontsource-variable/jetbrains-mono@5.3.0
@@ -43,16 +53,17 @@ node scripts/render-social-preview.mjs --previews /tmp/modwerk-previews
 ```
 
 The script renders at 2× in Chromium, downsamples with Sharp, refuses a render whose
-fonts did not load, and prints the export's SHA-256. The committed export is 117,553
-bytes, SHA-256 `7f1adc94706068d0d34347c11e691aaf5fc902ac6519818ab2d2219bf9adfe91`
+fonts or mark did not load, and prints the export's SHA-256. The committed export is
+98,003 bytes, SHA-256 `45e6a81189a622a9db04afcc09befe899f2a2fb7b9ba4ae6296795abebebe29d`
 (Playwright 1.56.1 Chromium on Linux; other platforms may differ by antialiasing).
 
 Activate it with the rebrand, not before: set `og:image` and `twitter:image` to
 `https://modwerk.app/modwerk-social-preview-v2.jpg`, keep the 1200 × 630 dimensions
 and `image/jpeg` type, and use this alt text for both cards:
 
-> Modwerk — Mods for every Elektron machine. A hub links Elektron machines to the mod
-> library, firmware builder, forum and developer SDK.
+> Modwerk — Mods for every Elektron machine. Four highlighted steps of a sequencer
+> row show the mod library, firmware builder, forum and developer SDK, above a row of
+> Elektron machines.
 
 ## Module links
 
