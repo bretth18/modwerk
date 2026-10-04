@@ -30,6 +30,8 @@ describe('All machines library parity', () => {
     }
     expect(html).toContain('href="#configuration"')
     expect(html).toContain('Build firmware')
+    expect(html.slice(html.indexOf('id="machine-octatrack"'))).toContain('Build firmware')
+    expect(html).toContain('aria-label="Build firmware for Octatrack"')
     expect(html).toContain('4.5 (2)')
     expect(html).toContain('7 likes')
     expect(html).toContain('12 downloads')
@@ -48,7 +50,7 @@ describe('All machines library parity', () => {
     expect(html).toContain('href="#digitakt/configuration"')
     expect(html).not.toContain('Digitone: your selection needs a change')
     expect(html).toContain('No modules found')
-    expect(html).toContain('Build firmware')
+    expect(html).not.toContain('Build firmware')
   })
 
   it('keeps unavailable counts distinct from zero and does not offer Digi firmware builds', () => {
@@ -57,7 +59,7 @@ describe('All machines library parity', () => {
     expect(html).toContain('— downloads')
     expect(html).not.toContain('0 downloads')
     expect(html).toContain('counts are not available yet')
-    expect(html.match(/Build firmware/g)).toHaveLength(1)
+    expect(html.match(/aria-label="Build firmware for/g)).toHaveLength(1)
     expect(html).toContain('href="#digitakt/configuration"')
     expect(html).toContain('href="#digitone/configuration"')
   })
