@@ -176,6 +176,10 @@ describe('social account sign-in',()=>{
     expect((await call('/auth/sso','POST',{provider:'google',mode:'login',challenge:'a'.repeat(64)},'','','https://evil.example')).status).toBe(403)
     env.AUTH_BASE_URL=undefined
     expect((await call('/auth/sso','POST',{provider:'google',mode:'login',challenge:'a'.repeat(64)})).status).toBe(503)
+    env.AUTH_BASE_URL='http://api.example.test/api/auth'
+    expect((await(await call('/auth/session')).json()).ssoProviders).toEqual([])
+    env.AUTH_BASE_URL='https://api.example.test/wrong-path'
+    expect((await(await call('/auth/session')).json()).ssoProviders).toEqual([])
   })
 })
 describe('profile editing and self-service account deletion',()=>{
@@ -208,6 +212,7 @@ describe('profile editing and self-service account deletion',()=>{
     const own=await(await f.call('/auth/session','GET',undefined,first)).json(),id=own.user.id
     const created=await f.call('/forum/threads','POST',{title:'A shared discussion',body:'Keep the conversation',category:'general'},first),thread=(await created.json()).id
     expect(created.status).toBe(201)
+    f.setIdentity('43','second@example.test');const second=await f.member('github','second')
     await f.call('/modules/miniverb/rating','POST',{value:5},first)
     expect((await f.call('/auth/account','DELETE',{confirm:'no'},first)).status).toBe(400)
     expect(profile.passwordRequired).toBe(false)
@@ -222,6 +227,8 @@ describe('profile editing and self-service account deletion',()=>{
     expect((await f.call('/auth/profile','GET',undefined,first)).status).toBe(401)
     expect((await f.call('/forum/threads/'+thread)).status).toBe(200)
     expect((await(await f.call('/forum/threads/'+thread)).json()).posts[0].username).toBeNull()
+    expect((await f.call('/auth/build-access','POST',{},second)).status).toBe(200)
+    expect(await(await f.call('/auth/profile','GET',undefined,second)).json()).toMatchObject({username:'second',email:'second@example.test'})
   })
   it('requires a recent social login or the correct password for deletion',async()=>{
     const f=await fixture(),session=await f.member(),own=await(await f.call('/auth/session','GET',undefined,session)).json()
