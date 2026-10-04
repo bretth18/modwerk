@@ -142,14 +142,18 @@ el(`<text x="${M - 5}" y="140" class="sans" font-size="112" font-weight="720" le
 el(`<text x="${M}" y="214" class="sans" font-size="41" font-weight="480" letter-spacing="-1.1" fill="${C.soft}">Mods for every</text>`)
 el(`<text x="${M}" y="263" class="sans" font-size="41" font-weight="480" letter-spacing="-1.1" fill="${C.soft}">Elektron machine.</text>`)
 
-// ---- Hub: the eight-tile mark (public/favicon.svg) as a component ----
+// ---- Hub: the eight-tile mark (public/favicon.svg), slot-in variant: the ninth tile is the mod ----
 const HUB = { x: 620, y: 232, size: 92 }
 el(`<rect x="${HUB.x - HUB.size / 2}" y="${HUB.y - HUB.size / 2}" width="${HUB.size}" height="${HUB.size}" rx="16" fill="#23244a" stroke="${C.accent}" stroke-width="2"/>`)
-const pad = 20, padGap = 7, padStart = (3 * pad + 2 * padGap) / 2
+const pad = 20, padGap = 7, padStart = (3 * pad + 2 * padGap) / 2, SLOT_IN = 6
 for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) {
   const x = HUB.x - padStart + c * (pad + padGap), y = HUB.y - padStart + r * (pad + padGap)
-  if (r === 2 && c === 2) el(`<rect x="${x + .75}" y="${y + .75}" width="${pad - 1.5}" height="${pad - 1.5}" rx="3.5" fill="none" stroke="${C.accent}" stroke-width="1.5" stroke-dasharray="3 3"/>`)
-  else el(`<rect x="${x}" y="${y}" width="${pad}" height="${pad}" rx="4" fill="${C.ink}"/>`)
+  if (r === 2 && c === 2) {
+    // Its empty slot, and the apricot mod on its way in.
+    el(`<rect x="${x + .75}" y="${y + .75}" width="${pad - 1.5}" height="${pad - 1.5}" rx="3.5" fill="none" stroke="${C.accent}" stroke-width="1.5" stroke-dasharray="3 3"/>`)
+    el(`<rect x="${x + SLOT_IN - 2}" y="${y + SLOT_IN - 2}" width="${pad + 4}" height="${pad + 4}" rx="6" fill="#23244a"/>`)
+    el(`<rect x="${x + SLOT_IN}" y="${y + SLOT_IN}" width="${pad}" height="${pad}" rx="4" fill="${C.apricot}"/>`)
+  } else el(`<rect x="${x}" y="${y}" width="${pad}" height="${pad}" rx="4" fill="${C.ink}"/>`)
 }
 
 // ---- Four features, fanned out from the hub ----

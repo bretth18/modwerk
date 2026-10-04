@@ -19,7 +19,8 @@ services can fetch the new asset.
 
 `public/modwerk-social-preview-v2.jpg` is the prepared homepage link preview for the
 Modwerk rebrand: 1200 × 630, progressive sRGB JPEG, quality 95, 4:4:4. It reads as a
-signal diagram: the eight-tile mark is a hub that fans out to the four features (Mod
+signal diagram: the eight-tile mark, its ninth tile an apricot mod sliding into its
+slot, is a hub that fans out to the four features (Mod
 library, Firmware builder, Forum, Developer SDK) and connects down to a bus of
 Elektron machines. The copy is “Mods for every Elektron machine.” The feature labels
 are sized to stay legible at 600 × 315 and 400 × 210.
@@ -42,8 +43,8 @@ node scripts/render-social-preview.mjs --previews /tmp/modwerk-previews
 ```
 
 The script renders at 2× in Chromium, downsamples with Sharp, refuses a render whose
-fonts did not load, and prints the export's SHA-256. The committed export is 117,471
-bytes, SHA-256 `8bdbe52a84c995d30c0499ec02267da0435476d203c6ef1145eab28d47fa4a84`
+fonts did not load, and prints the export's SHA-256. The committed export is 117,553
+bytes, SHA-256 `7f1adc94706068d0d34347c11e691aaf5fc902ac6519818ab2d2219bf9adfe91`
 (Playwright 1.56.1 Chromium on Linux; other platforms may differ by antialiasing).
 
 Activate it with the rebrand, not before: set `og:image` and `twitter:image` to
