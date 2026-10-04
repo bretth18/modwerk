@@ -2,7 +2,7 @@
   "schemaVersion": 3,
   "id": "digihealth",
   "name": "digihealth",
-  "version": "1.1.0-experimental",
+  "version": "1.1.1-experimental",
   "machine": "digitone",
   "category": "system",
   "exclusive": false,
@@ -86,7 +86,7 @@
   },
   "evidence": {
     "tier": "none",
-    "moduleVersion": "1.1.0-experimental",
+    "moduleVersion": "1.1.1-experimental",
     "sourceSha256": null,
     "reports": [],
     "hardware": null,

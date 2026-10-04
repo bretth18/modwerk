@@ -4,6 +4,8 @@ Two SETTINGS rows. FAST AUDIO (on by default) runs the audio render’s hot code
 
 By irpina (@irpina) · GPL-2.0-or-later · Digitakt OS 1.53, 1.54 · imported from [irpina/digihealth](https://github.com/irpina/digihealth/tree/6d2a95605901f4f5ea6301dbad16e573380331a6) at v1.1.
 
+Modwerk draft version: `1.0.1-experimental`. The build recipe now generates the upstream diagnostic name string; this is a Modwerk revision of the imported source, with no new hardware qualification.
+
 ## Where to find it
 
 SETTINGS.
@@ -20,7 +22,7 @@ SETTINGS.
 
 ## Limitations
 
-- FAST AUDIO’s call-site stubs are derived from the owner’s stock OS file. Modwerk generates them during the local build, never in CI.
+- FAST AUDIO’s call-site stubs are derived from the owner’s stock OS file. Modwerk compiles their address-only stubs in CI; the local build verifies their guards and derives the copied block’s fixups from the owner’s firmware.
 
 ## Credits
 

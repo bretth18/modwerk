@@ -49,7 +49,7 @@ function fastStubs(derive) {
   const entries = [...new Set(derive.callSites.map(site => Number(site.target)))].sort((a, b) => a - b)
   const hex = n => n.toString(16).padStart(8, '0'), lo = Number(derive.block[0]), dst = Number(derive.sram[0])
   const lines = ['.section .run, "ax"', '.globl stub_tab, stub_count', '.equ stub_count, ' + entries.length]
-  for (const address of entries) lines.push('.globl r_' + hex(address) + ', rp_' + hex(address), 'r_' + hex(address) + ': move.l rp_' + hex(address) + ', -(%sp)', 'rts')
+  for (const address of entries) lines.push('.globl r_' + hex(address) + ', rp_' + hex(address), 'r_' + hex(address) + ': move.l rp_' + hex(address) + '.l, -(%sp)', 'rts')
   lines.push('.balign 4')
   for (const address of entries) lines.push('rp_' + hex(address) + ': .long 0x' + hex(address))
   lines.push('stub_tab:')

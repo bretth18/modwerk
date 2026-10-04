@@ -61,6 +61,7 @@ for(const machine of machineProfiles.filter(profile=>profile.sdk?.platform==='el
   const folder=resolve(folderRoot,entry.name),label=machine.id+'/'+entry.name;let document
   try{document=parseModwerkModule(await json(resolve(folder,'modwerk.module.json')),machineProfiles)}catch(error){throw new Error(label+': '+error.message,{cause:error})}
   if(document.id!==entry.name||document.machine!==machine.id)throw new Error(label+': module id and machine must match its folder')
+  if(baseCommit){const prefix=machine.sdk.modules+'/'+entry.name+'/',oldPath=prefix+'modwerk.module.json';if(git('ls-tree','--name-only',baseCommit,'--',oldPath).trim()===oldPath){const old=JSON.parse(git('show',baseCommit+':'+oldPath)),changed=(git('diff','--name-only',baseCommit,'--',prefix)+git('ls-files','--others','--exclude-standard','--',prefix)).trim();if(changed&&compareModuleVersions(document.version,old.version)<=0)throw new Error(label+': every source, documentation or media update requires a greater module version than '+old.version)}}
   const build=parseElemodBuild(await json(await file(folder,document.platform.build)),document)
   // Modules may use only what their machine's core interface provides.
   if(core){const events=new Set(core.events.map(event=>event.name)),tables=new Set([...core.tables.map(table=>table.name),...Object.keys(build.collections)])
