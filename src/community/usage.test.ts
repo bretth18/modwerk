@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { USAGE_CONSENT_VERSION } from '../legal/policy'
 let usage: typeof import('./usage')
 let values: Map<string,string>
 let request: ReturnType<typeof vi.fn>
@@ -10,18 +11,43 @@ beforeEach(async()=>{
  usage=await import('./usage')
 })
 afterEach(()=>{vi.useRealTimers();vi.unstubAllGlobals();vi.unstubAllEnvs()})
-describe('anonymous usage reporting',()=>{
+describe('optional usage reporting',()=>{
+ it('does not create identifiers or send counts before explicit consent, including legacy preferences',()=>{
+  expect(usage.usageAllowed()).toBe(false)
+  for(const preference of [undefined,'off','on']){
+   if(preference)values.set('octamod.usage.opt-out',preference)
+   usage.trackPageView('library');usage.trackUsage('build_succeeded');usage.trackConfigurationStarted('33333333-3333-4333-8333-333333333333');usage.trackFirmwareDownload(['miniverb'])
+   expect(request).not.toHaveBeenCalled();expect(values.has('octamod.usage.daily-visitor')).toBe(false);expect(values.has('octamod.usage.started-configurations')).toBe(false)
+  }
+ })
+ it('stops counts immediately when storage rejects withdrawal',()=>{
+  usage.setUsageAllowed(true);usage.trackUsage('page_view');expect(request).toHaveBeenCalledTimes(1)
+  vi.stubGlobal('localStorage',{getItem:(key:string)=>values.get(key)??null,removeItem:()=>{throw new Error('Read-only storage')}})
+  expect(usage.setUsageAllowed(false)).toBe(false);expect(usage.usageAllowed()).toBe(false);usage.trackFirmwareDownload(['miniverb']);expect(request).toHaveBeenCalledTimes(1)
+ })
+ it('records consent version/time, expires it and withdraws without counting again',()=>{
+  usage.setUsageAllowed(true)
+  expect(JSON.parse(values.get('octamod.usage.consent')!)).toEqual({version:USAGE_CONSENT_VERSION,acceptedAt:'2026-10-01T12:00:00.000Z'})
+  usage.trackFirmwareDownload(['miniverb']);expect(request).toHaveBeenCalledTimes(2)
+  vi.setSystemTime(new Date('2027-04-01T12:00:00Z'));expect(usage.usageAllowed()).toBe(false)
+  values.set('octamod.usage.consent',JSON.stringify({version:'old-policy',acceptedAt:new Date().toISOString()}));expect(usage.usageAllowed()).toBe(false)
+  usage.setUsageAllowed(false);usage.trackFirmwareDownload(['miniverb'])
+  expect(request).toHaveBeenCalledTimes(2)
+  for(const key of ['octamod.usage.consent','octamod.usage.daily-visitor','octamod.usage.started-configurations'])expect(values.has(key)).toBe(false)
+ })
  it.each(['','https://community.example/api'])('sends only anonymous fields without credentials for API base %s',(apiBase)=>{
   vi.stubEnv('VITE_COMMUNITY_API_URL',apiBase)
   values.set('octamod.community.session:'+(apiBase||'/api'),'a'.repeat(64));values.set('octamod.community.admin:'+(apiBase||'/api'),'b'.repeat(64))
+  usage.setUsageAllowed(true)
   const configuration='33333333-3333-4333-8333-333333333333'
   usage.trackConfigurationStarted(configuration);usage.trackConfigurationStarted(configuration)
   expect(request).toHaveBeenCalledTimes(1)
   const [url,options]=request.mock.calls[0];expect(url).toBe((apiBase||'/api')+'/usage/events');expect(options.credentials).toBe('omit');expect(options.referrerPolicy).toBe('no-referrer')
   expect(Object.keys(JSON.parse(options.body)).sort()).toEqual(['event','eventId','visitor'])
-  expect(options.body).not.toContain(configuration);expect(options.headers).toEqual({'Content-Type':'application/json'})
+  expect(options.body).not.toContain(configuration);expect(options.headers).toEqual({'Content-Type':'application/json','X-Octamod-Usage-Consent':USAGE_CONSENT_VERSION})
  })
  it('deduplicates page effects, excludes admin views, never sends routes and rotates the visitor daily',()=>{
+  usage.setUsageAllowed(true)
   usage.trackPageView('library');usage.trackPageView('library');usage.trackPageView('admin');usage.trackPageView('library')
   expect(request).toHaveBeenCalledTimes(2)
   const first=JSON.parse(request.mock.calls[0][1].body);expect(first.visitor).toBe(JSON.parse(request.mock.calls[1][1].body).visitor)
@@ -37,6 +63,7 @@ describe('anonymous usage reporting',()=>{
   usage.setUsageAllowed(false);expect(values.has('octamod.usage.daily-visitor')).toBe(false)
  })
  it('reports a completed firmware request and each unique available module with independent event IDs',()=>{
+  usage.setUsageAllowed(true)
   usage.trackFirmwareDownload(['miniverb','tapeecho','miniverb','spectrum','unknown'])
   expect(request).toHaveBeenCalledTimes(3)
   const bodies=request.mock.calls.map(([url,options])=>({url,options,body:JSON.parse(options.body)}))
@@ -45,7 +72,7 @@ describe('anonymous usage reporting',()=>{
   expect(new Set(bodies.map(item=>item.body.eventId)).size).toBe(3)
   for(const item of bodies.slice(1)) {
    expect(item.url).toBe('/api/usage/module-downloads');expect(Object.keys(item.body).sort()).toEqual(['eventId','moduleId','visitor'])
-   expect(item.options.credentials).toBe('omit');expect(item.options.referrerPolicy).toBe('no-referrer');expect(item.options.headers).toEqual({'Content-Type':'application/json'})
+   expect(item.options.credentials).toBe('omit');expect(item.options.referrerPolicy).toBe('no-referrer');expect(item.options.headers).toEqual({'Content-Type':'application/json','X-Octamod-Usage-Consent':USAGE_CONSENT_VERSION})
   }
   usage.trackFirmwareDownload(['miniverb']);expect(request).toHaveBeenCalledTimes(5)
  })
@@ -56,7 +83,7 @@ describe('anonymous usage reporting',()=>{
  })
  it('never blocks local work when storage or the service is unavailable',async()=>{
   vi.stubGlobal('localStorage',{getItem:()=>{throw new Error('Unavailable')}});expect(()=>usage.trackUsage('page_view')).not.toThrow();expect(request).not.toHaveBeenCalled()
-  vi.stubGlobal('localStorage',{getItem:()=>null,setItem:()=>{},removeItem:()=>{}});request.mockRejectedValue(new Error('Offline'))
+  vi.stubGlobal('localStorage',{getItem:()=>JSON.stringify({version:USAGE_CONSENT_VERSION,acceptedAt:new Date().toISOString()}),setItem:()=>{},removeItem:()=>{}});request.mockRejectedValue(new Error('Offline'))
   expect(()=>usage.trackUsage('build_succeeded')).not.toThrow();expect(()=>usage.trackFirmwareDownload(['miniverb'])).not.toThrow();await Promise.resolve()
  })
 })

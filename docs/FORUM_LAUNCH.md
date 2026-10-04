@@ -29,14 +29,16 @@ The real journey exposed two frontend issues, both fixed: signed-in members can 
 | Real mail and account journey | Verification/recovery provider delivery, owner-confirmed inbox placement and local account/revocation journey passed; temporary key and private test data removed. Recipient-side SPF/DKIM/DMARC results remain unconfirmed. Keep the test recipient and credentials out of source/screenshots. |
 | Support / privacy / retention | Owner selected `jannik.assfalg@gmail.com` as the public receiving support contact; UI links and email Reply-To use it. Resend shows an earlier message delivered to that inbox, and test messages have the correct Reply-To. Support response procedure, operator ownership and archive/provider retention remain to confirm. The current privacy copy states actual retention and request-based removal. See [COMMUNITY_OPERATIONS.md](COMMUNITY_OPERATIONS.md). |
 | Production recovery point | Record a Time Travel bookmark and verify an encrypted production export with a restricted local recovery before migrations. No production export or restore was performed for the local evidence above. |
-| Production schema/backend | Main's 0010 issue-report schema is already present. Draft migrations 0011–0014 are not applied remotely; production Worker still serves the earlier release. Apply only when explicitly authorized. |
+| Production schema/backend | Main's 0010 issue-report schema is already present. Draft migrations 0011–0015 are not applied remotely; production Worker still serves the earlier release. Apply only when explicitly authorized. |
 | Frontend release | Owner approval to merge is still needed. Merging `main` triggers the existing GitHub Pages workflow; deploy/check the API first with registration closed, then publish the reviewed frontend and open registration after the gates pass. |
+
+The German/English notices, operator disclosure, optional-count consent, account export, rules agreement and initial rights deadlines are implemented by the compliance change. [LEGAL_COMPLIANCE.md](LEGAL_COMPLIANCE.md) records the actual provider/transfer/retention evidence still required. Registration needs both server flags; neither should be opened until those gates are resolved. No provider agreement or production change was performed by that work.
 
 ## Controlled release procedure
 
 1. Resolve the performance and real-mail checks, choose support/operating details, and review security/privacy boundaries and this evidence.
 2. Obtain explicit approval for the production rollout. Record Worker version, database bookmark and verified encrypted recovery point; preserve existing secrets.
-3. Apply migrations 0011–0014 after 0010 and deploy the reviewed API with `REGISTRATION_OPEN=false`. Verify existing content and independent admin access, private endpoints, trusted origin, migrations and failure behavior.
+3. Apply migrations 0011–0015 after 0010 and deploy the reviewed API with `REGISTRATION_OPEN=false` and `PRIVACY_READY=false`. Verify existing content and independent admin access, private endpoints, trusted origin, migrations and failure behavior.
 4. Merge the reviewed PR only when authorized; GitHub Pages builds/publishes the frontend. Check mobile/keyboard navigation and the exact deployed API boundary.
 5. Open registration through the reviewed production configuration only after approval and the controlled journey passes. Review operator counters/provider metrics and the moderation queue during the initial launch period.
 

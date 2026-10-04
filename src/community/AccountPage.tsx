@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { AccountExport } from './AccountExport'
+import { COMMUNITY_RULES_VERSION } from '../legal/policy'
 import { AccountInbox } from './AccountInbox'
 import { AccountRemovalRequest } from './AccountRequests'
 import { api, post } from './api'
@@ -19,7 +21,7 @@ export function AccountPage({route}:{route:string}) {
     setBusy(true);setError('');setMessage('')
     try {
       const fields=Object.fromEntries(new FormData(form))
-      const result=await post<{message?:string}>('/auth/'+mode,{...fields,...(['verify','reset'].includes(mode)?{token:linkToken}:{})})
+      const result=await post<{message?:string}>('/auth/'+mode,{...fields,...(mode==='register'?{rulesVersion:fields.rulesAccepted==='on'?COMMUNITY_RULES_VERSION:''}:{}),...(['verify','reset'].includes(mode)?{token:linkToken}:{})})
       form.reset();await refresh()
       if(mode==='login')window.location.assign('#forum')
       else setMessage(result.message??'Saved.')
@@ -39,12 +41,13 @@ export function AccountPage({route}:{route:string}) {
         {mode==='register'&&<label>Public username<input name="username" required minLength={3} maxLength={24} pattern="[A-Za-z0-9_]+" autoComplete="username" spellCheck={false}/><small>3–24 letters, numbers or underscores.</small></label>}
         {mode!=='verify'&&mode!=='reset'&&<label>Email address<input type="email" name="email" required maxLength={254} autoComplete="email"/></label>}
         {['register','login','verify','reset'].includes(mode)&&<label>{mode==='verify'?'Password you chose when registering':mode==='reset'?'New password':'Password'}<input type="password" name="password" required minLength={15} maxLength={128} autoComplete={mode==='register'||mode==='reset'?'new-password':'current-password'}/>{(mode==='register'||mode==='reset')&&<small>At least 15 characters. Try a few unrelated words.</small>}</label>}
-        {mode==='register'&&<p className="service-note">Verify your email before posting, rating or reporting issues. Your username and posts are public; your email is private. <a href="#privacy">Privacy details</a>.</p>}
+        {mode==='register'&&<><p className="service-note">Verify your email before posting, rating or reporting issues. Your username and posts are public; your email is private. Read the <a href="#privacy">privacy notice</a> and <a href="#impressum">Impressum</a>. Account emails cover verification and recovery. Usage counts are optional and off by default.</p><label className="risk-accept"><input name="rulesAccepted" type="checkbox" required/>I agree to the <a href="#community-rules">community rules</a>.</label></>}
         {mode==='verify'&&<p className="service-note">Only continue if you created this account. If you did not, you can ignore this message.</p>}
         <button className="button button-primary" disabled={busy||(mode==='register'&&!session.registrationAvailable)||(['forgot','resend'].includes(mode)&&!emailAvailable)}>{busy?'Please wait…':mode==='login'?'Sign in':mode==='register'?'Create account':mode==='verify'?'Verify email':mode==='reset'?'Save new password':'Send email'}</button>
       </form>}
       <div className="forum-actions"><a href="#account/forgot">Reset password</a><a href="#account/resend">Resend verification</a></div></>}
     </section>}
+    {member&&<AccountExport/>}
     {member&&<AccountRemovalRequest key={'removal-'+session.user!.id}/>}
     {session.user&&!linkAction&&<AccountInbox key={session.user.id}/>}
     {message&&<p className="success-note" role="status">{message}</p>}{error&&<p className="file-error" role="alert">{error}</p>}

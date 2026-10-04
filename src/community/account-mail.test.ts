@@ -1,3 +1,4 @@
+import { COMMUNITY_RULES_VERSION } from '../legal/policy'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { DatabaseSync } from 'node:sqlite'
 import { testServer } from './test-server'
@@ -13,7 +14,7 @@ describe('account-mail failures and quotas',()=>{
   const logs=[vi.spyOn(console,'error').mockImplementation(()=>{}),vi.spyOn(console,'warn').mockImplementation(()=>{})]
   const sender=vi.fn(async(_url:string,options:RequestInit)=>{messages.push(JSON.parse(String(options.body)));return Response.json({error:'private provider response recipient=retry@example.test token=secret-provider-token'}, {status:503})})
   vi.stubGlobal('fetch',sender)
-  const failure=await call('/auth/register','POST',{username:'retry',email:'retry@example.test',password})
+  const failure=await call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username:'retry',email:'retry@example.test',password})
   expect(failure.status).toBe(202)
   expect(await failure.text()).not.toMatch(/retry@example|secret-provider|test-resend|#account|private provider/)
   expect(logs.flatMap(log=>log.mock.calls)).toEqual([])
@@ -32,10 +33,10 @@ describe('account-mail failures and quotas',()=>{
  it('keeps mail counters private and closes new registration without disabling recovery',async()=>{
   const {call,env}=await fixture(),sender=vi.fn(async()=>Response.json({id:'synthetic-email'}))
   vi.stubGlobal('fetch',sender)
-  expect((await call('/auth/register','POST',{username:'existing',email:'existing@example.test',password})).status).toBe(202)
+  expect((await call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username:'existing',email:'existing@example.test',password})).status).toBe(202)
   env.REGISTRATION_OPEN='false'
   expect(await(await call('/auth/session')).json()).toMatchObject({emailAvailable:true,registrationAvailable:false})
-  expect((await call('/auth/register','POST',{username:'closed',email:'closed@example.test',password})).status).toBe(503)
+  expect((await call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username:'closed',email:'closed@example.test',password})).status).toBe(503)
   expect((await call('/auth/forgot','POST',{email:'existing@example.test'})).status).toBe(202)
   expect(sender).toHaveBeenCalledTimes(2)
   expect((await call('/admin/account-mail')).status).toBe(403)
@@ -47,7 +48,7 @@ describe('account-mail failures and quotas',()=>{
  it('contains network failures and missing mail configuration',async()=>{
   const {call,env,db}=await fixture()
   vi.stubGlobal('fetch',vi.fn(async()=>{throw new Error('private network payload with address and key')}))
-  const failure=await call('/auth/register','POST',{username:'network',email:'network@example.test',password})
+  const failure=await call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username:'network',email:'network@example.test',password})
   expect(failure.status).toBe(202);expect(await failure.text()).not.toContain('private network')
   expect(db.prepare('SELECT failed FROM account_mail_daily').get()).toEqual({failed:1})
   env.RESEND_API_KEY=undefined
@@ -59,7 +60,7 @@ describe('account-mail failures and quotas',()=>{
   vi.stubGlobal('fetch',sender)
   const now=Math.floor(Date.now()/1000)
   db.prepare('INSERT INTO rate_limits(key,count,expires) VALUES(?,?,?)').run(await digest(key+':'+Math.floor(now/seconds)),limit,now+seconds)
-  expect((await call('/auth/register','POST',{username:'quota',email:'quota@example.test',password})).status).toBe(202)
+  expect((await call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username:'quota',email:'quota@example.test',password})).status).toBe(202)
   expect(sender).not.toHaveBeenCalled()
   expect(db.prepare('SELECT limited FROM account_mail_daily').get()).toEqual({limited:1})
  })

@@ -3,6 +3,7 @@ import { DatabaseSync } from 'node:sqlite'
 import type { SQLInputValue } from 'node:sqlite'
 import { readFileSync } from 'node:fs'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { USAGE_CONSENT_VERSION } from '../legal/policy'
 import { cleanupUsage } from '../../server/usage'
 import { handleApi } from '../../server/api'
 import { handleCommunity } from '../../server/transport'
@@ -40,7 +41,8 @@ async function fixture(){
   db.prepare('INSERT INTO sessions(token_hash,user_id,expires) VALUES(?,?,?)').run(await digest(tokens[role]),role,Math.floor(Date.now()/1000)+600)
  }
  async function call(path:string,method='GET',body?:unknown,auth='',origin=env.APP_URL!,admin=''){
-  const headers:Record<string,string>={Origin:origin};if(auth)headers.Cookie=auth;if(admin)headers['X-Octamod-Admin']=admin
+  // Usage calls in this helper represent a visitor who explicitly opted in.
+  const headers:Record<string,string>={Origin:origin};if(path.startsWith('/usage/'))headers['X-Octamod-Usage-Consent']=USAGE_CONSENT_VERSION;if(auth)headers.Cookie=auth;if(admin)headers['X-Octamod-Admin']=admin
   if(body!==undefined)headers['Content-Type']='application/json'
   return handleApi(new Request(env.APP_URL+'/api'+path,{method,headers,body:body!==undefined?JSON.stringify(body):undefined}),env)
  }
@@ -380,14 +382,14 @@ describe('private aggregate usage statistics',()=>{
   for(const body of [{...usageEvent(),firmware:'not accepted'},{...usageEvent(),moduleIds:['miniverb']},{...usageEvent(),email:'not collected'},usageEvent('arbitrary_event'),{...usageEvent(),visitor:'stable-user-name'}])expect((await call('/usage/events','POST',body)).status).toBe(400)
   expect((await call('/usage/events','POST',{...usageEvent(),firmware:'x'.repeat(1024)})).status).toBe(413)
   expect((await call('/usage/events','POST',usageEvent(),'','https://elsewhere.test')).status).toBe(403)
-  expect((await handleApi(new Request('https://octamod.test/api/usage/events',{method:'POST',headers:{Origin:env.APP_URL!,'Content-Type':'application/octet-stream'},body:'ELEK'}),env)).status).toBe(415)
+  expect((await handleApi(new Request('https://octamod.test/api/usage/events',{method:'POST',headers:{Origin:env.APP_URL!,'Content-Type':'application/octet-stream','X-Octamod-Usage-Consent':USAGE_CONSENT_VERSION},body:'ELEK'}),env)).status).toBe(415)
   expect(db.prepare('SELECT COUNT(*) AS n FROM usage_daily').get()).toEqual({n:0})
  })
  it('honors browser privacy headers and fails closed when usage is not configured',async()=>{
   const {env,db}=await fixture()
   for(const header of ['DNT','Sec-GPC'])expect((await handleCommunity(new Request('https://octamod.test/api/usage/events',{method:'POST',headers:{Origin:env.APP_URL!,'Content-Type':'application/json',[header]:'1'},body:JSON.stringify(usageEvent())}),env)).status).toBe(204)
   expect(db.prepare('SELECT COUNT(*) AS n FROM usage_events').get()).toEqual({n:0})
-  expect((await handleCommunity(new Request('https://octamod.test/api/usage/events',{method:'POST',headers:{Origin:env.APP_URL!,'Content-Type':'application/json'},body:JSON.stringify(usageEvent())}),{...env,ADMIN_KEY_SHA256:undefined})).status).toBe(503)
+  expect((await handleCommunity(new Request('https://octamod.test/api/usage/events',{method:'POST',headers:{Origin:env.APP_URL!,'Content-Type':'application/json','X-Octamod-Usage-Consent':USAGE_CONSENT_VERSION},body:JSON.stringify(usageEvent())}),{...env,ADMIN_KEY_SHA256:undefined})).status).toBe(503)
  })
  it('changes server visitor hashes every UTC day and preserves independent daily counts',async()=>{
   vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(new Date('2026-10-01T23:59:00Z'))
@@ -461,7 +463,7 @@ describe('public module popularity',()=>{
   for(const body of [moduleDownload('unknown'),moduleDownload('spectrum'),moduleDownload('modulation'),moduleDownload('character'),moduleDownload('remix-unknown'),{...moduleDownload(),moduleIds:['tapeecho']},{...moduleDownload(),firmware:'not accepted'},{...moduleDownload(),configuration:'not accepted'},{...moduleDownload(),eventId:'invalid'},{...moduleDownload(),visitor:'invalid'}])expect((await call('/usage/module-downloads','POST',body)).status).toBe(400)
   expect((await call('/usage/module-downloads','POST',{...moduleDownload(),firmware:'x'.repeat(1024)})).status).toBe(413)
   expect((await call('/usage/module-downloads','POST',moduleDownload(),'','https://elsewhere.test')).status).toBe(403)
-  expect((await handleApi(new Request('https://octamod.test/api/usage/module-downloads',{method:'POST',headers:{Origin:env.APP_URL!,'Content-Type':'application/octet-stream'},body:'ELEK'}),env)).status).toBe(415)
+  expect((await handleApi(new Request('https://octamod.test/api/usage/module-downloads',{method:'POST',headers:{Origin:env.APP_URL!,'Content-Type':'application/octet-stream','X-Octamod-Usage-Consent':USAGE_CONSENT_VERSION},body:'ELEK'}),env)).status).toBe(415)
   expect(db.prepare('SELECT COUNT(*) AS n FROM module_downloads').get()).toEqual({n:0})
   expect(db.prepare('SELECT COUNT(*) AS n FROM module_download_events').get()).toEqual({n:0})
  })
@@ -469,7 +471,7 @@ describe('public module popularity',()=>{
   const {env,db,call}=await fixture()
   for(const header of ['DNT','Sec-GPC'])expect((await handleCommunity(new Request('https://octamod.test/api/usage/module-downloads',{method:'POST',headers:{Origin:env.APP_URL!,'Content-Type':'application/json',[header]:'1'},body:JSON.stringify(moduleDownload())}),env)).status).toBe(204)
   expect(db.prepare('SELECT COUNT(*) AS n FROM module_downloads').get()).toEqual({n:0})
-  expect((await handleCommunity(new Request('https://octamod.test/api/usage/module-downloads',{method:'POST',headers:{Origin:env.APP_URL!,'Content-Type':'application/json'},body:JSON.stringify(moduleDownload())}),{...env,ADMIN_KEY_SHA256:undefined})).status).toBe(503)
+  expect((await handleCommunity(new Request('https://octamod.test/api/usage/module-downloads',{method:'POST',headers:{Origin:env.APP_URL!,'Content-Type':'application/json','X-Octamod-Usage-Consent':USAGE_CONSENT_VERSION},body:JSON.stringify(moduleDownload())}),{...env,ADMIN_KEY_SHA256:undefined})).status).toBe(503)
   for(let i=0;i<200;i++)expect((await call('/usage/module-downloads','POST',moduleDownload())).status).toBe(200)
   expect((await call('/usage/module-downloads','POST',moduleDownload())).status).toBe(429)
   expect(db.prepare('SELECT downloads FROM module_downloads').get()).toEqual({downloads:200})

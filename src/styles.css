@@ -991,7 +991,20 @@ h1 { font-size: 28px; }
 .statistics-module-table td { vertical-align:top; }
 .statistics-definitions { margin-top:20px; font-size:13px; color:var(--muted); }
 .statistics-definitions summary { cursor:pointer; color:#ececf1; }
-.status-bar .privacy-link { margin-right:8px; font-size:11px; }
+.legal-links { display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; font-size:11px; }
+.legal-links a { min-height:28px; }
+.legal-page { max-width:860px; }
+.legal-page address { font-style:normal; line-height:1.7; }
+.legal-page p, .legal-page li { line-height:1.65; }
+.legal-page li + li { margin-top:8px; }
+.legal-page a { overflow-wrap:anywhere; }
+.legal-language { display:flex; gap:10px; margin-bottom:24px; }
+@media (max-width:600px) {
+ .status-bar { height:auto; min-height:60px; flex-wrap:wrap; padding:8px 13px; }
+ .status-bar .legal-links { flex:1 0 100%; justify-content:space-between; }
+ .status-bar .legal-links a { min-height:32px; }
+ .status-bar > span:first-of-type { font-size:10px; }
+}
 @media(max-width:850px) { .statistics-analysis { grid-template-columns:minmax(0,1fr); } .statistics-highlights { grid-template-columns:repeat(3,minmax(0,1fr)); } .statistics-highlights > div { padding:12px; } }
 @media(max-width:650px) { .statistics-cards { grid-template-columns:repeat(2,minmax(0,1fr)); } .admin-statistics .section-title { flex-wrap:wrap; gap:12px; } .statistics-highlights { grid-template-columns:minmax(0,1fr); } .statistics-highlights > div { padding:16px; } .statistics-module-controls label { width:100%; } .statistics-controls { align-items:center; } .admin-page > .page-heading { flex-wrap:wrap; } }
 
@@ -1130,7 +1143,7 @@ h1 { font-size: 28px; }
   .hover-info strong { gap: 5px; padding: 5px 9px; border: 1px solid #ffffff1f; border-radius: 6px; background: #18181dcc; color: #d5d5df; font-size: 12px; }
 
   .status-bar { height: 44px; padding: 0 16px; }
-  .status-bar .privacy-link { display: none; }
+  .status-bar .status-build { display: none; }
   .status-bar a[href="#configuration"] { font-size: 12px; }
 
   .module-page-actions { margin-bottom: 16px; }

@@ -2,11 +2,12 @@ import { verifyPassword } from 'better-auth/crypto'
 import type { Database, User } from './platform'
 import { HttpError, jsonBody, required, response } from './security'
 import { throttle } from './auth'
+import { withPrivacyDeadline } from './privacy-deadline'
 
 /** Requests are private and reversible. Data removal is a separate operator action. */
 export async function accountRequest(request: Request, db: Database, owner: User|null) {
  if(!owner?.username||!owner.email_verified)throw new HttpError(401,'Sign in to manage an account-removal request.')
- if(request.method==='GET')return response(await db.prepare('SELECT id,status,created_at,updated_at FROM account_removal_requests WHERE user_id=? ORDER BY created_at DESC,rowid DESC LIMIT 1').bind(owner.id).first())
+ if(request.method==='GET'){const row=await db.prepare('SELECT id,status,created_at,updated_at FROM account_removal_requests WHERE user_id=? ORDER BY created_at DESC,rowid DESC LIMIT 1').bind(owner.id).first<{created_at:string}>();return response(row?withPrivacyDeadline(row):null)}
  await throttle(db,'account-request:'+owner.id,5,900)
  if(request.method==='DELETE'){
   await db.prepare("UPDATE account_removal_requests SET status='cancelled',updated_at=CURRENT_TIMESTAMP WHERE user_id=? AND status IN ('requested','reviewing')").bind(owner.id).run()
@@ -18,7 +19,8 @@ export async function accountRequest(request: Request, db: Database, owner: User
  const credential=await db.prepare("SELECT password FROM auth_accounts WHERE userId=? AND providerId='credential'").bind(owner.id).first<{password:string}>()
  if(!credential||!await verifyPassword({hash:credential.password,password:body.password}))throw new HttpError(403,'Your password was not accepted.')
  await db.prepare("INSERT OR IGNORE INTO account_removal_requests(id,user_id) VALUES(?,?)").bind(crypto.randomUUID(),owner.id).run()
- return response(await db.prepare("SELECT id,status,created_at,updated_at FROM account_removal_requests WHERE user_id=? AND status IN ('requested','reviewing')").bind(owner.id).first(),202)
+ const row=await db.prepare("SELECT id,status,created_at,updated_at FROM account_removal_requests WHERE user_id=? AND status IN ('requested','reviewing')").bind(owner.id).first<{created_at:string}>()
+ return response(row?withPrivacyDeadline(row):null,202)
 }
 export async function reviewAccountRequest(request:Request,db:Database,id:string){
  const body=await jsonBody(request)
@@ -27,7 +29,7 @@ export async function reviewAccountRequest(request:Request,db:Database,id:string
  if(!requestRow)throw new HttpError(404,'Request not found.')
  if(!['requested','reviewing'].includes(requestRow.status))throw new HttpError(409,'This request has already ended.')
  if(body.status==='completed'){
-  const privateChecks=[['auth_users','id'],['auth_accounts','userId'],['auth_sessions','userId'],['account_tokens','user_id'],['auth_verifications','value'],['sessions','user_id'],['issues','reporter_id'],['configurations','user_id'],['forum_bookmarks','user_id'],['forum_follows','user_id'],['forum_notifications','user_id'],['forum_reports','user_id']] as const
+  const privateChecks=[['auth_users','id'],['auth_accounts','userId'],['auth_sessions','userId'],['account_tokens','user_id'],['auth_verifications','value'],['sessions','user_id'],['issues','reporter_id'],['configurations','user_id'],['forum_bookmarks','user_id'],['forum_follows','user_id'],['forum_notifications','user_id'],['forum_reports','user_id'],['account_policy_acceptances','user_id']] as const
   const checks=privateChecks.map(([table,column])=>`EXISTS(SELECT 1 FROM ${table} WHERE ${column}=?)`)
   checks.push("EXISTS(SELECT 1 FROM users WHERE id=? AND (username IS NOT NULL OR email_verified=1 OR suspended=0 OR display_name!='Deleted member'))")
   const remaining=await db.prepare('SELECT '+checks.join(' OR ')+' AS present').bind(...checks.map(()=>requestRow.user_id)).first<{present:number}>()
