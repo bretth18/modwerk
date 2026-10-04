@@ -3,7 +3,7 @@ import { api, post } from './api'
 import { useCommunity } from './context'
 type Profile = {username: string; displayName: string; bio: string; email: string; passwordRequired: boolean; freshLogin: boolean; methods: string[]}
 export function AccountSettings() {
-  const { refresh } = useCommunity(), [profile, setProfile] = useState<Profile | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState(''), [message, setMessage] = useState(''), [deleting, setDeleting] = useState(false)
+  const { refresh, refreshDeveloper } = useCommunity(), [profile, setProfile] = useState<Profile | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState(''), [message, setMessage] = useState(''), [deleting, setDeleting] = useState(false)
   useEffect(() => { let cancelled = false; void api<Profile>('/auth/profile').then(value => { if (!cancelled) setProfile(value) }).catch(error => { if (!cancelled) setError(error.message) }); return () => { cancelled = true } }, [])
   async function save(form: HTMLFormElement) {
     setBusy(true); setError(''); setMessage('')
@@ -11,7 +11,7 @@ export function AccountSettings() {
   }
   async function remove(form: HTMLFormElement) {
     setBusy(true); setError('')
-    try { await post('/auth/account', Object.fromEntries(new FormData(form)), 'DELETE'); await refresh(); window.location.assign('#account/login?deleted=1') } catch(error) { setError(error instanceof Error ? error.message : 'Unable to delete your account.') } finally { setBusy(false) }
+    try { await post('/auth/account', Object.fromEntries(new FormData(form)), 'DELETE'); await refresh(); await refreshDeveloper(); window.location.assign('#account/login?deleted=1') } catch(error) { setError(error instanceof Error ? error.message : 'Unable to delete your account.') } finally { setBusy(false) }
   }
   return <>
     <section className="configuration-section"><h2>Edit your profile</h2><p className="service-note">Your username, display name and bio are visible to other members.</p>{profile ? <form className="community-form" onSubmit={event => { event.preventDefault(); void save(event.currentTarget) }}><label>Public username<input name="username" defaultValue={profile.username} required minLength={3} maxLength={24} pattern="[A-Za-z0-9_]+" autoComplete="username" spellCheck={false}/><small>3–24 letters, numbers or underscores.</small></label><label>Display name<input name="displayName" defaultValue={profile.displayName} required maxLength={60} autoComplete="nickname"/></label><label>About you<textarea name="bio" defaultValue={profile.bio} rows={3} maxLength={500}/><small>Optional. Up to 500 characters.</small></label><p className="service-note">Private email: {profile.email}<br/>Sign-in methods: {profile.methods.map(method => method === 'credential' ? 'Email and password' : method === 'github' ? 'GitHub' : method === 'google' ? 'Google' : 'Discord').join(', ')}</p><button className="button button-primary" disabled={busy}>{busy ? 'Saving…' : 'Save profile'}</button></form> : <p role="status">Loading profile…</p>}</section>

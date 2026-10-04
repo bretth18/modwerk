@@ -21,6 +21,11 @@ export const COMMUNITY_MODULES = [
   })),
 ]
 export type CommunityModule = typeof COMMUNITY_MODULES[number]
+/** Only reviewed catalog handles confer developer eligibility. */
+export function developerModules(login: string | null | undefined) {
+  if (!login) return []
+  return COMMUNITY_MODULES.filter(module => module.maintainers.some(maintainer => maintainer.toLowerCase() === login.toLowerCase()))
+}
 export const communityModule = (id: string) => COMMUNITY_MODULES.find(module => module.id === id)
 export const machineModules = (machine: string) => COMMUNITY_MODULES.filter(module => module.machine === machine)
 export function nativeModule(machine: string, id: string) { return machineModules(machine).find(module => module.moduleId === id) }

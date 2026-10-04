@@ -1,6 +1,7 @@
 import type { Database, Env, User } from './platform'
 import { throttle } from './auth'
 import { cookie, digest, getCookie, HttpError, jsonBody, response, token } from './security'
+import { developerModules } from '../src/community/modules'
 
 function configuration(env:Env) {
   if (!env.GITHUB_OAUTH_CLIENT_ID || !env.GITHUB_OAUTH_CLIENT_SECRET || !env.GITHUB_OAUTH_CALLBACK_URL) return null
@@ -13,7 +14,8 @@ const clientHash = (env:Env) => digest(env.GITHUB_OAUTH_CLIENT_ID + ':' + env.GI
 export async function developerUser(request:Request,env:Env,db:Database):Promise<User|null> {
   const value=request.headers.get('X-Modwerk-Developer')??''
   if (!configuration(env) || !/^[a-f0-9]{64}$/.test(value)) return null
-  return db.prepare('SELECT u.id,u.display_name,u.github_id,u.github_login,u.suspended FROM users u JOIN developer_sessions s ON s.user_id=u.id WHERE s.token_hash=? AND s.client_hash=? AND s.expires>? AND u.suspended=0 AND u.github_id IS NOT NULL').bind(await digest(value),await clientHash(env),Math.floor(Date.now()/1000)).first<User>()
+  const user=await db.prepare('SELECT u.id,u.display_name,u.github_id,u.github_login,u.suspended FROM users u JOIN developer_sessions s ON s.user_id=u.id WHERE s.token_hash=? AND s.client_hash=? AND s.expires>? AND u.suspended=0 AND u.github_id IS NOT NULL').bind(await digest(value),await clientHash(env),Math.floor(Date.now()/1000)).first<User>()
+  return user && developerModules(user.github_login).length ? user : null
 }
 async function github<T>(url:string,options:RequestInit):Promise<T> {
   try {
@@ -44,7 +46,7 @@ export async function developerAuthentication(request:Request,env:Env,db:Databas
   if(path==='/api/developer/auth/start'&&request.method==='GET'){
     if(url.origin!==new URL(config.callback).origin)throw new HttpError(400,'Use the configured developer sign-in endpoint.')
     const challenge=url.searchParams.get('challenge')??''
-    if(!/^[a-f0-9]{64}$/.test(challenge))throw new HttpError(400,'Start GitHub sign-in from the developer page.')
+    if(!/^[a-f0-9]{64}$/.test(challenge))throw new HttpError(400,'Start GitHub verification from your account page.')
     await throttle(db,'github-start:'+(request.headers.get('CF-Connecting-IP')??'local'),10,900)
     const state=token(),verifier=token(),bytes=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(verifier)))
     const pkce=btoa(String.fromCharCode(...bytes)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')
@@ -58,7 +60,7 @@ export async function developerAuthentication(request:Request,env:Env,db:Databas
     if(url.origin!==new URL(config.callback).origin || !/^[a-f0-9]{64}$/.test(state) || getCookie(request,'modwerk_developer_oauth')!==state)throw new HttpError(400,'GitHub sign-in state was not accepted. Start again.')
     const flow=await db.prepare('DELETE FROM developer_oauth_states WHERE state_hash=? AND expires>? RETURNING verifier,browser_challenge').bind(await digest(state),now).first<{verifier:string;browser_challenge:string}>()
     if(!flow)throw new HttpError(400,'GitHub sign-in expired or was already used. Start again.')
-    const home=new URL(env.APP_URL!);home.hash='developer'
+    const home=new URL(env.APP_URL!);home.hash='account/developer'
     if(url.searchParams.has('error'))return redirect(home.href,env,'')
     if(!/^[a-zA-Z0-9_-]{1,256}$/.test(code))throw new HttpError(400,'GitHub did not provide a valid sign-in code.')
     const credential=await github<{access_token?:string;token_type?:string}>('https://github.com/login/oauth/access_token',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({client_id:config.id,client_secret:config.secret,redirect_uri:config.callback,code,code_verifier:flow.verifier})})
@@ -68,12 +70,13 @@ export async function developerAuthentication(request:Request,env:Env,db:Databas
     const viewer=profile.data?.viewer
     if(profile.errors||!viewer||!Number.isSafeInteger(viewer.databaseId)||(viewer.databaseId ?? 0) <= 0||typeof viewer.login!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9-]{0,38}$/.test(viewer.login))throw new HttpError(502,'GitHub identity could not be verified.')
     const githubId=String(viewer.databaseId),login=viewer.login.toLowerCase()
+    if(!developerModules(login).length){home.hash='account/developer/unlisted';return redirect(home.href,env,'')}
     // Stable GitHub ID owns the developer identity; names/emails never claim community accounts.
     const user=await db.prepare('INSERT INTO users(id,display_name,github_id,github_login) VALUES(?,?,?,?) ON CONFLICT(github_id) DO UPDATE SET github_login=excluded.github_login RETURNING id,suspended').bind(crypto.randomUUID(),'@'+login,githubId,login).first<{id:string;suspended:number}>()
     if(!user||user.suspended)throw new HttpError(403,'Developer access is suspended.')
     const handoff=token()
     await db.prepare('INSERT INTO developer_auth_codes(code_hash,user_id,browser_challenge,expires) VALUES(?,?,?,?)').bind(await digest(handoff),user.id,flow.browser_challenge,now+60).run()
-    home.hash='developer/complete/'+handoff
+    home.hash='account/developer/complete/'+handoff
     return redirect(home.href,env,'')
   }
   if(path==='/api/developer/auth/complete'&&request.method==='POST'){
@@ -82,6 +85,8 @@ export async function developerAuthentication(request:Request,env:Env,db:Databas
     await throttle(db,'github-complete:'+(request.headers.get('CF-Connecting-IP')??'local'),10,900)
     const link=await db.prepare('DELETE FROM developer_auth_codes WHERE code_hash=? AND browser_challenge=? AND expires>? AND EXISTS(SELECT 1 FROM users WHERE id=developer_auth_codes.user_id AND suspended=0) RETURNING user_id').bind(await digest(body.code),await digest(body.verifier),now).first<{user_id:string}>()
     if(!link)throw new HttpError(400,'GitHub sign-in expired or was already used. Start again.')
+    const user=await db.prepare('SELECT github_login FROM users WHERE id=?').bind(link.user_id).first<{github_login:string|null}>()
+    if(!developerModules(user?.github_login).length)throw new HttpError(403,'Your GitHub account is not listed as a module author or maintainer.')
     const session=token()
     await db.prepare('INSERT INTO developer_sessions(token_hash,user_id,client_hash,expires) VALUES(?,?,?,?)').bind(await digest(session),link.user_id,await clientHash(env),now+7*86400).run()
     const result=response({ok:true});result.headers.set('X-Modwerk-Developer',session);return result

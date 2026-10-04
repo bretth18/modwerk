@@ -32,7 +32,7 @@ async function fixture(){
     if(cookie)headers.set('Cookie',cookie)
     return handleCommunity(new Request('https://api.example.test/api'+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body)}),server.env)
   }
-  async function githubLogin(login='irpina',githubId=42){
+  async function githubLogin(login='irpina',githubId=42,listed=true){
     const verifier='a'.repeat(64),challenge=await digest(verifier)
     const start=await call('/developer/auth/start?challenge='+challenge);expect(start.status).toBe(302)
     const authorization=new URL(start.headers.get('Location')!),state=authorization.searchParams.get('state')!,cookie=start.headers.get('Set-Cookie')!.split(';')[0]
@@ -48,6 +48,7 @@ async function fixture(){
     }))
     const callback=await call('/developer/auth/callback?code=synthetic-code&state='+state,'GET',undefined,'','','',cookie,null);expect(callback.status).toBe(302)
     const location=callback.headers.get('Location')!,code=location.split('/complete/')[1]
+    if(!listed){expect(location).toBe('https://octamod.test/#account/developer/unlisted');return {token:'',code:'',verifier,state,cookie,location}}
     const result=await call('/developer/auth/complete','POST',{code,verifier});expect(result.status).toBe(200)
     const token=result.headers.get('X-Modwerk-Developer')!
     expect(await result.text()).not.toContain(token)
@@ -92,6 +93,31 @@ describe('machine-aware community',()=>{
   })
 })
 describe('GitHub developer claims and private report access',()=>{
+  it('rejects verified GitHub handles absent from the reviewed catalog before creating developer identities or sessions',async()=>{
+    const {call,githubLogin,db,member}=await fixture(),pretender=await member('irpina')
+    await githubLogin('irpina-pretender',42,false)
+    expect(db.prepare('SELECT COUNT(*) AS count FROM users WHERE github_id IS NOT NULL').get()!.count).toBe(0)
+    for(const table of ['developer_auth_codes','developer_sessions'])expect(db.prepare('SELECT COUNT(*) AS count FROM '+table).get()!.count).toBe(0)
+    expect((await(await call('/developer/auth/session','GET',undefined,pretender.token)).json()).user).toBeNull()
+    expect((await call('/developer/modules','GET',undefined,pretender.token)).status).toBe(401)
+    expect((await call('/developer/issues','GET',undefined,pretender.token)).status).toBe(401)
+  })
+  it('matches catalog handles without case sensitivity and rechecks both pending handoffs and existing sessions',async()=>{
+    const {call,githubLogin,db}=await fixture(),login=await githubLogin('IRPINA')
+    expect((await(await call('/developer/auth/session','GET',undefined,'',login.token)).json()).user).toEqual({login:'irpina'})
+    const user=String(db.prepare('SELECT id FROM users WHERE github_id IS NOT NULL').get()!.id),code='c'.repeat(64)
+    db.prepare('INSERT INTO developer_auth_codes VALUES(?,?,?,?)').run(await digest(code),user,await digest(login.verifier),Math.floor(Date.now()/1000)+60)
+    const modules=COMMUNITY_MODULES.filter(module=>module.maintainers.includes('irpina'))
+    const saved=modules.map(module=>[...module.maintainers])
+    try {
+      for(const module of modules)module.maintainers.splice(0,module.maintainers.length)
+      expect((await(await call('/developer/auth/session','GET',undefined,'',login.token)).json()).user).toBeNull()
+      for(const path of ['/developer/modules','/developer/issues'])expect((await call(path,'GET',undefined,'',login.token)).status).toBe(401)
+      expect((await call('/developer/modules/digitakt-digihealth/claim','POST',{},'',login.token)).status).toBe(401)
+      expect((await call('/developer/auth/complete','POST',{code,verifier:login.verifier})).status).toBe(403)
+      expect(db.prepare('SELECT COUNT(*) AS count FROM developer_sessions').get()!.count).toBe(1)
+    } finally{modules.forEach((module,index)=>module.maintainers.push(...saved[index]))}
+  })
   it('rejects provider failure and unverified identities, and handles denied authorization without signing in',async()=>{
     const {call,db,env}=await fixture()
     async function begin(){
@@ -100,7 +126,7 @@ describe('GitHub developer claims and private report access',()=>{
     }
     const denied=await begin()
     const cancelled=await call('/developer/auth/callback?error=access_denied&state='+denied.state,'GET',undefined,'','','',denied.cookie,null)
-    expect(cancelled.status).toBe(302);expect(cancelled.headers.get('Location')).toBe('https://octamod.test/#developer')
+    expect(cancelled.status).toBe(302);expect(cancelled.headers.get('Location')).toBe('https://octamod.test/#account/developer')
     for(const failure of ['network','credential','identity']){
       const flow=await begin()
       vi.stubGlobal('fetch',vi.fn(async(url:string)=>{
@@ -148,7 +174,7 @@ describe('GitHub developer claims and private report access',()=>{
     expect((await(await call('/developer/auth/session','GET',undefined,'',login.token)).json()).user).toEqual({login:'irpina'})
     expect(JSON.stringify(db.prepare('SELECT * FROM developer_sessions').all())).not.toContain(login.token)
     expect(JSON.stringify(db.prepare('SELECT * FROM developer_sessions').all())).not.toContain('synthetic-github-access')
-    expect(login.location).toMatch(/^https:\/\/octamod.test\/#developer\/complete\/[a-f0-9]{64}$/)
+    expect(login.location).toMatch(/^https:\/\/octamod.test\/#account\/developer\/complete\/[a-f0-9]{64}$/)
     expect((await call('/developer/auth/complete','POST',{code:login.code,verifier:login.verifier})).status).toBe(400)
     expect((await call('/developer/auth/callback?code=synthetic-code&state='+login.state,'GET',undefined,'','','',login.cookie,null)).status).toBe(400)
     const verifier='b'.repeat(64),start=await call('/developer/auth/start?challenge='+await digest(verifier)),state=new URL(start.headers.get('Location')!).searchParams.get('state')!

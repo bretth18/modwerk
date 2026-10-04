@@ -1,7 +1,7 @@
 import type { Database, User } from './platform'
 import { ADMIN_ACTOR, needMember, throttle } from './auth'
 import { HttpError, jsonBody, required, response } from './security'
-import { COMMUNITY_MODULES, communityModule } from '../src/community/modules'
+import { COMMUNITY_MODULES, communityModule, developerModules } from '../src/community/modules'
 
 export async function maintainedModules(db: Database, user: User) {
   const rows = (await db.prepare('SELECT module_id,github_login FROM module_maintainers WHERE user_id=? AND revoked=0').bind(user.id).all<{module_id:string;github_login:string}>()).results
@@ -36,7 +36,7 @@ export async function developerApi(request:Request,db:Database,user:User|null,ad
     return response({ok:true})
   }
   if (path.startsWith('/api/developer/')) {
-    if(!developer?.github_id)throw new HttpError(401,'Sign in with GitHub to manage your modules.')
+    if(!developer?.github_id||developer.suspended||!developerModules(developer.github_login).length)throw new HttpError(401,'Verify a GitHub account listed as a module author or maintainer to manage your modules.')
     const member=developer,modules=await maintainedModules(db,member)
     const claim=path.match(/^\/api\/developer\/modules\/([a-z0-9-]+)\/claim$/)
     if(claim&&request.method==='POST'){
@@ -52,7 +52,7 @@ export async function developerApi(request:Request,db:Database,user:User|null,ad
     const requested = url.searchParams.get('moduleId') ?? ''
     if (requested && !modules.some(module => module.id === requested)) throw new HttpError(403,'You do not maintain that module.')
     if (path === '/api/developer/modules' && request.method === 'GET') {
-      const candidates=COMMUNITY_MODULES.filter(module=>module.maintainers.some(login=>login.toLowerCase()===member.github_login?.toLowerCase()))
+      const candidates=developerModules(member.github_login)
       const grants=(await db.prepare('SELECT module_id,revoked FROM module_maintainers WHERE user_id=?').bind(member.id).all<{module_id:string;revoked:number}>()).results
       return response(await Promise.all(candidates.map(async module => ({...module,claimed:modules.some(value=>value.id===module.id),blocked:grants.some(grant=>grant.module_id===module.id&&grant.revoked===1),
         reports:modules.some(value=>value.id===module.id)?await db.prepare("SELECT COUNT(*) AS total,SUM(CASE WHEN status='open' THEN 1 ELSE 0 END) AS open FROM issues WHERE module_id=? AND maintainer_sharing=1 AND public_sharing=0").bind(module.id).first():{total:0,open:0},

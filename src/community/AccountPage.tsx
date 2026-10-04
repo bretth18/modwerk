@@ -12,9 +12,10 @@ import { accountHref, safeNext } from './member-access'
 import { api, post } from './api'
 import { useCommunity } from './context'
 import { SUPPORT_EMAIL, SUPPORT_MAILTO } from '../support'
+import { DeveloperVerification } from './DeveloperVerification'
 type DeviceSession = { id:string; current:boolean; expires:number }
 function AccountContent({route}:{route:string}) {
-  const {session,refresh}=useCommunity(), [busy,setBusy]=useState(false), [error,setError]=useState(route.startsWith('account/sso-error')?'Social sign-in was not completed. Use your original sign-in method, or create an account if you are new.':''), [message,setMessage]=useState(''), [devices,setDevices]=useState<DeviceSession[]>([])
+  const {session,developer,refresh}=useCommunity(), [busy,setBusy]=useState(false), [error,setError]=useState(route.startsWith('account/sso-error')?'Social sign-in was not completed. Use your original sign-in method, or create an account if you are new.':''), [message,setMessage]=useState(''), [devices,setDevices]=useState<DeviceSession[]>([])
   const [path,query='']=route.split('?'),params=new URLSearchParams(query),next=safeNext(params.get('next')),formRef=useRef<HTMLFormElement>(null)
   const [,action='login',linkToken='']=path.split('/'), mode=['login','register','resend','forgot','verify','reset'].includes(action)?action:'login'
   const linkAction=mode==='verify'||mode==='reset'||params.get('reauth')==='1',member=!!session.user?.verified&&!linkAction
@@ -46,7 +47,7 @@ function AccountContent({route}:{route:string}) {
   async function endSessions(all:boolean){setBusy(true);setError('');try{if(all){await api('/auth/sessions',{method:'DELETE'});setDevices(await api<DeviceSession[]>('/auth/sessions'));setMessage('Other sessions signed out.')}else{await post('/auth/logout',{});await refresh();window.location.assign('#account/login')}}catch(error){setError(error instanceof Error?error.message:'Unable to sign out.')}finally{setBusy(false)}}
   const titles:Record<string,string>={login:'Welcome back',register:'Join the community',resend:'Verify your email',forgot:'Forgot your password?',verify:'Confirm your email',reset:'Choose a new password'}
   return <div className="community-page account-page"><a className="back-link" href="#forum">← Community forum</a><div className="page-heading"><div><p className="page-kicker">MODWERK / ACCOUNT</p><h1>{member?'Your account':titles[mode]}</h1><p>{member?'Your profile, account access and community activity.':'A place to exchange ideas, find help and share configurations.'}</p></div></div>
-    {member?<section className="configuration-section"><h2>@{session.user!.username}</h2><p>Your email address is private. Your username appears alongside your posts.</p><div className="forum-actions"><a className="button button-quiet" href={'#forum/profile/'+session.user!.username}>Your public profile</a><a className="button button-quiet" href="#developer">Developer workspace</a><a className="button button-quiet" href="#forum?saved=1">Your bookmarks</a><button className="button button-quiet" disabled={busy} onClick={()=>void endSessions(false)}>Sign out</button></div><h3>Active sessions</h3>{devices.map((device,index)=><p key={device.id}>{device.current?'This session':'Other session '+(index+1)} · expires {new Date(device.expires*1000).toLocaleDateString()}</p>)}<button className="button button-quiet" disabled={busy||devices.length<2} onClick={()=>void endSessions(true)}>Sign out other sessions</button></section>:<section className="configuration-section">
+    {member?<section className="configuration-section"><h2>@{session.user!.username}</h2><p>Your email address is private. Your username appears alongside your posts.</p><div className="forum-actions"><a className="button button-quiet" href={'#forum/profile/'+session.user!.username}>Your public profile</a>{developer?.user&&<a className="button button-quiet" href="#developer">Developer workspace</a>}<a className="button button-quiet" href="#forum?saved=1">Your bookmarks</a><button className="button button-quiet" disabled={busy} onClick={()=>void endSessions(false)}>Sign out</button></div><h3>Active sessions</h3>{devices.map((device,index)=><p key={device.id}>{device.current?'This session':'Other session '+(index+1)} · expires {new Date(device.expires*1000).toLocaleDateString()}</p>)}<button className="button button-quiet" disabled={busy||devices.length<2} onClick={()=>void endSessions(true)}>Sign out other sessions</button></section>:<section className="configuration-section">
       {!session.available?<p className="service-note" role="status">Community services are unavailable. You can still use your local configurations.</p>:<>
       {session.user&&!session.user.username&&<p className="service-note">This browser holds a previous guest identity. Its private reports appear below until you sign in. Guest names do not reserve account usernames.</p>}
       {!(mode==='verify'||mode==='reset')&&<nav className="forum-actions" aria-label="Account actions"><a aria-current={mode==='login'?'page':undefined} href={accountHref('login',next)}>Sign in</a><a aria-current={mode==='register'?'page':undefined} href={accountHref('register',next)}>Create account</a></nav>}
@@ -66,6 +67,7 @@ function AccountContent({route}:{route:string}) {
     </section>}
     {member&&<NewsPreferences key={'news-'+session.user!.id}/>}
     {member&&<AccountExport/>}
+    {!linkAction&&<DeveloperVerification route={route}/>}
     {member&&<AccountRemovalRequest key={'removal-'+session.user!.id}/>}
     {member&&<AccountSettings key={'settings-'+session.user!.id}/>}
     {params.get('deleted')==='1'&&<p className="success-note" role="status">Your account has been deleted.</p>}
