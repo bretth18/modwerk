@@ -154,7 +154,7 @@ export default function App() {
   const libraryNavRef = useRef<HTMLElement>(null)
   // On phones the library nav is a horizontal strip; keep the current section in view.
   useEffect(() => {
-    const active = libraryNavRef.current?.querySelector('a.active')
+    const active = libraryNavRef.current?.querySelector('.active')
     if (active) active.scrollIntoView({ block: 'nearest', inline: 'nearest' })
     else libraryNavRef.current?.scrollTo({ left: 0 })
   }, [route])
@@ -214,10 +214,10 @@ export default function App() {
       <a className="skip-link" href="#main-content" onClick={(event) => { event.preventDefault(); mainRef.current?.focus() }}>Skip to content</a>
       <aside className="sidebar" aria-label="App sidebar">
         <a className="app-brand" href={'#' + ALL_MACHINES}><img src={import.meta.env.BASE_URL + 'favicon.svg'} width="34" height="34" alt="" /><span>Modwerk<small>Custom Elektron firmware</small></span></a>
-        <MachineSwitcher current={currentDevice} all={allMachines} counts={machineCounts} />
+        {!phoneLayout && <MachineSwitcher current={currentDevice} all={allMachines} counts={machineCounts} />}
         <div className="sidebar-section-label">Library</div>
         <nav className="sidebar-nav" aria-label="Module library" ref={libraryNavRef}>
-          <a href={libraryHref()} className={onLibrary && !libraryCategory ? 'active' : ''} aria-current={onLibrary && !libraryCategory ? 'page' : undefined}><Icon name="grid" /><span>All modules</span><small>{libraryCount()}</small></a>
+          {phoneLayout ? <MachineSwitcher compact current={currentDevice} all={allMachines} counts={machineCounts} active={onLibrary && !libraryCategory} /> : <a href={libraryHref()} className={onLibrary && !libraryCategory ? 'active' : ''} aria-current={onLibrary && !libraryCategory ? 'page' : undefined}><Icon name="grid" /><span>All modules</span><small>{libraryCount()}</small></a>}
           {SIDEBAR_CATEGORIES.map(category => {
             const count = libraryCount(category), current = onLibrary && libraryCategory === category
             return <a key={category} href={libraryHref(category)} onClick={()=>setFamily('all')} className={(current ? 'active' : '') + (count ? '' : ' is-empty') + (category === 'standalone' ? ' sidebar-standalone' : '')} aria-current={current ? 'page' : undefined}><Icon name={category==='standalone'?'lock':category==='scenes'?'grid':category==='effects'||category==='midi-usb'?'wave':'sliders'} /><span>{LIBRARY_CATEGORY_LABELS[category]}</span><small>{count}</small></a>
