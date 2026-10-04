@@ -402,3 +402,22 @@ checks, lint, app/server type checks and the production build. Exact-base
 module validation and `git diff origin/main --check` pass. The source-only
 compiler's `--verify-existing` pass reproduces every authored package and
 receiver against the locally parity-verified baseline. No firmware is involved.
+
+## Digitakt and Digitone container engine — 4 October 2026
+
+Modwerk's TypeScript engine (`src/engine/elektron/`) reads and writes the Digitakt and Digitone mk1 OS file: the ELE3 container, its SysEx transport and the packed main OS. Checked locally with the owner's own stock files, kept outside the repository (`scripts/verify-elektron-container.mjs`):
+
+| Stock file | SHA-256 | Writer identity | Repacked main OS (version MW01) |
+| --- | --- | --- | --- |
+| Digitakt OS 1.53 | `9bdd44bb…29bcc92` | byte for byte | passes every container check; in-place gap 531,097 |
+| Digitakt OS 1.54 | `f78ba80f…53e3cf6` | byte for byte | passes; in-place gap 527,627 |
+| Digitone / Keys OS 1.44 | `d4f200d0…3c9659` | byte for byte | passes; in-place gap 337,594 |
+
+**Writer identity:** rebuilding each file from its own main OS reproduces it byte for byte, which also confirms the message and content checksums.
+
+**The repacked Digitakt 1.53 build in digiemu:** it was checked against stock with digiemu's `emu.fwcheck` (irpina's mk1 emulator, run locally with its patched Unicorn).
+
+- The device's own updater accepted the build, it booted to a live user interface and it ran.
+- Nine screens and 7.9 seconds of audio are identical to stock (`--no-boot-strict`; stock against itself reports the same emulator bus-error quirk in strict mode).
+
+This proves the container layer only. No mods or core were linked, and no hardware was involved. Packing the main OS currently takes about 45 seconds in Node.
