@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api, apiFetch, post } from './api'
-import { FLASH_STATES, LOG_MISSING_REASONS, OT_MODELS } from './issue-context'
+import { isDigiIssue, FLASH_STATES, LOG_MISSING_REASONS, OT_MODELS } from './issue-context'
 import type { IssueContext, LogMissingReason } from './issue-context'
 import { describeOtLog } from './ot-log'
 import type { OtLogSummary } from './ot-log'
@@ -37,7 +37,7 @@ export function IssueInbox({moduleId = '',onClearModule}: {moduleId?: string;onC
       <small>{item.module_id} · from {item.reporter} · for @{item.author_login}</small>
       <p className="preserve-lines">{item.body}</p>
       <dl>
-        {item.context && <><dt>Device</dt><dd>{OT_MODELS[item.context.model]} · {FLASH_STATES[item.context.flash]} · OS {item.context.os}</dd>
+        {item.context && <><dt>Device</dt><dd>{isDigiIssue(item.context)?item.context.model:OT_MODELS[item.context.model]} · {FLASH_STATES[item.context.flash]} · OS {item.context.os}</dd>
           <dt>Modules</dt><dd>{item.context.modules.length ? item.context.modules.map(module => module.id + ' ' + module.version).join(', ') : 'none selected'}</dd>
           <dt>Build</dt><dd>{item.context.build ? <code>{item.context.build}</code> : 'not built in the reporter’s browser'}</dd></>}
         <dt>Log</dt><dd>{item.log ? describeOtLog(item.log) : item.log_missing ? 'Not attached: ' + LOG_MISSING_REASONS[item.log_missing] + (item.log_missing_note ? ' — ' + item.log_missing_note : '') : 'Not attached (report predates logs)'}</dd>

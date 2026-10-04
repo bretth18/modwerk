@@ -1,4 +1,8 @@
 import { forum } from './forum'
+import { developerAuthentication, developerUser } from './developer-auth'
+import { developerApi } from './developers'
+import { communityModule } from '../src/community/modules'
+import { validateDigiIssueContext } from '../src/community/digi-issue-context'
 import { recordUsage, recordModuleDownload, usageStatistics } from './usage'
 import { moduleStatistics } from './module-statistics'
 import { adminInsights } from './admin-insights'
@@ -14,7 +18,7 @@ import { OT_LOG_MAX_BYTES, OtLogError, parseOtLog } from '../src/community/ot-lo
 
 function needUser(user: User | null): User { if (!user) throw new HttpError(401,'Sign in to manage your activity.'); return user }
 async function knownModule(db: Database, id: string) {
-  if (MODULES.some(module => module.id === id)||recipes.some(recipe=>'remix-'+recipe.id===id)) return
+  if (communityModule(id)||recipes.some(recipe=>'remix-'+recipe.id===id)) return
   if (!await db.prepare("SELECT submission_id FROM module_publications WHERE module_id=?").bind(id).first()) throw new HttpError(404,'Module not found.')
 }
 function issueInput<T>(read:()=>T):T{try{return read()}catch(error){if(error instanceof IssueInputError||error instanceof OtLogError)throw new HttpError(400,error.message);throw error}}
@@ -35,8 +39,12 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if (!db) throw new HttpError(503,'Community services are not connected yet. Your device workspace still works.')
     if (path === '/api/usage/events' && request.method === 'POST') return await recordUsage(request,env,db)
     if (path === '/api/usage/module-downloads' && request.method === 'POST') return await recordModuleDownload(request,env,db)
+    const developerAuth = await developerAuthentication(request,env,db)
+    if(developerAuth)return developerAuth
     const user = await currentUser(request,db,env)
     const admin = await isAdmin(request,env,db)
+    const developer = await developerApi(request,db,user,admin,await developerUser(request,env,db))
+    if(developer)return developer
     const discussion = await forum(request,db,user,admin)
     if(discussion)return discussion
     let match: RegExpMatchArray | null
@@ -81,24 +89,29 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if ((match=path.match(/^\/api\/modules\/([a-z0-9-]+)\/issues$/)) && request.method==='POST') {
       const owner=needMember(user)
       await knownModule(db,match[1]);const body=await jsonBody(request,OT_LOG_MAX_BYTES+32*1024)
-      if(typeof body.steps!=='string'&&typeof body.body==='string')throw new HttpError(400,'Issue reports now include your configuration and OCTAMOD.LOG. Reload the page and report again.')
+      if(typeof body.steps!=='string'&&typeof body.body==='string')throw new HttpError(400,'Issue reports now include structured device details. Reload the page and report again.')
+      if(Object.keys(body).some(key=>!['title','steps','expected','actual','context','log','logMissing','maintainerSharing','displayName'].includes(key)))throw new HttpError(400,'Unexpected report field. Files and firmware are not accepted.')
       const title=required(body.title,'Issue title',160),steps=required(body.steps,'Steps to reproduce',3000),expected=required(body.expected,'Expected result',1000),actual=required(body.actual,'Actual result',2000)
-      const context=issueInput(()=>validateIssueContext(body.context))
+      const module=communityModule(match[1]),digi=module?.machine==='digitakt'||module?.machine==='digitone'
+      const context=issueInput(()=>digi?validateDigiIssueContext(body.context,module.machine):validateIssueContext(body.context))
+      if(!digi && body.context && typeof body.context==='object' && (body.context as Record<string,unknown>).machine && (body.context as Record<string,unknown>).machine!=='octatrack')throw new HttpError(400,'The report belongs to a different machine.')
+      if(body.maintainerSharing!==undefined&&typeof body.maintainerSharing!=='boolean')throw new HttpError(400,'Choose whether to share with verified maintainers.')
       const attached=body.log!==undefined&&body.log!==null&&body.log!==''
       if(attached&&typeof body.log!=='string')throw new HttpError(400,'Attach OCTAMOD.LOG as text.')
+      if(digi && (body.log!==undefined||body.logMissing!==undefined))throw new HttpError(400,'This machine accepts structured reports only. Files and firmware are not accepted.')
       const log=attached?issueInput(()=>parseOtLog(body.log as string)):null
-      const missing=log?null:issueInput(()=>validateLogMissing(body.logMissing,context))
+      const missing=digi||log?null:issueInput(()=>validateLogMissing(body.logMissing,context as import('../src/community/issue-context').OctatrackIssueContext))
       await throttle(db,'issue-ip:'+(request.headers.get('CF-Connecting-IP')??'local'),10)
       // Bound stored reports across the site as well as per IP and member.
       await throttle(db,'issue-global',60)
       const core=MODULES.find(item=>item.id===match![1])
       const recipe=recipes.find(item=>'remix-'+item.id===match![1])
       const published=core||recipe?null:await db.prepare("SELECT u.github_login FROM module_publications p JOIN submissions s ON s.id=p.submission_id JOIN users u ON u.id=s.owner_id WHERE p.module_id=?").bind(match[1]).first<{github_login:string}>()
-      const author=core?.author??recipe?.author??published?.github_login
+      const author=module?.author??core?.author??recipe?.author??published?.github_login
       if(!author)throw new HttpError(400,'No author is registered for this module.')
       await throttle(db,'issue-member:'+owner.id,10)
       const id=crypto.randomUUID(),details='Steps to reproduce:\n'+steps+'\n\nExpected:\n'+expected+'\n\nActual:\n'+actual
-      const statements=[db.prepare('INSERT INTO issues(id,module_id,author_login,reporter_id,title,body,context_json,log_missing,log_missing_note,github_state) VALUES(?,?,?,?,?,?,?,?,?,?)').bind(id,match[1],author,owner.id,title,details,JSON.stringify(context),missing?.reason??null,missing?.note??'','none')]
+      const statements=[db.prepare('INSERT INTO issues(id,module_id,author_login,reporter_id,title,body,context_json,log_missing,log_missing_note,github_state,maintainer_sharing) VALUES(?,?,?,?,?,?,?,?,?,?,?)').bind(id,match[1],author,owner.id,title,details,JSON.stringify(context),missing?.reason??null,missing?.note??'','none',Number(body.maintainerSharing===true))]
       if(log)statements.push(db.prepare('INSERT INTO issue_logs(issue_id,text,bytes,summary_json) VALUES(?,?,?,?)').bind(id,log.text,log.text.length,JSON.stringify(log.summary)))
       await db.batch(statements)
       // Account reports stay private, even when GitHub credentials are configured.
@@ -106,7 +119,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     }
     if(path==='/api/issues/mine'&&request.method==='GET'){
       if(!user)return response([])
-      return response((await db.prepare('SELECT id,module_id,author_login,title,body,status,created_at,github_url,public_sharing FROM issues WHERE reporter_id=? ORDER BY created_at DESC LIMIT 100').bind(user.id).all()).results)
+      return response((await db.prepare('SELECT id,module_id,author_login,title,body,status,created_at,github_url,public_sharing,maintainer_sharing FROM issues WHERE reporter_id=? ORDER BY created_at DESC LIMIT 100').bind(user.id).all()).results)
     }
     if (path.startsWith('/api/admin/')) {
       if (!admin) throw new HttpError(403,'Administrator access is required.')

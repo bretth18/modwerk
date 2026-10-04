@@ -52,6 +52,12 @@ On 3 October 2026 the owner chose to mirror issue reports to public GitHub issue
 
 The account/forum draft preserves structured reports and strict device-log validation but keeps new account reports private. It grants no GitHub publication permissions and blocks private-report retries; previously published GitHub links and status synchronization are retained. Re-enabling public mirroring requires a separately reviewed consent workflow. This limitation follows the automatic approval review during forum integration, not a new owner decision.
 
+## GitHub developer access and machine-aware community — 4 October 2026
+
+The owner explicitly requested GitHub login to claim/manage modules, superseding the earlier restriction on website GitHub sign-in for this developer flow. The reviewed module author/maintainer handle plus a verified stable GitHub identity permits claiming that module. Developer access is separate from verified email membership and administrator access; no GitHub email or repositories are requested. Maintainers receive only reports their authors explicitly share, can reply and resolve/reopen, and lose access when sharing is withdrawn, the claim is revoked or the reviewed maintainer list changes. Historical private reports remain unshared. Updates remain owner-reviewed PRs, without automatic publication. See [DEVELOPER_WORKSPACE.md](DEVELOPER_WORKSPACE.md).
+
+Digitakt/Digitone now use machine-specific community module IDs, immutable configuration sharing and structured private reports without Octatrack-only fields/log requirements. Octatrack keeps its existing context/log validation. Firmware and arbitrary attachments remain rejected.
+
 ## Catalog scope and pins
 
 The catalog scope is Spectrum, Modulation, Character, Mini Verb, Tape Echo, Euclid and Repitch, plus Analog BD, MIDI Scenes, USB Audio (tracks + MAIN/CUE) and Scale Quantizer and OctaKit and TapeHead (requested on 2 October 2026). Include their required internal platform dependencies; other octabam modules remain outside scope. Scope does not imply current availability or hardware qualification: Spectrum, Modulation and Character are temporarily suspended. See the app guide and verification record for current supported selections and hardware limits.

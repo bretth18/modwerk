@@ -1,6 +1,8 @@
 import { apiUrl, communityBase } from '../hosting'
 const sessionKey = () => 'octamod.community.session:' + communityBase()
 const adminKey = () => 'octamod.community.admin:' + communityBase()
+const developerKey = () => 'modwerk.developer.session:' + communityBase()
+function savedDeveloper() { try { return localStorage.getItem(developerKey()) ?? '' } catch { return '' } }
 function validSession(value:string){return /^[a-f0-9]{64}$/.test(value)||/^[A-Za-z0-9_%+./=-]{40,600}$/.test(value)&&value.includes('.')}
 function savedSession() { try { return localStorage.getItem(sessionKey()) ?? '' } catch { return '' } }
 function savedAdmin() { try { return sessionStorage.getItem(adminKey()) ?? '' } catch { return '' } }
@@ -11,10 +13,14 @@ export async function apiFetch(path: string, options: RequestInit = {}): Promise
   if (validSession(session)) headers.set('Authorization', 'Bearer ' + session)
   const admin = savedAdmin()
   if (/^[a-f0-9]{64}$/.test(admin)) headers.set('X-Octamod-Admin', admin)
+  const developer=savedDeveloper()
+  if ((path.startsWith('/developer/')||path.startsWith('/issues/'))&&/^[a-f0-9]{64}$/.test(developer)) headers.set('X-Modwerk-Developer',developer)
   let result: Response
   try { result = await fetch(apiUrl(path), { ...options, headers, credentials: 'same-origin', redirect: 'error' }) }
   catch { throw new Error('Community services are not connected yet. Your local workspace still works.') }
   const next = result.headers.get('X-Octamod-Session')
+  const nextDeveloper=result.headers.get('X-Modwerk-Developer')
+  if(result.ok&&nextDeveloper!==null){try{if(/^[a-f0-9]{64}$/.test(nextDeveloper))localStorage.setItem(developerKey(),nextDeveloper);else if(nextDeveloper==='')localStorage.removeItem(developerKey())}catch{throw new Error('Enable site storage to keep your developer sign-in.')}}
   if (result.ok && next !== null) {
     try { if (validSession(next)) localStorage.setItem(sessionKey(), next); else if (next === '') localStorage.removeItem(sessionKey()) }
     catch { throw new Error('Your browser could not save this community session. Enable site storage to keep ownership of posts.') }

@@ -31,6 +31,8 @@ async function fixture(){
  db.exec(readFileSync(new URL('../../migrations/0012_better_auth.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0010_issue_reports.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0013_issue_privacy.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0015_forum_machines.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0016_module_maintainers.sql',import.meta.url),'utf8'))
  const env:Env={DB:adapter(db),APP_URL:'https://octamod.test',ADMIN_KEY_SHA256:await digest(adminKey)}
  const objects=new Map<string,ArrayBuffer>()
  env.MEDIA={async put(key,bytes){objects.set(key,bytes)},async get(key){const bytes=objects.get(key);return bytes?{body:new ReadableStream({start(controller){controller.enqueue(new Uint8Array(bytes));controller.close()}})}:null},async delete(key){objects.delete(key)}}
@@ -266,7 +268,7 @@ describe('GitHub Pages and separate backend',()=>{
   const session=tokens.author
   const result=await call('/modules/spectrum/comments','POST',{body:'Cross-domain member'},session)
   expect(session).toMatch(/^[a-f0-9]{64}$/);expect(result.headers.get('set-cookie')).toBeNull()
-  expect(result.headers.get('access-control-expose-headers')).toBe('X-Octamod-Session')
+  expect(result.headers.get('access-control-expose-headers')).toBe('X-Octamod-Session, X-Modwerk-Developer')
   const mine=await (await call('/modules/spectrum','GET',undefined,session)).json();expect(mine.comments[0].canDelete).toBe(true)
   expect((await call('/submissions','POST',details,session)).status).toBe(410)
   const logout=await call('/auth/logout','POST',{},session);expect(logout.headers.get('X-Octamod-Session')).toBe('')

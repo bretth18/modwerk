@@ -1,3 +1,5 @@
+import { DigiIssueReport } from '../community/DigiIssueReport'
+import { ModuleCommunity } from '../community/ModuleCommunity'
 import type { ReactNode } from 'react'
 import { Icon } from '../components/Icon'
 import { issueRepository } from '../community/report-context'
@@ -142,6 +144,9 @@ export function DigiModDetail({ device, mod, selected, onToggle }: { device: Dig
         })}</ul>
         <p className="combination-footnote">Estimated from code and data sizes. The build’s own check decides.</p>
       </section>}
+      <section className="detail-section"><h2>Support & discussion</h2><a className="text-button" href={'#forum?machine='+device.id+'&module='+device.id+'-'+mod.id}>Discuss this module →</a></section>
+      <DigiIssueReport id={device.id+'-'+mod.id}/>
+      <ModuleCommunity id={device.id+'-'+mod.id} mode="discussion"/>
     </div>
   )
 }
@@ -158,7 +163,7 @@ export function DigiConfiguration({ device, configuration, configurations, onSel
       <div className="configuration-actions">
         {configurations.length > 0 && <select aria-label="Choose configuration" value={configuration?.id ?? ''} onChange={event => onSelect(event.target.value)}>{configurations.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select>}
         <button className="button button-primary" onClick={() => onDialog('create')}><Icon name="plus" size={16} />New</button>
-        {configuration && <><button className="button button-quiet" onClick={() => onDialog('rename')}>Rename</button><button className="button button-quiet" onClick={() => onDialog('duplicate')}>Duplicate</button><button className="button button-quiet" onClick={() => onDialog('delete')}>Delete</button></>}
+        {configuration && <><a className="button button-quiet" href={'#forum/new?category=configs&machine='+device.id}>Share in forum</a><button className="button button-quiet" onClick={() => onDialog('rename')}>Rename</button><button className="button button-quiet" onClick={() => onDialog('duplicate')}>Duplicate</button><button className="button button-quiet" onClick={() => onDialog('delete')}>Delete</button></>}
       </div>
       <section className="configuration-section" aria-labelledby="digi-selection-title"><div className="section-title"><h2 id="digi-selection-title">Selected modules <span className="subtle">{selection.length}</span></h2><a className="text-button" href={deviceHref(device.id)}>Browse modules <Icon name="plus" size={14} /></a></div>
         {selection.length ? <ul className="selected-list">{selection.map(mod => <li key={mod.id}><a className="selected-module-link" href={deviceHref(device.id, 'module/' + mod.id)}><DigiModPreview mod={mod} compact /><span><strong>{mod.title}</strong><small>{mod.category} · {mod.author} · {kib(mod.ramBytes)}</small></span></a><button className="icon-button" aria-label={'Remove ' + mod.title} onClick={() => onToggle(mod.id)}><Icon name="close" size={17} /></button></li>)}</ul>

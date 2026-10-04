@@ -17,3 +17,9 @@ GITHUB_TOKEN=
 GITHUB_REPOSITORY=repeat98/octamod
 # Secret of the repository webhook (Issues events) that syncs closed/reopened status back to reporters.
 GITHUB_WEBHOOK_SECRET=
+
+# Developer-only GitHub OAuth; separate from forum membership and administration.
+GITHUB_OAUTH_CLIENT_ID=
+GITHUB_OAUTH_CLIENT_SECRET=
+# Exact API callback registered with GitHub. HTTPS in production; loopback HTTP for local development.
+GITHUB_OAUTH_CALLBACK_URL=

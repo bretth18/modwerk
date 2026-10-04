@@ -25,6 +25,7 @@ export function MobileMenu({ route, selectedCount, configurationHref, admin, onS
     [
       { href: '#forum', label: 'Forum', icon: 'message', current: route.startsWith('forum') },
       { href: '#account', label: 'Account / sign in', icon: 'shield', current: route.startsWith('account') },
+      { href: '#developer', label: 'Developer workspace', icon: 'sliders', current: route.startsWith('developer') },
       { href: '#submit', label: 'Submit a module', icon: 'plus', current: route.startsWith('submit') },
       ...(admin ? [{ href: '#admin', label: 'Admin workspace', icon: 'shield' as const, current: route === 'admin' || route === 'review' }] : []),
     ],
