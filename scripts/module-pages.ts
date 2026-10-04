@@ -47,7 +47,8 @@ export function modulePageHtml(html: string, module: FirmwareModule, imagePath: 
   const appUrl = new URL(base.startsWith('/') ? base : '.', home)
   const pageUrl = new URL('module/' + module.id + '/', appUrl).href
   const imageUrl = new URL(imagePath, appUrl).href
-  const title = module.name + ' — Octamod'
+  const siteName = html.match(/<meta property="og:site_name" content="([^"]+)"/)?.[1] ?? 'Modwerk'
+  const title = module.name + ' — ' + siteName
   const alt = module.name + ' module thumbnail'
   const values: Record<string, string> = {
     description: module.description,

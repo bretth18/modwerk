@@ -41,3 +41,18 @@ Nested module pages set their document base to the app root so bundles, licensed
 media and other public assets also work after direct navigation or reload. The
 router resolves that base once before client-side navigation, including when
 the build is hosted under a Pages project path.
+
+## Modwerk integration
+
+The app logo and favicon use `public/modwerk-mark.svg`. The homepage Open Graph
+and Twitter cards use `https://modwerk.app/modwerk-social-preview-v2.jpg`, a
+1200 × 630 JPEG showing the mod library, firmware builder, community forum and
+developer SDK. Both assets are the unchanged redesign from
+[PR #76](https://github.com/repeat98/octamod/pull/76), commit
+`0dad6c08a09e1c763418352ded7734609a2d265a`. Its source artwork and rendering
+workflow remain in that PR. The older Octamod image is retained as a legacy asset.
+
+Module links keep their own module thumbnail and inherit the Modwerk site name
+and public origin from `index.html`. The versioned homepage image URL avoids
+reusing the old sharing cache key. Local previews verify the metadata and image;
+the public card changes after these files are deployed.
