@@ -17,6 +17,58 @@ services can fetch the new asset.
 
 ## Modwerk launch artwork
 
+`public/modwerk-social-preview-v2.jpg` is the prepared homepage link preview for the
+Modwerk rebrand: 1200 × 630, progressive sRGB JPEG, quality 95, 4:4:4. The Modwerk
+lockup and “Mods for Elektron instruments.” sit above four branches connecting the
+Mod library, Firmware builder, Community forum and Developer SDK to the central
+Modwerk mark. Large two-line feature labels and distinct vector drawings replace
+the sequencer keys and machine silhouettes. The feature labels are 41 pixels tall
+in the source and were visually checked at 600 × 315 and 400 × 210.
+
+Module covers with signal drawings represent the library, selected tiles combining
+into one package represent the builder, speech bubbles represent the forum, and
+code brackets represent the SDK. These are original explanatory illustrations,
+not interface captures, qualification evidence or a claim of mod availability for
+every instrument. The artwork states that Modwerk is independent and not
+affiliated with Elektron.
+
+### Mark
+
+`public/modwerk-mark.svg` (dark backgrounds) and `public/modwerk-mark-on-light.svg`
+(light backgrounds) are the Modwerk mark: eight tiles centred in a frame that opens
+at one corner, where an apricot ninth tile, the mod, slides in. The artwork embeds
+`modwerk-mark.svg` as-is twice: to the left of the wordmark and at the branch
+junction. The mark files are unchanged from the supplied redesign branch. A change
+to the mark changes the preview on its next export. `public/favicon.svg` is still
+the Octamod mark; switching it belongs to the rebrand.
+
+### Source and export
+
+The source is the vector drawing [`social-preview/modwerk-v2.html`](social-preview/modwerk-v2.html).
+It uses Archivo and JetBrains Mono (SIL Open Font License 1.1), pinned
+`@fontsource-variable` 5.3.0 builds, and the mark file; no photographs, firmware or
+generated images go into it. To re-export:
+
+```sh
+npm install --no-save playwright@1.56.1 @fontsource-variable/archivo@5.3.0 @fontsource-variable/jetbrains-mono@5.3.0
+npx playwright install chromium
+node scripts/render-social-preview.mjs --previews /tmp/modwerk-previews
+```
+
+The script renders at 2× in Chromium, downsamples with Sharp, refuses a render whose
+fonts or mark did not load, and prints the export's SHA-256. The committed export is
+95,982 bytes, SHA-256 `b01a07077dd5d508b4b695961d3a657420998e2e322b70f50a0928fa0b58663e`
+(Playwright 1.56.1 Chromium on macOS; other platforms may differ by antialiasing).
+
+Activate it with the rebrand, not before: set `og:image` and `twitter:image` to
+`https://modwerk.app/modwerk-social-preview-v2.jpg`, keep the 1200 × 630 dimensions
+and `image/jpeg` type, and use this alt text for both cards:
+
+> Modwerk. Mods for Elektron instruments. Four branches connect the mod library,
+> firmware builder, community forum and developer SDK to the Modwerk mark.
+
+### Earlier Three.js concept
+
 `public/modwerk-social-preview-v1.jpg` is the prepared homepage link preview for
 the coordinated Modwerk rebrand. It is a 1200 × 630 progressive sRGB JPEG, with
 a new filename to avoid reusing the cached Octamod preview URL. The production
