@@ -1,6 +1,8 @@
 import { DigiIssueReport } from '../community/DigiIssueReport'
 import { ModuleCommunity } from '../community/ModuleCommunity'
-import type { ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
+import { downloadDigiSelection, parseDigiSelection } from '../config/digi-selection'
+import { DIGI_DOWNLOADS_ENABLED } from '../engine/elekloader/protocol'
 import { Icon } from '../components/Icon'
 import { issueRepository } from '../community/report-context'
 import type { Configuration } from '../config/workspace'
@@ -134,7 +136,7 @@ export function DigiLibrary({ device, category, query, selectedIds, onToggle }: 
   return (
     <div className="library-page">
       <div className="page-heading"><div><p className="page-kicker">MODWERK / {device.name.toUpperCase()}</p><h1>{label ?? 'Module library'}</h1><p>{category === 'standalone' ? STANDALONE_NOTE : device.summary}</p></div><span className="library-total">{mods.length} modules</span></div>
-      <p className="device-preview-note"><Icon name="lock" size={14} />Preview: check and build {device.name} firmware in your browser. Downloads open after review.</p>
+      <p className="device-preview-note"><Icon name={DIGI_DOWNLOADS_ENABLED ? "file" : "lock"} size={14} />{DIGI_DOWNLOADS_ENABLED ? <>Build {device.name} firmware locally with your original OS file.</> : <>Preview: check and build {device.name} firmware in your browser. Downloads open after review.</>}</p>
       {(!estimate.fits || estimate.clashes.length > 0) && <a className="selection-conflict-link" href={deviceHref(device.id, 'configuration')}><Icon name="sliders" size={18} /><span><strong>Your selection needs a change</strong><small>{estimate.fits ? 'The selected mods cannot be used together.' : 'The selected mods need more memory than the ' + device.name + ' shares with mods.'}</small></span><Icon name="arrow" size={18} /></a>}
       <div className="library-subheading"><span>{term ? 'Results for “' + query.trim() + '”' : 'Explore the collection'}</span><span className="subtle">{device.name} · OS {device.firmware?.releases.join(' / ')}</span></div>
       <div className="module-grid">{mods.map(mod => <DigiModCard key={mod.id} mod={mod} selected={selectedIds.includes(mod.id)} onToggle={() => onToggle(mod.id)} />)}</div>
@@ -178,20 +180,34 @@ export function DigiModDetail({ device, mod, selected, onToggle }: { device: Dig
   )
 }
 
-export function DigiConfiguration({ device, configuration, configurations, onSelect, onDialog, onToggle }: { device: DigiDevice; configuration?: Configuration; configurations: Configuration[]; onSelect: (id: string) => void; onDialog: (mode: 'create' | 'rename' | 'duplicate' | 'delete') => void; onToggle: (id: string) => void }) {
+export function DigiConfiguration({ device, configuration, configurations, onSelect, onDialog, onToggle, onImport }: { device: DigiDevice; configuration?: Configuration; configurations: Configuration[]; onSelect: (id: string) => void; onDialog: (mode: 'create' | 'rename' | 'duplicate' | 'delete') => void; onToggle: (id: string) => void; onImport: (configuration: ReturnType<typeof parseDigiSelection>) => void }) {
+  const importRef = useRef<HTMLInputElement>(null), [importError, setImportError] = useState(''), [exported, setExported] = useState('')
   const firmware = useDigiFirmware(device.id)
   const ids = configuration?.moduleIds ?? []
   const selection = DIGI_MODS.filter(mod => mod.device === device.id && ids.includes(mod.id))
   const estimate = estimateCombination(device.id, ids, firmware.firmware?.release)
   const percent = Math.min(100, estimate.usedBytes / estimate.areaBytes * 100)
+  const exportKey = JSON.stringify(configuration)
+  async function importBackup(file?: File) {
+    if (!file) return
+    setImportError('')
+    try { if (file.size > 32 * 1024) throw new Error('Configuration backups must be smaller than 32 KB.'); onImport(parseDigiSelection(await file.text(), device.id)) }
+    catch(error) { setImportError(error instanceof Error ? error.message : 'Unable to import this configuration.') }
+  }
   return (
     <div className="configuration-page">
       <div className="page-heading"><div><p className="page-kicker">YOUR WORKSPACE · {device.name.toUpperCase()}</p><h1>{configuration?.name ?? 'No ' + device.name + ' configuration yet'}</h1><p>Changes save automatically on this device.</p></div><span className="pill">OS {device.firmware?.releases.join(' / ')}</span></div>
       <div className="configuration-actions">
         {configurations.length > 0 && <select aria-label="Choose configuration" value={configuration?.id ?? ''} onChange={event => onSelect(event.target.value)}>{configurations.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select>}
         <button className="button button-primary" onClick={() => onDialog('create')}><Icon name="plus" size={16} />New</button>
-        {configuration && <><a className="button button-quiet" href={'#forum/new?category=configs&machine='+device.id}>Share in forum</a><button className="button button-quiet" onClick={() => onDialog('rename')}>Rename</button><button className="button button-quiet" onClick={() => onDialog('duplicate')}>Duplicate</button><button className="button button-quiet" onClick={() => onDialog('delete')}>Delete</button></>}
+        {configuration && <><button className="button button-quiet" onClick={() => onDialog('rename')}>Rename</button><button className="button button-quiet" onClick={() => onDialog('duplicate')}>Duplicate</button><button className="button button-quiet" onClick={() => onDialog('delete')}>Delete</button><button className="button button-quiet" onClick={() => importRef.current?.click()}>Import JSON</button><a className="button button-quiet" href={'#forum/new?category=configs&machine='+device.id}>Share in forum</a></>}
       </div>
+      <input ref={importRef} type="file" accept="application/json,.json" hidden aria-label="Import configuration backup" onChange={event => { void importBackup(event.target.files?.[0]); event.target.value = '' }}/>
+      {importError && <p className="file-error" role="alert">{importError}</p>}
+      <section className={'compatibility-panel compatibility-' + (estimate.fits && !estimate.clashes.length ? 'clear' : 'conflict')} aria-live="polite" aria-labelledby="digi-compatibility-title"><div className="compatibility-heading"><span className="compatibility-icon"><Icon name={estimate.fits && !estimate.clashes.length ? 'shield' : 'sliders'} size={20}/></span><div><h2 id="digi-compatibility-title">{!estimate.fits || estimate.clashes.length ? 'Your selection needs a change' : selection.length ? 'No declared conflicts' : 'Choose your modules'}</h2><p>{!estimate.fits || estimate.clashes.length ? 'Review the resources below and choose a compatible set.' : selection.length ? 'Choose your base firmware for placement checks.' : 'Add a module from the library, or build the core alone. Compatibility updates as you make changes.'}</p></div></div></section>
+      <section className="configuration-section" aria-labelledby="digi-firmware-title"><div className="section-title"><h2 id="digi-firmware-title">Base firmware</h2><span className="subtle">Read locally</span></div>
+        <DigiFirmwarePanel name={device.name} releases={device.firmware?.releases ?? []} firmware={firmware} />
+      </section>
       <section className="configuration-section" aria-labelledby="digi-selection-title"><div className="section-title"><h2 id="digi-selection-title">Selected modules <span className="subtle">{selection.length}</span></h2><a className="text-button" href={deviceHref(device.id)}>Browse modules <Icon name="plus" size={14} /></a></div>
         {selection.length ? <ul className="selected-list">{selection.map(mod => <li key={mod.id}><a className="selected-module-link" href={deviceHref(device.id, 'module/' + mod.id)}><DigiModPreview mod={mod} compact /><span><strong>{mod.title}</strong><small>{mod.category} · {mod.author} · {kib(mod.ramBytes)}</small></span></a><button className="icon-button" aria-label={'Remove ' + mod.title} onClick={() => onToggle(mod.id)}><Icon name="close" size={17} /></button></li>)}</ul>
           : <div className="selection-empty"><Icon name="grid" size={26} /><strong>No modules selected</strong><p>Find something in the library and add it to your configuration.</p><a className="button button-quiet" href={deviceHref(device.id)}>Browse modules</a></div>}
@@ -204,11 +220,7 @@ export function DigiConfiguration({ device, configuration, configurations, onSel
         </div>
         {estimate.clashes.map((clash, index) => <p key={clash.claim + index} className="file-error" role="alert">{clash.mods.join(' and ')} cannot be used together: {clash.claim}.</p>)}
       </section>
-      <section className="configuration-section" aria-labelledby="digi-firmware-title"><div className="section-title"><h2 id="digi-firmware-title">Base firmware</h2><span className="subtle">Read locally</span></div>
-        <DigiFirmwarePanel name={device.name} releases={device.firmware?.releases ?? []} firmware={firmware} />
-        {device.firmware && <dl className="device-facts"><dt>Flash</dt><dd>{device.firmware.flash}</dd><dt>Recover</dt><dd>{device.firmware.recovery}</dd></dl>}
-      </section>
-      <MemberGate action="build firmware" next={device.id+'/configuration'}><DigiBuildPanel device={device} firmware={firmware} moduleIds={ids}/></MemberGate>
+      <MemberGate action="build firmware" next={device.id+'/configuration'}><DigiBuildPanel device={device} firmware={firmware} moduleIds={ids} onExport={() => { if (configuration) { downloadDigiSelection(configuration, device.id); setExported(exportKey) } }} exported={exported===exportKey} canExport={!!configuration}/></MemberGate>
     </div>
   )
 }

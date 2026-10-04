@@ -59,5 +59,11 @@ export function useDigiBuild(machine: BuilderMachine, file: File | undefined, re
       if (operation.current === request) setView({ phase: 'failed', key, enabled, device, error: message(error, 'The build failed.') })
     }
   }
-  return { state, check, build }
+  function cancel() {
+    ++operation.current
+    client.current?.dispose(); client.current = null
+    setEngaged(false); setLoaded(false); setAttempt(value => value + 1)
+    setView({ phase: 'idle', key: '' })
+  }
+  return { state, check, build, cancel }
 }

@@ -8,6 +8,7 @@ import { assetUrl } from '../hosting'
 import { useDigiBuild } from '../hooks/useDigiBuild'
 import type { useDigiFirmware } from '../hooks/useDigiFirmware'
 import { Icon } from './Icon'
+import { BuildProgressIndicator } from './BuildProgressIndicator'
 
 function save(buffer: ArrayBuffer, name: string) {
   const url = URL.createObjectURL(new Blob([buffer], { type: 'application/octet-stream' })), link = document.createElement('a')
@@ -16,15 +17,17 @@ function save(buffer: ArrayBuffer, name: string) {
 }
 const kib = (bytes: number) => (bytes / 1024).toFixed(0) + ' KB'
 
-export function DigiBuildPanel({ device, firmware, moduleIds }: { device: { id: DigiMod['device']; name: string; firmware?: { recovery: string } }; firmware: ReturnType<typeof useDigiFirmware>; moduleIds: readonly string[] }) {
+export function DigiBuildPanel({ device, firmware, moduleIds, onExport, exported, canExport }: { device: { id: DigiMod['device']; name: string; firmware?: { recovery: string } }; firmware: ReturnType<typeof useDigiFirmware>; moduleIds: readonly string[]; onExport: () => void; exported: boolean; canExport: boolean }) {
   const ready = firmware.state === 'ready' && !!firmware.file, release = ready ? firmware.firmware?.release : undefined
   const plan = release ? planBuild(device.id, release, moduleIds) : undefined
   const missing = plan?.missing.map(id => DIGI_MODS.find(mod => mod.device === device.id && mod.id === id)?.title ?? id) ?? []
-  const { state, check, build } = useDigiBuild(device.id, ready && !missing.length ? firmware.file : undefined, release, moduleIds)
+  const { state, check, build, cancel } = useDigiBuild(device.id, ready && !missing.length ? firmware.file : undefined, release, moduleIds)
   const [version, setVersion] = useState(''), [accepted, setAccepted] = useState(''), [downloaded, setDownloaded] = useState('')
   const deviceInfo = 'device' in state ? state.device : undefined, key = 'key' in state ? state.key : ''
-  const result = state.phase === 'built' ? state.result : undefined
   const shown = version || deviceInfo?.default_version || '2.0a', length = deviceInfo?.version_len ?? 4
+  const result = state.phase === 'built' && state.result.version === shown ? state.result : undefined
+  const approvalKey = JSON.stringify([device.id,ready ? firmware.firmware?.sha256 : '',[...moduleIds].sort(),shown])
+  const riskAccepted = accepted === approvalKey
   const versionError = /^[\x20-\x7e]*$/.test(shown) && shown.length === length ? '' : 'Use exactly ' + length + ' plain characters.'
   const busy = state.phase === 'loading' || state.phase === 'checking' || state.phase === 'building'
   const message = !ready ? 'Add your original ' + device.name + ' OS file above. Builds run in this browser; nothing is uploaded.'
@@ -37,24 +40,27 @@ export function DigiBuildPanel({ device, firmware, moduleIds }: { device: { id: 
     : state.phase === 'building' ? state.log
     : state.phase === 'failed' ? state.error
     : state.phase !== 'built' ? ''
-    : 'Firmware built and verified: ' + state.result.files[0].name + '.'
+    : !result ? 'The displayed OS version changed. Build again to use the new version.'
+    : 'Firmware built and verified: ' + result.files[0].name + '.'
   return <>
+    <aside className="risk-note"><strong>Before you flash</strong><p>{FLASHING_RISKS} Back up your projects and samples, review the module test records, and keep the original OS. Flash at your own risk.</p><p>{FIRMWARE_SHARING_NOTICE}</p><label className="risk-accept"><input type="checkbox" checked={riskAccepted} onChange={event => setAccepted(event.target.checked ? approvalKey : '')}/><span>I understand the risks of flashing custom firmware.</span></label></aside>
     <section className="build-section" aria-labelledby="digi-build-title" aria-busy={busy}>
       <div><h2 id="digi-build-title">{result ? 'Firmware ready' : 'Build firmware'}</h2>
         <p id="digi-build-status" role={state.phase === 'blocked' || state.phase === 'failed' ? 'alert' : 'status'}>{message}</p>
         {state.phase === 'blocked' && state.check?.problems?.length ? <details className="build-report"><summary>Show the builder’s report</summary><ul className="build-problems">{state.check.problems.map(problem => <li key={problem}>{problem}</li>)}</ul></details> : null}
-      </div>
-      <div className="build-actions">
-        {(state.phase === 'ready' || state.phase === 'failed' || state.phase === 'built') && <label className="version-field"><span>OS version shown on the unit</span>
+        {result && <BuildProgressIndicator finished/>}
+        <span className="subtle">No firmware upload. Local validation does not qualify this configuration on hardware.</span>
+
+        {(state.phase === 'ready' || state.phase === 'failed' || state.phase === 'built') && <label className="version-field build-version"><span>OS version shown on the unit</span>
           <input value={shown} maxLength={length} spellCheck={false} aria-invalid={!!versionError} aria-describedby="digi-version-help" onChange={event => setVersion(event.target.value)} />
           <small id="digi-version-help">{versionError || 'Shown instead of the stock version, so you can tell the builds apart.'}</small></label>}
-        {state.phase === 'ready' || state.phase === 'failed' || state.phase === 'built'
-          ? <button className={'button ' + (result ? 'button-quiet' : 'button-primary')} disabled={!!versionError} onClick={() => void build(shown)} aria-describedby="digi-build-status"><Icon name="sliders" size={16} />{result ? 'Build again' : 'Build firmware'}</button>
-          : <button className="button button-primary" disabled={!ready || !!missing.length || busy} onClick={() => void check()} aria-describedby="digi-build-status"><Icon name="check" size={16} />{state.phase === 'blocked' ? 'Check again' : 'Check selection'}</button>}
-        {result && DIGI_DOWNLOADS_ENABLED && <>
-          <label className="risk-check"><input type="checkbox" checked={accepted === key} onChange={event => setAccepted(event.target.checked ? key : '')} /><span>I understand the risks of custom firmware and keep the original OS file to recover.</span></label>
-          <button className="button button-primary" disabled={accepted !== key} onClick={() => { save(result.files[0].data, result.files[0].name); setDownloaded(key) }}><Icon name="download" size={16} />Download .syx</button>
-        </>}
+      </div>
+      <div className="build-actions">
+        {busy ? <button className="button button-quiet" onClick={cancel}>Cancel build</button> : result && DIGI_DOWNLOADS_ENABLED ? <button className="button button-primary" disabled={!riskAccepted} onClick={() => { save(result.files[0].data, result.files[0].name); setDownloaded(key) }}><Icon name="download" size={16}/>Download .syx</button> : null}
+        {!busy && (state.phase === 'ready' || state.phase === 'failed' || state.phase === 'built'
+          ? <button className={'button ' + (result ? 'button-quiet' : 'button-primary')} disabled={!!versionError || !riskAccepted} onClick={() => void build(shown)} aria-describedby="digi-build-status"><Icon name="sliders" size={16} />{result ? 'Build again' : 'Build firmware'}</button>
+          : <button className="button button-primary" disabled={!ready || !!missing.length || busy} onClick={() => void check()} aria-describedby="digi-build-status"><Icon name="check" size={16} />{state.phase === 'blocked' ? 'Check again' : 'Check selection'}</button>)}
+        <button className="button button-quiet" disabled={!canExport} onClick={onExport}><Icon name="download" size={16}/>Export configuration</button><p className="export-note" aria-live="polite">{exported ? 'Configuration exported as JSON.' : 'JSON backup · no firmware included'}</p>
       </div>
     </section>
     <p className="file-footnote"><span>Builder: <a href={BUILDER_SOURCE.repository} target="_blank" rel="noreferrer">elekloader ↗</a> by irpina (GPL-2.0-or-later), with each mod’s pinned author release. It runs in this browser.</span></p>

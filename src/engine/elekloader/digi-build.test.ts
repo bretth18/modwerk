@@ -19,8 +19,8 @@ describe('vendored elekloader catalog', () => {
   it('reports modules without a file for the chosen release', () => {
     expect(planBuild('digitakt', '1.54', ['digisophie', 'digihealth'])).toMatchObject({ missing: ['digisophie'], mods: [{ module: 'digihealth', release: '1.54' }] })
   })
-  it('keeps Digitakt/Digitone downloads off until the owner approves them', () => {
-    expect(DIGI_DOWNLOADS_ENABLED).toBe(false)
+  it('enables the owner-approved, native-parity-verified Digitakt/Digitone downloads', () => {
+    expect(DIGI_DOWNLOADS_ENABLED).toBe(true)
   })
 })
 

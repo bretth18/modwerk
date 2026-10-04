@@ -26,5 +26,5 @@ export type BuilderResult =
   | { ok: false; error: string; log?: [number, string][] }
 
 // Owner decision, 4 October 2026: Digitakt/Digitone builds use the vendored elekloader builder.
-// Building and checking run locally; offering the file needs the owner's separate approval.
-export const DIGI_DOWNLOADS_ENABLED = false
+// Owner approved downloads on 4 October after the pinned builder passed 27/27 native parity cases.
+export const DIGI_DOWNLOADS_ENABLED = true

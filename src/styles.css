@@ -331,6 +331,7 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .version-field { display: grid; gap: 5px; color: #c7c7d7; font-size: 12px; }
 .version-field input { width: 100%; min-height: 38px; border: 1px solid var(--line); border-radius: 7px; background: #19191c; color: inherit; font: 14px var(--mono); letter-spacing: 2px; padding: 0 10px; }
 .version-field input[aria-invalid="true"] { border-color: #e07a6f; }
+.build-version { max-width: 260px; margin-top: 16px; }
 .version-field small { color: #9292a5; line-height: 1.5; }
 .risk-check { display: flex; gap: 8px; align-items: flex-start; color: #c7c7d7; font-size: 12px; line-height: 1.5; }
 .risk-check input { margin-top: 2px; }
