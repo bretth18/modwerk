@@ -9,6 +9,8 @@ import { moduleHref } from '../routing'
 import { DeviceImage, PhotoCredit } from './DeviceImage'
 import { DEVICES, DEVICES_BY_ID, DEVICE_STEPS, STATUS_LABELS, deviceHref, deviceTitle, stepsDone, type DeviceProfile } from './registry'
 import { DIGI_CORES, DIGI_MODS, categorySlug, estimateCombination, type DigiMod } from './digi-mods'
+import { useDigiFirmware } from '../hooks/useDigiFirmware'
+import { DigiFirmwarePanel } from '../components/DigiFirmwarePanel'
 
 type DigiDevice = DeviceProfile & { id: DigiMod['device'] }
 const STEP_LABELS = { done: 'Done', started: 'Started', open: 'Open' } as const
@@ -144,9 +146,10 @@ export function DigiModDetail({ device, mod, selected, onToggle }: { device: Dig
 }
 
 export function DigiConfiguration({ device, configuration, configurations, onSelect, onDialog, onToggle }: { device: DigiDevice; configuration?: Configuration; configurations: Configuration[]; onSelect: (id: string) => void; onDialog: (mode: 'create' | 'rename' | 'duplicate' | 'delete') => void; onToggle: (id: string) => void }) {
+  const firmware = useDigiFirmware(device.id)
   const ids = configuration?.moduleIds ?? []
   const selection = DIGI_MODS.filter(mod => mod.device === device.id && ids.includes(mod.id))
-  const estimate = estimateCombination(device.id, ids)
+  const estimate = estimateCombination(device.id, ids, firmware.firmware?.release)
   const percent = Math.min(100, estimate.usedBytes / estimate.areaBytes * 100)
   return (
     <div className="configuration-page">
@@ -168,8 +171,8 @@ export function DigiConfiguration({ device, configuration, configurations, onSel
         </div>
         {estimate.clashes.map((clash, index) => <p key={clash.claim + index} className="file-error" role="alert">{clash.mods.join(' and ')} cannot be used together: {clash.claim}.</p>)}
       </section>
-      <section className="configuration-section" aria-labelledby="digi-firmware-title"><div className="section-title"><h2 id="digi-firmware-title">Base firmware</h2><span className="subtle">Coming soon</span></div>
-        <div className="firmware-drop is-disabled"><span className="file-symbol"><Icon name="lock" size={24} /></span><div className="file-copy"><strong>{device.name} OS {device.firmware?.releases.join(' or ')}</strong><span>Modwerk will read your own <code>.syx</code> on this device, as it does for the Octatrack. Building is not available yet.</span></div></div>
+      <section className="configuration-section" aria-labelledby="digi-firmware-title"><div className="section-title"><h2 id="digi-firmware-title">Base firmware</h2><span className="subtle">Read locally</span></div>
+        <DigiFirmwarePanel name={device.name} releases={device.firmware?.releases ?? []} firmware={firmware} />
         {device.firmware && <dl className="device-facts"><dt>Flash</dt><dd>{device.firmware.flash}</dd><dt>Recover</dt><dd>{device.firmware.recovery}</dd></dl>}
       </section>
     </div>
