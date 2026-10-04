@@ -5,12 +5,12 @@ const moduleRoute = /^module\/([a-z0-9-]+)$/
 export function moduleHref(id: string) { return assetUrl('module/' + id + '/') }
 
 /** Only app destinations participate; assets, downloads and external links keep normal browser behavior. */
-export function routeFromUrl(url: URL, appUrl: URL): string | undefined {
+export function routeFromUrl(url: URL, appUrl: URL, fallback = 'library'): string | undefined {
   if (url.origin !== appUrl.origin || !url.pathname.startsWith(appUrl.pathname)) return undefined
   const path = url.pathname.slice(appUrl.pathname.length)
   const module = /^module\/([a-z0-9-]+)\/(?:index\.html)?$/.exec(path)
   if (path && path !== 'index.html' && !module) return undefined
-  const route = url.hash.slice(1) || (module ? 'module/' + module[1] : 'library')
+  const route = url.hash.slice(1) || (module ? 'module/' + module[1] : fallback)
   // The forum's account page replaced the separate activity page; old #activity links open it.
   return route === 'remixes' ? 'module-sets' : route === 'activity' ? 'account' : route.startsWith('remix/') ? 'module-set/' + route.slice(6) : route
 }
@@ -26,8 +26,8 @@ export function canonicalRouteUrl(url: URL, appUrl: URL, moduleIds: readonly str
   return target
 }
 
-export function getRoute() {
-  return routeFromUrl(new URL(window.location.href), new URL(document.baseURI)) ?? 'library'
+export function getRoute(fallback = 'library') {
+  return routeFromUrl(new URL(window.location.href), new URL(document.baseURI), fallback) ?? fallback
 }
 
 export function startRouting(moduleIds: readonly string[]) {

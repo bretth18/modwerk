@@ -18,6 +18,11 @@ describe.each(['https://octamod.app/', 'https://example.github.io/octamod/'])('m
     expect(canonicalRouteUrl(new URL('#module/tapeecho', current), appUrl, moduleIds).href).toBe(root + 'module/tapeecho/')
     expect(canonicalRouteUrl(new URL('#configuration', current), appUrl, moduleIds).href).toBe(root + '#configuration')
   })
+  it('opens the remembered machine when the URL names no route', () => {
+    expect(routeFromUrl(new URL('', appUrl), appUrl, 'digitakt')).toBe('digitakt')
+    expect(routeFromUrl(new URL('#forum', appUrl), appUrl, 'digitakt')).toBe('forum')
+    expect(routeFromUrl(new URL('', appUrl), appUrl)).toBe('library')
+  })
   it('preserves old navigation aliases', () => {
     expect(routeFromUrl(new URL('#account', appUrl), appUrl)).toBe('account')
     expect(routeFromUrl(new URL('#activity', appUrl), appUrl)).toBe('account')
