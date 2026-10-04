@@ -1,6 +1,6 @@
-# Combined Modwerk preview
+# Combined Modwerk release
 
-The dedicated `codex/modwerk-integration` branch combines the open Modwerk launch work into one reviewable snapshot against `main`. It resolves overlapping UI and documentation changes without modifying the shared checkout or publishing the site. It is a preview and review branch; owner approval, production setup and release gates still apply.
+The dedicated `codex/modwerk-release` branch consolidates 24 Modwerk launch PRs (#64 and #68–#90) into one draft PR against `main`. It builds on `codex/modwerk-integration` and includes every source PR head in its ancestry, preserving authorship and the existing account reconciliation. The source PRs are superseded by the combined release PR; owner approval, production setup and release gates still apply.
 
 ## Integrated pull requests
 
@@ -26,16 +26,17 @@ The dedicated `codex/modwerk-integration` branch combines the open Modwerk launc
 | [#84](https://github.com/repeat98/octamod/pull/84) | `codex/all-machines-library-parity` | `f137471d02be` | Restore All machines controls and activate Modwerk branding |
 | [#85](https://github.com/repeat98/octamod/pull/85) | `codex/modwerk-vendor-elekloader` | `4e782ebd473a` | Modwerk: build Digitakt/Digitone firmware with the vendored elekloader builder |
 | [#87](https://github.com/repeat98/octamod/pull/87) | `codex/german-data-compliance` | `2f9394f2e9b1` | German/EU privacy safeguards, optional counts and account rights |
-| [#88](https://github.com/repeat98/octamod/pull/88) | `codex/modwerk-sso` | `441059f122eb` | Social sign-in, profile controls and member-only builds |
-| [#89](https://github.com/repeat98/octamod/pull/89) | `codex/verified-developer-workspace` | `6176a12acd24` | Server-verified developer eligibility and account-page verification |
+| [#88](https://github.com/repeat98/octamod/pull/88) | `codex/modwerk-sso` | `63768d57bcce` | Social sign-in, profile controls and member-only builds |
+| [#89](https://github.com/repeat98/octamod/pull/89) | `codex/verified-developer-workspace` | `85503ed17490` | Server-verified developer eligibility and the improved account layout |
+| [#90](https://github.com/repeat98/octamod/pull/90) | `codex/bug-reports-forum` | `a29b4540832f` | Public bug-report threads, private report details and developer notifications |
 
 PR [#86](https://github.com/repeat98/octamod/pull/86), `codex/verified-community-accounts` at `c721426294cc`, was based on the older account-free Octamod product. Its code-only authentication and migration 0011 conflict with the existing Better Auth/forum stack in #64. The integration retains Modwerk's password/email and forum account system and ports #86's unchecked optional news preference into that system, with authenticated preference changes, private consent records and no campaign delivery. Its branch is recorded with an explicit reconciliation merge, not used to replace the newer account implementation. Profile/deletion/SSO changes belong to the completed local Modwerk account snapshot described below.
 
-## Completed local chat snapshots
+## Account and migration reconciliation
 
-The preview includes PR #87 from “Review German data compliance” at `2f9394f` and PR #88 from “Add single sign-on” at `441059f122eb`, originally captured locally at `9626e37fcaeb`. The SSO snapshot was captured through an independent temporary Git index without changing that chat's worktree, branch or index. It includes Google/GitHub/Discord sign-in, member build access, public forum reading, profile editing and confirmed account deletion. The privacy snapshot adds bilingual notices, the owner-supplied operator disclosure, optional usage counts, recorded rules acceptance, account export and privacy-request response deadlines.
+The combined release includes the final published heads of #87, #88 and #89. The account page uses the improved community/developer layout while retaining Google/GitHub/Discord sign-in, email authentication, rules agreement, unchecked optional news consent, profile editing, account export and confirmed deletion. The SSO callback remains mounted during session refresh. Developer verification and administrator authorization remain separate from visitor sign-in.
 
-The privacy migration was renumbered from `0015_account_policy.sql` to `0018_account_policy.sql` to preserve existing forum migration 0015. The combined sequence is 0017 social accounts, 0018 policy acceptance and 0019 optional news preferences. Integration checks enforce the same privacy/rules gate for email and social signup, preserve optional consent, and support confirmed data export/removal requests for social-only accounts.
+The privacy migration was renumbered from `0015_account_policy.sql` to `0018_account_policy.sql` to preserve existing forum migration 0015. The combined sequence is 0017 social accounts, 0018 policy acceptance and 0019 optional news preferences. Migration 0020 links explicitly submitted public bug reports to forum threads; historical reports and full configuration/log details stay private. Apply migrations 0011–0020 in order before the matching frontend rollout. Integration checks enforce the same privacy/rules gate for email and social signup, preserve optional consent, and support confirmed data export/removal requests for social-only accounts.
 
 The unrelated IronOxide5, Inflator, Fattener and Stang 2 module drafts are outside this integration request. No draft was promoted into the approved module catalog or qualification baseline.
 
@@ -70,4 +71,6 @@ On 4 October 2026 the combined application passed `npm run check`: 560 tests acr
 
 The running local preview uses the fictional seed above. Sign in with `demo@example.test` and `Octamod local preview 2026!` to inspect the complete account/forum UI. These are public local fixture credentials, not a production account. Email delivery, real SSO providers and administrator access remain unconfigured.
 
-The final roster includes 23 open Modwerk-related PRs: #64, #68–#89. The original source PRs remain open with their existing bases; this branch reconciles them against `main` for review. PR #89 removes unverified workspace links and enforces author/maintainer eligibility on the backend, including direct private endpoints. Developer verification is available on the account page and remains separate from community membership and administrator authorization.
+The release roster contains 24 PRs: #64 and #68–#90. All recorded PR heads are ancestors of the combined release branch. The source branches remain available for provenance and recovery after their PRs close. PR #89 enforces author/maintainer eligibility on the backend, and #90 adds developer notifications and public reproduction threads with private report details.
+
+On 4 October 2026, consolidation validation passed with Node.js 24: `npm run check` (569 application tests across 91 files, 31 firmware-free SDK source/data checks, lint, type checking, licence/catalog/vendor checks and the production build). A signup rendering regression verifies all three SSO providers, required rules agreement, unchecked optional news consent, return navigation and hidden unverified workspace access in the improved account layout. The isolated local D1 database applied migrations through 0020 successfully. Desktop and 390-pixel browser review verified the merged sign-in/signup layout; provider credentials remain unconfigured in that preview, so this does not establish live-provider sign-in. No firmware/DSP/hardware suites or production changes were performed during consolidation.
