@@ -16,6 +16,10 @@ Read from public DNS, GitHub and the deployed Worker; nothing was changed.
 | Worker secrets | `ADMIN_KEY_SHA256`, `AUTH_SECRET`, `EMAIL_FROM`, `RESEND_API_KEY` are set. The last two are for octamod.app. |
 | Account mail | Resend, root domain, Ireland, for octamod.app. Its records are the reference for what modwerk.app needs. |
 
+### Verified setup follow-up
+
+On 4 October, Resend showed `modwerk.app` verified in Ireland with enforced TLS and tracking disabled. Its domain-restricted sending key and `Modwerk <accounts@modwerk.app>` sender are staged, followed by the six community SSO credentials; none of those staging versions is the release deployment. A temporary key sent one branded verification and one recovery email from an isolated local Worker. Both were delivered, their account links completed the local verification/recovery journey, and the owner confirmed inbox arrival and SPF/DKIM/DMARC PASS. The temporary key was revoked. GitHub's ownership TXT is present. The public site still uses the parking addresses until the approved cutover; the historical table above describes the earlier baseline.
+
 ## What changes with the domain
 
 One value, `APP_URL`, decides all of this: the origin the API trusts (CORS and the origin check on every write), the base URL of the account service, and the origin in verification and recovery links. It is `https://modwerk.app/` in `wrangler.worker.jsonc` on this branch. `AUTH_BASE_URL` separately pins the community OAuth backend to `https://octamod-community.octamod.workers.dev/api/auth`; provider callbacks use that backend, while account verification/recovery links use `APP_URL`. Only the sender and the Resend key are separate secrets. `index.html` carries the origin for link previews, and every module page derives its canonical URL and preview image from it.

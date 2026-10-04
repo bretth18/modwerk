@@ -19,7 +19,7 @@ function AccountContent({route}:{route:string}) {
   const {session,refresh}=useCommunity(), [busy,setBusy]=useState(false), [error,setError]=useState(route.startsWith('account/sso-error')?'Social sign-in was not completed. Use your original sign-in method, or create an account if you are new.':''), [message,setMessage]=useState(''), [devices,setDevices]=useState<DeviceSession[]>([])
   const [path,query='']=route.split('?'),params=new URLSearchParams(query),next=safeNext(params.get('next')),formRef=useRef<HTMLFormElement>(null)
   const [,action='login',linkToken='']=path.split('/'), mode=['login','register','resend','forgot','verify','reset'].includes(action)?action:'login'
-  const linkAction=mode==='verify'||mode==='reset'||params.get('reauth')==='1',member=!!session.user?.verified&&!linkAction
+  const linkAction=['verify','reset','forgot','resend'].includes(mode)||params.get('reauth')==='1',member=!!session.user?.verified&&!linkAction
   const emailAvailable=session.emailAvailable??session.registrationAvailable
   const [lastLink,setLastLink]=useState(linkToken)
   // A fresh emailed link starts a fresh form; stripping a consumed token keeps

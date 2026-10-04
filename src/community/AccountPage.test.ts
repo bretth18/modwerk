@@ -8,6 +8,14 @@ import { DeveloperPage } from './DeveloperPage'
 const session:Session={available:true,emailAvailable:true,registrationAvailable:true,admin:false,user:{id:'member',displayName:'Member',username:'member',verified:true}}
 function render(route:string,developer:DeveloperSession|null=null){return renderToStaticMarkup(createElement(CommunityContext.Provider,{value:{session,developer,catalog:[],refresh:async()=>{},refreshDeveloper:async()=>{}}},createElement(AccountPage,{route})))}
 describe('email action links in a signed-in browser',()=>{
+ it.each([['forgot','Forgot your password?'],['resend','Verify your email']])('shows the %s request form while signed in', (mode,title)=>{
+  const html=render('account/'+mode)
+  expect(html).toContain(title)
+  expect(html).toContain('Email address')
+  expect(html).toContain('Send email')
+  expect(html).not.toContain('Edit your profile')
+  expect(html).not.toContain('Active sessions')
+ })
  it('shows the recovery form so a member can use an emailed link without signing out',()=>{
   const html=render('account/reset/synthetic-private-token')
   expect(html).toContain('Choose a new password')

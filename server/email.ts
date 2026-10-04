@@ -2,9 +2,8 @@ import type { Env, Database } from './platform'
 import { digest, HttpError } from './security'
 import { throttle } from './auth'
 import { SUPPORT_EMAIL } from '../src/support'
+import { renderAccountEmail } from './account-email-template'
 export class AccountMailError extends HttpError {}
-// The product name in account mail. The sending address comes from the EMAIL_FROM secret.
-const BRAND = 'Modwerk'
 
 export function emailReady(env: Env) { return !!env.RESEND_API_KEY && !!env.EMAIL_FROM && !/[\r\n]/.test(env.EMAIL_FROM) }
 export async function sendAccountEmail(env: Env, db: Database, to: string, purpose: 'verify' | 'reset', value: string) {
@@ -20,12 +19,11 @@ export async function sendAccountEmail(env: Env, db: Database, to: string, purpo
   }catch(error){if(error instanceof HttpError&&error.status===429){await record('limited');throw new AccountMailError(429,'Account email is temporarily limited.')}throw error}
   const url = new URL(env.APP_URL!)
   url.hash = 'account/' + purpose + '/' + value
-  const action = purpose === 'verify' ? 'Verify your email address' : 'Reset your password'
-  const text = `${action} for ${BRAND}\n\n${url.href}\n\nThis link expires in ${purpose === 'verify' ? '24 hours' : '30 minutes'} and works once. ${purpose === 'verify' ? 'You will need the password you chose when registering. ' : ''}If you did not request this, ignore this message.\n\n${BRAND} will never ask you to send firmware.`
+  const message = renderAccountEmail(purpose, url.href)
   const result = await fetch('https://api.resend.com/emails', {
     method: 'POST', signal: AbortSignal.timeout(10000),
     headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json', 'Idempotency-Key': purpose + '-' + await digest(value) },
-    body: JSON.stringify({ from: env.EMAIL_FROM, to: [to], reply_to: SUPPORT_EMAIL, subject: action + ' · ' + BRAND, text }),
+    body: JSON.stringify({ from: env.EMAIL_FROM, to: [to], reply_to: SUPPORT_EMAIL, ...message }),
   }).catch(() => null)
   // Never expose provider bodies, recipient addresses, API credentials or links in logs/errors.
   await record(result?.ok?'accepted':'failed')

@@ -47,7 +47,7 @@ describe('account-mail failures and quotas',()=>{
   expect(counters.map((row:{accepted:number})=>row.accepted)).toEqual([1,1])
  })
  it('sends from the configured Modwerk identity and trusts only the configured site',async()=>{
-  const {call,env}=await fixture(),messages:{from:string;to:string[];reply_to:string;subject:string;text:string}[]=[]
+  const {call,env}=await fixture(),messages:{from:string;to:string[];reply_to:string;subject:string;text:string;html:string}[]=[]
   env.APP_URL='https://modwerk.app/'
   vi.stubGlobal('fetch',vi.fn(async(_url:string,options:RequestInit)=>{messages.push(JSON.parse(String(options.body)));return Response.json({id:'accepted'})}))
   const body={username:'newcomer',email:'newcomer@example.test',password,rulesVersion:COMMUNITY_RULES_VERSION}
@@ -60,6 +60,9 @@ describe('account-mail failures and quotas',()=>{
   expect(message.text).toMatch(/^Verify your email address for Modwerk\n\nhttps:\/\/modwerk\.app\/#account\/verify\/[^\s]+\n/)
   expect(message.text).toContain('Modwerk will never ask you to send firmware.')
   expect(message.text).not.toMatch(/octamod/i)
+  const actionLink=message.text.match(/https:\/\/modwerk\.app\/[^\s]+/)![0]
+  expect(message.html).toContain('href="'+actionLink+'"')
+  expect(message.html).not.toContain('newcomer@example.test')
  })
  it('contains network failures and missing mail configuration',async()=>{
   const {call,env,db}=await fixture()

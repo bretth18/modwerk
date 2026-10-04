@@ -52,3 +52,8 @@ The German/English notices, operator disclosure, optional-count consent, account
 5. Open registration through the reviewed production configuration only after approval and the controlled journey passes. Review operator counters/provider metrics and the moderation queue during the initial launch period.
 
 Do not restore the database merely to roll back frontend/Worker code. Schema additions preserve earlier data and remain while a reviewed compatible Worker/frontend is selected. Any destructive Time Travel restore or private-data removal needs its own exact scope and authorization. Never copy fictional preview data or firmware into production.
+
+
+## Release preparation follow-up — 4 October 2026
+
+The new Modwerk sender delivered one branded verification and one recovery email to the approved inbox, with owner-confirmed SPF/DKIM/DMARC PASS and a complete isolated verification/login/reset/replay/revocation journey. The temporary sending key was revoked. An explicitly approved temporary Cloudflare Worker completed two synthetic password hash/verify checks, recording 164/241 ms CPU. The owner purchased Workers Paid and its current-plan status was verified; the temporary Worker was deleted. An encrypted production backup restored locally with all 23 tables and row values matching, integrity `ok` and no foreign-key violations. These checks supersede the earlier mail/capacity/backup setup blockers in the historical table; production migration and frontend/API/domain cutover still require their actual rollout checks.
