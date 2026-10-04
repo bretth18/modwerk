@@ -1,4 +1,4 @@
-import { ReportSharing } from './ReportSharing'
+import { BugReportNotice, BugReportSuccess, type BugReportResult } from './BugReportNotice'
 import { useEffect, useId, useRef, useState } from 'react'
 import { post } from './api'
 import { useCommunity } from './context'
@@ -7,9 +7,7 @@ import { FLASH_STATES, LOG_MISSING_REASONS, OT_MODELS } from './issue-context'
 import type { FlashState, IssueContext, LogMissingReason, OtModel } from './issue-context'
 import { describeOtLog, OT_LOG_MAX_BYTES, OT_LOG_NAME, OtLogError, parseOtLog } from './ot-log'
 import type { OtLog } from './ot-log'
-import { moduleIssuesUrl, REPORT_OS, useWorkspaceReportContext } from './report-context'
-
-type Sent = { githubUrl: string | null; author: string }
+import { REPORT_OS, useWorkspaceReportContext } from './report-context'
 
 export function IssueReport({id,author,openRequest=0}:{id:string;author:string;openRequest?:number}){
  const {session}=useCommunity()
@@ -27,8 +25,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
  const [log,setLog]=useState<OtLog|null>(null),[logError,setLogError]=useState('')
  const [reading,setReading]=useState(false),[logName,setLogName]=useState(''),[logNote,setLogNote]=useState('')
  const [noLog,setNoLog]=useState(false),[reason,setReason]=useState<LogMissingReason|''>(''),[note,setNote]=useState('')
- const [sent,setSent]=useState<Sent|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('')
- const [sharing,setSharing]=useState(false)
+ const [sent,setSent]=useState<BugReportResult|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('')
  useEffect(()=>{if(sent){success.current?.focus();report.current?.scrollIntoView({block:'start'})}},[sent])
  const inConfiguration=workspace.modules.some(item=>item.id===id)||id.startsWith('remix-')
  const reasonOptions=(Object.keys(LOG_MISSING_REASONS) as LogMissingReason[]).filter(item=>!(item==='not-flashed'&&flash==='flashed'))
@@ -68,7 +65,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   const fields=Object.fromEntries(new FormData(form)) as Record<string,string>
   const context:IssueContext={model,flash,os:REPORT_OS,modules:workspace.modules,keepStockFx2:workspace.keepStockFx2,build:workspace.build}
   try{
-   const result=await post<Sent>('/modules/'+id+'/issues',{title:fields.title,steps:fields.steps,expected:fields.expected,actual:fields.actual,context,maintainerSharing:sharing,...(log?{log:log.text}:{logMissing:{reason,note}})})
+   const result=await post<BugReportResult>('/modules/'+id+'/issues',{title:fields.title,steps:fields.steps,expected:fields.expected,actual:fields.actual,context,visibility:'forum',...(log?{log:log.text}:{logMissing:{reason,note}})})
    setSent(result)
   }catch(error){setError(error instanceof Error?error.message:'Unable to send issue.')}
   finally{setBusy(false)}
@@ -76,12 +73,11 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
 
  return <details ref={report} className="issue-report"><summary>Report an issue <span>For @{author}</span></summary>
   {sent?<div ref={success} className="issue-report-success" role="status" tabIndex={-1}>
-   <strong>Your private report is saved</strong>
-   <p>It is visible to you and the administrator{sharing?' and the module’s verified maintainers':''}. Follow replies from Your account.</p>
-   <p>Track it under <a href="#account">Your account</a>.</p>
+   <BugReportSuccess report={sent}/>
   </div>:!session.user?.verified?<MemberPrompt/>:
   <form className="community-form" aria-busy={busy} onSubmit={event=>{event.preventDefault();void send(event.currentTarget)}}>
-   <p className="service-note">Tell <a href={'https://github.com/'+author} target="_blank" rel="noreferrer">@{author}</a> what happened. This report stays private to your account and the administrator. Choose below whether verified module maintainers may also help. For public discussion, start a bug-report thread in the forum. <a href={moduleIssuesUrl(id)} target="_blank" rel="noreferrer">Check existing issues ↗</a></p>
+   <BugReportNotice/>
+   <a href={'#forum?category=issues&module='+encodeURIComponent(id)}>Check existing bug reports →</a>
    <fieldset><legend>1. Describe the problem</legend>
    <label>Issue title<input ref={title} name="title" required maxLength={160} placeholder="What went wrong, in one line"/></label>
    <div className="issue-report-row">
@@ -106,7 +102,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
       <li>If the Octatrack still responds, stop playback and recording. Wait at least 30 seconds after the last save, then save the project from the <kbd>PROJECT</kbd> menu. Wait for saving to finish.</li>
       <li>Connect it by USB and open <kbd>PROJECT</kbd> › SYSTEM › USB DISK MODE. Alternatively, switch it off before removing the CF card and use a card reader.</li>
       <li>Open the card in Finder (Mac) or File Explorer (Windows). Look in the <strong>top folder of the card</strong>, beside your set folders, for <strong>OCTAMOD.LOG</strong> and <strong>OCTAMOD1.LOG</strong>.</li>
-      <li>Choose one or both files below. We check them on your device and select the complete log with the newest file date. Nothing is uploaded until you press “Send private report”.</li>
+      <li>Choose one or both files below. We check them on your device and select the complete log with the newest file date. Nothing is uploaded until you press “Post bug report”.</li>
       <li>Eject the card on your computer before leaving USB disk mode or removing the card.</li>
      </ol>
      <p className="service-note"><strong>After a freeze or crash:</strong> copy the logs already on the card as soon as possible. The latest events may be missing. Restarting cannot guarantee their recovery; describe the last action and screen in your report. You can report without a log if neither file is readable.</p>
@@ -126,9 +122,8 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
      <label>Details{reason==='other'?'':' (optional)'}<input value={note} onChange={event=>setNote(event.target.value)} maxLength={500} required={reason==='other'} minLength={reason==='other'?10:undefined} placeholder="For example: blank screen after the Elektron logo"/></label></>}
    </fieldset>
 
-   <p className="service-note">Your report, configuration and attached log stay private. Leave out firmware, samples and sensitive information.</p>
-   <ReportSharing checked={sharing} onChange={setSharing} disabled={busy}/>
-   <button className="button button-primary" disabled={busy||reading}>{busy?'Sending…':'Send private report'}</button>
+   <p className="service-note">The bug description will be public. Your configuration and log stay private to the people helping with your report.</p>
+   <button className="button button-primary" disabled={busy||reading}>{busy?'Posting…':'Post bug report'}</button>
   </form>}
   {error&&<p className="file-error" role="alert">{error}</p>}</details>
 }

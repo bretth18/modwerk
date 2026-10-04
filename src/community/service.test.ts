@@ -34,6 +34,7 @@ async function fixture(){
  db.exec(readFileSync(new URL('../../migrations/0013_issue_privacy.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0015_forum_machines.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0016_module_maintainers.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0020_issue_forum_threads.sql',import.meta.url),'utf8'))
  const env:Env={DB:adapter(db),APP_URL:'https://octamod.test',ADMIN_KEY_SHA256:await digest(adminKey)}
  const objects=new Map<string,ArrayBuffer>()
  env.MEDIA={async put(key,bytes){objects.set(key,bytes)},async get(key){const bytes=objects.get(key);return bytes?{body:new ReadableStream({start(controller){controller.enqueue(new Uint8Array(bytes));controller.close()}})}:null},async delete(key){objects.delete(key)}}
