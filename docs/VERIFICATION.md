@@ -489,3 +489,22 @@ The full build hashes are `8c858cb5dcb352e316072138d6f906e8975697dfb21a965244712
 **These probes do not establish stock equivalence.** digiemu's passing build verdict is separate from its comparison result: all four complete comparisons report differences. A repeated DN 1.43 run reproduced its audio mismatch. Local PCM/event-time inspection found slightly different delivered input times (up to one 0.667 ms audio block), but shifting selected audio windows did not make them byte-identical. The audio difference remains unresolved; it is not dismissed as a harmless phase offset. Both Digitone stock baselines fail on the previously recorded unconfigured FlexBus read at `0x0000012a`; the UI probes also report that inherited violation, marked `in_stock: true` and excluded by digiemu from their build verdict. No cycle timing or hardware evidence was collected.
 
 The boot-only probe evidence above remains separate. SETTINGS/render/timer facilities, Digitakt machine integration and Digitone voice/hold/parameter/page/project/menu facilities are still pending. UI ABI tests and matching named screen captures cannot qualify a complete core, imported modules or public firmware downloads. Ordinary Node 24 `npm run check` passes all 464 domain tests, lint, type checking and the production build; it does not run any of these emulator/CPU checks.
+
+## Original SETTINGS/render adapters — paused checkpoint, 4 October 2026
+
+Original `event-hooks.s` and `settings-api.c` add SETTINGS dispatch, render entry/exit dispatch and `core_additem`. The render adapters preserve all four EMAC accumulators, extensions, mask and arithmetic mode; render-out runs before stock EMAC restoration. State access follows NXP's [MCF54418 reference manual](https://www.nxp.com/docs/en/reference-manual/MCF54418RM.pdf), section 5.3.1.2. No reference core assembly was read or copied. Source-only artifacts declare `stage: event-hook-probe` and `providesInterface: false`; three inline resumes contain zero placeholders filled only from verified local stock. Four stock menu helper bindings carry address, length and SHA-256 guards.
+
+An isolated source build from runtime commit `0ca62324e823cd810279f7992a90ddbd0aa52ab5` compiles all eight module recipes and all twelve development probes, with the original host dispatcher/SETTINGS tests passing. `verify-elemod-events-cpu.mjs` executes the compiled common adapters and SETTINGS helper against independent synthetic instructions and helper substitutes: **276 cases pass** across all four profiles. They cover ordered dispatch, arguments, inline instruction effects, register/status/stack preservation, EMAC preservation across four arithmetic modes, callback record layout and construction order, allocation failure and null inputs. These synthetic cases do not prove the actual stock helpers or imported module behaviour.
+
+All four owner firmware files materialize and link the common-event probes, then pass complete packed-container checks. The local report is `event-hook-probes.json`; generated build hashes are:
+
+| Profile | Build SHA-256 |
+| --- | --- |
+| Digitakt 1.53 | `4ce9edb075f2092e246e5fe48b9750cc3a8b07de1596aaace26d7e519d3b6181` |
+| Digitakt 1.54 | `8e442663d1579acac591989a4a6f199f72fbe735738c6b7e144e6d1ed8bf9594` |
+| Digitone 1.43 | `a1f01bc4f5ed7e3da33dc3165f681beff65e959f0775e71097d590d8e494fb91` |
+| Digitone 1.44 | `c3c99f5a0249e71c77e7e7f49aa4f497d1bbc7f37e46ab9a4d58691414172aeb` |
+
+The owner requested a handoff while Digitakt 1.53 and Digitone 1.43 digiemu checks were still running. Both were stopped; their partial folders/logs provide **no completed emulator verdict**. Digitakt 1.54 and Digitone 1.44 emulator checks have not started. Repeat fresh local checks for all four profiles, then exercise the real SETTINGS helpers with an attached module. No imported module has yet been attached to these common-event probes. No reproducibility comparison has yet been completed for this stage; the final committed source must be compiled twice before its PR is ready.
+
+Node 24 `npm run check` passes **469 tests**, lint, type checking and the production build at this checkpoint. Timer setup, Digitakt SRC machines, Digitone extended facilities, unresolved UI audio differences and real module evidence remain outstanding. Downloads remain disabled; nothing has been merged or deployed.
