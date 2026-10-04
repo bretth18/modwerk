@@ -23,3 +23,5 @@ Format compatibility follows [elekloader's format documentation](https://github.
 ## Verification limits
 
 Repeatable source compilation and a valid recipe do not establish native byte parity, correct module behaviour or hardware qualification. Compare each materialized object with its author's pinned release, then verify Modwerk's own cores and each module in the emulator. Retain honest comparison results in `docs/VERIFICATION.md`; keep firmware and local images outside the repository. No firmware, DSP or emulator checks run as part of ordinary `npm run check` or visitor builds.
+
+For a local release comparison, run `node scripts/verify-elemod-source-parity.mjs --packages RECIPES --oracle AUTHOR_OBJECTS --out LOCAL_REPORTS --firmware digitakt:STOCK.syx` (repeat `--firmware` for each release). It verifies package hashes and source commit identities before linking. Missing stock/reference inputs and differing images are reported as unverified/different and produce a nonzero exit; the report contains hashes and section lengths only.

@@ -70,7 +70,7 @@ npm run module:new -- my-filter --kind dsp --author your-github-login        # O
 
 Categories are shared by every machine, so the library keeps one shape: Effects, Playback, Machines, Scenes, MIDI & USB, System and **Standalone firmware**. Standalone firmware replaces the whole OS image: it is `exclusive`, links with no core and is always used on its own.
 
-The elemod build spec (`build.json`) is what Modwerk's toolchain compiles and links:
+The elemod build spec (`build.json`) is what Modwerk's toolchain compiles and links ([source-only compilation](ELEMOD_SOURCE_BUILDS.md)):
 
 - the C or assembly sources under `src/`, defines and flags;
 - each subscribed core event with its handler and order;
