@@ -1,7 +1,7 @@
 # Social sharing preview
 
 The static page metadata in `index.html` references `public/social-preview.jpg` at
-`https://octamod.app/social-preview.jpg`. The production build copies this image
+`https://modwerk.app/social-preview.jpg`. The production build copies this image
 to `dist/social-preview.jpg`. Open Graph and Twitter cards can read the metadata
 without running the app.
 
@@ -17,7 +17,7 @@ services can fetch the new asset.
 
 ## Module links
 
-Share module URLs such as `https://octamod.app/module/analog-bassdrum/`. Each
+Share module URLs such as `https://modwerk.app/module/analog-bassdrum/`. Each
 production build generates `dist/module/<id>/index.html` with the module's name,
 description, canonical URL, and Open Graph/Twitter image metadata. These are
 ordinary static pages served by GitHub Pages and the Cloudflare Pages fallback;

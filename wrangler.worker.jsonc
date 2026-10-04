@@ -5,7 +5,7 @@
   "triggers": { "crons": ["17 * * * *"] },
   // Production values. Local development overrides vars through the ignored .dev.vars file.
   "vars": {
-    "APP_URL": "https://octamod.app/",
+    "APP_URL": "https://modwerk.app/",
     "REGISTRATION_OPEN": "false",
     "SESSION_TRANSPORT": "bearer"
   },

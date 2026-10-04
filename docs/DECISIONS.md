@@ -100,3 +100,11 @@ The owner froze Modwerk's own Digitakt/Digitone builder and chose elekloader's b
 - **Own builder later.** The original core and TypeScript engine stay frozen at their recorded state ([verification record](VERIFICATION.md)). Work resumes later with the same target: a builder that matches elekloader's online builder.
 - **Downloads** of Digitakt/Digitone files need the owner's separate approval. Checking and building already run locally.
 - **Licences.** elekloader, the cores and DIGISLICER, NEIGHBOR and digihealth are GPL-2.0-or-later; SOPHIE is MIT; Pyodide is MPL-2.0 with CPython under the PSF licence. Their notices ship with the site. Modwerk stays GPL-3.0-or-later.
+
+## Domain and mail: modwerk.app — 4 October 2026
+
+The owner bought modwerk.app on 4 October 2026. It stays registered, with its DNS, at Hetzner, like octamod.app; the earlier decision about mail stands: Resend sends verification and recovery messages only, with its key and sender as Worker secrets and its DNS records at the registrar.
+
+The community API keeps trusting exactly one origin, set by `APP_URL`; the launch moves it from octamod.app to modwerk.app with the Worker, the sender and the Pages custom domain in one ordered cutover. octamod.app is not retired: it becomes a plain redirect to the same path on modwerk.app, so shared links and mail links already sent keep working. Browser storage is per site, so saved configurations are not carried over; the move is announced first so people can export them.
+
+Whether the public support contact becomes a `support@modwerk.app` forwarder is left to the owner; the Gmail contact chosen on 3 October stays until a forwarder is proven. Nothing in the repository edits DNS or a provider account. The order, records and checks are in [DOMAIN_AND_MAIL.md](DOMAIN_AND_MAIL.md); `npm run domain:check` reads public DNS and pages to report progress.
