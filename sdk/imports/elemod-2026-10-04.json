@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 1,
+  "recorded": "2026-10-04",
+  "decision": "Owner decision of 4 October 2026: import the existing Digitakt/Digitone mods as Modwerk module folders under their licences, with attribution.",
+  "modules": [
+    {
+      "module": "digitakt/digislicer",
+      "version": "2.1.0-experimental",
+      "repository": "https://github.com/irpina/digislicer",
+      "tag": "v2.1",
+      "revision": "ac0c46d8607205352adcd0f49fb09a4736edda17",
+      "license": "GPL-2.0-or-later",
+      "files": [
+        {
+          "from": "glue.s",
+          "to": "src/glue.s",
+          "sha256": "b051235c63d7a5b1beeb3c22ec922157baa8bd4a713ade74e7de4a696e3ebb6b"
+        },
+        {
+          "from": "slice.c",
+          "to": "src/slice.c",
+          "sha256": "bdc2bfd6a2b53ad0199fd9586001b3c3817f6688a6cae16c07f2c48071b6fa5c"
+        },
+        {
+          "from": "kbd.c",
+          "to": "src/kbd.c",
+          "sha256": "2527f5966c68487f772a01ea39bc0e8de9d2816567afaee0dabca326981b0876"
+        },
+        {
+          "from": "os153.h",
+          "to": "src/os153.h",
+          "sha256": "e4e1ac863a85ecd12ace73ca49ee33409dc1ec8e093d7ddd62d2791002a2caf5"
+        },
+        {
+          "from": "os153.inc",
+          "to": "src/os153.inc",
+          "sha256": "2d218cf8f9f05868815a0762c85e97389ad0acb0e63ae1f81eb53938ec65cdf8"
+        },
+        {
+          "from": "os154.h",
+          "to": "src/os154.h",
+          "sha256": "568112d82ecba3946b686d468b593f4611404483ede9acfb68031446bc643a41"
+        },
+        {
+          "from": "os154.inc",
+          "to": "src/os154.inc",
+          "sha256": "817da6fb3e08e3495d9b8a7ad6d676283eae49861e432c3187fc688136d7168e"
+        },
+        {
+          "from": "LICENSE",
+          "to": "LICENSE",
+          "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+        },
+        {
+          "from": "README.md",
+          "to": "upstream/README.md",
+          "sha256": "3fc68012d97510adc6f3c5a701aac36a38873122bb4c4b15ae56dec63580c854"
+        }
+      ],
+      "excluded": [
+        ".gitignore",
+        "mod.json"
+      ],
+      "transformations": [
+        "Each stock byte run in the upstream build manifest became an address, length and SHA-256 guard in build.json."
+      ]
+    },
+    {
+      "module": "digitakt/digineighbor",
+      "version": "0.6.0-experimental",
+      "repository": "https://github.com/irpina/digineighbor",
+      "tag": "v0.6",
+      "revision": "d09574ab5fac8c079849e74c5c3efe129de54126",
+      "license": "GPL-2.0-or-later",
+      "files": [
+        {
+          "from": "glue.s",
+          "to": "src/glue.s",
+          "sha256": "932118c8f2d8292a67a95299f249f1ca07e3ca7b74beab65f048b7a50010bfdd"
+        },
+        {
+          "from": "neighbor.c",
+          "to": "src/neighbor.c",
+          "sha256": "cd5e02fc0a303372dfdd89ada323140335314a4e6856faf9c4bc0917a9b5ae46"
+        },
+        {
+          "from": "os153.h",
+          "to": "src/os153.h",
+          "sha256": "a57c7ce56e90bf047710c817196cbc1c22d35c81e85493830b03f0f15cde0f6b"
+        },
+        {
+          "from": "os153.inc",
+          "to": "src/os153.inc",
+          "sha256": "89b235c68050a3a0d10691786a84a2a9ff0d9189b817ef8d41049264572f418f"
+        },
+        {
+          "from": "os154.h",
+          "to": "src/os154.h",
+          "sha256": "cb34abc5ccbe65ed55979d350e9bbe07f1a423c0aa0b6ffa58209ba4dcb85f8e"
+        },
+        {
+          "from": "os154.inc",
+          "to": "src/os154.inc",
+          "sha256": "ae18db7126dd6038f8dc183c210a4174c57ef2ca11256a0667fbc5cad4c475f6"
+        },
+        {
+          "from": "LICENSE",
+          "to": "LICENSE",
+          "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+        },
+        {
+          "from": "README.md",
+          "to": "upstream/README.md",
+          "sha256": "5a4db09f49a710eb205216c8cf46238555f140d685d72594ef7868806488eab8"
+        }
+      ],
+      "excluded": [
+        ".gitignore",
+        "mod.json"
+      ],
+      "transformations": [
+        "Each stock byte run in the upstream build manifest became an address, length and SHA-256 guard in build.json."
+      ]
+    },
+    {
+      "module": "digitakt/digisophie",
+      "version": "1.1.13-experimental",
+      "repository": "https://github.com/soejrd/digisophie",
+      "tag": "v1.1.13",
+      "revision": "961c39cec699e8f8940391634aaba9fad7120792",
+      "license": "MIT",
+      "files": [
+        {
+          "from": "glue.s",
+          "to": "src/glue.s",
+          "sha256": "1b5e64c950469a5e4a299befe3435789f1b854774ab30323cd1f7477c597f558"
+        },
+        {
+          "from": "digitakt.c",
+          "to": "src/digitakt.c",
+          "sha256": "f7e7bc077e8e8814982ac69cbb9f2b8536ad00aa2ca7c17ce93d88884cf592c1"
+        },
+        {
+          "from": "sophie.c",
+          "to": "src/sophie.c",
+          "sha256": "c0ad0111f4f427cf49bfdbf11f05c0712baacb6bed6ce59d88b43b5760ffd3cd"
+        },
+        {
+          "from": "sophie.h",
+          "to": "src/sophie.h",
+          "sha256": "8d1ead56862ae1830da4ce6e5ac470f9d754bc54d2572bfb93e476284cf9423b"
+        },
+        {
+          "from": "sophie_sin_table.inc",
+          "to": "src/sophie_sin_table.inc",
+          "sha256": "76eaf1116bdca14a78ee073252903679776305e7e94a8456a56ca171716fd60a"
+        },
+        {
+          "from": "THIRD_PARTY.md",
+          "to": "upstream/THIRD_PARTY.md",
+          "sha256": "70026b0ed5919154e5b623304dd8496729d9ff6dd841f43754c54ff631d800a9"
+        },
+        {
+          "from": "DSP.md",
+          "to": "upstream/DSP.md",
+          "sha256": "ae5068c9096e52b620492fe539543051a88773f31f863c2a142822aff8aa12f4"
+        },
+        {
+          "from": "LICENSE",
+          "to": "LICENSE",
+          "sha256": "79549b46606e11237732cb7c5c5827f263df63f6d00d5275616160af11cf2b4b"
+        },
+        {
+          "from": "README.md",
+          "to": "upstream/README.md",
+          "sha256": "6b0ad2851361dc8777e8e75c11bd26d8978bf3b80d8f7ac166151d3e3050ea20"
+        }
+      ],
+      "excluded": [
+        ".gitignore",
+        "Makefile",
+        "diagnostics/README.md",
+        "diagnostics/digihealth/LICENSE",
+        "diagnostics/digihealth/README.md",
+        "diagnostics/digihealth/build.py",
+        "diagnostics/digihealth/fastaudio.s",
+        "diagnostics/digihealth/mod.json",
+        "diagnostics/digihealth/os153.inc",
+        "diagnostics/digihealth/sysinfo.s",
+        "mod.json",
+        "release/digihealth-1.0.1.elemod",
+        "release/digisophie-0.1.7.elemod",
+        "release/digisophie-1.1.13.elemod",
+        "scripts/build.sh",
+        "tests/amp_phase_probe.py",
+        "tests/diagnostic_ui_probe.py",
+        "tests/real_trig_timing_probe.py",
+        "tests/test_sophie.c",
+        "tests/timing_probe.py",
+        "tests/ui-select.script",
+        "tests/waveform_probe.c",
+        "tools-elekloader-mod.ld"
+      ],
+      "transformations": [
+        "Each stock byte run in the upstream build manifest became an address, length and SHA-256 guard in build.json."
+      ]
+    },
+    {
+      "module": "digitakt/digihealth",
+      "version": "1.0.0-experimental",
+      "repository": "https://github.com/irpina/digihealth",
+      "tag": "v1.1",
+      "revision": "6d2a95605901f4f5ea6301dbad16e573380331a6",
+      "license": "GPL-2.0-or-later",
+      "files": [
+        {
+          "from": "fastaudio.s",
+          "to": "src/fastaudio.s",
+          "sha256": "5859e5de9bd8d8b6e5275f3d67ddba1dc890dd24c38ce38407b5492c9aeef492"
+        },
+        {
+          "from": "sysinfo.s",
+          "to": "src/sysinfo.s",
+          "sha256": "5f5515d6234eab2f83ec0352425dd82432d2ad057a20815fa3b97614e31c0843"
+        },
+        {
+          "from": "os153.inc",
+          "to": "src/os153.inc",
+          "sha256": "04be4ff0e6c96b1d1e4fe653659ec1c28cdb9bb7c2600991b04265d380e4b831"
+        },
+        {
+          "from": "os154.inc",
+          "to": "src/os154.inc",
+          "sha256": "96df660481d2fa8944648140d268a9ca109eb87be2820573a727d8996cb7512c"
+        },
+        {
+          "from": "LICENSE",
+          "to": "LICENSE",
+          "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+        },
+        {
+          "from": "README.md",
+          "to": "upstream/README.md",
+          "sha256": "98598cadf2c797ad16ee43adb81e1a7733a29f38961d1f418d4c4618ca6e3cad"
+        }
+      ],
+      "excluded": [
+        ".gitignore",
+        "build.py",
+        "dn1/dn143.inc",
+        "dn1/mod.json",
+        "mod.json",
+        "tools/digiusb.py",
+        "tools/winmidi.py"
+      ],
+      "transformations": [
+        "Each stock byte run in the upstream build manifest became an address, length and SHA-256 guard in build.json.",
+        "FAST AUDIO call sites (opcode and target) became address, length and SHA-256 guards; build.py, which reads the stock file, is not imported."
+      ]
+    },
+    {
+      "module": "digitone/digihealth",
+      "version": "1.1.0-experimental",
+      "repository": "https://github.com/irpina/digihealth",
+      "tag": "v1.1",
+      "revision": "6d2a95605901f4f5ea6301dbad16e573380331a6",
+      "license": "GPL-2.0-or-later",
+      "files": [
+        {
+          "from": "sysinfo.s",
+          "to": "src/sysinfo.s",
+          "sha256": "5f5515d6234eab2f83ec0352425dd82432d2ad057a20815fa3b97614e31c0843"
+        },
+        {
+          "from": "dn1/dn143.inc",
+          "to": "src/dn143.inc",
+          "sha256": "dff8109e9e0c9531a370cb827d36667a279f84420a4b0489b5ee11358881c1ec"
+        },
+        {
+          "from": "LICENSE",
+          "to": "LICENSE",
+          "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+        },
+        {
+          "from": "README.md",
+          "to": "upstream/README.md",
+          "sha256": "98598cadf2c797ad16ee43adb81e1a7733a29f38961d1f418d4c4618ca6e3cad"
+        }
+      ],
+      "excluded": [
+        ".gitignore",
+        "build.py",
+        "dn1/mod.json",
+        "fastaudio.s",
+        "mod.json",
+        "os153.inc",
+        "os154.inc",
+        "tools/digiusb.py",
+        "tools/winmidi.py"
+      ],
+      "transformations": [
+        "Each stock byte run in the upstream build manifest became an address, length and SHA-256 guard in build.json."
+      ]
+    }
+  ]
+}
