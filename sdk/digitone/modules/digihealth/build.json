@@ -1,5 +1,6 @@
 {
   "schemaVersion": 1,
+  "strings": { "str_name": "digihealth 1.1" },
   "sources": [
     "src/sysinfo.s"
   ],

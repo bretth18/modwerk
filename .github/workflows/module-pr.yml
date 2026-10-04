@@ -1,7 +1,7 @@
 name: Module PR checks
 on:
   pull_request:
-    branches: [main]
+    branches: [main, 'modwerk/**', 'codex/modwerk-*']
 permissions:
   contents: read
 concurrency:
@@ -61,3 +61,26 @@ jobs:
           persist-credentials: false
       - name: Check bounded logger ring, controller and card adapter without firmware
         run: sh sdk/runtime/logging/tests/run_host.sh
+  elemod-source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Prepare the pinned source compiler
+        run: docker build --file sdk/build/Dockerfile --tag modwerk-source-tools .
+      - name: Compile twice without network, credentials or firmware
+        run: |
+          image=$(docker image inspect modwerk-source-tools --format '{{.Id}}')
+          bash scripts/build-elemod-isolated.sh "$GITHUB_WORKSPACE" "$RUNNER_TEMP/elemod-first" "$image"
+          bash scripts/build-elemod-isolated.sh "$GITHUB_WORKSPACE" "$RUNNER_TEMP/elemod-second" "$image"
+          diff --recursive "$RUNNER_TEMP/elemod-first" "$RUNNER_TEMP/elemod-second"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: elemod-source-${{ github.event.pull_request.head.sha }}
+          path: ${{ runner.temp }}/elemod-first
+          retention-days: 14
+          if-no-files-found: error

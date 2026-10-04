@@ -71,7 +71,7 @@ for(const machine of machineProfiles.filter(profile=>profile.sdk?.platform==='el
   for(const path of await walk(folder))if(/\.(bin|syx|elemod|exe|dll|so|dylib|zip|img|hex)$/i.test(path))throw new Error('Prohibited firmware/binary file: '+label+'/'+path)
   if(published.some(item=>item.id===document.id)){try{requireModwerkPublication(document)}catch(error){throw new Error(label+': '+error.message,{cause:error})}}
   // Only addresses and lengths are needed by the planner; never include stock bytes.
-  const patchSites=Object.fromEntries(Object.entries(build.releases).map(([release,value])=>[release,[...value.sites,...(build.derive?.release===release?build.derive.callSites:[])].map(({addr,len})=>({addr,len}))]))
+  const patchSites=Object.fromEntries(Object.entries(build.releases).map(([release,value])=>[release,[...value.sites,...(build.derive?.releases.includes(release)?build.derive.callSites:[])].map(({addr,len})=>({addr,len}))]))
   machineDocuments.push({...document,patchSites});machineModules++
  }
 }

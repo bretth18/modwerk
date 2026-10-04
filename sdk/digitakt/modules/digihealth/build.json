@@ -1,5 +1,6 @@
 {
   "schemaVersion": 1,
+  "strings": { "str_name": "digihealth 1.0" },
   "sources": [
     "src/fastaudio.s",
     "src/sysinfo.s"
@@ -73,6 +74,7 @@
     "kind": "fast_audio",
     "note": "The render block is copied to SRAM at boot; its call-site stubs are planned from the owner’s stock OS file during the local build, never in CI.",
     "release": "1.53",
+    "releases": ["1.53", "1.54"],
     "block": [
       "0x400716c0",
       "0x4007629a"

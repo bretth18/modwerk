@@ -233,13 +233,14 @@ export const ELEMOD_SITE_OPS = ['jmp', 'jsr', 'keep2', 'ptr'] as const
 export type ElemodSite = { addr: string; len: number; stockSha256: string; op: typeof ELEMOD_SITE_OPS[number]; target: string }
 export type ElemodRelease = { defsym: Record<string, string>; cflags: string[]; sites: ElemodSite[] }
 export type ElemodBuildSpec = {
+  strings: Record<string, string>
   schemaVersion: 1; sources: string[]; defsym: Record<string, string>; cflags: string[]; weak: string[]
   subscribe: { event: string; fn: string; order: number }[]
   contribute: { to: string; order: number; data: string; relocs: [number, 'abs32' | 'pc32' | 'pc16', string, number][] }[]
   collections: Record<string, number>; copied: { lo: string; hi: string; to: string }[]; regions: { name: string; lo: string; hi: string }[]
   claims: string[]; requires: string[]
   // Steps that need the stock OS run only during the owner's local build, never in CI.
-  derive: { kind: string; note: string; release: string; block: [string, string]; sram: [string, string]; callSites: { addr: string; len: number; stockSha256: string; target: string }[] } | null
+  derive: { kind: string; note: string; release: string; releases: string[]; block: [string, string]; sram: [string, string]; callSites: { addr: string; len: number; stockSha256: string; target: string }[] } | null
   releases: Record<string, ElemodRelease>
 }
 const symbol = (value: unknown, path: string) => { const item = text(value, path, 80); if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(item)) fail(path, 'expected a C symbol'); return item }
@@ -265,7 +266,7 @@ function range(value: unknown, path: string): [string, string] {
 
 export function parseElemodBuild(value: unknown, document: Pick<ModwerkModule, 'platform' | 'compatibility'>): ElemodBuildSpec {
   const keys = ['schemaVersion', 'sources', 'defsym', 'cflags', 'weak', 'subscribe', 'contribute', 'collections', 'copied', 'regions', 'claims', 'requires', 'derive', 'releases'] as const
-  const item = object(value, 'build', keys)
+  const item = object(value, 'build', keys, ['strings'])
   if (item.schemaVersion !== 1) fail('build.schemaVersion', 'expected 1')
   const sources = list(item.sources, 'build.sources', 1, 64).map((path, index) => {
     const file = modulePath(path, 'build.sources[' + index + ']')
@@ -298,9 +299,10 @@ export function parseElemodBuild(value: unknown, document: Pick<ModwerkModule, '
   for (const id of requires) if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(id)) fail('build.requires', 'expected module ids')
   let derive: ElemodBuildSpec['derive'] = null
   if (item.derive !== null) {
-    const value = object(item.derive, 'build.derive', ['kind', 'note', 'release', 'block', 'sram', 'callSites'])
+    const value = object(item.derive, 'build.derive', ['kind', 'note', 'release', 'block', 'sram', 'callSites'], ['releases'])
     derive = {
       kind: symbol(value.kind, 'build.derive.kind'), note: text(value.note, 'build.derive.note', 600), release: text(value.release, 'build.derive.release', 20),
+      releases: texts(value.releases ?? [value.release], 'build.derive.releases', 1, 16, 20),
       block: range(value.block, 'build.derive.block'), sram: range(value.sram, 'build.derive.sram'),
       callSites: list(value.callSites, 'build.derive.callSites', 0, 64).map((entry, index) => { const at = 'build.derive.callSites[' + index + ']', site = object(entry, at, ['addr', 'len', 'stockSha256', 'target']); return { addr: address(site.addr, at + '.addr'), len: count(site.len, at + '.len') ?? 0, stockSha256: sha256(site.stockSha256, at + '.stockSha256'), target: address(site.target, at + '.target') } }),
     }
@@ -311,5 +313,8 @@ export function parseElemodBuild(value: unknown, document: Pick<ModwerkModule, '
     return [release, { defsym: defines(value.defsym, at + '.defsym'), cflags: texts(value.cflags, at + '.cflags', 0, 16, 60), sites: sites(value.sites, at + '.sites') }]
   }))
   if (derive && !document.compatibility.releases.includes(derive.release)) fail('build.derive.release', 'expected a supported release')
-  return { schemaVersion: 1, sources, defsym: defines(item.defsym, 'build.defsym'), cflags: texts(item.cflags, 'build.cflags', 0, 16, 60), weak: list(item.weak, 'build.weak', 0, 16).map((name, index) => symbol(name, 'build.weak[' + index + ']')), subscribe, contribute, collections, copied, regions, claims, requires, derive, releases }
+  if (derive && (derive.releases.some(release => !document.compatibility.releases.includes(release)) || !derive.releases.includes(derive.release))) fail('build.derive.releases', 'expected supported releases including the base release')
+  const stringsValue = object(item.strings ?? {}, 'build.strings', Object.keys((item.strings ?? {}) as object))
+  const strings = Object.fromEntries(Object.entries(stringsValue).map(([name, value]) => [symbol(name, 'build.strings.' + name), text(value, 'build.strings.' + name, 120)]))
+  return { schemaVersion: 1, sources, strings, defsym: defines(item.defsym, 'build.defsym'), cflags: texts(item.cflags, 'build.cflags', 0, 16, 60), weak: list(item.weak, 'build.weak', 0, 16).map((name, index) => symbol(name, 'build.weak[' + index + ']')), subscribe, contribute, collections, copied, regions, claims, requires, derive, releases }
 }

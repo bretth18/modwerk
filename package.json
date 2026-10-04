@@ -28,6 +28,7 @@
     "module:new": "node scripts/scaffold-module.mjs",
     "sdk:check": "node scripts/sdk-check.mjs",
     "modules:build": "python3 -B scripts/build-module-packages.py",
+    "modules:build:elemod": "node scripts/build-elemod-packages.mjs",
     "modules:import": "node scripts/import-module-build.mjs",
     "typecheck": "tsc -b",
     "build:bundle": "vite build"

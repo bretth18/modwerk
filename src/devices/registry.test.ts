@@ -48,7 +48,7 @@ describe('digi combination estimate', () => {
     for (const mod of DIGI_MODS) {
       const build = JSON.parse(readFileSync(resolve('sdk', mod.device, 'modules', mod.id, 'build.json'), 'utf8'))
       for (const release of mod.releases) expect(mod.patchSites[release]).toEqual([
-        ...build.releases[release].sites, ...(build.derive?.release === release ? build.derive.callSites : []),
+        ...build.releases[release].sites, ...((build.derive?.releases ?? [build.derive?.release]).includes(release) ? build.derive.callSites : []),
       ].map(({ addr, len }: { addr: string; len: number }) => ({ addr, len })))
     }
   })
