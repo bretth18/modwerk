@@ -1,6 +1,6 @@
 import { NewsPreferences } from './NewsPreferences'
 import { AccountRemovalRequest } from './AccountRequests'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PrivateIssueDetail } from './PrivateIssueDetail'
 import { AccountExport } from './AccountExport'
 import { COMMUNITY_RULES_VERSION } from '../legal/policy'
@@ -17,7 +17,7 @@ import { DeveloperVerification } from './DeveloperVerification'
 type DeviceSession = { id:string; current:boolean; expires:number }
 function AccountContent({route}:{route:string}) {
   const {session,refresh}=useCommunity(), [busy,setBusy]=useState(false), [error,setError]=useState(route.startsWith('account/sso-error')?'Social sign-in was not completed. Use your original sign-in method, or create an account if you are new.':''), [message,setMessage]=useState(''), [devices,setDevices]=useState<DeviceSession[]>([])
-  const [path,query='']=route.split('?'),params=new URLSearchParams(query),next=safeNext(params.get('next')),formRef=useRef<HTMLFormElement>(null)
+  const [path,query='']=route.split('?'),params=new URLSearchParams(query),next=safeNext(params.get('next'))
   const [,action='login',linkToken='']=path.split('/'), mode=['login','register','resend','forgot','verify','reset'].includes(action)?action:'login'
   const linkAction=['verify','reset','forgot','resend'].includes(mode)||params.get('reauth')==='1',member=!!session.user?.verified&&!linkAction
   const emailAvailable=session.emailAvailable??session.registrationAvailable
@@ -38,12 +38,8 @@ function AccountContent({route}:{route:string}) {
     } catch(error){setError(error instanceof Error?error.message:'Unable to complete this request.')} finally{setBusy(false)}
   }
   async function social(provider:SocialProvider) {
-    const username=formRef.current?.elements.namedItem('username') as HTMLInputElement|null
-    const rules=formRef.current?.elements.namedItem('rulesAccepted') as HTMLInputElement|null
-    const newsletter=formRef.current?.elements.namedItem('newsletter') as HTMLInputElement|null
-    if(mode==='register'&&(!username?.reportValidity()||!rules?.reportValidity()))return
     setBusy(true);setError('')
-    try{await startSocial(provider,mode==='register'?'register':'login',username?.value??'',params.get('reauth')==='1'?'account':next,mode==='register'?{rulesVersion:COMMUNITY_RULES_VERSION,newsletter:newsletter?.checked??false}:{})}catch(error){setError(error instanceof Error?error.message:'Unable to start sign-in.')}finally{setBusy(false)}
+    try{await startSocial(provider,params.get('reauth')==='1'?'account':next)}catch(error){setError(error instanceof Error?error.message:'Unable to start sign-in.')}finally{setBusy(false)}
   }
   async function endSessions(all:boolean){setBusy(true);setError('');try{if(all){await api('/auth/sessions',{method:'DELETE'});setDevices(await api<DeviceSession[]>('/auth/sessions'));setMessage('Other sessions signed out.')}else{await post('/auth/logout',{});await refresh();window.location.assign('#account/login')}}catch(error){setError(error instanceof Error?error.message:'Unable to sign out.')}finally{setBusy(false)}}
   const titles:Record<string,string>={login:'Welcome back',register:'Join the community',resend:'Verify your email',forgot:'Forgot your password?',verify:'Confirm your email',reset:'Choose a new password'}
@@ -56,9 +52,9 @@ function AccountContent({route}:{route:string}) {
       {!(mode==='verify'||mode==='reset')&&<nav className="account-auth-tabs" aria-label="Account actions"><a aria-current={mode==='login'?'page':undefined} href={accountHref('login',next)}>Sign in</a><a aria-current={mode==='register'?'page':undefined} href={accountHref('register',next)}>Create account</a></nav>}
       {mode==='register'&&!session.registrationAvailable&&<p className="service-note" role="status">New registrations are temporarily closed. Existing accounts can still sign in.</p>}
       {!emailAvailable&&['forgot','resend'].includes(mode)&&<p className="service-note" role="status">Account email is not available yet. Please try again later.</p>}
-      {message&&(mode==='verify'||mode==='reset')?<a className="button button-primary" href="#account/login">Continue to sign in</a>:<form ref={formRef} className="community-form" onSubmit={event=>{event.preventDefault();void submit(event.currentTarget)}}>
+      {(mode==='login'||mode==='register')&&<><div className="social-sign-in" role="group" aria-label="Social sign-in">{(['google','github','discord'] as const).map(provider=><SocialButton key={provider} provider={provider} disabled={busy||!session.ssoProviders?.includes(provider)} onClick={()=>void social(provider)}/>)}</div>{session.ssoProviders?.length?<p className="service-note">Continue to sign in or create an account. No username needed to get started.</p>:<p className="service-note">Social sign-in is being prepared. Use email to continue.</p>}<p className="account-divider">{mode==='register'?'Or create an account with email':'Or use email'}</p></>}
+      {message&&(mode==='verify'||mode==='reset')?<a className="button button-primary" href="#account/login">Continue to sign in</a>:<form className="community-form" onSubmit={event=>{event.preventDefault();void submit(event.currentTarget)}}>
         {mode==='register'&&<label>Public username<input name="username" required minLength={3} maxLength={24} pattern="[A-Za-z0-9_]+" autoComplete="username" spellCheck={false}/><small>3–24 letters, numbers or underscores.</small></label>}
-        {(mode==='login'||mode==='register')&&<><div className="social-sign-in" role="group" aria-label="Social sign-in">{(['google','github','discord'] as const).map(provider=><SocialButton key={provider} provider={provider} disabled={busy||!session.ssoProviders?.includes(provider)||(mode==='register'&&!session.registrationAvailable)} onClick={()=>void social(provider)}/>)}</div>{!session.ssoProviders?.length&&<p className="service-note">Social sign-in is being prepared. Use email to continue.</p>}<p className="account-divider">Or use email</p></>}
         {mode!=='verify'&&mode!=='reset'&&<label>Email address<input type="email" name="email" required maxLength={254} autoComplete="email" placeholder="you@example.com"/></label>}
         {['register','login','verify','reset'].includes(mode)&&<label>{mode==='verify'?'Password you chose when registering':mode==='reset'?'New password':'Password'}<input type="password" name="password" required minLength={15} maxLength={128} autoComplete={mode==='register'||mode==='reset'?'new-password':'current-password'}/>{(mode==='register'||mode==='reset')&&<small>At least 15 characters. Try a few unrelated words.</small>}</label>}
         {mode==='register'&&<><p className="service-note">Use a verified email or social account to post, rate, report issues and build firmware. Your username and posts are public; your email is private. Read the <a href="#privacy">privacy notice</a> and <a href="#impressum">Impressum</a>. Account emails cover verification and recovery. Usage counts are optional and off by default.</p><label className="risk-accept"><input name="rulesAccepted" type="checkbox" required/><span>I agree to the <a href="#community-rules">community rules</a>.</span></label></>}

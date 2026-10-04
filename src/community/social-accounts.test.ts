@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { generateKeyPairSync, sign } from 'node:crypto'
 import type { DatabaseSync } from 'node:sqlite'
+import { cleanupAccounts } from '../../server/accounts'
+import { symmetricDecrypt } from 'better-auth/crypto'
 import { hashPassword } from 'better-auth/crypto'
 import { testServer } from './test-server'
 import { handleCommunity } from '../../server/transport'
@@ -180,6 +182,82 @@ describe('social account sign-in',()=>{
     expect((await(await call('/auth/session')).json()).ssoProviders).toEqual([])
     env.AUTH_BASE_URL='https://api.example.test/wrong-path'
     expect((await(await call('/auth/session')).json()).ssoProviders).toEqual([])
+  })
+})
+describe('social onboarding from either account entry point',()=>{
+  it.each((['google','github','discord'] as const).flatMap(provider=>(['login','register'] as const).map(mode=>[provider,mode] as const)))('authenticates %s from %s without a username, then activates only after rules confirmation',async(provider,mode)=>{
+    const f=await fixture(),pending=await f.complete(provider,mode,'')
+    const exchanged=await f.call('/auth/sso/exchange','POST',{code:pending.code,verifier:pending.verifier})
+    expect(exchanged.status).toBe(200)
+    expect(exchanged.headers.get('X-Octamod-Session')).toBeNull()
+    expect(exchanged.headers.get('Set-Cookie')).toBeNull()
+    const {onboarding}=await exchanged.json()
+    expect(onboarding.username).toMatch(/^member_[a-f0-9]{12}$/)
+    expect((await f.call('/forum/profiles/'+onboarding.username)).status).toBe(404)
+    expect(JSON.stringify(onboarding)).not.toMatch(/Private provider|member@example|synthetic-access/)
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM account_policy_acceptances').get()).toEqual({count:0})
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM account_news_preferences').get()).toEqual({count:0})
+    const flow=f.db.prepare('SELECT payload FROM social_flows WHERE token_hash=?').get(await digest(onboarding.code)) as {payload:string}
+    const held=JSON.parse(await symmetricDecrypt({key:f.env.AUTH_SECRET!,data:flow.payload})).session
+    expect((await(await f.call('/auth/session','GET',undefined,held)).json()).user).toBeNull()
+    for(const path of ['/auth/build-access','/auth/data-export','/auth/account-removal'])expect((await f.call(path,'POST',{},held)).status).toBe(401)
+    for(const path of ['/auth/profile','/auth/sessions','/auth/news'])expect((await f.call(path,'GET',undefined,held)).status).toBe(401)
+    expect((await f.call('/forum/threads','POST',{title:'Blocked',body:'Pending',category:'general'},held)).status).toBe(401)
+    const body={code:onboarding.code,verifier:pending.verifier,username:'',rulesVersion:COMMUNITY_RULES_VERSION,newsletter:false}
+    expect((await f.call('/auth/sso/complete','POST',{...body,rulesVersion:'outdated'})).status).toBe(400)
+    const completed=await f.call('/auth/sso/complete','POST',body)
+    expect(completed.status).toBe(200)
+    const session=completed.headers.get('X-Octamod-Session')!
+    const own=await(await f.call('/auth/session','GET',undefined,session)).json()
+    expect(own).toMatchObject({admin:false,user:{username:onboarding.username,displayName:onboarding.username,verified:true}})
+    expect(f.db.prepare('SELECT version FROM account_policy_acceptances WHERE user_id=?').get(own.user.id)).toEqual({version:COMMUNITY_RULES_VERSION})
+    expect(f.db.prepare('SELECT enabled FROM account_news_preferences WHERE user_id=?').get(own.user.id)).toEqual({enabled:0})
+    expect((await f.call('/auth/build-access','POST',{},session)).status).toBe(200)
+    expect((await f.call('/forum/profiles/'+onboarding.username)).status).toBe(200)
+    expect((await f.call('/auth/sso/complete','POST',body)).status).toBe(400)
+    expect((await f.call('/auth/sso/exchange','POST',{code:pending.code,verifier:pending.verifier})).status).toBe(400)
+    const returning=await f.complete(provider,mode,'')
+    const signedIn=await f.call('/auth/sso/exchange','POST',{code:returning.code,verifier:returning.verifier})
+    expect(signedIn.status).toBe(200)
+    expect(signedIn.headers.get('X-Octamod-Session')).toContain('.')
+    expect(await signedIn.json()).toEqual({ok:true})
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM auth_users').get()).toEqual({count:1})
+  })
+  it('allows an optional username and explicit news consent, with retry after duplicates and invalid proof',async()=>{
+    const f=await fixture();await f.member('github','already_used')
+    f.setIdentity('43','new@example.test')
+    const pending=await f.complete('discord','login',''),exchange=await f.call('/auth/sso/exchange','POST',{code:pending.code,verifier:pending.verifier}),{onboarding}=await exchange.json()
+    const body={code:onboarding.code,verifier:pending.verifier,username:'already_used',rulesVersion:COMMUNITY_RULES_VERSION,newsletter:true}
+    expect((await f.call('/auth/sso/complete','POST',body)).status).toBe(409)
+    expect((await f.call('/auth/sso/complete','POST',{...body,username:'modwerk'})).status).toBe(400)
+    expect((await f.call('/auth/sso/complete','POST',{...body,verifier:'b'.repeat(64)})).status).toBe(400)
+    expect((await f.call('/auth/sso/complete','POST',{...body,newsletter:'yes'})).status).toBe(400)
+    const completed=await f.call('/auth/sso/complete','POST',{...body,username:'My_Choice'}),session=completed.headers.get('X-Octamod-Session')!
+    expect(completed.status).toBe(200)
+    const own=await(await f.call('/auth/session','GET',undefined,session)).json()
+    expect(own.user.username).toBe('my_choice')
+    expect(f.db.prepare('SELECT enabled FROM account_news_preferences WHERE user_id=?').get(own.user.id)).toEqual({enabled:1})
+  })
+  it('retains returning login from either entry point when registration is closed, but never activates a new pending account',async()=>{
+    const f=await fixture();await f.member('google')
+    f.env.REGISTRATION_OPEN='false'
+    for(const mode of ['login','register'] as const){
+      const returning=await f.complete('google',mode,'')
+      expect((await f.call('/auth/sso/exchange','POST',{code:returning.code,verifier:returning.verifier})).headers.get('X-Octamod-Session')).toContain('.')
+    }
+    f.env.REGISTRATION_OPEN='true';f.setIdentity('43','new@example.test')
+    const pending=await f.complete('discord','login',''),exchange=await f.call('/auth/sso/exchange','POST',{code:pending.code,verifier:pending.verifier}),{onboarding}=await exchange.json()
+    f.env.PRIVACY_READY='false'
+    expect((await f.call('/auth/sso/complete','POST',{code:onboarding.code,verifier:pending.verifier,rulesVersion:COMMUNITY_RULES_VERSION})).status).toBe(503)
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM social_pending_accounts').get()).toEqual({count:1})
+  })
+  it('expires abandoned signup and removes its private identity and all held sessions',async()=>{
+    const f=await fixture(),pending=await f.complete('github','login','')
+    f.db.exec('UPDATE social_pending_accounts SET expires=0; UPDATE social_flows SET expires=0')
+    expect((await f.call('/auth/sso/exchange','POST',{code:pending.code,verifier:pending.verifier})).status).toBe(400)
+    await cleanupAccounts(f.env.DB!)
+    expect(f.db.prepare("SELECT COUNT(*) AS count FROM users WHERE id<>'administrator'").get()).toEqual({count:0})
+    for(const table of ['social_pending_accounts','auth_users','auth_accounts','auth_sessions','social_flows'])expect(f.db.prepare('SELECT COUNT(*) AS count FROM '+table).get()).toEqual({count:0})
   })
 })
 describe('profile editing and self-service account deletion',()=>{

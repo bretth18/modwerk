@@ -1,9 +1,10 @@
-import { symmetricDecrypt, symmetricEncrypt } from 'better-auth/crypto'
+import { symmetricEncrypt } from 'better-auth/crypto'
 import type { Database, Env } from './platform'
 import { COMMUNITY_RULES_VERSION } from '../src/legal/policy'
 import { accountAuth } from './accounts'
 import { throttle } from './auth'
 import { digest, HttpError, jsonBody, response, token } from './security'
+import { completeSocialOnboarding, exchangeSocialSession } from './social-onboarding'
 import { socialProviders, validUsername, type SocialProvider } from './social-config'
 const now = () => Math.floor(Date.now() / 1000)
 const hex = (value: unknown): value is string => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value)
@@ -28,7 +29,7 @@ export async function socialRoutes(request: Request, env: Env, db: Database, pat
     if (request.method !== 'GET') throw new HttpError(405, 'Open this sign-in link in your browser.')
     const flowHash = await digest(start[1]), flow = await db.prepare("UPDATE social_flows SET stage='started' WHERE token_hash=? AND stage='pending' AND expires>? RETURNING provider,mode").bind(flowHash, now()).first<{provider: SocialProvider; mode: string}>()
     if (!flow || !providers.includes(flow.provider)) throw new HttpError(400, 'This sign-in link is invalid or expired. Start again.')
-    const result = await auth.api.signInSocial({ headers: request.headers, body: { provider: flow.provider, requestSignUp: flow.mode === 'register', callbackURL: returnUrl(env, 'account/sso-error'), errorCallbackURL: returnUrl(env, 'account/sso-error'), disableRedirect: true, additionalData: { flowHash } }, asResponse: true })
+    const result = await auth.api.signInSocial({ headers: request.headers, body: { provider: flow.provider, requestSignUp: true, callbackURL: returnUrl(env, 'account/sso-error'), errorCallbackURL: returnUrl(env, 'account/sso-error'), disableRedirect: true, additionalData: { flowHash } }, asResponse: true })
     const data = await result.json() as { url?: string }
     if (!result.ok || !data.url) return redirect(returnUrl(env, 'account/sso-error'))
     const out = redirect(data.url)
@@ -39,23 +40,12 @@ export async function socialRoutes(request: Request, env: Env, db: Database, pat
   if (request.method !== 'POST') throw new HttpError(405, 'Use a supported sign-in action.')
   await throttle(db, 'social-ip:' + (request.headers.get('CF-Connecting-IP') ?? 'local'), 30, 900)
   const body = await jsonBody(request)
-  if (path === '/api/auth/sso/exchange') {
-    if (!hex(body.code) || !hex(body.verifier)) throw new HttpError(400, 'This sign-in could not be completed. Start again.')
-    const flow = await db.prepare("DELETE FROM social_flows WHERE token_hash=? AND challenge_hash=? AND stage='complete' AND expires>? RETURNING payload").bind(await digest(body.code), await digest(body.verifier), now()).first<{payload: string}>()
-    if (!flow) throw new HttpError(400, 'This sign-in has expired or was already completed. Start again.')
-    const data = JSON.parse(await symmetricDecrypt({ key: env.AUTH_SECRET!, data: flow.payload })) as {session: string; cookies: string[]}
-    const owner = await auth.api.getSession({ headers: new Headers({ Authorization: 'Bearer ' + data.session }) })
-    const active = owner?.user.emailVerified && await db.prepare('SELECT id FROM users WHERE id=? AND suspended=0 AND username IS NOT NULL').bind(owner.user.id).first()
-    if (!active) throw new HttpError(401, 'Sign in again to continue.')
-    const out = response({ ok: true })
-    if (env.SESSION_TRANSPORT === 'bearer') out.headers.set('X-Octamod-Session', data.session)
-    else for (const value of data.cookies) out.headers.append('Set-Cookie', value)
-    return out
-  }
+  if (path === '/api/auth/sso/exchange') return exchangeSocialSession(env,db,body)
+  if (path === '/api/auth/sso/complete') return completeSocialOnboarding(env,db,body)
   if (path !== '/api/auth/sso') throw new HttpError(404, 'Sign-in action not found.')
   if (!providers.includes(body.provider as SocialProvider) || (body.mode !== 'login' && body.mode !== 'register') || !hex(body.challenge)) throw new HttpError(400, 'Choose an available sign-in provider.')
   let username: string | null = null
-  if (body.mode === 'register') {
+  if (body.mode === 'register' && typeof body.username === 'string' && body.username.trim()) {
     if (env.REGISTRATION_OPEN !== 'true' || env.PRIVACY_READY !== 'true') throw new HttpError(503, 'New registrations are temporarily closed.')
     if (body.rulesVersion !== COMMUNITY_RULES_VERSION) throw new HttpError(400, 'Accept the current community rules before creating an account.')
     if (body.newsletter !== undefined && typeof body.newsletter !== 'boolean') throw new HttpError(400, 'Choose whether to receive news emails.')
