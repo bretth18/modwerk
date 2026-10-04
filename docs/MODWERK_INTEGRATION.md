@@ -26,7 +26,13 @@ The dedicated `codex/modwerk-integration` branch combines the open Modwerk launc
 | [#84](https://github.com/repeat98/octamod/pull/84) | `codex/all-machines-library-parity` | `f137471d02be` | Restore All machines controls and activate Modwerk branding |
 | [#85](https://github.com/repeat98/octamod/pull/85) | `codex/modwerk-vendor-elekloader` | `4e782ebd473a` | Modwerk: build Digitakt/Digitone firmware with the vendored elekloader builder |
 
-PR [#86](https://github.com/repeat98/octamod/pull/86), `codex/verified-community-accounts` at `c721426294cc`, was based on the older account-free Octamod product. Its code-only authentication and migration 0011 conflict with the existing Better Auth/forum stack in #64. The integration retains Modwerk's password/email and forum account system and ports #86's unchecked optional news preference into that system, with authenticated preference changes, private consent records and no campaign delivery. Its branch is recorded with an explicit reconciliation merge, not used to replace the newer account implementation. Profile/deletion/SSO changes belong to the current Modwerk account PR.
+PR [#86](https://github.com/repeat98/octamod/pull/86), `codex/verified-community-accounts` at `c721426294cc`, was based on the older account-free Octamod product. Its code-only authentication and migration 0011 conflict with the existing Better Auth/forum stack in #64. The integration retains Modwerk's password/email and forum account system and ports #86's unchecked optional news preference into that system, with authenticated preference changes, private consent records and no campaign delivery. Its branch is recorded with an explicit reconciliation merge, not used to replace the newer account implementation. Profile/deletion/SSO changes belong to the completed local Modwerk account snapshot described below.
+
+## Completed local chat snapshots
+
+The preview also includes “Review German data compliance” at `2f9394f` and “Add single sign-on” captured at `9626e37fcaeb`. The SSO snapshot was captured through an independent temporary Git index without changing that chat's worktree, branch or index. It includes Google/GitHub/Discord sign-in, member build access, public forum reading, profile editing and confirmed account deletion. The privacy snapshot adds bilingual notices, the owner-supplied operator disclosure, optional usage counts, recorded rules acceptance, account export and privacy-request response deadlines.
+
+The privacy migration was renumbered from `0015_account_policy.sql` to `0018_account_policy.sql` to preserve existing forum migration 0015. The combined sequence is 0017 social accounts, 0018 policy acceptance and 0019 optional news preferences. Integration checks enforce the same privacy/rules gate for email and social signup, preserve optional consent, and support confirmed data export/removal requests for social-only accounts.
 
 The unrelated IronOxide5, Inflator, Fattener and Stang 2 module drafts are outside this integration request. No draft was promoted into the approved module catalog or qualification baseline.
 
@@ -41,7 +47,7 @@ Use Node.js 24. Install the lockfile dependencies with `npm ci` in this checkout
    VITE_REPOSITORY_URL=https://github.com/repeat98/octamod
    ```
 
-2. Create `.dev.vars` with `APP_URL=http://127.0.0.1:5198`, `SESSION_TRANSPORT=bearer`, `REGISTRATION_OPEN=false` and an independently generated random `AUTH_SECRET` (at least 32 bytes). Never reuse production credentials. Account delivery and social sign-in remain unavailable until their real provider credentials and callbacks are configured; keep them closed until then. Administrator access stays separately authorized and closed without its own key.
+2. Create `.dev.vars` with `APP_URL=http://127.0.0.1:5198`, `SESSION_TRANSPORT=bearer`, `REGISTRATION_OPEN=false`, `PRIVACY_READY=false` and an independently generated random `AUTH_SECRET` (at least 32 bytes). Never reuse production credentials. Account delivery and social sign-in remain unavailable until their real provider credentials and callbacks are configured; keep them closed until then. Administrator access stays separately authorized and closed without its own key.
 3. Run `npm run db:local`. It applies migrations only to this checkout's local D1 database; do not use `--remote`.
 4. Run `npx --no-install wrangler dev --config wrangler.worker.jsonc --local --port 8988 --ip 127.0.0.1 --inspector-port 9298`.
 5. Run `npm run dev -- --port 5198`, then open [the combined app](http://127.0.0.1:5198/#all). Both processes must remain running.
@@ -56,3 +62,5 @@ Run `npm run check` for the integrated app's lint, domain/SDK source-data checks
 
 Downloads retain their existing qualification/owner approval gates. Modwerk's original Digitakt/Digitone core remains frozen; #85 uses the pinned, attributed elekloader builder locally in a browser worker. No owner firmware, native image, secrets or local database enters this branch or the Pages artifact.
 
+
+On 4 October 2026 the combined application passed `npm run check`: 553 tests across 91 files, lint, type checking, 31 firmware-free SDK source/data checks and the static production build. Google rejection coverage includes invalid nonce/signature/issuer/audience/expiry; privacy integration covers social signup rules and consent, fresh-session export/removal and deletion of private consent records.

@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import { AccountConfirmation } from './AccountConfirmation'
 import { apiFetch } from './api'
 export function AccountExport(){
-  const [busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('')
+  const [ready,setReady]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('')
   async function download(form:HTMLFormElement){
     setBusy(true);setError('');setMessage('')
     try{
@@ -14,5 +15,5 @@ export function AccountExport(){
       form.reset();setMessage('Your account data download was requested.')
     }catch(error){setError(error instanceof Error?error.message:'Unable to download account data.')}finally{setBusy(false)}
   }
-  return <section className="configuration-section"><h2>Download your account data</h2><p>Get your account details, contributions, private reports and community activity as a JSON file. This file contains personal data; store it privately. Saved firmware and local configurations stay on this device and are managed from Configuration.</p><details><summary>Download personal data</summary><form className="community-form" onSubmit={event=>{event.preventDefault();void download(event.currentTarget)}}><label>Current password<input type="password" name="password" autoComplete="current-password" required minLength={15} maxLength={128}/></label><button className="button button-quiet" disabled={busy}>{busy?'Preparing download…':'Download my data'}</button></form></details>{error&&<p className="file-error" role="alert">{error}</p>}{message&&<p className="success-note" role="status">{message}</p>}</section>
+  return <section className="configuration-section"><h2>Download your account data</h2><p>Get your account details, contributions, private reports and community activity as a JSON file. This file contains personal data; store it privately. Saved firmware and local configurations stay on this device and are managed from Configuration.</p><details><summary>Download personal data</summary><form className="community-form" onSubmit={event=>{event.preventDefault();void download(event.currentTarget)}}><AccountConfirmation onReady={setReady}/><button className="button button-quiet" disabled={busy||!ready}>{busy?'Preparing download…':'Download my data'}</button></form></details>{error&&<p className="file-error" role="alert">{error}</p>}{message&&<p className="success-note" role="status">{message}</p>}</section>
 }

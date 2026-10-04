@@ -1,17 +1,15 @@
-import { verifyPassword } from 'better-auth/crypto'
+import { confirmAccount } from './account-confirmation'
 import type { Database, User } from './platform'
 import { HttpError, jsonBody, response } from './security'
 import { throttle } from './auth'
 
 /** Only the verified owner, after reauthentication. Never export credentials or another member's text. */
-export async function accountExport(request:Request,db:Database,owner:User|null){
+export async function accountExport(request:Request,db:Database,owner:User|null,sessionCreatedAt?:Date|string){
   if(!owner?.username||!owner.email_verified||owner.suspended)throw new HttpError(401,'Sign in to download your account data.')
   if(request.method!=='POST')throw new HttpError(405,'Use the account data download form.')
   await throttle(db,'account-export:'+owner.id,5,900)
   const body=await jsonBody(request)
-  if(typeof body.password!=='string'||body.password.length<15||body.password.length>128)throw new HttpError(400,'Enter your current password.')
-  const credential=await db.prepare("SELECT password FROM auth_accounts WHERE userId=? AND providerId='credential'").bind(owner.id).first<{password:string}>()
-  if(!credential||!await verifyPassword({hash:credential.password,password:body.password}))throw new HttpError(403,'Your password was not accepted.')
+  await confirmAccount(db,owner.id,body,sessionCreatedAt)
   // Explicit field lists keep operator notes, access/session tokens and password hashes out.
   const queries={
     account:'SELECT id,name,email,emailVerified,createdAt,updatedAt,username,displayUsername FROM auth_users WHERE id=?',

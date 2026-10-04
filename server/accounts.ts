@@ -3,7 +3,7 @@ import { betterAuth } from 'better-auth'
 import { bearer } from 'better-auth/plugins/bearer'
 import { username } from 'better-auth/plugins/username'
 import { verifyPassword } from 'better-auth/crypto'
-import { isAPIError } from 'better-auth/api'
+import { createAuthMiddleware, getOAuthState, isAPIError } from 'better-auth/api'
 import type { BetterAuthOptions } from 'better-auth'
 import type { Env, Database, User } from './platform'
 import { throttle } from './auth'
@@ -12,17 +12,20 @@ import { AccountMailError, emailReady, sendAccountEmail } from './email'
 import { accountRequest } from './account-requests'
 import { accountExport } from './account-export'
 import { COMMUNITY_RULES_VERSION } from '../src/legal/policy'
+import { googleTokenBinding, socialOptions, validUsername } from './social-config'
 
 export function authReady(env: Env) { return !!env.AUTH_SECRET && env.AUTH_SECRET.length >= 32 }
 export function accountAuth(env: Env, db: Database) {
   if (!authReady(env)) throw new HttpError(503,'Accounts are not configured yet.')
-  const syncPublicUser = async (user:{id:string;name:string;emailVerified:boolean}) => {
-    await db.prepare('INSERT INTO users(id,display_name,username,email_verified) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET email_verified=excluded.email_verified').bind(user.id,user.name,user.name,Number(user.emailVerified)).run()
+  const syncPublicUser = async (user:{id:string;name:string;username?:string|null;emailVerified:boolean}) => {
+    await db.prepare('INSERT INTO users(id,display_name,username,email_verified) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET display_name=excluded.display_name,username=excluded.username,email_verified=excluded.email_verified').bind(user.id,user.name,user.username??user.name,Number(user.emailVerified)).run()
   }
   return betterAuth({
-    appName:'Modwerk', baseURL:new URL('/api/auth',env.APP_URL!).href, secret:env.AUTH_SECRET,
+    appName:'Modwerk', baseURL:env.AUTH_BASE_URL??new URL('/api/auth',env.APP_URL!).href, secret:env.AUTH_SECRET,
     database:db as unknown as NonNullable<BetterAuthOptions['database']>, trustedOrigins:[appOrigin(env)],
-    user:{modelName:'auth_users'}, account:{modelName:'auth_accounts',accountLinking:{enabled:false}},
+    user:{modelName:'auth_users',validateUserInfo:({user,source})=>{if(source.oauth&&!user.emailVerified)return {error:'email_not_verified',errorDescription:'Verify your email with the sign-in provider first.'}}},
+    account:{modelName:'auth_accounts',accountLinking:{enabled:false},encryptOAuthTokens:true},
+    socialProviders:socialOptions(env),
     session:{modelName:'auth_sessions',expiresIn:7*86400,updateAge:86400,cookieCache:{enabled:false}},
     verification:{modelName:'auth_verifications',storeIdentifier:'hashed'},
     // Only our explicit facade below is exposed; it applies persistent D1/IP/address throttles.
@@ -41,9 +44,26 @@ export function accountAuth(env: Env, db: Database) {
         await sendAccountEmail(env,db,user.email,'verify',actionToken)
       },
     },
-    plugins:[bearer({requireSignature:true}),username({minUsernameLength:3,maxUsernameLength:24,usernameValidator:value=>/^[a-z0-9_]{3,24}$/.test(value)&&!/^(admin|administrator|moderator|octamod|support|system|guest)$/.test(value)})],
+    plugins:[bearer({requireSignature:true}),username({minUsernameLength:3,maxUsernameLength:24,usernameValidator:validUsername}),googleTokenBinding()],
+    hooks:{after:createAuthMiddleware(async ctx=>{
+      if(ctx.path==='/callback/:id'){const state=await getOAuthState<{flowHash?:string}>();if(state?.flowHash)ctx.setHeader('X-Modwerk-Sso-Flow',state.flowHash)}
+    })},
     databaseHooks:{
-      user:{create:{after:async user=>{await syncPublicUser(user);await db.prepare('INSERT OR IGNORE INTO account_policy_acceptances(user_id,version) VALUES(?,?)').bind(user.id,COMMUNITY_RULES_VERSION).run()}},update:{after:syncPublicUser}},
+      user:{create:{before:async(user,ctx)=>{
+        if(ctx?.path!=='/callback/:id')return
+        const state=await getOAuthState<{flowHash?:string}>()
+        const flow=state?.flowHash?await db.prepare("SELECT username,rules_version FROM social_flows WHERE token_hash=? AND mode='register' AND stage='started' AND expires>?").bind(state.flowHash,Math.floor(Date.now()/1000)).first<{username:string;rules_version:string}>():null
+        if(env.REGISTRATION_OPEN!=='true'||env.PRIVACY_READY!=='true'||!flow||flow.rules_version!==COMMUNITY_RULES_VERSION||!validUsername(flow.username))return false
+        return {data:{...user,name:flow.username,username:flow.username,displayUsername:flow.username,image:null}}
+      },after:async(user,ctx)=>{
+        await syncPublicUser(user)
+        await db.prepare('INSERT OR IGNORE INTO account_policy_acceptances(user_id,version) VALUES(?,?)').bind(user.id,COMMUNITY_RULES_VERSION).run()
+        if(ctx?.path==='/callback/:id'){
+          const state=await getOAuthState<{flowHash?:string}>()
+          const flow=state?.flowHash?await db.prepare("SELECT newsletter FROM social_flows WHERE token_hash=? AND mode='register' AND stage='started'").bind(state.flowHash).first<{newsletter:number}>():null
+          await initializeNewsPreference(db,user.id,flow?.newsletter===1)
+        }
+      }},update:{after:syncPublicUser}},
       session:{create:{before:async session=>{
         const user=await db.prepare('SELECT suspended FROM users WHERE id=?').bind(session.userId).first<{suspended:number}>()
         if(!user||user.suspended)return false
@@ -62,8 +82,10 @@ function emailAddress(value:unknown){if(typeof value!=='string'||value.trim().le
 const genericMessage='If the address is eligible, an email will arrive shortly. Check your spam folder. You can request another message or reset your password if you already have an account.'
 export async function accountRoutes(request: Request, env: Env, db: Database, path: string): Promise<Response|null> {
   if(path==='/api/auth/news')return newsPreferences(request,db,await accountUser(request,env,db))
-  if(path==='/api/auth/data-export')return accountExport(request,db,await accountUser(request,env,db))
-  if(path==='/api/auth/account-removal')return accountRequest(request,db,await accountUser(request,env,db))
+  if(path==='/api/auth/data-export'||path==='/api/auth/account-removal'){
+    const owner=await accountUser(request,env,db),session=owner?await accountAuth(env,db).api.getSession({headers:request.headers}):null
+    return path==='/api/auth/data-export'?accountExport(request,db,owner,session?.session.createdAt):accountRequest(request,db,owner,session?.session.createdAt)
+  }
   const route=path.match(/^\/api\/auth\/(register|login|resend|forgot|verify|reset|sessions|logout)$/)
   if(!route)return null
   const action=route[1]
@@ -133,6 +155,7 @@ export async function accountRoutes(request: Request, env: Env, db: Database, pa
   }
 }
 export async function cleanupAccounts(db:Database){
-  const now=Math.floor(Date.now()/1000)
+ const now=Math.floor(Date.now()/1000)
+ await db.prepare('DELETE FROM social_flows WHERE expires<=?').bind(now).run()
   await db.batch([db.prepare('DELETE FROM account_tokens WHERE expires<=?').bind(now),db.prepare('DELETE FROM sessions WHERE expires<=?').bind(now),db.prepare('DELETE FROM rate_limits WHERE expires<=?').bind(now),db.prepare('DELETE FROM admin_sessions WHERE expires<=?').bind(now),db.prepare('DELETE FROM auth_sessions WHERE expiresAt<=?').bind(now*1000),db.prepare('DELETE FROM auth_verifications WHERE expiresAt<=?').bind(now*1000)])
 }

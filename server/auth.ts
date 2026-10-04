@@ -2,6 +2,9 @@ import type { Env, User, Database } from './platform'
 import { cookie, digest, HttpError, jsonBody, response, sessionValue, token } from './security'
 import { accountRoutes, accountUser, authReady } from './accounts'
 import { emailReady } from './email'
+import { socialProviders } from './social-config'
+import { socialRoutes } from './social'
+import { profileRoutes } from './profile'
 /** Fixed actor row for administrator history; the administrator is not a visitor account. */
 export const ADMIN_ACTOR='administrator'
 const ADMIN_SECONDS=8*60*60
@@ -33,11 +36,17 @@ export async function authentication(request:Request,env:Env,path:string):Promis
  if(path==='/api/auth/session'&&request.method==='GET'){
   const user=db?await currentUser(request,db,env):null
   const emailAvailable=!!db&&emailReady(env)&&authReady(env)
-  return response({available:!!db,emailAvailable,registrationAvailable:emailAvailable&&env.REGISTRATION_OPEN==='true'&&env.PRIVACY_READY==='true',admin:db?await isAdmin(request,env,db):false,user:user?{id:user.id,displayName:user.display_name,username:user.username??null,verified:!!user.email_verified}:null})
+  const providers=socialProviders(env)
+  return response({available:!!db,emailAvailable,ssoProviders:providers,registrationAvailable:!!db&&authReady(env)&&(emailAvailable||providers.length>0)&&env.REGISTRATION_OPEN==='true'&&env.PRIVACY_READY==='true',admin:db?await isAdmin(request,env,db):false,user:user?{id:user.id,displayName:user.display_name,username:user.username??null,verified:!!user.email_verified}:null})
  }
  if(!path.startsWith('/api/auth/'))return null
  if(/^\/api\/auth\/(github(\/callback)?|complete)$/.test(path))throw new HttpError(410,'Use your Octamod email account to sign in.')
  if(!db)throw new HttpError(503,'Community storage is not connected yet.')
+ const social=await socialRoutes(request,env,db,path)
+ if(social)return social
+ const profile=await profileRoutes(request,env,db,path)
+ if(profile)return profile
+ if(path==='/api/auth/build-access'&&request.method==='POST'){needMember(await accountUser(request,env,db));return response({ok:true})}
  const account=await accountRoutes(request,env,db,path)
  if(account)return account
  if(path==='/api/auth/logout'&&request.method==='POST'){

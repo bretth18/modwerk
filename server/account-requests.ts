@@ -1,11 +1,11 @@
-import { verifyPassword } from 'better-auth/crypto'
+import { confirmAccount } from './account-confirmation'
 import type { Database, User } from './platform'
 import { HttpError, jsonBody, required, response } from './security'
 import { throttle } from './auth'
 import { withPrivacyDeadline } from './privacy-deadline'
 
 /** Requests are private and reversible. Data removal is a separate operator action. */
-export async function accountRequest(request: Request, db: Database, owner: User|null) {
+export async function accountRequest(request: Request, db: Database, owner: User|null,sessionCreatedAt?:Date|string) {
  if(!owner?.username||!owner.email_verified)throw new HttpError(401,'Sign in to manage an account-removal request.')
  if(request.method==='GET'){const row=await db.prepare('SELECT id,status,created_at,updated_at FROM account_removal_requests WHERE user_id=? ORDER BY created_at DESC,rowid DESC LIMIT 1').bind(owner.id).first<{created_at:string}>();return response(row?withPrivacyDeadline(row):null)}
  await throttle(db,'account-request:'+owner.id,5,900)
@@ -15,9 +15,8 @@ export async function accountRequest(request: Request, db: Database, owner: User
  }
  if(request.method!=='POST')throw new HttpError(405,'Choose a supported account-request action.')
  const body=await jsonBody(request)
- if(body.confirm!=='REQUEST'||typeof body.password!=='string'||body.password.length<15||body.password.length>128)throw new HttpError(400,'Enter your password and confirm the removal request.')
- const credential=await db.prepare("SELECT password FROM auth_accounts WHERE userId=? AND providerId='credential'").bind(owner.id).first<{password:string}>()
- if(!credential||!await verifyPassword({hash:credential.password,password:body.password}))throw new HttpError(403,'Your password was not accepted.')
+ if(body.confirm!=='REQUEST')throw new HttpError(400,'Confirm the removal request.')
+  await confirmAccount(db,owner.id,body,sessionCreatedAt)
  await db.prepare("INSERT OR IGNORE INTO account_removal_requests(id,user_id) VALUES(?,?)").bind(crypto.randomUUID(),owner.id).run()
  const row=await db.prepare("SELECT id,status,created_at,updated_at FROM account_removal_requests WHERE user_id=? AND status IN ('requested','reviewing')").bind(owner.id).first<{created_at:string}>()
  return response(row?withPrivacyDeadline(row):null,202)

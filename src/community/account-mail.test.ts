@@ -50,7 +50,7 @@ describe('account-mail failures and quotas',()=>{
   const {call,env}=await fixture(),messages:{from:string;to:string[];reply_to:string;subject:string;text:string}[]=[]
   env.APP_URL='https://modwerk.app/'
   vi.stubGlobal('fetch',vi.fn(async(_url:string,options:RequestInit)=>{messages.push(JSON.parse(String(options.body)));return Response.json({id:'accepted'})}))
-  const body={username:'newcomer',email:'newcomer@example.test',password}
+  const body={username:'newcomer',email:'newcomer@example.test',password,rulesVersion:COMMUNITY_RULES_VERSION}
   // After the cutover only the new site may start an account action, and nothing is sent for a refused origin.
   expect((await call('/auth/register','POST',body,'','','https://octamod.test')).status).toBe(403)
   expect(messages).toHaveLength(0)
