@@ -65,7 +65,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     return response({ok:true})
   }
   if ((match=path.match(/^\/api\/forum\/profiles\/([a-z0-9_]{3,24})$/)) && request.method === 'GET') {
-    const profile = await db.prepare('SELECT username,created_at FROM users WHERE username=? AND email_verified=1 AND suspended=0').bind(match[1]).first()
+    const profile = await db.prepare('SELECT username,display_name AS displayName,profile_bio AS bio,created_at FROM users WHERE username=? AND email_verified=1 AND suspended=0').bind(match[1]).first()
     if (!profile) throw new HttpError(404,'Profile not found.')
     return response(profile)
   }
