@@ -184,3 +184,10 @@
 .sidebar-empty-note { padding: 4px 11px 2px; color: var(--muted); font-size: 12px; }
 .sidebar-nav a.sidebar-standalone { margin-top: 6px; position: relative; }
 .sidebar-nav a.sidebar-standalone::before { content: ''; position: absolute; left: 11px; right: 11px; top: -4px; border-top: 1px solid var(--line); }
+
+.machine-library-actions { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: flex-end; align-items: center; }
+@media (max-width: 600px) {
+  .machine-section .library-subheading { flex-wrap: wrap; gap: 10px; }
+  .machine-library-actions { justify-content: flex-start; }
+  .machine-library-actions .text-button { min-height: 44px; }
+}
