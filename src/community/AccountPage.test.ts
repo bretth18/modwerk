@@ -26,6 +26,7 @@ describe('email action links in a signed-in browser',()=>{
   const html=render('account')
   expect(html).toContain('Your account')
   expect(html).toContain('Active sessions')
-  expect(html).toContain('Account removal')
+  expect(html).toContain('Edit your profile')
+  expect(html).toContain('Delete account')
  })
 })

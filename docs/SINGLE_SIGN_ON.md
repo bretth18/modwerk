@@ -1,0 +1,35 @@
+# Modwerk accounts and single sign-on
+
+The owner’s 4 October 2026 request supersedes the original guest-only Octamod policy. Visitors can read the library, module discussions and forum without signing in. Ratings, comments, forum interactions, issue reports and firmware composition require a verified account. Administrator access remains a separate backend authorization; visitor OAuth cannot grant it.
+
+Signup and login offer email/password, Google, GitHub and Discord. Social signup first asks for a public username. Provider names and photos never automatically become a public profile. The provider must supply a verified email address. Accounts with matching email addresses are not silently linked; use the original sign-in method for an existing account. Provider credentials for community SSO are separate from GitHub developer OAuth credentials.
+
+## Backend configuration
+
+Apply migration `0017_social_accounts.sql` after the current Modwerk migrations. Preserve the existing `AUTH_SECRET`, `SESSION_TRANSPORT`, `APP_URL`, `REGISTRATION_OPEN`, mail settings and independent administrator key.
+
+Set `AUTH_BASE_URL` to the canonical backend auth URL, for example `https://octamod-community.octamod.workers.dev/api/auth`. `APP_URL` remains the frontend URL, `https://modwerk.app/`. Register the following exact callback URLs with the providers, replacing the example backend if hosted elsewhere:
+
+| Provider | Callback URL | Worker credentials |
+| --- | --- | --- |
+| Google | `https://octamod-community.octamod.workers.dev/api/auth/callback/google` | `SSO_GOOGLE_CLIENT_ID`, `SSO_GOOGLE_CLIENT_SECRET` |
+| GitHub | `https://octamod-community.octamod.workers.dev/api/auth/callback/github` | `SSO_GITHUB_CLIENT_ID`, `SSO_GITHUB_CLIENT_SECRET` |
+| Discord | `https://octamod-community.octamod.workers.dev/api/auth/callback/discord` | `SSO_DISCORD_CLIENT_ID`, `SSO_DISCORD_CLIENT_SECRET` |
+
+Store client secrets only as Worker secrets. Never put them in `VITE_` variables, committed files or logs. A provider button stays disabled until its credentials, auth secret and backend URL are configured. Email sign-in remains available independently; social registration also respects `REGISTRATION_OPEN`.
+
+Better Auth performs the provider authorization-code exchange, state-cookie verification, PKCE and Google ID-token validation. A top-level visit to the API sets its own first-party state cookie, avoiding dependence on third-party cookies between GitHub Pages and the Worker. The frontend receives only a random, single-use, one-minute exchange code, whose hash is stored on the backend and which is bound to a private verifier in its originating tab. The signed member session is delivered through the existing session response header or same-origin HttpOnly cookies. Provider tokens are encrypted at rest. Only explicit facade routes are exposed.
+
+## Account page and builds
+
+Members can change their username, display name and optional bio, see their private email and sign-in methods, inspect active sessions and revoke other sessions. Deleting an account requires its password or a social sign-in in the preceding ten minutes, plus typing `DELETE`. One database transaction removes authentication and private account records, revokes sessions and anonymizes the retained discussion author. Discussions remain readable as “Deleted member”; pinned module source credits are preserved. Local configurations and firmware are unaffected.
+
+Signed-out build attempts open a keyboard-accessible sign-in/signup modal. The return route restores the configuration after authentication. Each actual build authorizes the current session with `/api/auth/build-access` immediately before local composition; that request contains no firmware. Changing accounts or signing out cancels an active build and prevents reuse of another account’s build state. Existing engine qualification and download gates remain in force.
+
+The Forum sidebar badge marks the new feature. Public reading remains available, while mutation routes independently enforce verified membership.
+
+## Verification
+
+`npm run check` runs application checks only. Social regression tests exercise all three actual provider adapters with synthetic HTTP responses, signed synthetic Google ID tokens and an in-memory database. They cover account creation/returning login, cookie/state enforcement, browser binding, expiry/replay, verified provider email, refused implicit account linking, provider configuration, public forum reading, member-only mutation/build access, profile isolation and account deletion. Live consent, callback registration and provider credential checks still need real provider configuration before rollout.
+
+Provider setup references: [Better Auth Google](https://www.better-auth.com/docs/authentication/google), [GitHub](https://www.better-auth.com/docs/authentication/github), [Discord](https://www.better-auth.com/docs/authentication/discord), and [OAuth state and linking](https://www.better-auth.com/docs/concepts/oauth).

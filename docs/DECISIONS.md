@@ -40,7 +40,7 @@ Require original or properly licensed sources and media, attribution, contributo
 
 ## Registered community and private administration — 3 October 2026
 
-The owner superseded the earlier guest-only/no-email decision: public reading stays account-free, while threads, replies, comments, ratings, likes and issue reports require a verified email account. Better Auth provides password hashing, verification, recovery and revocable sessions behind a restricted API facade. GitHub authentication stays on GitHub itself for pull requests.
+The owner superseded the earlier guest-only/no-email decision: public reading stays account-free, while threads, replies, comments, ratings, likes and issue reports require a verified account. On 4 October 2026 the owner also requested Google, GitHub and Discord community single sign-on, member-only firmware builds, editable public profiles and self-service account deletion. Better Auth provides password hashing, verification, social authentication, recovery and revocable sessions behind a restricted API facade. PR authentication happens on GitHub itself. See [account access and SSO](SINGLE_SIGN_ON.md).
 
 The forum has general discussion, module help, public bug reports and immutable shared configuration snapshots. Existing private issue reports remain private and are never migrated by matching display names. New accounts cannot claim historical guest content. Config snapshots contain only named module selections, versions and chooser settings; firmware stays local.
 

@@ -37,6 +37,6 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
 }
 export function post<T>(path: string, body: unknown, method = 'POST') { return api<T>(path, { method, headers: { 'Content-Type':'application/json' }, body: JSON.stringify(body) }) }
 export type CommunityUser = { id: string; displayName: string; username: string | null; verified: boolean }
-export type Session = { available: boolean; emailAvailable?: boolean; registrationAvailable?: boolean; admin: boolean; user: CommunityUser | null }
+export type Session = { available: boolean; emailAvailable?: boolean; registrationAvailable?: boolean; ssoProviders?: ('google' | 'github' | 'discord')[]; admin: boolean; user: CommunityUser | null }
 export type PublicMedia = { id: string; kind: 'image' | 'audio'; caption: string; capture_type: string }
 export type PublishedModule = { module_id: string; title: string; repository_url: string; description: string; usage: string; resource_notes: string; test_report_url: string; reviewed_at: string; added_at?: string | null; author: string }
