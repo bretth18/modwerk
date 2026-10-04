@@ -1,0 +1,37 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Explicit local evidence command. Never run in CI or a visitor build.
+import { readFile, writeFile, mkdir } from 'node:fs/promises'
+import { resolve, basename } from 'node:path'
+import { createHash } from 'node:crypto'
+import { readEle3Syx, mainImage, packMain, writeEle3Syx, verifyEle3Build, ELE3_DEVICES } from '../src/engine/elektron/ele3.ts'
+import { LINK_DEVICES, parseElemod, linkMods } from '../src/engine/elektron/elemod.ts'
+import { materializeModuleObject } from '../src/engine/elektron/module-object.ts'
+
+const args = process.argv.slice(2), values = name => args.flatMap((arg, i) => arg === name ? [args[i + 1]] : []), one = name => values(name)[0]
+if (!one('--packages') || !one('--out') || !values('--firmware').length) throw new Error('Usage: verify-elemod-core-probe.mjs --packages DIR --out LOCAL_DIR --firmware machine:stock.syx ...')
+const packages = resolve(one('--packages')), output = resolve(one('--out')), sha = b => createHash('sha256').update(b).digest('hex')
+const inventory = JSON.parse(await readFile(resolve(packages, 'core-build.json'), 'utf8')), cases = []
+if (inventory.schemaVersion !== 1 || inventory.stage !== 'boot-probe' || inventory.providesInterface !== false) throw new Error('Expected boot-only probe inventory')
+await mkdir(output, { recursive: true })
+for (const input of values('--firmware')) {
+  const colon = input.indexOf(':'), machine = input.slice(0, colon), path = input.slice(colon + 1), device = LINK_DEVICES.find(d => d.machine === machine)
+  if (!device || !path) throw new Error('Expected machine:path')
+  const raw = new Uint8Array(await readFile(path)), release = device.releases.find(r => r.syxSha256 === sha(raw))
+  if (!release) throw new Error('Unrecognized stock firmware')
+  const entry = inventory.artifacts.find(e => e.machine === machine && e.release === release.version)
+  if (!entry || entry.path !== 'cores/' + machine + '/' + release.version + '.json') throw new Error('Missing core probe')
+  const bytes = await readFile(resolve(packages, entry.path)), plan = JSON.parse(bytes.toString('utf8'))
+  if (sha(bytes) !== entry.sha256 || plan.provenance.sourceCommit !== inventory.sourceCommit || plan.id !== 'core' || plan.stage !== 'boot-probe' || plan.providesInterface !== false || plan.machine !== machine || plan.release !== release.version || plan.sites.length !== 1) throw new Error('Core probe identity/hash mismatch')
+  const container = readEle3Syx(raw), image = mainImage(container, ELE3_DEVICES[machine]), view = new DataView(image.buffer, image.byteOffset, image.byteLength)
+  const boot = Number(plan.sites[0].addr) - device.mainLoad, binding = plan.module.symbols.mw_stock_boot
+  if (view.getUint16(boot) !== 0x4eb9 || view.getUint32(boot + 2) !== Number(plan.stockBootTarget) || binding?.[0] !== 'abs' || binding[1] !== Number(plan.stockBootTarget)) throw new Error('Original boot call binding changed')
+  const linked = await linkMods([parseElemod(await materializeModuleObject(plan, image))], image)
+  const rebuilt = writeEle3Syx(container, packMain(linked.image), ELE3_DEVICES[machine], 'MW01')
+  const facts = verifyEle3Build(rebuilt, container, linked.image, ELE3_DEVICES[machine], 'MW01')
+  const name = machine + '-' + release.version + '-boot-probe.syx'
+  await writeFile(resolve(output, name), rebuilt)
+  const result = { machine, release: release.version, stock: basename(path), stockSha256: sha(raw), sourceCommit: inventory.sourceCommit, recipeSha256: entry.sha256,
+    stage: 'boot-probe', providesInterface: false, containerVerified: true, buildSha256: sha(rebuilt), imageSha256: sha(linked.image), layout: linked.layout, facts }
+  cases.push(result); console.log(machine + ' ' + release.version + ': boot-only probe container verified; emulator evidence still required')
+}
+await writeFile(resolve(output, 'boot-probes.json'), JSON.stringify({ sourceCommit: inventory.sourceCommit, cases }, null, 2) + '\n')

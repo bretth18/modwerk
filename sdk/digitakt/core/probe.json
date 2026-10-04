@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "machine": "digitakt",
+  "version": "0.1.0-dev",
+  "stage": "boot-probe",
+  "providesInterface": false,
+  "releases": {
+    "1.53": {
+      "boot": { "addr": "0x40000538", "len": 6, "stockSha256": "c1a3cde7400c8be664852277311dbf1b3ce0b613123e9380d9cfde178b1fe0ac", "target": "0x40001c94" }
+    },
+    "1.54": {
+      "boot": { "addr": "0x40000538", "len": 6, "stockSha256": "c1a3cde7400c8be664852277311dbf1b3ce0b613123e9380d9cfde178b1fe0ac", "target": "0x40001c94" }
+    }
+  }
+}

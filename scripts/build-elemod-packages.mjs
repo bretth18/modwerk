@@ -11,6 +11,7 @@ import { parseModwerkModule, parseElemodBuild } from '../src/catalog/module-cont
 import { resolveModuleFile } from '../src/catalog/module-folder.ts'
 import { LINK_DEVICES, parseElemod } from '../src/engine/elektron/elemod.ts'
 import { elfToElemod } from './elemod-elf.mjs'
+import { buildCoreProbes } from './build-elemod-cores.mjs'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2), outputIndex = args.indexOf('--output'), commitIndex = args.indexOf('--source-commit')
@@ -115,4 +116,5 @@ for (const machine of machines.filter(item => item.sdk?.platform === 'elemod')) 
   }
 }
 // Written last: a failed compilation never creates a complete package inventory.
+await buildCoreProbes({ root, output, sourceCommit, compiler, cflags, ldScript, run })
 await writeFile(resolve(output, 'elemod-build.json'), JSON.stringify({ schemaVersion: 1, sourceCommit, compiler, artifacts }, null, 2) + '\n')

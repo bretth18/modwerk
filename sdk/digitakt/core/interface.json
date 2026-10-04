@@ -44,7 +44,7 @@
     {
       "name": "core_machines",
       "entry": 4,
-      "purpose": "New SRC machines in slots 4–7; the OS lists, names, sets, loads and renders them as the stock machine they stand in for."
+      "purpose": "Pointers to six-long descriptors for SRC machine ids 4–127; the OS lists, names, sets, loads and renders them as the stock machine they stand in for."
     }
   ],
   "exports": [
@@ -55,8 +55,13 @@
     },
     {
       "name": "core_track_machine",
-      "prototype": "int core_track_machine(track)",
-      "purpose": "The machine slot a track is using."
+      "prototype": "unsigned char core_track_machine[8]",
+      "purpose": "Each track's own machine id as the render last took it."
+    },
+    {
+      "name": "core_machine",
+      "prototype": "const struct mw_machine *core_machine(int id)",
+      "purpose": "The added machine descriptor for an id, or zero."
     },
     {
       "name": "core_zero",

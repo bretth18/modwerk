@@ -53,22 +53,22 @@
   "tables": [
     {
       "name": "core_params",
-      "entry": 0,
+      "entry": 4,
       "purpose": "Parameter records for ids 182–184."
     },
     {
       "name": "core_pages",
-      "entry": 0,
+      "entry": 4,
       "purpose": "Mod pages 27–30."
     },
     {
       "name": "core_projdata",
-      "entry": 0,
+      "entry": 4,
       "purpose": "Blocks saved and loaded with the project."
     },
     {
       "name": "core_menu",
-      "entry": 0,
+      "entry": 4,
       "purpose": "Mod Menu entries: a name and an open function each."
     }
   ],
@@ -80,12 +80,12 @@
     },
     {
       "name": "core_page_open",
-      "prototype": "void core_page_open(page)",
+      "prototype": "int core_page_open(void *brain, void *event, int key, struct mw_page *page)",
       "purpose": "Open a mod page from a key handler."
     },
     {
       "name": "core_page_shown",
-      "prototype": "int core_page_shown(page)",
+      "prototype": "int core_page_shown(void *brain, const struct mw_page *page)",
       "purpose": "Whether a mod page is on screen."
     },
     {
