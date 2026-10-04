@@ -84,7 +84,7 @@
         ]
       },
       "resources": {
-        "memoryBytes": 9494,
+        "memoryBytes": 5672,
         "fastBytes": 0,
         "load": {
           "display": "Not measured in Modwerk yet",
@@ -124,6 +124,88 @@
         "repository": "https://github.com/irpina/digihealth",
         "revision": "6d2a95605901f4f5ea6301dbad16e573380331a6",
         "path": "."
+      },
+      "patchSites": {
+        "1.53": [
+          {
+            "addr": "0x40000438",
+            "len": 6
+          },
+          {
+            "addr": "0x400d52f0",
+            "len": 6
+          },
+          {
+            "addr": "0x40077e9a",
+            "len": 6
+          },
+          {
+            "addr": "0x40077f76",
+            "len": 6
+          },
+          {
+            "addr": "0x40077f8e",
+            "len": 6
+          },
+          {
+            "addr": "0x40077fa6",
+            "len": 6
+          },
+          {
+            "addr": "0x40077fc8",
+            "len": 6
+          },
+          {
+            "addr": "0x40077fd4",
+            "len": 6
+          },
+          {
+            "addr": "0x40078024",
+            "len": 6
+          },
+          {
+            "addr": "0x40078078",
+            "len": 6
+          },
+          {
+            "addr": "0x40078088",
+            "len": 6
+          },
+          {
+            "addr": "0x40078096",
+            "len": 6
+          },
+          {
+            "addr": "0x400780a4",
+            "len": 6
+          },
+          {
+            "addr": "0x400780e0",
+            "len": 6
+          },
+          {
+            "addr": "0x40078116",
+            "len": 6
+          },
+          {
+            "addr": "0x4007814a",
+            "len": 6
+          },
+          {
+            "addr": "0x40078366",
+            "len": 6
+          }
+        ],
+        "1.54": [
+          {
+            "addr": "0x40000438",
+            "len": 6
+          },
+          {
+            "addr": "0x400d5518",
+            "len": 6
+          }
+        ]
       }
     },
     {
@@ -219,7 +301,7 @@
         ]
       },
       "resources": {
-        "memoryBytes": 31529,
+        "memoryBytes": 26712,
         "fastBytes": 0,
         "load": {
           "display": "Not measured in Modwerk yet",
@@ -259,6 +341,84 @@
         "repository": "https://github.com/irpina/digineighbor",
         "revision": "d09574ab5fac8c079849e74c5c3efe129de54126",
         "path": "."
+      },
+      "patchSites": {
+        "1.53": [
+          {
+            "addr": "0x400657cc",
+            "len": 6
+          },
+          {
+            "addr": "0x4000fe8a",
+            "len": 10
+          },
+          {
+            "addr": "0x4000feac",
+            "len": 10
+          },
+          {
+            "addr": "0x4000f324",
+            "len": 8
+          },
+          {
+            "addr": "0x4000f2bc",
+            "len": 8
+          },
+          {
+            "addr": "0x40065794",
+            "len": 10
+          },
+          {
+            "addr": "0x400657ee",
+            "len": 10
+          },
+          {
+            "addr": "0x40077fba",
+            "len": 6
+          },
+          {
+            "addr": "0x40078142",
+            "len": 6
+          }
+        ],
+        "1.54": [
+          {
+            "addr": "0x400657cc",
+            "len": 6
+          },
+          {
+            "addr": "0x4000fe8a",
+            "len": 10
+          },
+          {
+            "addr": "0x4000feac",
+            "len": 10
+          },
+          {
+            "addr": "0x4000f324",
+            "len": 8
+          },
+          {
+            "addr": "0x4000f2bc",
+            "len": 8
+          },
+          {
+            "addr": "0x40065794",
+            "len": 10
+          },
+          {
+            "addr": "0x400657ee",
+            "len": 10
+          },
+          {
+            "addr": "0x40077fba",
+            "len": 6
+          },
+          {
+            "addr": "0x40078142",
+            "len": 6
+          }
+        ]
       }
     },
     {
@@ -384,7 +544,7 @@
         ]
       },
       "resources": {
-        "memoryBytes": 113304,
+        "memoryBytes": 92190,
         "fastBytes": 0,
         "load": {
           "display": "Not measured in Modwerk yet",
@@ -424,6 +584,196 @@
         "repository": "https://github.com/irpina/digislicer",
         "revision": "ac0c46d8607205352adcd0f49fb09a4736edda17",
         "path": "."
+      },
+      "patchSites": {
+        "1.53": [
+          {
+            "addr": "0x40074df2",
+            "len": 6
+          },
+          {
+            "addr": "0x4005fa2e",
+            "len": 8
+          },
+          {
+            "addr": "0x401848dc",
+            "len": 4
+          },
+          {
+            "addr": "0x4000ff20",
+            "len": 6
+          },
+          {
+            "addr": "0x400100c4",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f534",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f5fc",
+            "len": 6
+          },
+          {
+            "addr": "0x4005f91c",
+            "len": 8
+          },
+          {
+            "addr": "0x4006060a",
+            "len": 8
+          },
+          {
+            "addr": "0x40075282",
+            "len": 6
+          },
+          {
+            "addr": "0x400759dc",
+            "len": 6
+          },
+          {
+            "addr": "0x400760ba",
+            "len": 8
+          },
+          {
+            "addr": "0x40028f3c",
+            "len": 8
+          },
+          {
+            "addr": "0x400a16c4",
+            "len": 8
+          },
+          {
+            "addr": "0x40029d64",
+            "len": 6
+          },
+          {
+            "addr": "0x4002965a",
+            "len": 24
+          },
+          {
+            "addr": "0x40025338",
+            "len": 6
+          },
+          {
+            "addr": "0x40025344",
+            "len": 6
+          },
+          {
+            "addr": "0x400299b2",
+            "len": 6
+          },
+          {
+            "addr": "0x400a2042",
+            "len": 6
+          },
+          {
+            "addr": "0x400d553e",
+            "len": 8
+          },
+          {
+            "addr": "0x40008d40",
+            "len": 6
+          },
+          {
+            "addr": "0x40008904",
+            "len": 6
+          }
+        ],
+        "1.54": [
+          {
+            "addr": "0x40074df2",
+            "len": 6
+          },
+          {
+            "addr": "0x4005fa2e",
+            "len": 8
+          },
+          {
+            "addr": "0x40184bdc",
+            "len": 4
+          },
+          {
+            "addr": "0x4000ff20",
+            "len": 6
+          },
+          {
+            "addr": "0x400100c4",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f534",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f5fc",
+            "len": 6
+          },
+          {
+            "addr": "0x4005f91c",
+            "len": 8
+          },
+          {
+            "addr": "0x4006060a",
+            "len": 8
+          },
+          {
+            "addr": "0x40075282",
+            "len": 6
+          },
+          {
+            "addr": "0x400759dc",
+            "len": 6
+          },
+          {
+            "addr": "0x400760ba",
+            "len": 8
+          },
+          {
+            "addr": "0x40028f3c",
+            "len": 8
+          },
+          {
+            "addr": "0x400a1820",
+            "len": 8
+          },
+          {
+            "addr": "0x40029d64",
+            "len": 6
+          },
+          {
+            "addr": "0x4002965a",
+            "len": 24
+          },
+          {
+            "addr": "0x40025338",
+            "len": 6
+          },
+          {
+            "addr": "0x40025344",
+            "len": 6
+          },
+          {
+            "addr": "0x400299b2",
+            "len": 6
+          },
+          {
+            "addr": "0x400a219e",
+            "len": 6
+          },
+          {
+            "addr": "0x400d5766",
+            "len": 8
+          },
+          {
+            "addr": "0x40008d40",
+            "len": 6
+          },
+          {
+            "addr": "0x40008904",
+            "len": 6
+          }
+        ]
       }
     },
     {
@@ -539,7 +889,7 @@
         ]
       },
       "resources": {
-        "memoryBytes": 17885,
+        "memoryBytes": 8722,
         "fastBytes": 0,
         "load": {
           "display": "Not measured in Modwerk yet",
@@ -579,6 +929,78 @@
         "repository": "https://github.com/soejrd/digisophie",
         "revision": "961c39cec699e8f8940391634aaba9fad7120792",
         "path": "."
+      },
+      "patchSites": {
+        "1.53": [
+          {
+            "addr": "0x400657cc",
+            "len": 6
+          },
+          {
+            "addr": "0x4000fe8a",
+            "len": 10
+          },
+          {
+            "addr": "0x4000feac",
+            "len": 10
+          },
+          {
+            "addr": "0x40060b8e",
+            "len": 6
+          },
+          {
+            "addr": "0x400a4374",
+            "len": 6
+          },
+          {
+            "addr": "0x400a43f0",
+            "len": 6
+          },
+          {
+            "addr": "0x40065de6",
+            "len": 6
+          },
+          {
+            "addr": "0x40065e5e",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f324",
+            "len": 8
+          },
+          {
+            "addr": "0x4000f2bc",
+            "len": 8
+          },
+          {
+            "addr": "0x40065794",
+            "len": 10
+          },
+          {
+            "addr": "0x400657ee",
+            "len": 10
+          },
+          {
+            "addr": "0x4000ff20",
+            "len": 6
+          },
+          {
+            "addr": "0x400100c4",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f534",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f5fc",
+            "len": 6
+          },
+          {
+            "addr": "0x40077fba",
+            "len": 6
+          }
+        ]
       }
     },
     {
@@ -654,7 +1076,7 @@
         ]
       },
       "resources": {
-        "memoryBytes": 7163,
+        "memoryBytes": 4500,
         "fastBytes": 0,
         "load": {
           "display": "Not measured in Modwerk yet",
@@ -694,6 +1116,18 @@
         "repository": "https://github.com/irpina/digihealth",
         "revision": "6d2a95605901f4f5ea6301dbad16e573380331a6",
         "path": "dn1"
+      },
+      "patchSites": {
+        "1.43": [
+          {
+            "addr": "0x40000438",
+            "len": 6
+          },
+          {
+            "addr": "0x400ea880",
+            "len": 6
+          }
+        ]
       }
     }
   ]

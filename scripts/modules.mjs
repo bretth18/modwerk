@@ -70,7 +70,9 @@ for(const machine of machineProfiles.filter(profile=>profile.sdk?.platform==='el
   for(const path of ['README.md',document.tests.report,document.license.file,...build.sources,...media,...reports])await readFile(await file(folder,path)).catch(()=>{throw new Error(label+': missing '+path)})
   for(const path of await walk(folder))if(/\.(bin|syx|elemod|exe|dll|so|dylib|zip|img|hex)$/i.test(path))throw new Error('Prohibited firmware/binary file: '+label+'/'+path)
   if(published.some(item=>item.id===document.id)){try{requireModwerkPublication(document)}catch(error){throw new Error(label+': '+error.message,{cause:error})}}
-  machineDocuments.push(document);machineModules++
+  // Only addresses and lengths are needed by the planner; never include stock bytes.
+  const patchSites=Object.fromEntries(Object.entries(build.releases).map(([release,value])=>[release,[...value.sites,...(build.derive?.release===release?build.derive.callSites:[])].map(({addr,len})=>({addr,len}))]))
+  machineDocuments.push({...document,patchSites});machineModules++
  }
 }
 // The website lists every machine's modules from the same validated folders.
