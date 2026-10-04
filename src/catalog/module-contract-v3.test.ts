@@ -68,4 +68,13 @@ describe('module contract v3', () => {
     expect(compareCoreVersions('2.10', '2.9')).toBeGreaterThan(0)
     expect(compareCoreVersions('2.1', '2.1')).toBe(0)
   })
+
+  it('validates generated string symbols and explicitly supported local derivation ports', () => {
+    const document = parse(template())
+    const build = JSON.parse(readFileSync(resolve('sdk/templates/elemod/build.json'), 'utf8').replace('__RELEASE__', '1.54'))
+    expect(parseElemodBuild({ ...build, strings: { str_name: 'Proof 1.0' } }, document).strings).toEqual({ str_name: 'Proof 1.0' })
+    expect(() => parseElemodBuild({ ...build, strings: { 'bad symbol': 'Proof' } }, document)).toThrow('C symbol')
+    const derive = { kind: 'fast_audio', note: 'Synthetic', release: '1.54', releases: ['1.53'], block: ['0x40001000', '0x40001008'], sram: ['0x80003360', '0x80008000'], callSites: [] }
+    expect(() => parseElemodBuild({ ...build, derive }, document)).toThrow('supported releases including the base')
+  })
 })
