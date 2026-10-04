@@ -86,7 +86,7 @@
     ]
   },
   "resources": {
-    "memoryBytes": 9494,
+    "memoryBytes": 5672,
     "fastBytes": 0,
     "load": {
       "display": "Not measured in Modwerk yet",
