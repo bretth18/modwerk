@@ -3,7 +3,8 @@ import type { StoredFirmware } from '../../storage/device'
 import type { DigiFirmwareClient } from './firmware-client'
 import type { DigiFirmwareInspection, DigiMachine } from './firmware'
 
-export type DigiFirmwareView = { state: 'restoring' | 'empty' | 'reading' | 'ready'; firmware?: DigiFirmwareInspection; saved?: boolean; error?: string; storageError?: string }
+// `file` is the verified original, kept in memory for local builds only.
+export type DigiFirmwareView = { state: 'restoring' | 'empty' | 'reading' | 'ready'; firmware?: DigiFirmwareInspection; file?: File; saved?: boolean; error?: string; storageError?: string }
 type FirmwareStorage = {
   readFirmware(machine: DigiMachine): Promise<StoredFirmware | undefined>
   saveFirmware(file: File, machine: DigiMachine): Promise<void>
@@ -33,8 +34,9 @@ export function createDigiFirmwareSession(machine: DigiMachine, client: DigiFirm
       if (!stored) { update({ state: 'empty' }); return }
       try {
         if (!(stored.blob instanceof Blob) || typeof stored.name !== 'string') throw new Error('Invalid saved file.')
-        const firmware = await client.inspect(machine, new File([stored.blob], stored.name))
-        if (!closed && initial === generation) update({ state: 'ready', firmware, saved: true })
+        const file = new File([stored.blob], stored.name)
+        const firmware = await client.inspect(machine, file)
+        if (!closed && initial === generation) update({ state: 'ready', firmware, file, saved: true })
       } catch {
         if (closed || initial !== generation) return
         await persist(async current => { if (!closed && initial === generation) await current.forgetFirmware(machine) })
@@ -53,13 +55,13 @@ export function createDigiFirmwareSession(machine: DigiMachine, client: DigiFirm
       try {
         const firmware = await client.inspect(machine, file)
         if (closed || current !== generation) return
-        update({ state: 'ready', firmware, storageError: view.storageError })
+        update({ state: 'ready', firmware, file, storageError: view.storageError })
         try {
           let saved = false
           await persist(async store => { if (!closed && current === generation) { await store.saveFirmware(file, machine); saved = true } })
-          if (!closed && current === generation && saved) update({ state: 'ready', firmware, saved: true })
+          if (!closed && current === generation && saved) update({ state: 'ready', firmware, file, saved: true })
         } catch {
-          if (!closed && current === generation) update({ state: 'ready', firmware, storageError: 'Verified for this session. This browser could not save the file.' })
+          if (!closed && current === generation) update({ state: 'ready', firmware, file, storageError: 'Verified for this session. This browser could not save the file.' })
         }
       } catch (error) {
         if (!closed && current === generation) update({ ...view, state: view.firmware ? 'ready' : 'empty', error: error instanceof Error ? error.message : 'Could not read this firmware.' })

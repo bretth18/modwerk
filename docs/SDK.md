@@ -34,7 +34,7 @@ To add a machine, follow [Add a machine](ADD_A_MACHINE.md).
 | `octabam` | Octatrack MKI/MKII (OS 1.40C) | octabam's platform runtime and stock-loader hooks; DSP effects and ColdFire modules composed by Modwerk's browser engine | [Octatrack](../sdk/machines/octatrack/README.md) |
 | `elemod` | Digitakt mk1 (1.53, 1.54), Digitone mk1 and Keys (1.43, 1.44) | one core per machine with shared events (the hook bus), linked into one image; interoperable with the `.elemod` format | [Digitakt](../sdk/machines/digitakt/README.md), [Digitone](../sdk/machines/digitone/README.md) |
 
-Modwerk builds Digitakt and Digitone firmware with its own TypeScript linker and OS writer, and its own core. Each core's contract is `sdk/<machine>/core/interface.json`: the events, tables and exports it provides. `npm run modules:check` rejects modules that use anything else, so mods written for an interface link with the core unchanged. elekloader serves only as a local reference to compare output bytes, as octabam's native builder does for the Octatrack.
+For the combined launch, Modwerk builds Digitakt and Digitone firmware with elekloader's builder, vendored unchanged at a pinned commit and run in the owner's browser ([vendor/elekloader](../vendor/elekloader/README.md)). Modwerk's own TypeScript linker, OS writer and core are frozen until work on them resumes; their target is a builder that matches elekloader's online builder. Each core's contract is `sdk/<machine>/core/interface.json`: the events, tables and exports it provides. `npm run modules:check` rejects modules that use anything else, so mods written for an interface link unchanged.
 
 ## Modules
 

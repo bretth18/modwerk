@@ -47,3 +47,19 @@ export async function renderLicenseNotices(root) {
     manifest.noticeSources].join('\n')
   return header + '\n\n' + sections.join('\n\n' + '='.repeat(72) + '\n\n') + '\n'
 }
+
+/** Notices for the vendored Digitakt/Digitone builder (vendor/licenses), kept out of the Octatrack SDK tree. */
+export async function renderVendorNotices(root) {
+  const folder = resolve(root, 'vendor/licenses')
+  const manifest = JSON.parse(await readFile(resolve(folder, 'manifest.json'), 'utf8'))
+  if (manifest.schemaVersion !== 1 || !Array.isArray(manifest.components) || !manifest.components.length) throw new Error('Invalid vendored licence inventory')
+  const sections = [], seen = new Set()
+  for (const component of manifest.components) {
+    if (seen.has(component.id) || !/^[a-z0-9-]+\.txt$/.test(component.noticeFile) || !component.spdx || !component.sources?.length || !component.usedIn?.length) throw new Error('Invalid component notice: ' + component.id)
+    seen.add(component.id)
+    const notice = (await readFile(resolve(folder, component.noticeFile), 'utf8')).trimEnd()
+    if (!notice.includes('Copyright') || notice.length < 500) throw new Error('Incomplete component notice: ' + component.id)
+    sections.push([component.name, 'SPDX: ' + component.spdx, 'Used in: ' + component.usedIn.join('; '), ...component.sources.map(source => 'Notice source: ' + (source.url ?? source.path)), '', notice].join('\n'))
+  }
+  return sections.join('\n\n' + '='.repeat(72) + '\n\n') + '\n'
+}

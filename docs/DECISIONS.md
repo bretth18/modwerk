@@ -84,3 +84,13 @@ The owner expanded the project from the Octatrack to every Elektron machine. The
 - **Downloads** for a machine stay disabled until its engine and core pass verification. Digitakt and Digitone builds must work at the combined launch.
 - **Contributions** remain pull requests reviewed and merged by the owner. Maintainers named in a manifest are a module's contacts. There are no automatic merges for now.
 - **Licence:** Modwerk's own code is GPL-3.0-or-later. Vendored components and modules keep their licences.
+
+## Digitakt/Digitone builds use elekloader's builder — 4 October 2026
+
+The owner froze Modwerk's own Digitakt/Digitone builder and chose elekloader's builder for the combined launch, so work can focus on the interface and the launch.
+
+- **Vendored builder.** [`vendor/elekloader`](../vendor/elekloader/README.md) holds elekloader's unchanged Python package and web bridge at a pinned commit, its release cores and the five shop mods' author release files, each pinned by SHA-256. Pyodide runs it in a browser worker that loads only from the site. Owners' files stay in their browser.
+- **Parity target.** Builds must match elekloader's online builder. Modwerk keeps its own interface; elekloader's site is not copied.
+- **Own builder later.** The original core and TypeScript engine stay frozen at their recorded state ([verification record](VERIFICATION.md)). Work resumes later with the same target: a builder that matches elekloader's online builder.
+- **Downloads** of Digitakt/Digitone files need the owner's separate approval. Checking and building already run locally.
+- **Licences.** elekloader, the cores and DIGISLICER, NEIGHBOR and digihealth are GPL-2.0-or-later; SOPHIE is MIT; Pyodide is MPL-2.0 with CPython under the PSF licence. Their notices ship with the site. Modwerk stays GPL-3.0-or-later.

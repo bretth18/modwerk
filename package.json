@@ -21,6 +21,7 @@
     "deploy:pages": "npm run build && wrangler pages deploy",
     "machines:generate": "node scripts/machines.mjs --write",
     "machines:check": "node scripts/machines.mjs",
+    "elekloader:check": "node scripts/elekloader-vendor.ts",
     "modules:generate": "node scripts/modules.mjs --write",
     "modules:check": "node scripts/modules.mjs",
     "licenses:generate": "node scripts/licenses.mjs --write",
@@ -35,6 +36,7 @@
   },
   "dependencies": {
     "better-auth": "1.7.7",
+    "pyodide": "314.0.7",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },

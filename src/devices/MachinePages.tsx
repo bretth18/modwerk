@@ -11,6 +11,7 @@ import { DEVICES, DEVICES_BY_ID, DEVICE_STEPS, STATUS_LABELS, deviceHref, device
 import { DIGI_CORES, DIGI_MODS, categorySlug, estimateCombination, type DigiMod } from './digi-mods'
 import { useDigiFirmware } from '../hooks/useDigiFirmware'
 import { DigiFirmwarePanel } from '../components/DigiFirmwarePanel'
+import { DigiBuildPanel } from '../components/DigiBuildPanel'
 
 type DigiDevice = DeviceProfile & { id: DigiMod['device'] }
 const STEP_LABELS = { done: 'Done', started: 'Started', open: 'Open' } as const
@@ -104,12 +105,12 @@ export function DigiLibrary({ device, category, query, selectedIds, onToggle }: 
   return (
     <div className="library-page">
       <div className="page-heading"><div><p className="page-kicker">MODWERK / {device.name.toUpperCase()}</p><h1>{label ?? 'Module library'}</h1><p>{category === 'standalone' ? STANDALONE_NOTE : device.summary}</p></div><span className="library-total">{mods.length} modules</span></div>
-      <p className="device-preview-note"><Icon name="lock" size={14} />Preview: plan configurations now. Modwerk cannot build {device.name} firmware yet.</p>
+      <p className="device-preview-note"><Icon name="lock" size={14} />Preview: check and build {device.name} firmware in your browser. Downloads open after review.</p>
       {(!estimate.fits || estimate.clashes.length > 0) && <a className="selection-conflict-link" href={deviceHref(device.id, 'configuration')}><Icon name="sliders" size={18} /><span><strong>Your selection needs a change</strong><small>{estimate.fits ? 'The selected mods cannot be used together.' : 'The selected mods need more memory than the ' + device.name + ' shares with mods.'}</small></span><Icon name="arrow" size={18} /></a>}
       <div className="library-subheading"><span>{term ? 'Results for “' + query.trim() + '”' : 'Explore the collection'}</span><span className="subtle">{device.name} · OS {device.firmware?.releases.join(' / ')}</span></div>
       <div className="module-grid">{mods.map(mod => <DigiModCard key={mod.id} mod={mod} selected={selectedIds.includes(mod.id)} onToggle={() => onToggle(mod.id)} />)}</div>
       {!mods.length && <div className="no-results"><Icon name="search" size={30} /><h2>{term ? 'No modules found' : 'No ' + device.name + ' modules here yet'}</h2><p>{term ? 'Try another name or author.' : 'Browse all ' + device.name + ' modules, or help write the first one.'}</p><a className="button button-quiet" href={deviceHref(device.id)}>All {device.name} modules</a></div>}
-      <div className="library-note"><span className="status-dot" /><p>Listed from each author’s public release with credit and licence. Modwerk has not built or reviewed these mods yet.</p></div>
+      <div className="library-note"><span className="status-dot" /><p>Built from each author’s pinned public release, with credit and licence.</p></div>
     </div>
   )
 }
@@ -175,6 +176,7 @@ export function DigiConfiguration({ device, configuration, configurations, onSel
         <DigiFirmwarePanel name={device.name} releases={device.firmware?.releases ?? []} firmware={firmware} />
         {device.firmware && <dl className="device-facts"><dt>Flash</dt><dd>{device.firmware.flash}</dd><dt>Recover</dt><dd>{device.firmware.recovery}</dd></dl>}
       </section>
+      <DigiBuildPanel device={device} firmware={firmware} moduleIds={ids} />
     </div>
   )
 }

@@ -36,7 +36,7 @@ Claim named resources (a machine slot, a SETTINGS row, a SysEx id, a +Drive path
 
 ## Toolchain
 
-m68k-elf GCC and binutils for ColdFire, and Modwerk's elemod linker and OS writer (in development). Modwerk writes its own core; its contract is [core/interface.json](../../digitakt/core/interface.json), and `npm run modules:check` rejects modules that use anything it does not provide.
+m68k-elf GCC and binutils for ColdFire, and elekloader's builder, which Modwerk runs in the browser for the launch ([vendor/elekloader](../../../vendor/elekloader/README.md)). Modwerk's own linker, OS writer and core are frozen until work resumes; the core's contract is [core/interface.json](../../digitakt/core/interface.json), and `npm run modules:check` rejects modules that use anything it does not provide.
 
 ## Flash and recover
 

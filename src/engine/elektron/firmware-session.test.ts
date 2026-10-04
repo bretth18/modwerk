@@ -20,7 +20,7 @@ describe('local machine firmware session', () => {
     test.store.readFirmware.mockResolvedValue({ name: 'synthetic.syx', blob: file() })
     test.open.resolve(test.store); await test.session.ready
     expect(test.client.inspect).toHaveBeenCalledWith('digitone', expect.any(File))
-    expect(test.latest()).toEqual({ state: 'ready', firmware: facts('synthetic.syx', 'digitone'), saved: true })
+    expect(test.latest()).toEqual({ state: 'ready', firmware: facts('synthetic.syx', 'digitone'), file: expect.any(File), saved: true })
     expect(test.store.saveFirmware).not.toHaveBeenCalled()
     test.session.dispose()
   })
@@ -69,7 +69,7 @@ describe('local machine firmware session', () => {
     test.client.inspect.mockReturnValueOnce(first.promise).mockReturnValueOnce(second.promise)
     const earlier = test.session.inspect(file('earlier.syx')), later = test.session.inspect(file('later.syx'))
     second.resolve(facts('later.syx')); await later; first.resolve(facts('earlier.syx')); await earlier
-    expect(test.latest()).toEqual({ state: 'ready', firmware: facts('later.syx'), saved: true })
+    expect(test.latest()).toEqual({ state: 'ready', firmware: facts('later.syx'), file: expect.objectContaining({ name: 'later.syx' }), saved: true })
     expect(test.store.saveFirmware).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ name: 'later.syx' }), 'digitakt')
     test.session.dispose()
   })

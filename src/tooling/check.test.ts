@@ -38,8 +38,8 @@ it('keeps every independent check mandatory and waits for all their results', ()
   for (const failure of ['sdk:check', 'lint', 'test', 'build:bundle', '']) {
     const result = check(failure)
     expect(result.status).toBe(failure ? 1 : 0)
-    expect(result.scripts.slice(0, 6)).toEqual(['licenses:check', 'machines:check', 'modules:check', 'licenses:generate', 'machines:generate', 'modules:generate'])
-    expect(result.scripts.slice(6).sort()).toEqual(['build:bundle', 'lint', 'sdk:check', 'test', 'typecheck'])
+    expect(result.scripts.slice(0, 7)).toEqual(['licenses:check', 'machines:check', 'modules:check', 'elekloader:check', 'licenses:generate', 'machines:generate', 'modules:generate'])
+    expect(result.scripts.slice(7).sort()).toEqual(['build:bundle', 'lint', 'sdk:check', 'test', 'typecheck'])
     expect(result.scripts.indexOf('build:bundle')).toBeGreaterThan(result.scripts.indexOf('typecheck'))
   }
 })
