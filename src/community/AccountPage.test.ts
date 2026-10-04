@@ -32,6 +32,12 @@ describe('email action links in a signed-in browser',()=>{
   expect(html).toContain('Edit your profile')
   expect(html).toContain('Delete account')
  })
+ it.each(['account/sso/synthetic-private-code','account/sso'])('keeps %s in the social return flow through a session refresh',route=>{
+  const html=render(route)
+  expect(html).toContain('Completing sign-in')
+  expect(html).not.toContain('Your account')
+  expect(html).not.toContain('synthetic-private-code')
+ })
 })
 describe('developer account verification',()=>{
  it('offers verification on the account page without exposing the workspace to regular members',()=>{
