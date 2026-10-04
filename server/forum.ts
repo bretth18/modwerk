@@ -3,6 +3,7 @@ import { ADMIN_ACTOR, needMember, throttle } from './auth'
 import { HttpError, jsonBody, required, response } from './security'
 import { FORUM_CATEGORIES, forumMachine, sharedConfiguration } from '../src/community/forum-contract'
 import { communityModule } from '../src/community/modules'
+import { notifyBugDevelopers } from './bug-reports'
 
 type Thread = {id:string;user_id:string;locked:number;hidden:number;configuration_json:string|null;issue_json:string|null}
 function page(url: URL) { const value = Number(url.searchParams.get('page') ?? 0); if (!Number.isInteger(value) || value < 0 || value > 10000) throw new HttpError(400,'Invalid page.'); return value }
@@ -105,6 +106,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
       db.prepare('INSERT INTO forum_threads(id,user_id,title,category,machine,module_id,configuration_json,issue_json) VALUES(?,?,?,?,?,?,?,?)').bind(id,member.id,title,body.category,machine ?? moduleMachine ?? configMachine,module,config?JSON.stringify(config):null,issue?JSON.stringify(issue):null),
       db.prepare('INSERT INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').bind(postId,id,member.id,content),
       db.prepare('INSERT INTO forum_follows(thread_id,user_id) VALUES(?,?)').bind(id,member.id),
+      ...(body.category==='issues'?notifyBugDevelopers(db,module,id,postId,member.id):[]),
     ])
     return response({id},201)
   }
@@ -131,7 +133,10 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     if(action==='status'&&request.method==='PATCH'){
       if(thread.user_id!==member.id&&!admin)throw new HttpError(403,'Only the thread author or administrator can change its status.')
       if(!['open','resolved'].includes(String(body.status)))throw new HttpError(400,'Choose open or resolved.')
-      await db.prepare('UPDATE forum_threads SET status=? WHERE id=? AND category=\'issues\'').bind(body.status,thread.id).run()
+      await db.batch([
+        db.prepare('UPDATE forum_threads SET status=? WHERE id=? AND category=\'issues\'').bind(body.status,thread.id),
+        db.prepare('UPDATE issues SET status=? WHERE forum_thread_id=?').bind(body.status==='resolved'?'closed':'open',thread.id),
+      ])
       return response({ok:true})
     }
   }

@@ -1,4 +1,5 @@
 import { forum } from './forum'
+import { notifyBugDevelopers, publicBugDetails } from './bug-reports'
 import { developerAuthentication, developerUser } from './developer-auth'
 import { developerApi } from './developers'
 import { communityModule } from '../src/community/modules'
@@ -91,7 +92,9 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       const owner=needMember(user)
       await knownModule(db,match[1]);const body=await jsonBody(request,OT_LOG_MAX_BYTES+32*1024)
       if(typeof body.steps!=='string'&&typeof body.body==='string')throw new HttpError(400,'Issue reports now include structured device details. Reload the page and report again.')
-      if(Object.keys(body).some(key=>!['title','steps','expected','actual','context','log','logMissing','maintainerSharing','displayName'].includes(key)))throw new HttpError(400,'Unexpected report field. Files and firmware are not accepted.')
+      if(Object.keys(body).some(key=>!['title','steps','expected','actual','context','log','logMissing','maintainerSharing','displayName','visibility'].includes(key)))throw new HttpError(400,'Unexpected report field. Files and firmware are not accepted.')
+      if(body.visibility!==undefined&&body.visibility!=='forum'&&body.visibility!=='private')throw new HttpError(400,'Choose a public forum report or a private report.')
+      const publicReport=body.visibility==='forum'
       const title=required(body.title,'Issue title',160),steps=required(body.steps,'Steps to reproduce',3000),expected=required(body.expected,'Expected result',1000),actual=required(body.actual,'Actual result',2000)
       const module=communityModule(match[1]),digi=module?.machine==='digitakt'||module?.machine==='digitone'
       const context=issueInput(()=>digi?validateDigiIssueContext(body.context,module.machine):validateIssueContext(body.context))
@@ -112,15 +115,21 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if(!author)throw new HttpError(400,'No author is registered for this module.')
       await throttle(db,'issue-member:'+owner.id,10)
       const id=crypto.randomUUID(),details='Steps to reproduce:\n'+steps+'\n\nExpected:\n'+expected+'\n\nActual:\n'+actual
-      const statements=[db.prepare('INSERT INTO issues(id,module_id,author_login,reporter_id,title,body,context_json,log_missing,log_missing_note,github_state,maintainer_sharing) VALUES(?,?,?,?,?,?,?,?,?,?,?)').bind(id,match[1],author,owner.id,title,details,JSON.stringify(context),missing?.reason??null,missing?.note??'','none',Number(body.maintainerSharing===true))]
+      const threadId=publicReport?crypto.randomUUID():null,postId=crypto.randomUUID()
+      const statements=threadId?[
+        db.prepare('INSERT INTO forum_threads(id,user_id,title,category,machine,module_id,issue_json) VALUES(?,?,?,\'issues\',?,?,?)').bind(threadId,owner.id,title,module?.machine??'octatrack',match[1],JSON.stringify(publicBugDetails(match[1],context,log,steps,expected,actual))),
+        db.prepare('INSERT INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').bind(postId,threadId,owner.id,details),
+        db.prepare('INSERT INTO forum_follows(thread_id,user_id) VALUES(?,?)').bind(threadId,owner.id),
+        ...notifyBugDevelopers(db,match[1],threadId,postId,owner.id),
+      ]:[]
+      statements.push(db.prepare('INSERT INTO issues(id,module_id,author_login,reporter_id,title,body,context_json,log_missing,log_missing_note,github_state,maintainer_sharing,forum_thread_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').bind(id,match[1],author,owner.id,title,details,JSON.stringify(context),missing?.reason??null,missing?.note??'','none',Number(publicReport||body.maintainerSharing===true),threadId))
       if(log)statements.push(db.prepare('INSERT INTO issue_logs(issue_id,text,bytes,summary_json) VALUES(?,?,?,?)').bind(id,log.text,log.text.length,JSON.stringify(log.summary)))
       await db.batch(statements)
-      // Account reports stay private, even when GitHub credentials are configured.
-      return response({ok:true,author,github:'none',githubUrl:null},201)
+      return response({ok:true,id,author,forumThreadId:threadId,github:'none',githubUrl:null},201)
     }
     if(path==='/api/issues/mine'&&request.method==='GET'){
       if(!user)return response([])
-      return response((await db.prepare('SELECT id,module_id,author_login,title,body,status,created_at,github_url,public_sharing,maintainer_sharing FROM issues WHERE reporter_id=? ORDER BY created_at DESC LIMIT 100').bind(user.id).all()).results)
+      return response((await db.prepare('SELECT id,module_id,author_login,title,body,status,created_at,github_url,public_sharing,maintainer_sharing,forum_thread_id FROM issues WHERE reporter_id=? ORDER BY created_at DESC LIMIT 100').bind(user.id).all()).results)
     }
     if (path.startsWith('/api/admin/')) {
       if (!admin) throw new HttpError(403,'Administrator access is required.')
@@ -148,8 +157,12 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if ((match=path.match(/^\/api\/admin\/issues\/([^/]+)$/)) && request.method === 'PATCH') {
         const body=await jsonBody(request)
         if(body.status!=='open'&&body.status!=='closed')throw new HttpError(400,'Choose open or closed.')
-        const issue=await db.prepare('UPDATE issues SET status=? WHERE id=? RETURNING github_number').bind(body.status,match[1]).first<{github_number:number|null}>()
+        const issue=await db.prepare('SELECT github_number FROM issues WHERE id=?').bind(match[1]).first<{github_number:number|null}>()
         if(!issue)throw new HttpError(404,'Issue not found.')
+        await db.batch([
+          db.prepare('UPDATE issues SET status=? WHERE id=?').bind(body.status,match[1]),
+          db.prepare('UPDATE forum_threads SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=(SELECT forum_thread_id FROM issues WHERE id=?)').bind(body.status==='closed'?'resolved':'open',match[1]),
+        ])
         // Keep the GitHub issue in step; the local status is authoritative for the reporter either way.
         const config=githubConfig(env);let github='none'
         if(config&&issue.github_number){try{await setGithubIssueState(config,issue.github_number,body.status);github='synced'}catch{github='failed'}}
