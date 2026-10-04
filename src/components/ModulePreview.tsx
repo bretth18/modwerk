@@ -1,4 +1,4 @@
-import { DETAILS } from '../catalog/details'
+import { DETAILS } from '../catalog/details.ts'
 
 function sine(offset: number, amplitude = 30, frequency = 2.2) {
   return Array.from({ length: 121 }, (_, i) => {
