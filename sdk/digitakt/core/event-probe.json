@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "machine": "digitakt",
+  "version": "0.3.0-dev",
+  "stage": "event-hook-probe",
+  "providesInterface": false,
+  "releases": {
+    "1.53": {
+      "boot": {
+        "addr": "0x40000538",
+        "len": 6,
+        "stockSha256": "c1a3cde7400c8be664852277311dbf1b3ce0b613123e9380d9cfde178b1fe0ac",
+        "target": "0x40001c94"
+      },
+      "hooks": {
+        "tick": {
+          "addr": "0x4000a770",
+          "len": 6,
+          "target": "0x400ca34c",
+          "stockSha256": "13ab557aaee5d356f2db123a198e1ffd86d3eff36974fe4b51d29956271f3a79"
+        },
+        "draw": {
+          "addr": "0x4000a7d6",
+          "len": 6,
+          "target": "0x400ca382",
+          "stockSha256": "12b965b9100a691a982969e270fc3e67aa394915187f4e4644d76f89470e374a"
+        },
+        "key": {
+          "addr": "0x4000b770",
+          "len": 6,
+          "target": "0x400084fe",
+          "stockSha256": "fd093959ea0b44395bc971bb16a4bd179b9032cb712bdb5d06f4458fc148ef58"
+        },
+        "enc": {
+          "addr": "0x4000b7ba",
+          "len": 6,
+          "target": "0x40008550",
+          "stockSha256": "b64e1b142d9a31dede4506a839e453a9c1ce529f3687898ea70489a111277e87"
+        }
+      },
+      "resumes": {
+        "settings": {
+          "addr": "0x40058800",
+          "len": 6,
+          "stockSha256": "c7589861366d298dd3e07f1f5ebce25db0435f9cad638eae321d68e7542f6c74"
+        },
+        "render_in": {
+          "addr": "0x40077428",
+          "len": 6,
+          "stockSha256": "0682088f8b8f8b0760d2f195d03bf17728bc872575efaf90dff0ac96d30db5ba"
+        },
+        "render_out": {
+          "addr": "0x400784ac",
+          "len": 6,
+          "stockSha256": "8de1fd699d2c10e8581889929e4d19624d400719c9c8ec7bcd64d166d75e5b68"
+        }
+      },
+      "stockRoutines": {
+        "mw_stock_allocate": {
+          "addr": "0x400d4180",
+          "len": 32,
+          "stockSha256": "569f1ec7dadb6f413677c27e12056c929aaed9a42a2ea9c53683c006a5b5fce6"
+        },
+        "mw_stock_item_construct": {
+          "addr": "0x400c423c",
+          "len": 172,
+          "stockSha256": "70046ba270288c253e5230e8e86c72c703e142910a90fd40b9c19b239e426f75"
+        },
+        "mw_stock_menu_append": {
+          "addr": "0x400c3a72",
+          "len": 32,
+          "stockSha256": "12aec3e060fa44fd2d466e3c3a72f9e2ff581ed4ac8227532fbbe939cfab31f4"
+        },
+        "mw_stock_function_manager": {
+          "addr": "0x40137478",
+          "len": 54,
+          "stockSha256": "da4672cff0c48fcd0e42322195d4b0f40e2dc4092e27ca8a35ef18bd64de5c4c"
+        }
+      }
+    },
+    "1.54": {
+      "boot": {
+        "addr": "0x40000538",
+        "len": 6,
+        "stockSha256": "c1a3cde7400c8be664852277311dbf1b3ce0b613123e9380d9cfde178b1fe0ac",
+        "target": "0x40001c94"
+      },
+      "hooks": {
+        "tick": {
+          "addr": "0x4000a770",
+          "len": 6,
+          "target": "0x400ca574",
+          "stockSha256": "17f64e76a33cd9f8211972ddc05c984d52cbd31fe16231ae768c5f0a6dce1388"
+        },
+        "draw": {
+          "addr": "0x4000a7d6",
+          "len": 6,
+          "target": "0x400ca5aa",
+          "stockSha256": "1fd873aa9a14c8691484085d12abd1cd864aab22a56387dd6a682396ea2bf72a"
+        },
+        "key": {
+          "addr": "0x4000b770",
+          "len": 6,
+          "target": "0x400084fe",
+          "stockSha256": "fd093959ea0b44395bc971bb16a4bd179b9032cb712bdb5d06f4458fc148ef58"
+        },
+        "enc": {
+          "addr": "0x4000b7ba",
+          "len": 6,
+          "target": "0x40008550",
+          "stockSha256": "b64e1b142d9a31dede4506a839e453a9c1ce529f3687898ea70489a111277e87"
+        }
+      },
+      "resumes": {
+        "settings": {
+          "addr": "0x40058800",
+          "len": 6,
+          "stockSha256": "c7589861366d298dd3e07f1f5ebce25db0435f9cad638eae321d68e7542f6c74"
+        },
+        "render_in": {
+          "addr": "0x40077428",
+          "len": 6,
+          "stockSha256": "0682088f8b8f8b0760d2f195d03bf17728bc872575efaf90dff0ac96d30db5ba"
+        },
+        "render_out": {
+          "addr": "0x400784ac",
+          "len": 6,
+          "stockSha256": "8de1fd699d2c10e8581889929e4d19624d400719c9c8ec7bcd64d166d75e5b68"
+        }
+      },
+      "stockRoutines": {
+        "mw_stock_allocate": {
+          "addr": "0x400d43a8",
+          "len": 32,
+          "stockSha256": "0279c11579fd3e6c36eb827b791cc6fbf0a84f23c0013605ebc91f6e82df3caf"
+        },
+        "mw_stock_item_construct": {
+          "addr": "0x400c4464",
+          "len": 172,
+          "stockSha256": "1f95fb08647a1e47c9d163ebe4fcd1457a2fac881c21bc7698eb0d357f24a05a"
+        },
+        "mw_stock_menu_append": {
+          "addr": "0x400c3c9a",
+          "len": 32,
+          "stockSha256": "12aec3e060fa44fd2d466e3c3a72f9e2ff581ed4ac8227532fbbe939cfab31f4"
+        },
+        "mw_stock_function_manager": {
+          "addr": "0x401376a0",
+          "len": 54,
+          "stockSha256": "8f4be17639fd88a59173ed7770835bece736e4b591e75b9ff060bfe36d873779"
+        }
+      }
+    }
+  }
+}

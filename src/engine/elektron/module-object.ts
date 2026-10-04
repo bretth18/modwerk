@@ -9,6 +9,8 @@ import { sha256Hex } from './hash.ts'
 export type CompiledElemodPlan = {
   schemaVersion: 1; machine: string; id: string; version: string; release: string
   module: Record<string, unknown>; sites: ElemodSite[]; derive: ElemodBuildSpec['derive']
+  stockResumes?: { symbol: string; addr: string; len: number; stockSha256: string }[]
+  stockRoutineBindings?: Record<string, { addr: string; len: number; stockSha256: string }>
 }
 const hex = (bytes: Uint8Array) => Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('')
 const words = (...values: number[]) => { const bytes = new Uint8Array(values.length * 4), view = new DataView(bytes.buffer); values.forEach((value, i) => view.setUint32(i * 4, value)); return hex(bytes) }
@@ -26,6 +28,14 @@ export async function materializeModuleObject(plan: CompiledElemodPlan, stock: U
     if (!Number.isSafeInteger(site.len) || site.len <= 0 || offset < 0 || offset + site.len > stock.length) throw new ModError('Recipe patch is outside the image')
     if (await sha256Hex(stock.subarray(offset, offset + site.len)) !== site.stockSha256) throw new ModError('Recipe stock guard does not match')
     return offset
+  }
+  if (plan.stockRoutineBindings) {
+    if (parsed.id !== 'core' || !parsed.sections['.boot']) throw new ModError('Stock helper bindings belong to a core')
+    for (const [symbol, binding] of Object.entries(plan.stockRoutineBindings)) {
+      const definition = parsed.symbols.get(symbol)
+      if (!/^mw_stock_[a-z_]+$/.test(symbol) || !Number.isSafeInteger(binding.len) || binding.len < 2 || binding.len > 256 || !definition || definition[0] !== 'abs' || definition[1] !== address(binding.addr)) throw new ModError('Stock helper binding changed')
+      await guarded(binding)
+    }
   }
   const sites: Record<string, unknown>[] = []
   const makeSite = async (site: ElemodSite) => {
@@ -77,7 +87,36 @@ export async function materializeModuleObject(plan: CompiledElemodPlan, stock: U
       await makeSite({ ...site, op: 'keep2', target: 'r_' + target.toString(16).padStart(8, '0') })
     }
   }
-  const module = { ...plan.module, sites, contribute }
+  let sections = plan.module.sections
+  if (plan.stockResumes?.length) {
+    if (parsed.id !== 'core' || !parsed.sections['.boot']) throw new ModError('Stock resumes belong to a core')
+    const section = parsed.sections['.run']
+    if (!section || !('parts' in section) || section.parts.some(part => part.kind !== 'hex')) throw new ModError('Stock resume needs source-only run bytes')
+    const run = new Uint8Array(section.length)
+    let end = 0
+    for (const part of section.parts) if (part.kind === 'hex') { run.set(part.bytes, end); end += part.bytes.length }
+    const ranges: [number, number][] = []
+    for (const resume of plan.stockResumes) {
+      if (!/^mw_resume_(settings|render_in|render_out)$/.test(resume.symbol) || !Number.isSafeInteger(resume.len) || resume.len < 6 || resume.len > 32 || resume.len % 2) throw new ModError('Invalid stock resume')
+      const definition = parsed.symbols.get(resume.symbol), continuation = parsed.symbols.get(resume.symbol.replace('resume', 'continue'))
+      const site = plan.sites.find(site => site.addr === resume.addr && site.len === resume.len && site.stockSha256 === resume.stockSha256 && site.target === resume.symbol.replace('resume', 'hook'))
+      if (!definition || definition[0] !== '.run' || !continuation || continuation[0] !== 'abs' || continuation[1] !== address(resume.addr) + resume.len || !site) throw new ModError('Stock resume binding changed')
+      const offset = definition[1], limit = offset + resume.len
+      if (offset < 0 || limit > run.length || offset % 2 || run.subarray(offset, limit).some(byte => byte !== 0) || ranges.some(([lo, hi]) => lo < limit && offset < hi)) throw new ModError('Stock resume placeholder changed')
+      if (parsed.relocs.some(reloc => reloc.section === '.run' && reloc.offset < limit && offset < reloc.offset + (reloc.type === 'pc16' ? 2 : 4))) throw new ModError('Stock resume overlaps a relocation')
+      const source = await guarded(resume)
+      let at = address(resume.addr)
+      while (at < address(resume.addr) + resume.len) {
+        const instruction = decodeColdFire(readerAt(stock, base)(at), at)
+        if (instruction.flags & (ILLEGAL | LINEF | FPU | PCREL) || instruction.flow !== 'none' || at + instruction.length > address(resume.addr) + resume.len) throw new ModError('Stock resume contains an instruction that cannot be copied')
+        at += instruction.length
+      }
+      run.set(stock.subarray(source, source + resume.len), offset)
+      ranges.push([offset, limit])
+    }
+    sections = { ...(plan.module.sections as Record<string, unknown>), '.run': { align: section.align, len: run.length, parts: [['hex', hex(run)]] } }
+  }
+  const module = { ...plan.module, sections, sites, contribute }
   parseElemod(module, plan.id, devices)
   return module
 }

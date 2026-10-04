@@ -116,6 +116,5 @@ for (const machine of machines.filter(item => item.sdk?.platform === 'elemod')) 
   }
 }
 // Written last: a failed compilation never creates a complete package inventory.
-await buildCoreProbes({ root, output, sourceCommit, compiler, cflags, ldScript, run })
-await buildCoreProbes({ root, output, sourceCommit, compiler, cflags, ldScript, run, uiHooks: true })
+for (const stage of ['boot-probe', 'ui-hook-probe', 'event-hook-probe']) await buildCoreProbes({ root, output, sourceCommit, compiler, cflags, ldScript, run, stage })
 await writeFile(resolve(output, 'elemod-build.json'), JSON.stringify({ schemaVersion: 1, sourceCommit, compiler, artifacts }, null, 2) + '\n')

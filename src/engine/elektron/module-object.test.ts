@@ -25,6 +25,16 @@ function fastPlan(plan: CompiledElemodPlan) {
   return plan
 }
 
+function resumeFixture() {
+  const { stock, device, plan } = fixture()
+  plan.id = 'core'
+  plan.module = { ...plan.module, id: 'core', sections: { '.boot': { parts: [['hex', '4e75']] }, '.run': { parts: [['hex', '0000000000004ef9000000004e75']] } },
+    symbols: { mw_resume_settings: ['.run', 0], mw_hook_settings: ['.run', 12], mw_continue_settings: ['abs', base + 0x26] }, relocs: [] }
+  plan.sites = [{ addr: '0x40000020', len: 6, stockSha256: sha(stock.subarray(0x20, 0x26)), op: 'jsr', target: 'mw_hook_settings' }]
+  plan.stockResumes = [{ symbol: 'mw_resume_settings', ...plan.sites[0] }]
+  return { stock, device, plan }
+}
+
 describe('local compiled module materialization', () => {
   it('fills kept opcode words from verified local stock without changing the source recipe', async () => {
     const { stock, device, plan } = fixture(), before = JSON.stringify(plan)
@@ -57,5 +67,53 @@ describe('local compiled module materialization', () => {
     await expect(materializeModuleObject(plan, stock, [device])).rejects.toThrow('branch leaves')
     plan.derive!.sram = ['0x51000000', '0x51001000']
     await expect(materializeModuleObject(plan, stock, [device])).rejects.toThrow('SRAM budget')
+  })
+
+  it('fills a guarded core resume only in local memory and preserves its own continuation', async () => {
+    const { stock, device, plan } = resumeFixture(), before = JSON.stringify(plan)
+    const result = await materializeModuleObject(plan, stock, [device])
+    expect(result.sections).toMatchObject({ '.run': { len: 14, parts: [['hex', '4e714e714e714ef9000000004e75']] } })
+    expect(JSON.stringify(plan)).toBe(before)
+  })
+  it('rejects missing continuation bindings, changed placeholders and overlapping relocations', async () => {
+    for (const change of ['binding', 'placeholder', 'relocation']) {
+      const { stock, device, plan } = resumeFixture()
+      if (change === 'binding') plan.module.symbols = { mw_resume_settings: ['.run', 0], mw_hook_settings: ['.run', 12] }
+      if (change === 'placeholder') plan.module.sections = { '.boot': { parts: [['hex', '4e75']] }, '.run': { parts: [['hex', '0001000000004ef9000000004e75']] } }
+      if (change === 'relocation') plan.module.relocs = [['.run', 2, 'abs32', 'abs', 1]]
+      await expect(materializeModuleObject(plan, stock, [device])).rejects.toThrow(change === 'binding' ? 'binding' : change === 'placeholder' ? 'placeholder' : 'relocation')
+    }
+  })
+  it('rejects PC-relative, control-flow and incomplete copied instructions', async () => {
+    for (const opcode of ['41fa00024e71', '4eb940000100', '4e7141f94000']) {
+      const { stock, device, plan } = resumeFixture()
+      stock.set(Buffer.from(opcode, 'hex'), 0x20)
+      device.releases[0].mainSha256 = sha(stock)
+      plan.sites[0].stockSha256 = sha(stock.subarray(0x20, 0x26))
+      plan.stockResumes![0].stockSha256 = plan.sites[0].stockSha256
+      await expect(materializeModuleObject(plan, stock, [device])).rejects.toThrow('cannot be copied')
+    }
+  })
+  it('rejects a resume for a module, a duplicate placeholder and a changed copy guard', async () => {
+    const { stock, device, plan } = resumeFixture()
+    plan.id = 'proof'; plan.module.id = 'proof'
+    await expect(materializeModuleObject(plan, stock, [device])).rejects.toThrow('belong to a core')
+    plan.id = 'core'; plan.module.id = 'core'
+    plan.stockResumes!.push({ ...plan.stockResumes![0] })
+    await expect(materializeModuleObject(plan, stock, [device])).rejects.toThrow('placeholder')
+    plan.stockResumes!.pop()
+    plan.stockResumes![0].stockSha256 = 'b'.repeat(64)
+    await expect(materializeModuleObject(plan, stock, [device])).rejects.toThrow('binding')
+  })
+  it('guards stock helper addresses and bytes before materializing the core', async () => {
+    const { stock, device, plan } = resumeFixture()
+    plan.module.symbols = { ...(plan.module.symbols as Record<string, unknown>), mw_stock_allocate: ['abs', base + 0x40] }
+    plan.stockRoutineBindings = { mw_stock_allocate: { addr: '0x40000040', len: 8, stockSha256: sha(stock.subarray(0x40, 0x48)) } }
+    await expect(materializeModuleObject(plan, stock, [device])).resolves.toHaveProperty('sections')
+    plan.stockRoutineBindings.mw_stock_allocate.addr = '0x40000042'
+    await expect(materializeModuleObject(plan, stock, [device])).rejects.toThrow('helper binding')
+    plan.stockRoutineBindings.mw_stock_allocate.addr = '0x40000040'
+    plan.stockRoutineBindings.mw_stock_allocate.stockSha256 = 'b'.repeat(64)
+    await expect(materializeModuleObject(plan, stock, [device])).rejects.toThrow('guard')
   })
 })
