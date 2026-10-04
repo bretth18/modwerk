@@ -83,6 +83,9 @@ describe('combined Modwerk account layout',()=>{
   const visitor:Session={available:true,emailAvailable:true,registrationAvailable:true,admin:false,user:null,ssoProviders:['google','github','discord']}
   const html=renderToStaticMarkup(createElement(CommunityContext.Provider,{value:{session:visitor,developer:{available:true,user:null},catalog:[],refresh:async()=>{},refreshDeveloper:async()=>{}}},createElement(AccountPage,{route:'account/register?next=digitakt/configuration'})))
   expect(html).toContain('Sign in with Google')
+  expect(html.indexOf('Social sign-in')).toBeLessThan(html.indexOf('name="username"'))
+  expect(html).toContain('No username needed to get started.')
+  expect(html).toContain('Or create an account with email')
   for(const provider of ['GitHub','Discord'])expect(html).toContain('Continue with '+provider)
   expect(html).toContain('aria-label="Community account"')
   expect(html).toContain('aria-label="Account actions"')

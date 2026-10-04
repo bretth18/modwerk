@@ -12,7 +12,7 @@ export function socialProviders(env: Env): SocialProvider[] {
   return SOCIAL_PROVIDERS.filter(provider => { const prefix = 'SSO_' + provider.toUpperCase(); return !!env[(prefix + '_CLIENT_ID') as keyof Env] && !!env[(prefix + '_CLIENT_SECRET') as keyof Env] })
 }
 export function socialOptions(env: Env): BetterAuthOptions['socialProviders'] {
-  return Object.fromEntries(socialProviders(env).map(provider => { const prefix = 'SSO_' + provider.toUpperCase(); return [provider, { clientId: env[(prefix + '_CLIENT_ID') as keyof Env], clientSecret: env[(prefix + '_CLIENT_SECRET') as keyof Env], disableImplicitSignUp: true, disableSignUp: env.REGISTRATION_OPEN !== 'true' || env.PRIVACY_READY !== 'true' }] })) as BetterAuthOptions['socialProviders']
+  return Object.fromEntries(socialProviders(env).map(provider => { const prefix = 'SSO_' + provider.toUpperCase(); return [provider, { clientId: env[(prefix + '_CLIENT_ID') as keyof Env], clientSecret: env[(prefix + '_CLIENT_SECRET') as keyof Env], ...(provider==='google'?{prompt:'select_account' as const}:{}), disableImplicitSignUp: true, disableSignUp: env.REGISTRATION_OPEN !== 'true' || env.PRIVACY_READY !== 'true' }] })) as BetterAuthOptions['socialProviders']
 }
 export function validUsername(value: unknown): value is string { return typeof value === 'string' && /^[a-z0-9_]{3,24}$/.test(value) && !/^(admin|administrator|moderator|octamod|modwerk|support|system|guest)$/.test(value) }
 

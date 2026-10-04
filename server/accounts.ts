@@ -52,21 +52,35 @@ export function accountAuth(env: Env, db: Database) {
       user:{create:{before:async(user,ctx)=>{
         if(ctx?.path!=='/callback/:id')return
         const state=await getOAuthState<{flowHash?:string}>()
-        const flow=state?.flowHash?await db.prepare("SELECT username,rules_version FROM social_flows WHERE token_hash=? AND mode='register' AND stage='started' AND expires>?").bind(state.flowHash,Math.floor(Date.now()/1000)).first<{username:string;rules_version:string}>():null
-        if(env.REGISTRATION_OPEN!=='true'||env.PRIVACY_READY!=='true'||!flow||flow.rules_version!==COMMUNITY_RULES_VERSION||!validUsername(flow.username))return false
-        return {data:{...user,name:flow.username,username:flow.username,displayUsername:flow.username,image:null}}
+        const flow=state?.flowHash?await db.prepare("SELECT username,rules_version FROM social_flows WHERE token_hash=? AND stage='started' AND expires>?").bind(state.flowHash,Math.floor(Date.now()/1000)).first<{username:string|null;rules_version:string|null}>():null
+        if(env.REGISTRATION_OPEN!=='true'||env.PRIVACY_READY!=='true'||!flow)return false
+        if(flow.username&&(flow.rules_version!==COMMUNITY_RULES_VERSION||!validUsername(flow.username)))return false
+        let publicName=flow.username
+        if(!publicName){
+          // Never derive a public name from a provider's real name or private email.
+          do { publicName='member_'+randomToken().slice(0,12) } while(await db.prepare('SELECT id FROM users WHERE username=? COLLATE NOCASE').bind(publicName).first())
+        }
+        return {data:{...user,name:publicName,username:publicName,displayUsername:publicName,image:null}}
       },after:async(user,ctx)=>{
         await syncPublicUser(user)
-        await db.prepare('INSERT OR IGNORE INTO account_policy_acceptances(user_id,version) VALUES(?,?)').bind(user.id,COMMUNITY_RULES_VERSION).run()
         if(ctx?.path==='/callback/:id'){
           const state=await getOAuthState<{flowHash?:string}>()
-          const flow=state?.flowHash?await db.prepare("SELECT newsletter FROM social_flows WHERE token_hash=? AND mode='register' AND stage='started'").bind(state.flowHash).first<{newsletter:number}>():null
-          await initializeNewsPreference(db,user.id,flow?.newsletter===1)
+          const flow=state?.flowHash?await db.prepare("SELECT username,rules_version,newsletter FROM social_flows WHERE token_hash=? AND stage='started'").bind(state.flowHash).first<{username:string|null;rules_version:string|null;newsletter:number}>():null
+          if(!flow?.username||flow.rules_version!==COMMUNITY_RULES_VERSION){
+            await db.prepare('INSERT INTO social_pending_accounts(user_id,expires) VALUES(?,?)').bind(user.id,Math.floor(Date.now()/1000)+600).run()
+            return
+          }
+          await initializeNewsPreference(db,user.id,flow.newsletter===1)
         }
+        await db.prepare('INSERT OR IGNORE INTO account_policy_acceptances(user_id,version) VALUES(?,?)').bind(user.id,COMMUNITY_RULES_VERSION).run()
       }},update:{after:syncPublicUser}},
-      session:{create:{before:async session=>{
+      session:{create:{before:async(session,ctx)=>{
         const user=await db.prepare('SELECT suspended FROM users WHERE id=?').bind(session.userId).first<{suspended:number}>()
         if(!user||user.suspended)return false
+        if(await db.prepare('SELECT user_id FROM social_pending_accounts WHERE user_id=?').bind(session.userId).first()){
+          if(ctx?.path!=='/callback/:id'||env.REGISTRATION_OPEN!=='true'||env.PRIVACY_READY!=='true')return false
+          await db.prepare('UPDATE social_pending_accounts SET expires=? WHERE user_id=?').bind(Math.floor(Date.now()/1000)+600,session.userId).run()
+        }
         return {data:{...session,ipAddress:null,userAgent:null}}
       }}},
     },
@@ -76,7 +90,7 @@ export async function accountUser(request: Request, env: Env, db: Database): Pro
   if(!authReady(env))return null
   const session=await accountAuth(env,db).api.getSession({headers:request.headers})
   if(!session?.user.emailVerified)return null
-  return db.prepare('SELECT id,display_name,username,email_verified,suspended FROM users WHERE id=? AND suspended=0').bind(session.user.id).first<User>()
+  return db.prepare('SELECT id,display_name,username,email_verified,suspended FROM users WHERE id=? AND suspended=0 AND NOT EXISTS(SELECT 1 FROM social_pending_accounts p WHERE p.user_id=users.id)').bind(session.user.id).first<User>()
 }
 function emailAddress(value:unknown){if(typeof value!=='string'||value.trim().length>254||!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(value.trim()))throw new HttpError(400,'Enter a valid email address.');return value.trim().toLowerCase()}
 const genericMessage='If the address is eligible, an email will arrive shortly. Check your spam folder. You can request another message or reset your password if you already have an account.'
@@ -156,6 +170,11 @@ export async function accountRoutes(request: Request, env: Env, db: Database, pa
 }
 export async function cleanupAccounts(db:Database){
  const now=Math.floor(Date.now()/1000)
- await db.prepare('DELETE FROM social_flows WHERE expires<=?').bind(now).run()
+ // Pending identities cannot publish or build, so no public contributions need retention.
+ await db.batch([
+  db.prepare('DELETE FROM users WHERE id IN(SELECT user_id FROM social_pending_accounts WHERE expires<=?)').bind(now),
+  db.prepare('DELETE FROM auth_users WHERE id IN(SELECT user_id FROM social_pending_accounts WHERE expires<=?)').bind(now),
+  db.prepare('DELETE FROM social_flows WHERE expires<=?').bind(now),
+ ])
   await db.batch([db.prepare('DELETE FROM account_tokens WHERE expires<=?').bind(now),db.prepare('DELETE FROM sessions WHERE expires<=?').bind(now),db.prepare('DELETE FROM rate_limits WHERE expires<=?').bind(now),db.prepare('DELETE FROM admin_sessions WHERE expires<=?').bind(now),db.prepare('DELETE FROM auth_sessions WHERE expiresAt<=?').bind(now*1000),db.prepare('DELETE FROM auth_verifications WHERE expiresAt<=?').bind(now*1000)])
 }
