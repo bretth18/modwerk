@@ -1,3 +1,4 @@
+import { newsPreferences, saveNewsPreference } from './news-preferences'
 import { betterAuth } from 'better-auth'
 import { bearer } from 'better-auth/plugins/bearer'
 import { username } from 'better-auth/plugins/username'
@@ -58,6 +59,7 @@ export async function accountUser(request: Request, env: Env, db: Database): Pro
 function emailAddress(value:unknown){if(typeof value!=='string'||value.trim().length>254||!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(value.trim()))throw new HttpError(400,'Enter a valid email address.');return value.trim().toLowerCase()}
 const genericMessage='If the address is eligible, an email will arrive shortly. Check your spam folder. You can request another message or reset your password if you already have an account.'
 export async function accountRoutes(request: Request, env: Env, db: Database, path: string): Promise<Response|null> {
+  if(path==='/api/auth/news')return newsPreferences(request,db,await accountUser(request,env,db))
   if(path==='/api/auth/account-removal')return accountRequest(request,db,await accountUser(request,env,db))
   const route=path.match(/^\/api\/auth\/(register|login|resend|forgot|verify|reset|sessions|logout)$/)
   if(!route)return null
@@ -113,7 +115,9 @@ export async function accountRoutes(request: Request, env: Env, db: Database, pa
     if(action==='register'){
       if(typeof body.username!=='string'||!/^[a-zA-Z0-9_]{3,24}$/.test(body.username))throw new HttpError(400,'Use 3–24 letters, numbers or underscores for your username.')
       if(typeof body.password!=='string')throw new HttpError(400,'Enter a password.')
-      await auth.api.signUpEmail({body:{name:body.username.toLowerCase(),username:body.username.toLowerCase(),email,password:body.password},headers})
+      if(body.newsletter!==undefined&&typeof body.newsletter!=='boolean')throw new HttpError(400,'Choose whether to receive news emails.')
+      const created=await auth.api.signUpEmail({body:{name:body.username.toLowerCase(),username:body.username.toLowerCase(),email,password:body.password},headers})
+      await saveNewsPreference(db,created.user.id,body.newsletter===true)
     }else if(action==='forgot')await auth.api.requestPasswordReset({body:{email},headers})
     else await auth.api.sendVerificationEmail({body:{email},headers})
     return response({message:genericMessage},202)
