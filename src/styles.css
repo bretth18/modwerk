@@ -899,7 +899,7 @@ h1 { font-size: 28px; }
   .page-heading { margin-bottom: 14px; }
   .page-heading h1 { font-size: 24px; }
   .page-heading p { margin-top: 4px; }
-  .app-shell:has(.search input:placeholder-shown) .library-subheading { display: none; }
+  .app-shell:has(.search input:placeholder-shown) .library-page > .library-subheading { display: none; }
   .discovery-tools { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 8px; margin: 0 0 14px; }
   .discovery-tools label { gap: 0; min-width: 0; font-size: 0; }
   .discovery-tools select { flex: 1; width: 100%; min-width: 0; min-height: 44px; padding: 0 28px 0 12px; border-radius: 8px; font-size: 16px; text-overflow: ellipsis; }
