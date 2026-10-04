@@ -11,7 +11,8 @@ export function routeFromUrl(url: URL, appUrl: URL): string | undefined {
   const module = /^module\/([a-z0-9-]+)\/(?:index\.html)?$/.exec(path)
   if (path && path !== 'index.html' && !module) return undefined
   const route = url.hash.slice(1) || (module ? 'module/' + module[1] : 'library')
-  return route === 'remixes' ? 'module-sets' : route === 'account' ? 'activity' : route.startsWith('remix/') ? 'module-set/' + route.slice(6) : route
+  // The forum's account page replaced the separate activity page; old #activity links open it.
+  return route === 'remixes' ? 'module-sets' : route === 'activity' ? 'account' : route.startsWith('remix/') ? 'module-set/' + route.slice(6) : route
 }
 
 export function canonicalRouteUrl(url: URL, appUrl: URL, moduleIds: readonly string[]): URL {

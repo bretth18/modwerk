@@ -19,7 +19,8 @@ describe.each(['https://octamod.app/', 'https://example.github.io/octamod/'])('m
     expect(canonicalRouteUrl(new URL('#configuration', current), appUrl, moduleIds).href).toBe(root + '#configuration')
   })
   it('preserves old navigation aliases', () => {
-    expect(routeFromUrl(new URL('#account', appUrl), appUrl)).toBe('activity')
+    expect(routeFromUrl(new URL('#account', appUrl), appUrl)).toBe('account')
+    expect(routeFromUrl(new URL('#activity', appUrl), appUrl)).toBe('account')
     expect(routeFromUrl(new URL('#remixes', appUrl), appUrl)).toBe('module-sets')
     expect(routeFromUrl(new URL('#remix/miniverb-solo', appUrl), appUrl)).toBe('module-set/miniverb-solo')
   })
