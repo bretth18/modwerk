@@ -11,11 +11,39 @@ jobs:
   module-contract:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    outputs:
+      elemod: ${{ steps.source-inputs.outputs.elemod }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
+      - name: Detect changes to Elemod source and compiler inputs
+        id: source-inputs
+        env:
+          OCTAMOD_PR_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          # Compare the actual checked-out PR merge with its exact base, including removals.
+          git cat-file -e "$OCTAMOD_PR_BASE^{commit}"
+          inputs=(sdk/elemod sdk/digitakt sdk/digitone sdk/machines sdk/build
+            sdk/octabam/scripts/vendor.sh sdk/octabam/tools/patches sdk/octabam/tools/harness/dsp_host
+            'scripts/build-elemod*' scripts/elemod-elf.mjs
+            src/catalog/module-contract-v3.ts src/catalog/module-folder.ts src/catalog/versions.ts
+            src/devices/machine-contract.ts src/engine/elektron src/engine/assets/elemod
+            package.json package-lock.json)
+          # Scheduling-only workflow edits do not change the compilation. Changes to
+          # the compiler job itself still require its isolated reproducibility check.
+          compiler_job() {
+            git show "$1:.github/workflows/module-pr.yml" |
+              sed -n '/^  elemod-source:/,$p' | sed '/^    needs:/d; /^    if:/d'
+          }
+          if git diff --quiet "$OCTAMOD_PR_BASE" HEAD -- "${inputs[@]}" &&
+             cmp -s <(compiler_job "$OCTAMOD_PR_BASE") <(compiler_job HEAD); then
+            echo 'elemod=false' >> "$GITHUB_OUTPUT"
+            echo 'Elemod source and compiler inputs are unchanged; skipping compilation.'
+          else
+            echo 'elemod=true' >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
@@ -62,6 +90,8 @@ jobs:
       - name: Check bounded logger ring, controller and card adapter without firmware
         run: sh sdk/runtime/logging/tests/run_host.sh
   elemod-source:
+    needs: module-contract
+    if: needs.module-contract.outputs.elemod == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     permissions:
