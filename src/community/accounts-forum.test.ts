@@ -24,6 +24,17 @@ async function fixture(){
 }
 const thread={title:'How do you use Mini Verb?',body:'Share your settings.',category:'modules',moduleId:'miniverb'}
 describe('verified email accounts',()=>{
+ it('files threads under one machine, filters by it and rejects unknown machines',async()=>{
+  const {call,member}=await fixture(),author=await member('machinist')
+  const digitakt=await call('/forum/threads','POST',{title:'Slicing ideas',body:'How do you slice?',category:'general',machine:'digitakt'},author.session);expect(digitakt.status).toBe(201)
+  const octatrack=await call('/forum/threads','POST',thread,author.session);expect(octatrack.status).toBe(201)
+  expect((await call('/forum/threads','POST',{...thread,machine:'not-a-box'},author.session)).status).toBe(400)
+  expect((await call('/forum/threads','POST',{...thread,machine:'digitone'},author.session)).status).toBe(400)
+  const listed=await(await call('/forum/threads?machine=digitakt')).json();expect(listed.threads.map((item:{title:string;machine:string})=>[item.title,item.machine])).toEqual([['Slicing ideas','digitakt']])
+  expect((await(await call('/forum/threads?machine=octatrack')).json()).threads[0].machine).toBe('octatrack')
+  expect((await call('/forum/threads?machine=not-a-box')).status).toBe(400)
+  const machines=await(await call('/forum/machines')).json();expect(Object.fromEntries(machines.map((row:{machine:string;threads:number})=>[row.machine,row.threads]))).toEqual({digitakt:1,octatrack:1})
+ })
  it('requires inbox verification and a signed session, keeping secrets out of public/session responses',async()=>{
   const {call,db}=await fixture(),email='listener@example.test'
   expect((await call('/auth/register','POST',{username:'listener',email,password})).status).toBe(202)

@@ -1,12 +1,12 @@
 import type { Database, User } from './platform'
 import { ADMIN_ACTOR, needMember, throttle } from './auth'
 import { HttpError, jsonBody, required, response } from './security'
-import { FORUM_CATEGORIES, sharedConfiguration } from '../src/community/forum-contract'
+import { FORUM_CATEGORIES, forumMachine, sharedConfiguration } from '../src/community/forum-contract'
 import { MODULES } from '../src/catalog/modules'
 
 type Thread = {id:string;user_id:string;locked:number;hidden:number;configuration_json:string|null;issue_json:string|null}
 function page(url: URL) { const value = Number(url.searchParams.get('page') ?? 0); if (!Number.isInteger(value) || value < 0 || value > 10000) throw new HttpError(400,'Invalid page.'); return value }
-const threadFields = 't.id,t.title,t.category,t.module_id,t.status,t.locked,t.pinned,t.created_at,t.updated_at,u.username,(SELECT MAX(COUNT(*)-1,0) FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0) AS replies'
+const threadFields = 't.id,t.title,t.category,t.machine,t.module_id,t.status,t.locked,t.pinned,t.created_at,t.updated_at,u.username,(SELECT MAX(COUNT(*)-1,0) FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0) AS replies'
 async function threadById(db: Database, id: string, admin: boolean) {
   const thread = await db.prepare('SELECT * FROM forum_threads WHERE id=? AND (hidden=0 OR ?=1)').bind(id, Number(admin)).first<Thread>()
   if (!thread) throw new HttpError(404,'Thread not found.')
@@ -46,10 +46,15 @@ export async function forum(request: Request, db: Database, user: User|null, adm
   if (path === '/api/forum/threads' && request.method === 'GET') {
     const category = url.searchParams.get('category') ?? '', module = moduleId(url.searchParams.get('module')), query = (url.searchParams.get('q') ?? '').trim().slice(0,120), saved = url.searchParams.get('saved') === '1', author = url.searchParams.get('author') ?? ''
     if (category && !Object.hasOwn(FORUM_CATEGORIES,category)) throw new HttpError(400,'Unknown category.')
+    let machine: string | null
+    try { machine = forumMachine(url.searchParams.get('machine')) } catch { throw new HttpError(400,'Unknown machine.') }
     if (saved) needMember(user)
     const escaped = '%' + query.replace(/[\\%_]/g, '\\$&') + '%'
-    const rows = (await db.prepare(`SELECT ${threadFields} FROM forum_threads t JOIN users u ON u.id=t.user_id WHERE t.hidden=0 AND (?='' OR t.category=?) AND (? IS NULL OR t.module_id=?) AND (?='' OR u.username=?) AND (?=0 OR EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?)) AND (?='' OR t.title LIKE ? ESCAPE '\\' OR EXISTS(SELECT 1 FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0 AND p.body LIKE ? ESCAPE '\\')) ORDER BY t.pinned DESC,t.updated_at DESC,t.id LIMIT 31 OFFSET ?`).bind(category,category,module,module,author,author,Number(saved),user?.id??'',query,escaped,escaped,page(url)*30).all()).results
+    const rows = (await db.prepare(`SELECT ${threadFields} FROM forum_threads t JOIN users u ON u.id=t.user_id WHERE t.hidden=0 AND (?='' OR t.category=?) AND (? IS NULL OR t.machine=?) AND (? IS NULL OR t.module_id=?) AND (?='' OR u.username=?) AND (?=0 OR EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?)) AND (?='' OR t.title LIKE ? ESCAPE '\\' OR EXISTS(SELECT 1 FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0 AND p.body LIKE ? ESCAPE '\\')) ORDER BY t.pinned DESC,t.updated_at DESC,t.id LIMIT 31 OFFSET ?`).bind(category,category,machine,machine,module,module,author,author,Number(saved),user?.id??'',query,escaped,escaped,page(url)*30).all()).results
     return response({threads:rows.slice(0,30),hasMore:rows.length>30})
+  }
+  if (path === '/api/forum/machines' && request.method === 'GET') {
+    return response((await db.prepare('SELECT machine,COUNT(*) AS threads,MAX(updated_at) AS updated_at FROM forum_threads WHERE hidden=0 AND machine IS NOT NULL GROUP BY machine').all()).results)
   }
   if (path === '/api/forum/notifications' && request.method === 'GET') {
     const member = needMember(user)
@@ -80,18 +85,22 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     await throttle(db,'new-thread:'+member.id,10)
     if (typeof body.category !== 'string' || !Object.hasOwn(FORUM_CATEGORIES,body.category)) throw new HttpError(400,'Choose a category.')
     const title=required(body.title,'Title',160), content=cleanBody(body.body), module=moduleId(body.moduleId), id=crypto.randomUUID(), postId=crypto.randomUUID()
+    let machine: string | null
+    try { machine = forumMachine(body.machine) } catch (error) { throw new HttpError(400, error instanceof Error ? error.message : 'Unknown machine.') }
+    if (module && machine && machine !== 'octatrack') throw new HttpError(400,'Octatrack modules belong to Octatrack threads.')
+    if (body.category==='configs' && machine && machine !== 'octatrack') throw new HttpError(400,'Shared configurations are available for the Octatrack for now.')
     let config=null,issue=null
     if(body.category==='configs'){try{config=sharedConfiguration(body.configuration)}catch(error){throw new HttpError(400,error instanceof Error?error.message:'Invalid configuration.')}}
     else if(body.configuration!==undefined)throw new HttpError(400,'Shared configurations belong in the configurations category.')
     if(body.category==='issues'){
-      if(!module)throw new HttpError(400,'Choose the affected module.')
+      if(!module&&(!machine||machine==='octatrack'))throw new HttpError(400,'Choose the affected module.')
       if(!body.issue||typeof body.issue!=='object'||Array.isArray(body.issue))throw new HttpError(400,'Include the device, module version and reproduction steps.')
       const item=body.issue as Record<string,unknown>
       if(Object.keys(item).some(key=>!['device','version','steps','expected','actual'].includes(key)))throw new HttpError(400,'Unexpected issue field. Attachments are not accepted.')
       issue={device:required(item.device,'Device',80),version:required(item.version,'Module version',80),steps:required(item.steps,'Steps',4000),expected:required(item.expected,'Expected result',2000),actual:required(item.actual,'Actual result',2000)}
     }
     await db.batch([
-      db.prepare('INSERT INTO forum_threads(id,user_id,title,category,module_id,configuration_json,issue_json) VALUES(?,?,?,?,?,?,?)').bind(id,member.id,title,body.category,module,config?JSON.stringify(config):null,issue?JSON.stringify(issue):null),
+      db.prepare('INSERT INTO forum_threads(id,user_id,title,category,machine,module_id,configuration_json,issue_json) VALUES(?,?,?,?,?,?,?,?)').bind(id,member.id,title,body.category,machine ?? (module || config ? 'octatrack' : null),module,config?JSON.stringify(config):null,issue?JSON.stringify(issue):null),
       db.prepare('INSERT INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').bind(postId,id,member.id,content),
       db.prepare('INSERT INTO forum_follows(thread_id,user_id) VALUES(?,?)').bind(id,member.id),
     ])
