@@ -17,7 +17,7 @@ export function accountAuth(env: Env, db: Database) {
     await db.prepare('INSERT INTO users(id,display_name,username,email_verified) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET email_verified=excluded.email_verified').bind(user.id,user.name,user.name,Number(user.emailVerified)).run()
   }
   return betterAuth({
-    appName:'Octamod', baseURL:new URL('/api/auth',env.APP_URL!).href, secret:env.AUTH_SECRET,
+    appName:'Modwerk', baseURL:new URL('/api/auth',env.APP_URL!).href, secret:env.AUTH_SECRET,
     database:db as unknown as NonNullable<BetterAuthOptions['database']>, trustedOrigins:[appOrigin(env)],
     user:{modelName:'auth_users'}, account:{modelName:'auth_accounts',accountLinking:{enabled:false}},
     session:{modelName:'auth_sessions',expiresIn:7*86400,updateAge:86400,cookieCache:{enabled:false}},

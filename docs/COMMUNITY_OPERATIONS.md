@@ -53,7 +53,7 @@ Submission and review never delete data. There is no automatic deletion endpoint
 
 The server rejects completion while authentication, account tokens, legacy/developer sessions and codes, claims/replies/developer events, private reports/configurations, follows/bookmarks/notifications/reports or the active user projection remain. This is a minimum technical check; it cannot inspect provider logs, archives, public free text or externally published copies. The operator must verify those separately.
 
-The owner chose `jannik.assfalg@gmail.com` as the public receiving support contact on 3 October 2026. Sign-in, privacy and account-removal pages link to it, and transactional email sets it as Reply-To. `accounts@octamod.app` remains the sending identity; it is not presented as a receiving mailbox. Confirm support-message receipt and the response procedure before public launch. Never ask a member to email passwords, recovery links or firmware.
+The owner chose `jannik.assfalg@gmail.com` as the public receiving support contact on 3 October 2026. Sign-in, privacy and account-removal pages link to it, and transactional email sets it as Reply-To. `accounts@modwerk.app` is the sending identity from launch; it is not presented as a receiving mailbox. Confirm support-message receipt and the response procedure before public launch. Never ask a member to email passwords, recovery links or firmware.
 
 ## Retention and private records
 

@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { DatabaseSync } from 'node:sqlite'
 import { testServer } from './test-server'
 import { digest } from '../../server/security'
+import { SUPPORT_EMAIL } from '../support'
 const databases:DatabaseSync[]=[]
 const password='a private synthetic mail test passphrase'
 afterEach(()=>{vi.useRealTimers();vi.unstubAllGlobals();vi.restoreAllMocks();for(const db of databases.splice(0))db.close()})
@@ -43,6 +44,21 @@ describe('account-mail failures and quotas',()=>{
   const counters=await(await call('/admin/account-mail','GET',undefined,'',admin)).json()
   expect(counters).toHaveLength(2);expect(JSON.stringify(counters)).not.toMatch(/example.test|token|password|id/)
   expect(counters.map((row:{accepted:number})=>row.accepted)).toEqual([1,1])
+ })
+ it('sends from the configured Modwerk identity and trusts only the configured site',async()=>{
+  const {call,env}=await fixture(),messages:{from:string;to:string[];reply_to:string;subject:string;text:string}[]=[]
+  env.APP_URL='https://modwerk.app/'
+  vi.stubGlobal('fetch',vi.fn(async(_url:string,options:RequestInit)=>{messages.push(JSON.parse(String(options.body)));return Response.json({id:'accepted'})}))
+  const body={username:'newcomer',email:'newcomer@example.test',password}
+  // After the cutover only the new site may start an account action, and nothing is sent for a refused origin.
+  expect((await call('/auth/register','POST',body,'','','https://octamod.test')).status).toBe(403)
+  expect(messages).toHaveLength(0)
+  expect((await call('/auth/register','POST',body,'','','https://modwerk.app')).status).toBe(202)
+  const [message]=messages
+  expect(message).toMatchObject({from:'Modwerk <accounts@notify.example.test>',to:['newcomer@example.test'],reply_to:SUPPORT_EMAIL,subject:'Verify your email address · Modwerk'})
+  expect(message.text).toMatch(/^Verify your email address for Modwerk\n\nhttps:\/\/modwerk\.app\/#account\/verify\/[^\s]+\n/)
+  expect(message.text).toContain('Modwerk will never ask you to send firmware.')
+  expect(message.text).not.toMatch(/octamod/i)
  })
  it('contains network failures and missing mail configuration',async()=>{
   const {call,env,db}=await fixture()

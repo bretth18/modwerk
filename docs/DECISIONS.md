@@ -90,3 +90,10 @@ The owner expanded the project from the Octatrack to every Elektron machine. The
 - **Downloads** for a machine stay disabled until its engine and core pass verification. Digitakt and Digitone builds must work at the combined launch.
 - **Contributions** remain pull requests reviewed and merged by the owner. Maintainers named in a manifest are a module's contacts. There are no automatic merges for now.
 - **Licence:** Modwerk's own code is GPL-3.0-or-later. Vendored components and modules keep their licences.
+## Domain and mail: modwerk.app — 4 October 2026
+
+The owner bought modwerk.app on 4 October 2026. It stays registered, with its DNS, at Hetzner, like octamod.app; the earlier decision about mail stands: Resend sends verification and recovery messages only, with its key and sender as Worker secrets and its DNS records at the registrar.
+
+The community API keeps trusting exactly one origin, set by `APP_URL`; the launch moves it from octamod.app to modwerk.app with the Worker, the sender and the Pages custom domain in one ordered cutover. octamod.app is not retired: it becomes a plain redirect to the same path on modwerk.app, so shared links and mail links already sent keep working. Browser storage is per site, so saved configurations are not carried over; the move is announced first so people can export them.
+
+Whether the public support contact becomes a `support@modwerk.app` forwarder is left to the owner; the Gmail contact chosen on 3 October stays until a forwarder is proven. Nothing in the repository edits DNS or a provider account. The order, records and checks are in [DOMAIN_AND_MAIL.md](DOMAIN_AND_MAIL.md); `npm run domain:check` reads public DNS and pages to report progress.

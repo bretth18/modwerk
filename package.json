@@ -18,6 +18,7 @@
     "dev:community": "wrangler dev --config wrangler.worker.jsonc --port 8788",
     "db:local": "wrangler d1 migrations apply octamod-community --config wrangler.worker.jsonc --local",
     "admin:key": "node scripts/admin-key.mjs",
+    "domain:check": "node scripts/domain-check.mjs",
     "deploy:pages": "npm run build && wrangler pages deploy",
     "machines:generate": "node scripts/machines.mjs --write",
     "machines:check": "node scripts/machines.mjs",
