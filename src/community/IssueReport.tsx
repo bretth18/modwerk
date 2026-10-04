@@ -1,5 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { post } from './api'
+import { useCommunity } from './context'
+import { AccountAccess } from './AccountAccess'
 import { FLASH_STATES, LOG_MISSING_REASONS, OT_MODELS } from './issue-context'
 import type { FlashState, IssueContext, LogMissingReason, OtModel } from './issue-context'
 import { describeOtLog, OT_LOG_MAX_BYTES, OT_LOG_NAME, OtLogError, parseOtLog } from './ot-log'
@@ -18,6 +20,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   target?.focus()
   report.current.scrollIntoView({block:'start'})
  },[openRequest])
+ const {session}=useCommunity()
  const workspace=useWorkspaceReportContext()
  const [model,setModel]=useState<OtModel|''>(''),[flash,setFlash]=useState<FlashState|''>('')
  const [log,setLog]=useState<OtLog|null>(null),[logError,setLogError]=useState('')
@@ -57,7 +60,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   if(fileInput.current)fileInput.current.value=''
  }
  async function send(form:HTMLFormElement){
-  if(!model||!flash||reading||busy)return
+  if(!session.user||!model||!flash||reading||busy)return
   if(!logReady){setError('Attach '+OT_LOG_NAME+', or tick “I can’t attach” and choose why.');return}
   setBusy(true);setError('')
   // Reserve a tab during the user's submit gesture; a delayed window.open
@@ -67,7 +70,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   const fields=Object.fromEntries(new FormData(form)) as Record<string,string>
   const context:IssueContext={model,flash,os:REPORT_OS,modules:workspace.modules,keepStockFx2:workspace.keepStockFx2,build:workspace.build}
   try{
-   const result=await post<Sent>('/modules/'+id+'/issues',{displayName:fields.displayName,title:fields.title,steps:fields.steps,expected:fields.expected,actual:fields.actual,context,...(log?{log:log.text}:{logMissing:{reason,note}})})
+   const result=await post<Sent>('/modules/'+id+'/issues',{title:fields.title,steps:fields.steps,expected:fields.expected,actual:fields.actual,context,...(log?{log:log.text}:{logMissing:{reason,note}})})
    setSent(result)
    if(result.githubUrl&&/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/issues\/[0-9]+$/.test(result.githubUrl)){
     try{if(issueTab)issueTab.location.replace(result.githubUrl)}catch{issueTab?.close()}
@@ -77,16 +80,16 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
  }
 
  return <details ref={report} className="issue-report"><summary>Report an issue <span>For @{author}</span></summary>
-  {sent?<div ref={success} className="issue-report-success" role="status" tabIndex={-1}>
+  {!session.user?<AccountAccess/>:sent?<div ref={success} className="issue-report-success" role="status" tabIndex={-1}>
    <strong>{sent.githubUrl?'Your GitHub issue is open':'Your report is saved'}</strong>
    <p>{sent.githubUrl?<>The issue mentions @{sent.author||author} and includes your report and log, if attached.</>:<>GitHub has not received it yet. Your report is saved for the administrator to forward to @{sent.author||author}; you do not need to submit it again.</>}</p>
    {sent.githubUrl&&<a className="button button-primary" href={sent.githubUrl} target="_blank" rel="noreferrer">Open issue on GitHub ↗</a>}
-   <p>Track it under <a href="#activity">Your activity</a> on this device. Replies are on GitHub; Octamod does not send email.</p>
+   <p>Track it under <a href="#activity">Your activity</a> from any device. Replies are on GitHub.</p>
   </div>:
   <form className="community-form" aria-busy={busy} onSubmit={event=>{event.preventDefault();void send(event.currentTarget)}}>
-   <p className="service-note">Tell <a href={'https://github.com/'+author} target="_blank" rel="noreferrer">@{author}</a> what happened. We create a <strong>public GitHub issue</strong> that mentions them and opens in a new tab. No account or email is needed to report. <a href={moduleIssuesUrl(id)} target="_blank" rel="noreferrer">Check existing issues ↗</a></p>
+   <p className="service-note">Tell <a href={'https://github.com/'+author} target="_blank" rel="noreferrer">@{author}</a> what happened. We create a <strong>public GitHub issue</strong> that mentions them and opens in a new tab. Your verified account identifies this report; your email stays private. <a href={moduleIssuesUrl(id)} target="_blank" rel="noreferrer">Check existing issues ↗</a></p>
    <fieldset><legend>1. Describe the problem</legend>
-   <label>Your name (optional)<input name="displayName" maxLength={60} placeholder="Guest"/></label>
+   <p className="service-note">Reporting as {session.user?.displayName}</p>
    <label>Issue title<input ref={title} name="title" required maxLength={160} placeholder="What went wrong, in one line"/></label>
    <div className="issue-report-row">
     <label>Octatrack<select required value={model} onChange={event=>setModel(event.target.value as OtModel)}><option value="" disabled>Choose…</option>{(Object.keys(OT_MODELS) as OtModel[]).map(key=><option key={key} value={key}>{OT_MODELS[key]}</option>)}</select></label>

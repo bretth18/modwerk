@@ -9,3 +9,8 @@ GITHUB_TOKEN=
 GITHUB_REPOSITORY=repeat98/octamod
 # Secret of the repository webhook (Issues events) that syncs closed/reopened status back to reporters.
 GITHUB_WEBHOOK_SECRET=
+
+# Resend account verification. Use a verified sender/domain; keep both values backend-only.
+# Leave blank to disable signup/sign-in until delivery is configured.
+RESEND_API_KEY=
+MAIL_FROM=

@@ -28,15 +28,17 @@ async function fixture(){
  db.exec(readFileSync(new URL('../../migrations/0008_private_usage.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0009_module_downloads.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0010_issue_reports.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0011_verified_accounts.sql',import.meta.url),'utf8'))
  const env:Env={DB:adapter(db),APP_URL:'https://octamod.test',ADMIN_KEY_SHA256:await digest(adminKey)}
  const objects=new Map<string,ArrayBuffer>()
  env.MEDIA={async put(key,bytes){objects.set(key,bytes)},async get(key){const bytes=objects.get(key);return bytes?{body:new ReadableStream({start(controller){controller.enqueue(new Uint8Array(bytes));controller.close()}})}:null},async delete(key){objects.delete(key)}}
  const tokens={author:'a'.repeat(64),other:'b'.repeat(64)}
- for(const [role,name] of [['author','Author guest'],['other','Another guest']] as const){
+ for(const [role,name] of [['author','Author'],['other','Another member']] as const){
   db.prepare('INSERT INTO users(id,display_name) VALUES(?,?)').run(role,name)
+  db.prepare('INSERT INTO accounts(user_id,email,verified_at,newsletter_changed_at) VALUES(?,?,?,?)').run(role,role+'@example.test',1,1)
   db.prepare('INSERT INTO sessions(token_hash,user_id,expires) VALUES(?,?,?)').run(await digest(tokens[role]),role,Math.floor(Date.now()/1000)+600)
  }
- async function call(path:string,method='GET',body?:unknown,auth='',origin=env.APP_URL!,admin=''){
+ async function call(path:string,method='GET',body?:unknown,auth=path.endsWith('/issues')&&method==='POST'?'octamod_session='+tokens.author:'',origin=env.APP_URL!,admin=''){
   const headers:Record<string,string>={Origin:origin};if(auth)headers.Cookie=auth;if(admin)headers['X-Octamod-Admin']=admin
   if(body!==undefined)headers['Content-Type']='application/json'
   return handleApi(new Request(env.APP_URL+'/api'+path,{method,headers,body:body!==undefined?JSON.stringify(body):undefined}),env)
@@ -74,23 +76,24 @@ describe('community access and review',()=>{
   expect(await (await call('/catalog')).json()).toEqual([])
   expect((await (await asAdmin('/admin/history')).json()).map((item:{action:string;actor:string})=>[item.action,item.actor])).toEqual([['withdrawn','Octamod administrator']])
  })
- it('accepts comments and ratings with no registration or email, preserving browser ownership',async()=>{
-  const {call}=await fixture();const posted=await call('/modules/spectrum/comments','POST',{body:'Useful module',displayName:'Listener'});expect(posted.status).toBe(200)
-  const cookie=posted.headers.get('set-cookie')!;expect(cookie).toContain('HttpOnly');const session=cookie.split(';')[0]
+ it('requires verified accounts for comments, ratings and likes and preserves ownership',async()=>{
+  const {call,tokens}=await fixture(),session='octamod_session='+tokens.author
+  for(const [kind,body] of [['comments',{body:'Useful'}],['rating',{value:5}],['like',{liked:true}]] as const)expect((await call('/modules/spectrum/'+kind,'POST',body)).status).toBe(401)
+  expect((await call('/modules/spectrum/comments','POST',{body:'Useful module',displayName:'Impersonation'},session)).status).toBe(200)
   expect((await call('/modules/spectrum/rating','POST',{value:5},session)).status).toBe(200)
   expect((await call('/modules/spectrum/rating','POST',{value:3},session)).status).toBe(200)
   const page=await (await call('/modules/spectrum','GET',undefined,session)).json()
-  expect(page.ratings).toEqual({average:3,count:1});expect(page.comments[0].author).toBe('Listener');expect(page.comments[0].canDelete).toBe(true);expect(JSON.stringify(page)).not.toContain('email')
+  expect(page.ratings).toEqual({average:3,count:1});expect(page.comments[0].author).toBe('Author');expect(page.comments[0].canDelete).toBe(true);expect(JSON.stringify(page)).not.toContain('email')
   expect((await call('/modules/spectrum/rating','POST',{value:6},session)).status).toBe(400)
   expect((await call('/modules/spectrum/like','POST',{liked:true},session)).status).toBe(200)
   expect((await call('/modules/spectrum/like','POST',{liked:true},session)).status).toBe(200)
   expect((await (await call('/modules/spectrum','GET',undefined,session)).json()).likes).toBe(1)
-  expect((await call('/submissions','POST',details,session)).status).toBe(410)
-  expect((await call('/modules/remix-miniverb/comments','POST',{body:'Guest remix discussion'},session)).status).toBe(200)
+  expect((await call('/modules/remix-miniverb/comments','POST',{body:'Remix discussion'},session)).status).toBe(200)
   expect((await call('/modules/remix-miniverb/rating','POST',{value:4},session)).status).toBe(200)
-  expect((await call('/auth/email','POST',{email:'unused@example.test'})).status).toBe(404)
-  const own=await (await call('/auth/session','GET',undefined,session)).json()
-  expect(own).toEqual({available:true,admin:false,user:{id:own.user.id,displayName:'Listener'}})
+  expect((await call('/comments/'+page.comments[0].id,'DELETE',undefined,'octamod_session='+tokens.other)).status).toBe(200)
+  expect((await (await call('/modules/spectrum')).json()).comments).toHaveLength(1)
+  expect((await call('/comments/'+page.comments[0].id,'DELETE',undefined,session)).status).toBe(200)
+  expect((await (await call('/modules/spectrum')).json()).comments).toHaveLength(0)
  })
  it('keeps previously uploaded private media restricted without offering new upload routes',async()=>{
   const {call,db,env,tokens}=await fixture(),auth='octamod_session='+tokens.author,other='octamod_session='+tokens.other
@@ -102,16 +105,16 @@ describe('community access and review',()=>{
   expect((await call('/media/preview','GET',undefined,auth)).status).toBe(200)
   expect((await call('/submissions/legacy/media','POST',{},auth)).status).toBe(410)
  })
- it('keeps account-free issue reports private to the administrator and the reporting device',async()=>{
+ it('keeps account issue reports private to the administrator and the reporting account',async()=>{
   const {call,tokens,admin}=await fixture()
   const result=await call('/modules/spectrum/issues','POST',issue());expect(result.status).toBe(201);expect(await result.json()).toMatchObject({author:'sambanks',github:'none'})
-  const reporter=result.headers.get('set-cookie')!.split(';')[0],other='octamod_session='+tokens.other,author='octamod_session='+tokens.author
+  const reporter='octamod_session='+tokens.author,other='octamod_session='+tokens.other,author='octamod_session='+tokens.author
   for(const session of ['',other,author,reporter])expect((await call('/admin/issues','GET',undefined,session)).status).toBe(403)
   expect((await call('/issues','GET',undefined,reporter)).status).toBe(404)
   expect(await (await call('/issues/mine')).json()).toEqual([])
   expect(await (await call('/issues/mine','GET',undefined,other)).json()).toEqual([])
   const mine=await (await call('/issues/mine','GET',undefined,reporter)).json();expect(mine).toHaveLength(1);expect(mine[0]).toMatchObject({author_login:'sambanks',status:'open'})
-  const inbox=await (await call('/admin/issues','GET',undefined,'',undefined,admin)).json();expect(inbox).toHaveLength(1);expect(inbox[0].reporter).toBe('Listener')
+  const inbox=await (await call('/admin/issues','GET',undefined,'',undefined,admin)).json();expect(inbox).toHaveLength(1);expect(inbox[0].reporter).toBe('Author')
   expect(inbox[0]).toMatchObject({context:issueContext,github_state:'none',log:{records:259,dropped:44}});expect(inbox[0].body).toContain('Load spectrum, turn knob A')
   for(const session of ['',reporter])expect((await call('/admin/issues/'+inbox[0].id+'/log','GET',undefined,session)).status).toBe(403)
   const log=await call('/admin/issues/'+inbox[0].id+'/log','GET',undefined,'',undefined,admin);expect(log.status).toBe(200);expect(await log.text()).toBe(otLog)
@@ -138,7 +141,7 @@ describe('community access and review',()=>{
   expect(db.prepare('SELECT COUNT(*) AS count FROM issue_logs').get()).toEqual({count:0})
  })
  it('mirrors reports to GitHub for the module author and follows the GitHub status',async()=>{
-  const {call,db,env,admin}=await fixture()
+  const {call,db,env,admin,tokens}=await fixture()
   Object.assign(env,{GITHUB_TOKEN:'github_pat_test',GITHUB_REPOSITORY:'repeat98/octamod',GITHUB_WEBHOOK_SECRET:'hook-secret'})
   const requests:{url:string;method:string;body:Record<string,unknown>;auth:string|null}[]=[]
   let failNext=true,number=40
@@ -150,7 +153,7 @@ describe('community access and review',()=>{
   try{
    const failed=await call('/modules/spectrum/issues','POST',issue({steps:'Ping @someone about #12 <img src=x>'}))
    expect(failed.status).toBe(201);expect(await failed.json()).toMatchObject({github:'failed',githubUrl:null})
-   const reporter=failed.headers.get('set-cookie')!.split(';')[0]
+   const reporter='octamod_session='+tokens.author
    const created=requests[0];expect(created).toMatchObject({url:'https://api.github.com/repos/repeat98/octamod/issues',method:'POST',auth:'Bearer github_pat_test'})
    expect(created.body.title).toBe('[spectrum] Knob issue');expect(created.body.labels).toEqual(['issue-report','module:spectrum'])
    const markdown=String(created.body.body)
@@ -187,7 +190,7 @@ describe('community access and review',()=>{
 })
 
 describe('separate administrator access',()=>{
- it('fails closed until a key is configured and never treats a guest session as administrator',async()=>{
+ it('fails closed until a key is configured and never treats an account session as administrator',async()=>{
   const {env,call,admin,tokens,db}=await fixture()
   expect((await (await call('/auth/session','GET',undefined,'',undefined,admin)).json()).admin).toBe(true)
   expect((await (await call('/auth/session','GET',undefined,'octamod_session='+tokens.author)).json()).admin).toBe(false)
@@ -213,15 +216,15 @@ describe('separate administrator access',()=>{
   env.ADMIN_KEY_SHA256=await digest('d'.repeat(64))
   expect((await call('/admin/overview','GET',undefined,'',undefined,admin)).status).toBe(403)
  })
- it('lets the administrator moderate guest comments without a guest identity',async()=>{
-  const {call,admin}=await fixture()
-  const posted=await call('/modules/spectrum/comments','POST',{body:'Spam',displayName:'Guest'});const guest=posted.headers.get('set-cookie')!.split(';')[0]
+ it('lets the administrator moderate account comments without a visitor session',async()=>{
+  const {call,admin,tokens}=await fixture(),member='octamod_session='+tokens.author
+  expect((await call('/modules/spectrum/comments','POST',{body:'Spam'},member)).status).toBe(200)
   const [comment]=await (await call('/admin/comments','GET',undefined,'',undefined,admin)).json() as {id:string}[]
   expect((await (await call('/modules/spectrum','GET',undefined,'',undefined,admin)).json()).comments[0].canDelete).toBe(true)
   expect((await (await call('/modules/spectrum')).json()).comments[0].canDelete).toBe(false)
   expect((await call('/comments/'+comment.id,'DELETE')).status).toBe(401)
   expect((await call('/comments/'+comment.id,'DELETE',undefined,'',undefined,admin)).status).toBe(200)
-  expect((await (await call('/modules/spectrum','GET',undefined,guest)).json()).comments).toEqual([])
+  expect((await (await call('/modules/spectrum','GET',undefined,member)).json()).comments).toEqual([])
  })
 })
 
@@ -238,8 +241,8 @@ describe('GitHub Pages and separate backend',()=>{
   expect(error.status).toBe(410);expect(error.headers.get('access-control-allow-origin')).toBe(allowed)
   expect((await handleCommunity(new Request(backend+'/api/auth/session',{headers:{Origin:'https://evil.test'}}),env)).status).toBe(403)
  })
- it('keeps guest ownership across domains without cookies and revokes bearer sessions',async()=>{
-  const {env}=await fixture();env.SESSION_TRANSPORT='bearer'
+ it('keeps account ownership across domains without cookies and revokes bearer sessions',async()=>{
+  const {env,tokens}=await fixture();env.SESSION_TRANSPORT='bearer'
   const endpoint='https://community.workers.dev/api'
   async function call(path:string,method='GET',body?:unknown,session=''){
    const headers=new Headers({Origin:new URL(env.APP_URL!).origin})
@@ -247,8 +250,8 @@ describe('GitHub Pages and separate backend',()=>{
    if(body!==undefined)headers.set('Content-Type','application/json')
    return handleCommunity(new Request(endpoint+path,{method,headers,body:body!==undefined?JSON.stringify(body):undefined}),env)
   }
-  const result=await call('/modules/spectrum/comments','POST',{body:'Cross-domain guest'})
-  const session=result.headers.get('X-Octamod-Session')!
+  const session=tokens.author
+  const result=await call('/modules/spectrum/comments','POST',{body:'Cross-domain member'},session)
   expect(session).toMatch(/^[a-f0-9]{64}$/);expect(result.headers.get('set-cookie')).toBeNull()
   expect(result.headers.get('access-control-expose-headers')).toBe('X-Octamod-Session')
   const mine=await (await call('/modules/spectrum','GET',undefined,session)).json();expect(mine.comments[0].canDelete).toBe(true)
@@ -256,7 +259,7 @@ describe('GitHub Pages and separate backend',()=>{
   const logout=await call('/auth/logout','POST',{},session);expect(logout.headers.get('X-Octamod-Session')).toBe('')
   expect((await (await call('/auth/session','GET',undefined,session)).json()).user).toBeNull()
  })
- it('has no website sign-in routes or GitHub identity in the session contract',async()=>{
+ it('retires GitHub sign-in routes and keeps GitHub identity out of the session contract',async()=>{
   const {env}=await fixture();env.SESSION_TRANSPORT='bearer';env.APP_URL='https://octamod.github.io/octamod/'
   const endpoint='https://community.workers.dev/api',headers={Origin:'https://octamod.github.io','Content-Type':'application/json'}
   for(const path of ['/auth/github','/auth/github/callback','/auth/complete'])for(const method of ['GET','POST']){
@@ -270,7 +273,7 @@ describe('GitHub Pages and separate backend',()=>{
 
 const usageEvent=(event='page_view',visitor='11111111-1111-4111-8111-111111111111',eventId=crypto.randomUUID())=>({event,visitor,eventId})
 describe('administrator insights',()=>{
- it('denies guests and invalid administrators and returns empty aggregates without private identities',async()=>{
+ it('denies visitors and invalid administrators and returns empty aggregates without private identities',async()=>{
   const {call,admin,tokens}=await fixture()
   for(const auth of ['', 'octamod_session='+tokens.author])expect((await call('/admin/insights','GET',undefined,auth)).status).toBe(403)
   expect((await call('/admin/insights','GET',undefined,'',undefined,'f'.repeat(64))).status).toBe(403)
@@ -281,7 +284,7 @@ describe('administrator insights',()=>{
   expect(insights.totals).toEqual({openIssues:0,closedIssues:0,comments:0,likes:0,ratings:0,downloads:0,published:0,mediaBytes:0})
   expect(insights.issueAges).toEqual({underWeek:0,weekToMonth:0,overMonth:0,oldest:null})
   expect(insights.modules.find((module:{moduleId:string})=>module.moduleId==='miniverb')).toMatchObject({ratings:0,ratingAverage:null,comments:0,downloads:0})
-  expect(JSON.stringify(insights)).not.toContain('Author guest')
+  expect(JSON.stringify(insights)).not.toContain('Author')
  })
  it('avoids join multiplication, ages only open reports and retains withdrawn module history',async()=>{
   vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(new Date('2026-10-03T12:00:00Z'))
@@ -295,7 +298,7 @@ describe('administrator insights',()=>{
   expect(result.issueAges).toEqual({underWeek:2,weekToMonth:1,overMonth:1,oldest:'2026-09-03 12:00:00'})
   expect(result.modules.find((module:{moduleId:string})=>module.moduleId==='miniverb')).toMatchObject({comments:2,likes:2,ratings:2,ratingAverage:4.5,openIssues:3,downloads:8})
   expect(result.modules.find((module:{moduleId:string})=>module.moduleId==='removed-module')).toMatchObject({available:false,openIssues:1})
-  for(const privateValue of ['Private report','A comment body','Author guest','reporter_id','user_id'])expect(JSON.stringify(result)).not.toContain(privateValue)
+  for(const privateValue of ['Private report','A comment body','Author','reporter_id','user_id'])expect(JSON.stringify(result)).not.toContain(privateValue)
   await call('/admin/issues/month','PATCH',{status:'closed'},'',undefined,admin)
   const updated=await (await call('/admin/insights','GET',undefined,'',undefined,admin)).json()
   expect(updated.issueAges.overMonth).toBe(0);expect(updated.totals.openIssues).toBe(3)

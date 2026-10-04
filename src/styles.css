@@ -1162,3 +1162,10 @@ h1 { font-size: 28px; }
 .issue-report-success:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .issue-report input[type=file] { width: 100%; min-width: 0; padding: 10px 0; font-size: 13px; }
 .issue-report input[type=file]::file-selector-button { padding: 9px 12px; border: 1px solid #656575; border-radius: 6px; background: #28282f; color: #eeeef7; cursor: pointer; margin-right: 10px; }
+
+/* Account forms share the existing community layout and keyboard focus styles. */
+.account-access { margin: 24px 0; padding: 24px; border: 1px solid var(--line); border-radius: 12px; }
+.account-consent { display: flex !important; align-items: flex-start; gap: 12px; margin: 16px 0; font-size: 13px; line-height: 1.6; }
+.account-consent input[type="checkbox"] { width: 18px; height: 18px; flex: 0 0 18px; margin-top: 3px; accent-color: var(--accent); }
+.account-access .community-form input { min-width: 0; }
+.account-access .review-actions { flex-wrap: wrap; }

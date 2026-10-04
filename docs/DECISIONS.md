@@ -14,7 +14,7 @@ A separate Cloudflare Worker with D1 serves the initial community backend. R2 re
 
 Keep the HTTP contract independent of the hosting provider. A future self-hosted backend can use SQLite and file/object-storage adapters; these adapters and a self-hosted entry point remain unimplemented. Keep the core experience free of paid dependencies and within initial hosting free-tier constraints.
 
-Cross-origin guest requests use an opaque device session in a bearer header, without third-party cookies. CORS and mutations are restricted to the configured frontend origin. No session token appears in a URL. See [app development and operations](APP_DEVELOPMENT.md) for setup.
+Cross-origin account requests use an opaque session in a bearer header, without third-party cookies. CORS and mutations are restricted to the configured frontend origin. No session token appears in a URL. See [app development and operations](APP_DEVELOPMENT.md) for setup.
 
 ## Local firmware and build qualification
 
@@ -38,9 +38,11 @@ The eleven current module versions and complete folder fingerprints are retained
 
 Require original or properly licensed sources and media, attribution, contributor declarations and reviewer verification. Distinguish illustrations, emulator evidence and hardware results. Review is not automatic legal clearance. See [contribution rules](../CONTRIBUTING.md).
 
-## Guest community and private administration
+## Verified community accounts and private administration
 
-Comments, reviews, ratings, likes and author-directed issues require no visitor account or email. GitHub authentication is used on GitHub itself for pull requests; Octamod has no website GitHub sign-in.
+On 4 October 2026 the owner replaced account-free participation with verified visitor accounts and explicitly rejected guest accounts. Signup and sign-in use single-use emailed eight-digit codes; only verified accounts can comment, rate, like or report issues. Resend delivers verification messages through a backend-only API key and verified sender. GitHub authentication remains on GitHub itself for pull requests; no website GitHub OAuth is added.
+
+News emails are an independent, unchecked opt-in, recorded only after email verification and changeable in account settings. Existing-account sign-ins and duplicate signups never overwrite that preference. Account deletion requires a fresh code for that account, revokes all sessions and deletes its email, preference and Octamod-held community activity. Public GitHub issues and historical module provenance remain; referenced attribution rows have no account credentials or email. Migration 0011 revokes all guest sessions without assigning guest posts to newly registered emails. Anonymous visitors can still browse and build locally.
 
 Administration uses separate server-side authorization. Every administrator route must reject access without valid backend authorization. Moderation history remains private; reporters can list only their own reports on the site. Do not expose private routes or use frontend-only access checks.
 

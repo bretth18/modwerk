@@ -224,9 +224,9 @@ const SECTIONS: FaqSection[] = [
       {
         id: 'community',
         title: 'Do I need an account? How do I report a module issue?',
-        keywords: 'guest comments ratings likes email sign in bug author community github contribution',
+        keywords: 'signup verification account newsletter comments ratings likes email sign in bug author community github contribution',
         answer: <>
-          <p>Octamod does not require visitor accounts or email addresses. When community services are connected, you can comment, rate, like and use <strong>Report an issue</strong> on a module page as a guest. A report attaches your configuration and the <code>OCTAMOD.LOG</code> file from your CF card; the form shows how to copy it. Reports become public GitHub issues so the module author is notified and can answer. Follow your reports in <a href="#activity">Your activity</a>.</p>
+          <p>Create an Octamod account and verify your email to comment, rate, like and use <strong>Report an issue</strong> on a module page. Your email stays private; news emails are optional and you can unsubscribe or delete your account under <a href="#activity">Your account</a>. Firmware and configurations stay on your device and do not require an account. A report attaches your configuration and the <code>OCTAMOD.LOG</code> file from your CF card; the form shows how to copy it. Reports become public GitHub issues so the module author is notified and can answer. Follow your reports in <a href="#activity">Your activity</a>.</p>
           <p>Describe the module, your Octatrack model, the displayed OS version and how to reproduce the problem. Never attach firmware. Module contributions and updates go through GitHub pull requests and owner review; see <a href="#submit">Submit a module</a>.</p>
         </>,
       },

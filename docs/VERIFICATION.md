@@ -402,3 +402,16 @@ checks, lint, app/server type checks and the production build. Exact-base
 module validation and `git diff origin/main --check` pass. The source-only
 compiler's `--verify-existing` pass reproduces every authored package and
 receiver against the locally parity-verified baseline. No firmware is involved.
+
+
+## Verified visitor accounts — 4 October 2026
+
+At the owner's request, verified email accounts replace guest participation. Resend signup/sign-in codes, account-only commenting/ratings/likes/issue reporting, independent unchecked news consent, sign-out, account settings and fresh-code deletion are implemented. Existing guest sessions are revoked by migration 0011; historical content is never claimed by a newly registered email. Administrator authorization remains separate. Deletion removes private account data and owned Octamod community activity, revokes all sessions and preserves original module provenance and already-public GitHub issues.
+
+Validation on Node 24: lint, licence/catalog checks (including four licence tests), 261 application/domain tests in 38 files (engine/firmware/DSP tests explicitly excluded), app/server TypeScript and `npm run build` passed. Account regressions cover expired and reused codes, bounded attempts, concurrent verification, transaction rollback, proofs removed before account creation, absent/failed/redirected mail delivery, private email, duplicate signup consent, separate deletion codes, cross-account denial, all-device revocation, legacy-session rejection, preservation of reviewed source attribution, blocked browser storage and multiple-tab session changes.
+
+Browser checks against the actual React app and API logic with an in-memory SQLite adapter and intercepted synthetic Resend delivery passed signup, invalid-code feedback, keyboard verification submission, account restoration after reload, news opt-in persistence and unsubscribe, comment posting, ratings, likes, sign-out and new-code sign-in. At 390 × 844 the account settings, mobile menu, deletion-code request and cancellation were exercised. Permanent deletion and invalidation were exercised through the API/database tests, without deleting real user data.
+
+A separate test bundled `worker.ts` and exercised it in the installed Miniflare/workerd runtime with its actual D1 binding, migrations 0001–0011, and an outbound handler restricted to synthetic `example.test` email. Verified signup/sign-in, single-use codes, account-only posting, preference updates, administrator isolation, fresh-code deletion and revocation on both device sessions passed. This caught an edge-runtime incompatibility with fetch's `redirect: error`; the Resend adapter now uses `manual` and rejects non-success responses without following redirects.
+
+No real email, production migration, Resend sender/secret setup, merge or deployment was performed. Live inbox delivery still requires a verified Resend sender and backend `RESEND_API_KEY` / `MAIL_FROM`; signup and sign-in remain visibly unavailable without them. Newsletter consent is recorded and changeable; marketing campaigns are outside this change. Firmware remains on-device, and no firmware/DSP/emulator/hardware tests ran.

@@ -21,7 +21,7 @@ export function MobileMenu({ route, selectedCount, admin, onSupport }: { route: 
     [{ href: '#configuration', label: 'Configuration', icon: 'sliders', current: route === 'configuration', count: selectedCount }],
     [
       { href: '#submit', label: 'Submit a module', icon: 'plus', current: route.startsWith('submit') },
-      { href: '#activity', label: 'Your activity', icon: 'message', current: route === 'activity' },
+      { href: '#activity', label: 'Account & activity', icon: 'message', current: route === 'activity' },
       ...(admin ? [{ href: '#admin', label: 'Admin workspace', icon: 'shield' as const, current: route === 'admin' || route === 'review' }] : []),
     ],
     [

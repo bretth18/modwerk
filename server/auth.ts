@@ -1,11 +1,13 @@
 import type { Env, User, Database } from './platform'
-import { cookie, digest, HttpError, jsonBody, response, sessionValue, token } from './security'
+import { digest, HttpError, jsonBody, response, sessionValue, token } from './security'
+import { accountRoutes, clearSession, publicUser } from './accounts'
+import { mailAvailable } from './mail'
 /** Fixed actor row for administrator history; the administrator is not a visitor account. */
 export const ADMIN_ACTOR='administrator'
 const ADMIN_SECONDS=8*60*60
 function configuredKey(env:Env){const value=env.ADMIN_KEY_SHA256?.trim().toLowerCase()??'';return /^[a-f0-9]{64}$/.test(value)?value:''}
 function sameDigest(a:string,b:string){if(a.length!==b.length)return false;let difference=0;for(let index=0;index<a.length;index++)difference|=a.charCodeAt(index)^b.charCodeAt(index);return difference===0}
-/** Administration is separate from guest sessions and fails closed until the backend owner configures a key. Rotating the key revokes every administrator session. */
+/** Administration is separate from visitor sessions and fails closed until the backend owner configures a key. Rotating the key revokes every administrator session. */
 export async function isAdmin(request:Request,env:Env,db:Database){
  const key=configuredKey(env),value=request.headers.get('X-Octamod-Admin')??''
  if(!key||!/^[a-f0-9]{64}$/.test(value))return false
@@ -13,37 +15,26 @@ export async function isAdmin(request:Request,env:Env,db:Database){
 }
 export async function currentUser(request:Request,db:Database):Promise<User|null>{
  const value=sessionValue(request);if(!/^[a-f0-9]{64}$/.test(value))return null
- return db.prepare('SELECT u.id,u.display_name FROM users u JOIN sessions s ON s.user_id=u.id WHERE s.token_hash=? AND s.expires>?').bind(await digest(value),Math.floor(Date.now()/1000)).first<User>()
+ return db.prepare('SELECT u.id,u.display_name,a.email,a.newsletter FROM users u JOIN accounts a ON a.user_id=u.id JOIN sessions s ON s.user_id=u.id WHERE s.token_hash=? AND s.expires>?').bind(await digest(value),Math.floor(Date.now()/1000)).first<User>()
 }
 export async function throttle(db:Database,key:string,maximum:number,seconds=3600){
  const now=Math.floor(Date.now()/1000),bucket=Math.floor(now/seconds)
  const result=await db.prepare('INSERT INTO rate_limits(key,count,expires) VALUES(?,1,?) ON CONFLICT(key) DO UPDATE SET count=count+1 RETURNING count').bind(await digest(key+':'+bucket),now+seconds).first<{count:number}>()
  if(!result||result.count>maximum)throw new HttpError(429,'Too many requests. Please try again later.')
 }
-async function createSession(user:User,env:Env,db:Database){
- const value=token(),seconds=30*24*60*60
- await db.prepare('INSERT INTO sessions(token_hash,user_id,expires) VALUES(?,?,?)').bind(await digest(value),user.id,Math.floor(Date.now()/1000)+seconds).run()
- return { cookie: env.SESSION_TRANSPORT === 'bearer' ? undefined : cookie('octamod_session',value,env,seconds), sessionToken: env.SESSION_TRANSPORT === 'bearer' ? value : undefined }
-}
-export async function guest(request:Request,env:Env,db:Database,name:string):Promise<{user:User;cookie?:string;sessionToken?:string}>{
- const existing=await currentUser(request,db);if(existing)return {user:existing}
- await throttle(db,'visitor:'+ (request.headers.get('CF-Connecting-IP')??'local'),20,3600)
- const user:User={id:crypto.randomUUID(),display_name:name}
- await db.prepare('INSERT INTO users(id,display_name) VALUES(?,?)').bind(user.id,name).run()
- return {user,...await createSession(user,env,db)}
-}
 export async function authentication(request:Request,env:Env,path:string):Promise<Response|null>{
  const db=env.DB
  if(path==='/api/auth/session'&&request.method==='GET'){
   const user=db?await currentUser(request,db):null
-  return response({available:!!db,admin:db?await isAdmin(request,env,db):false,user:user?{id:user.id,displayName:user.display_name}:null})
+  return response({available:!!db,emailAvailable:mailAvailable(env),admin:db?await isAdmin(request,env,db):false,user:user?publicUser(user):null})
  }
  if(!path.startsWith('/api/auth/'))return null
- if(/^\/api\/auth\/(github(\/callback)?|complete)$/.test(path))throw new HttpError(410,'Octamod has no website sign-in. Comments, ratings, likes and issue reports work as a guest.')
+ if(/^\/api\/auth\/(github(\/callback)?|complete)$/.test(path))throw new HttpError(410,'GitHub website sign-in is retired. Sign in with your verified email on Octamod.')
  if(!db)throw new HttpError(503,'Community storage is not connected yet.')
+ const account=await accountRoutes(request,env,path,db);if(account)return account
  if(path==='/api/auth/logout'&&request.method==='POST'){
   await db.prepare('DELETE FROM sessions WHERE token_hash=?').bind(await digest(sessionValue(request))).run()
-  const result=response({ok:true});result.headers.set('X-Octamod-Session','');if(env.SESSION_TRANSPORT!=='bearer')result.headers.append('Set-Cookie',cookie('octamod_session','',env,0));return result
+  return clearSession(env)
  }
  if(path==='/api/auth/admin'&&request.method==='POST'){
   await throttle(db,'admin-key:'+(request.headers.get('CF-Connecting-IP')??'local'),5,900)

@@ -3,14 +3,14 @@ import { moduleStatistics } from './module-statistics'
 import { adminInsights } from './admin-insights'
 import recipes from '../src/catalog/module-sets.json'
 import type { Database, Env, Media, User } from './platform'
-import { ADMIN_ACTOR, authentication, currentUser, guest, isAdmin, throttle } from './auth'
+import { ADMIN_ACTOR, authentication, currentUser, isAdmin, throttle } from './auth'
 import { boundedBody, checkOrigin, HttpError, jsonBody, required, response } from './security'
 import { MODULES } from '../src/catalog/modules'
 import { handleGithubWebhook, githubConfig, mirrorIssue, setGithubIssueState } from './github'
 import { IssueInputError, validateIssueContext, validateLogMissing } from '../src/community/issue-context'
 import { OT_LOG_MAX_BYTES, OtLogError, parseOtLog } from '../src/community/ot-log'
 
-function needUser(user: User | null): User { if (!user) throw new HttpError(401,'No guest session is saved on this device.'); return user }
+function needUser(user: User | null): User { if (!user) throw new HttpError(401,'Sign in with a verified account to participate.'); return user }
 async function knownModule(db: Database, id: string) {
   if (MODULES.some(module => module.id === id)||recipes.some(recipe=>'remix-'+recipe.id===id)) return
   if (!await db.prepare("SELECT submission_id FROM module_publications WHERE module_id=?").bind(id).first()) throw new HttpError(404,'Module not found.')
@@ -57,17 +57,17 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       return response({comments,ratings,ownRating:ownRating?.value ?? 0,media,likes:likes?.count??0,liked,downloads,downloadsStarted})
     }
     if ((match = path.match(/^\/api\/modules\/([a-z0-9-]+)\/(comments|rating|like)$/)) && request.method === 'POST') {
+      const owner=needUser(user)
       await knownModule(db,match[1])
       const body = await jsonBody(request)
       await throttle(db,'community-ip:'+(request.headers.get('CF-Connecting-IP')??'local'),30)
       if(match[2]==='comments')required(body.body,'Comment',2000)
       else if(match[2]==='rating'&&(!Number.isInteger(body.value)||Number(body.value)<1||Number(body.value)>5))throw new HttpError(400,'Choose a rating from 1 to 5.')
-      const visitor=await guest(request,env,db,typeof body.displayName==='string'&&body.displayName.trim()?required(body.displayName,'Display name',60):'Guest'),owner=visitor.user
       await throttle(db,'community:' + owner.id,30)
       if (match[2] === 'comments') { await db.prepare('INSERT INTO comments(id,module_id,user_id,body) VALUES(?,?,?,?)').bind(crypto.randomUUID(),match[1],owner.id,required(body.body,'Comment',2000)).run() }
       else if(match[2]==='like'){if(typeof body.liked!=='boolean')throw new HttpError(400,'Choose liked or unliked.');if(body.liked)await db.prepare('INSERT INTO likes(module_id,user_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(match[1],owner.id).run();else await db.prepare('DELETE FROM likes WHERE module_id=? AND user_id=?').bind(match[1],owner.id).run()}
       else { const rating = Number(body.value); if (!Number.isInteger(rating) || rating < 1 || rating > 5) throw new HttpError(400,'Choose a rating from 1 to 5.'); await db.prepare('INSERT INTO ratings(module_id,user_id,value) VALUES(?,?,?) ON CONFLICT(module_id,user_id) DO UPDATE SET value=excluded.value').bind(match[1],owner.id,rating).run() }
-      const result=response({ok:true});if(visitor.cookie)result.headers.append('Set-Cookie',visitor.cookie);if(visitor.sessionToken)result.headers.set('X-Octamod-Session',visitor.sessionToken);return result
+      return response({ok:true})
     }
     if ((match = path.match(/^\/api\/comments\/([^/]+)$/)) && request.method === 'DELETE') {
       if (admin) await db.prepare('DELETE FROM comments WHERE id=?').bind(match[1]).run()
@@ -75,6 +75,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       return response({ok:true})
     }
     if ((match=path.match(/^\/api\/modules\/([a-z0-9-]+)\/issues$/)) && request.method==='POST') {
+      const reporter=needUser(user)
       await knownModule(db,match[1]);const body=await jsonBody(request,OT_LOG_MAX_BYTES+32*1024)
       if(typeof body.steps!=='string'&&typeof body.body==='string')throw new HttpError(400,'Issue reports now include your configuration and OCTAMOD.LOG. Reload the page and report again.')
       const title=required(body.title,'Issue title',160),steps=required(body.steps,'Steps to reproduce',3000),expected=required(body.expected,'Expected result',1000),actual=required(body.actual,'Actual result',2000)
@@ -91,13 +92,12 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       const published=core||recipe?null:await db.prepare("SELECT u.github_login FROM module_publications p JOIN submissions s ON s.id=p.submission_id JOIN users u ON u.id=s.owner_id WHERE p.module_id=?").bind(match[1]).first<{github_login:string}>()
       const author=core?.author??recipe?.author??published?.github_login
       if(!author)throw new HttpError(400,'No author is registered for this module.')
-      const visitor=await guest(request,env,db,typeof body.displayName==='string'&&body.displayName.trim()?required(body.displayName,'Display name',60):'Guest')
       const id=crypto.randomUUID(),details='Steps to reproduce:\n'+steps+'\n\nExpected:\n'+expected+'\n\nActual:\n'+actual
-      const statements=[db.prepare('INSERT INTO issues(id,module_id,author_login,reporter_id,title,body,context_json,log_missing,log_missing_note,github_state) VALUES(?,?,?,?,?,?,?,?,?,?)').bind(id,match[1],author,visitor.user.id,title,details,JSON.stringify(context),missing?.reason??null,missing?.note??'',githubConfig(env)?'pending':'none')]
+      const statements=[db.prepare('INSERT INTO issues(id,module_id,author_login,reporter_id,title,body,context_json,log_missing,log_missing_note,github_state) VALUES(?,?,?,?,?,?,?,?,?,?)').bind(id,match[1],author,reporter.id,title,details,JSON.stringify(context),missing?.reason??null,missing?.note??'',githubConfig(env)?'pending':'none')]
       if(log)statements.push(db.prepare('INSERT INTO issue_logs(issue_id,text,bytes,summary_json) VALUES(?,?,?,?)').bind(id,log.text,log.text.length,JSON.stringify(log.summary)))
       await db.batch(statements)
       const github=await mirrorIssue(db,env,id)
-      const result=response({ok:true,author,github:github.state,githubUrl:'url' in github?github.url:null},201);if(visitor.cookie)result.headers.append('Set-Cookie',visitor.cookie);if(visitor.sessionToken)result.headers.set('X-Octamod-Session',visitor.sessionToken);return result
+      return response({ok:true,author,github:github.state,githubUrl:'url' in github?github.url:null},201)
     }
     if(path==='/api/issues/mine'&&request.method==='GET'){
       if(!user)return response([])

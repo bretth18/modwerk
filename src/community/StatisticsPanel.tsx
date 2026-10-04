@@ -78,7 +78,7 @@ function UsageDashboard({data}: {data: UsageStatistics}) {
       <p>{data.collectionStarted ? 'Collection began '+new Date(data.collectionStarted).toLocaleString(undefined,{timeZone:'UTC'})+' UTC. ' : ''}Today and the collection start day are incomplete. Missing days after collection began count as zero; earlier days are unavailable. Daily totals are kept for 90 days.</p>
       <p>Visitors are distinct browser identifiers within one UTC day. Identifiers rotate daily; adding daily visitors does not give unique people across a period. Average visitors and peak days exclude partial days.</p>
       <p>A configuration starts when its first module is added, or when a nonempty configuration is imported or duplicated. Builds count only successful completed local builds. Downloads and exports count requests, not saved or flashed files. These are separate event totals, not a linked conversion funnel.</p>
-      <p>Offline use, privacy preferences, blocked requests and automated traffic affect coverage. No firmware, configuration contents, guest identity, IP address, user agent or referrer is stored with these usage counts.</p>
+      <p>Offline use, privacy preferences, blocked requests and automated traffic affect coverage. No firmware, configuration contents, account identity, IP address, user agent or referrer is stored with these usage counts.</p>
     </details>
   </>
 }
