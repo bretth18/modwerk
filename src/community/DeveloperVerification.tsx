@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { api, post } from './api'
 import { apiUrl } from '../hosting'
 import { useCommunity } from './context'
+import { Icon } from '../components/Icon'
 
 const verifierKey='modwerk.developer.sign-in'
 export function DeveloperVerification({route}:{route:string}) {
@@ -40,9 +41,10 @@ export function DeveloperVerification({route}:{route:string}) {
     catch(error){setError(error instanceof Error?error.message:'Unable to sign out of your developer account.')}
     finally{setBusy(false)}
   }
-  return <section className="configuration-section" aria-labelledby="developer-verification"><h2 id="developer-verification">Developer account</h2>
+  return <section className="configuration-section developer-verification" aria-labelledby="developer-verification">
+    <header className="developer-verification-heading"><span className="developer-verification-icon"><Icon name="shield" size={20}/></span><div><p className="developer-verification-eyebrow">Module contributors</p><h2 id="developer-verification">Developer account</h2></div></header>
     {unlisted&&<p className="service-note" role="status">This GitHub account is not listed as an author or maintainer of a module in the catalog. Developer access becomes available after a reviewed module lists your GitHub handle.</p>}
     {error&&<p className="file-error" role="alert">{error}</p>}
-    {complete?<><p role="status">{error?'GitHub verification could not finish.':'Verifying your GitHub account…'}</p>{error&&<a className="button button-quiet" href="#account/developer">Try again</a>}</>:!developer?<p role="status">Checking developer verification…</p>:developer.user?<><p className="success-note">Verified developer: @{developer.user.login}</p><div className="forum-actions"><a className="button button-primary" href="#developer">Developer workspace</a><button className="button button-quiet" disabled={busy} onClick={()=>void signOut()}>Sign out of developer account</button></div></>:<><p>Verify with GitHub to manage your modules. Your GitHub login must match an author or maintainer listed in the module catalog. Your community username does not verify developer access.</p><button className="button button-primary" disabled={!developer.available||busy} onClick={()=>void verify()}>{busy?'Opening GitHub…':'Verify developer account with GitHub'}</button>{!developer.available&&<p className="service-note">GitHub developer verification is not available yet.</p>}</>}
+    {complete?<><p className="developer-verification-copy" role="status">{error?'GitHub verification could not finish.':'Verifying your GitHub account…'}</p>{error&&<a className="button button-quiet" href="#account/developer">Try again</a>}</>:!developer?<p className="developer-verification-copy" role="status">Checking developer verification…</p>:developer.user?<><p className="developer-verification-copy">Your GitHub account matches a module in the catalog.</p><p className="success-note"><Icon name="check" size={16}/>Verified developer: @{developer.user.login}</p><div className="developer-verification-actions"><a className="button button-primary" href="#developer">Open developer workspace<Icon name="arrow" size={16}/></a><button className="text-button" disabled={busy} onClick={()=>void signOut()}>Sign out of developer account</button></div></>:<><p className="developer-verification-copy">Manage your modules and respond to private reports. Verify the GitHub account listed as an author or maintainer in the module catalog.</p><div className="developer-verification-actions"><button className="button button-quiet" aria-label="Verify developer account with GitHub" disabled={!developer.available||busy} onClick={()=>void verify()}>{busy?'Opening GitHub…':'Verify with GitHub'}<Icon name="arrow" size={16}/></button></div>{!developer.available&&<p className="developer-verification-note" role="status">GitHub verification is currently unavailable. Please try again later.</p>}</>}
   </section>
 }
