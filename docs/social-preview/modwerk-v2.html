@@ -4,11 +4,10 @@
 <meta charset="utf-8">
 <title>Modwerk link preview</title>
 <!--
-  Source of public/modwerk-social-preview-v2.jpg: a 1200 × 630 vector drawing, rendered by
-  scripts/render-social-preview.mjs. Original artwork; no firmware, photographs or captures.
-  The mark is public/modwerk-mark.svg, embedded as-is.
-  Machines follow the site's schematic DeviceArt rules (generic boxes, not product likenesses).
-  Fonts: Archivo and JetBrains Mono (SIL Open Font License 1.1), pinned @fontsource builds.
+  Editable source for public/modwerk-social-preview-v2.jpg. Original vector artwork.
+  The four feature branches meet at the unchanged public/modwerk-mark.svg.
+  No firmware, photographs, product captures or generated images are used.
+  Fonts: Archivo and JetBrains Mono, pinned @fontsource builds (SIL OFL 1.1).
 -->
 <style>
   @font-face { font-family: 'Archivo'; src: url(https://cdn.jsdelivr.net/npm/@fontsource-variable/archivo@5.3.0/files/archivo-latin-standard-normal.woff2) format('woff2'); font-weight: 100 900; font-stretch: 62% 125%; }
@@ -21,168 +20,94 @@
 </head>
 <body>
 <svg id="art" xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img"
-  aria-label="Modwerk. Mods for every Elektron machine. Four highlighted steps of a sequencer row show the mod library, firmware builder, forum and developer SDK, above a row of Elektron machines."></svg>
+  aria-label="Modwerk. Mods for Elektron instruments. Four branches connect the mod library, firmware builder, community forum and developer SDK to the Modwerk mark.">
+  <defs>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="1" fill="#333237"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="#19191c"/>
+  <rect x="40" y="202" width="1120" height="370" fill="url(#grid)"/>
+  <rect x="530" y="310" width="140" height="154" fill="#19191c"/>
+
+  <!-- The header lockup and central hub both embed the unchanged mark. -->
+  <image href="../../public/modwerk-mark.svg" x="42" y="44" width="82" height="82"/>
+  <text x="148" y="120" class="sans" font-size="94" font-weight="720" letter-spacing="-4" fill="#ececf1" style="font-stretch:104%">Modwerk</text>
+  <text x="44" y="170" class="sans" font-size="32" font-weight="460" letter-spacing="-.7" fill="#c3c3ce">Mods for Elektron instruments.</text>
+  <text x="1156" y="72" text-anchor="end" class="mono" font-size="20" letter-spacing="1.6" fill="#d0a46a">MODWERK.APP</text>
+
+  <!-- Four short, visible branches. The generous centre keeps the mark intact. -->
+  <g stroke="#d0a46a" stroke-width="3" fill="none" stroke-linejoin="round">
+    <path d="M490 295H516Q528 295 528 307V467Q528 479 516 479H490M528 387H539"/>
+    <path d="M710 295H684Q672 295 672 307V467Q672 479 684 479H710M672 387H661"/>
+  </g>
+  <g fill="#d0a46a">
+    <circle cx="490" cy="295" r="5"/><circle cx="490" cy="479" r="5"/>
+    <circle cx="710" cy="295" r="5"/><circle cx="710" cy="479" r="5"/>
+  </g>
+
+  <!-- Feature panels: labels and drawings remain independent at preview sizes. -->
+  <g fill="#232326" stroke="#48474d" stroke-width="1.5">
+    <rect x="40" y="218" width="450" height="154" rx="16"/>
+    <rect x="710" y="218" width="450" height="154" rx="16"/>
+    <rect x="40" y="402" width="450" height="154" rx="16"/>
+    <rect x="710" y="402" width="450" height="154" rx="16"/>
+  </g>
+  <g class="sans" font-size="41" font-weight="620" letter-spacing="-1" fill="#ececf1">
+    <text x="66" y="282">Mod</text><text x="66" y="326">library</text>
+    <text x="878" y="282">Firmware</text><text x="878" y="326">builder</text>
+    <text x="66" y="466">Community</text><text x="66" y="510">forum</text>
+    <text x="878" y="466">Developer</text><text x="878" y="510">SDK</text>
+  </g>
+
+  <!-- Library: three collectible module covers, each with a distinct signal. -->
+  <g stroke-width="2">
+    <rect x="277" y="246" width="62" height="98" rx="6" fill="#19191c" stroke="#66636c"/>
+    <rect x="342" y="238" width="62" height="98" rx="6" fill="#19191c" stroke="#929bff"/>
+    <rect x="407" y="246" width="62" height="98" rx="6" fill="#19191c" stroke="#83c7bc"/>
+    <path d="M286 295C294 267 298 267 307 295S320 323 330 295" fill="none" stroke="#d0a46a" stroke-width="3"/>
+    <path d="M353 311V264M362 311V278M371 311V289M380 311V299M389 311V304" stroke="#929bff" stroke-width="4"/>
+    <path d="M417 310V280H431V299H445V280H459V310" fill="none" stroke="#83c7bc" stroke-width="3"/>
+  </g>
+
+  <!-- Builder: selected modules combine into one firmware package. -->
+  <g transform="translate(734 241)">
+    <g stroke-width="2">
+      <rect width="30" height="30" rx="5" fill="#302b25" stroke="#d0a46a"/>
+      <rect x="43" width="30" height="30" rx="5" fill="#292a36" stroke="#929bff"/>
+      <rect x="86" width="30" height="30" rx="5" fill="#25302f" stroke="#83c7bc"/>
+    </g>
+    <path d="M15 38V46H101V38M58 46V65M50 57L58 65L66 57" stroke="#c3c3ce" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="4" y="73" width="108" height="34" rx="6" fill="#19191c" stroke="#c3c3ce" stroke-width="2"/>
+    <g>
+      <rect x="14" y="82" width="17" height="16" rx="2" fill="#d0a46a"/>
+      <rect x="37" y="82" width="17" height="16" rx="2" fill="#929bff"/>
+      <rect x="60" y="82" width="17" height="16" rx="2" fill="#83c7bc"/>
+      <path d="M85 89L91 95L103 84" fill="none" stroke="#ececf1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+
+  <!-- Forum: a conversation, with clear silhouettes instead of miniature text. -->
+  <g transform="translate(290 428)" stroke-width="2.5" stroke-linejoin="round">
+    <path d="M46 40H155Q163 40 163 48V81Q163 89 155 89H147V106L128 89H46Q38 89 38 81V48Q38 40 46 40Z" fill="#302b25" stroke="#d0a46a"/>
+    <path d="M8 0H117Q125 0 125 8V44Q125 52 117 52H36L17 70V52H8Q0 52 0 44V8Q0 0 8 0Z" fill="#19191c" stroke="#ececf1"/>
+    <path d="M21 19H94M21 32H71" stroke="#c3c3ce" stroke-width="4" stroke-linecap="round"/>
+    <g fill="#d0a46a" stroke="none"><circle cx="98" cy="69" r="3"/><circle cx="113" cy="69" r="3"/><circle cx="128" cy="69" r="3"/></g>
+  </g>
+
+  <!-- SDK: code brackets frame a module tile, echoing the logo's incoming mod. -->
+  <g transform="translate(732 427)" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M25 19L4 49L25 79M100 19L121 49L100 79" stroke="#ececf1"/>
+    <path d="M75 8L51 91" stroke="#929bff"/>
+    <rect x="90" y="84" width="22" height="22" rx="4" fill="#d0a46a" stroke="none"/>
+  </g>
+
+  <image href="../../public/modwerk-mark.svg" x="534" y="321" width="132" height="132"/>
+
+  <text x="44" y="606" class="mono" font-size="11" letter-spacing="1" fill="#8d8d9a">INDEPENDENT · NOT AFFILIATED WITH ELEKTRON</text>
+</svg>
 <script>
-// Site palette (src/styles.css, src/devices/devices.css).
-const C = {
-  ink: '#ececf1', soft: '#c3c3ce', muted: '#8d8d9a', kicker: '#9c9caa', faint: '#55555f',
-  body: '#8f8f9d', accent: '#929bff', apricot: '#d0a46a', mint: '#83c7bc',
-}
-const W = 1200, M = 56
-const out = []
-const el = s => out.push(s)
-const f = n => +n.toFixed(2)
-
-// ---- Machines: one of each silhouette, drawn with the site's DeviceArt rules ----
-const MACHINES = [
-  ['Octatrack', { body: 'wide', encoders: 6, trigs: 16, fader: true }],
-  ['Digitakt', { body: 'compact', encoders: 8, trigs: 16 }],
-  ['Syntakt', { body: 'wide', encoders: 8, trigs: 16, knobs: 2 }],
-  ['Analog Rytm', { body: 'wide', encoders: 8, trigs: 16, pads: 12 }],
-  ['Analog Keys', { body: 'keys', encoders: 10, trigs: 16 }],
-  ['Analog Heat', { body: 'box', encoders: 0, trigs: 0, knobs: 8 }],
-  ['Model:Cycles', { body: 'model', encoders: 0, trigs: 16, pads: 6, knobs: 6 }],
-]
-function bodySize(art) {
-  const width = art.body === 'compact' ? 200 : art.body === 'box' ? 150 : art.body === 'model' ? 180 : 240
-  return { width, height: art.body === 'keys' ? 150 : 120 }
-}
-// Top-left at (x, y), scaled by s; strokes keep their pixel width.
-function machine(art, x, y, s) {
-  const { width, height } = bodySize(art)
-  const keys = art.body === 'keys', model = art.body === 'model', box = art.body === 'box'
-  const inner = width - 24
-  const screenWidth = box ? 44 : model ? 36 : 54
-  const encoderStep = art.encoders ? Math.min(18, (inner - screenWidth - 14) / Math.ceil(art.encoders / 2)) : 0
-  const trigStep = art.trigs ? inner / art.trigs : 0
-  const ns = 'vector-effect="non-scaling-stroke"'
-  const g = []
-  g.push(`<rect x="0" y="0" width="${width}" height="${height}" rx="9" fill="#202025" stroke="${C.body}" stroke-width="1.5" ${ns}/>`)
-  g.push(`<rect x="12" y="12" width="${screenWidth}" height="26" rx="2" fill="#262a4a" stroke="${C.accent}" stroke-width="1.3" ${ns}/>`)
-  for (let i = 0; i < art.encoders; i++) {
-    const row = i % 2, col = Math.floor(i / 2)
-    g.push(`<circle cx="${12 + screenWidth + 16 + col * encoderStep}" cy="${17 + row * 16}" r="5" fill="#2c2c33" stroke="#a4a4b2" stroke-width="1.1" ${ns}/>`)
-  }
-  for (let i = 0; i < (art.knobs ?? 0); i++) {
-    // Model bodies carry their knobs beside the screen, so the pad row stays clear.
-    const perRow = box ? 4 : art.knobs
-    const step = box ? (inner - 8) / perRow : model ? 18 : 16
-    const startX = box ? 12 + step / 2 + 4 : model ? 12 + screenWidth + 20 : width - 12 - art.knobs * 16 + 8
-    const startY = box ? 58 : model ? 25 : 50
-    g.push(`<circle cx="${startX + (i % perRow) * step}" cy="${startY + Math.floor(i / perRow) * 28}" r="${box ? 9 : 5.5}" fill="#2c2c33" stroke="#a4a4b2" stroke-width="1.1" ${ns}/>`)
-  }
-  for (let i = 0; i < (art.pads ?? 0); i++) {
-    const size = model ? 18 : 12, gap = model ? 6 : 4
-    const startX = model ? 12 : width - 12 - 6 * (size + gap) + gap
-    g.push(`<rect x="${startX + (i % 6) * (size + gap)}" y="${50 + Math.floor(i / 6) * (size + gap)}" width="${size}" height="${size}" rx="2" fill="#2f2f37" stroke="${C.body}" stroke-width="1" ${ns}/>`)
-  }
-  if (art.fader) g.push(`<path d="M18 62h46" stroke="#6d6d7a" stroke-width="1.2" ${ns}/><rect x="34" y="56" width="12" height="12" rx="2" fill="#2b2b31" stroke="${C.apricot}" stroke-width="1.2" ${ns}/>`)
-  for (let i = 0; i < art.trigs; i++) {
-    g.push(`<rect x="${12 + i * trigStep + 1}" y="${height - (keys ? 52 : 22)}" width="${Math.max(3, trigStep - 3)}" height="${model ? 6 : 8}" rx="1.5" fill="${i % 4 === 0 ? C.apricot : '#3a3a43'}"/>`)
-  }
-  if (keys) for (let i = 0; i < 22; i++) g.push(`<rect x="${12 + i * (inner / 22)}" y="${height - 38}" width="${inner / 22}" height="28" fill="#2a2a30" stroke="#6d6d7a" stroke-width="1" ${ns}/>`)
-  return `<g transform="translate(${f(x)} ${f(y)}) scale(${s})">${g.join('')}</g>`
-}
-
-// ---- Feature pictograms, drawn inside a 64 px tile ----
-const TILE = 64
-function icon(kind, x, y) {
-  const g = []
-  const cx = x + TILE / 2, cy = y + TILE / 2
-  if (kind === 'library') {
-    // Four module covers: wave, decay, rhythm, tape.
-    const s = 20, gap = 4, ox = cx - s - gap / 2, oy = cy - s - gap / 2
-    ;[[0, 0, C.accent], [1, 0, C.mint], [0, 1, C.apricot], [1, 1, C.soft]].forEach(([col, row, color], k) => {
-      const X = ox + col * (s + gap), Y = oy + row * (s + gap)
-      g.push(`<rect x="${X}" y="${Y}" width="${s}" height="${s}" rx="3" fill="#18181c" stroke="${C.faint}" stroke-width="1"/>`)
-      if (k === 0) {
-        let d = ''
-        for (let i = 0; i <= 20; i++) d += (i ? 'L' : 'M') + f(X + 3 + i * .7) + ' ' + f(Y + s / 2 - Math.sin(i / 20 * Math.PI * 2) * 5)
-        g.push(`<path d="${d}" stroke="${color}" stroke-width="1.5" fill="none" stroke-linecap="round"/>`)
-      }
-      if (k === 1) for (let i = 0; i < 6; i++) g.push(`<path d="M${X + 4 + i * 2.4} ${Y + s - 4}v${-12 * Math.exp(-i / 2.4)}" stroke="${color}" stroke-width="1.3" stroke-linecap="round"/>`)
-      if (k === 2) for (let i = 0; i < 8; i++) {
-        const a = i / 8 * Math.PI * 2 - Math.PI / 2
-        g.push(`<circle cx="${f(X + s / 2 + Math.cos(a) * 6)}" cy="${f(Y + s / 2 + Math.sin(a) * 6)}" r="1.4" fill="${[0, 3, 5].includes(i) ? color : '#4a4a55'}"/>`)
-      }
-      if (k === 3) g.push(`<circle cx="${X + 6.5}" cy="${Y + 10}" r="3.6" fill="none" stroke="${color}" stroke-width="1.2"/><circle cx="${X + 13.5}" cy="${Y + 10}" r="3.6" fill="none" stroke="${color}" stroke-width="1.2"/><path d="M${X + 3} ${Y + 15.5}h14" stroke="${color}" stroke-width="1.2"/>`)
-    })
-  } else if (kind === 'firmware') {
-    // The owner's stock OS (hatched) with mod blocks composed into it.
-    const bx = x + 12, by = y + 36, bw = 40, bh = 13
-    g.push(`<defs><pattern id="hatch" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V4" stroke="#6d6d7a" stroke-width="1.2"/></pattern></defs>`)
-    g.push(`<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="2" fill="url(#hatch)" stroke="${C.body}" stroke-width="1.2"/>`)
-    g.push(`<rect x="${bx + 9}" y="${by + 1.5}" width="7" height="${bh - 3}" fill="${C.accent}"/><rect x="${bx + 22}" y="${by + 1.5}" width="5" height="${bh - 3}" fill="${C.mint}"/>`)
-    g.push(`<rect x="${bx + 30}" y="${by - 22}" width="7" height="10" rx="1" fill="${C.apricot}"/>`)
-    g.push(`<path d="M${bx + 33.5} ${by - 9}v6m-3 -3l3 3l3 -3" stroke="${C.apricot}" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`)
-    g.push(`<path d="M${bx} ${by - 6}h24" stroke="${C.faint}" stroke-width="1"/>`)
-    g.push(`<text x="${bx}" y="${by - 11}" class="mono" font-size="7.5" fill="${C.muted}">OS.bin</text>`)
-  } else if (kind === 'forum') {
-    g.push(`<path d="M${x + 12} ${y + 15}h26a4 4 0 0 1 4 4v13a4 4 0 0 1 -4 4h-17l-6 6v-6h-3a4 4 0 0 1 -4 -4v-13a4 4 0 0 1 4 -4z" fill="#18181c" stroke="${C.soft}" stroke-width="1.5" stroke-linejoin="round"/>`)
-    g.push(`<path d="M${x + 46} ${y + 26}h4a4 4 0 0 1 4 4v11a4 4 0 0 1 -4 4h-2v5l-5 -5h-12a4 4 0 0 1 -4 -4v-1" fill="none" stroke="${C.accent}" stroke-width="1.5" stroke-linejoin="round"/>`)
-    for (let i = 0; i < 3; i++) g.push(`<circle cx="${x + 19 + i * 6}" cy="${y + 25.5}" r="1.7" fill="${C.soft}"/>`)
-  } else if (kind === 'sdk') {
-    // Braces around code lines and a cursor.
-    const l = x + 14, r = x + TILE - 14, t = y + 17, b = y + TILE - 17, m = (t + b) / 2
-    const brace = `stroke="${C.ink}" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"`
-    g.push(`<path d="M${l + 7} ${t}h-2a3 3 0 0 0 -3 3v${m - t - 6}a3 3 0 0 1 -3 3a3 3 0 0 1 3 3v${b - m - 6}a3 3 0 0 0 3 3h2" ${brace}/>`)
-    g.push(`<path d="M${r - 7} ${t}h2a3 3 0 0 1 3 3v${m - t - 6}a3 3 0 0 0 3 3a3 3 0 0 0 -3 3v${b - m - 6}a3 3 0 0 1 -3 3h-2" ${brace}/>`)
-    g.push(`<path d="M${l + 12} ${m - 5}h12M${l + 16} ${m + 1}h10" stroke="${C.accent}" stroke-width="2" stroke-linecap="round"/>`)
-    g.push(`<rect x="${l + 12}" y="${m + 5}" width="6" height="2.4" fill="${C.apricot}"/>`)
-  }
-  return g.join('')
-}
-
-// ---- Crop marks ----
-for (const [x, y, dx, dy] of [[24, 24, 1, 1], [1176, 24, -1, 1], [24, 606, 1, -1], [1176, 606, -1, -1]]) {
-  el(`<path d="M${x} ${y + dy * 12}V${y}H${x + dx * 12}" stroke="${C.faint}" stroke-width="1" fill="none"/>`)
-}
-
-// ---- Lockup: the mark file, verbatim, beside the wordmark ----
-const MARK = 92
-el(`<image href="../../public/modwerk-mark.svg" x="${M}" y="44" width="${MARK}" height="${MARK}"/>`)
-el(`<text x="${M + MARK + 22}" y="124" class="sans" font-size="104" font-weight="720" letter-spacing="-4.2" fill="${C.ink}" style="font-stretch:104%">Modwerk</text>`)
-el(`<text x="${M}" y="200" class="sans" font-size="40" font-weight="480" letter-spacing="-1.1" fill="${C.soft}">Mods for every Elektron machine.</text>`)
-
-// ---- Sixteen trig keys; the four beat steps are the four features ----
-const FEATURES = [
-  { title: 'Mod library', kicker: 'EVERY MOD, ONE CATALOG', icon: 'library' },
-  { title: 'Firmware builder', kicker: 'YOUR STOCK OS + YOUR MODS', icon: 'firmware' },
-  { title: 'Forum', kicker: 'A BOARD FOR EACH MACHINE', icon: 'forum' },
-  { title: 'Developer SDK', kicker: 'ONE STANDARD FOR EVERY MACHINE', icon: 'sdk' },
-]
-const KEY_GAP = 10, KEY = (W - 2 * M - 15 * KEY_GAP) / 16, KEY_Y = 316
-for (let i = 0; i < 16; i++) {
-  const x = M + i * (KEY + KEY_GAP)
-  const beat = i % 4 === 0
-  if (beat) {
-    const feature = FEATURES[i / 4]
-    el(`<text x="${x}" y="${KEY_Y - 34}" class="sans" font-size="31" font-weight="620" letter-spacing="-.8" fill="${C.ink}">${feature.title}</text>`)
-    el(`<text x="${x + 1}" y="${KEY_Y - 13}" class="mono" font-size="10.5" letter-spacing="1" fill="${C.kicker}">${feature.kicker}</text>`)
-    el(`<rect x="${f(x)}" y="${KEY_Y}" width="${f(KEY)}" height="${f(KEY)}" rx="9" fill="#202024" stroke="${C.apricot}" stroke-width="2"/>`)
-    el(`<g transform="translate(${f(x)} ${KEY_Y}) scale(${f(KEY / TILE)}) translate(${-x} ${-KEY_Y})">${icon(feature.icon, x, KEY_Y)}</g>`)
-  } else {
-    el(`<rect x="${f(x)}" y="${KEY_Y}" width="${f(KEY)}" height="${f(KEY)}" rx="9" fill="#232328" stroke="#3a3a43" stroke-width="1.5"/>`)
-  }
-  el(`<text x="${f(x + KEY / 2)}" y="${f(KEY_Y + KEY + 22)}" text-anchor="middle" class="mono" font-size="10" letter-spacing=".5" fill="${beat ? C.apricot : C.faint}">${i + 1}</text>`)
-}
-
-// ---- One of each machine, standing on one baseline ----
-const MACHINE_BASE = 511, SCALE = .42
-const widths = MACHINES.map(([, art]) => bodySize(art).width * SCALE)
-const machineGap = (W - 2 * M - widths.reduce((a, b) => a + b, 0)) / (MACHINES.length - 1)
-let left = M
-MACHINES.forEach(([, art], i) => {
-  el(machine(art, left, MACHINE_BASE - bodySize(art).height * SCALE, SCALE))
-  left += widths[i] + machineGap
-})
-
-// ---- Footer ----
-el(`<text x="${M}" y="596" class="sans" font-size="23" font-weight="620" letter-spacing="-.4" fill="${C.accent}">modwerk.app</text>`)
-el(`<text x="${W - M}" y="592" text-anchor="end" class="mono" font-size="10" letter-spacing="1" fill="${C.faint}">INDEPENDENT · NOT AFFILIATED WITH ELEKTRON</text>`)
-
-document.getElementById('art').innerHTML = out.join('\n')
-// Refuse to report a render with fallback fonts or without the mark.
+// Refuse a render with fallback fonts or a missing mark.
 const markLoaded = new Promise(resolve => {
   const probe = new Image()
   probe.onload = () => resolve(true)
@@ -190,7 +115,7 @@ const markLoaded = new Promise(resolve => {
   probe.src = '../../public/modwerk-mark.svg'
 })
 Promise.all([document.fonts.ready, markLoaded]).then(([, mark]) => {
-  const fonts = document.fonts.check('720 104px Archivo') && document.fonts.check('400 10px "JetBrains Mono"')
+  const fonts = document.fonts.check('720 94px Archivo') && document.fonts.check('400 20px "JetBrains Mono"')
     && [...document.fonts].every(face => face.status === 'loaded')
   document.documentElement.dataset.rendered = fonts && mark ? 'true' : fonts ? 'mark-error' : 'font-error'
 })
