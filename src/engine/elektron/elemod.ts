@@ -419,7 +419,7 @@ export async function applyWholeBuilds(mods: ParsedMod[], image: Uint8Array): Pr
   if (blobs.length > 1) bad.push('more than one whole build (' + blobs.map(label).join(', ') + ')')
   for (const mod of blobs) if (mod.blob!.load !== imageEnd(mod)) bad.push(label(mod) + ': its blob loads at ' + hex32(mod.blob!.load) + ', not the image end ' + hex32(imageEnd(mod)))
   if (bad.length) throw new ModError('the mods do not combine:\n  ' + bad.join('\n  '))
-  const chunks = [image.slice()]
+  const chunks: Uint8Array[] = [image.slice()]
   for (const mod of mods) for (const site of mod.sites) chunks[0].set(site.bytes, site.addr - device.mainLoad)
   for (const mod of blobs) {
     const bytes = partsBytes(mod.blob!.parts, image, device)
