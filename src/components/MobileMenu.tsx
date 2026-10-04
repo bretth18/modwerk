@@ -6,7 +6,7 @@ import { SupportButton } from './SupportDialog'
 type MenuLink = { href: string; label: string; icon: IconName; current: boolean; count?: number }
 
 // Phone-width home for the destinations the desktop sidebar lists under Configurations, Community and Help.
-export function MobileMenu({ route, selectedCount, configurationHref, admin, onSupport }: { route: string; selectedCount: number; configurationHref?: string; admin: boolean; onSupport?: () => void }) {
+export function MobileMenu({ route, selectedCount, configurationHref, admin, developer, onSupport }: { route: string; selectedCount: number; configurationHref?: string; admin: boolean; developer?: boolean; onSupport?: () => void }) {
   const [open, setOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
   useEffect(() => {
@@ -25,7 +25,7 @@ export function MobileMenu({ route, selectedCount, configurationHref, admin, onS
     [
       { href: '#forum', label: 'Forum', icon: 'message', current: route.startsWith('forum') },
       { href: '#account', label: 'Account / sign in', icon: 'shield', current: route.startsWith('account') },
-      { href: '#developer', label: 'Developer workspace', icon: 'sliders', current: route.startsWith('developer') },
+      ...(developer ? [{ href: '#developer', label: 'Developer workspace', icon: 'sliders' as const, current: route.startsWith('developer') }] : []),
       { href: '#submit', label: 'Submit a module', icon: 'plus', current: route.startsWith('submit') },
       ...(admin ? [{ href: '#admin', label: 'Admin workspace', icon: 'shield' as const, current: route === 'admin' || route === 'review' }] : []),
     ],
