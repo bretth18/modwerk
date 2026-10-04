@@ -113,7 +113,10 @@ export async function buildCoreProbes({ root, output, sourceCommit, compiler, cf
       if (!symbol || symbol.section !== section?.index || symbol.value + 6 > section.data.length) throw new Error('Invalid synthetic CPU fixture')
       return [event, section.data.subarray(symbol.value, symbol.value + 6).toString('hex')]
     }))
-    const bytes = JSON.stringify({ schemaVersion: 1, sourceCommit, synthetic: true, instructions }, null, 2) + '\n'
+    const at = name => elf.symbols.find(symbol => symbol.name === 'fixture_' + name)?.value
+    const emacHarness = { set: section.data.subarray(at('emac_set'), at('emac_get')).toString('hex'), get: section.data.subarray(at('emac_get'), at('end')).toString('hex') }
+    if (!emacHarness.set || !emacHarness.get) throw new Error('Missing synthetic EMAC helpers')
+    const bytes = JSON.stringify({ schemaVersion: 1, sourceCommit, synthetic: true, instructions, emacHarness }, null, 2) + '\n'
     await writeFile(resolve(output, path), bytes)
     syntheticFixtures = { path, sha256: sha(bytes) }
   }
