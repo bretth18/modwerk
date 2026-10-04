@@ -7,7 +7,8 @@ import { createHash } from 'node:crypto'
 import { LINK_DEVICES, parseElemod } from '../src/engine/elektron/elemod.ts'
 import { elfToElemod } from './elemod-elf.mjs'
 
-export async function buildCoreProbes({ root, output, sourceCommit, compiler, cflags, ldScript, run }) {
+export async function buildCoreProbes({ root, output, sourceCommit, compiler, cflags, ldScript, run, uiHooks = false }) {
+  const stage = uiHooks ? 'ui-hook-probe' : 'boot-probe', prefix = uiHooks ? 'ui-cores' : 'cores'
   const sha = value => createHash('sha256').update(value).digest('hex')
   const shared = resolve(root, 'sdk/elemod/core'), artifacts = [], sourceFiles = {}
   async function scan(folder, prefix = '') {
@@ -23,9 +24,9 @@ export async function buildCoreProbes({ root, output, sourceCommit, compiler, cf
   }
   await scan(shared)
   for (const device of LINK_DEVICES) {
-    const specBytes = await readFile(resolve(root, 'sdk', device.machine, 'core/probe.json'))
+    const specBytes = await readFile(resolve(root, 'sdk', device.machine, uiHooks ? 'core/ui-probe.json' : 'core/probe.json'))
     const spec = JSON.parse(specBytes.toString('utf8'))
-    if (spec.schemaVersion !== 1 || spec.machine !== device.machine || spec.stage !== 'boot-probe' || spec.providesInterface !== false || spec.version !== '0.1.0-dev' || Object.keys(spec.releases).sort().join() !== device.releases.map(r => r.version).sort().join()) throw new Error('Invalid draft core probe')
+    if (spec.schemaVersion !== 1 || spec.machine !== device.machine || spec.stage !== stage || spec.providesInterface !== false || spec.version !== (uiHooks ? '0.2.0-dev' : '0.1.0-dev') || Object.keys(spec.releases).sort().join() !== device.releases.map(r => r.version).sort().join()) throw new Error('Invalid draft core probe')
     const defs = device.machine === 'digitone' ? ['-DMODWERK_DIGITONE'] : []
     const work = resolve('/tmp/modwerk-compile/core', device.machine)
     await mkdir(work, { recursive: true })
@@ -36,27 +37,40 @@ export async function buildCoreProbes({ root, output, sourceCommit, compiler, cf
     const bus = resolve(work, 'event-bus.o')
     run('gcc', [...cflags, '-std=c11', '-Wextra', '-Werror', ...defs, '-I', shared, '-c', resolve(shared, 'event-bus.c'), '-o', bus])
     for (const release of device.releases) {
-      const boot = spec.releases[release.version].boot
+      const config = spec.releases[release.version], boot = config.boot
       if (boot.addr !== '0x40000538' || boot.len !== 6 || !/^0x[0-9a-f]{8}$/.test(boot.target) || !/^[a-f0-9]{64}$/.test(boot.stockSha256) || Number(boot.target) < device.mainLoad || Number(boot.target) >= device.mainLoad + release.mainLength) throw new Error('Invalid guarded boot site')
       const object = resolve(work, release.version + '.o'), bootObject = object + '.boot.o', script = object + '.ld'
       run('as', ['-mcpu=54455', '--defsym', 'mw_stock_boot=' + boot.target, '-o', bootObject, resolve(shared, 'boot.s')])
+      const hookObjects = [], stockCallBindings = {}
+      if (uiHooks) {
+        if (!config.hooks || Object.keys(config.hooks).sort().join() !== 'draw,enc,key,tick') throw new Error('Invalid UI hook set')
+        const definitions = []
+        for (const [event, site] of Object.entries(config.hooks)) {
+          if (site.len !== 6 || !/^0x[0-9a-f]{8}$/.test(site.addr) || !/^0x[0-9a-f]{8}$/.test(site.target) || !/^[a-f0-9]{64}$/.test(site.stockSha256) || Number(site.addr) < device.mainLoad || Number(site.addr) + 6 > device.mainLoad + release.mainLength || Number(site.target) < device.mainLoad || Number(site.target) >= device.mainLoad + release.mainLength) throw new Error('Invalid guarded UI hook')
+          definitions.push('--defsym', 'mw_stock_' + event + '=' + site.target)
+          stockCallBindings['mw_stock_' + event] = { addr: site.addr, target: site.target }
+        }
+        const hooks = object + '.ui.o'
+        run('as', ['-mcpu=54455', ...definitions, '-o', hooks, resolve(shared, 'ui-hooks.s')])
+        hookObjects.push(hooks)
+      }
       await writeFile(script, ldScript)
-      run('ld', ['-r', '-d', '-T', script, '-o', object, bootObject, bus])
+      run('ld', ['-r', '-d', '-T', script, '-o', object, bootObject, bus, ...hookObjects])
       const events = ['ev_tick', 'ev_draw', 'ev_key', 'ev_enc', 'ev_settings', 'ev_render_in', 'ev_render_out', ...(device.machine === 'digitone' ? ['ev_voice_on', 'ev_hold'] : [])]
       const build = { weak: [], subscribe: [], contribute: [], collections: Object.fromEntries(events.map(event => [event, 4])), copied: [], regions: [], claims: [], requires: [] }
-      const document = { id: 'core', version: spec.version, name: 'Modwerk boot probe', presentation: { summary: 'Development probe; does not provide the full machine core interface.' }, category: 'system', author: { github: 'repeat98' }, license: { spdx: 'GPL-3.0-or-later' }, compatibility: { requires: [], conflicts: [] } }
+      const document = { id: 'core', version: spec.version, name: uiHooks ? 'Modwerk UI hook probe' : 'Modwerk boot probe', presentation: { summary: 'Development probe; does not provide the full machine core interface.' }, category: 'system', author: { github: 'repeat98' }, license: { spdx: 'GPL-3.0-or-later' }, compatibility: { requires: [], conflicts: [] } }
       const target = { device: device.key, os: release.version, syx_sha256: release.syxSha256, section3_sha256: release.mainSha256 }
       const module = elfToElemod(await readFile(object), document, build, target)
       parseElemod(module)
-      const sources = { ...sourceFiles, ['sdk/' + device.machine + '/core/probe.json']: sha(specBytes) }
+      const sources = { ...sourceFiles, ['sdk/' + device.machine + '/core/' + (uiHooks ? 'ui-probe.json' : 'probe.json')]: sha(specBytes) }
       const plan = { schemaVersion: 1, machine: device.machine, id: 'core', version: spec.version, release: release.version, stage: spec.stage, providesInterface: false,
-        module, sites: [{ addr: boot.addr, len: boot.len, stockSha256: boot.stockSha256, op: 'jsr', target: 'mw_boot' }], derive: null, stockBootTarget: boot.target,
+        module, sites: [{ addr: boot.addr, len: boot.len, stockSha256: boot.stockSha256, op: 'jsr', target: 'mw_boot' }, ...(uiHooks ? Object.entries(config.hooks).map(([event, site]) => ({ addr: site.addr, len: site.len, stockSha256: site.stockSha256, op: 'jsr', target: 'mw_hook_' + event })) : [])], derive: null, stockBootTarget: boot.target, ...(uiHooks ? { stockCallBindings } : {}),
         provenance: { sourceCommit, compiler, sources, sourceTreeSha256: sha(JSON.stringify(sources)), elfSha256: sha(await readFile(object)) } }
-      const path = 'cores/' + device.machine + '/' + release.version + '.json', bytes = JSON.stringify(plan, null, 2) + '\n'
+      const path = prefix + '/' + device.machine + '/' + release.version + '.json', bytes = JSON.stringify(plan, null, 2) + '\n'
       await mkdir(dirname(resolve(output, path)), { recursive: true }); await writeFile(resolve(output, path), bytes)
       artifacts.push({ machine: device.machine, release: release.version, path, sha256: sha(bytes) })
-      console.log('Compiled boot-only core probe for ' + device.machine + ' ' + release.version + '; interface/downloads remain unavailable')
+      console.log('Compiled ' + stage + ' for ' + device.machine + ' ' + release.version + '; interface/downloads remain unavailable')
     }
   }
-  await writeFile(resolve(output, 'core-build.json'), JSON.stringify({ schemaVersion: 1, sourceCommit, stage: 'boot-probe', providesInterface: false, artifacts }, null, 2) + '\n')
+  await writeFile(resolve(output, uiHooks ? 'core-ui-build.json' : 'core-build.json'), JSON.stringify({ schemaVersion: 1, sourceCommit, stage, providesInterface: false, artifacts }, null, 2) + '\n')
 }

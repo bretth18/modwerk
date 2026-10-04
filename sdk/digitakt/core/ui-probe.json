@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "machine": "digitakt",
+  "version": "0.2.0-dev",
+  "stage": "ui-hook-probe",
+  "providesInterface": false,
+  "releases": {
+    "1.53": {
+      "boot": {
+        "addr": "0x40000538",
+        "len": 6,
+        "stockSha256": "c1a3cde7400c8be664852277311dbf1b3ce0b613123e9380d9cfde178b1fe0ac",
+        "target": "0x40001c94"
+      },
+      "hooks": {
+        "tick": {
+          "addr": "0x4000a770",
+          "len": 6,
+          "target": "0x400ca34c",
+          "stockSha256": "13ab557aaee5d356f2db123a198e1ffd86d3eff36974fe4b51d29956271f3a79"
+        },
+        "draw": {
+          "addr": "0x4000a7d6",
+          "len": 6,
+          "target": "0x400ca382",
+          "stockSha256": "12b965b9100a691a982969e270fc3e67aa394915187f4e4644d76f89470e374a"
+        },
+        "key": {
+          "addr": "0x4000b770",
+          "len": 6,
+          "target": "0x400084fe",
+          "stockSha256": "fd093959ea0b44395bc971bb16a4bd179b9032cb712bdb5d06f4458fc148ef58"
+        },
+        "enc": {
+          "addr": "0x4000b7ba",
+          "len": 6,
+          "target": "0x40008550",
+          "stockSha256": "b64e1b142d9a31dede4506a839e453a9c1ce529f3687898ea70489a111277e87"
+        }
+      }
+    },
+    "1.54": {
+      "boot": {
+        "addr": "0x40000538",
+        "len": 6,
+        "stockSha256": "c1a3cde7400c8be664852277311dbf1b3ce0b613123e9380d9cfde178b1fe0ac",
+        "target": "0x40001c94"
+      },
+      "hooks": {
+        "tick": {
+          "addr": "0x4000a770",
+          "len": 6,
+          "target": "0x400ca574",
+          "stockSha256": "17f64e76a33cd9f8211972ddc05c984d52cbd31fe16231ae768c5f0a6dce1388"
+        },
+        "draw": {
+          "addr": "0x4000a7d6",
+          "len": 6,
+          "target": "0x400ca5aa",
+          "stockSha256": "1fd873aa9a14c8691484085d12abd1cd864aab22a56387dd6a682396ea2bf72a"
+        },
+        "key": {
+          "addr": "0x4000b770",
+          "len": 6,
+          "target": "0x400084fe",
+          "stockSha256": "fd093959ea0b44395bc971bb16a4bd179b9032cb712bdb5d06f4458fc148ef58"
+        },
+        "enc": {
+          "addr": "0x4000b7ba",
+          "len": 6,
+          "target": "0x40008550",
+          "stockSha256": "b64e1b142d9a31dede4506a839e453a9c1ce529f3687898ea70489a111277e87"
+        }
+      }
+    }
+  }
+}
