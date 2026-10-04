@@ -87,10 +87,12 @@ Prerequisites: the launch pull request is approved and ready; `npm run check` pa
 
    Replace the root SPF with `v=spf1 -all`. Resend sends from the `send` subdomain, so the root authorises no sender, and the registrar's `+a` would otherwise authorise the Pages addresses.
 4. **Set the repository's Pages custom domain** to `modwerk.app` (Settings → Pages). This releases octamod.app from this repository: it stops serving the site from here. Wait for GitHub's certificate, then tick **Enforce HTTPS**.
-5. **Publish.** Merge the launch pull request into `main`; the Pages workflow verifies the owner merge, builds and publishes to modwerk.app. Then run `npm run domain:check -- all`: `pages` and `worker` must be green. `redirect` is covered by the hand-over described next.
-6. **Hand octamod.app over.** The old domain must keep answering with a page that sends visitors to modwerk.app, keeping the path and fragment, so shared links and the email links already sent keep working.
+5. **Publish.** Merge the launch pull request into `main`; the Pages workflow verifies the owner merge, builds and publishes to modwerk.app. Then run `npm run domain:check -- all`: `pages` and `worker` must be green. `redirect` follows in the next step.
+6. **Redirect octamod.app.** The `redirect/` folder is the whole site: a signpost page that sends every visitor to the same path, query and fragment on modwerk.app, so shared module links and mail links already sent keep working. Nothing is stored or read in the browser. `404.html` is the same page, which is how GitHub Pages reaches it for old deep links such as `/module/euclid/`.
 
-   A custom domain belongs to one Pages site. After step 4, octamod.app needs its own tiny site (a separate repository with Pages and the domain `octamod.app`, or another host). GitHub issues a fresh certificate when a domain moves between sites, so octamod.app can show a certificate error for minutes to about an hour. Plan for it, and check with `npm run domain:check -- redirect`.
+   A custom domain belongs to one Pages site, and step 4 gave modwerk.app to this repository. octamod.app therefore needs its own tiny Pages site: create a repository, put the contents of `redirect/` at its root (including `CNAME` and `.nojekyll`), publish it from the `main` branch, and set its custom domain to `octamod.app`. GitHub issues a fresh certificate when a domain moves between sites, so octamod.app can show a certificate error for minutes to about an hour. Check with `npm run domain:check -- redirect`.
+
+   Saved configurations and remembered firmware live in the browser under octamod.app and do not follow to modwerk.app. After the redirect, the old page can no longer be reached to export them, so announce the move on the old site first and ask people to use **Export configuration** (a JSON backup, no firmware) and import it on modwerk.app.
 7. **Check the accounts end to end** with a real inbox: register, receive the Modwerk mail from `accounts@modwerk.app`, verify (the link opens modwerk.app), sign in, recover the password. Registration stays closed (`REGISTRATION_OPEN=false`) until the owner opens it.
 
 ### Way back
@@ -100,7 +102,7 @@ Nothing in the migrations is destructive, so the data stays. To undo the front: 
 ## After launch
 
 - **Tighten DMARC** once real mail is delivering: look at the delivery evidence in Resend for a few weeks, then move `_dmarc` to `p=quarantine`, later `p=reject`. Add `rua=mailto:` only to an address that actually receives mail.
-- **Retire octamod.app mail**: when nothing sends as octamod.app any more, delete its Resend domain, revoke its API key and remove its records. Keep the domain itself registered for as long as the hand-over site is needed.
+- **Retire octamod.app mail**: when nothing sends as octamod.app any more, delete its Resend domain, revoke its API key and remove its records. Keep the domain itself registered for as long as the redirect is needed.
 - **Optional hardening:** a `CAA` record limited to `letsencrypt.org` (GitHub Pages certificates come from Let's Encrypt) and DNSSEC at the registrar, if offered. A wrong CAA record blocks certificate renewal, so add it only with `npm run domain:check -- pages` open.
 - **Cosmetic:** the Worker and its workers.dev address still say octamod. Renaming creates a new Worker and changes `COMMUNITY_API_URL`; it is not needed for the launch.
 

@@ -21,6 +21,10 @@ export default tseslint.config(
     },
   },
   {
+    files: ['redirect/**/*.js'],
+    languageOptions: { globals: globals.browser },
+  },
+  {
     files: ['*.{js,ts}', 'scripts/**/*.mjs'],
     languageOptions: { globals: globals.node },
   },
