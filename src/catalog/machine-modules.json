@@ -84,7 +84,7 @@
         ]
       },
       "resources": {
-        "memoryBytes": 9494,
+        "memoryBytes": 5672,
         "fastBytes": 0,
         "load": {
           "display": "Not measured in Modwerk yet",
@@ -219,7 +219,7 @@
         ]
       },
       "resources": {
-        "memoryBytes": 31529,
+        "memoryBytes": 26712,
         "fastBytes": 0,
         "load": {
           "display": "Not measured in Modwerk yet",
@@ -384,7 +384,7 @@
         ]
       },
       "resources": {
-        "memoryBytes": 113304,
+        "memoryBytes": 92190,
         "fastBytes": 0,
         "load": {
           "display": "Not measured in Modwerk yet",
@@ -539,7 +539,7 @@
         ]
       },
       "resources": {
-        "memoryBytes": 17885,
+        "memoryBytes": 8722,
         "fastBytes": 0,
         "load": {
           "display": "Not measured in Modwerk yet",
@@ -654,7 +654,7 @@
         ]
       },
       "resources": {
-        "memoryBytes": 7163,
+        "memoryBytes": 4500,
         "fastBytes": 0,
         "load": {
           "display": "Not measured in Modwerk yet",
