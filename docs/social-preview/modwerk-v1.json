@@ -1,0 +1,78 @@
+{
+  "asset": "public/modwerk-social-preview-v1.jpg",
+  "purpose": "Homepage link preview for the coordinated Modwerk launch",
+  "created": "2026-10-04",
+  "renderer": "Custom Three.js geometry, procedural CanvasTexture displays and HTML typography",
+  "source": {
+    "path": "docs/social-preview/modwerk-v1.html",
+    "sha256": "86e97c76a5edfc9c3f77f72f6d171518842726918e59579359c073dd09e55d1a",
+    "threeVersion": "0.180.0",
+    "threeRevision": "180",
+    "threeLicense": "MIT",
+    "threeLicenseFile": "docs/social-preview/THREE-LICENSE.txt",
+    "canvasSize": {
+      "width": 718,
+      "height": 630
+    },
+    "devicePixelRatio": 2,
+    "randomness": "None; fixed geometry, camera, lighting and displays"
+  },
+  "export": {
+    "width": 1200,
+    "height": 630,
+    "format": "jpeg",
+    "colorSpace": "srgb",
+    "progressive": true,
+    "chromaSubsampling": "4:4:4",
+    "bytes": 82498,
+    "capture": "Codex in-app Browser; clipped to the fixed 1200 × 630 HTML canvas",
+    "encoding": "Sharp 0.35.4; quality 95, mozjpeg",
+    "sha256": "f5af111119fb90f634c797395a559d448b083e245a8bf9a29d1df3bda3a7a5b8"
+  },
+  "copy": [
+    "Modwerk",
+    "Mods for",
+    "Elektron machines.",
+    "modwerk.app",
+    "Discover mods",
+    "MOD LIBRARY",
+    "Build firmware",
+    "LOCAL BUILDER",
+    "Join the forum",
+    "COMMUNITY",
+    "Developer SDK",
+    "TOOLS & DOCS"
+  ],
+  "imageAlt": "Modwerk — Mods for Elektron machines. Four branches connect the mod library, firmware builder, community forum and developer SDK to a central Modwerk hub.",
+  "provenance": {
+    "geometry": "Original artwork implemented in the accompanying HTML source",
+    "brandMark": "Existing public/favicon.svg plus a matching eight-pad hub",
+    "textures": "Procedural canvas drawings created by the source; no external image textures",
+    "inputs": "No firmware, user files, photographs or device captures",
+    "scope": "Conceptual feature illustrations, not hardware evidence or a promise of working downloads on every machine"
+  },
+  "review": {
+    "sizes": [
+      {
+        "width": 1200,
+        "height": 630
+      },
+      {
+        "width": 600,
+        "height": 315
+      },
+      {
+        "width": 400,
+        "height": 210
+      }
+    ],
+    "checks": [
+      "Exact copy, eight-pad mark and four-branch layout visually verified, with large horizontal action labels at reduced sizes",
+      "Three.js revision 180 rendered successfully",
+      "No browser error or warning logs",
+      "Source JavaScript syntax checked",
+      "Source and exported asset SHA-256 recorded"
+    ],
+    "activation": "Activate homepage metadata with the combined Modwerk rebrand"
+  }
+}
