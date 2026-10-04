@@ -37,7 +37,7 @@ import { ModuleRelease } from './components/ModuleRelease'
 import { useModuleUpdates } from './hooks/useModuleUpdates'
 import { FaqPage } from './components/FaqPage'
 import { MobileMenu } from './components/MobileMenu'
-import { MachineSwitcher } from './devices/MachineSwitcher'
+import { MachineSwitcher, MobileMachineSelect } from './devices/MachineSwitcher'
 import { AllMachinesLibrary, DigiConfiguration, DigiLibrary, DigiModDetail, EmptyMachine } from './devices/MachinePages'
 import { ALL_MACHINES, DEVICES_BY_ID, deviceHref, parseDeviceRoute, rememberDevice, rememberedDevice, type DeviceProfile } from './devices/registry'
 import { DIGI_MODS, isDigiDevice, type DigiMod } from './devices/digi-mods'
@@ -206,7 +206,7 @@ export default function App() {
       <a className="skip-link" href="#main-content" onClick={(event) => { event.preventDefault(); mainRef.current?.focus() }}>Skip to content</a>
       <aside className="sidebar" aria-label="App sidebar">
         <a className="app-brand" href={'#' + ALL_MACHINES}><img src={import.meta.env.BASE_URL + 'favicon.svg'} width="34" height="34" alt="" /><span>Modwerk<small>Custom Elektron firmware</small></span></a>
-        <MachineSwitcher current={currentDevice} all={allMachines} counts={machineCounts} />
+        {!phoneLayout && <MachineSwitcher current={currentDevice} all={allMachines} counts={machineCounts} />}
         <div className="sidebar-section-label">Library</div>
         <nav className="sidebar-nav" aria-label="Module library" ref={libraryNavRef}>
           <a href={libraryHref()} className={onLibrary && !libraryCategory ? 'active' : ''} aria-current={onLibrary && !libraryCategory ? 'page' : undefined}><Icon name="grid" /><span>All modules</span><small>{libraryCount()}</small></a>
@@ -235,7 +235,7 @@ export default function App() {
           <a className="toolbar-brand" href={'#' + ALL_MACHINES}><img src={import.meta.env.BASE_URL + 'favicon.svg'} width="30" height="30" alt="" /><span>Modwerk</span></a>
           <div className="toolbar-title"><Icon name={route === 'faq' ? 'help' : configuration || machineView === 'configuration' ? 'file' : 'grid'} size={17} /><span>{route === 'faq' ? 'FAQ & flashing guide' : configuration || machineView === 'configuration' ? 'Configuration' : route === 'privacy' ? 'Privacy' : communityRoute ? 'Community' : route.startsWith('module-set') ? 'Module sets' : 'Modules'}</span>{(detailModule?.name ?? digiMod?.title) && <><span className="breadcrumb-divider">/</span><strong>{detailModule?.name ?? digiMod?.title}</strong></>}<span className="preview-badge">Preview</span></div>
           {(['library',...LIBRARY_CATEGORIES,'module-sets'].includes(route) || allRoute || (digiDevice && machineView === 'library')) && <><label className={'search' + (searchExpanded ? ' is-open' : '')}><Icon name="search" size={15} /><input ref={searchRef} type="search" aria-label={route==='module-sets'?'Search module sets':'Search modules'} placeholder={route==='module-sets'?'Search sets':'Search modules'} value={query} onChange={(event) => setQuery(event.target.value)} onBlur={() => { if (!query) setSearchOpen(false) }} onKeyDown={(event) => { if (phoneLayout && event.key === 'Escape') closeSearch() }} /></label><button ref={searchToggleRef} type="button" className="toolbar-icon search-toggle" aria-label={route==='module-sets'?'Search module sets':'Search modules'} onClick={openSearch}><Icon name="search" size={20} /></button><button type="button" className="search-cancel" onClick={closeSearch}>Cancel</button></>}
-          <MobileMenu route={route} selectedCount={machineSelected.length} configurationHref={machineHasMods ? deviceHref(currentDevice.id, 'configuration') : undefined} admin={session.admin} onSupport={PAYPAL_DONATION_URL ? () => setSupportOpen(true) : undefined} />
+          <MobileMenu route={route} selectedCount={machineSelected.length} configurationHref={machineHasMods ? deviceHref(currentDevice.id, 'configuration') : undefined} machineSelector={phoneLayout ? <MobileMachineSelect current={currentDevice} all={allMachines} counts={machineCounts} /> : undefined} admin={session.admin} onSupport={PAYPAL_DONATION_URL ? () => setSupportOpen(true) : undefined} />
           {machineHasMods && <a className="configuration-button" href={deviceHref(currentDevice.id, 'configuration')} aria-label={"Open configuration, " + machineSelected.length + " modules selected"}><Icon name="sliders" size={16} /><span>Configuration</span><span className="toolbar-count">{machineSelected.length}</span></a>}
         </header>
         <main className="workspace-content" id="main-content" ref={mainRef} tabIndex={-1}>

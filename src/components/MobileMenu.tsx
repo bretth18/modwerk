@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Icon } from './Icon'
 import type { IconName } from './Icon'
 import { SupportButton } from './SupportDialog'
@@ -6,7 +6,7 @@ import { SupportButton } from './SupportDialog'
 type MenuLink = { href: string; label: string; icon: IconName; current: boolean; count?: number }
 
 // Phone-width home for the destinations the desktop sidebar lists under Configurations, Community and Help.
-export function MobileMenu({ route, selectedCount, configurationHref, admin, onSupport }: { route: string; selectedCount: number; configurationHref?: string; admin: boolean; onSupport?: () => void }) {
+export function MobileMenu({ route, selectedCount, configurationHref, machineSelector, admin, onSupport }: { route: string; selectedCount: number; configurationHref?: string; machineSelector?: ReactNode; admin: boolean; onSupport?: () => void }) {
   const [open, setOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
   useEffect(() => {
@@ -19,7 +19,7 @@ export function MobileMenu({ route, selectedCount, configurationHref, admin, onS
   }, [open])
   const groups: MenuLink[][] = [
     [
-      { href: '#all', label: 'All machines', icon: 'grid', current: route === 'all' },
+      ...(!machineSelector ? [{ href: '#all', label: 'All machines', icon: 'grid' as const, current: route === 'all' }] : []),
       ...(configurationHref ? [{ href: configurationHref, label: 'Configuration', icon: 'sliders' as const, current: route === 'configuration' || route.endsWith('/configuration'), count: selectedCount }] : []),
     ],
     [
@@ -39,7 +39,8 @@ export function MobileMenu({ route, selectedCount, configurationHref, admin, onS
       {open && <>
         <div className="mobile-menu-scrim" aria-hidden="true" onClick={() => setOpen(false)} />
         <nav id="mobile-menu-panel" className="mobile-menu-panel" aria-label="Menu">
-          {groups.map((links, index) => <div key={index} className="mobile-menu-group">{links.map(link => <a key={link.href} href={link.href} aria-current={link.current ? 'page' : undefined} onClick={() => setOpen(false)}><Icon name={link.icon} size={18} /><span>{link.label}</span>{link.count !== undefined && <small>{link.count}</small>}</a>)}</div>)}
+          {machineSelector}
+          {groups.filter(links => links.length > 0).map((links, index) => <div key={index} className="mobile-menu-group">{links.map(link => <a key={link.href} href={link.href} aria-current={link.current ? 'page' : undefined} onClick={() => setOpen(false)}><Icon name={link.icon} size={18} /><span>{link.label}</span>{link.count !== undefined && <small>{link.count}</small>}</a>)}</div>)}
           {onSupport && <div className="mobile-menu-support"><SupportButton onClick={() => { setOpen(false); buttonRef.current?.focus(); onSupport() }} /></div>}
         </nav>
       </>}

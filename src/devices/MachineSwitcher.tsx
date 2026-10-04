@@ -1,15 +1,32 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { Icon } from '../components/Icon'
 import { DeviceImage } from './DeviceImage'
-import { ALL_MACHINES, DEVICES, STATUS_LABELS, deviceHref, type DeviceProfile } from './registry'
+import { ALL_MACHINES, DEVICES, STATUS_LABELS, deviceHref, deviceTitle, type DeviceProfile } from './registry'
 
 const GROUPS = [
   { title: 'Mods available', match: (device: DeviceProfile) => device.status === 'available' || device.status === 'preview' },
   { title: 'No mods yet', match: (device: DeviceProfile) => device.status === 'research' || device.status === 'open' },
 ]
 
+type MachineSwitcherProps = { current: DeviceProfile; all: boolean; counts: Record<string, number> }
+
+export function MobileMachineSelect({ current, all, counts }: MachineSwitcherProps) {
+  const total = Object.values(counts).reduce((sum, count) => sum + count, 0)
+  return (
+    <label className="mobile-machine-select">
+      <span>Machine</span>
+      <select value={all ? ALL_MACHINES : current.id} onChange={event => window.location.assign(deviceHref(event.currentTarget.value))}>
+        <option value={ALL_MACHINES}>All machines · {total} mods</option>
+        {GROUPS.map(group => <optgroup key={group.title} label={group.title}>
+          {DEVICES.filter(group.match).map(device => <option key={device.id} value={device.id}>{deviceTitle(device)}{counts[device.id] ? ` · ${counts[device.id]} ${counts[device.id] === 1 ? 'mod' : 'mods'}` : ''}</option>)}
+        </optgroup>)}
+      </select>
+    </label>
+  )
+}
+
 // The sidebar's machine menu: switching keeps the layout and swaps the library, configurations and build panel.
-export function MachineSwitcher({ current, all, counts }: { current: DeviceProfile; all: boolean; counts: Record<string, number> }) {
+export function MachineSwitcher({ current, all, counts }: MachineSwitcherProps) {
   const total = Object.values(counts).reduce((sum, count) => sum + count, 0)
   const [open, setOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
