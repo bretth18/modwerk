@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { useEffect, useRef, useState } from 'react'
+import { requireBuildAccount } from '../community/member-access'
 import { createBuilderClient, type BuilderClient } from '../engine/elekloader/client'
 import { prepareBuild } from '../engine/elekloader/digi-build'
 import type { BuilderCheck, BuilderDevice, BuilderMachine, BuilderResult } from '../engine/elekloader/protocol'
@@ -26,9 +27,12 @@ export function useDigiBuild(machine: BuilderMachine, file: File | undefined, re
   useEffect(() => {
     if (!engaged || !file || !release) return
     const request = ++operation.current, controller = operation
-    client.current ??= createBuilderClient(new URL('elekloader/', document.baseURI).href)
-    prepareBuild(client.current, { machine, release, stock: file, moduleIds }).then(prepared => {
-      if (operation.current !== request) return
+    void requireBuildAccount().then(() => {
+      if(operation.current!==request)return
+      client.current ??= createBuilderClient(new URL('elekloader/', document.baseURI).href)
+      return prepareBuild(client.current, { machine, release, stock: file, moduleIds })
+    }).then(prepared => {
+      if (operation.current !== request || !prepared) return
       setLoaded(true)
       setView(prepared.ok ? { phase: 'ready', key, enabled: prepared.enabled, check: prepared.check, device: prepared.device } : { phase: 'blocked', key, error: prepared.error, check: prepared.check })
     }).catch(error => { if (operation.current === request) setView({ phase: 'blocked', key, error: message(error, 'The builder could not check this selection.') }) })
@@ -43,6 +47,8 @@ export function useDigiBuild(machine: BuilderMachine, file: File | undefined, re
     const { enabled, device } = state, request = ++operation.current, builder = client.current!
     setView({ phase: 'building', key, enabled, device, log: 'Starting the build…' })
     try {
+      await requireBuildAccount()
+      if(operation.current!==request)return
       const named = await builder.version(version, enabled)
       if (operation.current !== request) return
       if (!named.ok) { setView({ phase: 'failed', key, enabled, device, error: named.error ?? 'Check the OS version.' }); return }

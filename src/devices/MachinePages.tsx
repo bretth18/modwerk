@@ -204,12 +204,11 @@ export function DigiConfiguration({ device, configuration, configurations, onSel
         </div>
         {estimate.clashes.map((clash, index) => <p key={clash.claim + index} className="file-error" role="alert">{clash.mods.join(' and ')} cannot be used together: {clash.claim}.</p>)}
       </section>
-      <MemberGate action="build firmware" next={device.id+'/configuration'}/>
       <section className="configuration-section" aria-labelledby="digi-firmware-title"><div className="section-title"><h2 id="digi-firmware-title">Base firmware</h2><span className="subtle">Read locally</span></div>
         <DigiFirmwarePanel name={device.name} releases={device.firmware?.releases ?? []} firmware={firmware} />
         {device.firmware && <dl className="device-facts"><dt>Flash</dt><dd>{device.firmware.flash}</dd><dt>Recover</dt><dd>{device.firmware.recovery}</dd></dl>}
       </section>
-      <DigiBuildPanel device={device} firmware={firmware} moduleIds={ids} />
+      <MemberGate action="build firmware" next={device.id+'/configuration'}><DigiBuildPanel device={device} firmware={firmware} moduleIds={ids}/></MemberGate>
     </div>
   )
 }

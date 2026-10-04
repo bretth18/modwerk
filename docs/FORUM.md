@@ -1,6 +1,6 @@
 # Forum, accounts and transactional email
 
-The 3 October 2026 owner decision replaces guest participation with verified email accounts. Reading, configuring and building remain available without an account. Reply notifications and private reports live in Your account; there is no separate activity page. Legacy `#activity` links open the account page. Threads, replies, comments, ratings, likes, public bugs and private module reports require registration. Module releases still require owner-merged GitHub PRs; a community account grants no administrator or publication privileges.
+The 3 October 2026 owner decision replaces guest participation with verified email accounts. Reading and configuring remain available without an account. Firmware composition requires a verified member account. Reply notifications and private reports live in Your account; there is no separate activity page. Legacy `#activity` links open the account page. Threads, replies, comments, ratings, likes, public bugs and private module reports require registration. Module releases still require owner-merged GitHub PRs; a community account grants no administrator or publication privileges.
 
 ## Local draft
 

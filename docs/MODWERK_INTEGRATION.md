@@ -48,8 +48,8 @@ Use Node.js 24. Install the lockfile dependencies with `npm ci` in this checkout
    ```
 
 2. Create `.dev.vars` with `APP_URL=http://127.0.0.1:5198`, `SESSION_TRANSPORT=bearer`, `REGISTRATION_OPEN=false`, `PRIVACY_READY=false` and an independently generated random `AUTH_SECRET` (at least 32 bytes). Never reuse production credentials. Account delivery and social sign-in remain unavailable until their real provider credentials and callbacks are configured; keep them closed until then. Administrator access stays separately authorized and closed without its own key.
-3. Run `npm run db:local`. It applies migrations only to this checkout's local D1 database; do not use `--remote`.
-4. Run `npx --no-install wrangler dev --config wrangler.worker.jsonc --local --port 8988 --ip 127.0.0.1 --inspector-port 9298`.
+3. Run `node scripts/forum-preview-seed.mjs`. It applies migrations and creates fictional discussions and verified demo accounts only in this checkout’s `.wrangler/forum-preview` database. It has a fixed local target and accepts no arguments. For an empty preview database instead, use `npm run db:local` and omit `--persist-to` in the next command.
+4. Run `npx --no-install wrangler dev --config wrangler.worker.jsonc --local --port 8988 --ip 127.0.0.1 --inspector-port 9298 --persist-to .wrangler/forum-preview`.
 5. Run `npm run dev -- --port 5198`, then open [the combined app](http://127.0.0.1:5198/#all). Both processes must remain running.
 
 For the production artifact, run `npm run build` and `npm run preview -- --port 5198` instead of the dev server. The build uses the local API URL above only for local review. Remove the local environment override before any separately authorized public build.
@@ -64,3 +64,5 @@ Downloads retain their existing qualification/owner approval gates. Modwerk's or
 
 
 On 4 October 2026 the combined application passed `npm run check`: 553 tests across 91 files, lint, type checking, 31 firmware-free SDK source/data checks and the static production build. Google rejection coverage includes invalid nonce/signature/issuer/audience/expiry; privacy integration covers social signup rules and consent, fresh-session export/removal and deletion of private consent records.
+
+The running local preview uses the fictional seed above. Sign in with `demo@example.test` and `Octamod local preview 2026!` to inspect the complete account/forum UI. These are public local fixture credentials, not a production account. Email delivery, real SSO providers and administrator access remain unconfigured.
