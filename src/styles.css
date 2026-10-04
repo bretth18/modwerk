@@ -1184,11 +1184,20 @@ h1 { font-size: 28px; }
 .issue-report input[type=file] { width: 100%; min-width: 0; padding: 10px 0; font-size: 13px; }
 .issue-report input[type=file]::file-selector-button { padding: 9px 12px; border: 1px solid #656575; border-radius: 6px; background: #28282f; color: #eeeef7; cursor: pointer; margin-right: 10px; }
 
-.social-sign-in { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.social-sign-in .button { white-space: normal; justify-content: center; min-height: 48px; }
+.social-sign-in { display: grid; gap: 8px; }
+.social-sign-in .social-provider { min-height: 48px; gap: 12px; padding: 3px 16px; font-size: 14px; font-weight: 500; box-shadow: none; }
+.social-provider-logo { width: 20px; height: 20px; object-fit: contain; flex-shrink: 0; }
+.social-provider-art { width: 180px; height: 40px; flex-shrink: 0; }
+.social-provider-google { background: #fff; border-color: #747775; color: #1f1f1f; }
+.social-provider-google:hover:not(:disabled) { background: #f2f2f2; }
+.social-provider-github { background: #24292f; border-color: #656d76; color: #fff; }
+.social-provider-github:hover:not(:disabled) { background: #32383f; }
+.social-provider-github .social-provider-logo { filter: brightness(0) invert(1); }
+.social-provider-discord { background: #5865f2; border-color: #7984f5; color: #fff; }
+.social-provider-discord:hover:not(:disabled) { background: #4752c4; }
+.social-provider:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .account-divider { color: #a7a3ad; text-align: center; margin: 6px 0; }
 .account-deletion .button-danger { border-color: #b76c6c; color: #ffc5c5; }
-@media (max-width: 600px) { .social-sign-in { grid-template-columns: 1fr; } }
 
 .sidebar-nav .sidebar-feature-new { margin-left: auto; flex: 0 0 auto; padding: 2px 6px; border-radius: 4px; border: 1px solid #9788de; color: #d5c9ff; font-size: 10px; line-height: 1.4; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
 .login-prompt-dialog .dialog-actions { flex-wrap: wrap; }

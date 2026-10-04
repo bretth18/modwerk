@@ -132,6 +132,12 @@
 .account-auth-tabs a[aria-current="page"] { color: #d4d8ff; background: #34384f; box-shadow: inset 0 1px #ffffff08; }
 .account-page .community-form { margin: 22px 0 18px; gap: 18px; }
 .account-auth .community-form label { gap: 7px; font-weight: 500; }
+.account-page .community-form .risk-accept { flex-direction: row; align-items: flex-start; gap: 10px; margin-top: 0; font-weight: 400; }
+.account-page .community-form .risk-accept input { margin-top: 2px; }
+.account-page .community-form .risk-accept span { min-width: 0; }
+.account-page .risk-accept a { color: #c4c9ff; text-decoration: underline; text-underline-offset: 3px; }
+.account-page .account-auth .social-provider:disabled { opacity: .55; }
+.account-page .account-auth .social-provider-google:disabled { background: #fff; border-color: #747775; }
 .account-auth .community-form input::placeholder { color: #858592; }
 .account-auth .community-form > .button { margin-top: 2px; }
 .account-recovery-links { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px; border-top: 1px solid var(--line); padding-top: 12px; }
