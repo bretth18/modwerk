@@ -441,3 +441,24 @@ The owner supplied Digitone 1.43 during this continuation. Its complete SysEx SH
 The native-parity tool exits unsuccessfully when a case differs or lacks its stock/oracle input. The initial FAST AUDIO stubs were shortened by assembler relaxation; explicitly requiring absolute address operands restored both Digitakt digihealth comparisons. The remaining C objects use the exact pinned author source (every recorded input hash matches), but their compiled code differs. An independent GNU/Linux GCC 13.3 / binutils 2.42 comparison also differs; it is not a replacement production toolchain. Recovering the original C compiler/settings or qualifying the newly compiled implementations remains required. No timing, emulator behaviour or hardware evidence is inferred from these comparisons.
 
 The source PR provides reproducible compilation, stock-free review artifacts and local recipe materialization. It does not finish source-release parity, provide Modwerk's pending cores, publish a package to the app or enable Digitakt/Digitone downloads. The existing approved Octatrack implementation and frozen qualification records are unchanged.
+
+## Original core boot foundation — 4 October 2026
+
+Modwerk's `sdk/elemod/core/` implements its own boot copier and event-table dispatcher from the public ABI documentation. It does not copy elekloader's core assembly. The emitted recipes explicitly declare `stage: boot-probe` and `providesInterface: false`: only the boot call is installed; the event adapters and complete per-machine facilities remain pending.
+
+Two isolated source builds reproduced all eight module recipes, four core probes and both inventories. Firmware-free host tests exercise ordered dispatch, empty tables, argument delivery and nonzero input/hold consumption on both machine variants. Cross-compilation asserts every public descriptor's 32-bit layout. Compiled-code CPU checks cover normal, no-BSS, no-run and entirely empty sections with three different status-register patterns on each machine (24 cases): copying, clearing, bounds, all general registers, status, stack, return address and original-call handoff pass.
+
+The separate local verifier checked stock identities, guarded original-call bindings, linkage and the complete packed container for each release. Boot probes built from `581ae078d417cf72e9d7196361404fcf87f0a8a7` were checked in digiemu `c1b5735835923e328f8b4950d6ba927875e5b669` using `emu.fwcheck --baseline STOCK --no-timing --no-boot-strict`:
+
+| Machine / OS | Probe stages | Captured screens | Audio comparison | Probe DDR + BSS |
+| --- | --- | --- | --- | ---: |
+| Digitakt 1.53 | all pass | 9, identical | 7.882 s, identical | 420 B |
+| Digitakt 1.54 | all pass | 9, identical | 7.883 s, identical | 420 B |
+| Digitone 1.43 | all pass | 10, identical | 8.284 s, identical | 576 B |
+| Digitone 1.44 | all pass | 10, identical | 8.283 s, identical | 576 B |
+
+Both Digitone **stock baselines**, unlike the probes, report a runtime read at `0x0000012a` in unconfigured FlexBus space. Captured screen/audio comparisons are identical; that emulator baseline limitation is retained, not suppressed or treated as hardware proof. digiemu also reports that it did not check container checksums: Modwerk's separate `verifyEle3Build` checked the SysEx/content checksums and in-place unpacking before these runs.
+
+The complete local build hashes are `b2871db6664ee9f367ea6b7b35823ecc9136469cd04b51ab3167cbc222a039c4` (DT 1.53), `313ecf70991c6d3a529762547e4eb056a65e6c2a054538a58811edb4a4e4f455` (DT 1.54), `c11660e9e6d024af782b5aa3888c736f649d1ae01315ec02570f231fee503e31` (DN 1.43) and `76a13c0fae2b77ce8f7e54a43a9a3a8a076bfbe9bc8a5b0aaa94d13e57d7bab0` (DN 1.44). Final recipes from `1e49baf` have the same compiled ELF hashes for every release; subsequent changes added documentation and the synthetic CPU verifier, not runtime code.
+
+These checks qualify the boot development probe only. The event dispatcher has not been exercised through actual firmware hooks; no imported module was attached to these probes. Timer setup, SETTINGS integration, Digitakt SRC machines and Digitone voice/hold hooks, parameters, pages, project storage and Mod Menu must still be implemented and checked. Timing and real-hardware stress evidence were not collected. Downloads remain disabled.
