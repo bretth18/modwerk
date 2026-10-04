@@ -2,11 +2,13 @@
 
 These procedures accompany the forum draft. They do not authorize a production deployment, restore, data deletion or provider-plan change. Use Node 24 and the reviewed dependency lockfile. Keep operational evidence and private identifiers outside Git, screenshots and public PR descriptions.
 
+See [LEGAL_COMPLIANCE.md](LEGAL_COMPLIANCE.md) for German/EU disclosures, provider/transfer/retention review, rights deadlines and notice-and-action operations. `PRIVACY_READY=true` is an additional server-side registration prerequisite. Include migration 0018 in the approved rollout.
+
 ## Opening and pausing registrations
 
-Both Wrangler configurations default `REGISTRATION_OPEN` to `false`. The server rejects new registrations unless it is exactly `true`; hiding the frontend form is not the control. Closing registration keeps existing sign-in, verification, recovery and moderation available. The session endpoint reports mail availability separately from registration availability.
+Both Wrangler configurations default `REGISTRATION_OPEN` and `PRIVACY_READY` to `false`. The server rejects new registrations unless both flags are exactly `true`; hiding the frontend form is not the control. Closing registration keeps existing sign-in, verification, recovery and moderation available. The session endpoint reports mail availability separately from registration availability.
 
-Deploy the reviewed backend and apply migrations 0011–0016 only after owner authorization. Keep registration closed while checking health, existing content, administrator access and the frontend/API origin. Open it only after the controlled runtime and real-mail tests in [FORUM_LAUNCH.md](FORUM_LAUNCH.md) pass and the owner approves public launch. An operator can pause signups by deploying the reviewed configuration with registration closed. Do not improvise changes to hashing parameters or provider billing to solve capacity problems.
+Deploy the reviewed backend and apply migrations 0011–0019 only after owner authorization. Keep registration closed while checking health, existing content, administrator access and the frontend/API origin. Open it only after the controlled runtime and real-mail tests in [FORUM_LAUNCH.md](FORUM_LAUNCH.md) pass and the owner approves public launch. An operator can pause signups by deploying the reviewed configuration with registration closed. Do not improvise changes to hashing parameters or provider billing to solve capacity problems.
 
 ## Backups and recovery
 
@@ -45,13 +47,13 @@ Members submit a private request from Your account using their current password 
 
 Submission and review never delete data. There is no automatic deletion endpoint. For each request:
 
-1. Verify control of the account and confirm the exact scope with the member through an approved private support channel. Choose and record how public discussion, comments, attribution, configuration snapshots, reactions and any externally published GitHub issues will be handled. Do not infer consent to erase contributions from a bare account request.
+1. Verify control of the account and confirm the exact scope with the member through an approved private support channel. Choose and record how public discussion, comments, attribution, configuration snapshots, reactions and any externally published GitHub issues will be handled. Assess the Article 17 grounds and any lawful exception for retaining contributions; do not condition statutory erasure on additional consent. Clarify scope when necessary without automatically resetting the response deadline.
 2. Prepare a reviewed transaction and a recovery point for that exact account ID. Require separate authorization for the destructive operator action. Prefer suspension/session revocation before the approved removal to prevent concurrent writes.
 3. Remove private authentication records and action tokens, private reports including their device logs/replies, developer sessions/handoff codes, maintainer claims and developer audit rows, saved configurations, follows/bookmarks/notifications and moderation reports as approved. Address user references in submissions/media and review/moderation history as applicable. Inventory the current schema rather than relying on an outdated table list.
 4. Apply the approved public-content handling and retain an inert `users` projection when needed for discussion/attribution foreign keys: no username or GitHub identity/handle, unverified, suspended, display name `Deleted member`. Do not grant the old identity to a new account. Preserve other contributors' posts and source attribution as agreed. Provider logs, existing public GitHub issues and recovery archives need separate handling; database changes cannot erase those copies.
 5. Verify the original credentials and sessions fail, private APIs cannot recover the removed data, other members still work, references are valid and retained content matches the approved scope. Only then mark the request complete and record a minimal private audit note.
 
-The server rejects completion while authentication, account tokens, legacy/developer sessions and codes, claims/replies/developer events, private reports/configurations, follows/bookmarks/notifications/reports or the active user projection remain. This is a minimum technical check; it cannot inspect provider logs, archives, public free text or externally published copies. The operator must verify those separately.
+The server rejects completion while authentication, account tokens, legacy/developer sessions and codes, claims/replies/developer events, rules acceptance and news preferences, private reports/configurations, follows/bookmarks/notifications/reports or the active user projection remain. This is a minimum technical check; it cannot inspect provider logs, archives, public free text or externally published copies. The operator must verify those separately.
 
 The owner chose `jannik.assfalg@gmail.com` as the public receiving support contact on 3 October 2026. Sign-in, privacy and account-removal pages link to it, and transactional email sets it as Reply-To. `accounts@modwerk.app` is the sending identity from launch; it is not presented as a receiving mailbox. Confirm support-message receipt and the response procedure before public launch. Never ask a member to email passwords, recovery links or firmware.
 

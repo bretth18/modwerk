@@ -8,6 +8,7 @@ import { moduleStatistics } from './module-statistics'
 import { adminInsights } from './admin-insights'
 import recipes from '../src/catalog/module-sets.json'
 import type { Database, Env, Media, User } from './platform'
+import { withPrivacyDeadline } from './privacy-deadline'
 import { reviewAccountRequest } from './account-requests'
 import { ADMIN_ACTOR, authentication, currentUser, needMember, isAdmin, throttle } from './auth'
 import { boundedBody, checkOrigin, HttpError, jsonBody, required, response } from './security'
@@ -123,7 +124,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     }
     if (path.startsWith('/api/admin/')) {
       if (!admin) throw new HttpError(403,'Administrator access is required.')
-      if(path==='/api/admin/account-requests'&&request.method==='GET')return response((await db.prepare('SELECT r.id,r.user_id,r.status,r.created_at,r.updated_at,r.review_note,u.username FROM account_removal_requests r JOIN users u ON u.id=r.user_id ORDER BY r.created_at DESC,r.rowid DESC LIMIT 100').all()).results)
+      if(path==='/api/admin/account-requests'&&request.method==='GET')return response((await db.prepare("SELECT r.id,r.user_id,r.status,r.created_at,r.updated_at,r.review_note,u.username FROM account_removal_requests r JOIN users u ON u.id=r.user_id ORDER BY CASE WHEN r.status IN ('requested','reviewing') THEN 0 ELSE 1 END,r.created_at ASC,r.rowid ASC LIMIT 100").all<{created_at:string}>()).results.map(withPrivacyDeadline))
       if(path==='/api/admin/account-mail'&&request.method==='GET')return response((await db.prepare('SELECT day,purpose,accepted,failed,limited FROM account_mail_daily ORDER BY day DESC,purpose LIMIT 60').all()).results)
       if((match=path.match(/^\/api\/admin\/account-requests\/([a-zA-Z0-9-]+)$/))&&request.method==='PATCH')return reviewAccountRequest(request,db,match[1])
       if (path === '/api/admin/insights' && request.method === 'GET') return response(await adminInsights(db))

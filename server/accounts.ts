@@ -10,6 +10,8 @@ import { throttle } from './auth'
 import { appOrigin, digest, HttpError, jsonBody, response, token as randomToken } from './security'
 import { AccountMailError, emailReady, sendAccountEmail } from './email'
 import { accountRequest } from './account-requests'
+import { accountExport } from './account-export'
+import { COMMUNITY_RULES_VERSION } from '../src/legal/policy'
 
 export function authReady(env: Env) { return !!env.AUTH_SECRET && env.AUTH_SECRET.length >= 32 }
 export function accountAuth(env: Env, db: Database) {
@@ -41,7 +43,7 @@ export function accountAuth(env: Env, db: Database) {
     },
     plugins:[bearer({requireSignature:true}),username({minUsernameLength:3,maxUsernameLength:24,usernameValidator:value=>/^[a-z0-9_]{3,24}$/.test(value)&&!/^(admin|administrator|moderator|octamod|support|system|guest)$/.test(value)})],
     databaseHooks:{
-      user:{create:{after:syncPublicUser},update:{after:syncPublicUser}},
+      user:{create:{after:async user=>{await syncPublicUser(user);await db.prepare('INSERT OR IGNORE INTO account_policy_acceptances(user_id,version) VALUES(?,?)').bind(user.id,COMMUNITY_RULES_VERSION).run()}},update:{after:syncPublicUser}},
       session:{create:{before:async session=>{
         const user=await db.prepare('SELECT suspended FROM users WHERE id=?').bind(session.userId).first<{suspended:number}>()
         if(!user||user.suspended)return false
@@ -60,11 +62,12 @@ function emailAddress(value:unknown){if(typeof value!=='string'||value.trim().le
 const genericMessage='If the address is eligible, an email will arrive shortly. Check your spam folder. You can request another message or reset your password if you already have an account.'
 export async function accountRoutes(request: Request, env: Env, db: Database, path: string): Promise<Response|null> {
   if(path==='/api/auth/news')return newsPreferences(request,db,await accountUser(request,env,db))
+  if(path==='/api/auth/data-export')return accountExport(request,db,await accountUser(request,env,db))
   if(path==='/api/auth/account-removal')return accountRequest(request,db,await accountUser(request,env,db))
   const route=path.match(/^\/api\/auth\/(register|login|resend|forgot|verify|reset|sessions|logout)$/)
   if(!route)return null
   const action=route[1]
-  if(action==='register'&&env.REGISTRATION_OPEN!=='true')throw new HttpError(503,'New registrations are temporarily closed. Existing accounts can still sign in and recover access.')
+  if(action==='register'&&(env.REGISTRATION_OPEN!=='true'||env.PRIVACY_READY!=='true'))throw new HttpError(503,'New registrations are temporarily closed. Existing accounts can still sign in and recover access.')
   if(action==='logout'&&!authReady(env))return null
   if(action==='logout'&&!request.headers.get('Authorization')?.includes('.')&&!request.headers.get('Cookie')?.includes('octamod-account'))return null
   const auth=accountAuth(env,db),headers=request.headers
@@ -113,6 +116,7 @@ export async function accountRoutes(request: Request, env: Env, db: Database, pa
       return out
     }
     if(action==='register'){
+      if(body.rulesVersion!==COMMUNITY_RULES_VERSION)throw new HttpError(400,'Read and accept the current community rules before creating an account.')
       if(typeof body.username!=='string'||!/^[a-zA-Z0-9_]{3,24}$/.test(body.username))throw new HttpError(400,'Use 3–24 letters, numbers or underscores for your username.')
       if(typeof body.password!=='string')throw new HttpError(400,'Enter a password.')
       if(body.newsletter!==undefined&&typeof body.newsletter!=='boolean')throw new HttpError(400,'Choose whether to receive news emails.')

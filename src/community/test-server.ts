@@ -11,7 +11,7 @@ export function testDatabase(){
  return {db,adapter}
 }
 export async function testServer(){
- const {db,adapter}=testDatabase(),env:Env={DB:adapter,APP_URL:'https://octamod.test/',SESSION_TRANSPORT:'bearer',REGISTRATION_OPEN:'true',AUTH_SECRET:'only-a-test-secret-with-adequate-entropy-1234567890',RESEND_API_KEY:'test-resend-key',EMAIL_FROM:'Modwerk <accounts@notify.example.test>',ADMIN_KEY_SHA256:await digest('e'.repeat(64))}
+ const {db,adapter}=testDatabase(),env:Env={DB:adapter,APP_URL:'https://octamod.test/',SESSION_TRANSPORT:'bearer',REGISTRATION_OPEN:'true',PRIVACY_READY:'true',AUTH_SECRET:'only-a-test-secret-with-adequate-entropy-1234567890',RESEND_API_KEY:'test-resend-key',EMAIL_FROM:'Modwerk <accounts@notify.example.test>',ADMIN_KEY_SHA256:await digest('e'.repeat(64))}
  async function call(path:string,method='GET',body?:unknown,token='',admin='',origin='https://octamod.test'){
   const headers=new Headers({Origin:origin,'CF-Connecting-IP':'192.0.2.1'})
   if(body!==undefined)headers.set('Content-Type','application/json')

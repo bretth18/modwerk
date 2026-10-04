@@ -5,7 +5,8 @@
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
     "APP_URL": "http://127.0.0.1:5173",
-    "REGISTRATION_OPEN": "false"
+    "REGISTRATION_OPEN": "false",
+    "PRIVACY_READY": "false"
   },
   "d1_databases": [
     {

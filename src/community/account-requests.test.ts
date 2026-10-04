@@ -1,3 +1,4 @@
+import { COMMUNITY_RULES_VERSION } from '../legal/policy'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { DatabaseSync } from 'node:sqlite'
 import { testServer } from './test-server'
@@ -10,7 +11,7 @@ async function fixture(){
  vi.stubGlobal('fetch',vi.fn(async(_url:string,options:RequestInit)=>{messages.push(JSON.parse(String(options.body)));return Response.json({id:'mock-email'})}))
  async function member(username:string){
   const email=username+'@example.test'
-  expect((await server.call('/auth/register','POST',{username,email,password})).status).toBe(202)
+  expect((await server.call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username,email,password})).status).toBe(202)
   const token=messages.at(-1)!.text.match(/#account\/verify\/([^\s]+)/)![1]
   expect((await server.call('/auth/verify','POST',{token,password})).status).toBe(200)
   return (await server.call('/auth/login','POST',{email,password})).headers.get('X-Octamod-Session')!

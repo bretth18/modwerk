@@ -1,3 +1,4 @@
+import { COMMUNITY_RULES_VERSION } from '../legal/policy'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { testServer } from './test-server'
 import type { DatabaseSync } from 'node:sqlite'
@@ -13,7 +14,7 @@ async function fixture(){
  const server=await testServer();databases.push(server.db)
  async function member(username:string){
   const email=username+'@example.test'
-  const register=await server.call('/auth/register','POST',{username,email,password});expect(await register.json()).not.toHaveProperty('error');expect(register.status).toBe(202)
+  const register=await server.call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username,email,password});expect(await register.json()).not.toHaveProperty('error');expect(register.status).toBe(202)
   const message=[...sent].reverse().find(message=>message.to[0]===email)!,token=message.text.match(/#account\/verify\/([^\s]+)/)![1]
   const verified=await server.call('/auth/verify','POST',{token,password});expect(await verified.json()).not.toHaveProperty('error');expect(verified.status).toBe(200)
   const login=await server.call('/auth/login','POST',{email,password});expect(await login.json()).not.toHaveProperty('error');expect(login.status).toBe(200)
@@ -37,7 +38,7 @@ describe('verified email accounts',()=>{
  })
  it('requires inbox verification and a signed session, keeping secrets out of public/session responses',async()=>{
   const {call,db}=await fixture(),email='listener@example.test'
-  expect((await call('/auth/register','POST',{username:'listener',email,password})).status).toBe(202)
+  expect((await call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username:'listener',email,password})).status).toBe(202)
   expect((await call('/auth/login','POST',{email,password})).status).toBe(403)
   const token=sent[0].text.match(/#account\/verify\/([^\s]+)/)![1]
   expect(JSON.stringify(db.prepare('SELECT * FROM account_tokens').all())).not.toContain(token)
@@ -77,7 +78,7 @@ describe('verified email accounts',()=>{
   expect(await(await call('/auth/sessions','GET',undefined,user.session)).json()).toHaveLength(2)
   expect((await call('/auth/sessions','DELETE',undefined,user.session)).status).toBe(200)
   expect((await(await call('/auth/session','GET',undefined,secondToken)).json()).user).toBeNull()
-  const duplicate=await call('/auth/register','POST',{username:'anothername',email:user.email,password})
+  const duplicate=await call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username:'anothername',email:user.email,password})
   expect(duplicate.status).toBe(202);expect(await duplicate.text()).not.toContain(user.email)
   const absent=await call('/auth/forgot','POST',{email:'absent@example.test'})
   expect(absent.status).toBe(202)
@@ -93,9 +94,9 @@ describe('verified email accounts',()=>{
  })
  it('rejects expired verification and recovery links, weak passwords and reserved usernames',async()=>{
   const {call,db}=await fixture()
-  expect((await call('/auth/register','POST',{username:'admin',email:'admin@example.test',password})).status).toBeGreaterThanOrEqual(400)
-  expect((await call('/auth/register','POST',{username:'short',email:'short@example.test',password:'short'})).status).toBeGreaterThanOrEqual(400)
-  expect((await call('/auth/register','POST',{username:'expired',email:'expired@example.test',password})).status).toBe(202)
+  expect((await call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username:'admin',email:'admin@example.test',password})).status).toBeGreaterThanOrEqual(400)
+  expect((await call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username:'short',email:'short@example.test',password:'short'})).status).toBeGreaterThanOrEqual(400)
+  expect((await call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username:'expired',email:'expired@example.test',password})).status).toBe(202)
   const token=sent.at(-1)!.text.match(/#account\/verify\/([^\s]+)/)![1]
   db.exec('UPDATE account_tokens SET expires=0')
   expect((await call('/auth/verify','POST',{token,password})).status).toBe(400)
@@ -123,7 +124,7 @@ describe('verified email accounts',()=>{
   for(let i=0;i<9;i++)expect((await call('/auth/login','POST',{email:user.email,password:'wrong long password here'})).status).toBe(401)
   expect((await call('/auth/login','POST',{email:user.email,password})).status).toBe(429)
   expect(JSON.stringify(db.prepare('SELECT * FROM rate_limits').all())).not.toContain(user.email)
-  env.AUTH_SECRET=undefined;expect((await call('/auth/register','POST',{username:'closed',email:'closed@example.test',password})).status).toBe(503)
+  env.AUTH_SECRET=undefined;expect((await call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username:'closed',email:'closed@example.test',password})).status).toBe(503)
   expect((await(await call('/auth/session')).json()).registrationAvailable).toBe(false)
  })
 })

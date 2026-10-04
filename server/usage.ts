@@ -1,4 +1,5 @@
 import type { Database, Env } from './platform'
+import { USAGE_CONSENT_VERSION } from '../src/legal/policy'
 import { boundedBody, HttpError, response } from './security'
 import { throttle } from './auth'
 import { isModuleAvailable } from '../src/catalog/availability'
@@ -15,6 +16,7 @@ async function privateHash(key: string, purpose: string) {
 /** No guest account, IP, user agent, referrer, module list or firmware enters these tables. */
 export async function recordUsage(request: Request, env: Env, db: Database) {
   if (request.headers.get('DNT') === '1' || request.headers.get('Sec-GPC') === '1') return new Response(null,{status:204})
+  if(request.headers.get('X-Octamod-Usage-Consent')!==USAGE_CONSENT_VERSION)throw new HttpError(403,'Usage counts require your current opt-in choice.')
   const secret = env.ADMIN_KEY_SHA256?.trim().toLowerCase() ?? ''
   if (!/^[a-f0-9]{64}$/.test(secret)) throw new HttpError(503,'Usage counts are not configured.')
   if (!request.headers.get('Content-Type')?.startsWith('application/json')) throw new HttpError(415,'Send JSON for this request.')
@@ -63,6 +65,7 @@ export async function usageStatistics(db: Database, days: number, now = new Date
 /** Each request names one build-integrated module; no configuration grouping is stored. */
 export async function recordModuleDownload(request: Request, env: Env, db: Database) {
   if (request.headers.get('DNT') === '1' || request.headers.get('Sec-GPC') === '1') return new Response(null,{status:204})
+  if(request.headers.get('X-Octamod-Usage-Consent')!==USAGE_CONSENT_VERSION)throw new HttpError(403,'Usage counts require your current opt-in choice.')
   const secret = env.ADMIN_KEY_SHA256?.trim().toLowerCase() ?? ''
   if (!/^[a-f0-9]{64}$/.test(secret)) throw new HttpError(503,'Usage counts are not configured.')
   if (!request.headers.get('Content-Type')?.startsWith('application/json')) throw new HttpError(415,'Send JSON for this request.')
