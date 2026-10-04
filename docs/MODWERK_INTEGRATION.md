@@ -1,6 +1,8 @@
 # Combined Modwerk release
 
-The dedicated `codex/modwerk-release` branch consolidates 24 Modwerk launch PRs (#64 and #68–#90) into one draft PR against `main`. It builds on `codex/modwerk-integration` and includes every source PR head in its ancestry, preserving authorship and the existing account reconciliation. The source PRs are superseded by the combined release PR; owner approval, production setup and release gates still apply.
+The dedicated `codex/modwerk-release` branch consolidates 24 Modwerk launch PRs (#64 and #68–#90) into [release PR #91](https://github.com/repeat98/octamod/pull/91) against `main`. It builds on `codex/modwerk-integration` and includes every source PR head in its ancestry, preserving authorship and the existing account reconciliation. The source PRs are superseded by the combined release PR; owner approval, production setup and release gates still apply.
+
+Per the owner's instruction on 4 October 2026, all further Modwerk release fixes and validation must be committed to `codex/modwerk-release` and PR #91 until the release is ready. Do not open separate PRs for that release work. The earlier integration branch is historical review context.
 
 ## Integrated pull requests
 

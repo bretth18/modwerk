@@ -6,9 +6,9 @@ Signup and login offer email/password, Google, GitHub and Discord. Social signup
 
 ## Backend configuration
 
-Apply migration `0017_social_accounts.sql` after the current Modwerk migrations. Preserve the existing `AUTH_SECRET`, `SESSION_TRANSPORT`, `APP_URL`, `REGISTRATION_OPEN`, `PRIVACY_READY`, mail settings and independent administrator key.
+Apply the combined release migrations 0011–0020 in order; migration `0017_social_accounts.sql` adds the social account handoff. Preserve the existing `AUTH_SECRET`, `SESSION_TRANSPORT`, `APP_URL`, `REGISTRATION_OPEN`, `PRIVACY_READY`, mail settings and independent administrator key.
 
-Set `AUTH_BASE_URL` to the canonical backend auth URL, for example `https://octamod-community.octamod.workers.dev/api/auth`. `APP_URL` remains the frontend URL, `https://modwerk.app/`. Register the following exact callback URLs with the providers, replacing the example backend if hosted elsewhere:
+The combined release pins `AUTH_BASE_URL` in `wrangler.worker.jsonc` to the canonical backend auth URL, `https://octamod-community.octamod.workers.dev/api/auth`. `APP_URL` remains the frontend URL, `https://modwerk.app/`. Register the following exact callback URLs with the providers, replacing the example backend if hosted elsewhere:
 
 | Provider | Callback URL | Worker credentials |
 | --- | --- | --- |
@@ -19,6 +19,8 @@ Set `AUTH_BASE_URL` to the canonical backend auth URL, for example `https://octa
 Store client secrets only as Worker secrets. Never put them in `VITE_` variables, committed files or logs. A provider button stays disabled until its credentials, auth secret and backend URL are configured. Email sign-in remains available independently; social registration also respects `REGISTRATION_OPEN`.
 
 Better Auth performs the provider authorization-code exchange, state-cookie verification and PKCE. The integration binds Google redirect tokens to the state nonce and uses Better Auth’s ID-token verifier for RS256 signatures, issuer, audience and expiry before reading identity claims. The pinned Google provider does not perform these checks itself on its redirect path; the `googleTokenBinding` plugin supplies them. A top-level visit to the API sets its own first-party state cookie, avoiding dependence on third-party cookies between GitHub Pages and the Worker. The frontend receives only a random, single-use, one-minute exchange code, whose hash is stored on the backend and which is bound to a private verifier in its originating tab. The signed member session is delivered through the existing session response header or same-origin HttpOnly cookies. Provider access and refresh tokens are encrypted at rest. Only explicit facade routes are exposed.
+
+On 4 October 2026, a read-only production secret-name check found `AUTH_SECRET` and the mail/admin secrets, but none of the six `SSO_*` credentials. The owner confirmed that the three provider apps still need creating. Configure and verify them before claiming live SSO readiness; do not place their secrets in source or frontend configuration.
 
 ## Account page and builds
 

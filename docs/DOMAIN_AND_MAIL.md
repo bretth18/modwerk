@@ -18,7 +18,7 @@ Read from public DNS, GitHub and the deployed Worker; nothing was changed.
 
 ## What changes with the domain
 
-One value, `APP_URL`, decides all of this: the origin the API trusts (CORS and the origin check on every write), the base URL of the account service, and the origin in verification and recovery links. It is `https://modwerk.app/` in `wrangler.worker.jsonc` on this branch. Only the sender and the Resend key are separate secrets. `index.html` carries the origin for link previews, and every module page derives its canonical URL and preview image from it.
+One value, `APP_URL`, decides all of this: the origin the API trusts (CORS and the origin check on every write), the base URL of the account service, and the origin in verification and recovery links. It is `https://modwerk.app/` in `wrangler.worker.jsonc` on this branch. `AUTH_BASE_URL` separately pins the community OAuth backend to `https://octamod-community.octamod.workers.dev/api/auth`; provider callbacks use that backend, while account verification/recovery links use `APP_URL`. Only the sender and the Resend key are separate secrets. `index.html` carries the origin for link previews, and every module page derives its canonical URL and preview image from it.
 
 The frontend needs no change: assets are relative, the Content-Security-Policy is derived from the API URL, and the API URL stays the workers.dev address.
 
@@ -73,7 +73,7 @@ Do **not** add the Pages address records yet. The apex would answer 404 with an 
 
 ## Launch day
 
-Prerequisites: the launch pull request is approved and ready; `npm run check` passes on it; the forum gates in [FORUM_LAUNCH.md](FORUM_LAUNCH.md) are done (D1 backup and recovery bookmark, Worker crypto capacity, migrations 0011–0015); the three "Before launch" sections above are green. Choose a quiet hour. Steps 2–5 should follow each other within minutes.
+Prerequisites: the launch pull request is approved and ready; `npm run check` passes on it; the forum gates in [FORUM_LAUNCH.md](FORUM_LAUNCH.md) are done (D1 backup and recovery bookmark, Worker crypto capacity, migrations 0011–0020); the three "Before launch" sections above are green. Choose a quiet hour. Steps 2–5 should follow each other within minutes.
 
 1. **Record the way back.** Note the current Worker version (`npx wrangler deployments list --config wrangler.worker.jsonc`) and the D1 bookmark, and keep the Pages settings page open.
 2. **Deploy the Worker**, with the staged secrets and the new `APP_URL`: `npx wrangler versions upload --config wrangler.worker.jsonc`, inspect it with `npx wrangler versions view <id> --config wrangler.worker.jsonc` (all four secrets present, `APP_URL` is `https://modwerk.app/`), then deploy that version. Apply the migrations first, after the backup, as FORUM_LAUNCH.md describes. From this moment the API trusts only modwerk.app; the old site's comments and ratings pause until step 5.
