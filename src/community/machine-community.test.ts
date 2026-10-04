@@ -37,6 +37,7 @@ async function fixture(){
     const start=await call('/developer/auth/start?challenge='+challenge);expect(start.status).toBe(302)
     const authorization=new URL(start.headers.get('Location')!),state=authorization.searchParams.get('state')!,cookie=start.headers.get('Set-Cookie')!.split(';')[0]
     vi.stubGlobal('fetch',vi.fn(async(url:string,options:RequestInit)=>{
+      expect(options.redirect).toBe('manual')
       if(url==='https://github.com/login/oauth/access_token'){
         const body=JSON.parse(String(options.body));expect(body).toMatchObject({client_id:'test-client',code:'synthetic-code',redirect_uri:server.env.GITHUB_OAUTH_CALLBACK_URL})
         const digestBytes=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(body.code_verifier)))
@@ -127,15 +128,20 @@ describe('GitHub developer claims and private report access',()=>{
     const denied=await begin()
     const cancelled=await call('/developer/auth/callback?error=access_denied&state='+denied.state,'GET',undefined,'','','',denied.cookie,null)
     expect(cancelled.status).toBe(302);expect(cancelled.headers.get('Location')).toBe('https://octamod.test/#account/developer')
-    for(const failure of ['network','credential','identity']){
+    for(const failure of ['network','credential','identity','token-redirect','identity-redirect']){
       const flow=await begin()
-      vi.stubGlobal('fetch',vi.fn(async(url:string)=>{
+      const provider=vi.fn(async(url:string,options:RequestInit)=>{
+        expect(options.redirect).toBe('manual')
         if(failure==='network')throw new Error('Private provider diagnostics')
+        if((failure==='token-redirect'&&url==='https://github.com/login/oauth/access_token')||(failure==='identity-redirect'&&url==='https://api.github.com/graphql'))return new Response(null,{status:307,headers:{Location:'https://untrusted.example.test/credentials'}})
         if(url==='https://github.com/login/oauth/access_token')return Response.json(failure==='credential'?{error:'private-provider-error'}:{access_token:'synthetic-access',token_type:'bearer'})
         return Response.json({data:{viewer:{databaseId:42,login:'not/a/github/handle'}}})
-      }))
+      })
+      vi.stubGlobal('fetch',provider)
       const result=await call('/developer/auth/callback?code=synthetic-code&state='+flow.state,'GET',undefined,'','','',flow.cookie,null)
       expect(result.status).toBe(502);expect(await result.text()).not.toMatch(/Private provider|private-provider|synthetic-access/)
+      expect(provider).toHaveBeenCalledTimes(failure==='identity'||failure==='identity-redirect'?2:1)
+      expect(provider.mock.calls.every(([url])=>url==='https://github.com/login/oauth/access_token'||url==='https://api.github.com/graphql')).toBe(true)
     }
     expect(db.prepare('SELECT COUNT(*) AS count FROM developer_sessions').get()!.count).toBe(0)
     expect(db.prepare('SELECT COUNT(*) AS count FROM users WHERE github_id IS NOT NULL').get()!.count).toBe(0)

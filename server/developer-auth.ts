@@ -19,7 +19,8 @@ export async function developerUser(request:Request,env:Env,db:Database):Promise
 }
 async function github<T>(url:string,options:RequestInit):Promise<T> {
   try {
-    const result=await fetch(url,{...options,redirect:'error',signal:AbortSignal.timeout(10000)})
+    // Return redirects for explicit rejection; never forward OAuth credentials to another URL.
+    const result=await fetch(url,{...options,redirect:'manual',signal:AbortSignal.timeout(10000)})
     if(!result.ok)throw new Error()
     return await result.json() as T
   } catch {throw new HttpError(502,'GitHub sign-in could not be completed. Try again.')}
