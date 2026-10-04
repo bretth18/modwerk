@@ -29,14 +29,23 @@ The real journey exposed two frontend issues, both fixed: signed-in members can 
 | Real mail and account journey | Verification/recovery provider delivery, owner-confirmed inbox placement and local account/revocation journey passed; temporary key and private test data removed. Recipient-side SPF/DKIM/DMARC results remain unconfirmed. Keep the test recipient and credentials out of source/screenshots. |
 | Support / privacy / retention | Owner selected `jannik.assfalg@gmail.com` as the public receiving support contact; UI links and email Reply-To use it. Resend shows an earlier message delivered to that inbox, and test messages have the correct Reply-To. Support response procedure, operator ownership and archive/provider retention remain to confirm. The current privacy copy states actual retention and request-based removal. See [COMMUNITY_OPERATIONS.md](COMMUNITY_OPERATIONS.md). |
 | Production recovery point | Record a Time Travel bookmark and verify an encrypted production export with a restricted local recovery before migrations. No production export or restore was performed for the local evidence above. |
-| Production schema/backend | Main's 0010 issue-report schema is already present. Draft migrations 0011–0014 are not applied remotely; production Worker still serves the earlier release. Apply only when explicitly authorized. |
+| Production schema/backend | Main's 0010 issue-report schema is already present. Draft migrations 0011–0016 are not applied remotely; production Worker still serves the earlier release. Apply only when explicitly authorized. |
 | Frontend release | Owner approval to merge is still needed. Merging `main` triggers the existing GitHub Pages workflow; deploy/check the API first with registration closed, then publish the reviewed frontend and open registration after the gates pass. |
+| Developer GitHub sign-in | Backend OAuth app credentials and its exact callback must be configured and the actual provider flow checked before enabling live developer login. Local verification uses a simulated provider; see [DEVELOPER_WORKSPACE.md](DEVELOPER_WORKSPACE.md). |
+
+## Machine community and developer additions — 4 October 2026
+
+Digitakt/Digitone module filters, immutable machine configuration snapshots and structured private reports now join the Octatrack flow. GitHub-only developers can claim reviewed maintainer declarations, read explicitly shared reports, reply and resolve/reopen them. Sharing defaults off for new and historical reports. Withdrawal, per-module administrator revocation, suspension, logout and client-secret rotation enforce the server-side access boundary. Module updates still require owner-reviewed PRs.
+
+Node 24 `npm run check` passed 473 application tests, 31 synthetic SDK checks, licence/schema checks, lint, TypeScript and a production build. Worker dry-run bundling passed (410.97 KiB gzip); no Worker or database was deployed. Regression tests cover OAuth state/cookie/PKCE/browser proof, expiry/replay/provider failure, stable GitHub identity, wrong module/identity, opt-in report access, replies/resolution, consent withdrawal, validated Octatrack log access and admin revocation/suspension. All identities, reports and provider credentials were synthetic. No firmware/DSP/hardware tests ran.
+
+Local browser checks used separate frontend/API ports, completed simulated GitHub login and claiming, submitted a shared Digitakt report, answered/resolved it from a developer-only session, and shared/copied a Digitakt snapshot into the correct local machine configuration. The Digitone form showed its own models, OS releases, version and isolated configuration. Developer/private-report layouts were checked at the default desktop viewport and 375 pixels with no horizontal content overflow. This evidence does not validate a real GitHub OAuth app or authorize launch.
 
 ## Controlled release procedure
 
 1. Resolve the performance and real-mail checks, choose support/operating details, and review security/privacy boundaries and this evidence.
 2. Obtain explicit approval for the production rollout. Record Worker version, database bookmark and verified encrypted recovery point; preserve existing secrets.
-3. Apply migrations 0011–0014 after 0010 and deploy the reviewed API with `REGISTRATION_OPEN=false`. Verify existing content and independent admin access, private endpoints, trusted origin, migrations and failure behavior.
+3. Apply migrations 0011–0016 after 0010 and deploy the reviewed API with `REGISTRATION_OPEN=false`. Verify existing content and independent admin access, private endpoints, trusted origin, migrations and failure behavior.
 4. Merge the reviewed PR only when authorized; GitHub Pages builds/publishes the frontend. Check mobile/keyboard navigation and the exact deployed API boundary.
 5. Open registration through the reviewed production configuration only after approval and the controlled journey passes. Review operator counters/provider metrics and the moderation queue during the initial launch period.
 

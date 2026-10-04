@@ -1,0 +1,31 @@
+# GitHub developer workspace
+
+The owner requested GitHub sign-in and module claiming on 4 October 2026. Open **Developer workspace**, choose **Continue with GitHub**, and claim the modules listed for that verified handle. No separate developer password or email is needed. Community posting still uses the existing verified member account, and site administration keeps its independent server-side authorization.
+
+## Module ownership and updates
+
+The reviewed catalog is the authority: Octatrack uses the existing module author; Digitakt/Digitone use the v3 manifest's `maintainers`. Claims require GitHub authentication, never a matching forum username or typed handle. The stable GitHub account ID owns the claim. An already-claimed handle cannot be transferred to another GitHub identity by claiming it again. Handle changes or ownership disputes require source review and operator review of the existing link.
+
+Module IDs in community APIs include the machine for elemod modules, for example `digitakt-digihealth` and `digitone-digihealth`; native configuration selections retain `digihealth`. Catalog removal of a maintainer immediately removes their module access. The administrator Accounts tab can revoke/restore individual claims with a private reason. A revoked claim cannot be restored by signing in or claiming again.
+
+Claimed modules show their version, evidence, public ratings/discussions, source/documentation links and private report inbox. Maintainers can reply to shared reports and resolve/reopen them. Updates remain GitHub PRs with increased versions, the existing machine-specific evidence/licence gates and owner approval. Login/claims never publish a version or grant administration.
+
+## Private reports and machine configuration sharing
+
+Report sharing with maintainers is off by default, including all historical reports. A reporter can opt in when submitting or from **Your account → Your reports**. Consent covers the report, configuration details, private replies and any attached validated Octatrack log. Withdrawal immediately blocks maintainer reads, replies, status changes and log downloads; prior replies remain visible to the reporter/administrator. It cannot retract copies already downloaded. Reports are not published to GitHub or the public forum.
+
+Digitakt/Digitone reports collect their own model, supported base OS, running state, module version, selected modules and available build fingerprint. They accept no Octatrack log, missing-log requirement, arbitrary attachment or firmware. Octatrack keeps its structured context and mandatory validated `OCTAMOD.LOG` or explicit missing-log reason.
+
+Forum module filters and immutable configuration snapshots support all three machines. A snapshot includes its machine, native module IDs and exact recorded versions. Legacy snapshots without a machine remain Octatrack. Copying a snapshot creates a local configuration for that machine using the current approved versions and normal compatibility checks; shared historical versions stay visible in the post. No firmware is shared.
+
+## Backend setup
+
+After an authorized rollout and verified recovery point, apply migrations in order through **0016** (0015 adds machine forum sections; 0016 adds claims, private replies/sharing and developer authentication records).
+
+Register a GitHub OAuth app with the frontend homepage and the exact API callback `https://<api-host>/api/developer/auth/callback`. Store `GITHUB_OAUTH_CLIENT_ID`, `GITHUB_OAUTH_CLIENT_SECRET` and `GITHUB_OAUTH_CALLBACK_URL` in the backend environment/secrets. Never use `VITE_*` variables for OAuth credentials. `APP_URL` must remain the frontend URL; the callback must be on the API origin. Separate frontend/API origins are supported. Loopback HTTP callbacks are allowed only for local development. Missing/invalid configuration keeps developer login closed.
+
+The implementation follows GitHub's [OAuth authorization flow](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps) with state, an HttpOnly SameSite cookie and S256 PKCE. It requests `read:user` and uses a [GraphQL identity query](https://docs.github.com/en/graphql/guides/forming-calls-with-graphql) containing only `viewer { databaseId login }`; it does not request, fetch or store GitHub email or repositories. The GitHub access token is transient and stays on the server. Errors never return provider payloads.
+
+The frontend completes a one-use, 60-second handoff code from a URL fragment with proof saved in the initiating tab. Developer sessions last seven days and store only a token digest and client-secret binding in D1. The browser stores its opaque session by API origin, sends it only to developer/private-report routes and can sign out. As with existing bearer membership, same-origin script compromise can steal this session. Secret rotation and user suspension invalidate developer access. Expired state (10 minutes), handoff and session rows are cleaned hourly. Claims, replies and private audit events persist until an approved operator removal.
+
+Before enabling live login, test the registered callback and return to the actual frontend, denied/expired authorization, logout, undeclared handles, module scope, consent withdrawal and admin revocation. The local regression/browser checks use synthetic identities and a simulated GitHub provider. They do not prove real OAuth-app configuration. Do not log callback query strings, codes, session headers, provider tokens or private report bodies. This document does not authorize creating an OAuth app, deploying or migrating production.

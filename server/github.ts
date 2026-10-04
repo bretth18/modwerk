@@ -1,6 +1,6 @@
 import type { Database, Env } from './platform'
 import { HttpError } from './security'
-import { FLASH_STATES, LOG_MISSING_REASONS, OT_MODELS } from '../src/community/issue-context'
+import { isDigiIssue, FLASH_STATES, LOG_MISSING_REASONS, OT_MODELS } from '../src/community/issue-context'
 import type { IssueContext, LogMissingReason } from '../src/community/issue-context'
 import { describeOtLog } from '../src/community/ot-log'
 import type { OtLogSummary } from '../src/community/ot-log'
@@ -55,7 +55,7 @@ export function issueMarkdown(issue: MirroredIssue) {
   const context = issue.context
   if (context) {
     lines.push('### Browser configuration', '', '| | |', '| --- | --- |',
-      '| Device | ' + OT_MODELS[context.model] + ' |',
+      '| Device | ' + (isDigiIssue(context)?context.model:OT_MODELS[context.model]) + ' |',
       '| State | ' + FLASH_STATES[context.flash] + ' |',
       '| Base OS | ' + context.os + ' |',
       '| Stock FX2 kept | ' + (context.keepStockFx2 === null ? 'n/a' : context.keepStockFx2 ? 'yes' : 'no') + ' |',
