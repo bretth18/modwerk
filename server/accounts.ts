@@ -1,4 +1,4 @@
-import { newsPreferences, saveNewsPreference } from './news-preferences'
+import { initializeNewsPreference, newsPreferences } from './news-preferences'
 import { betterAuth } from 'better-auth'
 import { bearer } from 'better-auth/plugins/bearer'
 import { username } from 'better-auth/plugins/username'
@@ -117,7 +117,7 @@ export async function accountRoutes(request: Request, env: Env, db: Database, pa
       if(typeof body.password!=='string')throw new HttpError(400,'Enter a password.')
       if(body.newsletter!==undefined&&typeof body.newsletter!=='boolean')throw new HttpError(400,'Choose whether to receive news emails.')
       const created=await auth.api.signUpEmail({body:{name:body.username.toLowerCase(),username:body.username.toLowerCase(),email,password:body.password},headers})
-      await saveNewsPreference(db,created.user.id,body.newsletter===true)
+      await initializeNewsPreference(db,created.user.id,body.newsletter===true)
     }else if(action==='forgot')await auth.api.requestPasswordReset({body:{email},headers})
     else await auth.api.sendVerificationEmail({body:{email},headers})
     return response({message:genericMessage},202)

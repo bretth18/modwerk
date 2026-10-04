@@ -3,6 +3,12 @@ import { HttpError, jsonBody, response } from './security'
 
 export const NEWS_CONSENT_VERSION = 'modwerk-news-2026-10-04'
 
+export async function initializeNewsPreference(db: Database, userId: string, enabled: boolean) {
+  // Duplicate signup returns an opaque user; it must not claim or reset consent.
+  await db.prepare('INSERT INTO account_news_preferences(user_id,enabled,consent_version,changed_at) SELECT id,?,?,? FROM auth_users WHERE id=? ON CONFLICT(user_id) DO NOTHING')
+    .bind(enabled ? 1 : 0, enabled ? NEWS_CONSENT_VERSION : null, new Date().toISOString(), userId).run()
+}
+
 export async function saveNewsPreference(db: Database, userId: string, enabled: boolean) {
   await db.prepare('INSERT INTO account_news_preferences(user_id,enabled,consent_version,changed_at) VALUES(?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET enabled=excluded.enabled,consent_version=excluded.consent_version,changed_at=excluded.changed_at WHERE account_news_preferences.enabled!=excluded.enabled')
     .bind(userId, enabled ? 1 : 0, enabled ? NEWS_CONSENT_VERSION : null, new Date().toISOString()).run()
