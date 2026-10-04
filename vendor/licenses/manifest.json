@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "components": [
+    {
+      "id": "elekloader",
+      "name": "elekloader (vendored Digitakt/Digitone builder)",
+      "spdx": "GPL-2.0-or-later",
+      "noticeFile": "elekloader.txt",
+      "sources": [
+        {
+          "path": "vendor/elekloader/NOTICE"
+        },
+        {
+          "path": "vendor/elekloader/LICENSE"
+        },
+        {
+          "url": "https://github.com/irpina/elekloader/tree/e4d8ba84841900db78144030a991e1d69816b6a4",
+          "revision": "e4d8ba84841900db78144030a991e1d69816b6a4"
+        }
+      ],
+      "usedIn": [
+        "vendor/elekloader",
+        "Digitakt/Digitone browser builder"
+      ]
+    },
+    {
+      "id": "pyodide",
+      "name": "Pyodide 314.0.7",
+      "spdx": "MPL-2.0",
+      "noticeFile": "pyodide.txt",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/pyodide/pyodide/314.0.7/LICENSE",
+          "revision": "314.0.7",
+          "path": "LICENSE"
+        }
+      ],
+      "usedIn": [
+        "Digitakt/Digitone browser builder runtime"
+      ]
+    },
+    {
+      "id": "cpython",
+      "name": "CPython 3.14.2 (built into Pyodide)",
+      "spdx": "PSF-2.0",
+      "noticeFile": "cpython.txt",
+      "sources": [
+        {
+          "url": "https://raw.githubusercontent.com/python/cpython/v3.14.2/LICENSE",
+          "revision": "v3.14.2",
+          "path": "LICENSE"
+        }
+      ],
+      "usedIn": [
+        "Digitakt/Digitone browser builder runtime"
+      ]
+    },
+    {
+      "id": "digi-mods",
+      "name": "Digitakt/Digitone mod releases (DIGISLICER, NEIGHBOR, digihealth, elekloader cores)",
+      "spdx": "GPL-2.0-or-later",
+      "noticeFile": "digi-mods.txt",
+      "sources": [
+        {
+          "path": "vendor/elekloader/UPSTREAM.json"
+        },
+        {
+          "path": "sdk/digitakt/modules/digislicer/LICENSE"
+        }
+      ],
+      "usedIn": [
+        "vendor/elekloader/core",
+        "vendor/elekloader/shop"
+      ]
+    },
+    {
+      "id": "digisophie",
+      "name": "SOPHIE (digisophie) release",
+      "spdx": "MIT",
+      "noticeFile": "digisophie.txt",
+      "sources": [
+        {
+          "path": "sdk/digitakt/modules/digisophie/LICENSE"
+        }
+      ],
+      "usedIn": [
+        "vendor/elekloader/shop/digisophie-1.1.13.elemod"
+      ]
+    }
+  ]
+}

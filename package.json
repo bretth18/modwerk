@@ -1,5 +1,6 @@
 {
   "name": "octamod",
+  "license": "GPL-3.0-or-later",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -17,7 +18,11 @@
     "dev:community": "wrangler dev --config wrangler.worker.jsonc --port 8788",
     "db:local": "wrangler d1 migrations apply octamod-community --config wrangler.worker.jsonc --local",
     "admin:key": "node scripts/admin-key.mjs",
+    "domain:check": "node scripts/domain-check.mjs",
     "deploy:pages": "npm run build && wrangler pages deploy",
+    "machines:generate": "node scripts/machines.mjs --write",
+    "machines:check": "node scripts/machines.mjs",
+    "elekloader:check": "node scripts/elekloader-vendor.ts",
     "modules:generate": "node scripts/modules.mjs --write",
     "modules:check": "node scripts/modules.mjs",
     "licenses:generate": "node scripts/licenses.mjs --write",
@@ -25,11 +30,14 @@
     "module:new": "node scripts/scaffold-module.mjs",
     "sdk:check": "node scripts/sdk-check.mjs",
     "modules:build": "python3 -B scripts/build-module-packages.py",
+    "modules:build:elemod": "node scripts/build-elemod-packages.mjs",
     "modules:import": "node scripts/import-module-build.mjs",
     "typecheck": "tsc -b",
     "build:bundle": "vite build"
   },
   "dependencies": {
+    "better-auth": "1.7.7",
+    "pyodide": "314.0.7",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },

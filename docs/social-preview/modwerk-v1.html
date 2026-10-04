@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modwerk — Three.js social preview</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+    body { color: #ececf1; background: #19191c; font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    .canvas { position: relative; width: 1200px; height: 630px; overflow: hidden; }
+    .copy { position: absolute; left: 48px; top: 83px; width: 480px; z-index: 2; }
+    .mark { display: block; width: 68px; height: 68px; margin-bottom: 30px; }
+    h1 { margin: 0; font-size: 87px; line-height: 1; font-weight: 730; letter-spacing: -4.8px; }
+    .descriptor { margin: 29px 0 0; font-size: 45px; line-height: 1.19; letter-spacing: -1.5px; font-weight: 500; color: #b8b8c6; }
+    .domain { position: absolute; left: 48px; bottom: 59px; margin: 0; font-size: 21px; font-weight: 600; letter-spacing: -.4px; color: #929bff; z-index: 2; }
+    #scene { position: absolute; left: 482px; top: 0; width: 718px; height: 630px; }
+    #scene canvas { display: block; width: 100%; height: 100%; }
+    .feature-label { position: absolute; z-index: 1; transform: translate(-50%, -50%); text-align: center; white-space: nowrap; }
+    .feature-label h2 { margin: 0; color: #f2f1f6; font-size: 30px; line-height: 1.12; letter-spacing: -.85px; font-weight: 650; }
+    .feature-label span { display: block; margin-top: 4px; color: #aeacbe; font: 11px monospace; letter-spacing: 1.15px; }
+  </style>
+</head>
+<body>
+  <main class="canvas">
+  <header class="copy">
+    <img class="mark" src="../../public/favicon.svg" alt="">
+    <h1>Modwerk</h1>
+    <p class="descriptor">Mods for<br>Elektron machines.</p>
+  </header>
+  <div id="scene" role="img" aria-label="Four physical feature branches — mod library, firmware builder, forum and developer SDK — connected to a central Modwerk hub"></div>
+  <p class="domain">modwerk.app</p>
+  </main>
+  <script type="module">
+    // This is an artwork source, not an application dependency or a hardware capture.
+    const local = new URLSearchParams(location.search).has('local');
+    const THREE = await import(local ? './.three/three.module.js' : 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js');
+    const host = document.querySelector('#scene');
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+    renderer.setSize(718, 630);
+    renderer.setPixelRatio(2);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    host.append(renderer.domElement);
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-4.75 * 718 / 630, 4.75 * 718 / 630, 4.75, -4.75, .1, 100);
+    camera.position.set(.7, 16, 4.8);
+    camera.lookAt(0, .1, 0);
+    scene.add(new THREE.AmbientLight(0xffffff, 1.65));
+    const key = new THREE.DirectionalLight(0xffffff, 3.6);
+    key.position.set(-5, 12, 9);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    Object.assign(key.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9 });
+    key.shadow.normalBias = .035;
+    key.shadow.bias = -.00015;
+    key.shadow.radius = 4;
+    scene.add(key);
+    const fill = new THREE.DirectionalLight(0xcdd1ff, 2.1);
+    fill.position.set(8, 5, -6); scene.add(fill);
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.ShadowMaterial({ opacity: .35 }));
+    floor.rotation.x = -Math.PI / 2; floor.position.y = -.15; floor.receiveShadow = true; scene.add(floor);
+    const rig = new THREE.Group(); scene.add(rig);
+    const colors = { body: '#41434b', face: '#292b32', dark: '#181b22', mint: '#8fcebd', orange: '#e19a71', purple: '#a5a6ec', cream: '#e4dfd0' };
+    const mats = {};
+    function material(color, roughness = .65, metalness = .18) {
+      const key = color + roughness + metalness;
+      return mats[key] ??= new THREE.MeshStandardMaterial({ color, roughness, metalness });
+    }
+    function mesh(geometry, color, parent, x = 0, y = 0, z = 0, roughness = .65, metalness = .18) {
+      const m = new THREE.Mesh(geometry, material(color, roughness, metalness));
+      m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; parent.add(m); return m;
+    }
+    function shape(w, d, r) {
+      const s = new THREE.Shape(), x = -w / 2, z = -d / 2;
+      s.moveTo(x + r, z); s.lineTo(x + w - r, z); s.quadraticCurveTo(x + w, z, x + w, z + r);
+      s.lineTo(x + w, z + d - r); s.quadraticCurveTo(x + w, z + d, x + w - r, z + d);
+      s.lineTo(x + r, z + d); s.quadraticCurveTo(x, z + d, x, z + d - r);
+      s.lineTo(x, z + r); s.quadraticCurveTo(x, z, x + r, z); return s;
+    }
+    function extrude(s, h, bevel = .025) {
+      const g = new THREE.ExtrudeGeometry(s, { depth: h, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: bevel, bevelThickness: bevel, curveSegments: 16 });
+      g.rotateX(-Math.PI / 2); g.translate(0, -h / 2, 0); return g;
+    }
+    function box(w, h, d, color, parent, x, y, z, radius = .045) { return mesh(extrude(shape(w, d, radius), h), color, parent, x, y, z); }
+    function cylinder(r, h, color, parent, x, y, z) { return mesh(new THREE.CylinderGeometry(r, r, h, 40), color, parent, x, y, z); }
+    function cable(points, color, radius = .035) {
+      const curve = new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p)));
+      return mesh(new THREE.TubeGeometry(curve, 80, radius, 10, false), color, rig);
+    }
+    function texture(draw, w = 1024, h = 640) {
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      draw(c.getContext('2d'), w, h);
+      const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+      tex.anisotropy = renderer.capabilities.getMaxAnisotropy(); return tex;
+    }
+    function plane(tex, w, d, parent, x, y, z) {
+      const p = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshBasicMaterial({ map: tex, transparent: true }));
+      p.rotation.x = -Math.PI / 2; p.position.set(x, y + .05, z); parent.add(p); return p;
+    }
+    function screw(parent, x, y, z) {
+      cylinder(.035, .018, '#999aa2', parent, x, y, z);
+      box(.042, .004, .007, '#2c2e35', parent, x, y + .012, z, .001);
+    }
+    function knob(parent, x, z, y, color) {
+      cylinder(.106, .025, '#747680', parent, x, y, z);
+      cylinder(.084, .12, color, parent, x, y + .065, z);
+      box(.012, .008, .049, '#ece8db', parent, x, y + .13, z - .019, .002);
+      for (let i = 0; i < 14; i++) {
+        const a = i / 14 * Math.PI * 2;
+        cylinder(.004, .08, '#484b54', parent, x + Math.cos(a) * .084, y + .066, z + Math.sin(a) * .084);
+      }
+    }
+    const featureLabels = [];
+    function housing(title, x, z, category) {
+      const g = new THREE.Group(); g.position.set(x, 0, z); rig.add(g);
+      box(3.55, .23, 2.82, colors.body, g, 0, .10, 0, .09);
+      box(3.42, .045, 2.69, colors.face, g, 0, .246, 0, .06);
+      featureLabels.push({ title, category, position: new THREE.Vector3(x, .32, z - 1.025) });
+      for (const sx of [-1.57, 1.57]) for (const sz of [-1.16, 1.16]) screw(g, sx, .283, sz);
+      for (let i = 0; i < 7; i++) box(.07, .035, .20, '#25262c', g, -1.80, .1, -.54 + i * .18, .004);
+      const content = new THREE.Group(); content.position.z = .20; g.add(content);
+      return content;
+    }
+    const library = housing('Discover mods', -2.04, -1.87, 'MOD LIBRARY');
+    const builder = housing('Build firmware', 2.04, -1.87, 'LOCAL BUILDER');
+    const forum = housing('Join the forum', -2.04, 1.87, 'COMMUNITY');
+    const sdk = housing('Developer SDK', 2.04, 1.87, 'TOOLS & DOCS');
+    function signal(type, color) {
+      return texture((ctx, w, h) => {
+        ctx.fillStyle = '#161c24'; ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = '#2a343e'; ctx.lineWidth = 3;
+        for (let y = 100; y < h; y += 140) { ctx.beginPath(); ctx.moveTo(60, y); ctx.lineTo(w - 60, y); ctx.stroke(); }
+        ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 30; ctx.lineCap = 'round';
+        if (type === 'wave') {
+          ctx.beginPath();
+          for (let i = 0; i < 200; i++) { const x = 70 + i / 199 * (w - 140), y = h / 2 + Math.sin(i / 199 * Math.PI * 4.2) * 180; if (!i) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
+          ctx.stroke();
+        } else if (type === 'reverb') {
+          for (let i = 0; i < 23; i++) { const x = 80 + i * (w - 160) / 22, dh = Math.exp(-i / 9) * (120 + Math.abs(Math.sin(i * 2.7)) * 150); ctx.beginPath(); ctx.moveTo(x, h / 2 - dh); ctx.lineTo(x, h / 2 + dh); ctx.stroke(); }
+        } else {
+          for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2 - Math.PI / 2; ctx.fillStyle = [0, 3, 6, 9, 12].includes(i) ? color : '#40434e'; ctx.beginPath(); ctx.arc(w / 2 + Math.cos(a) * 210, h / 2 + Math.sin(a) * 210, 23, 0, Math.PI * 2); ctx.fill(); }
+        }
+      });
+    }
+    // Library: three removable signal modules, with actual geometries and controls.
+    for (let i = 0; i < 3; i++) {
+      const x = -.98 + i * .98, color = [colors.purple, colors.mint, colors.orange][i], height = [.26, .36, .20][i];
+      box(.83, height, 1.55, '#565861', library, x, .30 + height / 2, .20, .035);
+      box(.77, .025, 1.47, '#22262e', library, x, .31 + height, .20, .025);
+      plane(signal(['wave', 'reverb', 'euclid'][i], color), .67, 1.05, library, x, .327 + height, .03);
+      knob(library, x, .74, .34 + height, color);
+      for (let j = 0; j < 4; j++) box(.052, .028, .15, '#b8a48a', library, x - .15 + j * .10, .37, 1.04, .002);
+    }
+    // Builder: three processors plug into a common board and route to one output.
+    box(2.94, .045, 1.65, '#36453f', builder, 0, .32, .19, .028);
+    for (let i = 0; i < 3; i++) {
+      const x = -.93 + i * .93, color = [colors.purple, colors.mint, colors.orange][i];
+      box(.65, .18 + i * .07, .70, '#24262f', builder, x, .46 + i * .035, -.13, .028);
+      box(.54, .021, .58, color, builder, x, .56 + i * .07, -.13, .022);
+      for (let j = 0; j < 4; j++) for (const sign of [-1, 1]) box(.035, .030, .13, '#a5a1a0', builder, x - .19 + j * .125, .41, -.13 + sign * .44, .002);
+      for (let j = 0; j < 3; j++) box(.035, .006, .018, '#666575', builder, x - .14 + j * .14, .576 + i * .07, -.13, .002);
+      const path = new THREE.CatmullRomCurve3([new THREE.Vector3(x, .353, .37), new THREE.Vector3(x, .353, .59), new THREE.Vector3(.64, .353, .80)]);
+      mesh(new THREE.TubeGeometry(path, 20, .017, 6, false), '#ac9974', builder);
+    }
+    box(.68, .08, .70, '#727094', builder, .80, .39, .61, .018);
+    plane(texture((ctx) => {
+      ctx.strokeStyle = '#eeedf7'; ctx.lineWidth = 21; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.beginPath(); ctx.moveTo(150, 45); ctx.lineTo(150, 180); ctx.moveTo(85, 125); ctx.lineTo(150, 190); ctx.lineTo(215, 125); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(65, 225); ctx.lineTo(65, 255); ctx.lineTo(235, 255); ctx.lineTo(235, 225); ctx.stroke();
+    }, 300, 300), .52, .54, builder, .80, .447, .61);
+    // Forum: solid, layered conversation forms with inset dots, not glowing outlines.
+    function bubble(parent, x, z, width, depth, color, y) {
+      const s = shape(width, depth, .15);
+      const b = mesh(extrude(s, .17, .018), color, parent, x, y, z);
+      const tail = new THREE.Shape(); tail.moveTo(-.24, -.28); tail.lineTo(-.24, 0); tail.lineTo(.10, 0); tail.closePath();
+      mesh(extrude(tail, .17, .01), color, parent, x - width * .26, y, z + depth / 2 - .005);
+      for (let i = 0; i < 3; i++) cylinder(.058, .016, '#333843', parent, x - .24 + i * .24, y + .1, z);
+      return b;
+    }
+    bubble(forum, .52, .34, 1.38, .89, colors.mint, .40);
+    bubble(forum, -.51, -.10, 1.48, 1.02, colors.purple, .62);
+    // SDK: an etched code faceplate and an exposed socket with eight removable pads.
+    box(1.43, .16, 1.52, '#535760', sdk, -.70, .40, .12, .035);
+    box(1.33, .03, 1.42, '#20242c', sdk, -.70, .496, .12, .027);
+    plane(texture((ctx, w, h) => { ctx.fillStyle = '#acadee'; ctx.font = 'bold 450px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('</>', w / 2, h / 2); }), 1.21, 1.22, sdk, -.70, .514, .12);
+    box(1.06, .055, 1.30, '#434846', sdk, .80, .34, .12, .027);
+    for (let row = 0; row < 3; row++) for (let col = 0; col < 3; col++) {
+      if (row === 2 && col === 2) continue;
+      box(.23, .095, .25, row === col ? colors.purple : '#c4c2b9', sdk, .80 + (col - 1) * .30, .42, .12 + (row - 1) * .33, .008);
+    }
+    for (let i = 0; i < 6; i++) for (const sign of [-1, 1]) box(.14, .028, .026, '#b2a384', sdk, .80 + sign * .62, .33, -.39 + i * .20, .001);
+    // Four independent branches converge on a small physical Modwerk hub.
+    const hub = new THREE.Group(); rig.add(hub);
+    box(.77, .34, .93, '#585674', hub, 0, .40, 0, .075);
+    box(.70, .025, .86, '#8e8dd0', hub, 0, .586, 0, .055);
+    for (let row = 0; row < 3; row++) for (let col = 0; col < 3; col++) {
+      if (row === 2 && col === 2) continue;
+      box(.134, .035, .134, '#ede9dc', hub, (col - 1) * .181, .628, (row - 1) * .181, .006);
+    }
+    const branches = [
+      [[-.34, .44, -.28], [-.73, .62, -.54], [-.86, .49, -.91], [-.72, .31, -1.05]],
+      [[.34, .44, -.28], [.73, .62, -.54], [.86, .49, -.91], [.72, .31, -1.05]],
+      [[-.34, .44, .28], [-.73, .62, .54], [-.86, .49, .91], [-.72, .31, 1.05]],
+      [[.34, .44, .28], [.73, .62, .54], [.86, .49, .91], [.72, .31, 1.05]],
+    ];
+    for (const points of branches) {
+      cable(points, '#aaa7e2', .055);
+      const [x, , z] = points.at(-1);
+      cylinder(.09, .025, '#92929e', rig, x, .31, z);
+      cylinder(.055, .05, '#444653', rig, x, .346, z);
+    }
+    await document.fonts.ready;
+    renderer.render(scene, camera);
+    // Keep the four feature names horizontal and readable, independent of the 3D perspective.
+    for (const feature of featureLabels) {
+      const projected = feature.position.clone().project(camera);
+      const element = document.createElement('div'); element.className = 'feature-label';
+      element.style.left = ((projected.x + 1) / 2 * 718) + 'px';
+      element.style.top = ((1 - projected.y) / 2 * 630) + 'px';
+      const heading = document.createElement('h2'); heading.textContent = feature.title;
+      const category = document.createElement('span'); category.textContent = feature.category;
+      element.append(heading, category); host.append(element);
+    }
+    document.documentElement.dataset.rendered = 'true';
+    document.documentElement.dataset.threeRevision = THREE.REVISION;
+  </script>
+</body>
+</html>

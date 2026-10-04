@@ -1,14 +1,16 @@
+import { BugReportNotice, BugReportSuccess, type BugReportResult } from './BugReportNotice'
 import { useEffect, useId, useRef, useState } from 'react'
 import { post } from './api'
+import { useCommunity } from './context'
+import { MemberPrompt } from './MemberPrompt'
 import { FLASH_STATES, LOG_MISSING_REASONS, OT_MODELS } from './issue-context'
 import type { FlashState, IssueContext, LogMissingReason, OtModel } from './issue-context'
 import { describeOtLog, OT_LOG_MAX_BYTES, OT_LOG_NAME, OtLogError, parseOtLog } from './ot-log'
 import type { OtLog } from './ot-log'
-import { moduleIssuesUrl, REPORT_OS, useWorkspaceReportContext } from './report-context'
-
-type Sent = { githubUrl: string | null; author: string }
+import { REPORT_OS, useWorkspaceReportContext } from './report-context'
 
 export function IssueReport({id,author,openRequest=0}:{id:string;author:string;openRequest?:number}){
+ const {session}=useCommunity()
  const report=useRef<HTMLDetailsElement>(null),title=useRef<HTMLInputElement>(null),success=useRef<HTMLDivElement>(null)
  const fileInput=useRef<HTMLInputElement>(null),readRequest=useRef(0),helpId=useId()
  useEffect(()=>{
@@ -23,7 +25,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
  const [log,setLog]=useState<OtLog|null>(null),[logError,setLogError]=useState('')
  const [reading,setReading]=useState(false),[logName,setLogName]=useState(''),[logNote,setLogNote]=useState('')
  const [noLog,setNoLog]=useState(false),[reason,setReason]=useState<LogMissingReason|''>(''),[note,setNote]=useState('')
- const [sent,setSent]=useState<Sent|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('')
+ const [sent,setSent]=useState<BugReportResult|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('')
  useEffect(()=>{if(sent){success.current?.focus();report.current?.scrollIntoView({block:'start'})}},[sent])
  const inConfiguration=workspace.modules.some(item=>item.id===id)||id.startsWith('remix-')
  const reasonOptions=(Object.keys(LOG_MISSING_REASONS) as LogMissingReason[]).filter(item=>!(item==='not-flashed'&&flash==='flashed'))
@@ -60,33 +62,23 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   if(!model||!flash||reading||busy)return
   if(!logReady){setError('Attach '+OT_LOG_NAME+', or tick “I can’t attach” and choose why.');return}
   setBusy(true);setError('')
-  // Reserve a tab during the user's submit gesture; a delayed window.open
-  // would usually be blocked. Keep a visible link if popups are disabled.
-  let issueTab:Window|null=null
-  try{issueTab=window.open('about:blank','_blank');if(issueTab)issueTab.opener=null}catch{/* The confirmation link is the fallback. */}
   const fields=Object.fromEntries(new FormData(form)) as Record<string,string>
   const context:IssueContext={model,flash,os:REPORT_OS,modules:workspace.modules,keepStockFx2:workspace.keepStockFx2,build:workspace.build}
   try{
-   const result=await post<Sent>('/modules/'+id+'/issues',{displayName:fields.displayName,title:fields.title,steps:fields.steps,expected:fields.expected,actual:fields.actual,context,...(log?{log:log.text}:{logMissing:{reason,note}})})
+   const result=await post<BugReportResult>('/modules/'+id+'/issues',{title:fields.title,steps:fields.steps,expected:fields.expected,actual:fields.actual,context,visibility:'forum',...(log?{log:log.text}:{logMissing:{reason,note}})})
    setSent(result)
-   if(result.githubUrl&&/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/issues\/[0-9]+$/.test(result.githubUrl)){
-    try{if(issueTab)issueTab.location.replace(result.githubUrl)}catch{issueTab?.close()}
-   }else issueTab?.close()
-  }catch(error){issueTab?.close();setError(error instanceof Error?error.message:'Unable to send issue.')}
+  }catch(error){setError(error instanceof Error?error.message:'Unable to send issue.')}
   finally{setBusy(false)}
  }
 
  return <details ref={report} className="issue-report"><summary>Report an issue <span>For @{author}</span></summary>
   {sent?<div ref={success} className="issue-report-success" role="status" tabIndex={-1}>
-   <strong>{sent.githubUrl?'Your GitHub issue is open':'Your report is saved'}</strong>
-   <p>{sent.githubUrl?<>The issue mentions @{sent.author||author} and includes your report and log, if attached.</>:<>GitHub has not received it yet. Your report is saved for the administrator to forward to @{sent.author||author}; you do not need to submit it again.</>}</p>
-   {sent.githubUrl&&<a className="button button-primary" href={sent.githubUrl} target="_blank" rel="noreferrer">Open issue on GitHub ↗</a>}
-   <p>Track it under <a href="#activity">Your activity</a> on this device. Replies are on GitHub; Octamod does not send email.</p>
-  </div>:
+   <BugReportSuccess report={sent}/>
+  </div>:!session.user?.verified?<MemberPrompt/>:
   <form className="community-form" aria-busy={busy} onSubmit={event=>{event.preventDefault();void send(event.currentTarget)}}>
-   <p className="service-note">Tell <a href={'https://github.com/'+author} target="_blank" rel="noreferrer">@{author}</a> what happened. We create a <strong>public GitHub issue</strong> that mentions them and opens in a new tab. No account or email is needed to report. <a href={moduleIssuesUrl(id)} target="_blank" rel="noreferrer">Check existing issues ↗</a></p>
+   <BugReportNotice/>
+   <a href={'#forum?category=issues&module='+encodeURIComponent(id)}>Check existing bug reports →</a>
    <fieldset><legend>1. Describe the problem</legend>
-   <label>Your name (optional)<input name="displayName" maxLength={60} placeholder="Guest"/></label>
    <label>Issue title<input ref={title} name="title" required maxLength={160} placeholder="What went wrong, in one line"/></label>
    <div className="issue-report-row">
     <label>Octatrack<select required value={model} onChange={event=>setModel(event.target.value as OtModel)}><option value="" disabled>Choose…</option>{(Object.keys(OT_MODELS) as OtModel[]).map(key=><option key={key} value={key}>{OT_MODELS[key]}</option>)}</select></label>
@@ -110,7 +102,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
       <li>If the Octatrack still responds, stop playback and recording. Wait at least 30 seconds after the last save, then save the project from the <kbd>PROJECT</kbd> menu. Wait for saving to finish.</li>
       <li>Connect it by USB and open <kbd>PROJECT</kbd> › SYSTEM › USB DISK MODE. Alternatively, switch it off before removing the CF card and use a card reader.</li>
       <li>Open the card in Finder (Mac) or File Explorer (Windows). Look in the <strong>top folder of the card</strong>, beside your set folders, for <strong>OCTAMOD.LOG</strong> and <strong>OCTAMOD1.LOG</strong>.</li>
-      <li>Choose one or both files below. We check them on your device and select the complete log with the newest file date. Nothing is uploaded until you press “Create issue”.</li>
+      <li>Choose one or both files below. We check them on your device and select the complete log with the newest file date. Nothing is uploaded until you press “Post bug report”.</li>
       <li>Eject the card on your computer before leaving USB disk mode or removing the card.</li>
      </ol>
      <p className="service-note"><strong>After a freeze or crash:</strong> copy the logs already on the card as soon as possible. The latest events may be missing. Restarting cannot guarantee their recovery; describe the last action and screen in your report. You can report without a log if neither file is readable.</p>
@@ -121,7 +113,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
      <p className="success-note" role="status"><strong>{logName} is ready.</strong> {describeOtLog(log.summary)}.</p>
      {logNote&&<p className="service-note">{logNote}</p>}
      <p className="service-note">Device log: OS {log.summary.os}; {log.summary.modules.map(item=>item.id+' '+item.version).join(', ')||'no modules listed'}. This stays separate from your browser configuration.</p>
-     <details><summary>Preview the log that will be public</summary><pre tabIndex={0}>{log.text.trimEnd()}</pre></details>
+     <details><summary>Preview the log to attach</summary><pre tabIndex={0}>{log.text.trimEnd()}</pre></details>
      <button type="button" className="button button-quiet" disabled={busy} onClick={removeLog}>Remove log</button>
     </div>}
     {logError&&<p className="file-error" role="alert">{logError} Try the other log, or choose why you cannot attach one below.</p>}
@@ -130,8 +122,8 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
      <label>Details{reason==='other'?'':' (optional)'}<input value={note} onChange={event=>setNote(event.target.value)} maxLength={500} required={reason==='other'} minLength={reason==='other'?10:undefined} placeholder="For example: blank screen after the Elektron logo"/></label></>}
    </fieldset>
 
-   <p className="service-note">Your report, optional name, configuration and attached log will be public on GitHub. Leave out firmware, samples and private information.</p>
-   <button className="button button-primary" disabled={busy||reading}>{busy?'Creating issue…':'Create issue'}</button>
+   <p className="service-note">The bug description will be public. Your configuration and log stay private to the people helping with your report.</p>
+   <button className="button button-primary" disabled={busy||reading}>{busy?'Posting…':'Post bug report'}</button>
   </form>}
   {error&&<p className="file-error" role="alert">{error}</p>}</details>
 }

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "analog-rytm-mkii",
+  "order": 80,
+  "name": "Analog Rytm",
+  "variants": [
+    "MKII"
+  ],
+  "status": "open",
+  "summary": "Analog drum machine with pads. No public firmware research yet.",
+  "steps": {
+    "format": "open",
+    "rebuild": "open",
+    "boot": "open",
+    "core": "open",
+    "mods": "open"
+  },
+  "art": {
+    "body": "wide",
+    "encoders": 8,
+    "trigs": 16,
+    "pads": 12
+  }
+}

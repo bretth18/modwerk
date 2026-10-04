@@ -1,0 +1,556 @@
+[
+  {
+    "schemaVersion": 1,
+    "id": "octatrack",
+    "order": 10,
+    "name": "Octatrack",
+    "status": "available",
+    "summary": "Effects, machines, MIDI and USB modules built on octabam.",
+    "steps": {
+      "format": "done",
+      "rebuild": "done",
+      "boot": "done",
+      "core": "done",
+      "mods": "done"
+    },
+    "art": {
+      "body": "wide",
+      "encoders": 6,
+      "trigs": 16,
+      "fader": true
+    },
+    "variants": [
+      "MKI",
+      "MKII"
+    ],
+    "firmware": {
+      "releases": [
+        {
+          "version": "1.40C",
+          "files": [
+            {
+              "name": "OCTATRACK_OS1.40C.bin",
+              "sha256": "34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad"
+            }
+          ]
+        }
+      ],
+      "flash": "Copy the .bin to the card root, then PROJECT › SYSTEM › OS UPGRADE.",
+      "recovery": "Hold FUNC while powering on, choose MIDI UPGRADE and send the stock .syx over DIN MIDI."
+    },
+    "sdk": {
+      "platform": "octabam",
+      "modules": "sdk/octabam/modules",
+      "catalog": "sdk/catalog.json",
+      "guide": "sdk/machines/octatrack/README.md",
+      "core": {
+        "version": "octabam",
+        "path": "sdk/octabam/platform"
+      },
+      "toolchain": "GNU binutils 2.47 (m68k-elf) and the dsp56300 assembler, run in the pinned build container (sdk/build/Dockerfile).",
+      "budgets": [
+        {
+          "name": "Reserved module memory",
+          "unit": "bytes",
+          "value": 10487808,
+          "note": "The bottom 1,707 pages (6,144 B each) of the audio page arena that the octabam platform reserves for modules."
+        }
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "digitakt",
+    "order": 20,
+    "name": "Digitakt",
+    "status": "preview",
+    "summary": "New SRC machines, a slice editor and system diagnostics.",
+    "steps": {
+      "format": "done",
+      "rebuild": "done",
+      "boot": "done",
+      "core": "done",
+      "mods": "done"
+    },
+    "art": {
+      "body": "compact",
+      "encoders": 8,
+      "trigs": 16
+    },
+    "variants": [
+      "mk1"
+    ],
+    "firmware": {
+      "releases": [
+        {
+          "version": "1.53",
+          "files": [
+            {
+              "name": "Digitakt_OS1.53.syx",
+              "sha256": "9bdd44bb6102fb25c143cfab97bc92b7a89c463f795d3112dce89771e29bcc92"
+            }
+          ]
+        },
+        {
+          "version": "1.54",
+          "files": [
+            {
+              "name": "Digitakt_OS1.54.syx",
+              "sha256": "f78ba80fa7b1da5fb0e1ff61ad61e9e71aafe79f4364fc49679f3651353e3cf6"
+            }
+          ]
+        }
+      ],
+      "flash": "Send the .syx with Elektron Transfer and confirm on the unit.",
+      "recovery": "Hold FUNC while powering on, choose OS UPGRADE and send the stock .syx."
+    },
+    "research": [
+      {
+        "label": "elekloader",
+        "url": "https://github.com/irpina/elekloader",
+        "note": "Device profile, OS file writer and a core with shared hooks, verified in an emulator and on units by the mods’ authors."
+      },
+      {
+        "label": "elektron-firmware-tool",
+        "url": "https://github.com/mischa85/elektron-firmware-tool",
+        "note": "First public documentation of the OS container, SysEx transport and packing."
+      }
+    ],
+    "sdk": {
+      "platform": "elemod",
+      "modules": "sdk/digitakt/modules",
+      "catalog": null,
+      "guide": "sdk/machines/digitakt/README.md",
+      "core": {
+        "version": "2.1",
+        "path": "sdk/digitakt/core"
+      },
+      "toolchain": "m68k-elf GCC and binutils for ColdFire, and Modwerk’s .elemod linker and OS writer (in development).",
+      "budgets": [
+        {
+          "name": "Shared mod memory",
+          "unit": "bytes",
+          "value": 131072,
+          "note": "DDR 0x47BE0000–0x47C00000 below the audio DMA ring, shared by the core and every mod (public research: elekloader, digikit)."
+        },
+        {
+          "name": "Fast SRAM for code",
+          "unit": "bytes",
+          "value": 2304,
+          "note": "On-chip SRAM tail 0x8000F700–0x80010000 for time-critical code."
+        },
+        {
+          "name": "SRC machine slots",
+          "unit": "slots",
+          "value": 4,
+          "note": "Machine ids 4–7, added by the core for new SRC machines."
+        }
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "digitone",
+    "order": 30,
+    "name": "Digitone",
+    "status": "preview",
+    "summary": "Parameter slots, mod pages, project data and a Mod Menu for FM mods.",
+    "steps": {
+      "format": "done",
+      "rebuild": "done",
+      "boot": "done",
+      "core": "done",
+      "mods": "done"
+    },
+    "art": {
+      "body": "compact",
+      "encoders": 8,
+      "trigs": 16
+    },
+    "variants": [
+      "mk1",
+      "Digitone Keys"
+    ],
+    "firmware": {
+      "releases": [
+        {
+          "version": "1.43",
+          "files": [
+            {
+              "name": "Digitone_and_Digitone_Keys_OS1.43.syx",
+              "sha256": "c5a54cc05b921f2e4bd814834c5365c2a5aa01d7772a9a2961fac1c3095bf9aa"
+            }
+          ]
+        },
+        {
+          "version": "1.44",
+          "files": [
+            {
+              "name": "Digitone_and_Digitone_Keys_OS1.44.syx",
+              "sha256": "d4f200d04484333d82822db7744e6484d0def8f2db8ddf55ee2b780cc13c9659"
+            }
+          ]
+        }
+      ],
+      "flash": "Send the .syx with Elektron Transfer and confirm on the unit.",
+      "recovery": "Hold FUNC while powering on, choose OS UPGRADE and send the stock .syx."
+    },
+    "research": [
+      {
+        "label": "elekloader",
+        "url": "https://github.com/irpina/elekloader",
+        "note": "Device profile, OS file writer and a core with shared hooks, verified in an emulator and on units by the mods’ authors."
+      }
+    ],
+    "sdk": {
+      "platform": "elemod",
+      "modules": "sdk/digitone/modules",
+      "catalog": null,
+      "guide": "sdk/machines/digitone/README.md",
+      "core": {
+        "version": "2.2",
+        "path": "sdk/digitone/core"
+      },
+      "toolchain": "m68k-elf GCC and binutils for ColdFire, and Modwerk’s .elemod linker and OS writer (in development).",
+      "budgets": [
+        {
+          "name": "Shared mod memory",
+          "unit": "bytes",
+          "value": 131072,
+          "note": "DDR 0x47BE0000–0x47C00000 below the audio DMA ring, shared by the core and every mod (public research: elekloader, digikit)."
+        },
+        {
+          "name": "Parameter slots",
+          "unit": "slots",
+          "value": 3,
+          "note": "Parameter ids 182–184, handled by the stock UI with knobs, values and p-locks."
+        },
+        {
+          "name": "Mod pages",
+          "unit": "slots",
+          "value": 4,
+          "note": "Pages 27–30, each placed after a stock page in its key’s list."
+        }
+      ]
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "digitakt-ii",
+    "order": 40,
+    "name": "Digitakt II",
+    "status": "research",
+    "summary": "Its OS file is sealed with an HMAC trailer. Emulator research exists.",
+    "steps": {
+      "format": "started",
+      "rebuild": "open",
+      "boot": "started",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "compact",
+      "encoders": 8,
+      "trigs": 16
+    },
+    "research": [
+      {
+        "label": "digikit",
+        "url": "https://github.com/m-dwyer/digikit",
+        "note": "Emulator for the control processor that boots the real OS and shows its screen, plus analysis tools for the audio processor and the sealed OS file."
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "digitone-ii",
+    "order": 50,
+    "name": "Digitone II",
+    "status": "research",
+    "summary": "Shares the Digitakt II platform and its sealed OS file.",
+    "steps": {
+      "format": "started",
+      "rebuild": "open",
+      "boot": "started",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "compact",
+      "encoders": 8,
+      "trigs": 16
+    },
+    "research": [
+      {
+        "label": "digikit",
+        "url": "https://github.com/m-dwyer/digikit",
+        "note": "Emulator for the control processor that boots the real OS and shows its screen, plus analysis tools for the audio processor and the sealed OS file."
+      }
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "syntakt",
+    "order": 60,
+    "name": "Syntakt",
+    "status": "open",
+    "summary": "Twelve analog and digital tracks. No public firmware research yet.",
+    "steps": {
+      "format": "open",
+      "rebuild": "open",
+      "boot": "open",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "wide",
+      "encoders": 8,
+      "trigs": 16,
+      "knobs": 2
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "tonverk",
+    "order": 70,
+    "name": "Tonverk",
+    "status": "open",
+    "summary": "Multitimbral sampler. No public firmware research yet.",
+    "steps": {
+      "format": "open",
+      "rebuild": "open",
+      "boot": "open",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "wide",
+      "encoders": 8,
+      "trigs": 16
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "analog-rytm-mkii",
+    "order": 80,
+    "name": "Analog Rytm",
+    "status": "open",
+    "summary": "Analog drum machine with pads. No public firmware research yet.",
+    "steps": {
+      "format": "open",
+      "rebuild": "open",
+      "boot": "open",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "wide",
+      "encoders": 8,
+      "trigs": 16,
+      "pads": 12
+    },
+    "variants": [
+      "MKII"
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "analog-rytm-mki",
+    "order": 90,
+    "name": "Analog Rytm",
+    "status": "open",
+    "summary": "The original Rytm. No public firmware research yet.",
+    "steps": {
+      "format": "open",
+      "rebuild": "open",
+      "boot": "open",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "wide",
+      "encoders": 8,
+      "trigs": 16,
+      "pads": 12
+    },
+    "variants": [
+      "MKI"
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "analog-four-mkii",
+    "order": 100,
+    "name": "Analog Four",
+    "status": "open",
+    "summary": "Four-voice analog synthesizer. No public firmware research yet.",
+    "steps": {
+      "format": "open",
+      "rebuild": "open",
+      "boot": "open",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "wide",
+      "encoders": 10,
+      "trigs": 16
+    },
+    "variants": [
+      "MKII"
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "analog-four-mki",
+    "order": 110,
+    "name": "Analog Four",
+    "status": "open",
+    "summary": "The original Four. No public firmware research yet.",
+    "steps": {
+      "format": "open",
+      "rebuild": "open",
+      "boot": "open",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "wide",
+      "encoders": 10,
+      "trigs": 16
+    },
+    "variants": [
+      "MKI"
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "analog-keys",
+    "order": 120,
+    "name": "Analog Keys",
+    "status": "open",
+    "summary": "Analog Four voices with a keyboard. No public firmware research yet.",
+    "steps": {
+      "format": "open",
+      "rebuild": "open",
+      "boot": "open",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "keys",
+      "encoders": 10,
+      "trigs": 16
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "analog-heat",
+    "order": 130,
+    "name": "Analog Heat",
+    "status": "open",
+    "summary": "Stereo analog sound processor. No public firmware research yet.",
+    "steps": {
+      "format": "open",
+      "rebuild": "open",
+      "boot": "open",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "box",
+      "encoders": 0,
+      "trigs": 0,
+      "knobs": 8
+    },
+    "variants": [
+      "MKI",
+      "MKII",
+      "+FX"
+    ]
+  },
+  {
+    "schemaVersion": 1,
+    "id": "model-samples",
+    "order": 140,
+    "name": "Model:Samples",
+    "status": "open",
+    "summary": "Six-track sample groovebox. No public firmware research yet.",
+    "steps": {
+      "format": "open",
+      "rebuild": "open",
+      "boot": "open",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "model",
+      "encoders": 0,
+      "trigs": 16,
+      "pads": 6,
+      "knobs": 6
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "model-cycles",
+    "order": 150,
+    "name": "Model:Cycles",
+    "status": "open",
+    "summary": "Six-track FM groovebox. No public firmware research yet.",
+    "steps": {
+      "format": "open",
+      "rebuild": "open",
+      "boot": "open",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "model",
+      "encoders": 0,
+      "trigs": 16,
+      "pads": 6,
+      "knobs": 6
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "machinedrum",
+    "order": 160,
+    "name": "Machinedrum",
+    "status": "open",
+    "summary": "Classic digital drum machine. No public firmware research yet.",
+    "steps": {
+      "format": "open",
+      "rebuild": "open",
+      "boot": "open",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "wide",
+      "encoders": 8,
+      "trigs": 16
+    }
+  },
+  {
+    "schemaVersion": 1,
+    "id": "monomachine",
+    "order": 170,
+    "name": "Monomachine",
+    "status": "open",
+    "summary": "Classic six-track synthesizer. No public firmware research yet.",
+    "steps": {
+      "format": "open",
+      "rebuild": "open",
+      "boot": "open",
+      "core": "open",
+      "mods": "open"
+    },
+    "art": {
+      "body": "wide",
+      "encoders": 8,
+      "trigs": 16
+    }
+  }
+]

@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 3,
+  "id": "digislicer",
+  "name": "DIGISLICER",
+  "version": "2.1.0-experimental",
+  "machine": "digitakt",
+  "category": "machines",
+  "exclusive": false,
+  "author": {
+    "github": "irpina",
+    "credits": [
+      "irpina — DIGISLICER design and code"
+    ]
+  },
+  "maintainers": [
+    "irpina"
+  ],
+  "source": {
+    "repository": "https://github.com/irpina/digislicer",
+    "revision": "ac0c46d8607205352adcd0f49fb09a4736edda17",
+    "path": "."
+  },
+  "presentation": {
+    "label": "DIGISLICER",
+    "family": "Sampling",
+    "summary": "A slicing machine with a slice editor: cut a sample where you want, and play the slices from the trig keys and the keyboard.",
+    "overview": "DIGISLICER is the SLICE machine with a slice editor. Its SRC page is SLICE’s; press SRC again for a waveform view where you add, split, delete and move slices, auto-slice on transients or use equal grids, watch them play and play them from the trig keys. A sample’s own slices play on every DIGISLICER track and are kept per sample on the +Drive. GRID gains AUTO (slices on the transients) and PLAY gains PIPO (ping-pong loops). With the keyboard on, the trig keys play the slices one per key, as the Octatrack’s trig slice mode, and live recording records them as slice locks. The stock SLICE machine is left as it is.",
+    "highlights": [
+      "A slice editor on the track’s sample, opened by pressing SRC twice.",
+      "Your slices are saved per sample on the +Drive and play on every DIGISLICER track.",
+      "GRID = AUTO slices on transients; PLAY = PIPO ping-pong loops.",
+      "Trig keys play slices one per key, with live recording as slice locks."
+    ],
+    "usage": [
+      "Chop a break by hand in the editor, then play the slices from the trig keys.",
+      "Use AUTO on drum loops that have no slices of their own."
+    ]
+  },
+  "access": {
+    "location": "SRC machine list, below SLICE",
+    "steps": [
+      "Select a track, press FUNC + SRC and choose DIGISLICER below SLICE.",
+      "Press SRC again to open the slice editor; SRC, NO or another page key closes it."
+    ],
+    "screenshots": []
+  },
+  "controls": [
+    {
+      "name": "Knob A",
+      "default": null,
+      "doc": "Select a slice in the editor",
+      "labels": null
+    },
+    {
+      "name": "Knob B",
+      "default": null,
+      "doc": "Move the slice start",
+      "labels": null
+    },
+    {
+      "name": "Knob C",
+      "default": null,
+      "doc": "Move the start by single samples",
+      "labels": null
+    },
+    {
+      "name": "Knob D",
+      "default": null,
+      "doc": "Zoom horizontally around the cursor",
+      "labels": null
+    },
+    {
+      "name": "Knob H",
+      "default": null,
+      "doc": "Zoom vertically, up to 64 times",
+      "labels": null
+    },
+    {
+      "name": "LEVEL",
+      "default": null,
+      "doc": "Move the cursor; the waveform scrolls with it",
+      "labels": null
+    },
+    {
+      "name": "FUNC + YES",
+      "default": null,
+      "doc": "AUTO SLICE",
+      "labels": null
+    },
+    {
+      "name": "YES",
+      "default": null,
+      "doc": "Open the slice menu",
+      "labels": null
+    }
+  ],
+  "compatibility": {
+    "releases": [
+      "1.53",
+      "1.54"
+    ],
+    "requires": [],
+    "conflicts": [],
+    "limitations": [
+      "Slices are stored on the +Drive in /cfw/slices.a and /cfw/slices.b; a /cfw folder appears in the sample browser."
+    ]
+  },
+  "platform": {
+    "kind": "elemod",
+    "core": "2.1",
+    "build": "build.json",
+    "events": [
+      "ev_draw",
+      "ev_enc",
+      "ev_key",
+      "ev_tick"
+    ],
+    "claims": [
+      "machine:5",
+      "param:SLICE GRID=5",
+      "param:SLICE PLAY=4",
+      "ui:SRC page:SRC twice",
+      "ui:KEYBOARD fold slice",
+      "drive:/cfw/slices.a",
+      "drive:/cfw/slices.b"
+    ]
+  },
+  "resources": {
+    "memoryBytes": 92190,
+    "fastBytes": 0,
+    "load": {
+      "display": "Not measured in Modwerk yet",
+      "method": "unmeasured",
+      "conditions": "Measure with every track playing, parameters modulated and the mod at its heaviest setting."
+    }
+  },
+  "evidence": {
+    "tier": "none",
+    "moduleVersion": "2.1.0-experimental",
+    "sourceSha256": null,
+    "reports": [],
+    "hardware": null,
+    "verifiedBy": null
+  },
+  "tests": {
+    "report": "TESTING.md",
+    "summary": "Imported from the author’s v2.1 source; not yet built or tested in Modwerk."
+  },
+  "license": {
+    "spdx": "GPL-2.0-or-later",
+    "file": "LICENSE",
+    "declaration": "The author’s source, imported unchanged from github.com/irpina/digislicer at v2.1 (commit ac0c46d86072) under its GPL-2.0-or-later licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+  },
+  "media": [
+    {
+      "path": "media/thumbnail.svg",
+      "kind": "thumbnail",
+      "caption": "DIGISLICER thumbnail",
+      "alt": "Abstract sampling illustration for DIGISLICER",
+      "credit": "Modwerk",
+      "license": "GPL-3.0-or-later",
+      "source": "Original Modwerk illustration"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "digitakt-ii",
+  "order": 40,
+  "name": "Digitakt II",
+  "status": "research",
+  "summary": "Its OS file is sealed with an HMAC trailer. Emulator research exists.",
+  "steps": {
+    "format": "started",
+    "rebuild": "open",
+    "boot": "started",
+    "core": "open",
+    "mods": "open"
+  },
+  "research": [
+    {
+      "label": "digikit",
+      "url": "https://github.com/m-dwyer/digikit",
+      "note": "Emulator for the control processor that boots the real OS and shows its screen, plus analysis tools for the audio processor and the sealed OS file."
+    }
+  ],
+  "art": {
+    "body": "compact",
+    "encoders": 8,
+    "trigs": 16
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "machine": "digitone",
+  "version": "0.1.0-dev",
+  "stage": "boot-probe",
+  "providesInterface": false,
+  "releases": {
+    "1.43": {
+      "boot": { "addr": "0x40000538", "len": 6, "stockSha256": "f5ddc05119db1d033360fd7f7ba78cd0bc158ffa3f2a2dd08183a3ce56525620", "target": "0x40001df4" }
+    },
+    "1.44": {
+      "boot": { "addr": "0x40000538", "len": 6, "stockSha256": "f5ddc05119db1d033360fd7f7ba78cd0bc158ffa3f2a2dd08183a3ce56525620", "target": "0x40001df4" }
+    }
+  }
+}

@@ -16,7 +16,8 @@ export const LOG_MISSING_REASONS = {
 export type OtModel = keyof typeof OT_MODELS
 export type FlashState = keyof typeof FLASH_STATES
 export type LogMissingReason = keyof typeof LOG_MISSING_REASONS
-export type IssueContext = {
+export type OctatrackIssueContext = {
+  machine?: 'octatrack'
   model: OtModel
   flash: FlashState
   os: string
@@ -25,6 +26,11 @@ export type IssueContext = {
   /** SHA-256 of the image this browser built; never the image itself. */
   build: string
 }
+export type DigiIssueContext = Omit<OctatrackIssueContext, 'machine' | 'model' | 'keepStockFx2'> & {
+  machine: 'digitakt' | 'digitone'; model: string; keepStockFx2: null; moduleVersion: string
+}
+export type IssueContext = OctatrackIssueContext | DigiIssueContext
+export function isDigiIssue(context: IssueContext): context is DigiIssueContext { return context.machine === 'digitakt' || context.machine === 'digitone' }
 export type LogMissing = { reason: LogMissingReason; note: string }
 
 const MODULE_ID = /^[a-z0-9][a-z0-9-]{0,47}$/, VERSION = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[a-z0-9.]{1,24})?$/
@@ -33,7 +39,7 @@ export class IssueInputError extends Error {}
 function fail(message: string): never { throw new IssueInputError(message) }
 const isRecord = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value)
 
-export function validateIssueContext(value: unknown): IssueContext {
+export function validateIssueContext(value: unknown): OctatrackIssueContext {
   if (!isRecord(value)) fail('Report context is missing.')
   const { model, flash, os, modules, keepStockFx2, build } = value
   if (typeof model !== 'string' || !(model in OT_MODELS)) fail('Choose your Octatrack model.')
@@ -52,7 +58,7 @@ export function validateIssueContext(value: unknown): IssueContext {
 }
 
 /** A log is required unless the reporter says why there is none; the reason must fit the report. */
-export function validateLogMissing(value: unknown, context: IssueContext): LogMissing {
+export function validateLogMissing(value: unknown, context: OctatrackIssueContext): LogMissing {
   if (!isRecord(value) || typeof value.reason !== 'string' || !(value.reason in LOG_MISSING_REASONS)) fail('Attach OCTAMOD.LOG, or choose why you cannot.')
   const reason = value.reason as LogMissingReason
   const note = typeof value.note === 'string' ? value.note.trim() : ''

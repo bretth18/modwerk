@@ -1,10 +1,14 @@
 {
   "name": "octamod-community",
   "compatibility_date": "2026-09-30",
+  "compatibility_flags": ["nodejs_compat"],
   "triggers": { "crons": ["17 * * * *"] },
   // Production values. Local development overrides vars through the ignored .dev.vars file.
   "vars": {
-    "APP_URL": "https://octamod.app/",
+    "APP_URL": "https://modwerk.app/",
+    "AUTH_BASE_URL": "https://octamod-community.octamod.workers.dev/api/auth",
+    "REGISTRATION_OPEN": "false",
+    "PRIVACY_READY": "false",
     "SESSION_TRANSPORT": "bearer"
   },
   "d1_databases": [

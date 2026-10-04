@@ -49,9 +49,9 @@ const started = performance.now()
 const buildOnly = process.argv.includes('--build')
 let passed = true
 // Reject stale notices/catalog before generation can overwrite the evidence of staleness.
-if (!buildOnly) passed = await run('licenses:check') && await run('modules:check')
+if (!buildOnly) passed = await run('licenses:check') && await run('machines:check') && await run('modules:check') && await run('elekloader:check')
 // Finish generated notice/catalog/media writes before lint, tests, typecheck or bundling read them.
-if (passed) passed = await run('licenses:generate') && await run('modules:generate')
+if (passed) passed = await run('licenses:generate') && await run('machines:generate') && await run('modules:generate')
 if (passed) {
   const results = buildOnly
     ? [await build()]

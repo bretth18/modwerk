@@ -31,15 +31,15 @@ function check(failure = '', buildOnly = false) {
 it('rejects a stale catalog before generation or any dependent check can run', () => {
   const result = check('modules:check')
   expect(result.status).toBe(1)
-  expect(result.scripts).toEqual(['licenses:check', 'modules:check'])
+  expect(result.scripts).toEqual(['licenses:check', 'machines:check', 'modules:check'])
 })
 
 it('keeps every independent check mandatory and waits for all their results', () => {
   for (const failure of ['sdk:check', 'lint', 'test', 'build:bundle', '']) {
     const result = check(failure)
     expect(result.status).toBe(failure ? 1 : 0)
-    expect(result.scripts.slice(0, 4)).toEqual(['licenses:check', 'modules:check', 'licenses:generate', 'modules:generate'])
-    expect(result.scripts.slice(4).sort()).toEqual(['build:bundle', 'lint', 'sdk:check', 'test', 'typecheck'])
+    expect(result.scripts.slice(0, 7)).toEqual(['licenses:check', 'machines:check', 'modules:check', 'elekloader:check', 'licenses:generate', 'machines:generate', 'modules:generate'])
+    expect(result.scripts.slice(7).sort()).toEqual(['build:bundle', 'lint', 'sdk:check', 'test', 'typecheck'])
     expect(result.scripts.indexOf('build:bundle')).toBeGreaterThan(result.scripts.indexOf('typecheck'))
   }
 })
@@ -56,10 +56,10 @@ it('prevents bundling on a type error while finishing the other checks', () => {
 it('builds through the same generation, typecheck and bundling gates', () => {
   const result = check('', true)
   expect(result.status).toBe(0)
-  expect(result.scripts).toEqual(['licenses:generate', 'modules:generate', 'typecheck', 'build:bundle'])
+  expect(result.scripts).toEqual(['licenses:generate', 'machines:generate', 'modules:generate', 'typecheck', 'build:bundle'])
   const failure = check('modules:generate', true)
   expect(failure.status).toBe(1)
-  expect(failure.scripts).toEqual(['licenses:generate', 'modules:generate'])
+  expect(failure.scripts).toEqual(['licenses:generate', 'machines:generate', 'modules:generate'])
 })
 
 it('rejects stale licence notices before generation can overwrite them', () => {

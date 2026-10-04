@@ -1,0 +1,22 @@
+Provider sign-in brand assets (retrieved 4 October 2026)
+
+Google: Copyright Google LLC. The gradient G and outlined “Sign in with Google”
+lettering come from the pre-approved Android + Web / SVG / Light / Square button.
+Only the surrounding background and border paths are removed; the native button
+renders that boundary at the full form width. Logo and text geometry are unchanged.
+Source: https://developers.google.com/static/identity/images/signin-assets.zip
+Usage guidance: https://developers.google.com/identity/branding-guidelines
+
+GitHub: Copyright GitHub, Inc. mark-github-16 from Primer Octicons. The SVG geometry
+is unchanged; the button displays its monochrome white variant.
+Source: https://github.com/primer/octicons/blob/main/icons/mark-github-16.svg
+Usage guidance: https://github.com/logos
+
+Discord: Copyright Discord Inc. Official white Clyde symbol, unchanged.
+Source: https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/66e3d7f4ef6498ac018f2c55_Symbol.svg
+Usage guidance: https://discord.com/branding
+
+These marks identify the authentication providers. They remain the property of
+their owners and do not imply endorsement of Modwerk. The application's source
+licence does not grant rights to these trademarks. All assets are served locally;
+showing these buttons does not contact a provider until the visitor chooses it.

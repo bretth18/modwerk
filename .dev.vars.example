@@ -1,11 +1,35 @@
 APP_URL=http://127.0.0.1:5173
 SESSION_TRANSPORT=bearer
+# Open only for controlled testing or an explicitly approved public launch.
+REGISTRATION_OPEN=false
+# Set true only after completing docs/LEGAL_COMPLIANCE.md, including processor and transfer checks.
+PRIVACY_READY=false
 # Separate administrator access. Generate with `npm run admin:key`; store only the SHA-256 here or as a Worker secret.
 # Leave blank to keep the admin workspace closed.
 ADMIN_KEY_SHA256=
+# Email accounts: generate at least 32 random bytes; never put secrets in VITE_* variables.
+# Example generator: node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+AUTH_SECRET=
+# Community social sign-in. AUTH_BASE_URL is the API auth URL, not APP_URL.
+AUTH_BASE_URL=http://127.0.0.1:8788/api/auth
+SSO_GOOGLE_CLIENT_ID=
+SSO_GOOGLE_CLIENT_SECRET=
+SSO_GITHUB_CLIENT_ID=
+SSO_GITHUB_CLIENT_SECRET=
+SSO_DISCORD_CLIENT_ID=
+SSO_DISCORD_CLIENT_SECRET=
+# Resend sending-only key scoped to your verified domain; leave blank to disable registration/recovery.
+RESEND_API_KEY=
+EMAIL_FROM=
 # Optional: mirror issue reports to GitHub issues (fine-grained token, Issues: read and write on one repository).
 # Leave blank to keep reports in the admin inbox only.
 GITHUB_TOKEN=
 GITHUB_REPOSITORY=repeat98/octamod
 # Secret of the repository webhook (Issues events) that syncs closed/reopened status back to reporters.
 GITHUB_WEBHOOK_SECRET=
+
+# Developer-only GitHub OAuth; separate from forum membership and administration.
+GITHUB_OAUTH_CLIENT_ID=
+GITHUB_OAUTH_CLIENT_SECRET=
+# Exact API callback registered with GitHub. HTTPS in production; loopback HTTP for local development.
+GITHUB_OAUTH_CALLBACK_URL=

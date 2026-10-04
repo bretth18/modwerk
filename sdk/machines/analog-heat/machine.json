@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "analog-heat",
+  "order": 130,
+  "name": "Analog Heat",
+  "variants": [
+    "MKI",
+    "MKII",
+    "+FX"
+  ],
+  "status": "open",
+  "summary": "Stereo analog sound processor. No public firmware research yet.",
+  "steps": {
+    "format": "open",
+    "rebuild": "open",
+    "boot": "open",
+    "core": "open",
+    "mods": "open"
+  },
+  "art": {
+    "body": "box",
+    "encoders": 0,
+    "trigs": 0,
+    "knobs": 8
+  }
+}

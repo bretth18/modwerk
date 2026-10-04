@@ -11,10 +11,10 @@ export async function handleCommunity(request: Request, env: Env): Promise<Respo
   if (request.method === 'OPTIONS') {
     const method = request.headers.get('Access-Control-Request-Method') ?? ''
     const headers = (request.headers.get('Access-Control-Request-Headers') ?? '').split(',').map(value => value.trim().toLowerCase()).filter(Boolean)
-    if (origin !== allowed || !['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(method) || headers.some(header => !['authorization', 'content-type', 'x-octamod-admin'].includes(header))) return response({ error: 'Preflight not allowed.' }, 403)
+    if (origin !== allowed || !['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].includes(method) || headers.some(header => !['authorization', 'content-type', 'x-octamod-admin','x-modwerk-developer','x-octamod-usage-consent'].includes(header))) return response({ error: 'Preflight not allowed.' }, 403)
     result = new Response(null, { status: 204 })
     result.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
-    result.headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-Octamod-Admin')
+    result.headers.set('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-Octamod-Admin, X-Modwerk-Developer, X-Octamod-Usage-Consent')
     result.headers.set('Access-Control-Max-Age', '600')
   } else {
     try { result = await handleApi(request, env) }
@@ -24,7 +24,7 @@ export async function handleCommunity(request: Request, env: Env): Promise<Respo
   headers.set('Vary', 'Origin')
   if (origin === allowed) {
     headers.set('Access-Control-Allow-Origin', allowed)
-    headers.set('Access-Control-Expose-Headers', 'X-Octamod-Session')
+    headers.set('Access-Control-Expose-Headers', 'X-Octamod-Session, X-Modwerk-Developer')
   }
   return new Response(result.body, { status: result.status, statusText: result.statusText, headers })
 }

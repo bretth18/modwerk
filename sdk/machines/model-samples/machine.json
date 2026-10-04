@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "model-samples",
+  "order": 140,
+  "name": "Model:Samples",
+  "status": "open",
+  "summary": "Six-track sample groovebox. No public firmware research yet.",
+  "steps": {
+    "format": "open",
+    "rebuild": "open",
+    "boot": "open",
+    "core": "open",
+    "mods": "open"
+  },
+  "art": {
+    "body": "model",
+    "encoders": 0,
+    "trigs": 16,
+    "pads": 6,
+    "knobs": 6
+  }
+}

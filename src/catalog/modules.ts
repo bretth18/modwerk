@@ -6,8 +6,12 @@ export const CATALOG_SOURCE = {
   branch: 'codex/dsp-dynload',
 } as const
 
-export const LIBRARY_CATEGORIES = ['effects', 'playback', 'machines', 'scenes', 'midi-usb', 'system'] as const
+export const LIBRARY_CATEGORIES = ['effects', 'playback', 'machines', 'scenes', 'midi-usb', 'system', 'standalone'] as const
 export type ModuleCategory = typeof LIBRARY_CATEGORIES[number]
+// Sidebar names, shared by every machine so the library keeps one shape when switching machines.
+export const LIBRARY_CATEGORY_LABELS: Record<ModuleCategory, string> = { effects: 'Effects', playback: 'Playback', machines: 'Machines', scenes: 'Scenes', 'midi-usb': 'MIDI & USB', system: 'System', standalone: 'Standalone firmware' }
+// Standalone firmware replaces the whole OS, so it is chosen on its own rather than combined with other mods.
+export const STANDALONE_NOTE = 'Complete custom firmware that replaces the whole OS. Use one at a time: it never combines with other mods.'
 // Library grouping can change without rewriting approved module metadata or qualification pins.
 const LIBRARY_CATEGORY_OVERRIDES: Readonly<Partial<Record<string, ModuleCategory>>> = {
   'midi-scenes': 'midi-usb',

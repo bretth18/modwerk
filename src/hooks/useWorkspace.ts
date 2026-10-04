@@ -1,6 +1,7 @@
 import { trackConfigurationStarted } from '../community/usage'
 import { useEffect, useRef, useState } from 'react'
-import { newConfiguration, cleanName, pinModuleVersions } from '../config/workspace'
+import { newConfiguration, cleanName, pinModuleVersions, configurationDevice, DEFAULT_DEVICE } from '../config/workspace'
+import { DEVICES_BY_ID } from '../devices/registry'
 import { isModuleAvailable } from '../catalog/availability'
 import type { Configuration } from '../config/workspace'
 import { deviceStore, openDeviceDatabase } from '../storage/device'
@@ -87,16 +88,17 @@ export function useWorkspace() {
     changeActive(id)
     persist(store => store.setActiveConfiguration(id))
   }
-  function createConfiguration(name: string, copy = false) {
+  function createConfiguration(name: string, copy = false, device = DEFAULT_DEVICE) {
     const original = configsRef.current.find(item => item.id === activeRef.current)
-    const item = newConfiguration(name, copy ? original?.moduleIds : [], copy ? original?.keepStockFx2 : true, copy ? original?.moduleVersions : undefined)
+    const source = copy && original && configurationDevice(original) === device ? original : undefined
+    const item = newConfiguration(name, source?.moduleIds, source?.keepStockFx2 ?? true, source?.moduleVersions, device)
     replaceConfigurations([...configsRef.current, item]); changeActive(item.id)
     persist(async store => { await store.saveConfiguration(item); await store.setActiveConfiguration(item.id) })
     if(item.moduleIds.length)trackConfigurationStarted(item.id)
     return item
   }
-  function importConfiguration(name: string, ids: string[], keepStockFx2 = true, moduleVersions?: Record<string,string>) {
-    const item = newConfiguration(name, ids, keepStockFx2, moduleVersions)
+  function importConfiguration(name: string, ids: string[], keepStockFx2 = true, moduleVersions?: Record<string,string>, device = DEFAULT_DEVICE) {
+    const item = newConfiguration(name, ids, keepStockFx2, moduleVersions, device)
     replaceConfigurations([...configsRef.current,item]);changeActive(item.id)
     if(item.moduleIds.length)trackConfigurationStarted(item.id)
     persist(async store => {await store.saveConfiguration(item);await store.setActiveConfiguration(item.id)})
@@ -109,11 +111,19 @@ export function useWorkspace() {
     persist(store => store.saveConfiguration(updated))
   }
   function renameConfiguration(name: string) { updateActive({ name: cleanName(name) }) }
-  function toggleModule(id: string) {
-    const current = configsRef.current.find(item => item.id === activeRef.current)
-    if (!current || (!current.moduleIds.includes(id) && !isModuleAvailable(id))) return
+  // Adding a module edits the machine's active configuration, creating the machine's first one when needed.
+  function configurationFor(device: string) {
+    const active = configsRef.current.find(item => item.id === activeRef.current)
+    if (active && configurationDevice(active) === device) return active
+    const latest = configsRef.current.filter(item => configurationDevice(item) === device).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0]
+    if (latest) { selectConfiguration(latest.id); return latest }
+    return createConfiguration('My ' + (DEVICES_BY_ID[device]?.name ?? 'first') + ' configuration', false, device)
+  }
+  function toggleModule(id: string, device = DEFAULT_DEVICE) {
+    const current = configurationFor(device)
+    if (!current.moduleIds.includes(id) && device === DEFAULT_DEVICE && !isModuleAvailable(id)) return
     const moduleIds = current.moduleIds.includes(id) ? current.moduleIds.filter(value => value !== id) : [...current.moduleIds, id]
-    const moduleVersions = Object.fromEntries(moduleIds.map(selected=>[selected,current.moduleVersions[selected]??pinModuleVersions([selected])[selected]]))
+    const moduleVersions = Object.fromEntries(moduleIds.map(selected=>[selected,current.moduleVersions[selected]??pinModuleVersions([selected],device)[selected]]))
     updateActive({ moduleIds, moduleVersions })
     if(!current.moduleIds.length&&moduleIds.length)trackConfigurationStarted(current.id)
   }

@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 3,
+  "id": "digihealth",
+  "name": "digihealth",
+  "version": "1.0.1-experimental",
+  "machine": "digitakt",
+  "category": "system",
+  "exclusive": false,
+  "author": {
+    "github": "irpina",
+    "credits": [
+      "irpina — digihealth design and code"
+    ]
+  },
+  "maintainers": [
+    "irpina"
+  ],
+  "source": {
+    "repository": "https://github.com/irpina/digihealth",
+    "revision": "6d2a95605901f4f5ea6301dbad16e573380331a6",
+    "path": "."
+  },
+  "presentation": {
+    "label": "DIGIHEALTH",
+    "family": "Performance",
+    "summary": "FAST AUDIO lowers the DSP load; SYSTEM INFO shows CPU, DSP and memory in the top bar.",
+    "overview": "Two SETTINGS rows. FAST AUDIO (on by default) runs the audio render’s hot code from the free on-chip SRAM: the same code, so the audio is identical and the DSP load lower; a watchdog goes back to the stock code if the copy is ever overwritten. SYSTEM INFO shows CPU, DSP, RAM and free sample memory in the top bar, and a read-only USB diagnostics channel (SysEx device 0x7D) answers its desktop tool.",
+    "highlights": [
+      "FAST AUDIO: the render’s hot code runs from on-chip SRAM for a lower DSP load.",
+      "A watchdog falls back to the stock code if the copy is overwritten.",
+      "SYSTEM INFO: CPU, DSP, RAM and free sample memory in the top bar."
+    ],
+    "usage": [
+      "Turn FAST AUDIO on to make room for heavier machines such as SOPHIE.",
+      "Watch DSP peaks with SYSTEM INFO while building a pattern."
+    ]
+  },
+  "access": {
+    "location": "SETTINGS",
+    "steps": [
+      "Open SETTINGS.",
+      "Tick FAST AUDIO or SYSTEM INFO."
+    ],
+    "screenshots": []
+  },
+  "controls": [
+    {
+      "name": "FAST AUDIO",
+      "default": null,
+      "doc": "Runs the render from SRAM; untick to stop until the next power-on",
+      "labels": null
+    },
+    {
+      "name": "SYSTEM INFO",
+      "default": null,
+      "doc": "Shows CPU, DSP and memory in the top bar",
+      "labels": null
+    }
+  ],
+  "compatibility": {
+    "releases": [
+      "1.53",
+      "1.54"
+    ],
+    "requires": [],
+    "conflicts": [],
+    "limitations": [
+      "FAST AUDIO’s call-site stubs are derived from the owner’s stock OS file. Modwerk generates them during the local build, never in CI."
+    ]
+  },
+  "platform": {
+    "kind": "elemod",
+    "core": "2.1",
+    "build": "build.json",
+    "events": [
+      "ev_draw",
+      "ev_render_in",
+      "ev_render_out",
+      "ev_settings",
+      "ev_tick"
+    ],
+    "claims": [
+      "settings:FAST AUDIO",
+      "settings:SYSTEM INFO",
+      "sysex:0x7d"
+    ]
+  },
+  "resources": {
+    "memoryBytes": 5672,
+    "fastBytes": 0,
+    "load": {
+      "display": "Not measured in Modwerk yet",
+      "method": "unmeasured",
+      "conditions": "Measure with every track playing, parameters modulated and the mod at its heaviest setting."
+    }
+  },
+  "evidence": {
+    "tier": "none",
+    "moduleVersion": "1.0.1-experimental",
+    "sourceSha256": null,
+    "reports": [],
+    "hardware": null,
+    "verifiedBy": null
+  },
+  "tests": {
+    "report": "TESTING.md",
+    "summary": "Imported from the author’s v1.1 source; not yet built or tested in Modwerk."
+  },
+  "license": {
+    "spdx": "GPL-2.0-or-later",
+    "file": "LICENSE",
+    "declaration": "The author’s source, imported unchanged from github.com/irpina/digihealth at v1.1 (commit 6d2a95605901) under its GPL-2.0-or-later licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+  },
+  "media": [
+    {
+      "path": "media/thumbnail.svg",
+      "kind": "thumbnail",
+      "caption": "digihealth thumbnail",
+      "alt": "Abstract performance illustration for digihealth",
+      "credit": "Modwerk",
+      "license": "GPL-3.0-or-later",
+      "source": "Original Modwerk illustration"
+    }
+  ]
+}

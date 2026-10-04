@@ -1,0 +1,1194 @@
+{
+  "schemaVersion": 3,
+  "modules": [
+    {
+      "schemaVersion": 3,
+      "id": "digihealth",
+      "name": "digihealth",
+      "version": "1.0.1-experimental",
+      "machine": "digitakt",
+      "category": "system",
+      "exclusive": false,
+      "author": {
+        "github": "irpina",
+        "credits": [
+          "irpina — digihealth design and code"
+        ]
+      },
+      "maintainers": [
+        "irpina"
+      ],
+      "presentation": {
+        "label": "DIGIHEALTH",
+        "family": "Performance",
+        "summary": "FAST AUDIO lowers the DSP load; SYSTEM INFO shows CPU, DSP and memory in the top bar.",
+        "overview": "Two SETTINGS rows. FAST AUDIO (on by default) runs the audio render’s hot code from the free on-chip SRAM: the same code, so the audio is identical and the DSP load lower; a watchdog goes back to the stock code if the copy is ever overwritten. SYSTEM INFO shows CPU, DSP, RAM and free sample memory in the top bar, and a read-only USB diagnostics channel (SysEx device 0x7D) answers its desktop tool.",
+        "highlights": [
+          "FAST AUDIO: the render’s hot code runs from on-chip SRAM for a lower DSP load.",
+          "A watchdog falls back to the stock code if the copy is overwritten.",
+          "SYSTEM INFO: CPU, DSP, RAM and free sample memory in the top bar."
+        ],
+        "usage": [
+          "Turn FAST AUDIO on to make room for heavier machines such as SOPHIE.",
+          "Watch DSP peaks with SYSTEM INFO while building a pattern."
+        ]
+      },
+      "access": {
+        "location": "SETTINGS",
+        "steps": [
+          "Open SETTINGS.",
+          "Tick FAST AUDIO or SYSTEM INFO."
+        ],
+        "screenshots": []
+      },
+      "controls": [
+        {
+          "name": "FAST AUDIO",
+          "default": null,
+          "doc": "Runs the render from SRAM; untick to stop until the next power-on",
+          "labels": null
+        },
+        {
+          "name": "SYSTEM INFO",
+          "default": null,
+          "doc": "Shows CPU, DSP and memory in the top bar",
+          "labels": null
+        }
+      ],
+      "compatibility": {
+        "releases": [
+          "1.53",
+          "1.54"
+        ],
+        "requires": [],
+        "conflicts": [],
+        "limitations": [
+          "FAST AUDIO’s call-site stubs are derived from the owner’s stock OS file. Modwerk generates them during the local build, never in CI."
+        ]
+      },
+      "platform": {
+        "kind": "elemod",
+        "core": "2.1",
+        "build": "build.json",
+        "events": [
+          "ev_draw",
+          "ev_render_in",
+          "ev_render_out",
+          "ev_settings",
+          "ev_tick"
+        ],
+        "claims": [
+          "settings:FAST AUDIO",
+          "settings:SYSTEM INFO",
+          "sysex:0x7d"
+        ]
+      },
+      "resources": {
+        "memoryBytes": 5672,
+        "fastBytes": 0,
+        "load": {
+          "display": "Not measured in Modwerk yet",
+          "method": "unmeasured",
+          "conditions": "Measure with every track playing, parameters modulated and the mod at its heaviest setting."
+        }
+      },
+      "evidence": {
+        "tier": "none",
+        "moduleVersion": "1.0.1-experimental",
+        "sourceSha256": null,
+        "reports": [],
+        "hardware": null,
+        "verifiedBy": null
+      },
+      "tests": {
+        "report": "TESTING.md",
+        "summary": "Imported from the author’s v1.1 source; not yet built or tested in Modwerk."
+      },
+      "license": {
+        "spdx": "GPL-2.0-or-later",
+        "file": "LICENSE",
+        "declaration": "The author’s source, imported unchanged from github.com/irpina/digihealth at v1.1 (commit 6d2a95605901) under its GPL-2.0-or-later licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+      },
+      "media": [
+        {
+          "path": "media/thumbnail.svg",
+          "kind": "thumbnail",
+          "caption": "digihealth thumbnail",
+          "alt": "Abstract performance illustration for digihealth",
+          "credit": "Modwerk",
+          "license": "GPL-3.0-or-later",
+          "source": "Original Modwerk illustration"
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/irpina/digihealth",
+        "revision": "6d2a95605901f4f5ea6301dbad16e573380331a6",
+        "path": "."
+      },
+      "patchSites": {
+        "1.53": [
+          {
+            "addr": "0x40000438",
+            "len": 6
+          },
+          {
+            "addr": "0x400d52f0",
+            "len": 6
+          },
+          {
+            "addr": "0x40077e9a",
+            "len": 6
+          },
+          {
+            "addr": "0x40077f76",
+            "len": 6
+          },
+          {
+            "addr": "0x40077f8e",
+            "len": 6
+          },
+          {
+            "addr": "0x40077fa6",
+            "len": 6
+          },
+          {
+            "addr": "0x40077fc8",
+            "len": 6
+          },
+          {
+            "addr": "0x40077fd4",
+            "len": 6
+          },
+          {
+            "addr": "0x40078024",
+            "len": 6
+          },
+          {
+            "addr": "0x40078078",
+            "len": 6
+          },
+          {
+            "addr": "0x40078088",
+            "len": 6
+          },
+          {
+            "addr": "0x40078096",
+            "len": 6
+          },
+          {
+            "addr": "0x400780a4",
+            "len": 6
+          },
+          {
+            "addr": "0x400780e0",
+            "len": 6
+          },
+          {
+            "addr": "0x40078116",
+            "len": 6
+          },
+          {
+            "addr": "0x4007814a",
+            "len": 6
+          },
+          {
+            "addr": "0x40078366",
+            "len": 6
+          }
+        ],
+        "1.54": [
+          {
+            "addr": "0x40000438",
+            "len": 6
+          },
+          {
+            "addr": "0x400d5518",
+            "len": 6
+          },
+          {
+            "addr": "0x40077e9a",
+            "len": 6
+          },
+          {
+            "addr": "0x40077f76",
+            "len": 6
+          },
+          {
+            "addr": "0x40077f8e",
+            "len": 6
+          },
+          {
+            "addr": "0x40077fa6",
+            "len": 6
+          },
+          {
+            "addr": "0x40077fc8",
+            "len": 6
+          },
+          {
+            "addr": "0x40077fd4",
+            "len": 6
+          },
+          {
+            "addr": "0x40078024",
+            "len": 6
+          },
+          {
+            "addr": "0x40078078",
+            "len": 6
+          },
+          {
+            "addr": "0x40078088",
+            "len": 6
+          },
+          {
+            "addr": "0x40078096",
+            "len": 6
+          },
+          {
+            "addr": "0x400780a4",
+            "len": 6
+          },
+          {
+            "addr": "0x400780e0",
+            "len": 6
+          },
+          {
+            "addr": "0x40078116",
+            "len": 6
+          },
+          {
+            "addr": "0x4007814a",
+            "len": 6
+          },
+          {
+            "addr": "0x40078366",
+            "len": 6
+          }
+        ]
+      }
+    },
+    {
+      "schemaVersion": 3,
+      "id": "digineighbor",
+      "name": "NEIGHBOR",
+      "version": "0.6.0-experimental",
+      "machine": "digitakt",
+      "category": "machines",
+      "exclusive": false,
+      "author": {
+        "github": "irpina",
+        "credits": [
+          "irpina — NEIGHBOR design and code"
+        ]
+      },
+      "maintainers": [
+        "irpina"
+      ],
+      "presentation": {
+        "label": "NEIGHBOR",
+        "family": "Sampling",
+        "summary": "A NEIGHBOR machine like the Octatrack’s: a track plays another track’s audio through its own chain. A prototype.",
+        "overview": "NEIGHBOR is a fifth SRC machine, like the Octatrack’s neighbor machine. The track plays another track’s audio (post-filter) through its own overdrive, level, filter, volume, pan and sends, one block (0.67 ms) late. Its SRC page has TUNE (a pitch shifter that follows the trig’s note), BR, SLOT (the source track, 1–8), GAIN (0 to +31.5 dB after its own chain) and LEV. A prototype.",
+        "highlights": [
+          "Route one track’s audio through another track’s filter, effects and sends.",
+          "A pitch shifter (TUNE) that follows the trig’s note.",
+          "Up to +31.5 dB of GAIN after its own chain."
+        ],
+        "usage": [
+          "Run a drum track through a second filter and delay setting on another track.",
+          "Pitch-shift a pad track in key with trigs on the NEIGHBOR track."
+        ]
+      },
+      "access": {
+        "location": "SRC machine list",
+        "steps": [
+          "Select a track, press FUNC + SRC and choose NEIGHBOR.",
+          "Set SLOT to the source track on the SRC page."
+        ],
+        "screenshots": []
+      },
+      "controls": [
+        {
+          "name": "TUNE",
+          "default": null,
+          "doc": "Pitch shift that follows the trig’s note",
+          "labels": null
+        },
+        {
+          "name": "BR",
+          "default": null,
+          "doc": "Bit reduction",
+          "labels": null
+        },
+        {
+          "name": "SLOT",
+          "default": null,
+          "doc": "Source track, 1–8",
+          "labels": null
+        },
+        {
+          "name": "GAIN",
+          "default": null,
+          "doc": "0 to +31.5 dB after its own chain",
+          "labels": null
+        },
+        {
+          "name": "LEV",
+          "default": null,
+          "doc": "Level",
+          "labels": null
+        }
+      ],
+      "compatibility": {
+        "releases": [
+          "1.53",
+          "1.54"
+        ],
+        "requires": [],
+        "conflicts": [],
+        "limitations": [
+          "A prototype: the source audio arrives one block (0.67 ms) late."
+        ]
+      },
+      "platform": {
+        "kind": "elemod",
+        "core": "2.1",
+        "build": "build.json",
+        "events": [],
+        "claims": [
+          "machine:4"
+        ]
+      },
+      "resources": {
+        "memoryBytes": 26712,
+        "fastBytes": 0,
+        "load": {
+          "display": "Not measured in Modwerk yet",
+          "method": "unmeasured",
+          "conditions": "Measure with every track playing, parameters modulated and the mod at its heaviest setting."
+        }
+      },
+      "evidence": {
+        "tier": "none",
+        "moduleVersion": "0.6.0-experimental",
+        "sourceSha256": null,
+        "reports": [],
+        "hardware": null,
+        "verifiedBy": null
+      },
+      "tests": {
+        "report": "TESTING.md",
+        "summary": "Imported from the author’s v0.6 source; not yet built or tested in Modwerk."
+      },
+      "license": {
+        "spdx": "GPL-2.0-or-later",
+        "file": "LICENSE",
+        "declaration": "The author’s source, imported unchanged from github.com/irpina/digineighbor at v0.6 (commit d09574ab5fac) under its GPL-2.0-or-later licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+      },
+      "media": [
+        {
+          "path": "media/thumbnail.svg",
+          "kind": "thumbnail",
+          "caption": "NEIGHBOR thumbnail",
+          "alt": "Abstract sampling illustration for NEIGHBOR",
+          "credit": "Modwerk",
+          "license": "GPL-3.0-or-later",
+          "source": "Original Modwerk illustration"
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/irpina/digineighbor",
+        "revision": "d09574ab5fac8c079849e74c5c3efe129de54126",
+        "path": "."
+      },
+      "patchSites": {
+        "1.53": [
+          {
+            "addr": "0x400657cc",
+            "len": 6
+          },
+          {
+            "addr": "0x4000fe8a",
+            "len": 10
+          },
+          {
+            "addr": "0x4000feac",
+            "len": 10
+          },
+          {
+            "addr": "0x4000f324",
+            "len": 8
+          },
+          {
+            "addr": "0x4000f2bc",
+            "len": 8
+          },
+          {
+            "addr": "0x40065794",
+            "len": 10
+          },
+          {
+            "addr": "0x400657ee",
+            "len": 10
+          },
+          {
+            "addr": "0x40077fba",
+            "len": 6
+          },
+          {
+            "addr": "0x40078142",
+            "len": 6
+          }
+        ],
+        "1.54": [
+          {
+            "addr": "0x400657cc",
+            "len": 6
+          },
+          {
+            "addr": "0x4000fe8a",
+            "len": 10
+          },
+          {
+            "addr": "0x4000feac",
+            "len": 10
+          },
+          {
+            "addr": "0x4000f324",
+            "len": 8
+          },
+          {
+            "addr": "0x4000f2bc",
+            "len": 8
+          },
+          {
+            "addr": "0x40065794",
+            "len": 10
+          },
+          {
+            "addr": "0x400657ee",
+            "len": 10
+          },
+          {
+            "addr": "0x40077fba",
+            "len": 6
+          },
+          {
+            "addr": "0x40078142",
+            "len": 6
+          }
+        ]
+      }
+    },
+    {
+      "schemaVersion": 3,
+      "id": "digislicer",
+      "name": "DIGISLICER",
+      "version": "2.1.0-experimental",
+      "machine": "digitakt",
+      "category": "machines",
+      "exclusive": false,
+      "author": {
+        "github": "irpina",
+        "credits": [
+          "irpina — DIGISLICER design and code"
+        ]
+      },
+      "maintainers": [
+        "irpina"
+      ],
+      "presentation": {
+        "label": "DIGISLICER",
+        "family": "Sampling",
+        "summary": "A slicing machine with a slice editor: cut a sample where you want, and play the slices from the trig keys and the keyboard.",
+        "overview": "DIGISLICER is the SLICE machine with a slice editor. Its SRC page is SLICE’s; press SRC again for a waveform view where you add, split, delete and move slices, auto-slice on transients or use equal grids, watch them play and play them from the trig keys. A sample’s own slices play on every DIGISLICER track and are kept per sample on the +Drive. GRID gains AUTO (slices on the transients) and PLAY gains PIPO (ping-pong loops). With the keyboard on, the trig keys play the slices one per key, as the Octatrack’s trig slice mode, and live recording records them as slice locks. The stock SLICE machine is left as it is.",
+        "highlights": [
+          "A slice editor on the track’s sample, opened by pressing SRC twice.",
+          "Your slices are saved per sample on the +Drive and play on every DIGISLICER track.",
+          "GRID = AUTO slices on transients; PLAY = PIPO ping-pong loops.",
+          "Trig keys play slices one per key, with live recording as slice locks."
+        ],
+        "usage": [
+          "Chop a break by hand in the editor, then play the slices from the trig keys.",
+          "Use AUTO on drum loops that have no slices of their own."
+        ]
+      },
+      "access": {
+        "location": "SRC machine list, below SLICE",
+        "steps": [
+          "Select a track, press FUNC + SRC and choose DIGISLICER below SLICE.",
+          "Press SRC again to open the slice editor; SRC, NO or another page key closes it."
+        ],
+        "screenshots": []
+      },
+      "controls": [
+        {
+          "name": "Knob A",
+          "default": null,
+          "doc": "Select a slice in the editor",
+          "labels": null
+        },
+        {
+          "name": "Knob B",
+          "default": null,
+          "doc": "Move the slice start",
+          "labels": null
+        },
+        {
+          "name": "Knob C",
+          "default": null,
+          "doc": "Move the start by single samples",
+          "labels": null
+        },
+        {
+          "name": "Knob D",
+          "default": null,
+          "doc": "Zoom horizontally around the cursor",
+          "labels": null
+        },
+        {
+          "name": "Knob H",
+          "default": null,
+          "doc": "Zoom vertically, up to 64 times",
+          "labels": null
+        },
+        {
+          "name": "LEVEL",
+          "default": null,
+          "doc": "Move the cursor; the waveform scrolls with it",
+          "labels": null
+        },
+        {
+          "name": "FUNC + YES",
+          "default": null,
+          "doc": "AUTO SLICE",
+          "labels": null
+        },
+        {
+          "name": "YES",
+          "default": null,
+          "doc": "Open the slice menu",
+          "labels": null
+        }
+      ],
+      "compatibility": {
+        "releases": [
+          "1.53",
+          "1.54"
+        ],
+        "requires": [],
+        "conflicts": [],
+        "limitations": [
+          "Slices are stored on the +Drive in /cfw/slices.a and /cfw/slices.b; a /cfw folder appears in the sample browser."
+        ]
+      },
+      "platform": {
+        "kind": "elemod",
+        "core": "2.1",
+        "build": "build.json",
+        "events": [
+          "ev_draw",
+          "ev_enc",
+          "ev_key",
+          "ev_tick"
+        ],
+        "claims": [
+          "machine:5",
+          "param:SLICE GRID=5",
+          "param:SLICE PLAY=4",
+          "ui:SRC page:SRC twice",
+          "ui:KEYBOARD fold slice",
+          "drive:/cfw/slices.a",
+          "drive:/cfw/slices.b"
+        ]
+      },
+      "resources": {
+        "memoryBytes": 92190,
+        "fastBytes": 0,
+        "load": {
+          "display": "Not measured in Modwerk yet",
+          "method": "unmeasured",
+          "conditions": "Measure with every track playing, parameters modulated and the mod at its heaviest setting."
+        }
+      },
+      "evidence": {
+        "tier": "none",
+        "moduleVersion": "2.1.0-experimental",
+        "sourceSha256": null,
+        "reports": [],
+        "hardware": null,
+        "verifiedBy": null
+      },
+      "tests": {
+        "report": "TESTING.md",
+        "summary": "Imported from the author’s v2.1 source; not yet built or tested in Modwerk."
+      },
+      "license": {
+        "spdx": "GPL-2.0-or-later",
+        "file": "LICENSE",
+        "declaration": "The author’s source, imported unchanged from github.com/irpina/digislicer at v2.1 (commit ac0c46d86072) under its GPL-2.0-or-later licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+      },
+      "media": [
+        {
+          "path": "media/thumbnail.svg",
+          "kind": "thumbnail",
+          "caption": "DIGISLICER thumbnail",
+          "alt": "Abstract sampling illustration for DIGISLICER",
+          "credit": "Modwerk",
+          "license": "GPL-3.0-or-later",
+          "source": "Original Modwerk illustration"
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/irpina/digislicer",
+        "revision": "ac0c46d8607205352adcd0f49fb09a4736edda17",
+        "path": "."
+      },
+      "patchSites": {
+        "1.53": [
+          {
+            "addr": "0x40074df2",
+            "len": 6
+          },
+          {
+            "addr": "0x4005fa2e",
+            "len": 8
+          },
+          {
+            "addr": "0x401848dc",
+            "len": 4
+          },
+          {
+            "addr": "0x4000ff20",
+            "len": 6
+          },
+          {
+            "addr": "0x400100c4",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f534",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f5fc",
+            "len": 6
+          },
+          {
+            "addr": "0x4005f91c",
+            "len": 8
+          },
+          {
+            "addr": "0x4006060a",
+            "len": 8
+          },
+          {
+            "addr": "0x40075282",
+            "len": 6
+          },
+          {
+            "addr": "0x400759dc",
+            "len": 6
+          },
+          {
+            "addr": "0x400760ba",
+            "len": 8
+          },
+          {
+            "addr": "0x40028f3c",
+            "len": 8
+          },
+          {
+            "addr": "0x400a16c4",
+            "len": 8
+          },
+          {
+            "addr": "0x40029d64",
+            "len": 6
+          },
+          {
+            "addr": "0x4002965a",
+            "len": 24
+          },
+          {
+            "addr": "0x40025338",
+            "len": 6
+          },
+          {
+            "addr": "0x40025344",
+            "len": 6
+          },
+          {
+            "addr": "0x400299b2",
+            "len": 6
+          },
+          {
+            "addr": "0x400a2042",
+            "len": 6
+          },
+          {
+            "addr": "0x400d553e",
+            "len": 8
+          },
+          {
+            "addr": "0x40008d40",
+            "len": 6
+          },
+          {
+            "addr": "0x40008904",
+            "len": 6
+          }
+        ],
+        "1.54": [
+          {
+            "addr": "0x40074df2",
+            "len": 6
+          },
+          {
+            "addr": "0x4005fa2e",
+            "len": 8
+          },
+          {
+            "addr": "0x40184bdc",
+            "len": 4
+          },
+          {
+            "addr": "0x4000ff20",
+            "len": 6
+          },
+          {
+            "addr": "0x400100c4",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f534",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f5fc",
+            "len": 6
+          },
+          {
+            "addr": "0x4005f91c",
+            "len": 8
+          },
+          {
+            "addr": "0x4006060a",
+            "len": 8
+          },
+          {
+            "addr": "0x40075282",
+            "len": 6
+          },
+          {
+            "addr": "0x400759dc",
+            "len": 6
+          },
+          {
+            "addr": "0x400760ba",
+            "len": 8
+          },
+          {
+            "addr": "0x40028f3c",
+            "len": 8
+          },
+          {
+            "addr": "0x400a1820",
+            "len": 8
+          },
+          {
+            "addr": "0x40029d64",
+            "len": 6
+          },
+          {
+            "addr": "0x4002965a",
+            "len": 24
+          },
+          {
+            "addr": "0x40025338",
+            "len": 6
+          },
+          {
+            "addr": "0x40025344",
+            "len": 6
+          },
+          {
+            "addr": "0x400299b2",
+            "len": 6
+          },
+          {
+            "addr": "0x400a219e",
+            "len": 6
+          },
+          {
+            "addr": "0x400d5766",
+            "len": 8
+          },
+          {
+            "addr": "0x40008d40",
+            "len": 6
+          },
+          {
+            "addr": "0x40008904",
+            "len": 6
+          }
+        ]
+      }
+    },
+    {
+      "schemaVersion": 3,
+      "id": "digisophie",
+      "name": "SOPHIE",
+      "version": "1.1.13-experimental",
+      "machine": "digitakt",
+      "category": "machines",
+      "exclusive": false,
+      "author": {
+        "github": "mestela",
+        "credits": [
+          "Matt Estela — Sophie algorithm (Sophie for Schwung) and the Digitakt adaptation",
+          "soejrd — digisophie repository"
+        ],
+        "name": "Matt Estela"
+      },
+      "maintainers": [
+        "mestela"
+      ],
+      "presentation": {
+        "label": "SOPHIE",
+        "family": "Synthesis",
+        "summary": "A metallic percussion machine with four models: FUSE, BOOM, PIPE and SHARD.",
+        "overview": "Sophie is a metallic percussion synth machine for the original Digitakt. It began as a fixed-point adaptation of Sophie for Schwung by Matt Estela and evolved into four models: FUSE, BOOM, PIPE and SHARD. Its audio enters the normal Digitakt AMP, filter, mixer and sends; the custom controls can be parameter-locked.",
+        "highlights": [
+          "Four metallic percussion models: FUSE, BOOM, PIPE and SHARD.",
+          "FOLD wavefolder with output level compensation.",
+          "Uses the Digitakt’s own AMP, filter, mixer and effects."
+        ],
+        "usage": [
+          "Program metallic hits and bells with parameter-locked MODEL and METAL.",
+          "Use AMP HOLD = NOTE so TRIG LEN sets when the release begins."
+        ]
+      },
+      "access": {
+        "location": "SRC machine list",
+        "steps": [
+          "Select a track, press FUNC + SRC and choose SOPHIE.",
+          "Set the machine’s controls on the SRC page; AMP shapes the note envelope."
+        ],
+        "screenshots": []
+      },
+      "controls": [
+        {
+          "name": "TUNE",
+          "default": null,
+          "doc": "Pitch",
+          "labels": null
+        },
+        {
+          "name": "MODEL",
+          "default": null,
+          "doc": "FUSE / BOOM / PIPE / SHARD",
+          "labels": null
+        },
+        {
+          "name": "FOLD",
+          "default": null,
+          "doc": "Wavefolder with output level compensation; zero bypasses it",
+          "labels": null
+        },
+        {
+          "name": "SAMP",
+          "default": null,
+          "doc": "Stock sample selector; Sophie does not use the sample",
+          "labels": null
+        },
+        {
+          "name": "SWEEP",
+          "default": null,
+          "doc": "Bipolar pitch sweep toward the played note",
+          "labels": null
+        },
+        {
+          "name": "METAL",
+          "default": null,
+          "doc": "FM/ring intensity",
+          "labels": null
+        },
+        {
+          "name": "FBK",
+          "default": null,
+          "doc": "Oscillator feedback",
+          "labels": null
+        },
+        {
+          "name": "COLOR",
+          "default": null,
+          "doc": "Inharmonic character",
+          "labels": null
+        }
+      ],
+      "compatibility": {
+        "releases": [
+          "1.53"
+        ],
+        "requires": [],
+        "conflicts": [],
+        "limitations": [
+          "One instance runs without FAST AUDIO; the author found two practical with FAST AUDIO on. Eight tracks are not claimed.",
+          "Built for OS 1.53 only."
+        ]
+      },
+      "platform": {
+        "kind": "elemod",
+        "core": "2.1",
+        "build": "build.json",
+        "events": [],
+        "claims": [
+          "machine:7"
+        ]
+      },
+      "resources": {
+        "memoryBytes": 8722,
+        "fastBytes": 0,
+        "load": {
+          "display": "Not measured in Modwerk yet",
+          "method": "unmeasured",
+          "conditions": "Measure with every track playing, parameters modulated and the mod at its heaviest setting."
+        }
+      },
+      "evidence": {
+        "tier": "none",
+        "moduleVersion": "1.1.13-experimental",
+        "sourceSha256": null,
+        "reports": [],
+        "hardware": null,
+        "verifiedBy": null
+      },
+      "tests": {
+        "report": "TESTING.md",
+        "summary": "Imported from the author’s v1.1.13 source; not yet built or tested in Modwerk."
+      },
+      "license": {
+        "spdx": "MIT",
+        "file": "LICENSE",
+        "declaration": "The author’s source, imported unchanged from github.com/soejrd/digisophie at v1.1.13 (commit 961c39cec699) under its MIT licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+      },
+      "media": [
+        {
+          "path": "media/thumbnail.svg",
+          "kind": "thumbnail",
+          "caption": "SOPHIE thumbnail",
+          "alt": "Abstract synthesis illustration for SOPHIE",
+          "credit": "Modwerk",
+          "license": "GPL-3.0-or-later",
+          "source": "Original Modwerk illustration"
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/soejrd/digisophie",
+        "revision": "961c39cec699e8f8940391634aaba9fad7120792",
+        "path": "."
+      },
+      "patchSites": {
+        "1.53": [
+          {
+            "addr": "0x400657cc",
+            "len": 6
+          },
+          {
+            "addr": "0x4000fe8a",
+            "len": 10
+          },
+          {
+            "addr": "0x4000feac",
+            "len": 10
+          },
+          {
+            "addr": "0x40060b8e",
+            "len": 6
+          },
+          {
+            "addr": "0x400a4374",
+            "len": 6
+          },
+          {
+            "addr": "0x400a43f0",
+            "len": 6
+          },
+          {
+            "addr": "0x40065de6",
+            "len": 6
+          },
+          {
+            "addr": "0x40065e5e",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f324",
+            "len": 8
+          },
+          {
+            "addr": "0x4000f2bc",
+            "len": 8
+          },
+          {
+            "addr": "0x40065794",
+            "len": 10
+          },
+          {
+            "addr": "0x400657ee",
+            "len": 10
+          },
+          {
+            "addr": "0x4000ff20",
+            "len": 6
+          },
+          {
+            "addr": "0x400100c4",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f534",
+            "len": 6
+          },
+          {
+            "addr": "0x4000f5fc",
+            "len": 6
+          },
+          {
+            "addr": "0x40077fba",
+            "len": 6
+          }
+        ]
+      }
+    },
+    {
+      "schemaVersion": 3,
+      "id": "digihealth",
+      "name": "digihealth",
+      "version": "1.1.1-experimental",
+      "machine": "digitone",
+      "category": "system",
+      "exclusive": false,
+      "author": {
+        "github": "irpina",
+        "credits": [
+          "irpina — digihealth design and code"
+        ]
+      },
+      "maintainers": [
+        "irpina"
+      ],
+      "presentation": {
+        "label": "DIGIHEALTH",
+        "family": "Performance",
+        "summary": "SYSTEM INFO shows CPU, DSP and free RAM in the top bar.",
+        "overview": "A SETTINGS row, SYSTEM INFO: CPU load, the audio render’s load (the main CPU’s effects and mix; the FM voices run on the second CPU) and free RAM in the top bar, and a read-only USB diagnostics channel (SysEx device 0x7D). FAST AUDIO is Digitakt only.",
+        "highlights": [
+          "CPU, render load and free RAM in the top bar.",
+          "A read-only USB diagnostics channel."
+        ],
+        "usage": [
+          "Watch the render load while layering FM tracks."
+        ]
+      },
+      "access": {
+        "location": "SETTINGS",
+        "steps": [
+          "Open SETTINGS.",
+          "Tick SYSTEM INFO."
+        ],
+        "screenshots": []
+      },
+      "controls": [
+        {
+          "name": "SYSTEM INFO",
+          "default": null,
+          "doc": "Shows CPU, render load and free RAM in the top bar",
+          "labels": null
+        }
+      ],
+      "compatibility": {
+        "releases": [
+          "1.43"
+        ],
+        "requires": [],
+        "conflicts": [],
+        "limitations": [
+          "Built for OS 1.43 only."
+        ]
+      },
+      "platform": {
+        "kind": "elemod",
+        "core": "2.1",
+        "build": "build.json",
+        "events": [
+          "ev_draw",
+          "ev_render_in",
+          "ev_render_out",
+          "ev_settings",
+          "ev_tick"
+        ],
+        "claims": [
+          "settings:SYSTEM INFO",
+          "sysex:0x7d"
+        ]
+      },
+      "resources": {
+        "memoryBytes": 4500,
+        "fastBytes": 0,
+        "load": {
+          "display": "Not measured in Modwerk yet",
+          "method": "unmeasured",
+          "conditions": "Measure with every track playing, parameters modulated and the mod at its heaviest setting."
+        }
+      },
+      "evidence": {
+        "tier": "none",
+        "moduleVersion": "1.1.1-experimental",
+        "sourceSha256": null,
+        "reports": [],
+        "hardware": null,
+        "verifiedBy": null
+      },
+      "tests": {
+        "report": "TESTING.md",
+        "summary": "Imported from the author’s v1.1 source; not yet built or tested in Modwerk."
+      },
+      "license": {
+        "spdx": "GPL-2.0-or-later",
+        "file": "LICENSE",
+        "declaration": "The author’s source, imported unchanged from github.com/irpina/digihealth at v1.1 (commit 6d2a95605901) under its GPL-2.0-or-later licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+      },
+      "media": [
+        {
+          "path": "media/thumbnail.svg",
+          "kind": "thumbnail",
+          "caption": "digihealth thumbnail",
+          "alt": "Abstract performance illustration for digihealth",
+          "credit": "Modwerk",
+          "license": "GPL-3.0-or-later",
+          "source": "Original Modwerk illustration"
+        }
+      ],
+      "source": {
+        "repository": "https://github.com/irpina/digihealth",
+        "revision": "6d2a95605901f4f5ea6301dbad16e573380331a6",
+        "path": "dn1"
+      },
+      "patchSites": {
+        "1.43": [
+          {
+            "addr": "0x40000438",
+            "len": 6
+          },
+          {
+            "addr": "0x400ea880",
+            "len": 6
+          }
+        ]
+      }
+    }
+  ]
+}

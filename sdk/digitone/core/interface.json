@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "machine": "digitone",
+  "interface": "2.2",
+  "status": "The Modwerk core implementing this interface is in development. Mods written for this interface link with it unchanged.",
+  "events": [
+    {
+      "name": "ev_tick",
+      "when": "the UI's 30 Hz compose check",
+      "handler": "void f(ctrl); set ctrl+0x20 to recompose"
+    },
+    {
+      "name": "ev_draw",
+      "when": "after the OS draws the screen",
+      "handler": "void f(bmp, ctrl)"
+    },
+    {
+      "name": "ev_key",
+      "when": "a key event",
+      "handler": "int f(brain, KeyEvent*); nonzero takes it"
+    },
+    {
+      "name": "ev_enc",
+      "when": "an encoder event",
+      "handler": "int f(brain, EncoderEvent*); nonzero takes it"
+    },
+    {
+      "name": "ev_settings",
+      "when": "building the SETTINGS menu",
+      "handler": "void f(menu)"
+    },
+    {
+      "name": "ev_render_in",
+      "when": "entry of the audio render",
+      "handler": "void f(void)"
+    },
+    {
+      "name": "ev_render_out",
+      "when": "exit of the audio render",
+      "handler": "void f(void)"
+    },
+    {
+      "name": "ev_voice_on",
+      "when": "a voice's note-on in the render",
+      "handler": "void f(voice, track, event); may change the pitch word"
+    },
+    {
+      "name": "ev_hold",
+      "when": "a track key held on its own",
+      "handler": "int f(brain, event, track); none taken opens the Mod Menu"
+    }
+  ],
+  "tables": [
+    {
+      "name": "core_params",
+      "entry": 4,
+      "purpose": "Parameter records for ids 182–184."
+    },
+    {
+      "name": "core_pages",
+      "entry": 4,
+      "purpose": "Mod pages 27–30."
+    },
+    {
+      "name": "core_projdata",
+      "entry": 4,
+      "purpose": "Blocks saved and loaded with the project."
+    },
+    {
+      "name": "core_menu",
+      "entry": 4,
+      "purpose": "Mod Menu entries: a name and an open function each."
+    }
+  ],
+  "exports": [
+    {
+      "name": "core_additem",
+      "prototype": "void core_additem(menu, row)",
+      "purpose": "Add a SETTINGS row from an ev_settings handler."
+    },
+    {
+      "name": "core_page_open",
+      "prototype": "int core_page_open(void *brain, void *event, int key, struct mw_page *page)",
+      "purpose": "Open a mod page from a key handler."
+    },
+    {
+      "name": "core_page_shown",
+      "prototype": "int core_page_shown(void *brain, const struct mw_page *page)",
+      "purpose": "Whether a mod page is on screen."
+    },
+    {
+      "name": "core_zero",
+      "prototype": "zero-filled data",
+      "purpose": "What a weak import resolves to when no mod provides it."
+    }
+  ],
+  "claims": [
+    "timer:DTIM0"
+  ],
+  "memory": {
+    "area": "0x47be0000-0x47c00000"
+  }
+}

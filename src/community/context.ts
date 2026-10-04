@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react'
-import type { PublishedModule, Session } from './api'
+import type { DeveloperSession, PublishedModule, Session } from './api'
 export const emptySession:Session={available:false,admin:false,user:null}
-export const CommunityContext=createContext<{session:Session;catalog:PublishedModule[];refresh:()=>Promise<void>}>({session:emptySession,catalog:[],refresh:async()=>{}})
+export const emptyDeveloperSession:DeveloperSession={available:false,user:null}
+export const CommunityContext=createContext<{session:Session;developer:DeveloperSession|null;catalog:PublishedModule[];refresh:()=>Promise<void>;refreshDeveloper:()=>Promise<void>}>({session:emptySession,developer:null,catalog:[],refresh:async()=>{},refreshDeveloper:async()=>{}})
 export function useCommunity(){return useContext(CommunityContext)}

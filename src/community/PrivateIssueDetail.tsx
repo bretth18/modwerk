@@ -1,0 +1,26 @@
+import { useEffect, useState } from 'react'
+import { api, apiFetch, post } from './api'
+import { communityModule } from './modules'
+import { FLASH_STATES, isDigiIssue, OT_MODELS, type IssueContext } from './issue-context'
+import { DEVICES_BY_ID } from '../devices/registry'
+import { ReportSharing } from './ReportSharing'
+type Detail={id:string;module_id:string;title:string;body:string;status:string;created_at:string;forumThreadId:string|null;context:IssueContext|null;maintainerSharing:boolean;canShare:boolean;canManage:boolean;hasLog:boolean;replies:{id:string;body:string;username:string|null;author:string;created_at:string}[];hasMore:boolean}
+export function PrivateIssueDetail({id,back='#account'}:{id:string;back?:string}) {
+  const [data,setData]=useState<Detail|null>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[reply,setReply]=useState(''),[page,setPage]=useState(0)
+  const path='/issues/'+id+'?page='+page
+  useEffect(()=>{let cancelled=false;void api<Detail>(path).then(value=>{if(!cancelled){setData(value);setError('')}}).catch(error=>{if(!cancelled){setData(null);setError(error.message)}});return()=>{cancelled=true}},[path])
+  async function act(action:()=>Promise<unknown>){setBusy(true);setError('');try{await action();setData(await api<Detail>(path))}catch(error){setError(error instanceof Error?error.message:'Unable to update the report.')}finally{setBusy(false)}}
+  async function download(){await act(async()=>{const response=await apiFetch('/issues/'+id+'/log');if(!response.ok)throw new Error('The log is unavailable.');const url=URL.createObjectURL(await response.blob()),link=document.createElement('a');link.href=url;link.download='OCTAMOD.LOG';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)})}
+  const module=data?communityModule(data.module_id):undefined,context=data?.context
+  return <section className="configuration-section private-report"><a className="back-link" href={back}>← Back to inbox</a>{error&&<p className="file-error" role="alert">{error}</p>}{!data?!error&&<p role="status">Loading report…</p>:<>
+    <div className="section-title"><h2>{data.title}</h2><span className="pill">{data.status==='closed'?'Resolved':'Open'}</span></div>{module&&<p><a href={module.href}>{DEVICES_BY_ID[module.machine].name} · {module.name}</a></p>}
+    {data.forumThreadId&&<p className="service-note">The bug description is public in <a href={'#forum/thread/'+data.forumThreadId}>Bug Reports</a>. Post public replies there. Configuration details, logs and replies on this page stay private. Stopping private sharing does not remove the public thread.</p>}
+    <p className="preserve-lines">{data.body}</p>{context&&<dl className="private-report-context"><dt>Device</dt><dd>{isDigiIssue(context)?context.model:OT_MODELS[context.model]} · {FLASH_STATES[context.flash].replace('an Octamod','a Modwerk')} · OS {context.os}{isDigiIssue(context)&&<> · Module {context.moduleVersion}</>}</dd><dt>Configuration</dt><dd>{context.modules.map(item=>item.id+' '+item.version).join(', ')||'No modules selected'}</dd><dt>Build</dt><dd>{context.build||'No build fingerprint available'}</dd></dl>}
+    {data.hasLog&&<button className="button button-quiet" disabled={busy} onClick={()=>void download()}>Download attached log</button>}
+    {data.canShare?<ReportSharing checked={data.maintainerSharing} disabled={busy} onChange={value=>void act(()=>post('/issues/'+id,{maintainerSharing:value},'PATCH'))}/>:<p className="service-note">{data.maintainerSharing?'Shared privately with verified maintainers.':'Visible to the reporter and administrator.'}</p>}
+    {data.canManage&&<button className="button button-quiet" disabled={busy} onClick={()=>void act(()=>post('/issues/'+id,{status:data.status==='open'?'closed':'open'},'PATCH'))}>{data.status==='open'?'Mark resolved':'Reopen report'}</button>}
+    <h3>Private replies</h3>{data.replies.length?data.replies.map(item=><article className="inbox-issue" key={item.id}><div className="private-report-reply-header"><strong>{item.username?'@'+item.username:item.author}</strong><small>{new Date(item.created_at.replace(' ','T')+'Z').toLocaleString()}</small></div><p className="preserve-lines">{item.body}</p></article>):<p className="service-note">No replies yet.</p>}
+    {(page>0||data.hasMore)&&<div className="forum-actions"><button className="button button-quiet" disabled={page===0||busy} onClick={()=>setPage(value=>value-1)}>Previous replies</button><span>Page {page+1}</span><button className="button button-quiet" disabled={!data.hasMore||busy} onClick={()=>setPage(value=>value+1)}>Next replies</button></div>}
+    <form className="community-form" onSubmit={event=>{event.preventDefault();void act(async()=>{await post('/issues/'+id+'/replies',{body:reply});setReply('')})}}><label>Reply<textarea value={reply} onChange={event=>setReply(event.target.value)} maxLength={4000} required rows={3}/></label><button className="button button-primary" disabled={busy||!reply.trim()}>{busy?'Saving…':'Send private reply'}</button></form>
+  </>}</section>
+}

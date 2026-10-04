@@ -402,3 +402,167 @@ checks, lint, app/server type checks and the production build. Exact-base
 module validation and `git diff origin/main --check` pass. The source-only
 compiler's `--verify-existing` pass reproduces every authored package and
 receiver against the locally parity-verified baseline. No firmware is involved.
+
+## Digitakt and Digitone container engine — 4 October 2026
+
+Modwerk's TypeScript engine (`src/engine/elektron/`) reads and writes the Digitakt and Digitone mk1 OS file: the ELE3 container, its SysEx transport and the packed main OS. Checked locally with the owner's own stock files, kept outside the repository (`scripts/verify-elektron-container.mjs`):
+
+| Stock file | SHA-256 | Writer identity | Repacked main OS (version MW01) |
+| --- | --- | --- | --- |
+| Digitakt OS 1.53 | `9bdd44bb…29bcc92` | byte for byte | passes every container check; in-place gap 531,097 |
+| Digitakt OS 1.54 | `f78ba80f…53e3cf6` | byte for byte | passes; in-place gap 527,627 |
+| Digitone / Keys OS 1.44 | `d4f200d0…3c9659` | byte for byte | passes; in-place gap 337,594 |
+
+**Writer identity:** rebuilding each file from its own main OS reproduces it byte for byte, which also confirms the message and content checksums.
+
+**The repacked Digitakt 1.53 build in digiemu:** it was checked against stock with digiemu's `emu.fwcheck` (irpina's mk1 emulator, run locally with its patched Unicorn).
+
+- The device's own updater accepted the build, it booted to a live user interface and it ran.
+- Nine screens and 7.9 seconds of audio are identical to stock (`--no-boot-strict`; stock against itself reports the same emulator bus-error quirk in strict mode).
+
+This proves the container layer only. No mods or core were linked, and no hardware was involved. Packing the main OS currently takes about 45 seconds in Node.
+
+## Source-only elemod compilation — 4 October 2026
+
+The pinned GCC 16.2.0 / m68k-elf / binutils 2.47 / Node 24.21.0 container compiled all eight currently declared module/release recipes without any firmware mounted. Two runs from the same tracked source produced byte-identical recipes and inventory. ELF rejection tests and synthetic local-materialization tests run in the ordinary application checks; the real-stock comparisons below run only through the separate local evidence tool.
+
+`node scripts/verify-elemod-source-parity.mjs --packages DIR --oracle DIR --out LOCAL_DIR --firmware machine:stock.syx ...` materializes each recipe from the owner's verified main image and compares the linked image with the corresponding author release, using the same reference core. It writes only identities, hashes, section sizes and status, never image bytes.
+
+| Module | OS | Source-built `.run` | Author `.run` | Linked image comparison |
+| --- | --- | ---: | ---: | --- |
+| digihealth (Digitakt) | 1.53, 1.54 | 2,988 B | 2,988 B | byte exact on both releases |
+| SOPHIE | 1.53 | 7,998 B | 7,998 B | byte exact |
+| NEIGHBOR | 1.53, 1.54 | 3,744 B | 3,772 B | differs; not accepted as native parity |
+| DIGISLICER | 1.53, 1.54 | 16,346 B | 16,414 B | differs; not accepted as native parity |
+| digihealth (Digitone) | 1.43 | 1,952 B | 1,952 B | byte exact |
+
+The owner supplied Digitone 1.43 during this continuation. Its complete SysEx SHA-256 matches the machine profile (`c5a54cc0…95bf9aa`). The reference `core-dn1-2.0a.elemod` was obtained from elekloader v0.4.0 and checked against GitHub's asset digest (`c6d9dbed…6b54f`); it is used only as a local oracle. The source-built and author-built digihealth images both hash to `460e86b85ed7a7d638ec4a0c5606aa484c4108a286cd33bb2f54ec715746f031`. The new stock and oracle files remain outside the repository.
+
+The native-parity tool exits unsuccessfully when a case differs or lacks its stock/oracle input. The initial FAST AUDIO stubs were shortened by assembler relaxation; explicitly requiring absolute address operands restored both Digitakt digihealth comparisons. The remaining C objects use the exact pinned author source (every recorded input hash matches), but their compiled code differs. An independent GNU/Linux GCC 13.3 / binutils 2.42 comparison also differs; it is not a replacement production toolchain. Recovering the original C compiler/settings or qualifying the newly compiled implementations remains required. No timing, emulator behaviour or hardware evidence is inferred from these comparisons.
+
+The source PR provides reproducible compilation, stock-free review artifacts and local recipe materialization. It does not finish source-release parity, provide Modwerk's pending cores, publish a package to the app or enable Digitakt/Digitone downloads. The existing approved Octatrack implementation and frozen qualification records are unchanged.
+
+## Original core boot foundation — 4 October 2026
+
+Modwerk's `sdk/elemod/core/` implements its own boot copier and event-table dispatcher from the public ABI documentation. It does not copy elekloader's core assembly. The emitted recipes explicitly declare `stage: boot-probe` and `providesInterface: false`: only the boot call is installed; the event adapters and complete per-machine facilities remain pending.
+
+Two isolated source builds reproduced all eight module recipes, four core probes and both inventories. Firmware-free host tests exercise ordered dispatch, empty tables, argument delivery and nonzero input/hold consumption on both machine variants. Cross-compilation asserts every public descriptor's 32-bit layout. Compiled-code CPU checks cover normal, no-BSS, no-run and entirely empty sections with three different status-register patterns on each machine (24 cases): copying, clearing, bounds, all general registers, status, stack, return address and original-call handoff pass.
+
+The separate local verifier checked stock identities, guarded original-call bindings, linkage and the complete packed container for each release. Boot probes built from `581ae078d417cf72e9d7196361404fcf87f0a8a7` were checked in digiemu `c1b5735835923e328f8b4950d6ba927875e5b669` using `emu.fwcheck --baseline STOCK --no-timing --no-boot-strict`:
+
+| Machine / OS | Probe stages | Captured screens | Audio comparison | Probe DDR + BSS |
+| --- | --- | --- | --- | ---: |
+| Digitakt 1.53 | all pass | 9, identical | 7.882 s, identical | 420 B |
+| Digitakt 1.54 | all pass | 9, identical | 7.883 s, identical | 420 B |
+| Digitone 1.43 | all pass | 10, identical | 8.284 s, identical | 576 B |
+| Digitone 1.44 | all pass | 10, identical | 8.283 s, identical | 576 B |
+
+Both Digitone **stock baselines**, unlike the probes, report a runtime read at `0x0000012a` in unconfigured FlexBus space. Captured screen/audio comparisons are identical; that emulator baseline limitation is retained, not suppressed or treated as hardware proof. digiemu also reports that it did not check container checksums: Modwerk's separate `verifyEle3Build` checked the SysEx/content checksums and in-place unpacking before these runs.
+
+The complete local build hashes are `b2871db6664ee9f367ea6b7b35823ecc9136469cd04b51ab3167cbc222a039c4` (DT 1.53), `313ecf70991c6d3a529762547e4eb056a65e6c2a054538a58811edb4a4e4f455` (DT 1.54), `c11660e9e6d024af782b5aa3888c736f649d1ae01315ec02570f231fee503e31` (DN 1.43) and `76a13c0fae2b77ce8f7e54a43a9a3a8a076bfbe9bc8a5b0aaa94d13e57d7bab0` (DN 1.44). Final recipes from `1e49baf` have the same compiled ELF hashes for every release; subsequent changes added documentation and the synthetic CPU verifier, not runtime code.
+
+These checks qualify the boot development probe only. The event dispatcher has not been exercised through actual firmware hooks; no imported module was attached to these probes. Timer setup, SETTINGS integration, Digitakt SRC machines and Digitone voice/hold hooks, parameters, pages, project storage and Mod Menu must still be implemented and checked. Timing and real-hardware stress evidence were not collected. Downloads remain disabled.
+
+### 4 October 2026 — local Digitakt / Digitone import
+
+The local reader accepted the owner's original Digitakt 1.53 / 1.54 and Digitone 1.43 / 1.44 downloads, checking complete-file SHA-256, ELE3 parsing, unpacked main image length and SHA-256. The newly supplied Digitone 1.43 download matches `c5a54cc05b921f2e4bd814834c5365c2a5aa01d7772a9a2961fac1c3095bf9aa`. Only metadata returns from the worker. This inspection does not build or qualify a modded image.
+
+Synthetic tests cover full file and main image identity refusals, wrong-machine files, size bounds, worker transfer/disposal, per-machine persistence with the legacy Octatrack slot, restore revalidation, corrupt-file removal, storage failure, out-of-order checks and deletion after a pending save or navigation. Firmware storage uses the existing IndexedDB database and separate machine keys; no upload endpoint is involved. The Browser checks rejected a three-byte synthetic `.syx` and a synthetic ZIP through the actual file picker. Switching machines cleared the previous reader's state. Valid owner files were checked locally outside the browser automation; no stock bytes were served or uploaded. Downloads remain disabled while the complete cores are pending.
+
+## Original core UI adapters — 4 October 2026
+
+`ui-hooks.s` implements the documented tick, draw, key and encoder event contracts, from public ABI documentation and inspection of the owner's local call sites. No elekloader core assembly was read or copied. The source-only job emits a separate `core-ui-build.json` and four `ui-cores/` recipes, each declaring `stage: ui-hook-probe` and `providesInterface: false`. The boot and four UI calls are installed with full six-byte stock guards and verified original destinations. Their event tables remain empty; imported modules are not installed.
+
+Two isolated builds from `2ac1e332e69a53b380fff53bace668c79803c163` reproduced all eight module recipes, four boot probes, four UI probes and three inventories byte for byte. `verify-elemod-ui-cpu.mjs` executed the compiled adapters and C dispatcher in synthetic ColdFire memory: 144 cases pass across all four OS profiles. They cover empty and observing tables, input consumed by the first or second handler, callback arguments and order, redraw signalling, original outputs, all general registers, status, caller arguments, stack bounds and return address. These callbacks are synthetic substitutes; this is ABI evidence, not module or hardware behaviour evidence.
+
+The local container verifier checked complete stock identity, original-call bindings, linkage, SysEx/content checksums and in-place unpacking before digiemu `c1b5735835923e328f8b4950d6ba927875e5b669` checked each packed probe against stock (`--no-timing --no-boot-strict`). The results are:
+
+| Machine / OS | Probe stages | Named screen captures | Exact audio comparison | First frame-stream difference |
+| --- | --- | --- | --- | --- |
+| Digitakt 1.53 | all pass | 9, identical | differs: one final 100 ms window, reported RMS zero; 7.882 / 7.883 s | 1,238.402 ms |
+| Digitakt 1.54 | all pass | 9, identical | differs: one final 100 ms window, reported RMS zero; both rounded to 7.883 s | 1,138 ms |
+| Digitone 1.43 | all pass | 10, identical | differs: 34 windows, starting at 4,500 ms; both rounded to 8.284 s | 1,005.024 ms |
+| Digitone 1.44 | all pass | 10, identical | differs: 34 windows, starting at 4,600 ms; 8.283 / 8.281 s | 1,537.333 ms |
+
+The full build hashes are `8c858cb5dcb352e316072138d6f906e8975697dfb21a9652447122939b307e72` (DT 1.53), `ec27a8c9b68acac333402bd1de758365c4db750d0367336d45302f78f1d6e432` (DT 1.54), `70aa09ca5393ccb0c4a5e6bc68db082bd852c62ecd49c6ae0c44476a25e0cc52` (DN 1.43) and `69a8c2b736f58d53e6b9e4939ad93af23b60b514a342aa064a4ac41a8d2c483b` (DN 1.44).
+
+**These probes do not establish stock equivalence.** digiemu's passing build verdict is separate from its comparison result: all four complete comparisons report differences. A repeated DN 1.43 run reproduced its audio mismatch. Local PCM/event-time inspection found slightly different delivered input times (up to one 0.667 ms audio block), but shifting selected audio windows did not make them byte-identical. The audio difference remains unresolved; it is not dismissed as a harmless phase offset. Both Digitone stock baselines fail on the previously recorded unconfigured FlexBus read at `0x0000012a`; the UI probes also report that inherited violation, marked `in_stock: true` and excluded by digiemu from their build verdict. No cycle timing or hardware evidence was collected.
+
+The boot-only probe evidence above remains separate. SETTINGS/render/timer facilities, Digitakt machine integration and Digitone voice/hold/parameter/page/project/menu facilities are still pending. UI ABI tests and matching named screen captures cannot qualify a complete core, imported modules or public firmware downloads. Ordinary Node 24 `npm run check` passes all 464 domain tests, lint, type checking and the production build; it does not run any of these emulator/CPU checks.
+
+## Original SETTINGS/render adapters — frozen, 4 October 2026
+
+**Status: frozen by the owner.** On 4 October the owner paused Modwerk's own Digitakt/Digitone builder at this stage and chose to vendor elekloader's builder for the launch. Work on the original core resumes later; its completion criterion is a builder that matches elekloader's online builder. This section records the state at the freeze.
+
+Original `event-hooks.s` and `settings-api.c` add SETTINGS dispatch, render entry/exit dispatch and `core_additem`. The render adapters preserve all four EMAC accumulators, extensions, mask and arithmetic mode; render-out runs before stock EMAC restoration. State access follows NXP's [MCF54418 reference manual](https://www.nxp.com/docs/en/reference-manual/MCF54418RM.pdf), section 5.3.1.2. No reference core assembly was read or copied. Source-only artifacts declare `stage: event-hook-probe` and `providesInterface: false`; three inline resumes contain zero placeholders filled only from verified local stock. Four stock menu helper bindings carry address, length and SHA-256 guards. No imported module patches within 64 bytes of any core site.
+
+**Reproducibility.** Two isolated builds of `17ef30ed83c581b4a8fc2660596abb56573ccd35` (image `sha256:6711f0abb3c30dcfda4e9a8a812555f8bbceb37a0fc988918b5d624b603d4a6a`) produced 25 byte-identical files: eight module recipes, twelve development probes and their inventories. All twelve probe ELF hashes equal those of runtime commit `0ca62324e823cd810279f7992a90ddbd0aa52ab5`; only the test script and README source fingerprints differ. `verify-elemod-events-cpu.mjs` passes **276 synthetic cases** on the final build. They cover ordered dispatch, arguments, inline instruction effects, register/status/stack preservation, EMAC preservation across four arithmetic modes, callback record layout and construction order, allocation failure and null inputs. They do not prove the actual stock helpers or imported module behaviour.
+
+**Emulator checks.** The final recipes materialize, link and pack into the same four builds as the runtime commit. digiemu `c1b5735835923e328f8b4950d6ba927875e5b669` checked each against stock (`--no-timing --no-boot-strict`):
+
+| Profile | Build SHA-256 | Stages | Named screens | Audio against stock | Frame streams first differ |
+| --- | --- | --- | --- | --- | --- |
+| Digitakt 1.53 | `4ce9edb075f2092e246e5fe48b9750cc3a8b07de1596aaace26d7e519d3b6181` | all pass, no violations | 9, identical | identical, 7.882 s | 1,238.402 ms |
+| Digitakt 1.54 | `8e442663d1579acac591989a4a6f199f72fbe735738c6b7e144e6d1ed8bf9594` | all pass, no violations | 9, identical | one final 100 ms window, RMS zero in both; 7.883 / 7.884 s | 1,138 ms |
+| Digitone 1.43 | `a1f01bc4f5ed7e3da33dc3165f681beff65e959f0775e71097d590d8e494fb91` | all pass | 10, identical | 35 windows from 4,500 ms | 1,005.024 ms |
+| Digitone 1.44 | `c3c99f5a0249e71c77e7e7f49aa4f497d1bbc7f37e46ab9a4d58691414172aeb` | all pass | 10, identical | 33 windows from 4,600 ms | 1,005.067 ms |
+
+Both Digitone runs report only the stock baseline's own FlexBus read at `0x0000012a` (`in_stock: true`). Default tours on the Digitakt play silence (no samples on the emulated card), so its audio comparison says nothing about sounding playback. The Digitone audio windows are numerically identical to those of the UI-only probes, so the SETTINGS/render adapters added no audio difference of their own.
+
+**The Digitone audio difference is shared with elekloader's core.** elekloader's Digitone 1.43 core alone (reference object `core-dn1-2.0a.elemod`, SHA-256 `c6d9dbed28965bce4a827c292f499c8f5309187bf136ffb52e237bd01186b54f`, linked by Modwerk's linker into build `5f84fa66e7ff68286b67b5c0246158ee1c0b38bd3125bfe86a30f7bfe77bd9fe`) differs from stock in the same 35 windows from 4,500 ms, with the same RMS values. Compared directly with that reference build, the Modwerk 1.43 probe matches all 10 named screens; its audio differs in 34 windows with a maximum RMS difference of 3.8 (16-bit scale). elekloader's own documentation attributes its core's difference to the core's extra cycles moving where scripted key presses land. A local stock-only control did not reproduce the difference by shifting every key press 0.3 ms or 0.667 ms from one snapshot (identical audio apart from one silent final window). Separately booted builds start from different settled snapshots, and their DSP voice-parameter streams already differ in the first render. The exact mechanism therefore remains open; parity with the reference core is the relevant result. The Digitone 1.44 reference comparison was stopped at the freeze.
+
+**Attached module.** Source-built Digitone 1.43 digihealth linked with the probe (with a local-only `core_zero` alias for its two weak imports, because the probe does not export `core_zero`; build `8d6f9948ca39add6a4298242e3fb867a4c719020a0ddb3e7acec9ef0da705d44`) and with the reference core (build `472031cf58e782f8d5515bf82b60bb2c8f3cfbafac9593df59cb432159572343`). A key tour opened SETTINGS and navigated it identically on both: 18 of 18 named screens match, and audio differs only after PLAY. The tour stopped on CONTROL, before the SYSTEM INFO row, so **the row's insertion, select, change and draw callbacks were not exercised**. Resume by extending the tour further down the list. DTIM0 setup and `core_zero` remain unimplemented.
+
+Node 24 `npm run check` passes the application tests, lint, type checking and the production build at this commit; it runs none of these firmware, CPU or emulator checks. Digitakt SRC machines, Digitone extended facilities, DTIM0, `core_zero` and real module evidence remain outstanding for the original core. Downloads from the original core remain disabled; nothing has been merged or deployed. Firmware, builds, PCM, LCD captures and reports stayed local and temporary.
+
+## Vendored elekloader builder — 4 October 2026
+
+Digitakt/Digitone builds now run elekloader's builder (commit `e4d8ba84841900db78144030a991e1d69816b6a4`, release v0.4.0 cores, the five shop mods' author release files) under Pyodide 314.0.7 in a browser worker. `npm run elekloader:check` verifies every vendored file against `vendor/elekloader/UPSTREAM.json`. The npm Pyodide runtime files are byte-identical to the `pyodide-core-314.0.7.tar.bz2` that elekloader pins (SHA-256 `2abdcc2e35208af406e07724cffa85bc582ced97e9028383ecf5462541393f95`).
+
+Every vendored file matches the SHA-256 in elekloader's catalog and release checksums. No `.elemod` file contains Elektron code. Compared with each owner stock image, the only matching runs of 8 bytes or more are zero or `0xFF` filler, plus the text "\0Source " in NEIGHBOR's own strings. Stock instructions are referenced by address and copied from the owner's file during the build.
+
+**Parity with elekloader.** The vendored files were loaded into Pyodide under Node exactly as the worker loads them. They built every module subset for each of the owner's four stock files (Digitakt 1.53: 16, 1.54: 8, Digitone 1.43: 2, 1.44: core alone), all with OS version `2.0a`. Each result was compared with elekloader's own command line (`python3 -m elekloader.patch`) run natively from the same commit:
+
+- **27 of 27 cases match.** Every successful build is byte-identical. Every set elekloader refuses is refused, for example any set with both NEIGHBOR and SOPHIE, whose patch sites overlap.
+- Sample identities: Digitakt 1.53 core alone `7286aed303da0538a582e23473d246941f8d0f443f5621fb8724af4b4d10a521`, Digitakt 1.53 DIGISLICER `01be49ea937b40822097005ed13a17e7df360b15d50b8d399d0a6314c6bc7711`, Digitone 1.43 digihealth `09f43f1b1dd179789f2198c5f2b8d190046e229bd4a8821c6d17871a3a92117a`, Digitone 1.44 core alone `c9bcd105b5e5f3cdfd6cb7b8ea99a582fc98f0f4393af80b85256fcbf6fa4cf2`.
+
+**Browser.** In headless Chromium against the development server, the real configuration page went through the whole flow:
+- It verified the owner's Digitakt 1.53 file through the file picker, then checked DIGISLICER (2.9 s) and built it (10.9 s).
+- The page showed SHA-256 `01be49ea…6c7711`, identical to native elekloader.
+- NEIGHBOR + SOPHIE was refused with elekloader's overlap report.
+- At 390 px there was no horizontal overflow, and no request left the site.
+- The same flow passed against the production build (`vite preview`, CSP meta tag with `'wasm-unsafe-eval'`).
+- After a reload, the saved Digitone 1.44 file was restored and verified again, and the core alone built as `c9bcd105…6881`, identical to native elekloader.
+
+Downloads stay off (`DIGI_DOWNLOADS_ENABLED = false`) pending the owner's approval. No emulator or hardware check of these outputs was repeated here; elekloader documents its own checks. Stock files and builds stayed local and temporary.
+
+
+## Combined release account follow-up — 4 October 2026
+
+PR #91 consolidates #64 and #68–#90 and is the only branch for further Modwerk release fixes. All 24 recorded source heads are in its ancestry; the superseded PRs are closed and their branches retained. The approved Octatrack folders, eleven-module qualification baseline and pinned Digi builder are unchanged.
+
+Owner-authorized live local Google/GitHub/Discord signup and returning login passed with real provider apps, callback URLs and credentials. Separate local databases avoided linking the owner’s same-email identities; each created only its chosen public username, private verified email and unchecked news preference. Google’s external app remains in Testing. Six private credentials are staged in an undeployed Worker version; production code/schema/registration are unchanged. [SINGLE_SIGN_ON.md](SINGLE_SIGN_ON.md) records the version and production gates.
+
+The existing server OAuth flow now uses locally served official provider artwork in native buttons. Signup consent labels stay beside their checkboxes with normal wrapping. Desktop/375-pixel visual review and a fresh Node 24 `npm run check` passed: 569 application tests, 31 firmware-free SDK/source checks, lint, types, licence/catalog/vendor verification and the production build. No firmware/DSP/hardware tests were rerun and no stock file entered these login tests.
+
+
+## Release builder and live mail follow-up — 4 October 2026
+
+The owner approved Digitakt/Digitone downloads on the condition that the builder matches elekloader. The exact vendored engine, cores, modules and Pyodide pins remain unchanged from #85; `npm run elekloader:check` verified the pinned files again. The recorded 27/27 native byte-parity and refusal cases above remain the qualification evidence. `DIGI_DOWNLOADS_ENABLED` is now true; the earlier paused-download record is historical. No firmware/DSP/hardware test was repeated for these application changes, and Modwerk's separate original core remains frozen.
+
+The Digi configuration page now follows the OT page's order: compatibility status, verified base firmware, selected modules, resources and risk acknowledgement/build/export. It adds a firmware-free, machine/catalog/version-validated JSON backup/import. Build/download acknowledgement is tied to the current device, verified base identity, selection and OS version; cancelling disposes the active browser worker. Stock and outputs remain local.
+
+Account messages now include a table-based Modwerk HTML layout and the existing plain-text fallback, with a direct action button, fallback link, expiry and support contact. There are no remote images, fonts, tracking pixels or scripts. A sending-only temporary key restricted to `modwerk.app` sent exactly one verification and one recovery message to the owner-approved inbox from an isolated local Worker/database. Resend recorded both as delivered; the owner confirmed inbox arrival and SPF, DKIM and DMARC PASS. Verification, verified login, reset, one-use replay rejection, old-password rejection and new-password login passed. Recovery revoked the previous session (local session count 1 to 0). The real journey exposed and fixed signed-in recovery/resend routes incorrectly showing the profile; two regression cases cover these forms. A consumed verification URL appeared in tool output during browser inspection; replay was rejected and no password or API key was printed.
+
+The temporary sending key was revoked. Production account links and origin remain pending the approved domain/backend rollout. Node 24 `npm run check` passed 579 application tests in 93 files, 31 synthetic SDK/source checks, lint, TypeScript, licence/schema checks and the static production build. The Worker dry-run passed (417.86 KiB gzip).
+
+
+### Production rollout preparation
+
+With explicit owner approval, a temporary database-free, mail-free Worker ran two synthetic Better Auth hash/verify requests using the pinned password implementation. Both returned success; private tail aggregates recorded 164/241 ms CPU and 165/243 ms wall time. `Date.now()` inside a Worker did not advance during CPU-only work, so the endpoint's zero-ms fields are not the measurement. Those costs exceed the Free plan's stated 10 ms budget despite the runtime's occasional allowance. The owner purchased Workers Paid and the dashboard confirmed Paid as the current plan; hashing parameters are unchanged. The temporary Worker was deleted. This proves the tested operations complete, not arbitrary concurrent load.
+
+Before any production migration, the production D1 export was encrypted with a separate private key and restored only into a fresh local database. All 23 application/internal SQLite tables and complete row-value identities match the encrypted source, integrity is `ok`, and there are no foreign-key violations. A private Time Travel bookmark and existing deployment record are kept with the rollout evidence. No firmware, provider credential or database rows enter this evidence file.
+
+## Digi library parity follow-up — 4 October 2026
+
+Digitakt and Digitone now use the Octatrack library toolbar, with working type filtering, sorting, comparison checkboxes and their own Build firmware links. The shared comparison dialog accepts machine-qualified Digi IDs, preserves the three-module limit and updates the correct machine configuration. Missing Digi popularity, addition dates and processing measurements remain explicit. Local browser checks exercised Sampling/Name sorting, comparison and adding a module, plus JSON configuration import/export without firmware. Node 24 `npm run check` passed 582 application tests and 31 SDK/source checks, lint, TypeScript and the production build. No firmware/DSP/hardware tests ran and builder/vendor code was unchanged.

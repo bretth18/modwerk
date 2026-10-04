@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 3,
+  "id": "digihealth",
+  "name": "digihealth",
+  "version": "1.1.1-experimental",
+  "machine": "digitone",
+  "category": "system",
+  "exclusive": false,
+  "author": {
+    "github": "irpina",
+    "credits": [
+      "irpina — digihealth design and code"
+    ]
+  },
+  "maintainers": [
+    "irpina"
+  ],
+  "source": {
+    "repository": "https://github.com/irpina/digihealth",
+    "revision": "6d2a95605901f4f5ea6301dbad16e573380331a6",
+    "path": "dn1"
+  },
+  "presentation": {
+    "label": "DIGIHEALTH",
+    "family": "Performance",
+    "summary": "SYSTEM INFO shows CPU, DSP and free RAM in the top bar.",
+    "overview": "A SETTINGS row, SYSTEM INFO: CPU load, the audio render’s load (the main CPU’s effects and mix; the FM voices run on the second CPU) and free RAM in the top bar, and a read-only USB diagnostics channel (SysEx device 0x7D). FAST AUDIO is Digitakt only.",
+    "highlights": [
+      "CPU, render load and free RAM in the top bar.",
+      "A read-only USB diagnostics channel."
+    ],
+    "usage": [
+      "Watch the render load while layering FM tracks."
+    ]
+  },
+  "access": {
+    "location": "SETTINGS",
+    "steps": [
+      "Open SETTINGS.",
+      "Tick SYSTEM INFO."
+    ],
+    "screenshots": []
+  },
+  "controls": [
+    {
+      "name": "SYSTEM INFO",
+      "default": null,
+      "doc": "Shows CPU, render load and free RAM in the top bar",
+      "labels": null
+    }
+  ],
+  "compatibility": {
+    "releases": [
+      "1.43"
+    ],
+    "requires": [],
+    "conflicts": [],
+    "limitations": [
+      "Built for OS 1.43 only."
+    ]
+  },
+  "platform": {
+    "kind": "elemod",
+    "core": "2.1",
+    "build": "build.json",
+    "events": [
+      "ev_draw",
+      "ev_render_in",
+      "ev_render_out",
+      "ev_settings",
+      "ev_tick"
+    ],
+    "claims": [
+      "settings:SYSTEM INFO",
+      "sysex:0x7d"
+    ]
+  },
+  "resources": {
+    "memoryBytes": 4500,
+    "fastBytes": 0,
+    "load": {
+      "display": "Not measured in Modwerk yet",
+      "method": "unmeasured",
+      "conditions": "Measure with every track playing, parameters modulated and the mod at its heaviest setting."
+    }
+  },
+  "evidence": {
+    "tier": "none",
+    "moduleVersion": "1.1.1-experimental",
+    "sourceSha256": null,
+    "reports": [],
+    "hardware": null,
+    "verifiedBy": null
+  },
+  "tests": {
+    "report": "TESTING.md",
+    "summary": "Imported from the author’s v1.1 source; not yet built or tested in Modwerk."
+  },
+  "license": {
+    "spdx": "GPL-2.0-or-later",
+    "file": "LICENSE",
+    "declaration": "The author’s source, imported unchanged from github.com/irpina/digihealth at v1.1 (commit 6d2a95605901) under its GPL-2.0-or-later licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+  },
+  "media": [
+    {
+      "path": "media/thumbnail.svg",
+      "kind": "thumbnail",
+      "caption": "digihealth thumbnail",
+      "alt": "Abstract performance illustration for digihealth",
+      "credit": "Modwerk",
+      "license": "GPL-3.0-or-later",
+      "source": "Original Modwerk illustration"
+    }
+  ]
+}

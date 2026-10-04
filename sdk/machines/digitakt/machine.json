@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "id": "digitakt",
+  "order": 20,
+  "name": "Digitakt",
+  "variants": [
+    "mk1"
+  ],
+  "status": "preview",
+  "summary": "New SRC machines, a slice editor and system diagnostics.",
+  "firmware": {
+    "releases": [
+      {
+        "version": "1.53",
+        "files": [
+          {
+            "name": "Digitakt_OS1.53.syx",
+            "sha256": "9bdd44bb6102fb25c143cfab97bc92b7a89c463f795d3112dce89771e29bcc92"
+          }
+        ]
+      },
+      {
+        "version": "1.54",
+        "files": [
+          {
+            "name": "Digitakt_OS1.54.syx",
+            "sha256": "f78ba80fa7b1da5fb0e1ff61ad61e9e71aafe79f4364fc49679f3651353e3cf6"
+          }
+        ]
+      }
+    ],
+    "flash": "Send the .syx with Elektron Transfer and confirm on the unit.",
+    "recovery": "Hold FUNC while powering on, choose OS UPGRADE and send the stock .syx."
+  },
+  "steps": {
+    "format": "done",
+    "rebuild": "done",
+    "boot": "done",
+    "core": "done",
+    "mods": "done"
+  },
+  "research": [
+    {
+      "label": "elekloader",
+      "url": "https://github.com/irpina/elekloader",
+      "note": "Device profile, OS file writer and a core with shared hooks, verified in an emulator and on units by the mods’ authors."
+    },
+    {
+      "label": "elektron-firmware-tool",
+      "url": "https://github.com/mischa85/elektron-firmware-tool",
+      "note": "First public documentation of the OS container, SysEx transport and packing."
+    }
+  ],
+  "sdk": {
+    "platform": "elemod",
+    "modules": "sdk/digitakt/modules",
+    "catalog": null,
+    "guide": "sdk/machines/digitakt/README.md",
+    "core": {
+      "version": "2.1",
+      "path": "sdk/digitakt/core"
+    },
+    "toolchain": "m68k-elf GCC and binutils for ColdFire, and Modwerk’s .elemod linker and OS writer (in development).",
+    "budgets": [
+      {
+        "name": "Shared mod memory",
+        "unit": "bytes",
+        "value": 131072,
+        "note": "DDR 0x47BE0000–0x47C00000 below the audio DMA ring, shared by the core and every mod (public research: elekloader, digikit)."
+      },
+      {
+        "name": "Fast SRAM for code",
+        "unit": "bytes",
+        "value": 2304,
+        "note": "On-chip SRAM tail 0x8000F700–0x80010000 for time-critical code."
+      },
+      {
+        "name": "SRC machine slots",
+        "unit": "slots",
+        "value": 4,
+        "note": "Machine ids 4–7, added by the core for new SRC machines."
+      }
+    ]
+  },
+  "art": {
+    "body": "compact",
+    "encoders": 8,
+    "trigs": 16
+  }
+}
