@@ -114,4 +114,4 @@ Nothing in the migrations is destructive, so the data stays. To undo the front: 
 
 - No credentials in the repository, in frontend variables, in screenshots or in pull requests. Secrets go to the Worker with Wrangler's interactive input.
 - DNS and provider changes are made by the owner. Nothing in this repository edits DNS or a provider account.
-- Mail stays limited to verification and password recovery. No newsletters, no notification mail.
+- Verification, recovery and the one-time new-member welcome share the account-mail quota. Activity and optional news follow their separate settings; see [mail operation](FORUM.md).

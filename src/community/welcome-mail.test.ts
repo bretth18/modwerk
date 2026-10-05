@@ -1,0 +1,148 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { DatabaseSync } from 'node:sqlite'
+import { readFileSync, readdirSync } from 'node:fs'
+import { testServer } from './test-server'
+import { COMMUNITY_RULES_VERSION } from '../legal/policy'
+import { digest } from '../../server/security'
+import { sendMemberWelcomes } from '../../server/welcome-mail'
+import { welcomeEmail } from '../../server/welcome-email-template'
+import worker from '../../worker'
+
+type Sent = { to: string[]; subject: string; text: string; html: string }
+const databases: DatabaseSync[] = [], messages: Sent[] = [], keys: string[] = []
+const password = 'a private welcome test passphrase'
+let provider: () => Promise<Response>
+beforeEach(() => {
+  messages.length = 0; keys.length = 0
+  provider = async () => Response.json({ id: crypto.randomUUID() })
+  vi.stubGlobal('fetch', vi.fn(async (_url: string, options: RequestInit) => {
+    messages.push(JSON.parse(String(options.body)))
+    keys.push(new Headers(options.headers).get('Idempotency-Key')!)
+    return provider()
+  }))
+})
+afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); for (const db of databases.splice(0)) db.close() })
+async function fixture() {
+  const server = await testServer(); databases.push(server.db)
+  server.env.WELCOME_MAIL_ENABLED = 'true'
+  async function register(username = 'newmember', newsletter = false) {
+    const email = username + '@example.test'
+    expect((await server.call('/auth/register', 'POST', { username, email, password, rulesVersion: COMMUNITY_RULES_VERSION, newsletter })).status).toBe(202)
+    const token = messages.at(-1)!.text.match(/#account\/verify\/([^\s]+)/)![1]
+    const id = String(server.db.prepare('SELECT id FROM auth_users WHERE email=?').get(email)!.id)
+    const verify = async () => { expect((await server.call('/auth/verify', 'POST', { token, password })).status).toBe(200) }
+    return { id, email, verify }
+  }
+  const run = (now?: Date) => sendMemberWelcomes(server.env, server.env.DB!, now)
+  return { ...server, register, run }
+}
+
+describe('new member welcome email', () => {
+  it('sends the approved welcome once after verification, even when news is off', async () => {
+    const { register, run, db, env, call } = await fixture(), member = await register()
+    expect((await run()).sent).toBe(0)
+    expect(messages).toHaveLength(1)
+    await member.verify()
+    const jobs: Promise<unknown>[] = []
+    worker.scheduled({ cron: '*/5 * * * *' }, env, { waitUntil: job => { jobs.push(job) } })
+    await Promise.all(jobs)
+    expect(messages).toHaveLength(2)
+    expect(messages[1]).toMatchObject({ to: [member.email], ...welcomeEmail })
+    expect(db.prepare('SELECT enabled FROM account_news_preferences WHERE user_id=?').get(member.id)).toEqual({ enabled: 0 })
+    expect(db.prepare('SELECT state,attempts FROM member_welcome_mail WHERE user_id=?').get(member.id)).toEqual({ state: 'accepted', attempts: 1 })
+    expect(db.prepare("SELECT accepted FROM account_mail_daily WHERE purpose='welcome'").get()).toEqual({ accepted: 1 })
+    expect((await call('/auth/login', 'POST', { email: member.email, password })).status).toBe(200)
+    expect((await run()).sent).toBe(0)
+    expect(messages).toHaveLength(2)
+  })
+
+  it('matches the readable previews and describes signup rather than news consent', () => {
+    expect(welcomeEmail.html).toBe(readFileSync(new URL('../../docs/news/001-member-welcome.html', import.meta.url), 'utf8'))
+    const plain = readFileSync(new URL('../../docs/news/001-member-welcome.txt', import.meta.url), 'utf8')
+    expect(plain).toBe('Subject: ' + welcomeEmail.subject + '\nPreheader: More modules are coming, and the repo is open for contributions.\n\n' + welcomeEmail.text)
+    expect(welcomeEmail.html).toContain('https://github.com/repeat98/modwerk')
+    expect(welcomeEmail.html).not.toMatch(/opted in|<script|<img|<iframe|<form|mailto:|—/i)
+  })
+
+  it('waits for social signup completion and excludes suspended members', async () => {
+    const { register, run, db } = await fixture(), social = await register('socialmember'), suspended = await register('suspendedmember')
+    await social.verify(); await suspended.verify()
+    db.prepare('INSERT INTO social_pending_accounts(user_id,expires) VALUES(?,?)').run(social.id, Math.floor(Date.now() / 1000) + 600)
+    db.prepare('UPDATE users SET suspended=1 WHERE id=?').run(suspended.id)
+    expect((await run()).sent).toBe(0)
+    db.prepare('DELETE FROM social_pending_accounts WHERE user_id=?').run(social.id)
+    expect((await run()).sent).toBe(1)
+    expect(messages.at(-1)!.to).toEqual([social.email])
+  })
+
+  it('claims atomically across overlapping scheduled runs', async () => {
+    const { register, run } = await fixture(), member = await register()
+    await member.verify()
+    let release!: () => void, reached!: () => void
+    const gate = new Promise<void>(resolve => { release = resolve }), started = new Promise<void>(resolve => { reached = resolve })
+    provider = async () => { reached(); await gate; return Response.json({ id: 'accepted-once' }) }
+    const first = run()
+    await started
+    expect((await run()).sent).toBe(0)
+    release()
+    expect((await first).sent).toBe(1)
+    expect(messages).toHaveLength(2)
+  })
+
+  it('retries failures with the same key and stops uncertain retries before key expiry', async () => {
+    const { register, run, db } = await fixture(), member = await register()
+    await member.verify()
+    const now = new Date()
+    provider = async () => { throw new Error('private provider address/key payload') }
+    expect((await run(now)).sent).toBe(0)
+    expect((await run(new Date(now.getTime() + 60000))).sent).toBe(0)
+    expect(messages).toHaveLength(2)
+    provider = async () => Response.json({ id: 'retried' })
+    expect((await run(new Date(now.getTime() + 6 * 60000))).sent).toBe(1)
+    expect(keys.at(-1)).toBe(keys.at(-2))
+    const uncertain = await register('uncertainmember')
+    await uncertain.verify()
+    provider = async () => { throw new Error('unknown network result') }
+    const future = new Date(now.getTime() + 6 * 60000)
+    await run(future)
+    expect((await run(new Date(future.getTime() + 21 * 3600000))).review).toBe(1)
+    expect(db.prepare('SELECT state FROM member_welcome_mail WHERE user_id=?').get(uncertain.id)).toEqual({ state: 'review' })
+  })
+
+  it('leaves exhausted-quota welcomes pending without starting the idempotency window', async () => {
+    const { register, run, db } = await fixture(), member = await register()
+    await member.verify()
+    const seconds = Math.floor(Date.now() / 1000)
+    db.prepare('INSERT INTO rate_limits(key,count,expires) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET count=excluded.count,expires=excluded.expires').run(await digest('account-mail:daily:' + Math.floor(seconds / 86400)), 80, seconds + 86400)
+    expect((await run()).sent).toBe(0)
+    expect(messages).toHaveLength(1)
+    expect(db.prepare('SELECT state,first_attempt_at,attempts FROM member_welcome_mail WHERE user_id=?').get(member.id)).toEqual({ state: 'pending', first_attempt_at: null, attempts: 0 })
+    expect(db.prepare("SELECT limited FROM account_mail_daily WHERE purpose='welcome'").get()).toEqual({ limited: 1 })
+  })
+
+  it('can be paused and removes welcome state when an account is deleted', async () => {
+    const { register, run, db, env } = await fixture(), member = await register()
+    await member.verify()
+    env.WELCOME_MAIL_ENABLED = 'false'
+    expect((await run()).sent).toBe(0)
+    env.WELCOME_MAIL_ENABLED = 'true'
+    expect((await run()).sent).toBe(1)
+    db.prepare('DELETE FROM auth_users WHERE id=?').run(member.id)
+    expect(db.prepare('SELECT user_id FROM member_welcome_mail WHERE user_id=?').get(member.id)).toBeUndefined()
+  })
+
+  it('excludes existing completed members during the real schema upgrade', () => {
+    const db = new DatabaseSync(':memory:'); databases.push(db)
+    const folder = new URL('../../migrations/', import.meta.url)
+    for (const name of readdirSync(folder).filter(name => name.endsWith('.sql') && name < '0029').sort()) db.exec(readFileSync(new URL(name, folder), 'utf8'))
+    for (const [id, verified] of [['oldmember', 1], ['unfinished', 0], ['socialpending', 1]] as const) {
+      db.prepare('INSERT INTO auth_users(id,name,email,emailVerified,createdAt,updatedAt) VALUES(?,?,?,?,?,?)').run(id, id, id + '@example.test', verified, new Date().toISOString(), new Date().toISOString())
+      db.prepare('INSERT INTO users(id,display_name,username,email_verified) VALUES(?,?,?,?)').run(id, id, id, verified)
+    }
+    db.prepare('INSERT INTO social_pending_accounts(user_id,expires) VALUES(?,?)').run('socialpending', Math.floor(Date.now() / 1000) + 600)
+    db.prepare("INSERT INTO account_mail_daily(day,purpose,accepted) VALUES('2026-10-05','verify',12)").run()
+    db.exec(readFileSync(new URL('0029_member_welcome.sql', folder), 'utf8'))
+    expect(db.prepare('SELECT user_id,state FROM member_welcome_mail').all()).toEqual([{ user_id: 'oldmember', state: 'existing' }])
+    expect(db.prepare("SELECT accepted FROM account_mail_daily WHERE purpose='verify'").get()).toEqual({ accepted: 12 })
+  })
+})

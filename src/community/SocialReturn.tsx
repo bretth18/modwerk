@@ -24,7 +24,7 @@ export function SocialReturn({code}:{code:string}) {
     <h1>{onboarding?'Finish creating your account':'Completing sign-in'}</h1>
     {onboarding?<><p>Your social account is verified. Choose the public username that will appear with your posts. We suggested one; edit it if you like.</p><form className="community-form" onSubmit={event=>{event.preventDefault();void submit(event.currentTarget)}}>
       <label>Public username<input name="username" defaultValue={onboarding.username} required minLength={3} maxLength={24} pattern="[A-Za-z0-9_]{3,24}" autoComplete="username" spellCheck={false}/><small>3–24 letters, numbers or underscores. Your email and provider profile stay private.</small></label>
-      <p className="service-note">Read the <a href="#privacy" target="_blank" rel="noopener noreferrer">privacy notice</a> and <a href="#impressum" target="_blank" rel="noopener noreferrer">Impressum</a>.</p>
+      <p className="service-note">We send a welcome email once you complete signup. Read the <a href="#privacy" target="_blank" rel="noopener noreferrer">privacy notice</a> and <a href="#impressum" target="_blank" rel="noopener noreferrer">Impressum</a>.</p>
       <label className="risk-accept"><input name="rulesAccepted" type="checkbox" required/><span>I agree to the <a href="#community-rules" target="_blank" rel="noopener noreferrer">community rules</a>.</span></label>
       <label className="risk-accept"><input name="newsletter" type="checkbox"/><span>Email me occasional Modwerk news and updates (optional).</span></label>
       <button className="button button-primary" disabled={busy}>{busy?'Creating account…':'Create account and continue'}</button>

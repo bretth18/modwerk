@@ -140,3 +140,7 @@ The owner asked to bring the shoutbox and forum organization from elektronmods.c
 The owner also requested a richer post editor. Threads and replies use visual formatting with a Markdown source option; the stored text remains Markdown and public rendering does not execute HTML or embed external images. Shoutbox messages remain brief plain text with verified-account posting, ownership controls, rate limits, reports and administrator moderation.
 
 The owner explicitly requires local review before any production rollout. The isolated preview uses fictional data, a separate local Worker configuration, no production database ID and no mail credentials. Implementation and local migrations do not authorize deployment.
+
+## New-member welcome · 5 October 2026
+
+Each new verified, fully onboarded member receives the approved welcome once, including members with optional news disabled. The footer explains signup as the reason for the welcome. Further news remains opt-in. Existing completed members are excluded at rollout, and a persistent delivery record with provider duplicate protection prevents repeats. The five-minute job shares the account-mail budget; hourly cleanup and activity digests keep their schedule.

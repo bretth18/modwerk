@@ -36,3 +36,6 @@ GITHUB_OAUTH_CLIENT_ID=
 GITHUB_OAUTH_CLIENT_SECRET=
 # Exact API callback registered with GitHub. HTTPS in production; loopback HTTP for local development.
 GITHUB_OAUTH_CALLBACK_URL=
+
+# One welcome for each new verified member, independently of optional news.
+WELCOME_MAIL_ENABLED=true

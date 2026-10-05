@@ -2,7 +2,7 @@
   "name": "octamod-community",
   "compatibility_date": "2026-09-30",
   "compatibility_flags": ["nodejs_compat"],
-  "triggers": { "crons": ["17 * * * *"] },
+  "triggers": { "crons": ["17 * * * *", "*/5 * * * *"] },
   // Workers Logs: searchable request logs and exceptions in the Cloudflare dashboard, kept for a few days.
   "observability": { "enabled": true },
   // Production values. Local development overrides vars through the ignored .dev.vars file.
@@ -12,6 +12,7 @@
     "REGISTRATION_OPEN": "false",
     "PRIVACY_READY": "false",
     "SESSION_TRANSPORT": "bearer",
+    "WELCOME_MAIL_ENABLED": "true",
     // Activity digests per day. 15 leaves the free Resend tier (100/day) room for account mail; raise after upgrading.
     "ACTIVITY_MAIL_DAILY_LIMIT": "15"
   },
