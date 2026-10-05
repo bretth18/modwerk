@@ -1,3 +1,4 @@
+import { BackLink } from '../components/BackLink'
 import { DevelopmentGuide } from './DevelopmentGuide'
 import { assetUrl, sourceRepository } from '../hosting'
 import { communityModule } from './modules'
@@ -6,13 +7,13 @@ export function SubmissionPage({moduleId=''}:{moduleId?:string}) {
   const repository=sourceRepository()
   const module=communityModule(moduleId)
   const moduleRepository=repository||'https://github.com/repeat98/modwerk'
-  if(module&&module.machine!=='octatrack')return <div className="community-page contribution-page">
+  if(module&&module.machine!=='octatrack')return <div className="community-page contribution-page"><BackLink href={moduleId?'#developer':'#library'}>{moduleId?'Developer workspace':'Module library'}</BackLink>
     <div className="page-heading"><div><p className="page-kicker">MODWERK / DEVELOPERS</p><h1>Update {module.name}</h1><p>{DEVICES_BY_ID[module.machine].name} · Current version {module.version}. Prepare source, documentation and media together in a GitHub pull request.</p></div><span className="pill">Owner review required</span></div>
     <section className="configuration-section"><h2>Start from the reviewed module</h2><p>Keep its licence, attribution and pinned source provenance. Increase the module’s semantic version for every source, documentation or media update, and keep the manifest, README, tutorial and test evidence synchronized.</p><div className="forum-actions"><a className="button button-primary" href={moduleRepository+'/tree/main/'+module.sourcePath} target="_blank" rel="noreferrer">Open module source ↗</a><a className="button button-quiet" href={moduleRepository+'/compare'} target="_blank" rel="noreferrer">Open a pull request ↗</a><a href={moduleRepository+'/blob/main/docs/SDK.md'} target="_blank" rel="noreferrer">Machine SDK & evidence rules ↗</a></div></section>
     <section className="configuration-section"><h2>Include the update evidence</h2><p>Use the machine’s v3 <code>modwerk.module.json</code> contract: source/build identity, compatibility, memory and load measurements, hardware coverage and actual UI captures where applicable. State the evidence tier and remaining limitations honestly. Documentation, tutorial, screenshots and credits must match this version.</p><p>Submit only original or properly licensed sources and reviewed media. Keep firmware, stock bytes, dumps and generated firmware builds local. Passing checks does not publish an update; owner merge approves that exact version. Pending or rejected updates keep the existing approved release available.</p></section>
-    <a className="back-link" href="#developer">← Developer workspace</a>
+
   </div>
-  return <div className="community-page contribution-page">
+  return <div className="community-page contribution-page"><BackLink href={moduleId?'#developer':'#library'}>{moduleId?'Developer workspace':'Module library'}</BackLink>
     <div className="page-heading">
       <div><p className="page-kicker">MODWERK / DEVELOPERS</p><h1>{moduleId ? 'Improve a module' : 'Submit a module'}</h1><p>One contribution process for every machine. Submit source, documentation and media in one pull request.</p></div>
       <span className="pill">GitHub PRs only</span>

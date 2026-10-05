@@ -1,3 +1,4 @@
+import { BackLink } from '../components/BackLink'
 import { useEffect, useState } from 'react'
 import { api, post } from './api'
 import { sourceRepository } from '../hosting'
@@ -36,7 +37,7 @@ export function DeveloperPage({route}:{route:string}) {
   },[session?.user,reportId,revision])
   async function act(action:()=>Promise<unknown>){setBusy(true);setError('');try{await action();await refreshDeveloper();setRevision(value=>value+1)}catch(error){setError(error instanceof Error?error.message:'Unable to update developer access.')}finally{setBusy(false)}}
   if(!session?.user||complete)return <AccountPage route={complete?'account/'+route:'account/developer'}/>
-  return <div className="community-page developer-page"><div className="page-heading"><div><p className="page-kicker">MODWERK / DEVELOPERS</p><h1>Developer workspace</h1><p>Claim your modules, follow bug reports and keep their documentation and releases current.</p></div>{session?.user&&<button className="button button-quiet" disabled={busy} onClick={()=>void act(()=>api('/developer/auth/session',{method:'DELETE'}))}>Sign out @{session.user.login}</button>}</div>
+  return <div className="community-page developer-page"><BackLink href="#forum">Community forum</BackLink><div className="page-heading"><div><p className="page-kicker">MODWERK / DEVELOPERS</p><h1>Developer workspace</h1><p>Claim your modules, follow bug reports and keep their documentation and releases current.</p></div>{session?.user&&<button className="button button-quiet" disabled={busy} onClick={()=>void act(()=>api('/developer/auth/session',{method:'DELETE'}))}>Sign out @{session.user.login}</button>}</div>
     {error&&<p className="file-error" role="alert">{error}</p>}
     {reportId?<PrivateIssueDetail key={reportId} id={reportId} back="#developer"/>:<>
       <section className="configuration-section"><div className="section-title"><h2>Module activity</h2><button className="text-button" disabled={busy||!notifications.some(item=>!item.seen)} onClick={()=>void act(()=>post('/developer/notifications',{},'PATCH'))}>Mark all read</button></div>{notifications.length?<div className="account-notifications"><NotificationList lines={notificationLines(notifications)} onOpen={()=>{}}/></div>:<p className="service-note">Bug reports, replies in module threads, and comments, ratings and likes on your claimed modules appear here automatically. Sign in to a member account with the same GitHub account to get them in the bell and by email.</p>}</section>

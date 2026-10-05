@@ -1,7 +1,21 @@
 import { machineModules } from './modules'
 import { compareModuleVersions } from '../catalog/versions'
 import { DEVICES_BY_ID } from '../devices/registry'
-export const FORUM_CATEGORIES = { general: 'General discussion', modules: 'Module help', issues: 'Bug reports', configs: 'Shared configurations' } as const
+export const FORUM_CATEGORIES = { general: 'General discussion', introductions: 'Introductions', showcase: 'Showcase', requests: 'Feature requests', tutorials: 'Tutorials & guides', modules: 'Module help', configs: 'Shared configurations', issues: 'Bug reports' } as const
+export const FORUM_CATEGORY_DESCRIPTIONS: Record<keyof typeof FORUM_CATEGORIES, string> = {
+  general: 'Talk gear, workflows, and everything Modwerk.',
+  introductions: 'Say hello and meet the people behind the patches.',
+  showcase: 'Share your music, live sets, and hardware projects.',
+  requests: 'Suggest a mod or explore an idea together.',
+  tutorials: 'Share what you learned, from first flash to building mods.',
+  modules: 'Ask questions and exchange tips with module developers.',
+  configs: 'Share module combinations others can try.',
+  issues: 'Report a problem with steps others can reproduce.',
+}
+export type ForumCategorySummary = { category: keyof typeof FORUM_CATEGORIES; threads: number; replies: number }
+export type ForumShout = { id: string; body: string; username: string | null; created_at: string; edited_at: string | null; hidden: number; canEdit: boolean }
+export type ForumShouts = { messages: ForumShout[]; hasMore: boolean }
+export const SHOUT_MAX_LENGTH = 600
 export type ForumCategory = keyof typeof FORUM_CATEGORIES
 // A thread may name one Elektron machine; null means it is about Modwerk or every machine.
 export function forumMachine(value: unknown): string | null {
@@ -27,7 +41,7 @@ export function sharedConfiguration(value: unknown): SharedConfiguration {
   }
   return { name: item.name.trim(), ...(item.device ? {device} : {}), moduleIds: [...item.moduleIds], moduleVersions: { ...item.moduleVersions }, keepStockFx2: item.keepStockFx2 }
 }
-export type ForumThread = { id:string;title:string;category:ForumCategory;machine:string|null;module_id:string|null;username:string|null;official?:number;status:'open'|'resolved';locked:number;pinned:number;hidden?:number;created_at:string;updated_at:string;replies:number }
+export type ForumThread = { id:string;title:string;category:ForumCategory;machine:string|null;module_id:string|null;username:string|null;official?:number;status:'open'|'resolved';locked:number;pinned:number;hidden?:number;created_at:string;updated_at:string;replies:number;last_post_id?:string|null;last_username?:string|null;last_excerpt?:string|null;last_post_page?:number }
 // Images and sound clips attached to a post. Sizes are checked again on the server after the file type is read from its bytes.
 export const FORUM_MEDIA = { maxImageBytes: 5 * 1024 * 1024, maxAudioBytes: 10 * 1024 * 1024, perPost: 4, captionLength: 300, dailyFiles: 20, dailyBytes: 100 * 1024 * 1024 } as const
 export type ForumAttachment = {id:string;kind:'image'|'audio';caption:string}

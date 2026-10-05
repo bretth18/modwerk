@@ -1,3 +1,4 @@
+import { BackLink } from '../components/BackLink'
 import { useEffect, useRef, useState } from 'react'
 import { api, post } from './api'
 import type { NotificationPreferences as Preferences } from './notification-contract'
@@ -45,7 +46,7 @@ export function Unsubscribe({ token }: { token: string }) {
     setState('busy'); setError('')
     try { await post('/notifications/unsubscribe', { token }); setState('done') } catch (error) { setError(error instanceof Error ? error.message : 'Unable to unsubscribe.'); setState('idle') }
   }
-  return <div className="community-page account-page"><div className="page-heading"><div><p className="page-kicker">MODWERK / ACCOUNT</p><h1>Activity email</h1><p>Stop digest emails about replies, mentions, likes and module activity.</p></div></div>
+  return <div className="community-page account-page"><BackLink href="#account">Your account</BackLink><div className="page-heading"><div><p className="page-kicker">MODWERK / ACCOUNT</p><h1>Activity email</h1><p>Stop digest emails about replies, mentions, likes and module activity.</p></div></div>
     <section className="configuration-section">{state === 'done' ? <><p className="success-note" role="status">You're unsubscribed from activity email. The bell keeps working when you sign in.</p><a className="button button-quiet" href="#account/notifications">Email settings</a></> : <><p>Confirm to turn off activity email for this account. You can turn it back on in your account at any time.</p><button className="button button-primary" disabled={state === 'busy'} onClick={() => void confirm()}>{state === 'busy' ? 'Please wait…' : 'Unsubscribe'}</button></>}{error && <p className="file-error" role="alert">{error}</p>}</section>
   </div>
 }
