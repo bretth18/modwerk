@@ -40,7 +40,7 @@ function UsageDashboard({data}: {data: UsageStatistics}) {
 
   return <>
     <dl className="admin-overview statistics-cards">
-      <div><dt>Visitors today</dt><dd>{covered ? format(insights.today) : '—'}</dd><small>Daily browser identifiers · today is partial</small></div>
+      <div><dt>Visitors today</dt><dd>{covered ? format(insights.today) : '—'}</dd><small>Opted-in browsers only · today is partial</small></div>
       {usageMetrics.slice(1).map(([key,title]) => <div key={key}><dt>{title}</dt><dd>{covered ? format(insights.totals[key]) : '—'}</dd><small>Selected period · includes today</small>{covered && <Comparison value={insights.compare(key)}/>}</div>)}
     </dl>
     {covered ? <>
@@ -76,7 +76,7 @@ function UsageDashboard({data}: {data: UsageStatistics}) {
     </> : <p className="service-note" role="status">Waiting for the first recorded visit. Earlier traffic is unavailable.</p>}
     <details className="statistics-definitions"><summary>Coverage and metric definitions</summary>
       <p>{data.collectionStarted ? 'Collection began '+new Date(data.collectionStarted).toLocaleString(undefined,{timeZone:'UTC'})+' UTC. ' : ''}Today and the collection start day are incomplete. Missing days after collection began count as zero; earlier days are unavailable. Daily totals are kept for 90 days.</p>
-      <p>Visitors are distinct browser identifiers within one UTC day. Identifiers rotate daily; adding daily visitors does not give unique people across a period. Average visitors and peak days exclude partial days.</p>
+      <p>Page views, configurations, builds, exports and downloads include anonymous totals from every visitor who has not objected or enabled Do Not Track (since 2026-10-05). Visitors count only browsers that opted in to unique-visitor counts, so they are far lower than page views. Visitors are distinct browser identifiers within one UTC day. Identifiers rotate daily; adding daily visitors does not give unique people across a period. Average visitors and peak days exclude partial days.</p>
       <p>A configuration starts when its first module is added, or when a nonempty configuration is imported or duplicated. Builds count only successful completed local builds. Downloads and exports count requests, not saved or flashed files. These are separate event totals, not a linked conversion funnel.</p>
       <p>Offline use, privacy preferences, blocked requests and automated traffic affect coverage. No firmware, configuration contents, guest identity, IP address, user agent or referrer is stored with these usage counts.</p>
     </details>

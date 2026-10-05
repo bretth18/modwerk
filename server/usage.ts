@@ -39,6 +39,37 @@ export async function recordUsage(request: Request, env: Env, db: Database) {
   ])
   return response({ok:true})
 }
+/** Identifier-free counts: only a closed event name (and, for downloads, one public module ID) is accepted.
+ * Nothing is read from or stored on the device. The client IP is used only as a keyed, daily-rotated digest
+ * for abuse limiting in rate_limits, which expires within the hour; it never reaches the count tables.
+ * Unique visitors are never derived here; only opted-in browsers contribute to usage_daily.visitors. */
+export async function recordAnonymousCount(request: Request, env: Env, db: Database) {
+  if (request.headers.get('DNT') === '1' || request.headers.get('Sec-GPC') === '1') return new Response(null,{status:204})
+  const secret = env.ADMIN_KEY_SHA256?.trim().toLowerCase() ?? ''
+  if (!/^[a-f0-9]{64}$/.test(secret)) throw new HttpError(503,'Usage counts are not configured.')
+  if (!request.headers.get('Content-Type')?.startsWith('application/json')) throw new HttpError(415,'Send JSON for this request.')
+  let body: Record<string,unknown>
+  try { const value: unknown = JSON.parse(new TextDecoder().decode(await boundedBody(request,256))); if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(); body=value as Record<string,unknown> }
+  catch(error) { if(error instanceof HttpError)throw error; throw new HttpError(400,'Invalid usage count.') }
+  const keys = Object.keys(body).sort().join(',')
+  const moduleCount = keys === 'event,moduleId' && body.event === 'module_download' && typeof body.moduleId === 'string' && isModuleAvailable(body.moduleId) && !moduleBuildPending(body.moduleId)
+  if (!moduleCount && (keys !== 'event' || typeof body.event !== 'string' || !USAGE_EVENTS.includes(body.event as UsageEvent))) throw new HttpError(400,'Invalid usage count.')
+  const now = new Date(), today = day(now)
+  await throttle(db,'usage-count:' + await privateHash(secret,today + ':count-rate:' + (request.headers.get('CF-Connecting-IP') ?? 'local')),300,3600)
+  if (moduleCount) {
+    await db.batch([
+      db.prepare('INSERT INTO module_downloads(module_id,downloads) VALUES(?,1) ON CONFLICT(module_id) DO UPDATE SET downloads=downloads+1').bind(body.moduleId),
+      db.prepare("INSERT INTO module_download_meta(key,value) VALUES('collection_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
+    ])
+    return response({ok:true})
+  }
+  const metric = columns[body.event as UsageEvent] // Selected only from the closed enum above, never from arbitrary SQL input.
+  await db.batch([
+    db.prepare(`INSERT INTO usage_daily(day,${metric}) VALUES(?,1) ON CONFLICT(day) DO UPDATE SET ${metric}=${metric}+1`).bind(today),
+    db.prepare("INSERT INTO usage_meta(key,value) VALUES('collection_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
+  ])
+  return response({ok:true})
+}
 /** Called hourly by the Worker and available to other backend adapters. */
 export async function cleanupUsage(db: Database, now = new Date()) {
   await db.batch([

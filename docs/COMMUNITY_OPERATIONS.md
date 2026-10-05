@@ -98,5 +98,9 @@ A verified, unsuspended member whose `users.is_admin` is `1` sees the Admin work
 
 The Statistics and Accounts tabs of the Admin workspace show aggregate account numbers from `GET /api/admin/accounts`: active members, unverified and unfinished social sign-ups, suspended and deleted accounts, administrators, news opt-ins, sign-ins by method and daily sign-ups for the last 30 UTC days. They are computed from the account tables on request, so they need no opt-in and cover every sign-up since launch. Removed accounts drop out of the history. No email address, provider profile or per-member row is returned.
 
-Usage counts (visitors, page views, builds, downloads) are different: they are opt-in per browser since 2026-10-04, and consent stored on octamod.app does not carry over to modwerk.app. Days without opted-in visitors have no data, and missing days cannot be reconstructed.
+Usage counts (visitors, page views, builds, downloads) come from separate paths; see Usage counts below.
+
+## Usage counts
+
+Two independent paths feed the Statistics tab. `POST /api/usage/count` takes only a closed event name (or `module_download` with one public module ID), needs no consent header, stores no identifier and never writes `usage_events`, `usage_visitors` or `module_download_events`. It is on for every visitor unless the browser sends Do Not Track or Global Privacy Control, or the visitor objects on the privacy page. Abuse limiting uses a daily-rotated HMAC of the client IP (300 counts per hour) that expires with the rate-limit row. The existing opt-in path (`/api/usage/events`, `/api/usage/module-downloads`) is unchanged and is the only source of daily visitor numbers, so visitors are far lower than page views. Anonymous totals start 2026-10-05; earlier days after the 2026-10-04 opt-in change cannot be reconstructed.
 

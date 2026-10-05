@@ -4,7 +4,7 @@ import { developerAuthentication, developerUser } from './developer-auth'
 import { developerApi } from './developers'
 import { communityModule } from '../src/community/modules'
 import { validateDigiIssueContext } from '../src/community/digi-issue-context'
-import { recordUsage, recordModuleDownload, usageStatistics } from './usage'
+import { recordAnonymousCount, recordUsage, recordModuleDownload, usageStatistics } from './usage'
 import { moduleStatistics } from './module-statistics'
 import { adminInsights } from './admin-insights'
 import { adminAccounts } from './admin-accounts'
@@ -42,6 +42,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if (!db) throw new HttpError(503,'Community services are not connected yet. Your device workspace still works.')
     if (path === '/api/usage/events' && request.method === 'POST') return await recordUsage(request,env,db)
     if (path === '/api/usage/module-downloads' && request.method === 'POST') return await recordModuleDownload(request,env,db)
+    if (path === '/api/usage/count' && request.method === 'POST') return await recordAnonymousCount(request,env,db)
     const developerAuth = await developerAuthentication(request,env,db)
     if(developerAuth)return developerAuth
     const user = await currentUser(request,db,env)
