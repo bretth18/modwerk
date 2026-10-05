@@ -23,6 +23,13 @@
       "migrations_dir": "migrations"
     }
   ],
-  // Module screenshots and audio arrive through PRs and are served by the site; no R2 bucket is needed.
+  // Images and sound clips attached to forum posts. Module screenshots and audio arrive through PRs and are
+  // served by the site instead. Create the bucket once with `npx wrangler r2 bucket create modwerk-forum-media`.
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "modwerk-forum-media"
+    }
+  ],
   "main": "worker.ts"
 }
