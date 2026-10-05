@@ -50,9 +50,17 @@ export async function ensureDiscussionThread(db: Database, moduleId: string) {
 }
 
 const checked = new WeakSet<Database>()
-/** The catalog is fixed per deployment, so one check per database binding is enough. */
+const pending = new WeakMap<Database, Promise<void>>()
+/** Share initialization across the concurrent requests on the forum home page. */
 export async function ensureModuleThreadsOnce(db: Database) {
   if (checked.has(db)) return
-  // Reading the forum must keep working if this fails (for example before migration 0023); the next request retries.
-  try { await ensureModuleThreads(db); const published=(await db.prepare('SELECT module_id FROM module_publications').all<{module_id:string}>()).results; for(const module of published)await ensureDiscussionThread(db,module.module_id); checked.add(db) } catch (error) { console.error('Module threads could not be created.', error) }
+  const current=pending.get(db)
+  if(current)return current
+  const work=(async()=>{
+    // Reading the forum must keep working if this fails; the next request retries.
+    try { await ensureModuleThreads(db); const published=(await db.prepare('SELECT module_id FROM module_publications').all<{module_id:string}>()).results; for(const module of published)await ensureDiscussionThread(db,module.module_id); checked.add(db) } catch (error) { console.error('Module threads could not be created.', error) }
+    finally { pending.delete(db) }
+  })()
+  pending.set(db,work)
+  return work
 }

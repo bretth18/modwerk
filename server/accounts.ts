@@ -15,7 +15,20 @@ import { COMMUNITY_RULES_VERSION } from '../src/legal/policy'
 import { googleTokenBinding, socialOptions, suggestUsername, validUsername } from './social-config'
 
 export function authReady(env: Env) { return !!env.AUTH_SECRET && env.AUTH_SECRET.length >= 32 }
+const authInstances = new WeakMap<Database, { settings: string; auth: ReturnType<typeof createAccountAuth> }>()
+const accountUsers = new WeakMap<Request, { db: Database; settings: string; user: Promise<User|null> }>()
+function authSettings(env: Env) {
+  return JSON.stringify(Object.entries(env).filter(([,value]) => typeof value === 'string').sort(([a],[b]) => a.localeCompare(b)))
+}
+/** Reuse the adapter context: creating it inspects every database table. Configuration changes invalidate it. */
 export function accountAuth(env: Env, db: Database) {
+  const settings = authSettings(env), cached = authInstances.get(db)
+  if (cached?.settings === settings) return cached.auth
+  const auth = createAccountAuth(env,db)
+  authInstances.set(db,{settings,auth})
+  return auth
+}
+function createAccountAuth(env: Env, db: Database) {
   if (!authReady(env)) throw new HttpError(503,'Accounts are not configured yet.')
   const syncPublicUser = async (user:{id:string;name:string;username?:string|null;emailVerified:boolean}) => {
     await db.prepare('INSERT INTO users(id,display_name,username,email_verified) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET display_name=excluded.display_name,username=excluded.username,email_verified=excluded.email_verified').bind(user.id,user.name,user.username??user.name,Number(user.emailVerified)).run()
@@ -92,9 +105,17 @@ export function accountAuth(env: Env, db: Database) {
 }
 export async function accountUser(request: Request, env: Env, db: Database): Promise<User|null> {
   if(!authReady(env))return null
-  const session=await accountAuth(env,db).api.getSession({headers:request.headers})
-  if(!session?.user.emailVerified)return null
-  return db.prepare('SELECT id,display_name,username,email_verified,suspended FROM users WHERE id=? AND suspended=0 AND NOT EXISTS(SELECT 1 FROM social_pending_accounts p WHERE p.user_id=users.id)').bind(session.user.id).first<User>()
+  // Guest tokens and anonymous reads do not need the account adapter at all.
+  if(!request.headers.get('Authorization')?.includes('.')&&!request.headers.get('Cookie')?.includes('octamod-account'))return null
+  const settings=authSettings(env),cached=accountUsers.get(request)
+  if(cached?.db===db&&cached.settings===settings)return cached.user
+  const user=(async()=>{
+    const session=await accountAuth(env,db).api.getSession({headers:request.headers})
+    if(!session?.user.emailVerified)return null
+    return db.prepare('SELECT id,display_name,username,email_verified,suspended,is_admin FROM users WHERE id=? AND suspended=0 AND NOT EXISTS(SELECT 1 FROM social_pending_accounts p WHERE p.user_id=users.id)').bind(session.user.id).first<User>()
+  })()
+  accountUsers.set(request,{db,settings,user})
+  return user
 }
 function emailAddress(value:unknown){if(typeof value!=='string'||value.trim().length>254||!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(value.trim()))throw new HttpError(400,'Enter a valid email address.');return value.trim().toLowerCase()}
 const genericMessage='If the address is eligible, an email will arrive shortly. Check your spam folder. You can request another message or reset your password if you already have an account.'

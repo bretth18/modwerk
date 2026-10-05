@@ -20,7 +20,7 @@ export async function isAdmin(request:Request,env:Env,db:Database){
 async function memberIsAdmin(request:Request,db:Database,env:Env){
  if(!request.headers.get('Authorization')&&!request.headers.get('Cookie'))return false
  const account=await accountUser(request,env,db)
- return !!account&&!!await db.prepare('SELECT 1 AS ok FROM users WHERE id=? AND is_admin=1 AND suspended=0 AND email_verified=1').bind(account.id).first()
+ return !!account&&account.is_admin===1&&account.email_verified===1&&!account.suspended
 }
 export async function currentUser(request:Request,db:Database,env:Env):Promise<User|null>{
  const account=await accountUser(request,env,db);if(account)return account

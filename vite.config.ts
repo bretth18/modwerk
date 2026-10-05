@@ -14,6 +14,7 @@ export default defineConfig(({ command, mode }) => {
    return command === 'build' ? [
     { tag:'meta', attrs:{ 'http-equiv':'Content-Security-Policy', content:csp }, injectTo:'head-prepend' },
     { tag:'meta', attrs:{ name:'referrer', content:'no-referrer' }, injectTo:'head-prepend' },
+    ...(origin ? [{ tag:'link', attrs:{ rel:'preconnect', href:origin, crossorigin:'anonymous' }, injectTo:'head' as const }] : []),
    ] : []
   } }],
   base: './',
