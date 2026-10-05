@@ -34,7 +34,8 @@ export function ModuleCommunity({id,mode='all',onDiscuss}:{id:string;mode?:'all'
   const [data,setData] = useState<Data | null>(null), [comment,setComment] = useState(''), [rating,setRating] = useState(0), [error,setError] = useState(''), [busy,setBusy] = useState(false), [notice,setNotice] = useState('')
   useEffect(() => {
     let cancelled=false
-    if (session.available) void api<Data>('/modules/' + id).then(value => {if (!cancelled) {setData(value);setRating(value.ownRating)}}).catch(error => {if(!cancelled)setError(error.message)})
+    // A successful load clears an earlier failure, so a passing network blip does not leave a stale error.
+    if (session.available) void api<Data>('/modules/' + id).then(value => {if (!cancelled) {setData(value);setRating(value.ownRating);setError('')}}).catch(error => {if(!cancelled)setError(error.message)})
     return () => {cancelled=true}
   },[id,session.available,session.user?.id])
   async function send(kind:'comments'|'rating'|'like') {
