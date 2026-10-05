@@ -1,9 +1,6 @@
 import type { Database, Env } from './platform'
 import { HttpError } from './security'
-import { isDigiIssue, FLASH_STATES, LOG_MISSING_REASONS, OT_MODELS } from '../src/community/issue-context'
-import type { IssueContext, LogMissingReason } from '../src/community/issue-context'
-import { describeOtLog } from '../src/community/ot-log'
-import type { OtLogSummary } from '../src/community/ot-log'
+import { communityModule } from '../src/community/modules'
 
 const API = 'https://api.github.com'
 const BODY_LIMIT = 60000
@@ -41,54 +38,27 @@ export function inert(text: string) {
 }
 const quote = (text: string) => inert(text).split(/\r?\n/).map(line => '> ' + line).join('\n')
 
-export type MirroredIssue = {
-  module_id: string; author_login: string; title: string; body: string; reporter: string
-  context: IssueContext | null; log: { text: string; summary: OtLogSummary } | null
-  log_missing: LogMissingReason | null; log_missing_note: string
-}
+/** What the reporter agreed to publish; the configuration, build fingerprint and log stay on the site. */
+export type PublicBugDetails = { device: string; version: string; steps: string; expected: string; actual: string }
+export type MirroredIssue = { id: string; module_id: string; title: string; reporter: string | null; owners: string[]; details: PublicBugDetails }
 
 export function issueTitle(issue: Pick<MirroredIssue, 'module_id' | 'title'>) { return ('[' + issue.module_id + '] ' + issue.title).slice(0, 256) }
+const GITHUB_LOGIN = /^[A-Za-z0-9-]{1,39}$/
+const appLink = (app: string | undefined, hash: string) => { if (!app) return null; const url = new URL(app); url.hash = hash; return url.href }
 
-export function issueMarkdown(issue: MirroredIssue) {
-  const author = /^[A-Za-z0-9-]{1,39}$/.test(issue.author_login) ? '@' + issue.author_login : inert(issue.author_login)
-  const lines = ['Reported on modwerk.app for **`' + issue.module_id + '`** · module author ' + author, '', 'Reporter: ' + inert(issue.reporter), '', issue.body ? quote(issue.body) : '', '']
-  const context = issue.context
-  if (context) {
-    lines.push('### Browser configuration', '', '| | |', '| --- | --- |',
-      '| Device | ' + (isDigiIssue(context)?context.model:OT_MODELS[context.model]) + ' |',
-      '| State | ' + FLASH_STATES[context.flash] + ' |',
-      '| Base OS | ' + context.os + ' |',
-      '| Stock FX2 kept | ' + (context.keepStockFx2 === null ? 'n/a' : context.keepStockFx2 ? 'yes' : 'no') + ' |',
-      '| Build SHA-256 | ' + (context.build ? '`' + context.build + '`' : 'not built in this browser') + ' |',
-      '', context.modules.length ? context.modules.map(item => '- `' + item.id + '` ' + item.version).join('\n') : '_No modules selected._', '')
-  }
-  if (issue.log) {
-    const summary = issue.log.summary
-    lines.push('### Device log configuration', '', 'These values came from the device log; the browser selection above may differ.', '',
-      '- OS: `' + summary.os + '`',
-      '- Configuration: `' + (summary.configuration || summary.build) + '`',
-      '- Modules: ' + (summary.modules.map(item => '`' + item.id + '@' + item.version + '`').join(', ') || 'none'), '')
-    if (summary.version === 2) lines.push('- Source SHA-256: `' + summary.source + '`',
-      '- FX1 order: ' + summary.fx1.map(key => '`' + key + '`').join(', '),
-      '- FX2 order: ' + summary.fx2.map(key => '`' + key + '`').join(', '),
-      '- Hidden modules: ' + (summary.hidden.map(key => '`' + key + '`').join(', ') || 'none'),
-      '- Stock FX2 kept: ' + (summary.stockFx2 ? 'yes' : 'no'), '')
-    // The grammar admits no backticks, so a fence cannot be broken out of.
-    const text = issue.log.text.replace(/\n+$/, '\n')
-    const used = lines.join('\n').length + 400
-    const room = Math.max(0, BODY_LIMIT - used)
-    const shown = text.length <= room ? text : text.slice(text.length - room).replace(/^[^\n]*\n/, '')
-    lines.push('### OCTAMOD.LOG', '', describeOtLog(issue.log.summary) + (shown.length < text.length ? ' · showing the newest ' + shown.length + ' of ' + text.length + ' bytes' : ''), '',
-      '<details><summary>Log</summary>', '', '```text', shown.replace(/\n$/, ''), '```', '', '</details>', '')
-  } else if (issue.log_missing) {
-    lines.push('### OCTAMOD.LOG', '', '_Not attached:_ ' + LOG_MISSING_REASONS[issue.log_missing] + (issue.log_missing_note ? ' — ' + inert(issue.log_missing_note) : ''), '')
-  }
-  lines.push('---', '_Status changes here are shown to the reporter on modwerk.app._')
-  return lines.join('\n').slice(0, BODY_LIMIT)
+export function issueMarkdown(issue: MirroredIssue, app?: string) {
+  const owners = [...new Set(issue.owners.filter(login => GITHUB_LOGIN.test(login)).map(login => '@' + login))]
+  const reporter = issue.reporter ? inert(issue.reporter) : 'a Modwerk member', profile = issue.reporter ? appLink(app, 'forum/profile/' + issue.reporter) : null
+  const site = appLink(app, '') ?? 'https://modwerk.app/', details = appLink(app, 'developer/report/' + issue.id), { device, version, steps, expected, actual } = issue.details
+  return ['Reported on [Modwerk](' + site + ') for **`' + issue.module_id + '`** by ' + (profile ? '[' + reporter + '](' + profile + ')' : reporter) + (owners.length ? ' · ' + owners.join(' ') : ''), '',
+    '| | |', '| --- | --- |', '| Device | ' + inert(device).replace(/\|/g, '\\|') + ' |', '| Module version | ' + inert(version).replace(/\|/g, '\\|') + ' |', '',
+    '### Steps to reproduce', '', quote(steps), '', '### Expected', '', quote(expected), '', '### Actual', '', quote(actual), '', '---',
+    '_The reporter’s configuration, build fingerprint and device log are private' + (details ? '. Verified maintainers can [open them on Modwerk](' + details + ')' : '') + '. Comments and status changes here are sent to the reporter on Modwerk._',
+  ].join('\n').slice(0, BODY_LIMIT)
 }
 
-export async function createGithubIssue(config: GithubConfig, issue: MirroredIssue) {
-  const created = await github<{ number: number; html_url: string }>(config, '/issues', 'POST', { title: issueTitle(issue), body: issueMarkdown(issue), labels: ['issue-report', 'module:' + issue.module_id] })
+export async function createGithubIssue(config: GithubConfig, issue: MirroredIssue, app?: string) {
+  const created = await github<{ number: number; html_url: string }>(config, '/issues', 'POST', { title: issueTitle(issue), body: issueMarkdown(issue, app), labels: ['issue-report', 'module:' + issue.module_id] })
   if (!Number.isInteger(created.number) || typeof created.html_url !== 'string' || !created.html_url.startsWith('https://github.com/')) throw new Error('GitHub returned an unexpected issue.')
   return { number: created.number, url: created.html_url }
 }
@@ -97,7 +67,12 @@ export async function setGithubIssueState(config: GithubConfig, number: number, 
   await github(config, '/issues/' + number, 'PATCH', status === 'closed' ? { state: 'closed', state_reason: 'completed' } : { state: 'open' })
 }
 
-type IssueRow = { id: string; module_id: string; author_login: string; title: string; body: string; reporter: string; context_json: string | null; log_missing: LogMissingReason | null; log_missing_note: string; github_state: string; public_sharing: number; log_text: string | null; summary_json: string | null }
+/** Everyone GitHub should notify: the module author and its declared maintainers. */
+function moduleOwners(moduleId: string, author: string) {
+  return [author, ...(communityModule(moduleId)?.maintainers ?? [])]
+}
+
+type IssueRow = { id: string; module_id: string; author_login: string; title: string; reporter: string | null; github_state: string; public_json: string | null }
 
 /**
  * Create the GitHub issue for a stored report. The report is kept whatever GitHub answers.
@@ -106,18 +81,15 @@ type IssueRow = { id: string; module_id: string; author_login: string; title: st
 export async function mirrorIssue(db: Database, env: Env, id: string, stale = false) {
   const config = githubConfig(env)
   if (!config) return { state: 'none' as const }
-  const row = await db.prepare('SELECT i.id,i.module_id,i.author_login,i.title,i.body,i.context_json,i.log_missing,i.log_missing_note,i.github_state,i.public_sharing,u.display_name AS reporter,l.text AS log_text,l.summary_json FROM issues i JOIN users u ON u.id=i.reporter_id LEFT JOIN issue_logs l ON l.issue_id=i.id WHERE i.id=?').bind(id).first<IssueRow>()
+  const row = await db.prepare('SELECT i.id,i.module_id,i.author_login,i.title,i.github_state,i.public_json,u.username AS reporter FROM issues i JOIN users u ON u.id=i.reporter_id WHERE i.id=?').bind(id).first<IssueRow>()
   if (!row) throw new HttpError(404, 'Issue not found.')
-  // No new or historical report is granted publication by the account migration.
-  if (!row.public_sharing) throw new HttpError(400, 'This report is private and cannot be published to GitHub.')
+  // Only reports whose reporter chose a public bug description are published, and only that description.
+  if (!row.public_json) throw new HttpError(400, 'This report is private and cannot be published to GitHub.')
   // Claim the row so concurrent requests cannot open two GitHub issues.
   const claimable = stale ? "('none','pending','failed','syncing')" : "('none','pending','failed')"
   if (!await db.prepare("UPDATE issues SET github_state='syncing',github_error='' WHERE id=? AND github_state IN " + claimable + " RETURNING id").bind(id).first()) return { state: row.github_state as 'synced' | 'syncing' }
   try {
-    const created = await createGithubIssue(config, {
-      ...row, context: row.context_json ? JSON.parse(row.context_json) as IssueContext : null,
-      log: row.log_text && row.summary_json ? { text: row.log_text, summary: JSON.parse(row.summary_json) as OtLogSummary } : null,
-    })
+    const created = await createGithubIssue(config, { id: row.id, module_id: row.module_id, title: row.title, reporter: row.reporter, owners: moduleOwners(row.module_id, row.author_login), details: JSON.parse(row.public_json) as PublicBugDetails }, env.APP_URL)
     await db.prepare("UPDATE issues SET github_state='synced',github_number=?,github_url=?,github_error='' WHERE id=?").bind(created.number, created.url, id).run()
     return { state: 'synced' as const, url: created.url }
   } catch (error) {
@@ -135,22 +107,44 @@ export async function signGithubPayload(secret: string, body: ArrayBuffer) {
   return 'sha256=' + hex(await crypto.subtle.sign('HMAC', key, body))
 }
 
+type WebhookPayload = { action?: unknown; issue?: { number?: unknown; state_reason?: unknown }; comment?: { body?: unknown; user?: { login?: unknown; type?: unknown } }; sender?: { login?: unknown }; repository?: { full_name?: unknown } }
+
 /**
- * GitHub "issues" webhook: closing or reopening the mirrored issue updates the
- * reporter's status. Only signed deliveries for the configured repository count.
+ * GitHub "issues" and "issue_comment" webhooks. Closing or reopening a mirrored issue updates the report's
+ * status; status changes and comments notify the reporter. Only signed deliveries for the configured
+ * repository count, and a redelivered event never notifies twice.
  */
 export async function handleGithubWebhook(request: Request, env: Env, db: Database, body: ArrayBuffer) {
   const secret = env.GITHUB_WEBHOOK_SECRET?.trim() ?? '', config = githubConfig(env)
   if (!secret || !config) throw new HttpError(503, 'GitHub webhooks are not configured.')
   if (!sameText(request.headers.get('X-Hub-Signature-256') ?? '', await signGithubPayload(secret, body))) throw new HttpError(401, 'Invalid signature.')
   const event = request.headers.get('X-GitHub-Event')
-  if (event === 'ping') return { ok: true, handled: false }
-  if (event !== 'issues') return { ok: true, handled: false }
-  let payload: { action?: unknown; issue?: { number?: unknown }; repository?: { full_name?: unknown } }
+  if (event !== 'issues' && event !== 'issue_comment') return { ok: true, handled: false }
+  let payload: WebhookPayload
   try { payload = JSON.parse(new TextDecoder().decode(body)) } catch { throw new HttpError(400, 'Invalid payload.') }
-  const status = payload.action === 'closed' ? 'closed' : payload.action === 'reopened' ? 'open' : null
   const number = payload.issue?.number
-  if (!status || !Number.isInteger(number) || String(payload.repository?.full_name ?? '').toLowerCase() !== config.repository.toLowerCase()) return { ok: true, handled: false }
-  const updated = await db.prepare('UPDATE issues SET status=? WHERE github_number=? RETURNING id').bind(status, number).first()
-  return { ok: true, handled: !!updated }
+  if (!Number.isInteger(number) || String(payload.repository?.full_name ?? '').toLowerCase() !== config.repository.toLowerCase()) return { ok: true, handled: false }
+  // Most issues and comments on the repository did not start on Modwerk.
+  if (!await db.prepare('SELECT id FROM issues WHERE github_number=?').bind(number).first()) return { ok: true, handled: false }
+  const delivery = (request.headers.get('X-GitHub-Delivery') ?? '').slice(0, 100) || crypto.randomUUID()
+  const notify = (kind: string, actor: unknown, excerpt: string | null) => db.prepare(`INSERT INTO notifications(id,user_id,kind,issue_id,module_id,github_actor,excerpt,delivery_id) SELECT lower(hex(randomblob(16))),i.reporter_id,?,i.id,i.module_id,?,?,? FROM issues i JOIN users u ON u.id=i.reporter_id WHERE i.github_number=? AND u.suspended=0 ON CONFLICT DO NOTHING`)
+    .bind(kind, typeof actor === 'string' && GITHUB_LOGIN.test(actor) ? actor : null, excerpt, delivery, number)
+  if (event === 'issue_comment') {
+    const comment = payload.comment
+    // Bots (CI, release tooling) talk to developers, not reporters.
+    if (payload.action !== 'created' || typeof comment?.body !== 'string' || comment.user?.type === 'Bot') return { ok: true, handled: false }
+    await notify('issue_comment', comment.user?.login, comment.body.slice(0, 400)).run()
+    return { ok: true, handled: true }
+  }
+  const status = payload.action === 'closed' ? 'closed' : payload.action === 'reopened' ? 'open' : null
+  if (!status) return { ok: true, handled: false }
+  // "Completed" is how GitHub records a fix, including closing through a merged pull request.
+  const kind = status === 'open' ? 'issue_reopened' : payload.issue?.state_reason === 'completed' ? 'issue_resolved' : 'issue_closed'
+  await db.batch([
+    db.prepare('UPDATE issues SET status=? WHERE github_number=?').bind(status, number),
+    // Reports from before GitHub tracking may still have a forum thread; it follows the issue.
+    db.prepare('UPDATE forum_threads SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=(SELECT forum_thread_id FROM issues WHERE github_number=?)').bind(status === 'closed' ? 'resolved' : 'open', number),
+    notify(kind, payload.sender?.login, null),
+  ])
+  return { ok: true, handled: true }
 }

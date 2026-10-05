@@ -9,7 +9,7 @@ export async function maintainedModules(db: Database, user: User) {
   // Removed maintainers lose access immediately when the reviewed catalog changes.
   return COMMUNITY_MODULES.filter(module => rows.some(row => row.module_id === module.id && row.github_login.toLowerCase()===user.github_login?.toLowerCase() && module.maintainers.some(login => login.toLowerCase() === row.github_login.toLowerCase())))
 }
-type Issue = {id:string;module_id:string;reporter_id:string;title:string;body:string;status:string;context_json:string|null;maintainer_sharing:number;public_sharing:number;created_at:string;forum_thread_id:string|null}
+type Issue = {id:string;module_id:string;reporter_id:string;title:string;body:string;status:string;context_json:string|null;maintainer_sharing:number;public_sharing:number;created_at:string;forum_thread_id:string|null;github_url:string|null}
 async function accessIssue(db:Database,id:string,user:User|null,admin:boolean,developer:User|null) {
   const issue = await db.prepare('SELECT * FROM issues WHERE id=?').bind(id).first<Issue>()
   if (!issue) throw new HttpError(404,'Report not found.')
@@ -78,7 +78,7 @@ export async function developerApi(request:Request,db:Database,user:User|null,ad
       const ids = requested ? [requested] : modules.map(module => module.id), status = url.searchParams.get('status') ?? 'open'
       if (!['open','closed','all'].includes(status)) throw new HttpError(400,'Choose all, open or closed reports.')
       if (!ids.length) return response([])
-      return response((await db.prepare(`SELECT id,module_id,title,body,status,created_at,forum_thread_id FROM issues WHERE maintainer_sharing=1 AND public_sharing=0 AND module_id IN (${ids.map(()=>'?').join(',')}) AND (?='all' OR status=?) ORDER BY created_at DESC,rowid DESC LIMIT 200`).bind(...ids,status,status).all()).results)
+      return response((await db.prepare(`SELECT id,module_id,title,body,status,created_at,forum_thread_id,github_url FROM issues WHERE maintainer_sharing=1 AND public_sharing=0 AND module_id IN (${ids.map(()=>'?').join(',')}) AND (?='all' OR status=?) ORDER BY created_at DESC,rowid DESC LIMIT 200`).bind(...ids,status,status).all()).results)
     }
     throw new HttpError(404,'Developer route not found.')
   }
@@ -94,7 +94,7 @@ export async function developerApi(request:Request,db:Database,user:User|null,ad
       if (!Number.isInteger(page) || page < 0 || page > 10000) throw new HttpError(400,'Invalid reply page.')
       const replies = (await db.prepare('SELECT r.id,r.body,r.created_at,u.username,u.display_name AS author FROM issue_replies r JOIN users u ON u.id=r.user_id WHERE issue_id=? ORDER BY r.created_at,r.rowid LIMIT 101 OFFSET ?').bind(issue.id,page*100).all()).results
       const log = await db.prepare('SELECT summary_json FROM issue_logs WHERE issue_id=?').bind(issue.id).first<{summary_json:string}>()
-      return response({id:issue.id,module_id:issue.module_id,title:issue.title,body:issue.body,status:issue.status,created_at:issue.created_at,forumThreadId:issue.forum_thread_id,context:issue.context_json?JSON.parse(issue.context_json):null,maintainerSharing:!!issue.maintainer_sharing,canShare:reporter&&!!user?.email_verified&&!issue.public_sharing,canManage,hasLog:!!log,replies:replies.slice(0,100),hasMore:replies.length>100})
+      return response({id:issue.id,module_id:issue.module_id,title:issue.title,body:issue.body,status:issue.status,created_at:issue.created_at,forumThreadId:issue.forum_thread_id,githubUrl:issue.github_url,context:issue.context_json?JSON.parse(issue.context_json):null,maintainerSharing:!!issue.maintainer_sharing,canShare:reporter&&!!user?.email_verified&&!issue.public_sharing,canManage,hasLog:!!log,replies:replies.slice(0,100),hasMore:replies.length>100})
     }
     const member = admin || actor?.github_id ? actor! : needMember(user)
     await throttle(db,'private-report:'+member.id,30)
