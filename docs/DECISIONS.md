@@ -132,3 +132,11 @@ The owner asked for images and audio snippets in forum posts, compressed well (O
 - **The server still decides the type** from the file's bytes (PNG, JPEG, WebP, WAV, MP3, Ogg) and rejects everything else, including firmware. Limits: 5 MB per image, 10 MB per sound clip, four files per post, 20 uploads and 100 MB per member per day.
 - **Files are attached to posts, not embedded in the text,** so post bodies stay plain escaped text. They are stored in the `MEDIA` R2 bucket and served by the Worker with a fixed type, `nosniff`, a sandbox CSP and byte ranges (Safari needs them to play audio).
 - **Deleting an account removes its files** while the post text stays with anonymous attribution, because pictures and recordings are more likely to contain personal data than the discussion around them. Authors can remove their own files at any time; administrators can delete a file permanently. Unused uploads are purged after a day.
+
+## 5 October 2026 — Forum organization, Shoutbox 8 and rich editing
+
+The owner asked to bring the shoutbox and forum organization from elektronmods.com into Modwerk; the app's existing module gallery already serves that purpose. The chat is named **Shoutbox 8** and opens expanded by default as a floating chat panel on the side, keeping the forum layout unchanged. Browse by machine also starts expanded. New topics cover feature requests, tutorials, introductions and showcases. Latest activity, new threads, followed discussions, category counts and recent reply previews improve discovery without adding another mod catalog.
+
+The owner also requested a richer post editor. Threads and replies use visual formatting with a Markdown source option; the stored text remains Markdown and public rendering does not execute HTML or embed external images. Shoutbox messages remain brief plain text with verified-account posting, ownership controls, rate limits, reports and administrator moderation.
+
+The owner explicitly requires local review before any production rollout. The isolated preview uses fictional data, a separate local Worker configuration, no production database ID and no mail credentials. Implementation and local migrations do not authorize deployment.

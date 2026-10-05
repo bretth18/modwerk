@@ -1,3 +1,4 @@
+import { BackLink } from '../components/BackLink'
 import { useEffect, useRef, useState } from 'react'
 import { useCommunity } from './context'
 import { completeSocial, finishSocial, type SocialResult } from './social-login'
@@ -19,7 +20,7 @@ export function SocialReturn({code}:{code:string}) {
       await refreshRef.current();window.location.assign('#'+next)
     }catch(error){setError(error instanceof Error?error.message:'Your account could not be created.')}finally{setBusy(false)}
   }
-  return <div className="community-page account-page"><section className="configuration-section">
+  return <div className="community-page account-page"><BackLink href="#account/login">Sign in</BackLink><section className="configuration-section">
     <h1>{onboarding?'Finish creating your account':'Completing sign-in'}</h1>
     {onboarding?<><p>Your social account is verified. Choose the public username that will appear with your posts. We suggested one; edit it if you like.</p><form className="community-form" onSubmit={event=>{event.preventDefault();void submit(event.currentTarget)}}>
       <label>Public username<input name="username" defaultValue={onboarding.username} required minLength={3} maxLength={24} pattern="[A-Za-z0-9_]{3,24}" autoComplete="username" spellCheck={false}/><small>3–24 letters, numbers or underscores. Your email and provider profile stay private.</small></label>

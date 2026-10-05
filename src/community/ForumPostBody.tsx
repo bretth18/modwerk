@@ -1,39 +1,10 @@
-type Block = { kind: 'text' | 'quote' | 'code'; lines: string[] }
+import Markdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import { forumLink } from './forum-links'
 
+const allowed = ['p','br','strong','em','del','a','code','pre','blockquote','ul','ol','li','h2','h3','hr']
 export function ForumPostBody({ body }: { body: string }) {
-  const blocks: Block[] = []
-  let fenced = false
-  let current: Block | undefined
-  for (const line of body.split('\n')) {
-    if (/^```[\w+-]*\s*$/.test(line)) {
-      if (fenced && !/^```\s*$/.test(line)) {
-        current!.lines.push(line)
-        continue
-      }
-      fenced = !fenced
-      current = fenced ? { kind: 'code', lines: [] } : undefined
-      if (current) blocks.push(current)
-      continue
-    }
-    if (fenced) {
-      current!.lines.push(line)
-      continue
-    }
-    if (!line.trim()) {
-      current = undefined
-      continue
-    }
-    const kind = line.startsWith('>') ? 'quote' : 'text'
-    if (!current || current.kind !== kind) {
-      current = { kind, lines: [] }
-      blocks.push(current)
-    }
-    current.lines.push(kind === 'quote' ? line.replace(/^>\s?/, '') : line)
-  }
-  return <div className="forum-post-body">{blocks.map((block, index) => {
-    const content = block.lines.join('\n')
-    if (block.kind === 'code') return <pre key={index}><code>{content}</code></pre>
-    if (block.kind === 'quote') return <blockquote key={index}>{content}</blockquote>
-    return <p key={index}>{content}</p>
-  })}</div>
+  return <div className="forum-post-body"><Markdown remarkPlugins={[remarkGfm]} allowedElements={allowed} unwrapDisallowed
+    urlTransform={value=>forumLink(value)??''}
+    components={{code:({children})=><code>{typeof children==='string'?children.replace(/\n$/,''):children}</code>,a:({href,children})=>href?<a href={href} target="_blank" rel="noopener noreferrer nofollow">{children}</a>:<span>{children}</span>}}>{body}</Markdown></div>
 }

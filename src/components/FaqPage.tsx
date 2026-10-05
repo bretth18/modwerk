@@ -1,3 +1,4 @@
+import { BackLink } from './BackLink'
 import { INDEPENDENCE_NOTICE, FLASHING_RISKS } from '../firmware-notices'
 import { isValidElement, useState } from 'react'
 import type { ReactNode } from 'react'
@@ -304,7 +305,7 @@ export function FaqPage() {
   })).filter(section => section.questions.length > 0)
   const count = sections.reduce((total, section) => total + section.questions.length, 0)
 
-  return <div className="faq-page">
+  return <div className="faq-page"><BackLink href="#library">Module library</BackLink>
     <div className="page-heading"><div><p className="page-kicker">MODWERK / HELP</p><h1>Frequently asked questions</h1><p>Choose the right firmware for your machine, understand preview status and find its flashing and recovery steps.</p></div></div>
     {!DOWNLOADS_ENABLED && <aside className="risk-note" role="note"><strong>Octatrack firmware downloads are paused</strong><p>The built-in logger is undergoing verification. You can explore modules and check supported configurations while the updated builds await review. The official Elektron OS remains available from Elektron.</p></aside>}
     <div className="faq-tools">

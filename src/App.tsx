@@ -3,6 +3,7 @@ import { NotificationBell } from './community/NotificationBell'
 import { DeveloperPage } from './community/DeveloperPage'
 import { MemberGate } from './community/MemberGate'
 import { ForumPage } from './community/ForumPage'
+import { ForumShoutbox } from './community/ForumShoutbox'
 import './community/forum.css'
 import { trackPageView, trackUsage } from './community/usage'
 import { LegalPage } from './legal/LegalPage'
@@ -308,6 +309,7 @@ export default function App() {
           </>}
           {phoneLayout && projectNotice}
         </main>
+        {forumRoute&&!route.startsWith('forum/shoutbox')&&<ForumShoutbox floating/>}
         <footer className="status-bar"><nav className="legal-links" aria-label="Legal information"><a href="#privacy">Privacy</a><a href="#impressum">Impressum</a><a href="#report-content">Report content</a></nav><span><span className={'status-dot ' + (!allMachines && currentDevice.id === 'octatrack' && firmware ? 'verified' : '')} />{allMachines ? 'All machines' : currentDevice.id !== 'octatrack' ? currentDevice.name + (machineHasMods ? DIGI_DOWNLOADS_ENABLED ? ' · local builds' : ' · builds in preview' : ' · no mods yet') : firmware ? 'OS 1.40C verified' : 'No base firmware selected'}</span><span className="status-build" role="status">{workspace.saving ? "Saving…" : workspace.storageError ? "Changes not saved" : "Workspace saved on device"}</span>{machineHasMods ? <a href={deviceHref(currentDevice.id, 'configuration')} aria-live="polite">{machineSelected.length} {machineSelected.length === 1 ? 'module' : 'modules'} selected <Icon name="arrow" size={12} /></a> : <span />}</footer>
       </div>
     </div>

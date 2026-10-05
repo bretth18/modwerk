@@ -1,0 +1,16 @@
+import { useEffect, useState } from 'react'
+import { api } from './api'
+import { FORUM_CATEGORIES, FORUM_CATEGORY_DESCRIPTIONS, type ForumCategorySummary, type ForumCategory } from './forum-contract'
+import { Icon, type IconName } from '../components/Icon'
+
+const icons:Record<ForumCategory,IconName>={general:'message',introductions:'heart',showcase:'wave',requests:'plus',tutorials:'file',modules:'help',configs:'sliders',issues:'shield'}
+export function ForumDirectory({href,machine}:{href:(category:string)=>string;machine?:string}){
+  const [data,setData]=useState<ForumCategorySummary[]|null>(null),[error,setError]=useState('')
+  useEffect(()=>{let cancelled=false;void api<ForumCategorySummary[]>('/forum/categories'+(machine?'?machine='+machine:'')).then(value=>{if(!cancelled)setData(value)}).catch(()=>{if(!cancelled)setError('Category counts are unavailable. You can still browse topics.')});return()=>{cancelled=true}},[machine])
+  return <section className="forum-directory" aria-labelledby="forum-directory-title"><div className="forum-list-heading"><h2 id="forum-directory-title">Find your conversation</h2><span>Browse by topic</span></div>
+    <div className="forum-topic-grid">{Object.entries(FORUM_CATEGORIES).map(([key,label])=>{
+      const count=data?.find(item=>item.category===key)
+      return <a key={key} href={href(key)} className="forum-topic-card" data-category={key}><Icon name={icons[key as ForumCategory]} size={18}/><div><h3>{label}</h3><p>{FORUM_CATEGORY_DESCRIPTIONS[key as ForumCategory]}</p><small>{data?(count?.threads??0)+' discussions · '+(count?.replies??0)+' replies':error?'Browse discussions':'Loading counts…'}</small></div><Icon name="arrow" size={14}/></a>
+    })}</div>{error&&<p className="service-note">{error}</p>}
+  </section>
+}
