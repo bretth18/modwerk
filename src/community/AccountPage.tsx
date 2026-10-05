@@ -16,7 +16,7 @@ import { SUPPORT_MAILTO } from '../support'
 import { DeveloperVerification } from './DeveloperVerification'
 type DeviceSession = { id:string; current:boolean; expires:number }
 function AccountContent({route}:{route:string}) {
-  const {session,refresh}=useCommunity(), [busy,setBusy]=useState(false), [error,setError]=useState(route.startsWith('account/sso-error')?'Social sign-in was not completed. Use your original sign-in method, or create an account if you are new.':''), [message,setMessage]=useState(''), [devices,setDevices]=useState<DeviceSession[]>([])
+  const {session,refresh}=useCommunity(), [busy,setBusy]=useState(false), [error,setError]=useState(route.startsWith('account/sso-error')?(new URLSearchParams(route.split('?')[1]).get('reason')==='exists'?'An account with this email address already exists. Sign in with the method you used to create it (your email and password, or the social provider you first used).':'Social sign-in was not completed. Use your original sign-in method, or create an account if you are new.'):''), [message,setMessage]=useState(''), [devices,setDevices]=useState<DeviceSession[]>([])
   const [path,query='']=route.split('?'),params=new URLSearchParams(query),next=safeNext(params.get('next'))
   const [,action='login',linkToken='']=path.split('/'), mode=['login','register','resend','forgot','verify','reset'].includes(action)?action:'login'
   const linkAction=['verify','reset','forgot','resend'].includes(mode)||params.get('reauth')==='1',member=!!session.user?.verified&&!linkAction
