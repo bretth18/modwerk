@@ -117,10 +117,16 @@ export async function forum(request: Request, db: Database, user: User|null, adm
   }
   if ((match=path.match(/^\/api\/forum\/threads\/([a-zA-Z0-9-]+)$/)) && request.method === 'GET') {
     const thread = await threadById(db,match[1],admin)
-    const summary = await db.prepare(`SELECT ${threadFields},t.hidden FROM forum_threads t JOIN users u ON u.id=t.user_id WHERE t.id=?`).bind(thread.id).first()
-    const posts = (await db.prepare('SELECT p.*,u.username,u.display_name AS displayName,(SELECT COUNT(*) FROM forum_reactions r WHERE r.post_id=p.id) AS likes,EXISTS(SELECT 1 FROM forum_reactions r WHERE r.post_id=p.id AND r.user_id=?) AS liked FROM forum_posts p JOIN users u ON u.id=p.user_id WHERE p.thread_id=? ORDER BY p.created_at,p.rowid LIMIT 31 OFFSET ?').bind(user?.id??'',thread.id,page(url)*30).all<{id:string;user_id:string;hidden:number;body:string;username:string;displayName:string;created_at:string;edited_at:string|null;likes:number;liked:number}>()).results
-    const following = !!user && !!await db.prepare('SELECT user_id FROM forum_follows WHERE thread_id=? AND user_id=?').bind(thread.id,user.id).first()
-    const bookmarked = !!user && !!await db.prepare('SELECT user_id FROM forum_bookmarks WHERE thread_id=? AND user_id=?').bind(thread.id,user.id).first()
+    const [details,pagePosts] = await Promise.all([
+      db.prepare(`SELECT ${threadFields},t.hidden,
+        EXISTS(SELECT 1 FROM forum_follows f WHERE f.thread_id=t.id AND f.user_id=?) AS following,
+        EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?) AS bookmarked
+        FROM forum_threads t JOIN users u ON u.id=t.user_id WHERE t.id=?`).bind(user?.id??null,user?.id??null,thread.id).first<Record<string,unknown>&{following:number;bookmarked:number}>(),
+      db.prepare('SELECT p.*,u.username,u.display_name AS displayName,(SELECT COUNT(*) FROM forum_reactions r WHERE r.post_id=p.id) AS likes,EXISTS(SELECT 1 FROM forum_reactions r WHERE r.post_id=p.id AND r.user_id=?) AS liked FROM forum_posts p JOIN users u ON u.id=p.user_id WHERE p.thread_id=? ORDER BY p.created_at,p.rowid LIMIT 31 OFFSET ?').bind(user?.id??'',thread.id,page(url)*30).all<{id:string;user_id:string;hidden:number;body:string;username:string;displayName:string;created_at:string;edited_at:string|null;likes:number;liked:number}>(),
+    ])
+    if(!details)throw new HttpError(404,'Thread not found.')
+    const {following:followed,bookmarked:saved,...summary}=details
+    const posts=pagePosts.results,following=!!followed,bookmarked=!!saved
     const attachments = await postAttachments(db,posts.slice(0,30).filter(post=>admin||!post.hidden).map(post=>post.id))
     return response({thread:summary,posts:posts.slice(0,30).map(post=>({attachments:attachments.get(post.id)??[],canRemoveMedia:!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,id:post.id,body:post.hidden&&!admin?'':post.body,username:post.hidden&&!admin?null:post.username,displayName:post.hidden&&!admin?null:post.displayName,created_at:post.created_at,edited_at:post.edited_at,hidden:post.hidden,likes:post.hidden?0:post.likes,liked:!post.hidden&&!!post.liked,canEdit:!thread.locked&&!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,official:post.user_id===SYSTEM_AUTHOR,...(admin?{user_id:post.user_id}:{})})),configuration:thread.configuration_json?JSON.parse(thread.configuration_json):null,issue:thread.issue_json?JSON.parse(thread.issue_json):null,following,bookmarked,hasMore:posts.length>30})
   }

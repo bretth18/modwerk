@@ -294,7 +294,7 @@ describe('GitHub Pages and separate backend',()=>{
   const session=tokens.author
   const result=await call('/modules/spectrum/comments','POST',{body:'Cross-domain member'},session)
   expect(session).toMatch(/^[a-f0-9]{64}$/);expect(result.headers.get('set-cookie')).toBeNull()
-  expect(result.headers.get('access-control-expose-headers')).toBe('X-Octamod-Session, X-Modwerk-Developer')
+  expect(result.headers.get('access-control-expose-headers')).toBe('X-Octamod-Session, X-Modwerk-Developer, Server-Timing')
   const mine=await (await call('/modules/spectrum','GET',undefined,session)).json();expect(mine.comments[0].canDelete).toBe(true)
   expect((await call('/submissions','POST',details,session)).status).toBe(410)
   const logout=await call('/auth/logout','POST',{},session);expect(logout.headers.get('X-Octamod-Session')).toBe('')

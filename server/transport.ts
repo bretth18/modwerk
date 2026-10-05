@@ -3,6 +3,7 @@ import type { Env } from './platform'
 import { appOrigin, HttpError, response } from './security'
 /** One trusted website origin, including failure responses and preflights. */
 export async function handleCommunity(request: Request, env: Env): Promise<Response> {
+  const started=performance.now()
   let allowed: string
   try { allowed = appOrigin(env) } catch (error) { return response({ error: error instanceof Error ? error.message : 'Service unavailable.' }, 503) }
   const origin = request.headers.get('Origin')
@@ -21,10 +22,12 @@ export async function handleCommunity(request: Request, env: Env): Promise<Respo
     catch (error) { result = response({ error: error instanceof HttpError ? error.message : 'The request could not be completed.' }, error instanceof HttpError ? error.status : 500) }
   }
   const headers = new Headers(result.headers)
+  headers.set('Server-Timing','app;dur='+(performance.now()-started).toFixed(1))
   headers.set('Vary', 'Origin')
   if (origin === allowed) {
     headers.set('Access-Control-Allow-Origin', allowed)
-    headers.set('Access-Control-Expose-Headers', 'X-Octamod-Session, X-Modwerk-Developer')
+    headers.set('Timing-Allow-Origin',allowed)
+    headers.set('Access-Control-Expose-Headers', 'X-Octamod-Session, X-Modwerk-Developer, Server-Timing')
   }
   return new Response(result.body, { status: result.status, statusText: result.statusText, headers })
 }

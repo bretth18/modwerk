@@ -98,12 +98,17 @@ export async function cleanupUsage(db: Database, now = new Date()) {
 export async function usageStatistics(db: Database, days: number, now = new Date()) {
   if (![7,30,90].includes(days)) throw new HttpError(400,'Choose 7, 30 or 90 days.')
   const from = before(now,days-1), to = day(now)
-  const collectionStarted = (await db.prepare("SELECT value FROM usage_meta WHERE key='collection_started'").first<{value:string}>())?.value ?? null
-  const rows = (await db.prepare('SELECT day,visitors,page_views,configurations,builds,downloads,exports FROM usage_daily WHERE day>=? AND day<=? ORDER BY day').bind(from,to).all<UsageDay>()).results
   // Compare equal windows of completed days; today and the first partial collection day are excluded.
   const previousFrom = before(now,2 * (days-1)), previousTo = before(now,days)
-  const unavailableReason = previousFrom < before(now,89) ? 'retention' : !collectionStarted || previousFrom <= collectionStarted.slice(0,10) ? 'collection' : null
-  const previousRows = unavailableReason ? [] : (await db.prepare('SELECT day,visitors,page_views,configurations,builds,downloads,exports FROM usage_daily WHERE day>=? AND day<=? ORDER BY day').bind(previousFrom,previousTo).all<UsageDay>()).results
+  const outsideRetention = previousFrom < before(now,89)
+  const [meta,daily] = await Promise.all([
+    db.prepare("SELECT value FROM usage_meta WHERE key='collection_started'").first<{value:string}>(),
+    db.prepare('SELECT day,visitors,page_views,configurations,builds,downloads,exports FROM usage_daily WHERE day>=? AND day<=? ORDER BY day').bind(outsideRetention?from:previousFrom,to).all<UsageDay>(),
+  ])
+  const collectionStarted = meta?.value ?? null
+  const rows = daily.results.filter(row=>row.day>=from)
+  const unavailableReason = outsideRetention ? 'retention' : !collectionStarted || previousFrom <= collectionStarted.slice(0,10) ? 'collection' : null
+  const previousRows = unavailableReason ? [] : daily.results.filter(row=>row.day>=previousFrom&&row.day<=previousTo)
   return response({generatedAt:now.toISOString(),collectionStarted,from,to,days,rows,comparison:{from:previousFrom,to:previousTo,rows:previousRows,unavailableReason}})
 }
 

@@ -51,6 +51,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if (path === '/api/usage/events' && request.method === 'POST') return await recordUsage(request,env,db)
     if (path === '/api/usage/module-downloads' && request.method === 'POST') return await recordModuleDownload(request,env,db)
     if (path === '/api/usage/count' && request.method === 'POST') return await recordAnonymousCount(request,env,db)
+    if (path === '/api/catalog' && request.method === 'GET') return response((await db.prepare("SELECT s.module_id,s.title,s.repository_url,s.description,s.usage,s.resource_notes,s.test_report_url,s.reviewed_at,(SELECT strftime('%Y-%m-%dT%H:%M:%SZ', MIN(first.reviewed_at)) FROM submissions first WHERE first.module_id=s.module_id AND first.status='approved') AS added_at,u.github_login AS author FROM module_publications p JOIN submissions s ON s.id=p.submission_id JOIN users u ON u.id=s.owner_id ORDER BY s.reviewed_at DESC").all()).results)
+    if(path==='/api/community/summary'&&request.method==='GET')return response(await moduleStatistics(db))
     const developerAuth = await developerAuthentication(request,env,db)
     if(developerAuth)return developerAuth
     const user = await currentUser(request,db,env)
@@ -71,19 +73,25 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if (!object) throw new HttpError(404,'Media not found.')
       return new Response(object.body,{headers:{'Content-Type':item.mime,'X-Content-Type-Options':'nosniff','Cache-Control':'private, no-store','Content-Security-Policy':"default-src 'none'; sandbox"}})
     }
-    if (path === '/api/catalog' && request.method === 'GET') return response((await db.prepare("SELECT s.module_id,s.title,s.repository_url,s.description,s.usage,s.resource_notes,s.test_report_url,s.reviewed_at,(SELECT strftime('%Y-%m-%dT%H:%M:%SZ', MIN(first.reviewed_at)) FROM submissions first WHERE first.module_id=s.module_id AND first.status='approved') AS added_at,u.github_login AS author FROM module_publications p JOIN submissions s ON s.id=p.submission_id JOIN users u ON u.id=s.owner_id ORDER BY s.reviewed_at DESC").all()).results)
     if ((match = path.match(/^\/api\/modules\/([a-z0-9-]+)$/)) && request.method === 'GET') {
       await knownModule(db,match[1])
       await ensureDiscussionThread(db,match[1])
-      const comments = (await db.prepare("SELECT p.id,p.body,p.created_at,u.display_name AS author,p.user_id,t.locked FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id JOIN users u ON u.id=p.user_id WHERE t.id=? AND p.id<>t.id AND p.hidden=0 AND (t.hidden=0 OR ?=1) ORDER BY p.created_at DESC,p.rowid DESC LIMIT 100").bind(moduleThreadId(match[1]),Number(admin)).all<{id:string;body:string;created_at:string;author:string;user_id:string;locked:number}>()).results.map(({locked,...comment}) => ({...comment,user_id:undefined,canDelete:admin || !locked && comment.user_id === user?.id}))
-      const ratings = await db.prepare('SELECT AVG(value) AS average,COUNT(*) AS count FROM ratings WHERE module_id=?').bind(match[1]).first()
-      const ownRating = user ? await db.prepare('SELECT value FROM ratings WHERE module_id=? AND user_id=?').bind(match[1],user.id).first<{value:number}>() : null
-      const media = (await db.prepare("SELECT m.id,m.kind,m.caption,m.capture_type FROM media m JOIN module_publications p ON p.submission_id=m.submission_id WHERE p.module_id=?").bind(match[1]).all()).results
-      const likes=await db.prepare('SELECT COUNT(*) AS count FROM likes WHERE module_id=?').bind(match[1]).first<{count:number}>()
-      const liked=!!(user&&await db.prepare('SELECT user_id FROM likes WHERE module_id=? AND user_id=?').bind(match[1],user.id).first())
-      const downloads=(await db.prepare('SELECT downloads FROM module_downloads WHERE module_id=?').bind(match[1]).first<{downloads:number}>())?.downloads??0
-      const downloadsStarted=(await db.prepare("SELECT value FROM module_download_meta WHERE key='collection_started'").first<{value:string}>())?.value??null
-      return response({comments,ratings,ownRating:ownRating?.value ?? 0,media,likes:likes?.count??0,liked,downloads,downloadsStarted})
+      const [posts,statistics,media] = await Promise.all([
+        db.prepare("SELECT p.id,p.body,p.created_at,u.display_name AS author,p.user_id,t.locked FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id JOIN users u ON u.id=p.user_id WHERE t.id=? AND p.id<>t.id AND p.hidden=0 AND (t.hidden=0 OR ?=1) ORDER BY p.created_at DESC,p.rowid DESC LIMIT 100").bind(moduleThreadId(match[1]),Number(admin)).all<{id:string;body:string;created_at:string;author:string;user_id:string;locked:number}>(),
+        db.prepare(`WITH requested AS (SELECT ? AS module_id,? AS user_id) SELECT
+          (SELECT AVG(value) FROM ratings WHERE module_id=requested.module_id) AS average,
+          (SELECT COUNT(*) FROM ratings WHERE module_id=requested.module_id) AS count,
+          COALESCE((SELECT value FROM ratings WHERE module_id=requested.module_id AND user_id=requested.user_id),0) AS ownRating,
+          (SELECT COUNT(*) FROM likes WHERE module_id=requested.module_id) AS likes,
+          EXISTS(SELECT 1 FROM likes WHERE module_id=requested.module_id AND user_id=requested.user_id) AS liked,
+          COALESCE((SELECT downloads FROM module_downloads WHERE module_id=requested.module_id),0) AS downloads,
+          (SELECT value FROM module_download_meta WHERE key='collection_started') AS downloadsStarted
+          FROM requested`).bind(match[1],user?.id??null).first<{average:number|null;count:number;ownRating:number;likes:number;liked:number;downloads:number;downloadsStarted:string|null}>(),
+        db.prepare("SELECT m.id,m.kind,m.caption,m.capture_type FROM media m JOIN module_publications p ON p.submission_id=m.submission_id WHERE p.module_id=?").bind(match[1]).all(),
+      ])
+      const comments = posts.results.map(({locked,...comment}) => ({...comment,user_id:undefined,canDelete:admin || !locked && comment.user_id === user?.id}))
+      if(!statistics)throw new Error('Module statistics missing.')
+      return response({comments,ratings:{average:statistics.average,count:statistics.count},ownRating:statistics.ownRating,media:media.results,likes:statistics.likes,liked:!!statistics.liked,downloads:statistics.downloads,downloadsStarted:statistics.downloadsStarted})
     }
     if ((match = path.match(/^\/api\/modules\/([a-z0-9-]+)\/(comments|rating|like)$/)) && request.method === 'POST') {
       await knownModule(db,match[1])
@@ -217,7 +225,6 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       }
       throw new HttpError(404,'API route not found.')
     }
-    if(path==='/api/community/summary'&&request.method==='GET')return response(await moduleStatistics(db))
     throw new HttpError(404,'API route not found.')
   } catch (error) { return response({error:error instanceof HttpError ? error.message : 'The community service could not complete this request.'},error instanceof HttpError ? error.status : 500) }
 }
