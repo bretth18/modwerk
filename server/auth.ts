@@ -13,8 +13,14 @@ function sameDigest(a:string,b:string){if(a.length!==b.length)return false;let d
 /** Administration is separate from guest sessions and fails closed until the backend owner configures a key. Rotating the key revokes every administrator session. */
 export async function isAdmin(request:Request,env:Env,db:Database){
  const key=configuredKey(env),value=request.headers.get('X-Octamod-Admin')??''
- if(!key||!/^[a-f0-9]{64}$/.test(value))return false
- return !!await db.prepare('SELECT token_hash FROM admin_sessions WHERE token_hash=? AND key_hash=? AND expires>?').bind(await digest(value),await digest(key),Math.floor(Date.now()/1000)).first()
+ if(key&&/^[a-f0-9]{64}$/.test(value)&&await db.prepare('SELECT token_hash FROM admin_sessions WHERE token_hash=? AND key_hash=? AND expires>?').bind(await digest(value),await digest(key),Math.floor(Date.now()/1000)).first())return true
+ return memberIsAdmin(request,db,env)
+}
+/** A signed-in, verified, unsuspended member whose account carries the administrator role. The role is never settable through the API. */
+async function memberIsAdmin(request:Request,db:Database,env:Env){
+ if(!request.headers.get('Authorization')&&!request.headers.get('Cookie'))return false
+ const account=await accountUser(request,env,db)
+ return !!account&&!!await db.prepare('SELECT 1 AS ok FROM users WHERE id=? AND is_admin=1 AND suspended=0 AND email_verified=1').bind(account.id).first()
 }
 export async function currentUser(request:Request,db:Database,env:Env):Promise<User|null>{
  const account=await accountUser(request,env,db);if(account)return account
