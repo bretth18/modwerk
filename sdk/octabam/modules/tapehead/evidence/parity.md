@@ -1,5 +1,44 @@
 # TapeHead browser and native integration
 
+## 0.1.2-experimental (5 Oct 2026)
+
+0.1.2 changes only `tapehead.asm` (422 words instead of 416); the manifest,
+descriptor, chooser rows and ID are unchanged.
+
+- **Package.** `scripts/build-module-packages.py` on this source, imported
+  with `import-module-build.mjs --development`: the TapeHead DSP package is
+  422 words, SHA-256 `c54070fcb616da026d59875a91945818dc58ede2ebcf23023bf3c769c8f0376f`,
+  with its four-origin relocation proofs (`dsp-package.test.ts`: it matches
+  native fresh assembly at all four). Every other package recompiled byte for
+  byte; the ColdFire, ROM, bootstrap, requested and utility packages were
+  carried over unchanged with the new version pins (their sources did not
+  change, and this machine had no pinned m68k-elf toolchain to recompile
+  them; the release build recompiles all of them and refuses any byte
+  difference from these committed packages).
+- **Browser against native.** With the author's local 1.40C (`164f3122…`),
+  the browser composer's TapeHead selection and the native `build_bus.py`
+  build of `tapehead-spring` place TapeHead at P:0x1252 (core A) and
+  P:0x1012 (core B), 422 words each, and the **complete DSP payloads of both
+  cores are word-for-word identical** (26,221 and 25,408 words). The browser
+  also built and round-tripped TapeHead with Repitch, with Mini Verb and
+  Euclid, with Preview Vol and CC Map, and with Scale Quantizer and USB
+  Audio, both chooser settings, and refused TapeHead with Analog BD as
+  before.
+- **Native profiles.** The 32 static-stock profiles over Modulation,
+  Character, Mini Verb and TapeHead (the ones this machine can build without
+  the m68k-elf toolchain) were rebuilt natively: the 16 without TapeHead
+  reproduce the committed identities exactly, which checks the setup; the 16
+  with TapeHead build or refuse exactly as with 0.1.1 (Modulation +
+  Character + TapeHead now overruns by 262 words instead of 256; the
+  four-module set still refuses on Mini Verb).
+- **Not regenerated.** The committed 512-, 224- and 48-profile proof files
+  below are the 0.1.1 record. They already predate the built-in logger
+  (docs/VERIFICATION.md, 3 Oct 2026), so they are no longer complete-image
+  identities of what the site builds, for any module. Re-exporting them for
+  0.1.2 needs the pinned m68k-elf toolchain.
+
+The 0.1.1 record follows.
+
 Version 0.1.1-experimental. The DSP and manifest remain identical to the
 contributor's corrected source at c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c.
 The updated documentation, licences and metadata preserve the original port.

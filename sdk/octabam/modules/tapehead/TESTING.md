@@ -1,6 +1,182 @@
 # TapeHead testing
 
-## Commands and exact revision
+## 0.1.2-experimental: the input level (2 Oct 2026)
+
+Everything in this section is for 0.1.2. The sections after it are the 0.1.1
+record, kept as it was released.
+
+| file | SHA-256 |
+|---|---|
+| `tapehead.asm` (0.1.2) | `d102114c6eb47a89bbd5f74cc601e53d0657e2d9abffe07a4ffcbec20e23fa12` |
+| `tapehead.asm` heard as OCTABAM6 (level fix, before the cycle payback) | `c6896b3eebc21365db9d00f99ac46320e33e2d70890e92e9a1bde710f4f532b2` |
+| `tapehead.asm` (0.1.1) | `eb30c36f76344df2e9e53a0cf397665a0203cd203573da13fcc4a45c1b92eda5` |
+
+Base: Octamod `main` at `866ea9e` (after PR #42), the vendored DSP56300 tree at
+pin `8ccdd843` with `tools/patches/dsp56300.patch`, Linux x86-64. Local MAIN OS
+section SHA-256 `164f3122…0a84e` (the `stock_guard.py` fingerprint).
+
+### Why
+
+Heard on the unit with 0.1.1 (OCTABAM2): TapeHead saturates less than the
+JSFX. The render gate said the arithmetic matched, and a re-run reproduced
+0.1.1's 4.68e-4 exactly, so the difference is the level. The mixer model
+(`sdk/octabam/docs/remixer/HARNESS.md`, measured under the ColdFire port)
+applies AMP VOL as (v/127)² before the FX chain: at the default VOL 64 a
+0 dBFS sample reaches the module at 0.254 FS. TapeHead's saturation depends on
+level, and the JSFX is normally fed full-scale material in a DAW. Character's
+TAPE mode met the same thing on 23 Sep 2026 ("much too subtle") and got
++12 dB of drive.
+
+0.1.1 in `dsp_host`, a 0.89-amplitude 100 Hz sine scaled by 0.254, against the
+JSFX on the unscaled sine (COLOR NORM, TRIM 18):
+
+| DRIVE | 0.1.1 THD | JSFX THD | 0.1.2 THD |
+|---:|---:|---:|---:|
+| 36 | −33.7 dB | −11.1 dB | −11.0 dB |
+| 70 | −21.7 dB | −8.8 dB | −8.8 dB (float model) |
+| 100 | −12.7 dB | −8.3 dB | −8.3 dB (float model) |
+
+### The change
+
+`out = JSFX(4x) / 4`, a fixed +12.04 dB in and the same out, so the wet/dry
+level relation stays the JSFX's. The state's existing /4 headroom absorbs the
+×4, so the input costs four shifts and moves per channel. The JSFX's input clip
+(on 4x) and output clip (on y) are limiting moves (`move a,x0` from an
+accumulator in extension). `reference.py` gains `INPUT_GAIN` and `render()`
+models the module; `render_jsfx()` is the plugin alone.
+
+Those 12 instructions per sample were paid back in the recursion: each
+multiply-then-add/sub became one `mac y1,y0,a` / `mac -y1,y0,b` (both
+disassemble as signed; exact, since `mpy` leaves the full product and the add
+is exact), and y1n/y3 go to y1 from the accumulator instead of being reloaded
+from the word just stored (the same limiter either way). Against the OCTABAM6
+source: **684 mono renders and a stereo render, bit-identical** (COLOR 0–2 ×
+DRIVE {0, 36, 70, 127} × TRIM {0, 18, 127} × impulse/step/220 Hz–12 kHz at
+three levels plus full-scale white noise).
+
+### The render gate
+
+`python3 verify.py` (same setup as below; about a minute):
+
+```
+assembled 422 words; init P:2000 proc P:2006
+[PASS] tapehead_l is straight-line, one rts
+[PASS] tapehead_r is straight-line, one rts
+[PASS] no mpysu anywhere []
+[PASS] COLOR 0: zero in, zero out
+[PASS] COLOR 1: zero in, zero out
+[PASS] COLOR 2: zero in, zero out
+[PASS] peak error vs the float JSFX <= 0.001 (JSFX units) worst 5.38e-04 at COLOR/DRIVE/TRIM/signal/level (0, 0, 0, 1000, 'hot')
+       meter: 274.1 instructions/sample (one instance, dsp_host)
+[PASS] COLOR 1 renders MEDIUM, not BRIGHT error vs MED 1.1e-05, vs BRGT 8.9e-02
+[PASS] stereo render == two mono renders, bit for bit
+[PASS] DRIVE 36 at AMP VOL 64 saturates like the JSFX at 0 dBFS THD module -11.0 dB, JSFX -11.1 dB
+all TAPEHEAD gates passed
+```
+
+Changes to the gate: error is measured in the JSFX's units (module error ×
+`INPUT_GAIN`); every signal runs at −2 dBFS (input clip engaged) and at
+0.22 FS (a normalized sample at VOL 64); gate 7 pins the THD match. Against
+0.1.1's source gate 7 fails by 22.6 dB.
+
+### Cycles and memory
+
+`REMIX=tapehead-spring BUILD=7 XBUS=1 SPEC=1 python3 -B
+tools/build/cycle_count.py --verify --json`: marker no-op identical,
+**295 cycles/sample** (`tapehead_l` 137, `tapehead_r` 137 words/call), worst
+core 1,180 with four FX2 instances. (OCTABAM6's source counted 301.)
+
+The conservative block model of [cycles](evidence/cycles.md), same method:
+16 × 295 + 3 × 422 + 144 = **6,130 code cycles/instance/block**; eight inserts
+per core **49,040** against the 49,920 usable-work budget, 880 to spare (0.1.1:
+6,000 and 48,000). OCTABAM6's 301-cycle source would have priced 49,952, over
+the budget, which is why the payback was done before submitting.
+
+Memory, as in [memory](evidence/memory.md): 422 P words per core, 844 words,
+**2,532 bytes**; descriptor stride 416 and COLOR formatter 60 unchanged:
+**3,008 shared bytes**; state/scratch unchanged at 31 X words (93 bytes) per
+instance; **4,496 bytes** at sixteen inserts.
+
+### Composed image and benchmark
+
+`hardware-test-remix.py` as `remixes/tapehead-spring/remix.py`, `make image
+REMIX=tapehead-spring BUILD=7` on `866ea9e`:
+
+```
+TAPEHEAD      P:0x01252..0x013f8 ( 422 words)  id 0x1f      (payload A)
+TAPEHEAD      P:0x01012..0x011b8 ( 422 words)  id 0x1f      (payload B)
+round-trip: payload ok, checksum ok
+```
+
+| artifact (local only, never committed) | SHA-256 |
+|---|---|
+| `out/mainos_bus.bin` (0.1.2, BUILD=7) | `774aa99723625fb698e5f0bb6fc32ea3196996931f55beb10ce1ec53eccc328b` |
+| `out/OCTATRACK_OCTABAM7.bin` | `deef3808544729014eebcb611f4cb580f2848acacfa3d5a1c079837c7204b892` |
+| `out/mainos_bus.bin` heard as OCTABAM6 | `2f1f98015e7e8c61f01bbe8cf9b3038e6ef1b44aa2c6b5c205ca0c4f2d37e3b9` |
+| `out/OCTATRACK_OCTABAM6.bin` | `5405cd6c445095adfc77810c9b8c7a25cdf6726f097cb84918419ace952afc39` |
+
+OCTABAM6 was built on `433fa32` with the draft layout; the same source on
+`866ea9e` reproduces its MAIN OS byte for byte. The same setup reproduces
+0.1.1's OCTABAM2 (`2f01f013…`) from 0.1.1's source.
+
+On BUILD=7: `verify_menu` ALL CHECKS PASSED, `verify_initregs` 0 failures,
+`verify_replaces --image` OK, `label_fmt` OK. `benchmark.py`'s runner on the
+composed payloads renders TAPEHEAD within 6.0e-5 (JSFX units) of `reference.py`
+at the defaults, L = R for mono input.
+
+`REMIX=tapehead-spring python3 modules/tapehead/benchmark.py` (2,048 blocks,
+executed instructions, not hardware cycles):
+
+| case | 0.1.2 | 0.1.1 | SPRING REV |
+|---|---:|---:|---:|
+| one instance, fixed controls, per 16-sample block | 4,383 | 4,287 | 4,186 |
+| one instance, per sample | 273.9 | 267.9 | 261.6 |
+| four per core, fixed controls, peak per block | 17,532 | 17,148 | 16,744 |
+| four per core, modulated, peak per block | 17,544 | 17,160 | 16,748 |
+| four per core, worst of all splits, peak per block | 18,000 | 17,616 | 20,376 |
+| init, per core | 24 | 24 | 380 |
+
+### OT UI captures
+
+`scripts/capture-module-ui.py` with 0.1.1's plan (`media/capture.json`) on
+`ot_emu` SHA-256 `2360ffb2…5115` (built from `tools/emu/ot_emu`, pinned
+`vendor/mc68k`; the binary the original draft captured with), MKII panel, empty
+scratch card, transport stopped, the BUILD=7 image. location, controls and
+COLOR MED are byte-identical to 0.1.1's `media/` PNGs and were reviewed; the
+chooser frame again still shows DELAY before YES and is not used.
+
+### Hardware
+
+2 Oct 2026, devilfish707, Octatrack MKII:
+
+- OCTABAM6 (MAIN OS `2f1f9801…`, the level fix before the cycle payback):
+  "yes this works" after comparing with the JSFX, which 0.1.1 had
+  under-saturated.
+- OCTABAM7 (MAIN OS `774aa997…`, this source): "yes it sounds the same",
+  about three minutes with TapeHead on seven tracks under p-lock automation
+  and scene changes. No overload reported.
+
+A listening report, not a stress run: no measured timing, memory canary,
+recording or recovery test, and seven instances rather than the sixteen-insert
+maximum. Record: [hardware](evidence/hardware.md).
+
+### Release integration (5 Oct 2026)
+
+The draft (PR #53, `sdk/drafts/tapehead` at `f890330`) moved into
+`sdk/octabam/modules/tapehead/`; the catalog pins 0.1.2-experimental.
+`evidence/parity.md` has the browser package and parity record.
+
+- Browser packages: rebuilt from this source with `scripts/build-module-packages.py`
+  and imported as a development build. Only the TapeHead DSP package (422
+  words, `c54070fc…`) and the version pins changed; every other module's
+  DSP, resident Character, descriptor, menu and platform record recompiled
+  identically.
+- `npm run check` was not run: the session's npm registry refused the app's
+  packages. The repository's dependency-free checks and the TapeHead,
+  package, composition and qualification tests were run under Node.
+
+
+## Commands and exact revision (0.1.1)
 
 Contributor results below used PR #42 source on top of Octamod `main` at
 `433fa32c0f5b381cf5a71930dc45e121609b7f4d` (2 Oct 2026), with the vendored

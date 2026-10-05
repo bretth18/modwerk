@@ -4,7 +4,7 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import manifest from '../../sdk/octabam/modules/tapehead/octamod.module.json'
 import capture from '../../sdk/octabam/modules/tapehead/media/capture.json'
-import provenance from '../../sdk/imports/tapehead-c53daa9.json'
+import provenance from '../../sdk/imports/tapehead-f890330.json'
 import baseline from '../../sdk/module-qualification-baseline.json'
 import { moduleNativeSourceSha256, parseQualificationBaseline, requireFolderQualification } from '../../scripts/module-qualification.mjs'
 import { parseModuleDocument } from './module-contract'
@@ -25,7 +25,7 @@ describe('published TapeHead evidence', () => {
     expect(await requireFolderQualification(folder, document, parseQualificationBaseline(baseline))).toBe('qualified')
     expect(document.tests.qualification?.sourceSha256).toBe(await moduleNativeSourceSha256(folder, document))
     expect(document.tests.hardwareStatus).toBe('reported')
-    expect(document.tests.qualification?.hardware).toMatchObject({ kind: 'functional', status: 'reported', model: null, sourceRevision: provenance.revision })
+    expect(document.tests.qualification?.hardware).toMatchObject({ kind: 'functional', status: 'reported', model: 'MKII', sourceRevision: provenance.revision })
     expect(document.tests.qualification?.hardware).not.toHaveProperty('durationMinutes')
     expect(isModuleAvailable('tapehead')).toBe(true)
     expect(moduleBuildPending('tapehead')).toBe(false)

@@ -1,10 +1,11 @@
 # TapeHead exact logical memory inventory
 
-Version 0.1.1-experimental, test-image hash bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7.
+Version 0.1.2-experimental, test-image hash 774aa99723625fb698e5f0bb6fc32ea3196996931f55beb10ce1ec53eccc328b (BUILD=7).
+0.1.1 placed 416 words and totalled 2,972 shared / 4,460 bytes; the X, descriptor and formatter figures are unchanged.
 
-Native `build_bus.py` allocation map: payload A P:0x1252..0x13f2;
-payload B P:0x1012..0x11b2 (exclusive ends), 416 logical 24-bit words each.
-Total P storage: 832 words, **2,496 bytes**. Instructions/constants are packed
+Native `build_bus.py` allocation map: payload A P:0x1252..0x13f8;
+payload B P:0x1012..0x11b8 (exclusive ends), 422 logical 24-bit words each.
+Total P storage: 844 words, **2,532 bytes**. Instructions/constants are packed
 into 3-byte words in firmware records; their positions can change in another
 composition, and the native/browser placement check enforces both bounds.
 Record headers and packing/container bytes belong to common firmware packaging.
@@ -28,8 +29,8 @@ ColdFire flash: one 402-byte cloned descriptor in a **416-byte stride**
 (14 bytes padding), plus the verified **60-byte COLOR formatter**, shared by
 all instances. Clone address is selected by the standard native menu builder;
 it is not a new fixed runtime RAM allocation. Thus shared module storage is
-2,496 + 416 + 60 = **2,972 bytes**, per-instance touched storage 93 bytes,
-and maximum logical module total **4,460 bytes** at sixteen inserts.
+2,532 + 416 + 60 = **3,008 bytes**, per-instance touched storage 93 bytes,
+and maximum logical module total **4,496 bytes** at sixteen inserts.
 
 No new Y allocation, buffer, sample table, heap, SDRAM or CPU RAM; no runtime
 allocation or recursion. DSP hardware call stack depth is bounded at three

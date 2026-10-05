@@ -1,12 +1,14 @@
 # TapeHead
 
-Version: 0.1.1-experimental · author: @devilfish707 · algorithm: JClones (MIT)
+Version: 0.1.2-experimental · author: @devilfish707 · algorithm: JClones (MIT)
 
 ![TapeHead: the smoothstep curve, and a sine before and after](presentation/thumbnail.svg)
 
-Experimental module. Hardware operation and parameter locks are reported by
-the author; model, duration and tested maximum load were not specified.
-Native render, cycles, memory and browser parity evidence are in TESTING.md.
+Experimental module. 0.1.2 changes one thing from 0.1.1: the level the tape
+model is driven at, so TapeHead on an Octatrack saturates as much as the JSFX
+does in a DAW. Heard on an MKII by the author (2 Oct 2026; about three minutes
+on seven tracks with p-locks and scenes). Native render, cycles, memory and
+browser/native parity evidence are in TESTING.md.
 
 ## Overview
 
@@ -25,6 +27,14 @@ It suits drum buses, bass and anything that sounds too clean.
 It is a buffer-free insert: no allocator memory, no bus role and no absolute
 Y addresses, so it runs on FX1 or FX2 of any track.
 
+The Octatrack applies AMP VOL before the FX chain, so at the default VOL 64 a
+normalized sample reaches the effect about 12 dB below where it reaches the
+JSFX in a DAW. TapeHead therefore runs the JSFX at +12 dB in and −12 dB out
+(`JSFX(4x) / 4`): a normalized sample at VOL 64 saturates as it does in the
+JSFX, and the wet level relative to dry is the JSFX's. 0.1.1 lacked this and
+saturated far less than the JSFX at the same DRIVE (22 dB less distortion at
+the default DRIVE 36).
+
 The module was written and heard on hardware in octabam (12 Sep 2026). The
 first native render against the float JSFX, made for this port, found three
 defects in that build. This version fixes them, so **it sounds different from
@@ -37,7 +47,7 @@ controls.
 
 | slot | control | default | range | what it does |
 |---|---|---|---|---|
-| 0 | DRIVE | 36 | 0–127 | Drive into the smoothstep curves. 0–127 maps to the JSFX drive 1–10, a gain of 0.8× to 8×. 36 is about the JSFX default 3.5. |
+| 0 | DRIVE | 36 | 0–127 | Drive into the smoothstep curves. 0–127 maps to the JSFX drive 1–10, a gain of 0.8× to 8×. 36 is about the JSFX default 3.5. AMP VOL also drives it (see Overview). |
 | 1 | TRIM | 18 | 0–127 | Output trim. 0 is 0 dB, 127 is −21 dB, linear in dB. 18 is the JSFX default −3 dB. Higher values are quieter. |
 | 2 | COLOR | NORM | NORM / MED / BRGT | Corner of the recursion: 2100, 3680 or 5000 Hz. Higher corners let more top end into the saturator. |
 
@@ -74,13 +84,17 @@ bypassed.
 - OS 1.40C only, as for every Octamod module. MKI and MKII use the same DSP
   code; the MKII panel has been captured in the emulator only.
 - 44.1 kHz is assumed for the COLOR corners.
-- The cost is 288 cycles/sample per instance by the static counter,
+- AMP VOL is part of the drive. At VOL 64 a 0 dBFS sample just reaches the
+  JSFX's input clip; above it, full-scale peaks are hard-clipped at the
+  input, as a signal hotter than 0 dBFS would be in a DAW. Turn VOL down
+  for a softer result at high DRIVE.
+- The cost is 295 cycles/sample per instance by the static counter,
   whatever the settings. Eight instances on one core (FX1 and FX2 on four
-  tracks) price at 2,304 of the 3,120 cycles/core modules may use, leaving
-  816 for everything else on that core. Selections that also carry
+  tracks) price at 2,360 of the 3,120 cycles/core modules may use, leaving
+  760 for everything else on that core. Selections that also carry
   heavy modules on the same tracks may not fit; the build's cycle check
   decides.
-- Projects saved with the octabam build keep working: the ID (0x1f) and the
+- Projects saved with 0.1.1 or the octabam build keep working: the ID (0x1f) and the
   slot layout (DRIVE, TRIM, COLOR on slots 0–2, COLOR a 3-way select) are
   unchanged.
 - The octabam build heard on 12 Sep 2026 had different arithmetic (see below).
@@ -92,18 +106,21 @@ See [TESTING.md](TESTING.md) for commands and numbers. In short:
 
 - **Against the JSFX (emulator):** `verify.py` assembles `tapehead.asm`,
   runs it in `dsp_host` and compares it with `reference.py`. Peak error is
-  4.7e-4 over COLOR × DRIVE {0, 36, 127} × TRIM {0, 18, 127} × six
-  signals. Silence in gives silence out, COLOR 1 renders MEDIUM, the stereo
-  channels are independent, the sample routines are straight-line and no
-  `mpysu` remains. In the composed test image it renders within 3.9e-5 of
-  the JSFX at the defaults.
+  5.4e-4 (in the JSFX's units) over COLOR × DRIVE {0, 36, 127} × TRIM
+  {0, 18, 127} × six signals at two levels: −2 dBFS, and 0.22 FS (a
+  normalized sample at VOL 64). Silence in gives silence out, COLOR 1
+  renders MEDIUM, the stereo channels are independent, the sample routines
+  are straight-line and no `mpysu` remains. At DRIVE 36 a normalized 100 Hz
+  sine at the unit's level has −11.0 dB THD against the JSFX's −11.1 dB at
+  0 dBFS (0.1.1: −33.7 dB). In the composed test image it renders within
+  6.0e-5 of the reference at the defaults.
 - **Against SPRING REV (emulator, `benchmark.py`):**
 
   | | TapeHead | Spring Reverb |
   |---|---:|---:|
-  | one instance, instructions per sample | 268 | 262 |
-  | four per core, worst peak per 16-sample block | 17,616 | 20,376 |
-  | DSP program | 416 words | 1,063 words |
+  | one instance, instructions per sample | 274 | 262 |
+  | four per core, worst peak per 16-sample block | 18,000 | 20,376 |
+  | DSP program | 422 words | 1,063 words |
   | FX2 instance buffer | none | 16,384 words |
   | state | 31 words of its r7 block | — |
 
@@ -116,12 +133,20 @@ See [TESTING.md](TESTING.md) for commands and numbers. In short:
      limits it at 0.99999. The half is now stored.
   3. Page-1 values arrive as value << 16, but COLOR was compared with 1, so
      MED selected BRGT.
+- **Fixed in 0.1.2** (after the 0.1.1 hardware listen, "saturates less than
+  the JSFX"): the input level. AMP VOL's (v/127)² ahead of the FX left a
+  normalized sample 12 dB short of the JSFX's drive. The fixed +12 dB in /
+  −12 dB out above restores it; the 12 extra instructions were won back in
+  the recursion with bit-identical output, so 0.1.2 costs 7 cycles/sample
+  more than 0.1.1.
 - **Composed build:** `tapehead-spring` builds, packs into
-  `OCTATRACK_OCTABAM2.bin` with a valid checksum, boots in the emulator and
-  draws the chooser and page above. `verify_menu`, `verify_initregs`,
-  `verify_replaces --image` and `label_fmt` pass.
-- **On hardware:** the author flashed the OCTABAM2 test image on 2 Oct 2026
-  and reported it works well (a listening test, not a stress run).
+  `OCTATRACK_OCTABAM7.bin` with a valid checksum. `verify_menu`,
+  `verify_initregs`, `verify_replaces --image` and `label_fmt` pass.
+- **On hardware (MKII, 2 Oct 2026):** after 0.1.1 under-saturated, the level
+  fix (OCTABAM6) was compared with the JSFX and reported working. This
+  source's image (OCTABAM7) sounded the same over about three minutes with
+  TapeHead on seven tracks under p-lock automation and scenes. A listening
+  test, not a stress run.
 - **Hardware coverage:** author-reported operation and parameter locks, accepted by the owner. Model, duration and maximum tested load are unknown. The owner removed the mandatory one-hour stress run; the complete record is in [hardware evidence](evidence/hardware.md).
 
 ## Authorship and licences
@@ -138,9 +163,10 @@ See [TESTING.md](TESTING.md) for commands and numbers. In short:
 
 ## Screens and audio
 
-Captured from the MKII panel of the Octamod emulator running the hardware
-test image (`hardware-test-remix.py`): real LCD pixels, not a
-reconstruction. No audio is included.
+Captured from the MKII panel of the Octamod emulator running the 0.1.2
+hardware test image (`hardware-test-remix.py`, BUILD=7): real LCD pixels, not
+a reconstruction. They are byte-identical to the 0.1.1 captures: 0.1.2 does
+not change the menu, controls or labels. No audio is included.
 
 ![TAPEHEAD assigned in FX2 SETUP](media/ot-location.png)
 

@@ -2,12 +2,19 @@
 2026 JClones) line for line, plus the knob mapping tapehead.asm uses.
 
 Ground truth for verify.py. SR is 44,100 Hz, the rate every Octamod effect
-assumes. Clip is always on (the JSFX's default), as in the module.
+assumes. Clip is always on (the JSFX's default), as in the module. render() adds
+the module's INPUT_GAIN; render_jsfx() is the plugin alone.
 """
 import math
 
 SR = 44100.0
 COLOR_HZ = (2100.0, 3680.0, 5000.0)      # NORM / MED / BRGT
+
+# The unit applies AMP VOL as (v/127)^2 before the FX chain: at the default
+# VOL 64 a 0 dBFS sample arrives at 0.254 FS. The module runs the JSFX at
+# x * INPUT_GAIN and divides its output by INPUT_GAIN, so a sample at the
+# default VOL saturates as the same sample does in the JSFX in a DAW.
+INPUT_GAIN = 4.0
 
 
 class TapeHead:
@@ -49,6 +56,13 @@ def from_knobs(drive, trim, color):
     return TapeHead(1.0 + 9.0 * drive / 128.0, -21.0 * trim / 128.0, color)
 
 
-def render(drive, trim, color, xs):
+def render_jsfx(drive, trim, color, xs):
+    """The JSFX itself at the panel's knob mapping (no INPUT_GAIN)."""
     th = from_knobs(drive, trim, color)
     return [th.process(v) for v in xs]
+
+
+def render(drive, trim, color, xs):
+    """What the module renders: JSFX(INPUT_GAIN * x) / INPUT_GAIN."""
+    th = from_knobs(drive, trim, color)
+    return [th.process(v * INPUT_GAIN) / INPUT_GAIN for v in xs]
