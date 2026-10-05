@@ -15,10 +15,9 @@ export async function socialRoutes(request: Request, env: Env, db: Database, pat
   if (!path.startsWith('/api/auth/sso') && !/^\/api\/auth\/callback\/(google|github|discord)$/.test(path)) return null
   const callback = path.match(/^\/api\/auth\/callback\/(google|github|discord)$/), start = path.match(/^\/api\/auth\/sso\/start\/([a-f0-9]{64})$/), providers = socialProviders(env)
   if (!providers.length) throw new HttpError(503, 'Social sign-in is not configured yet.')
-  const auth = accountAuth(env, db)
   if (callback) {
     if (request.method !== 'GET' || !providers.includes(callback[1] as SocialProvider)) throw new HttpError(404, 'Sign-in provider not available.')
-    const result = await auth.handler(request), session = result.headers.get('set-auth-token'), flowHash = result.headers.get('X-Modwerk-Sso-Flow')
+    const result = await accountAuth(env,db).handler(request), session = result.headers.get('set-auth-token'), flowHash = result.headers.get('X-Modwerk-Sso-Flow')
     if (!session || !hex(flowHash)) {
       // Provider/Better Auth failures arrive as ?error=<code> on the redirect; log only the code (visible in `wrangler tail`).
       const reason = (() => { try { return new URL(result.headers.get('Location') ?? '', env.APP_URL!).searchParams.get('error') } catch { return null } })()
@@ -35,7 +34,7 @@ export async function socialRoutes(request: Request, env: Env, db: Database, pat
     if (request.method !== 'GET') throw new HttpError(405, 'Open this sign-in link in your browser.')
     const flowHash = await digest(start[1]), flow = await db.prepare("UPDATE social_flows SET stage='started' WHERE token_hash=? AND stage='pending' AND expires>? RETURNING provider,mode").bind(flowHash, now()).first<{provider: SocialProvider; mode: string}>()
     if (!flow || !providers.includes(flow.provider)) throw new HttpError(400, 'This sign-in link is invalid or expired. Start again.')
-    const result = await auth.api.signInSocial({ headers: request.headers, body: { provider: flow.provider, requestSignUp: true, callbackURL: returnUrl(env, 'account/sso-error'), errorCallbackURL: returnUrl(env, 'account/sso-error'), disableRedirect: true, additionalData: { flowHash } }, asResponse: true })
+    const result = await accountAuth(env,db).api.signInSocial({ headers: request.headers, body: { provider: flow.provider, requestSignUp: true, callbackURL: returnUrl(env, 'account/sso-error'), errorCallbackURL: returnUrl(env, 'account/sso-error'), disableRedirect: true, additionalData: { flowHash } }, asResponse: true })
     const data = await result.json() as { url?: string }
     if (!result.ok || !data.url) return redirect(returnUrl(env, 'account/sso-error'))
     const out = redirect(data.url)

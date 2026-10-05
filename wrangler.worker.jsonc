@@ -2,6 +2,7 @@
   "name": "octamod-community",
   "compatibility_date": "2026-09-30",
   "compatibility_flags": ["nodejs_compat"],
+  "alias": { "@better-auth/core/async_hooks": "./server/auth-async-hooks.ts" },
   "triggers": { "crons": ["17 * * * *", "*/5 * * * *"] },
   // Workers Logs: searchable request logs and exceptions in the Cloudflare dashboard, kept for a few days.
   "observability": { "enabled": true },

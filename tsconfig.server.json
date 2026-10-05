@@ -7,6 +7,7 @@
       "ES2023",
       "DOM"
     ],
+    "types": ["node"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,

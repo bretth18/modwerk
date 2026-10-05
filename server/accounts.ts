@@ -1,4 +1,5 @@
 import { initializeNewsPreference, newsPreferences } from './news-preferences'
+import { AsyncLocalStorage } from 'node:async_hooks'
 import { betterAuth } from 'better-auth'
 import { bearer } from 'better-auth/plugins/bearer'
 import { username } from 'better-auth/plugins/username'
@@ -15,17 +16,19 @@ import { COMMUNITY_RULES_VERSION } from '../src/legal/policy'
 import { googleTokenBinding, socialOptions, suggestUsername, validUsername } from './social-config'
 
 export function authReady(env: Env) { return !!env.AUTH_SECRET && env.AUTH_SECRET.length >= 32 }
-const authInstances = new WeakMap<Database, { settings: string; auth: ReturnType<typeof createAccountAuth> }>()
+const authInstances = new AsyncLocalStorage<Map<Database, { settings: string; auth: ReturnType<typeof createAccountAuth> }>>()
 const accountUsers = new WeakMap<Request, { db: Database; settings: string; user: Promise<User|null> }>()
+/** Adapter initialization and connection locks must belong to one Worker invocation. */
+export function withAccountAuth<T>(operation:()=>T):T { return authInstances.run(new Map(),operation) }
 function authSettings(env: Env) {
   return JSON.stringify(Object.entries(env).filter(([,value]) => typeof value === 'string').sort(([a],[b]) => a.localeCompare(b)))
 }
-/** Reuse the adapter context: creating it inspects every database table. Configuration changes invalidate it. */
+/** Reuse the adapter within a request, never across requests that may be canceled. */
 export function accountAuth(env: Env, db: Database) {
-  const settings = authSettings(env), cached = authInstances.get(db)
+  const settings = authSettings(env), instances = authInstances.getStore(), cached = instances?.get(db)
   if (cached?.settings === settings) return cached.auth
   const auth = createAccountAuth(env,db)
-  authInstances.set(db,{settings,auth})
+  instances?.set(db,{settings,auth})
   return auth
 }
 function createAccountAuth(env: Env, db: Database) {
@@ -43,7 +46,8 @@ function createAccountAuth(env: Env, db: Database) {
     verification:{modelName:'auth_verifications',storeIdentifier:'hashed'},
     // Only our explicit facade below is exposed; it applies persistent D1/IP/address throttles.
     rateLimit:{enabled:false}, logger:{disabled:true},
-    advanced:{cookiePrefix:'octamod-account',ipAddress:{ipAddressHeaders:['cf-connecting-ip']}},
+    // Versioned migrations own the schema; avoid background introspection that can outlive a request.
+    advanced:{database:{validateSchema:false},cookiePrefix:'octamod-account',ipAddress:{ipAddressHeaders:['cf-connecting-ip']}},
     emailAndPassword:{enabled:true,minPasswordLength:15,maxPasswordLength:128,requireEmailVerification:true,autoSignIn:false,resetPasswordTokenExpiresIn:1800,revokeSessionsOnPasswordReset:true,
       sendResetPassword:async({user,token})=>{await sendAccountEmail(env,db,user.email,'reset',token)},
       onPasswordReset:async({user})=>{await db.batch([db.prepare('DELETE FROM account_tokens WHERE user_id=?').bind(user.id),db.prepare('DELETE FROM auth_verifications WHERE value=?').bind(user.id),db.prepare('UPDATE auth_users SET emailVerified=1 WHERE id=?').bind(user.id),db.prepare('UPDATE users SET email_verified=1 WHERE id=?').bind(user.id)])},

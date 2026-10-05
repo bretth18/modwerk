@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { accountAuth } from '../../server/accounts'
+import { accountAuth, withAccountAuth } from '../../server/accounts'
+import { schemaCheckFor } from '@better-auth/core/db/internal'
 import { ensureModuleThreads } from '../../server/module-threads'
 import { COMMUNITY_RULES_VERSION } from '../legal/policy'
 import { testServer } from './test-server'
@@ -32,10 +33,21 @@ describe('community request database budgets',()=>{
   expect((await call('/catalog')).status).toBe(200)
   expect(prepare).toHaveBeenCalledTimes(1)
  })
- it('reuses the auth context for equivalent config and invalidates it on secret rotation',async()=>{
-  const {env}=await fixture(),db=env.DB!,auth=accountAuth(env,db)
-  expect(accountAuth({...env},db)).toBe(auth)
-  expect(accountAuth({...env,AUTH_SECRET:'a different auth secret with sufficient entropy'},db)).not.toBe(auth)
+ it('reuses auth only within one request and observes secret rotation',async()=>{
+  const {env}=await fixture(),db=env.DB!
+  const first=withAccountAuth(()=>{
+   const auth=accountAuth(env,db)
+   expect(accountAuth({...env},db)).toBe(auth)
+   expect(accountAuth({...env,AUTH_SECRET:'a different auth secret with sufficient entropy'},db)).not.toBe(auth)
+   return auth
+  })
+  expect(withAccountAuth(()=>accountAuth(env,db))).not.toBe(first)
+ })
+ it('validates the migrated account schema explicitly without background request checks',async()=>{
+  const {env}=await fixture(),auth=accountAuth(env,env.DB!)
+  const check=schemaCheckFor((await auth.$context).adapter)
+  expect(check).toBeTypeOf('function')
+  await check!()
  })
  it('resolves a member once per request and observes suspension on the next request',async()=>{
   const {env,db,call,token}=await member(),prepare=vi.spyOn(env.DB!,'prepare')
@@ -46,6 +58,32 @@ describe('community request database budgets',()=>{
   db.prepare('UPDATE users SET suspended=1').run()
   const suspended=await (await call('/auth/session','GET',undefined,token)).json()
   expect(suspended).toMatchObject({user:null,admin:false})
+ })
+ it('keeps a stalled member lookup from blocking the next request',async()=>{
+  const {env,call,token}=await member(),db=env.DB!,prepare=db.prepare.bind(db)
+  let release!:()=>void,started!:()=>void,parkNext=true
+  const parked=new Promise<void>(resolve=>{release=resolve}),entered=new Promise<void>(resolve=>{started=resolve})
+  vi.spyOn(db,'prepare').mockImplementation(sql=>{
+   const statement=prepare(sql)
+   if(!parkNext||!sql.includes('"auth_sessions"'))return statement
+   parkNext=false
+   const bind=statement.bind.bind(statement)
+   return {...statement,bind(...values){
+    const bound=bind(...values),all=bound.all.bind(bound)
+    return {...bound,async all(){started();await parked;return all()}}
+   }}
+  })
+  const first=call('/auth/session','GET',undefined,token)
+  await entered
+  const next=call('/auth/session','GET',undefined,token)
+  let timer:ReturnType<typeof setTimeout>|undefined
+  try{
+   const result=await Promise.race([next,new Promise<null>(resolve=>{timer=setTimeout(()=>resolve(null),1000)})])
+   expect(result,'a separate request must not wait for the stalled adapter').not.toBeNull()
+   expect(await result!.json()).toMatchObject({user:{username:'performance_member'}})
+  }finally{
+   clearTimeout(timer);release();await Promise.all([first,next])
+  }
  })
  it('returns correct member statistics with at most seven queries and no schema inspection',async()=>{
   const {env,db,call,token}=await member()

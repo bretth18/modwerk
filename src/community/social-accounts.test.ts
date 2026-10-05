@@ -185,6 +185,24 @@ describe('social account sign-in',()=>{
   })
 })
 describe('member administrator role',()=>{
+  it('restores an existing administrator after repeated logout and GitHub sign-in',async()=>{
+    const f=await fixture()
+    let session=await f.member('github','owner')
+    f.db.exec("UPDATE users SET is_admin=1 WHERE username='owner'")
+    for(let attempt=0;attempt<2;attempt++){
+      const logout=await f.call('/auth/logout','POST',{},session)
+      expect(logout.status).toBe(200)
+      expect(logout.headers.get('X-Octamod-Session')).toBe('')
+      expect(await(await f.call('/auth/session','GET',undefined,session)).json()).toMatchObject({admin:false,user:null})
+      const pending=await f.complete('github','login','')
+      const exchange=await f.call('/auth/sso/exchange','POST',{code:pending.code,verifier:pending.verifier})
+      expect(exchange.status).toBe(200)
+      session=exchange.headers.get('X-Octamod-Session')!
+      expect(await(await f.call('/auth/session','GET',undefined,session)).json()).toMatchObject({admin:true,user:{username:'owner',verified:true}})
+      expect((await f.call('/admin/overview','GET',undefined,session)).status).toBe(200)
+    }
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM auth_users').get()).toEqual({count:1})
+  })
   it('grants the admin workspace only to a verified member who holds the role',async()=>{
     const f=await fixture(),session=await f.member('github','owner')
     expect((await f.call('/admin/overview')).status).toBe(403)
