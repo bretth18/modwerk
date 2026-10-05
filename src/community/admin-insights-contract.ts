@@ -16,3 +16,13 @@ export type AdminInsights = {
   issueAges: { underWeek: number; weekToMonth: number; overMonth: number; oldest: string | null }
   modules: AdminModuleInsight[]
 }
+export type AdminAccounts = {
+  generatedAt: string
+  from: string
+  to: string
+  totals: { members: number; unverified: number; pendingSocial: number; suspended: number; deleted: number; administrators: number; newsOptIns: number }
+  signups: { today: number; last7: number; last30: number }
+  methods: { method: 'credential' | 'google' | 'github' | 'discord'; members: number }[]
+  /** One row per UTC day from `from` to `to`, including days without sign-ups. */
+  daily: { day: string; signups: number }[]
+}

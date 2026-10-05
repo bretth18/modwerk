@@ -33,7 +33,7 @@ function UsageDashboard({data}: {data: UsageStatistics}) {
   function exportDaily() {
     const url = URL.createObjectURL(new Blob([usageCsv(data)],{type:'text/csv;charset=utf-8'}))
     const link = document.createElement('a')
-    link.href=url; link.download='octamod-usage-'+data.from+'-'+data.to+'.csv'
+    link.href=url; link.download='modwerk-usage-'+data.from+'-'+data.to+'.csv'
     document.body.append(link); link.click(); link.remove()
     setTimeout(() => URL.revokeObjectURL(url),1000)
   }

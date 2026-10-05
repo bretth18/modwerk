@@ -11,7 +11,7 @@ export type GithubConfig = { token: string; repository: string }
 
 /** Mirroring is on only with a token and a valid owner/name repository. */
 export function githubConfig(env: Env): GithubConfig | null {
-  const token = env.GITHUB_TOKEN?.trim() ?? '', repository = env.GITHUB_REPOSITORY?.trim() || 'repeat98/octamod'
+  const token = env.GITHUB_TOKEN?.trim() ?? '', repository = env.GITHUB_REPOSITORY?.trim() || 'repeat98/modwerk'
   return token && /^[A-Za-z0-9-]{1,39}\/[A-Za-z0-9_.-]{1,100}$/.test(repository) ? { token, repository } : null
 }
 
@@ -51,7 +51,7 @@ export function issueTitle(issue: Pick<MirroredIssue, 'module_id' | 'title'>) { 
 
 export function issueMarkdown(issue: MirroredIssue) {
   const author = /^[A-Za-z0-9-]{1,39}$/.test(issue.author_login) ? '@' + issue.author_login : inert(issue.author_login)
-  const lines = ['Reported on octamod.app for **`' + issue.module_id + '`** · module author ' + author, '', 'Reporter: ' + inert(issue.reporter), '', issue.body ? quote(issue.body) : '', '']
+  const lines = ['Reported on modwerk.app for **`' + issue.module_id + '`** · module author ' + author, '', 'Reporter: ' + inert(issue.reporter), '', issue.body ? quote(issue.body) : '', '']
   const context = issue.context
   if (context) {
     lines.push('### Browser configuration', '', '| | |', '| --- | --- |',
@@ -83,7 +83,7 @@ export function issueMarkdown(issue: MirroredIssue) {
   } else if (issue.log_missing) {
     lines.push('### OCTAMOD.LOG', '', '_Not attached:_ ' + LOG_MISSING_REASONS[issue.log_missing] + (issue.log_missing_note ? ' — ' + inert(issue.log_missing_note) : ''), '')
   }
-  lines.push('---', '_Status changes here are shown to the reporter on octamod.app._')
+  lines.push('---', '_Status changes here are shown to the reporter on modwerk.app._')
   return lines.join('\n').slice(0, BODY_LIMIT)
 }
 

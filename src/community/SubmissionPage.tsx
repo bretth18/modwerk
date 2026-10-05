@@ -5,7 +5,7 @@ import { DEVICES_BY_ID } from '../devices/registry'
 export function SubmissionPage({moduleId=''}:{moduleId?:string}) {
   const repository=sourceRepository()
   const module=communityModule(moduleId)
-  const moduleRepository=repository||'https://github.com/repeat98/octamod'
+  const moduleRepository=repository||'https://github.com/repeat98/modwerk'
   if(module&&module.machine!=='octatrack')return <div className="community-page contribution-page">
     <div className="page-heading"><div><p className="page-kicker">MODWERK / DEVELOPERS</p><h1>Update {module.name}</h1><p>{DEVICES_BY_ID[module.machine].name} · Current version {module.version}. Prepare source, documentation and media together in a GitHub pull request.</p></div><span className="pill">Owner review required</span></div>
     <section className="configuration-section"><h2>Start from the reviewed module</h2><p>Keep its licence, attribution and pinned source provenance. Increase the module’s semantic version for every source, documentation or media update, and keep the manifest, README, tutorial and test evidence synchronized.</p><div className="forum-actions"><a className="button button-primary" href={moduleRepository+'/tree/main/'+module.sourcePath} target="_blank" rel="noreferrer">Open module source ↗</a><a className="button button-quiet" href={moduleRepository+'/compare'} target="_blank" rel="noreferrer">Open a pull request ↗</a><a href={moduleRepository+'/blob/main/docs/SDK.md'} target="_blank" rel="noreferrer">Machine SDK & evidence rules ↗</a></div></section>

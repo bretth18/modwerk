@@ -198,6 +198,21 @@ describe('member administrator role',()=>{
     expect((await f.call('/admin/overview','GET',undefined,session)).status).toBe(403)
   })
 })
+describe('administrator account statistics',()=>{
+  it('reports aggregate member counts and daily sign-ups to administrators only',async()=>{
+    const f=await fixture(),session=await f.member('github','owner')
+    expect((await f.call('/admin/accounts','GET',undefined,session)).status).toBe(403)
+    f.db.exec("UPDATE users SET is_admin=1 WHERE username='owner'")
+    const result=await f.call('/admin/accounts','GET',undefined,session),data=await result.json()
+    expect(result.status).toBe(200)
+    expect(data.totals).toMatchObject({members:1,administrators:1,suspended:0,deleted:0})
+    expect(data.signups).toEqual({today:1,last7:1,last30:1})
+    expect(data.methods.find((row:{method:string})=>row.method==='github').members).toBe(1)
+    expect(data.daily).toHaveLength(30)
+    expect(data.daily.at(-1)).toEqual({day:new Date().toISOString().slice(0,10),signups:1})
+    expect(JSON.stringify(data)).not.toMatch(/@|owner/)
+  })
+})
 describe('social onboarding from either account entry point',()=>{
   it.each((['google','github','discord'] as const).flatMap(provider=>(['login','register'] as const).map(mode=>[provider,mode] as const)))('authenticates %s from %s without a username, then activates only after rules confirmation',async(provider,mode)=>{
     const f=await fixture(),pending=await f.complete(provider,mode,'')
