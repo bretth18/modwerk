@@ -83,6 +83,8 @@ describe('compliance access boundaries',()=>{
   db.prepare("UPDATE users SET username=NULL,email_verified=0,suspended=1,display_name='Deleted member' WHERE id=?").run(owner.id)
   expect((await call('/admin/account-requests/'+request.id,'PATCH',{status:'completed',note:'Verified private removal'},'',admin)).status).toBe(409)
   db.prepare('DELETE FROM account_policy_acceptances WHERE user_id=?').run(owner.id)
+  expect((await call('/admin/account-requests/'+request.id,'PATCH',{status:'completed',note:'Push data still present'},'',admin)).status).toBe(409)
+  db.prepare('DELETE FROM signup_events WHERE user_id=?').run(owner.id)
   expect((await call('/admin/account-requests/'+request.id,'PATCH',{status:'completed',note:'Verified private removal'},'',admin)).status).toBe(200)
  })
  it('rejects absent/stale count consent before storing anything and allows its trusted-origin preflight',async()=>{

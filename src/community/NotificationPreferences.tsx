@@ -1,3 +1,4 @@
+import { PushSettings } from './PushSettings'
 import { BackLink } from '../components/BackLink'
 import { useEffect, useRef, useState } from 'react'
 import { api, post } from './api'
@@ -24,7 +25,7 @@ export function NotificationPreferences({ focus = false }: { focus?: boolean }) 
     catch (error) { setError(error instanceof Error ? error.message : 'Unable to save your email settings.') }
     finally { setBusy(false) }
   }
-  return <section className="configuration-section" id="notification-settings"><h2 ref={heading} tabIndex={-1}>Activity email</h2>
+  return <><PushSettings/><section className="configuration-section" id="notification-settings"><h2 ref={heading} tabIndex={-1}>Activity email</h2>
     <p className="service-note">The bell shows everything. Email sends a digest of what you have not read yet, at most once per chosen interval. Every email has an unsubscribe link.</p>
     {value && <>
       <label className="risk-accept"><input type="checkbox" checked={value.emailEnabled} disabled={busy} onChange={event => void change({ emailEnabled: event.target.checked })} />Email me about activity I have not seen</label>
@@ -36,7 +37,7 @@ export function NotificationPreferences({ focus = false }: { focus?: boolean }) 
     </>}
     <p className="service-note">Verification, recovery and optional news emails are separate.</p>
     {message && <p role="status">{message}</p>}{error && <p className="file-error" role="alert">{error}</p>}
-  </section>
+  </section></>
 }
 
 /** Opened from the link in an activity email; works signed out because the signed token identifies the account. */

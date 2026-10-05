@@ -34,9 +34,11 @@
     "modules:build:elemod": "node scripts/build-elemod-packages.mjs",
     "modules:import": "node scripts/import-module-build.mjs",
     "typecheck": "tsc -b",
-    "build:bundle": "vite build"
+    "build:bundle": "vite build",
+    "push:keys": "node scripts/push-keys.mjs"
   },
   "dependencies": {
+    "@block65/webcrypto-web-push": "2.0.0",
     "@tiptap/markdown": "3.31.4",
     "@tiptap/pm": "3.31.4",
     "@tiptap/react": "3.31.4",

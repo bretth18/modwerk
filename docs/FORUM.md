@@ -101,6 +101,10 @@ Hourly cleanup removes expired action tokens, sessions and throttle rows. Forum 
 
 Run `npm run check` for ordinary app checks, including authentication/authorization regression tests and a production frontend build. Tests cover verification/recovery, replay/expiry, forged sessions, origin checks, legacy ownership, immutable config validation and moderation. They use synthetic data only. No firmware, emulator, hardware or DSP qualification tests are needed for forum work. Keep the authentication dependency patched and review security advisories; passing these tests is not an independent security audit.
 
+## Device push
+
+Members can optionally receive bell activity on each device from account notification settings. Administrator member accounts can separately enable one push per new signup in Admin workspace → Accounts. Signups never appear in member bells or digests. iPhone users add Modwerk to their Home Screen before enabling push. See [device push setup and delivery](WEB_PUSH.md).
+
 ## New-member welcome email
 
 Migration 0029 marks existing completed members as excluded from automatic welcomes and leaves unfinished signups eligible when they complete. The `*/5 * * * *` Worker trigger runs `sendMemberWelcomes`; the hourly cleanup/activity trigger stays unchanged. `WELCOME_MAIL_ENABLED=true` enables the welcome. It uses the approved HTML and text in `docs/news/001-member-welcome.*`, with a welcome footer instead of a news-consent claim. Every verified, active, fully onboarded new member is eligible, regardless of optional news or activity preferences.

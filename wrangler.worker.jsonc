@@ -3,11 +3,13 @@
   "compatibility_date": "2026-09-30",
   "compatibility_flags": ["nodejs_compat"],
   "alias": { "@better-auth/core/async_hooks": "./server/auth-async-hooks.ts" },
-  "triggers": { "crons": ["17 * * * *", "*/5 * * * *"] },
+  "triggers": { "crons": ["* * * * *", "17 * * * *", "*/5 * * * *"] },
   // Workers Logs: searchable request logs and exceptions in the Cloudflare dashboard, kept for a few days.
   "observability": { "enabled": true },
   // Production values. Local development overrides vars through the ignored .dev.vars file.
   "vars": {
+    // Production push is enabled after VAPID setup; devices still opt in independently.
+    "WEB_PUSH_ENABLED": "true",
     "APP_URL": "https://modwerk.app/",
     "AUTH_BASE_URL": "https://octamod-community.octamod.workers.dev/api/auth",
     "REGISTRATION_OPEN": "false",

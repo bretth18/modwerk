@@ -1,3 +1,4 @@
+import { pushRoutes } from './push'
 import { forum } from './forum'
 import { forumMedia } from './forum-media'
 import { notificationRoutes, notifyModuleMaintainers, unsubscribe, withdrawModuleLike } from './notifications'
@@ -58,6 +59,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if(developerAuth)return developerAuth
     const user = await currentUser(request,db,env)
     const admin = await isAdmin(request,env,db)
+    const push = await pushRoutes(request,env,db,user,admin)
+    if(push)return push
     const developer = await developerApi(request,db,user,admin,await developerUser(request,env,db))
     if(developer)return developer
     const media = await forumMedia(request,env,db,user,admin)
