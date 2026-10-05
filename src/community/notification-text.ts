@@ -32,6 +32,12 @@ export function notificationLines(items: NotificationItem[], link: (hash: string
     else if (item.kind === 'mention') lines.push({ ...base, text: `${actor} mentioned you in ${quote(item.title)}`, excerpt: excerpt(item.excerpt), href: threadHref(item) })
     else if (item.kind === 'bug_report') lines.push({ ...base, text: `New bug report for ${moduleName(item.module_id)} from ${actor}: ${quote(item.title)}`, excerpt: excerpt(item.excerpt), href: threadHref(item) })
     else if (item.kind === 'module_comment') lines.push({ ...base, text: `${actor} commented on ${moduleName(item.module_id)}`, excerpt: excerpt(item.excerpt), href: moduleHref(item.module_id) })
+    else if (item.kind.startsWith('issue_')) {
+      const report = 'your bug report ' + quote(item.title), href = item.url ?? link('#account/report/' + item.issue_id)
+      const who = item.github_actor ? '@' + item.github_actor + ' on GitHub' : 'A developer on GitHub'
+      if (item.kind === 'issue_comment') lines.push({ ...base, text: `${who} replied to ${report}`, excerpt: excerpt(item.excerpt), href })
+      else lines.push({ ...base, text: `${who} ${item.kind === 'issue_resolved' ? 'marked' : item.kind === 'issue_closed' ? 'closed' : 'reopened'} ${report}${item.kind === 'issue_resolved' ? ' as fixed' : ''}`, excerpt: null, href })
+    }
     else if (item.kind === 'module_rating') lines.push({ ...base, text: `${actor} rated ${moduleName(item.module_id)}${item.rating ? ' ' + '★'.repeat(item.rating) + '☆'.repeat(5 - item.rating) : ''}`, excerpt: null, href: moduleHref(item.module_id) })
   }
   return lines.map(line => {

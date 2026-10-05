@@ -6,6 +6,6 @@ function time(value: string) {
 /** Bell and account inbox entries; opening one marks every notification it groups as read. */
 export function NotificationList({ lines, onOpen }: { lines: NotificationLine[]; onOpen: (line: NotificationLine) => void }) {
   return <ul className="notification-list">{lines.map(line => { const when = time(line.created_at); return <li key={line.ids[0]} data-unread={!line.seen}>
-    <a href={line.href} onClick={() => onOpen(line)}>{!line.seen && <span className="sr-only">Unread: </span>}<strong>{line.text}</strong>{line.excerpt && <span className="notification-excerpt">{line.excerpt}</span>}<time dateTime={when.iso}>{when.label}</time></a>
+    <a href={line.href} onClick={() => onOpen(line)} {...line.href.startsWith('https://') ? { target: '_blank', rel: 'noreferrer' } : {}}>{!line.seen && <span className="sr-only">Unread: </span>}<strong>{line.text}</strong>{line.excerpt && <span className="notification-excerpt">{line.excerpt}</span>}<time dateTime={when.iso}>{when.label}</time></a>
   </li> })}</ul>
 }

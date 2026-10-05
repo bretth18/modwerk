@@ -113,3 +113,13 @@ Whether the public support contact becomes a `support@modwerk.app` forwarder is 
 ## 4 October 2026 — Bug Reports forum and automatic developer delivery
 
 The owner requested that issue reports reach developers and appear in the Bug Reports forum. New module forms disclose public posting before submission and explicitly request `visibility: "forum"`. A transaction creates the forum thread and scoped developer notifications alongside the private report. Public fields are the title, reproduction details, device/base OS and affected module version; full configuration, build fingerprint, log/missing-log notes and private replies stay authorized. Developer notification and follow recipients require current reviewed maintainer metadata and an active GitHub-verified claim. Reports submitted through older clients and all existing private reports remain private. Resolution/reopening synchronizes both records. Migration 0020 adds the nullable forum link; no production rollout is authorized by implementation.
+
+## 5 October 2026 — GitHub is the one bug tracker
+
+Community feedback pointed out that tracking the same bug in the site's report inbox, a Bug Reports forum thread and GitHub creates overhead for developers and lets the copies drift. The owner chose GitHub as the single place where bugs are tracked; Modwerk only collects reports and shows their status.
+
+- **Intake stays on Modwerk.** The report form still collects the structured device context and validated log that a GitHub issue template cannot, and reporters do not need a GitHub account.
+- **A public report becomes a GitHub issue straight away**, labelled `module:<id>` and mentioning the module author and declared maintainers, and it gets no forum thread of its own. The issue carries only what the form already discloses as public: title, device and base OS, module version, steps, expected and actual result, and the reporter's username. The configuration, build fingerprint and log stay private; the issue links verified maintainers to them in the developer workspace. Migration 0025 stores that public snapshot (`issues.public_json`), backfilled from earlier forum reports, and the admin retry publishes only reports that have one.
+- **Status and replies flow back from GitHub.** Signed `issues` and `issue_comment` webhooks update the report status and notify the reporter in the bell and activity email; bot comments and redelivered events are ignored.
+- **The form checks for duplicates first** by listing the module's open mirrored issues and linking GitHub's full list for the label.
+- **Fallback.** Without `GITHUB_TOKEN`, public reports keep using the Bug Reports forum as before. Earlier forum threads stay and follow their GitHub issue if one is created later.

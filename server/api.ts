@@ -98,6 +98,13 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if (removed) await db.prepare('DELETE FROM notifications WHERE comment_id=?').bind(match[1]).run()
       return response({ok:true})
     }
+    if ((match=path.match(/^\/api\/modules\/([a-z0-9-]+)\/issues$/)) && request.method==='GET') {
+      // Lets reporters find an existing issue before filing a duplicate. Titles are public on GitHub already.
+      await knownModule(db,match[1]);const config=githubConfig(env)
+      if(!config)return response({tracker:'forum',issues:[],allUrl:null})
+      const issues=(await db.prepare("SELECT title,github_url AS url,created_at FROM issues WHERE module_id=? AND status='open' AND github_url IS NOT NULL ORDER BY created_at DESC LIMIT 10").bind(match[1]).all()).results
+      return response({tracker:'github',issues,allUrl:'https://github.com/'+config.repository+'/issues?q='+encodeURIComponent('is:issue is:open label:"module:'+match[1]+'"')})
+    }
     if ((match=path.match(/^\/api\/modules\/([a-z0-9-]+)\/issues$/)) && request.method==='POST') {
       const owner=needMember(user)
       await knownModule(db,match[1]);const body=await jsonBody(request,OT_LOG_MAX_BYTES+32*1024)
@@ -125,17 +132,22 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if(!author)throw new HttpError(400,'No author is registered for this module.')
       await throttle(db,'issue-member:'+owner.id,10)
       const id=crypto.randomUUID(),details='Steps to reproduce:\n'+steps+'\n\nExpected:\n'+expected+'\n\nActual:\n'+actual
-      const threadId=publicReport?crypto.randomUUID():null,postId=crypto.randomUUID()
+      const publicDetails=publicReport?publicBugDetails(match[1],context,log,steps,expected,actual):null
+      // With GitHub configured, a public report becomes a GitHub issue and gets no forum thread of its own.
+      const github=!!publicReport&&!!githubConfig(env)
+      const threadId=publicReport&&!github?crypto.randomUUID():null,postId=crypto.randomUUID()
       const statements=threadId?[
-        db.prepare('INSERT INTO forum_threads(id,user_id,title,category,machine,module_id,issue_json) VALUES(?,?,?,\'issues\',?,?,?)').bind(threadId,owner.id,title,module?.machine??'octatrack',match[1],JSON.stringify(publicBugDetails(match[1],context,log,steps,expected,actual))),
+        db.prepare('INSERT INTO forum_threads(id,user_id,title,category,machine,module_id,issue_json) VALUES(?,?,?,\'issues\',?,?,?)').bind(threadId,owner.id,title,module?.machine??'octatrack',match[1],JSON.stringify(publicDetails)),
         db.prepare('INSERT INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').bind(postId,threadId,owner.id,details),
         db.prepare('INSERT INTO forum_follows(thread_id,user_id) VALUES(?,?)').bind(threadId,owner.id),
         ...notifyBugDevelopers(db,match[1],threadId,postId,owner.id),
       ]:[]
-      statements.push(db.prepare('INSERT INTO issues(id,module_id,author_login,reporter_id,title,body,context_json,log_missing,log_missing_note,github_state,maintainer_sharing,forum_thread_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').bind(id,match[1],author,owner.id,title,details,JSON.stringify(context),missing?.reason??null,missing?.note??'','none',Number(publicReport||body.maintainerSharing===true),threadId))
+      statements.push(db.prepare('INSERT INTO issues(id,module_id,author_login,reporter_id,title,body,context_json,log_missing,log_missing_note,github_state,maintainer_sharing,forum_thread_id,public_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)').bind(id,match[1],author,owner.id,title,details,JSON.stringify(context),missing?.reason??null,missing?.note??'',github?'pending':'none',Number(publicReport||body.maintainerSharing===true),threadId,publicDetails&&JSON.stringify(publicDetails)))
       if(log)statements.push(db.prepare('INSERT INTO issue_logs(issue_id,text,bytes,summary_json) VALUES(?,?,?,?)').bind(id,log.text,log.text.length,JSON.stringify(log.summary)))
       await db.batch(statements)
-      return response({ok:true,id,author,forumThreadId:threadId,github:'none',githubUrl:null},201)
+      // The report is stored either way; a failed mirror stays retryable from the admin inbox.
+      const mirrored=github?await mirrorIssue(db,env,id):{state:'none' as const}
+      return response({ok:true,id,author,forumThreadId:threadId,github:mirrored.state,githubUrl:'url' in mirrored?mirrored.url??null:null},201)
     }
     if(path==='/api/issues/mine'&&request.method==='GET'){
       if(!user)return response([])

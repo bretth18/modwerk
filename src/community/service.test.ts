@@ -9,6 +9,7 @@ import { handleApi } from '../../server/api'
 import { handleCommunity } from '../../server/transport'
 import { digest } from '../../server/security'
 import { signGithubPayload } from '../../server/github'
+import { notificationLines } from './notification-text'
 import type { Database, Statement, Env } from '../../server/platform'
 const databases:DatabaseSync[]=[]
 function adapter(db:DatabaseSync):Database{
@@ -38,6 +39,7 @@ async function fixture(){
  db.exec(readFileSync(new URL('../../migrations/0014_account_requests.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0023_module_forum_threads.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0024_activity_notifications.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0025_github_issue_tracking.sql',import.meta.url),'utf8'))
  const env:Env={DB:adapter(db),APP_URL:'https://octamod.test',ADMIN_KEY_SHA256:await digest(adminKey)}
  const objects=new Map<string,ArrayBuffer>()
  env.MEDIA={async put(key,bytes){objects.set(key,bytes)},async get(key){const bytes=objects.get(key);return bytes?{body:new ReadableStream({start(controller){controller.enqueue(new Uint8Array(bytes));controller.close()}})}:null},async delete(key){objects.delete(key)}}
@@ -154,7 +156,7 @@ describe('community access and review',()=>{
   expect(db.prepare('SELECT log_missing,log_missing_note FROM issues').get()).toEqual({log_missing:'device-does-not-boot',log_missing_note:'Blank screen'})
   expect(db.prepare('SELECT COUNT(*) AS count FROM issue_logs').get()).toEqual({count:0})
  })
- it('blocks private publication and retains status synchronization for separately authorized public reports',async()=>{
+ it('keeps private reports off GitHub, tracks public ones as GitHub issues and relays GitHub activity to the reporter',async()=>{
   const {call,db,env,admin,tokens}=await fixture()
   Object.assign(env,{GITHUB_TOKEN:'github_pat_test',GITHUB_REPOSITORY:'repeat98/octamod',GITHUB_WEBHOOK_SECRET:'hook-secret'})
   const requests:{url:string;method:string;body:Record<string,unknown>;auth:string|null}[]=[]
@@ -166,39 +168,57 @@ describe('community access and review',()=>{
   })
   try{
    const reporter='octamod_session='+tokens.other
-   const saved=await call('/modules/spectrum/issues','POST',issue({steps:'Ping @someone about #12 <img src=x>'}),reporter)
+   // A private report never reaches GitHub, not even through an administrator retry.
+   const saved=await call('/modules/spectrum/issues','POST',issue(),reporter)
    expect(saved.status).toBe(201);expect(await saved.json()).toMatchObject({github:'none',githubUrl:null})
+   const privateId=String(db.prepare('SELECT id FROM issues').get()!.id)
+   expect((await call('/admin/issues/'+privateId+'/github','POST',{},'',undefined,admin)).status).toBe(400)
    expect(requests).toHaveLength(0)
-   const rowId=String(db.prepare('SELECT id FROM issues').get()!.id)
-   expect((await call('/admin/issues/'+rowId+'/github','POST',{},'',undefined,admin)).status).toBe(400)
-   expect(requests).toHaveLength(0)
-   // Only this synthetic fixture grants public sharing to exercise the retained mirroring implementation.
-   db.prepare("UPDATE issues SET public_sharing=1,github_state='pending' WHERE id=?").run(rowId)
-   expect(await (await call('/admin/issues/'+rowId+'/github','POST',{},'',undefined,admin)).json()).toMatchObject({state:'failed'})
+   expect(await (await call('/modules/spectrum/issues')).json()).toEqual({tracker:'github',issues:[],allUrl:'https://github.com/repeat98/octamod/issues?q='+encodeURIComponent('is:issue is:open label:"module:spectrum"')})
+   // A public report becomes a GitHub issue straight away and gets no forum thread of its own.
+   const published=await call('/modules/spectrum/issues','POST',issue({visibility:'forum',steps:'Ping @someone about #12 <img src=x>'}),reporter)
+   expect(published.status).toBe(201)
+   const result=await published.json();expect(result).toMatchObject({forumThreadId:null,github:'failed',githubUrl:null})
+   expect(db.prepare("SELECT COUNT(*) AS count FROM forum_threads WHERE category='issues'").get()).toEqual({count:0})
    const created=requests[0];expect(created).toMatchObject({url:'https://api.github.com/repos/repeat98/octamod/issues',method:'POST',auth:'Bearer github_pat_test'})
    expect(created.body.title).toBe('[spectrum] Knob issue');expect(created.body.labels).toEqual(['issue-report','module:spectrum'])
    const markdown=String(created.body.body)
-   expect(markdown).toContain('module author @sambanks');expect(markdown).toContain('@\u200bsomeone');expect(markdown).toContain('#\u200b12');expect(markdown).not.toContain('<img')
-   expect(markdown).toContain('```text\n# OCTAMOD-LOG v2');expect(markdown).toContain('259 records · 2 boots · 1 fault');expect(markdown).toContain('`'+'c'.repeat(64)+'`')
-   expect(markdown).toContain('### Device log configuration');expect(markdown).toContain('`repitch@0.1.0`');expect(markdown).toContain('FX2 order: `MINIVERB`, `DELAY`');expect(markdown).toContain('### Browser configuration')
-   const [row]=await (await call('/admin/issues','GET',undefined,'',undefined,admin)).json();expect(row).toMatchObject({github_state:'failed',github_error:'GitHub answered 401: Bad credentials.'})
+   expect(markdown).toContain('by [other](https://octamod.test/#forum/profile/other) · @sambanks');expect(markdown).toContain('| Module version | 0.1.0 |')
+   expect(markdown).toContain('@\u200bsomeone');expect(markdown).toContain('#\u200b12');expect(markdown).not.toContain('<img')
+   expect(markdown).toContain('[open them on Modwerk](https://octamod.test/#developer/report/'+result.id+')')
+   // The configuration, build fingerprint and log stay private.
+   for(const secret of ['c'.repeat(64),'OCTAMOD-LOG','repitch'])expect(markdown).not.toContain(secret)
+   const [row]=await (await call('/admin/issues?status=all','GET',undefined,'',undefined,admin)).json();expect(row).toMatchObject({id:result.id,github_state:'failed',github_error:'GitHub answered 401: Bad credentials.'})
    expect((await call('/admin/issues/'+row.id+'/github','POST',{},reporter)).status).toBe(403)
    const retried=await (await call('/admin/issues/'+row.id+'/github','POST',{},'',undefined,admin)).json();expect(retried).toEqual({state:'synced',url:'https://github.com/repeat98/octamod/issues/41'})
    expect(await (await call('/admin/issues/'+row.id+'/github','POST',{},'',undefined,admin)).json()).toEqual({state:'synced'});expect(requests).toHaveLength(2)
-   expect((await (await call('/issues/mine','GET',undefined,reporter)).json())[0]).toMatchObject({status:'open',github_url:'https://github.com/repeat98/octamod/issues/41'})
-   // The author closes the GitHub issue: only a correctly signed delivery for this repository counts.
-   const hook=async(payload:unknown,signature?:string,event='issues')=>{const body=new TextEncoder().encode(JSON.stringify(payload)).buffer as ArrayBuffer;return handleApi(new Request(env.APP_URL+'/api/github/webhook',{method:'POST',headers:{'Content-Type':'application/json','X-GitHub-Event':event,'X-Hub-Signature-256':signature??await signGithubPayload('hook-secret',body)},body}),env)}
-   const closed={action:'closed',issue:{number:41},repository:{full_name:'repeat98/octamod'}}
-   expect((await hook(closed,'sha256='+'0'.repeat(64))).status).toBe(401)
+   expect((await (await call('/modules/spectrum/issues')).json()).issues).toEqual([expect.objectContaining({title:'Knob issue',url:'https://github.com/repeat98/octamod/issues/41'})])
+   // GitHub activity: only correctly signed deliveries for this repository and a mirrored issue count.
+   let delivery=0
+   const hook=async(payload:unknown,{event='issues',signature,id}:{event?:string;signature?:string;id?:string}={})=>{const body=new TextEncoder().encode(JSON.stringify(payload)).buffer as ArrayBuffer;return handleApi(new Request(env.APP_URL+'/api/github/webhook',{method:'POST',headers:{'Content-Type':'application/json','X-GitHub-Event':event,'X-GitHub-Delivery':id??'delivery-'+ ++delivery,'X-Hub-Signature-256':signature??await signGithubPayload('hook-secret',body)},body}),env)}
+   const repository={full_name:'repeat98/octamod'},closed={action:'closed',issue:{number:41,state_reason:'completed'},sender:{login:'sambanks'},repository}
+   expect((await hook(closed,{signature:'sha256='+'0'.repeat(64)})).status).toBe(401)
    expect(await (await hook({...closed,repository:{full_name:'someone/else'}})).json()).toEqual({ok:true,handled:false})
-   expect(await (await hook({zen:'hi'},undefined,'ping')).json()).toEqual({ok:true,handled:false})
-   expect((await (await call('/issues/mine','GET',undefined,reporter)).json())[0].status).toBe('open')
+   expect(await (await hook({...closed,issue:{number:7}})).json()).toEqual({ok:true,handled:false})
+   expect(await (await hook({zen:'hi'},{event:'ping'})).json()).toEqual({ok:true,handled:false})
+   const comment={action:'created',issue:{number:41},comment:{body:'Thanks, I can reproduce this on 1.40C.',user:{login:'sambanks',type:'User'}},repository}
+   expect(await (await hook(comment,{event:'issue_comment',id:'comment-1'})).json()).toEqual({ok:true,handled:true})
+   // A redelivery and a bot comment notify nobody.
+   await hook(comment,{event:'issue_comment',id:'comment-1'})
+   expect(await (await hook({...comment,comment:{body:'CI passed',user:{login:'ci-bot',type:'Bot'}}},{event:'issue_comment'})).json()).toEqual({ok:true,handled:false})
+   expect((await (await call('/issues/mine','GET',undefined,reporter)).json()).find((item:{id:string})=>item.id===row.id).status).toBe('open')
    expect(await (await hook(closed)).json()).toEqual({ok:true,handled:true})
-   expect((await (await call('/issues/mine','GET',undefined,reporter)).json())[0].status).toBe('closed')
+   expect((await (await call('/issues/mine','GET',undefined,reporter)).json()).find((item:{id:string})=>item.id===row.id).status).toBe('closed')
+   const {items}=await (await call('/notifications','GET',undefined,reporter)).json()
+   expect(items).toMatchObject([{kind:'issue_resolved',github_actor:'sambanks',title:'Knob issue',url:'https://github.com/repeat98/octamod/issues/41'},{kind:'issue_comment',excerpt:'Thanks, I can reproduce this on 1.40C.'}])
+   expect(notificationLines(items).map(line=>[line.text,line.href])).toEqual([
+    ['@sambanks on GitHub marked your bug report “Knob issue” as fixed','https://github.com/repeat98/octamod/issues/41'],
+    ['@sambanks on GitHub replied to your bug report “Knob issue”','https://github.com/repeat98/octamod/issues/41'],
+   ])
    // Reopening from the admin inbox reopens the GitHub issue too.
    expect(await (await call('/admin/issues/'+row.id,'PATCH',{status:'open'},'',undefined,admin)).json()).toEqual({ok:true,github:'synced'})
    expect(requests.at(-1)).toMatchObject({url:'https://api.github.com/repos/repeat98/octamod/issues/41',method:'PATCH',body:{state:'open'}})
-   expect(db.prepare('SELECT status FROM issues').get()).toEqual({status:'open'})
+   expect(db.prepare('SELECT status FROM issues WHERE id=?').get(row.id)).toEqual({status:'open'})
   }finally{vi.unstubAllGlobals()}
  })
  it('retires account-bound cloud configuration copies; configurations stay on the device',async()=>{

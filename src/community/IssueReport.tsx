@@ -1,4 +1,5 @@
-import { BugReportNotice, BugReportSuccess, type BugReportResult } from './BugReportNotice'
+import { BugReportNotice, BugReportSuccess, ExistingIssues } from './BugReportNotice'
+import { useIssueTracker, type BugReportResult } from './issue-tracker'
 import { useEffect, useId, useRef, useState } from 'react'
 import { post } from './api'
 import { useCommunity } from './context'
@@ -21,6 +22,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   report.current.scrollIntoView({block:'start'})
  },[openRequest])
  const workspace=useWorkspaceReportContext()
+ const [opened,setOpened]=useState(false),tracker=useIssueTracker(id,opened)
  const [model,setModel]=useState<OtModel|''>(''),[flash,setFlash]=useState<FlashState|''>('')
  const [log,setLog]=useState<OtLog|null>(null),[logError,setLogError]=useState('')
  const [reading,setReading]=useState(false),[logName,setLogName]=useState(''),[logNote,setLogNote]=useState('')
@@ -71,13 +73,13 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   finally{setBusy(false)}
  }
 
- return <details ref={report} className="issue-report"><summary>Report an issue <span>For @{author}</span></summary>
+ return <details ref={report} className="issue-report" onToggle={event=>{if(event.currentTarget.open)setOpened(true)}}><summary>Report an issue <span>For @{author}</span></summary>
   {sent?<div ref={success} className="issue-report-success" role="status" tabIndex={-1}>
    <BugReportSuccess report={sent}/>
   </div>:!session.user?.verified?<MemberPrompt/>:
   <form className="community-form" aria-busy={busy} onSubmit={event=>{event.preventDefault();void send(event.currentTarget)}}>
-   <BugReportNotice/>
-   <a href={'#forum?category=issues&module='+encodeURIComponent(id)}>Check existing bug reports →</a>
+   <BugReportNotice tracker={tracker}/>
+   <ExistingIssues id={id} tracker={tracker}/>
    <fieldset><legend>1. Describe the problem</legend>
    <label>Issue title<input ref={title} name="title" required maxLength={160} placeholder="What went wrong, in one line"/></label>
    <div className="issue-report-row">

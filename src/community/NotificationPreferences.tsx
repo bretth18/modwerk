@@ -6,7 +6,7 @@ const TOPICS: [keyof Pick<Preferences, 'replies' | 'likes' | 'modules' | 'bugs'>
   ['replies', 'Replies in threads you follow and @mentions'],
   ['likes', 'Likes on your posts'],
   ['modules', 'Comments, ratings and likes on modules you maintain'],
-  ['bugs', 'Bug reports and their replies for modules you maintain'],
+  ['bugs', 'Bug reports for modules you maintain, and GitHub replies and fixes for your own reports'],
 ]
 export function NotificationPreferences({ focus = false }: { focus?: boolean }) {
   const [value, setValue] = useState<Preferences | null>(null), [busy, setBusy] = useState(false), [message, setMessage] = useState(''), [error, setError] = useState('')
