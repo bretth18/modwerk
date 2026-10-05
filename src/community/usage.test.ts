@@ -16,17 +16,21 @@ describe('optional usage reporting',()=>{
   expect(usage.usageAllowed()).toBe(false)
   for(const preference of [undefined,'off','on']){
    if(preference)values.set('octamod.usage.opt-out',preference)
-   usage.trackPageView('library');usage.trackUsage('build_succeeded');usage.trackConfigurationStarted('33333333-3333-4333-8333-333333333333');usage.trackFirmwareDownload(['miniverb'])
-   expect(request).not.toHaveBeenCalled();expect(values.has('octamod.usage.daily-visitor')).toBe(false);expect(values.has('octamod.usage.started-configurations')).toBe(false)
+   request.mockClear();usage.trackPageView('library'+preference);usage.trackUsage('build_succeeded');usage.trackConfigurationStarted('33333333-3333-4333-8333-333333333333');usage.trackFirmwareDownload(['miniverb'])
+   // Only identifier-free totals leave the browser before consent.
+   for(const [url,options] of request.mock.calls){expect(url).toBe('/api/usage/count');expect(options.credentials).toBe('omit');expect(options.headers).toEqual({'Content-Type':'application/json'});expect(Object.keys(JSON.parse(options.body)).every(key=>key==='event'||key==='moduleId')).toBe(true)}
+   expect(values.has('octamod.usage.daily-visitor')).toBe(false);expect(values.has('octamod.usage.started-configurations')).toBe(false)
   }
+  usage.setAnonymousCountsAllowed(false);request.mockClear();usage.trackPageView('forum');usage.trackUsage('build_succeeded');usage.trackFirmwareDownload(['miniverb'])
+  expect(request).not.toHaveBeenCalled()
  })
  it('stops counts immediately when storage rejects withdrawal',()=>{
-  usage.setUsageAllowed(true);usage.trackUsage('page_view');expect(request).toHaveBeenCalledTimes(1)
+  values.set('modwerk.usage.anonymous-off','1');usage.setUsageAllowed(true);usage.trackUsage('page_view');expect(request).toHaveBeenCalledTimes(1)
   vi.stubGlobal('localStorage',{getItem:(key:string)=>values.get(key)??null,removeItem:()=>{throw new Error('Read-only storage')}})
   expect(usage.setUsageAllowed(false)).toBe(false);expect(usage.usageAllowed()).toBe(false);usage.trackFirmwareDownload(['miniverb']);expect(request).toHaveBeenCalledTimes(1)
  })
  it('records consent version/time, expires it and withdraws without counting again',()=>{
-  usage.setUsageAllowed(true)
+  values.set('modwerk.usage.anonymous-off','1');usage.setUsageAllowed(true)
   expect(JSON.parse(values.get('octamod.usage.consent')!)).toEqual({version:USAGE_CONSENT_VERSION,acceptedAt:'2026-10-01T12:00:00.000Z'})
   usage.trackFirmwareDownload(['miniverb']);expect(request).toHaveBeenCalledTimes(2)
   vi.setSystemTime(new Date('2027-04-01T12:00:00Z'));expect(usage.usageAllowed()).toBe(false)
@@ -56,9 +60,9 @@ describe('optional usage reporting',()=>{
   expect(JSON.parse(request.mock.calls[2][1].body).visitor).not.toBe(first.visitor)
  })
  it('honors Do Not Track, Global Privacy Control and the saved opt-out before creating identifiers',()=>{
-  vi.stubGlobal('navigator',{doNotTrack:'1'});usage.trackUsage('page_view');expect(values.size).toBe(0)
-  vi.stubGlobal('navigator',{globalPrivacyControl:true});usage.trackUsage('page_view');expect(values.size).toBe(0)
-  vi.stubGlobal('navigator',{});expect(usage.setUsageAllowed(false)).toBe(true);usage.trackUsage('page_view');expect(request).not.toHaveBeenCalled()
+  vi.stubGlobal('navigator',{doNotTrack:'1'});usage.trackUsage('page_view');usage.trackPageView('library');expect(values.size).toBe(0);expect(request).not.toHaveBeenCalled()
+  vi.stubGlobal('navigator',{globalPrivacyControl:true});usage.trackUsage('page_view');usage.trackPageView('forum');expect(values.size).toBe(0);expect(request).not.toHaveBeenCalled()
+  vi.stubGlobal('navigator',{});values.set('modwerk.usage.anonymous-off','1');expect(usage.setUsageAllowed(false)).toBe(true);usage.trackUsage('page_view');expect(request).not.toHaveBeenCalled()
   expect(usage.setUsageAllowed(true)).toBe(true);usage.trackUsage('page_view');expect(request).toHaveBeenCalledTimes(1)
   usage.setUsageAllowed(false);expect(values.has('octamod.usage.daily-visitor')).toBe(false)
  })
@@ -79,10 +83,18 @@ describe('optional usage reporting',()=>{
  it('suppresses public module reporting for browser privacy and opt-outs',()=>{
   vi.stubGlobal('navigator',{doNotTrack:'1'});usage.trackFirmwareDownload(['miniverb']);expect(values.size).toBe(0)
   vi.stubGlobal('navigator',{globalPrivacyControl:true});usage.trackFirmwareDownload(['miniverb']);expect(values.size).toBe(0)
-  vi.stubGlobal('navigator',{});usage.setUsageAllowed(false);usage.trackFirmwareDownload(['miniverb']);expect(request).not.toHaveBeenCalled()
+  vi.stubGlobal('navigator',{});values.set('modwerk.usage.anonymous-off','1');usage.setUsageAllowed(false);usage.trackFirmwareDownload(['miniverb']);expect(request).not.toHaveBeenCalled()
+ })
+ it('counts identifier-free totals once per configuration and per available module without storing anything',()=>{
+  const configuration='33333333-3333-4333-8333-333333333333'
+  usage.trackConfigurationStarted(configuration);usage.trackConfigurationStarted(configuration);usage.trackFirmwareDownload(['miniverb','miniverb','unknown'])
+  expect(request.mock.calls.map(([url,options])=>[url,JSON.parse(options.body)])).toEqual([['/api/usage/count',{event:'configuration_started'}],['/api/usage/count',{event:'firmware_download_requested'}],['/api/usage/count',{event:'module_download',moduleId:'miniverb'}]])
+  expect(values.size).toBe(0)
+  usage.setAnonymousCountsAllowed(false);expect(values.get('modwerk.usage.anonymous-off')).toBe('1');usage.setAnonymousCountsAllowed(true);expect(values.size).toBe(0)
  })
  it('never blocks local work when storage or the service is unavailable',async()=>{
-  vi.stubGlobal('localStorage',{getItem:()=>{throw new Error('Unavailable')}});expect(()=>usage.trackUsage('page_view')).not.toThrow();expect(request).not.toHaveBeenCalled()
+  vi.stubGlobal('localStorage',{getItem:()=>{throw new Error('Unavailable')}});expect(()=>usage.trackUsage('page_view')).not.toThrow()
+  expect(request.mock.calls.map(([url])=>url)).toEqual(['/api/usage/count'])
   vi.stubGlobal('localStorage',{getItem:()=>JSON.stringify({version:USAGE_CONSENT_VERSION,acceptedAt:new Date().toISOString()}),setItem:()=>{},removeItem:()=>{}});request.mockRejectedValue(new Error('Offline'))
   expect(()=>usage.trackUsage('build_succeeded')).not.toThrow();expect(()=>usage.trackFirmwareDownload(['miniverb'])).not.toThrow();await Promise.resolve()
  })

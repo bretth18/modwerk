@@ -423,6 +423,26 @@ describe('private aggregate usage statistics',()=>{
  })
 })
 
+describe('identifier-free usage counts',()=>{
+ it('adds daily and module totals without identifiers, consent or visitor rows',async()=>{
+  const {env,db}=await fixture()
+  const count=(body:unknown,headers:Record<string,string>={},ip='192.0.2.7')=>handleCommunity(new Request('https://octamod.test/api/usage/count',{method:'POST',headers:{Origin:env.APP_URL!,'Content-Type':'application/json','CF-Connecting-IP':ip,...headers},body:JSON.stringify(body)}),env)
+  for(const event of ['page_view','page_view','build_succeeded'])expect((await count({event})).status).toBe(200)
+  expect((await count({event:'module_download',moduleId:'miniverb'})).status).toBe(200)
+  const today=new Date().toISOString().slice(0,10)
+  expect(db.prepare('SELECT visitors,page_views,builds FROM usage_daily WHERE day=?').get(today)).toEqual({visitors:0,page_views:2,builds:1})
+  expect(db.prepare("SELECT downloads FROM module_downloads WHERE module_id='miniverb'").get()).toEqual({downloads:1})
+  for(const table of ['usage_events','usage_visitors','module_download_events'])expect(db.prepare('SELECT count(*) AS count FROM '+table).get()).toEqual({count:0})
+  expect(JSON.stringify(db.prepare('SELECT key FROM rate_limits').all())).not.toContain('192.0.2.7')
+  for(const body of [{event:'page_view',visitor:'11111111-1111-4111-8111-111111111111'},{event:'page_view',eventId:crypto.randomUUID()},{event:'arbitrary'},{event:'module_download',moduleId:'not-a-module'},{event:'page_view',moduleId:'miniverb'},{event:'module_download'},[]])expect((await count(body)).status).toBe(400)
+  for(const header of ['DNT','Sec-GPC'])expect((await count({event:'page_view'},{[header]:'1'})).status).toBe(204)
+  expect(db.prepare('SELECT page_views FROM usage_daily WHERE day=?').get(today)).toEqual({page_views:2})
+  for(let i=0;i<300;i++)expect((await count({event:'page_view'},{},'198.51.100.9')).status).toBe(200)
+  expect((await count({event:'page_view'},{},'198.51.100.9')).status).toBe(429)
+  expect((await count({event:'page_view'},{},'198.51.100.10')).status).toBe(200)
+ })
+})
+
 const moduleDownload=(moduleId='miniverb',eventId=crypto.randomUUID())=>({moduleId,eventId,visitor:'11111111-1111-4111-8111-111111111111'})
 describe('public module popularity',()=>{
  it('includes unrated likes and download-only modules without disclosing private statistics',async()=>{
