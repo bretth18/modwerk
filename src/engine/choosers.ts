@@ -21,10 +21,11 @@ export function defaultChoosers(ids: readonly string[], keepStockFx2 = true, loa
     if (!entry || entry.key !== module.key || entry.fxId !== (module.fxId ?? null)) throw new Error('The chooser declarations do not match this module version.')
     return entry
   })
-  const fx1 = [...metadata.stockFx1, ...modules.filter(module => module.fx1).map(module => module.key)]
+  const replacement = (key: string) => modules.find(module => 'replaces' in module && module.replaces === key)?.key ?? key
+  const fx1 = [...metadata.stockFx1.map(replacement), ...modules.filter(module => module.fx1 && !('replaces' in module)).map(module => module.key)]
   const own = modules.filter(module => module.fxId !== null && !module.fx1Only).map(module => module.key)
   if (!keepStockFx2) return { fx1, fx2: own }
-  const kept = { fx1, fx2: [...metadata.stockFx2, ...own] }
+  const kept = { fx1, fx2: [...metadata.stockFx2.map(replacement), ...own.filter(key => !modules.some(module => module.key === key && 'replaces' in module))] }
   if (loader) return kept
   // Without the loader, module code takes the place of stock effects listed on neither menu: give up only those it needs.
   const donors = stockFx2Donors(ids, kept, ids.includes('analog-bassdrum') ? [ANALOG_BD_DONOR] : [])
@@ -53,7 +54,9 @@ export async function composeChoosers(original: Uint8Array, ids: readonly string
   const { own, hidden } = validateChoosers(ids, profile), layout = metadata.layout
   if (await hash(original) !== metadata.sourceSha256) throw new Error('Chooser composition needs the original OS fingerprint.')
   const listAddress = (profile.fx2.length + 2) * 4 <= 32 ? layout.NEW_LIST : layout.LONG_LIST
-  const menus = await composeModuleMenus(original, ids, listAddress === layout.NEW_LIST ? MENU_CAVE_END : MENU_LONG_LIST, runtime)
+  // A module replacing a stock effect takes that effect's FX2 slot while the stock rows stay, so it leads the placement order.
+  const leading = profile.fx2.some(key => metadata.stockEffects.some(effect => effect.key === key)) ? own.filter(module => 'replaces' in module).map(module => module.id) : []
+  const menus = await composeModuleMenus(original, ids, listAddress === layout.NEW_LIST ? MENU_CAVE_END : MENU_LONG_LIST, runtime, leading)
   const writes: OsWrite[] = [...menus.writes], view = new DataView(original.buffer, original.byteOffset, original.byteLength)
   const read = (address: number) => view.getUint32(address - OS_LOAD_ADDRESS)
   const pointerTable = (entries: readonly number[]) => {
@@ -116,8 +119,16 @@ export async function composeChoosers(original: Uint8Array, ids: readonly string
       const effectId = id(key); positions[effectId] = position + 1
       const module = own.find(module => module.key === key)
       if (module) {
-        if (read(layout.FX1_IDS + effectId * 4) !== none) throw new Error('The module FX1 id is already claimed by a stock effect.')
+        if (read(layout.FX1_IDS + effectId * 4) !== ('replaces' in module ? read(layout.FX2_IDS + effectId * 4) : none)) throw new Error('The module FX1 id is already claimed by a stock effect.')
         await write(layout.FX1_IDS + effectId * 4, pointerTable([descriptor(key)]), 'Module FX1 descriptor')
+        if (module.replaces !== undefined) {
+          // Native also takes over the replaced effect's row in the stock list, in place (build_bus.py, "a REPLACEMENT also takes over the
+          // stock effect's FX1 page"). The relocated list above is what the firmware reads, so this row is stale, but the image stays identical.
+          const stockDescriptor = descriptor(module.replaces), rows: number[] = []
+          for (let at = layout.FX1_LIST; read(at) !== 0 && at <= layout.FX1_LIST + 32 * 4; at += 4) if (read(at) === stockDescriptor) rows.push(at)
+          if (rows.length !== 1) throw new Error('The replaced effect is not listed once in the stock FX1 chooser.')
+          await write(rows[0], pointerTable([descriptor(key)]), 'Replaced FX1 chooser row')
+        }
       }
     }
     await write(layout.FX1_ID2POS, pointerTable(positions), 'FX1 chooser cursor table')

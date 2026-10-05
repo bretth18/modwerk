@@ -5,7 +5,11 @@ def sha(data):return hashlib.sha256(data).hexdigest()
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('worktree',type=pathlib.Path);p.add_argument('destination',type=pathlib.Path);p.add_argument('--app',type=pathlib.Path,required=True);p.add_argument('--stock-bin',type=pathlib.Path);p.add_argument('--static-stock',action='store_true',help='Loader-free builds: stock DSP code stays built in; every module subset with and without stock FX2')
     p.add_argument('--vendored-sdk',action='store_true',help='Verify reviewed SDK sources against the app checkout instead of the legacy upstream worktree')
-    p.add_argument('--suite',choices=['original','tapehead','tapehead-utilities'],default='original')
+    p.add_argument('--suite',choices=['original','tapehead','tapehead-utilities','sidechain','sidechain-visible','sidechain-analog-bd','visible'],default='original')
+    p.add_argument('--cache',action='store_true',help="Reuse octabam's content-addressed compiler memo (source, options and tool bytes are in its key; placement and validation still run). Evidence is made without it unless this is given.")
+    p.add_argument('--verbose',action='store_true',help='Print each native build log (placement addresses, no firmware bytes).')
+    p.add_argument('--image-dir',type=pathlib.Path,help='Write each native image here for private diffing. Stock-derived: keep it outside the checkout and delete it afterwards.')
+    p.add_argument('--select',action='append',help='Build only this profile: module ids joined by +, then :true or :false (repeatable)')
     p.add_argument('--menus',type=pathlib.Path,help='Precomputed defaultChoosers JSON for containers without Node')
     p.add_argument('--shard',type=int,default=0);p.add_argument('--shards',type=int,default=1)
     p.add_argument('--packing-vendor',type=pathlib.Path,help='Reviewed local elektron-firmware-tool checkout')
@@ -27,7 +31,7 @@ def main():
     original=(root/'out/raw/section_3_MAIN_OS.bin').read_bytes();sourceHash=json.loads((app/'src/engine/assets/stock-dsp-metadata.json').read_text())['sourceSha256']
     if sha(original)!=sourceHash:p.error('Original OS fingerprint mismatch.')
     sys.path[:0]=[str(root/'tools/build'),str(root/'tools')];os.chdir(root)
-    os.environ.update(REMIX='tapehead-spring' if a.vendored_sdk else 'miniverb',XBUS='1',SPEC='1',DEV='0',NOROUNDTRIP='0',OCTABAM_STATIC_STOCK='1' if a.static_stock else '0',OCTABAM_NO_CACHE='1',BUILD='79')
+    os.environ.update(REMIX='tapehead-spring' if a.vendored_sdk else 'miniverb',XBUS='1',SPEC='1',DEV='0',NOROUNDTRIP='0',OCTABAM_STATIC_STOCK='1' if a.static_stock else '0',OCTABAM_NO_CACHE='0' if a.cache else '1',BUILD='79')
     import toolpath,dsp_modmap as dm
     dm.IMG=root/'out/raw/section_3_MAIN_OS.bin'
     from remix import registry,stock
@@ -36,17 +40,22 @@ def main():
     known=registry.modules();order=['spectrum','modulation','character','miniverb','tapeecho','euclid','repitch']+(['tapehead'] if a.vendored_sdk else []);
     if a.suite=='tapehead':order=['miniverb','tapeecho','euclid','repitch','tapehead','analog-bassdrum','usb-audio-out-tracks-main-cue','quantizer']
     if a.suite=='tapehead-utilities':order=['repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map']
+    if a.suite=='sidechain':order=['spectrum','modulation','character','miniverb','tapeecho','euclid','repitch','tapehead','sidechain-compressor']
+    # Analog BD is refused beside any custom DSP module, after native has done all of its heavy DSP work (minutes per selection), so it is covered by representative selections.
+    if a.suite=='sidechain-visible':order=['miniverb','tapeecho','euclid','repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map','sidechain-compressor']
+    if a.suite=='visible':order=['miniverb','tapeecho','euclid','repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map']
+    if a.suite=='sidechain-analog-bd':order=['analog-bassdrum','miniverb','tapeecho','euclid','repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map','sidechain-compressor']
     if a.vendored_sdk:order=[row['id'] for row in json.loads((app/'sdk/catalog.json').read_text())['modules'] if row['id'] in order]
     byid={m.name:m for m in known.values()}
     stockKeys={m.menu.fx2_id:m.key for m in known.values() if m.is_stock and m.menu is not None}
     stockFx1=[stockKeys[id] for id in stock.fx1_order() if id];stockFx2=[stockKeys[id] for id in stock._chooser_order(stock.FX2_CHOOSER) if id]
     # CPU Tape Echo is a post-FX2 contribution; a hazard-free DSP shim alone
     # does not establish that its ColdFire effect runs on FX1.
-    fx1Capable={'spectrum','modulation','character','euclid','tapehead'}
+    fx1Capable={'spectrum','modulation','character','euclid','tapehead','sidechain-compressor'}
     modules=[]
     for id in order:
         m=byid[id]
-        modules.append({'id':id,'key':m.key,'fxId':m.menu.fx2_id if m.menu else None,'fx1':m.name in fx1Capable and m.menu is not None and fx1_hazard(m) is None,'fx1Only':bool(m.claims and m.claims.fx1_only)})
+        modules.append({'id':id,'key':m.key,'fxId':m.menu.fx2_id if m.menu else None,'fx1':m.name in fx1Capable and m.menu is not None and fx1_hazard(m) is None,'fx1Only':bool(m.claims and m.claims.fx1_only),**({'replaces':m.menu.replaces} if m.menu and m.menu.stock_dsp else {})})
     def profile(ids,default):
         selected=[byid[id] for id in order if id in ids]
         fx1=stockFx1+[m.key for m in selected if m.name in fx1Capable and m.menu and fx1_hazard(m) is None] if default or ids==order else []
@@ -69,7 +78,26 @@ def main():
             return {'fx1':menu['fx1'],'fx2':menu['fx2'],'hidden':hidden}
     if a.suite=='tapehead':cases=[(ids,keep) for ids,keep in cases if 'tapehead' in ids and any(id in ids for id in ['analog-bassdrum','usb-audio-out-tracks-main-cue','quantizer'])]
     if a.suite=='tapehead-utilities':cases=[(ids,keep) for ids,keep in cases if 'tapehead' in ids and any(id in ids for id in ['previewvol','cc-map'])]
+    if a.suite=='sidechain':cases=[(ids,keep) for ids,keep in cases if 'sidechain-compressor' in ids]
+    if a.suite=='sidechain-visible':cases=[(ids,keep) for ids,keep in cases if 'sidechain-compressor' in ids]
+    if a.suite=='sidechain-analog-bd':cases=[(ids,keep) for ids,keep in cases if 'sidechain-compressor' in ids and 'analog-bassdrum' in ids and len(ids) in (2,3,len(order))]
+    if a.select:
+        wanted={(tuple(sorted(row.rsplit(':',1)[0].split('+') if row.rsplit(':',1)[0] else [])),row.rsplit(':',1)[1]=='true') for row in a.select}
+        cases=[(ids,keep) for ids,keep in cases if (tuple(sorted(ids)),keep) in wanted]
+        if len(cases)!=len(wanted):p.error('--select named a profile this suite does not carry.')
     cases=cases[a.shard::a.shards]
+    # The browser always links the core logger, which moves the runtime and everything that points into it. Those pointers are the
+    # platform writes (arena sizes, the boot call, runtime detours), so a native image is compared with them reset to the original bytes.
+    platform=json.loads((app/'src/engine/assets/platform-writes.json').read_text());osBase=platform['osBase']
+    def platformSpans(ids):
+        spans=[(row['address'],4) for row in platform['arena']]+[(platform['boot']['address'],6)]
+        for group in platform['groups']:
+            if group['moduleId']!='dsp-dynload-stock' and group['moduleId'] in ids:spans+=[(row['address'],row['writeLength']) for row in group['detours']]
+        return spans
+    def maskedOsSha(image,ids):
+        data=bytearray(image[:len(original)])
+        for address,length in platformSpans(ids):data[address-osBase:address-osBase+length]=original[address-osBase:address-osBase+length]
+        return sha(bytes(data))
     proofs=[];originalRemix=registry.remix
     packTemp=None;packing=None
     if a.stock_bin:
@@ -88,7 +116,10 @@ def main():
         except BaseException:packTemp.cleanup();raise
     try:
         for ids,default in cases:
-            menu=profile(ids,default);keys=[k for k in menu['fx2'] if known[k].is_stock]+[byid[id].key for id in order if id in ids]
+            # A module that replaces a stock effect (menu.stock_dsp) keeps that effect's chooser row. While stock FX2 stays it is listed at that slot, ahead of every module of its own, and native places clones in that order; the browser leads its placement with the same modules.
+            menu=profile(ids,default);replacing={byid[id].key for id in ids if byid[id].menu and byid[id].menu.stock_dsp}
+            keys=[k for k in menu['fx2'] if known[k].is_stock]+[byid[id].key for id in order if id in ids]
+            if replacing and any(known[k].is_stock for k in menu['fx2']):keys=[k for k in menu['fx2'] if known[k].is_stock or k in replacing]+[byid[id].key for id in order if id in ids and byid[id].key not in replacing]
             if 'usb-audio-out-tracks-main-cue' in ids:keys.append('USB MIDI')
             remix=registry.with_platform(Remix(name='octamod-composition-proof',doc='Disposable local full-image identity; never flashed.',modules=tuple(keys),fx1=tuple(menu['fx1']),hidden=tuple(menu['hidden']),fallback='NONE'),known)
             registry.remix=lambda _:remix
@@ -96,10 +127,13 @@ def main():
                 work=pathlib.Path(tmp)
                 for name in ['modules','platform','dsp','vendor']:os.symlink(root/name,work/name,target_is_directory=True)
                 (work/'out').mkdir();os.chdir(work);sys.modules.pop('build_bus',None);build=importlib.import_module('build_bus');build.IMG=root/'out/raw/section_3_MAIN_OS.bin';build.OUT=work/'out/image.bin';log=io.StringIO()
-                if build.ORDER!=menu['fx2']:raise ValueError('Native carried / hidden order does not match the declared FX2 chooser.')
+                if build.ORDER!=menu['fx2']:raise ValueError('Native carried / hidden order does not match the declared FX2 chooser: native '+json.dumps(build.ORDER)+' vs declared '+json.dumps(menu['fx2'])+'.')
                 try:
                     with contextlib.redirect_stdout(log):build.main()
-                    image=build.OUT.read_bytes();proof={'moduleIds':ids,**({'keepStockFx2':default} if a.static_stock else {'default':default}),'menu':menu,'bytes':len(image),'sha256':sha(image),'osSha256':sha(image[:len(original)]),'appendSha256':sha(image[len(original):])}
+                    image=build.OUT.read_bytes()
+                    if a.verbose:print(log.getvalue())
+                    if a.image_dir:a.image_dir.mkdir(parents=True,exist_ok=True);(a.image_dir/(('+'.join(sorted(ids)) or 'stock')+('-keep' if default else '-compact')+'.bin')).write_bytes(image)
+                    proof={'moduleIds':ids,**({'keepStockFx2':default} if a.static_stock else {'default':default}),'menu':menu,'bytes':len(image),'sha256':sha(image),'osSha256':sha(image[:len(original)]),'maskedOsSha256':maskedOsSha(image,ids),'appendSha256':sha(image[len(original):])}
                     if packing:
                         container=work/'out/container.bin';update=work/'out/update.bin';version=packing['version']
                         subprocess.run([str(executable),str(stockContainer),str(build.OUT),version,str(container)],check=True,capture_output=True)
@@ -107,8 +141,8 @@ def main():
                         c=container.read_bytes();f=update.read_bytes();proof['firmware']={'version':version,'containerBytes':len(c),'containerSha256':sha(c),'bytes':len(f),'sha256':sha(f)}
                     proofs.append(proof)
                     print(f"{ids or ['stock']} default={default}: {len(image)} bytes, full native identity captured.")
-                except SystemExit as error:
-                    if a.static_stock and any(word in str(error) for word in ('overruns the region','nowhere to place','does not fit','do not fit','chooser list of','currently composes with stock effects only')):
+                except (SystemExit,AssertionError) as error:
+                    if a.static_stock and any(word in str(error) for word in ('overruns the region','nowhere to place','does not fit','do not fit','chooser list of','currently composes with stock effects only',' not free','past the stock zero run','fits neither the clone window')):
                         proofs.append({'moduleIds':ids,'keepStockFx2':default,'menu':menu,'error':str(error)});print(f"{ids or ['stock']} keep={default}: refused: {str(error)[:90]}")
                     elif ids==order and default and ('does not fit' in str(error) or 'do not fit' in str(error)):
                         proofs.append({'moduleIds':ids,'default':default,'menu':menu,'error':str(error)});print('Crowded all-module / stock-chooser selection rejects placement, as expected.')

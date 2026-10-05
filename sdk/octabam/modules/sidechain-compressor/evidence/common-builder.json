@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "id": "sidechain-compressor",
+  "moduleVersion": "0.1.1-experimental",
+  "recordedOn": "2026-10-05",
+  "base": {
+    "osVersion": "1.40C",
+    "mainOsSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+    "updateSha256": "34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad"
+  },
+  "images": {
+    "standaloneOracle": {
+      "what": "Author-form image built by octabam f80ecfeabc187a33403588678e707443161afc96 from remixes/test/sidechain-compressor (stock effects, SIDECHAIN_COMPRESSOR in COMPRESSOR's row, SPRING REV absent), rebuilt on 5 October 2026 with that revision's own tools.",
+      "options": {
+        "REMIX": "sidechain-compressor",
+        "XBUS": 1,
+        "SPEC": 1,
+        "DEV": 0,
+        "NOROUNDTRIP": 0,
+        "BUILD": 81
+      },
+      "bytes": 1112560,
+      "changedBytes": 2462,
+      "sha256": "b5aa8cee7787a3dc0ea53007fe31358ba14d155421ebec9c7f98948de740675f"
+    },
+    "sharedBuilderNative": {
+      "what": "The same selection built by the SDK Modwerk ships (octabam b8deefc88b2c3e5f3c6158e364eb741df1924e1d plus the shared stock-DSP and replacement support), stock FX2 kept: SPRING REV gives up its code space.",
+      "bytes": 1112560,
+      "changedBytes": 2506,
+      "sha256": "4fd5fcb49ed17cd4e707d407a6e42a64ec30b50aefaad3b1eeb1bb804493aef0",
+      "compactSha256": "a50b99cf373cca589f97e94d1ac8e6c9c777c5aa9a17777edbbba722d9dbcf4c",
+      "compactWhat": "The same module with every stock FX2 effect removed from the FX2 chooser."
+    }
+  },
+  "differenceFromStandalone": {
+    "bytes": 56,
+    "ranges": 8,
+    "sidechainOwnedBytesDiffering": 0,
+    "sidechainPlacements": "Descriptor clone 0x400d6b20, ColdFire unit sc_cf 0x400d6d00, the FX2 chooser list 0x400d7bbc and every DSP hook, table and code word on both cores are at the same addresses with the same bytes in both images.",
+    "explained": [
+      {
+        "firmwareAddresses": [
+          "0x40037992..0x40037993",
+          "0x40052708..0x40052709",
+          "0x40059bd4..0x40059bd5"
+        ],
+        "bytes": 6,
+        "cause": "The shared builder declares an FX1 chooser, so it relocates the FX1 list into the cave and repoints these three list references. The standalone profile leaves the stock FX1 list in place."
+      },
+      {
+        "firmwareAddresses": [
+          "0x400d6d86..0x400d6db1"
+        ],
+        "bytes": 44,
+        "cause": "That relocated FX1 list, eleven rows and a terminator, with SIDECHAIN_COMPRESSOR in COMPRESSOR's row."
+      },
+      {
+        "firmwareAddresses": [
+          "0x400ef795",
+          "0x40102d49",
+          "0x40102d4f",
+          "0x40102d55",
+          "0x40102d6a",
+          "0x401030f1"
+        ],
+        "bytes": 6,
+        "cause": "Newer octabam applies six stock DSP words in every build (tools/remix/dsp_ranges.py STOCK_PATCHES): stock's 16-word cross-core mailbox moves from Y:0x38000 to 0x37F00 (payload A P:0x9c; payload B P:0x4c and 0x173) and payload B's boot zero loop widens by 0x100 words to cover it (P:0x41, 0x43, 0x45). They keep BusDelay's line and the base of a stock effect on bank track 3 FX2 clear of the mailbox. The pinned SDK predates them and carries no BusDelay or BusVerb."
+      }
+    ],
+    "doesNotTouchSidechain": "Sidechain's claimed words (Y:0x7f0-0x9ff on each core; A 0x33dfe-0x33fff and B 0x3bdfe-0x3bfff) meet neither mailbox location nor the 0x30000-0x30047 parameter staging, and lie past the +0x3DA2 extent of every stock effect buffer. The widened boot loop adds only Y:0x3F00-0x3FFF and 0x37F00-0x37FFF to what stock's loop already zeroes on payload B at boot, none of it claimed; B's window lies in the half that stock's own loop zeroes in both builds."
+  },
+  "composition": {
+    "scope": "Every selection that contains the module out of the eight original modules (512), out of the nine visible modules other than Analog BD (1,024), and for Analog BD on its own, with each other visible module and with all of them (22); each with and without the stock FX2 effects. Analog BD is covered by representative selections because native refuses it beside every custom DSP module only after minutes of its own DSP work.",
+    "proofs": [
+      "src/engine/assets/sidechain-composition-proofs.json",
+      "src/engine/assets/sidechain-visible-proofs.json",
+      "src/engine/assets/sidechain-analog-bd-proofs.json"
+    ],
+    "selections": 1558,
+    "nativeBuilt": 1014,
+    "nativeRefused": 544,
+    "refusedByReason": {
+      "DSP code space on core A": 272,
+      "menu space": 252,
+      "Analog BD runs with stock effects only": 20
+    },
+    "browserRefusalsMatchNative": 544,
+    "browserModuleOwnedWritesMatchNativeOutsidePlatformWrites": 1014,
+    "identicalOutright": 124,
+    "platformOrLoggerWritesOverlappingModuleOwnedWrites": 0,
+    "pairsWithOneOriginalModule": "all sixteen build, with and without stock FX2",
+    "scopeOfComparison": "Module-owned writes (chooser, descriptors, ROM units, DSP payloads) against native octabam. The browser always links the core logger, which native cannot, so the platform writes (arena sizes, the boot call and runtime detours) are compared with their spans reset to the original bytes; where native has no runtime the image is identical outright.",
+    "reproduce": "node scripts/verify-sidechain-native.mjs <your own 1.40C update> [--shard=i/n]; the proofs are made by scripts/export-composition-proofs.py --suite sidechain, sidechain-visible and sidechain-analog-bd.",
+    "visibleModules": {
+      "withoutThisModule": {
+        "selectionsThatBuild": 882,
+        "selectionsRefused": 142
+      },
+      "withThisModule": {
+        "stillBuild": 798,
+        "newlyRefused": 84,
+        "newlyRefusedModuleSets": 48,
+        "refusedThatWouldBuildWithoutIt": 0,
+        "buildWithOneOtherModule": "18 of 18",
+        "buildWithTwoOtherModules": "72 of 72"
+      },
+      "reasonForTheNewlyRefused": "No room left in the effect-menu caves (label formatters, the wide-dial hook or the FX1 list) once the module's descriptor clone and ColdFire unit are added; each set holds Euclid or Scale Quantizer with at least two other modules.",
+      "baseline": "The same nine modules built natively without Sidechain, with and without stock FX2 (scripts/export-composition-proofs.py --suite visible), not committed.",
+      "footprintExperiment": "Placing the ColdFire unit at 4-byte instead of 128-byte alignment in a scratch copy of the builder would have rescued 8 of the 84; the rest are bound by the descriptor clone and the menu caves, so the builder was left unchanged."
+    },
+    "originalEight": {
+      "withoutThisModule": {
+        "selectionsThatBuild": 262
+      },
+      "withThisModule": {
+        "stillBuild": 214,
+        "newlyRefused": 48,
+        "newlyRefusedModuleSets": 24,
+        "note": "Every one of the 24 sets includes Spectrum, Modulation or Character, which Modwerk does not offer; its 388 words per core no longer fit core A's code space beside them."
+      }
+    },
+    "compileCache": "The bulk native runs reused octabam's content-addressed compiler memo; eight selections rebuilt without it, including the heaviest and refused ones, were identical."
+  },
+  "emulator": {
+    "what": "Headless ot_emu, MKII panel, empty scratch card, stopped transport; FX1 SETUP chooser on T1 with LEVEL turned to COMPRESSOR and YES.",
+    "imageSha256": "4fd5fcb49ed17cd4e707d407a6e42a64ec30b50aefaad3b1eeb1bb804493aef0",
+    "composedImageBoots": "The complete composed image, with the appended runtime and the core logger, also booted and drew the same three frames; each is pixel-identical to the native image's.",
+    "composedImageSha256": "d40db90a2d31aa6a46b015c892fb16891717f49a3ad20b7871a01a8661d1b30a",
+    "composedImageBytes": 1117516,
+    "claim": "The ColdFire key formatter and list widget run in the shared-builder image: KEY draws OFF and T2, KFLT, KGN and MON draw through their raw descriptor words. No audio, ducking or MON behaviour is claimed from these frames."
+  },
+  "ledger": {
+    "checks": "tools/remix/ledger.py compares declared DSP data ranges (Claims.dsp_ranges), every module's absolute x:/y: literals, and stock's own shared-window tenants. Sidechain is clean beside each companion and all of them together under XBUS=1; without XBUS, Character's $990/$991 reads of the bus scratch fall inside the keybus and are refused.",
+    "declarationChecks": "1,024 selections of the visible modules that contain Sidechain are recorded in src/catalog/native-metadata.json by scripts/export-native-checks.py, which re-checked all 4,719 existing ledger-composed records first."
+  }
+}

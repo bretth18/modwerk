@@ -13,6 +13,10 @@ export type DspPackage = {
   relocations: readonly number[]
   init: number
   proc: number
+  tag?: string
+  stockDsp?: boolean
+  stockKey?: string
+  hooks?: readonly { site: number; words: number; guardSha256: string; entry: number; note: string }[]
 }
 export type PlacedDspPackage = { words: Uint32Array; init: number; proc: number }
 
@@ -28,9 +32,9 @@ function packageWords(pkg: DspPackage): Uint32Array {
   return words
 }
 
-export async function readDspPackage(id: string): Promise<DspPackage> {
+export async function readDspPackage(id: string, tag?: string): Promise<DspPackage> {
   if (catalog.schema !== 1 || catalog.revision !== CATALOG_SOURCE.revision) throw new Error('Module packages do not match the catalog revision.')
-  const pkg = catalog.packages.find(pkg => pkg.id === id)
+  const pkg = catalog.packages.find(pkg => pkg.id === id && (!('tag' in pkg) || pkg.tag === tag))
   if (!pkg) throw new Error('This module needs a different native placement path.')
   const module = MODULES.find(module => module.id === id)
   if (!module || module.key !== pkg.key || module.author !== pkg.author || module.fxId !== pkg.fxId) throw new Error('The module package does not match its catalog entry.')

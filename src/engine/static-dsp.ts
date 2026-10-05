@@ -9,7 +9,7 @@ import { CATALOG_SOURCE, resolveSelection } from '../catalog/modules.ts'
 import { readDspPackage, relocateDspPackage, type DspPackage } from './dsp-package.ts'
 import { readResidentCharacter } from './resident-dsp.ts'
 import type { StockDspCore } from './stock-dsp.ts'
-import { parseDspMemory, writeDspWords, type DspMemory } from './dsp-memory.ts'
+import { parseDspMemory, readDspWords, writeDspWords, type DspMemory } from './dsp-memory.ts'
 import { OS_LOAD_ADDRESS, type OsWrite } from './os-patches.ts'
 import type { ChooserProfile } from './choosers.ts'
 
@@ -98,6 +98,7 @@ export function stockFx2Donors(ids: readonly string[], profile: ChooserProfile, 
     .filter(set => required.every(key => set.includes(key))).sort(preferred)
   for (const set of sets) {
     const listed = new Set([...profile.fx1, ...profile.fx2].filter(key => !set.includes(key)))
+    for (const pkg of dspPackages.packages) if (pkg.stockKey !== undefined && plan.some(module => module.key === pkg.key)) listed.add(pkg.stockKey)
     const fits = stockMetadata.payloads.every(payload => {
       try { return !overwrittenHelper(payload.tag, listed, planStaticPlacement(payload.tag, payload.packages, listed, plan).runs) }
       catch { return false }
@@ -126,12 +127,14 @@ export async function composeStaticDsp(cores: readonly StockDspCore[], ids: read
   if (cores.length !== 2 || new Set(cores.map(core => core.core)).size !== 2) throw new Error('DSP composition requires both stock cores.')
   const plan = staticModulePlan(ids)
   const packages = new Map<string, DspPackage>()
-  for (const module of plan) packages.set(module.id, module.id === 'character' ? await readResidentCharacter() : await readDspPackage(module.id))
+  for (const module of plan.filter(module => !dspPackages.packages.some(pkg => pkg.id === module.id && 'stockDsp' in pkg))) packages.set(module.id, module.id === 'character' ? await readResidentCharacter() : await readDspPackage(module.id))
   const listed = new Set([...profile.fx1, ...profile.fx2])
+  for (const pkg of dspPackages.packages) if (pkg.stockKey !== undefined && plan.some(module => module.id === pkg.id)) listed.add(pkg.stockKey)
   const writes: OsWrite[] = [], layouts: StaticDspLayout[] = []
   for (const core of [...cores].sort((a, b) => a.core - b.core)) {
     const stock = stockMetadata.payloads.find(payload => payload.core === core.core)!, stub = facts.payloads.find(payload => payload.core === core.core)!
     if (!stock || !stub || core.tag !== stock.tag || stub.tag !== stock.tag || await sha(core.memory.bytes) !== stock.sha256) throw new Error('DSP composition needs the verified original payloads.')
+    for (const module of plan) if (dspPackages.packages.some(pkg => pkg.id === module.id && 'stockDsp' in pkg)) packages.set(module.id, await readDspPackage(module.id, core.tag))
     const layout = planStaticPlacement(stock.tag, stock.packages, listed, plan.map(module => ({ key: module.key, fxId: module.fxId, words: packages.get(module.id)!.words })))
     const broken = overwrittenHelper(stock.tag, listed, layout.runs)
     if (broken) throw new Error('payload ' + stock.tag + ': module code would overwrite a ' + broken.host + ' routine that ' + broken.callers.join(', ') + ' still calls.')
@@ -142,7 +145,16 @@ export async function composeStaticDsp(cores: readonly StockDspCore[], ids: read
       if (pkg.fxId !== module.fxId) throw new Error('The ' + module.key + ' package does not match its native DSP id.')
       const code = relocateDspPackage(pkg, at.address)
       writeDspWords(memory, 0, at.address, code.words)
-      dispatch.push({ fxId: module.fxId, init: code.init, proc: code.proc })
+      if (pkg.stockDsp) {
+        if (!pkg.hooks?.length || pkg.tag !== core.tag || !pkg.stockKey) throw new Error('The stock DSP hooks have an invalid payload declaration.')
+        for (const hook of pkg.hooks) {
+          if (hook.words !== 2 || !Number.isInteger(hook.site) || hook.site < 0 || !Number.isInteger(hook.entry) || hook.entry < 0 || hook.entry >= pkg.words || !/^[a-f0-9]{64}$/.test(hook.guardSha256)) throw new Error('Invalid stock DSP hook.')
+          const inherited = readDspWords(core.memory, 0, hook.site, hook.words), bytes = new Uint8Array(inherited.length * 3)
+          inherited.forEach((word, i) => { bytes[i * 3] = word >>> 16; bytes[i * 3 + 1] = word >>> 8; bytes[i * 3 + 2] = word })
+          if (await sha(bytes) !== hook.guardSha256) throw new Error('The stock DSP hook fingerprint differs from the verified original.')
+          writeDspWords(memory, 0, hook.site, new Uint32Array([0x0bf080, at.address + hook.entry]))
+        }
+      } else dispatch.push({ fxId: module.fxId, init: code.init, proc: code.proc })
     }
     applyStaticDispatch(memory, dispatch, layout.nulledDonors, stub)
     writes.push({ address: OS_LOAD_ADDRESS + stock.sourceOffset, guardLength: stock.bytes, guardSha256: stock.sha256, bytes: memory.bytes, note: 'DSP payload ' + stock.tag + ' (static stock)' })

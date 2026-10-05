@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "id": "sidechain-compressor",
+  "moduleVersion": "0.1.1-experimental",
+  "sourceSha256": "301d7dc13d0f7f4567e9bb121e8fc50c8cebbc1fb4bf544c511c28769370edbc",
+  "imageSha256": "4fd5fcb49ed17cd4e707d407a6e42a64ec30b50aefaad3b1eeb1bb804493aef0",
+  "hardwareStatus": "historical",
+  "currentBuildHardware": "owner-waived",
+  "chipWallClockCycles": null,
+  "measuredOn": {
+    "imageSha256": "b5aa8cee7787a3dc0ea53007fe31358ba14d155421ebec9c7f98948de740675f",
+    "what": "The author-form standalone image from octabam f80ecfe, rebuilt on 5 October 2026.",
+    "carriesOverToTheSharedBuilder": "The shared-builder image differs from it in 56 bytes (evidence/common-builder.json). None is a byte Sidechain Compressor places; none lies on the COMPRESSOR path the cycle matrix and static pricing run; six are stock DSP words for the cross-core mailbox and payload B's boot zero loop. The ColdFire unit that the formatter measurements ran is byte-identical. The measurements below therefore describe the module's own contribution in both images. They do not price other modules sharing a core."
+  },
+  "cycles": {
+    "staticPerCore": 69496,
+    "budgetPerCore": 72560,
+    "matrixPeakPerCore": 19506,
+    "blocksPerSplit": 2304,
+    "splits": 16,
+    "instances": 16,
+    "initPerCore": 192,
+    "coldfire": {
+      "keyPeakInstructions": 132,
+      "kfltPeakInstructions": 60,
+      "keyStackBytes": 88,
+      "kfltStackBytes": 72,
+      "boundPerEvent": 135168,
+      "maxConfiguration": 8162688,
+      "budget": 8800000
+    },
+    "initialRecordedPeakPerCore": 19828
+  },
+  "memory": {
+    "totalBytes": 23292,
+    "perInstanceBytes": 768,
+    "sharedBytes": 11004,
+    "maxInstances": 16,
+    "newHeapBytes": 0,
+    "newSdramBytes": 0,
+    "hardwareCanaries": null
+  },
+  "numericTransforms": {
+    "status": "passed",
+    "checks": 37,
+    "scope": "Pinned author same-core B stage suite with CLI dump order and receiving-track host-context adapters, run on the standalone image above before its temporary workspace was removed."
+  },
+  "sharedBuilder": {
+    "record": "evidence/common-builder.json",
+    "selectionsCompared": 1558,
+    "nativeBuilt": 1014,
+    "nativeRefused": 544,
+    "browserRefusalsMatchNative": 544,
+    "browserModuleOwnedWritesMatchNativeOutsidePlatformWrites": 1014,
+    "identicalOutright": 124,
+    "emulator": "UI frames only: KEY, KFLT, KGN and MON draw correctly on the native and on the complete composed image.",
+    "notClaimed": "No stress, audio render, ducking, cross-core timing or maximum-load run was made on a mixed image. Cycle bounds are not summed with other modules."
+  }
+}

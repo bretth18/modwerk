@@ -14,6 +14,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Mapping
+from types import MappingProxyType
 
 
 class Kind(Enum):
@@ -150,7 +152,7 @@ class Param:
     name: bytes | None = None          # <=5 chars in a 6-byte NUL-terminated field; b"" blanks it
     default: int | None = None         # u8 written at P+0x5e+idx
     count: int | None = None           # value count; None leaves the donor's
-    active: bool = False               # drawn at all (the enable bitmap)
+    active: bool | None = False               # drawn at all (the enable bitmap)
     formatter: Formatter = Formatter.INHERIT
     # Display-only, consumed by the remixer and never by the build (the
     # refhash gate proves it): one line saying what the knob DOES, and for a
@@ -167,7 +169,32 @@ class Param:
     # links across 2-3.
     link: bool = False
 
+    formatter_word: int | tuple[str, str] | None = None
+    widget_word: int | tuple[str, str] | None = None
+    word_12a: int | tuple[str, str] | None = None
+
+    @property
+    def raw_words(self) -> tuple:
+        """(formatter_word, widget_word, word_12a)."""
+        return (self.formatter_word, self.widget_word, self.word_12a)
+
+    @property
+    def has_raw_words(self) -> bool:
+        return any(w is not None for w in self.raw_words)
+
+    @property
+    def prints_labels(self) -> bool:
+        """The build emits a label formatter for this slot. A slot with raw
+        descriptor words is drawn by those words, which take P+0x0ca: its
+        labels are display-only (the remixer's help row, the BCR map)."""
+        return bool(self.active and self.labels) and not self.has_raw_words
+
     def __post_init__(self):
+        for label,value in zip(("formatter_word","widget_word","word_12a"),self.raw_words):
+            if value is None or isinstance(value,int) and not isinstance(value,bool) and 0<=value<=0xffffffff: continue
+            if isinstance(value,tuple) and len(value)==2 and all(isinstance(x,str) and x for x in value): continue
+            raise ValueError(f"{label}: expected u32 or (unit,symbol)")
+        if self.has_raw_words and self.formatter is not Formatter.INHERIT: raise ValueError("Raw descriptor words conflict with formatter")
         if self.link and not self.active:
             raise ValueError(f"param {self.name!r}: link on a slot that is not drawn")
         if self.name is not None and len(self.name) > 5:
@@ -257,8 +284,10 @@ class MenuEntry:
     # FX1's tables (its id lookup and the row the encoder scrolls), in place,
     # and verify_replaces.py checks both menus in both directions.
     replaces: str | None = None
+    stock_dsp: bool = False
 
     def __post_init__(self):
+        if self.stock_dsp and not self.replaces: raise ValueError("stock_dsp requires replaces")
         # 0x00-0x03 are the ids stock treats as bare synonyms for "no effect";
         # the first hardware test used them and got correct names with dead
         # knobs and garbage audio.
@@ -293,10 +322,26 @@ class DspHook:
     inject at the frame head, P:0x88.
     """
 
-    site: int                                  # P address of the displaced instruction
+    # P address of the displaced instruction: one int for every payload,
+    # or {"A": addr, "B": addr} naming exactly the section's payloads when
+    # the stock code sits at a different address on each (the two payloads
+    # are linked separately; AGENTS.md "payload-relative addresses").
+    site: int | Mapping[str, int]
     stock: tuple[int, int]                     # its two words, as the image has them
     label: str                                 # the section's entry for this site
     note: str = ""
+
+    def __post_init__(self):
+        if isinstance(self.site, Mapping):
+            object.__setattr__(self, "site", MappingProxyType(dict(self.site)))
+            if not self.site or set(self.site) - {"A", "B"}:
+                raise ValueError(f"DspHook {self.label!r}: site keys are payload "
+                                 f"tags A/B, got {sorted(self.site)}")
+
+    def site_on(self, payload: str) -> int:
+        """The hook's P address on one payload."""
+        return self.site[payload] if isinstance(self.site, Mapping) else self.site
+
 
 
 @dataclass(frozen=True)
@@ -354,7 +399,53 @@ class DspSection:
     # with hooks and no MenuEntry is placed on `payloads` only and takes no
     # dispatch entry; one with a menu may carry hooks as well.
     hooks: tuple[DspHook, ...] = ()
+    subst: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
 
+    def __post_init__(self):
+        object.__setattr__(self, "subst", MappingProxyType(
+            {pl: MappingProxyType(dict(kv)) for pl, kv in self.subst.items()}))
+        for h in self.hooks:
+            if isinstance(h.site, Mapping) and set(h.site) != set(self.payloads):
+                raise ValueError(
+                    f"DspHook {h.label!r}: site names payloads {sorted(h.site)}, "
+                    f"the section is placed on {sorted(self.payloads)}")
+        if self.subst:
+            if set(self.subst) != set(self.payloads):
+                raise ValueError(f"subst names payloads {sorted(self.subst)}, "
+                                 f"the section is placed on {sorted(self.payloads)}")
+            keys = [frozenset(kv) for kv in self.subst.values()]
+            if len(set(keys)) != 1:
+                raise ValueError("subst: every payload names the same keys "
+                                 + "; ".join(f"{pl}: {sorted(kv)}" for pl, kv
+                                             in sorted(self.subst.items())))
+            for k in keys[0]:
+                if not k.strip():
+                    raise ValueError(f"subst: empty key {k!r}")
+                hit = [r for r in SUBST_RESERVED if r in k or k in r]
+                if hit:
+                    raise ValueError(f"subst key {k!r} overlaps the build's own "
+                                     f"marker {hit[0]!r}")
+            for pl, kv in self.subst.items():
+                for k, v in kv.items():
+                    if any(r in v for r in SUBST_RESERVED):
+                        raise ValueError(f"subst {pl} {k!r}: value {v!r} carries "
+                                         f"a marker the build substitutes")
+
+    def source_for(self, payload: str, src: str) -> str:
+        """`src` with this payload's subst applied (refuses a key the source
+        does not carry)."""
+        for k, v in self.subst.get(payload, {}).items():
+            if k not in src:
+                raise ValueError(f"{self.asm}: subst key {k!r} does not occur "
+                                 f"in the source")
+            src = src.replace(k, v)
+        return src
+
+
+
+SUBST_RESERVED = ("$30000", "$facade", "$fab1e0", "$fab2e0", "; ROTLATCH", "; ROTINIT",
+                  "_OVERRIDE", "XBUS_GATE", "; HOSTGUARD",
+                  "LFO lines 0-1: ROLLED TOO")
 
 @dataclass(frozen=True)
 class FormatterReg:
@@ -439,6 +530,54 @@ class CavePatch:
     reference: object | None = None
 
 
+SHARED_WINDOW = (0x30000, 0x40000)
+HALF_BASE = {"A":0x30000,"B":0x38000}
+
+@dataclass(frozen=True)
+class DspRange:
+    """DSP data words a module writes, on every payload its section runs on.
+
+    `space` is "x" or "y". `start` is an absolute address, or with
+    `half_relative` an offset from the payload's own half of the shared
+    window (`HALF_BASE`: 0x30000 on A, 0x38000 on B -- the per-payload
+    `$30000` rewrite, schema.YBase). A range lies wholly inside the shared
+    window or wholly below it. Inside it, X, Y and P are one memory shared
+    by both cores, so the ledger compares the range against every module's
+    on either payload; below it, only against the same space on the same
+    payload (each core has its own).
+    """
+
+    space: str
+    start: int
+    length: int
+    what: str
+    half_relative: bool = False
+
+    def __post_init__(self):
+        if self.space not in ("x", "y"):
+            raise ValueError(f"DspRange({self.what!r}): space must be 'x' or 'y', not {self.space!r}")
+        if self.length <= 0:
+            raise ValueError(f"DspRange({self.what!r}): length must be positive")
+        if self.half_relative:
+            if not (0 <= self.start and self.start + self.length <= 0x8000):
+                raise ValueError(f"DspRange({self.what!r}): a half-relative range lies "
+                                 f"inside one half, 0x0000-0x7FFF")
+            return
+        lo, hi = SHARED_WINDOW
+        end = self.start + self.length
+        if self.start < 0 or end > hi or (self.start < lo < end):
+            raise ValueError(f"DspRange({self.what!r}): 0x{self.start:05x}..0x{end - 1:05x} "
+                             f"must lie wholly below 0x{lo:05x} or wholly in the shared window")
+
+    def resolve(self, payload: str) -> tuple[str, int, int]:
+        """(domain, start, end) on `payload`: domain "shared" in the window,
+        else "<payload>:<space>"."""
+        start = self.start + (HALF_BASE[payload] if self.half_relative else 0)
+        end = start + self.length
+        if start >= SHARED_WINDOW[0]:
+            return "shared", start, end
+        return f"{payload}:{self.space}", start, end
+
 @dataclass(frozen=True)
 class Claims:
     """Resources a module reserves that the ledger cannot see for itself.
@@ -450,6 +589,10 @@ class Claims:
     """
 
     reserved_private_y: tuple[int, ...] = ()
+    # DSP data words the module writes, per payload (DspRange). The ledger
+    # refuses two modules whose ranges overlap, and a module whose own source
+    # addresses another module's range by literal.
+    dsp_ranges: tuple[DspRange, ...] = ()
     owns_fx2_buffers: bool = False
     # A STOCK effect that allocates an FX2 instance buffer through the host's
     # bump allocator (it reads X:0x213 at init -- docs/firmware/DSP.md section 10).
@@ -1063,6 +1206,17 @@ class Module:
     def active_params(self) -> list[int]:
         """Slots the panel draws -- the enable bitmap, in index order."""
         return [i for i, p in enumerate(self.params) if p.active]
+
+    @property
+    def inherited_enable(self) -> tuple[int, ...]:
+        """Slots whose enable nibble (draw and link bits) is the donor's:
+        active=None on a MenuEntry(stock_dsp=True) clone. Empty params are
+        twelve Param()s."""
+        if self.menu is None or not self.menu.stock_dsp:
+            return ()
+        if not self.params:
+            return tuple(range(12))
+        return tuple(i for i, p in enumerate(self.params) if p.active is None)
 
     @property
     def linked_params(self) -> list[int]:

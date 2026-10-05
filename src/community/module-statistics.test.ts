@@ -30,8 +30,8 @@ it('sorts by the first addition date, with alphabetical ties and unknown dates l
  expect(additions.slice(0,2).sort((a,b) => compareModules(a,b,'recent',statistics)).map(module => module.id)).toEqual(['c','a'])
 })
 
-it('requires a valid addition date for every catalog entry and puts TapeHead followed by the four earlier additions', () => {
+it('requires a valid addition date for every catalog entry and puts Sidechain Compressor first, then TapeHead and the four earlier additions', () => {
  expect(Object.keys(MODULE_ADDED_AT).sort()).toEqual(MODULES.map(module => module.id).sort())
  expect(MODULES.every(module => Number.isFinite(Date.parse(module.addedAt)))).toBe(true)
- expect([...MODULES].sort((a,b) => compareModules(a,b,'recent',null)).slice(0,7).map(module => module.id)).toEqual(['tapehead','cc-map','previewvol','analog-bassdrum','midi-scenes','quantizer','usb-audio-out-tracks-main-cue'])
+ expect([...MODULES].sort((a,b) => compareModules(a,b,'recent',null)).slice(0,8).map(module => module.id)).toEqual(['sidechain-compressor','tapehead','cc-map','previewvol','analog-bassdrum','midi-scenes','quantizer','usb-audio-out-tracks-main-cue'])
 })

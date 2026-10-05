@@ -147,6 +147,14 @@
       "fxId": 31,
       "fx1": true,
       "fx1Only": false
+    },
+    {
+      "id": "sidechain-compressor",
+      "key": "SIDECHAIN_COMPRESSOR",
+      "fxId": 24,
+      "fx1": true,
+      "fx1Only": false,
+      "replaces": "COMPRESSOR"
     }
   ],
   "customIds": [

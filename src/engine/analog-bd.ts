@@ -18,7 +18,7 @@ function payload(raw: Uint8Array, destination: number, stage: number) {
   return { raw, blob, destination, stage, rawHash: rollingHash(raw), packedHash: rollingHash(packed) }
 }
 export async function composeAnalogBd(original: Uint8Array, patched: Uint8Array, ids: readonly string[], profile: { fx1: readonly string[]; fx2: readonly string[] }) {
-  if (ids.some(id => ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'tapehead'].includes(id))) throw new Error('Analog BD currently composes with stock effects only.')
+  if (ids.some(id => ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'tapehead', 'sidechain-compressor'].includes(id))) throw new Error('Analog BD currently composes with stock effects only.')
   if ([...profile.fx1, ...profile.fx2].includes(ANALOG_BD_DONOR)) throw new Error('Analog BD needs the space used by ' + ANALOG_BD_DONOR + '.')
   const uploads = [], writes: OsWrite[] = [], recipe = facts.analog
   for (const variant of recipe.variants) {

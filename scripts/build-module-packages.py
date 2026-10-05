@@ -9,6 +9,7 @@ import argparse, hashlib, importlib.util, json, os, re, shutil, struct, subproce
 
 APP = Path(__file__).resolve().parents[1]
 ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead']
+HOOKED = ['sidechain-compressor']
 REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer']
 UTILITIES = ['previewvol', 'cc-map']
 ASSET_NAMES = ['dsp-packages.json', 'coldfire-packages.json', 'resident-dsp.json', 'rom-packages.json',
@@ -61,7 +62,7 @@ def fingerprint(reference, address):
 
 def requested_release_scope(buildable):
     """Permit the reviewed scope; MIDISC2.0 is a standalone local-stock recipe."""
-    ordinary = [id for id in buildable if id not in UTILITIES]
+    ordinary = [id for id in buildable if id not in UTILITIES + HOOKED]
     if [id for id in buildable if id in UTILITIES] not in ([], UTILITIES):
         raise ValueError('Unsupported utility module scope')
     scopes = (ORDER, ORDER + REQUESTED, ORDER + [id for id in REQUESTED if id != 'midi-scenes'])
@@ -185,16 +186,17 @@ def main():
     requested_ids = [id for id in REQUESTED if id != 'midi-scenes'] if args.include_requested else approved_requested
     include_requested = bool(requested_ids)
     versions = {module['id']: module['version'] for module in buildable}
+    hooked_ids = [id for id in HOOKED if id in versions]
     revision = catalog['sourceRevision']
     utility_ids = [id for id in UTILITIES if id in versions]
-    documents = {id: json_file(sdk / 'modules' / id / 'octamod.module.json') for id in ORDER + REQUESTED + utility_ids}
+    documents = {id: json_file(sdk / 'modules' / id / 'octamod.module.json') for id in ORDER + REQUESTED + utility_ids + hooked_ids}
     provenance = {'sourceCommit': args.source_commit, 'moduleVersions': versions}
     products = {}
     with tempfile.TemporaryDirectory(prefix='octamod-source-build.') as temporary:
         root = Path(temporary)
         # Pending imports stay in the source fingerprint, but are never evaluated or compiled.
         (root / 'modules').mkdir()
-        for id in ORDER + requested_ids + utility_ids:
+        for id in ORDER + requested_ids + utility_ids + hooked_ids:
             shutil.copytree(sdk / 'modules' / id, root / 'modules' / id, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '.DS_Store'))
         for group in ['platform', 'tools', 'dsp']:
             shutil.copytree(sdk / group, root / group, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '.DS_Store'))
@@ -212,12 +214,12 @@ def main():
         known = registry.modules()
         byid = {module.name: module for module in known.values()}
         public = sorted(module.name for module in known.values() if not module.is_stock and module.name not in registry.PLATFORM_NAMES)
-        if public != sorted(ORDER + requested_ids + utility_ids): raise ValueError('Unexpected module scope')
-        for id in ORDER:
+        if public != sorted(ORDER + requested_ids + utility_ids + hooked_ids): raise ValueError('Unexpected module scope')
+        for id in ORDER + hooked_ids:
             module, doc = byid[id], documents[id]
             if doc['version'] != versions[id] or doc['key'] != module.key or doc['author']['github'] != module.author or doc['compatibility']['effectId'] != (module.menu.fx2_id if module.menu else None):
                 raise ValueError(id + ': website metadata differs from its native declaration')
-        profile = registry.with_platform(Remix(name='source-build', doc='Compile authored packages without firmware.', modules=tuple(byid[id].key for id in ORDER), fallback='NONE'), known)
+        profile = registry.with_platform(Remix(name='source-build', doc='Compile authored packages without firmware.', modules=tuple(byid[id].key for id in ORDER + hooked_ids), fallback='NONE'), known)
         registry.remix = lambda _: profile
         import build_bus as native
         import label_fmt, mode_names, wide_dial
@@ -245,6 +247,36 @@ def main():
             text = native._loadable_text(module)
             if text is None: raise ValueError(id + ': changed native placement needs a supported browser recipe')
             packages.append(package(module, text))
+
+        for id in hooked_ids:
+            module = byid[id]
+            if not module.menu.stock_dsp or not module.dsp.hooks:
+                raise ValueError(id + ': stock DSP hook package requires a preserved dispatch and hooks')
+            text = (root / module.dsp.asm).read_text()
+            for tag in sorted(module.dsp.payloads):
+                source = module.dsp.source_for(tag, text)
+                validate_source(source)
+                words, symbols = native.assemble_syms(source.replace(native.PTABLE_LITERAL, '$0'), len(module.dsp.ptable), label=module.key)
+                words = list(module.dsp.ptable) + words
+                relocations = None; proofs = []
+                for base in (0x1000, 0x1400, 0x1801, 0x2407):
+                    fresh, _ = native.assemble_syms(source.replace(native.PTABLE_LITERAL, '$'+format(base,'x')), base + len(module.dsp.ptable), label=module.key)
+                    fresh = list(module.dsp.ptable) + fresh
+                    changed = [i for i, (a,b) in enumerate(zip(words,fresh)) if a != b]
+                    if len(fresh) != len(words) or any(fresh[i] != words[i] + base or not 0 <= words[i] < len(words) for i in changed):
+                        raise ValueError(id + ': unsupported relocation')
+                    if relocations is not None and changed != relocations: raise ValueError(id + ': origin-dependent relocation map')
+                    relocations = changed
+                    proofs.append({'base':base,'sha256':HASH(code_bytes(fresh))})
+                hooks = [{'site':h.site_on(tag),'words':len(h.stock),'guardSha256':h.stock.sha256,
+                          'entry':symbols[h.label],'note':h.note} for h in module.dsp.hooks]
+                code = code_bytes(words)
+                packages.append({'id':id,'version':versions[id],'key':module.key,'author':module.author,
+                    'sources':hashes(module.dsp.asm,f'modules/{id}/manifest.py'),'fxId':module.menu.fx2_id,
+                    'tag':tag,'stockDsp':True,'stockKey':module.menu.replaces,
+                    'words':len(words),'code':code.hex(),'sha256':HASH(code),'relocations':relocations,
+                    'init':hooks[0]['entry'],'proc':hooks[1]['entry'],'hooks':hooks,'proofs':proofs})
+
         products['dsp-packages.json'] = {'schema': 1, 'revision': revision, 'license': '/licenses/octabam.txt', **provenance,
             'packages': packages, 'excluded': [{'id': 'character', 'reason': 'Native resident placement.'}]}
         print('Compiled loadable DSP modules with four-origin relocation proofs.', flush=True)
@@ -332,7 +364,7 @@ def main():
         for id in ORDER:
             module = byid[id]
             for slot, param in enumerate(module.params):
-                if not (param.active and param.labels): continue
+                if not param.prints_labels: continue
                 views = module.name_views_for(slot)
                 names = mode_names.complete(module, slot, views) if views else {}
                 if slot == module.mode_slot: names = mode_names.with_selfname(names, slot, param.labels)
@@ -378,9 +410,16 @@ def main():
                 integer(0xca + slot * 4, 4, 0x4003c7a0); integer(0xfa + slot * 4, 4, 0); integer(0x12a + slot * 4, 4, 0x400328e4)
             for slot, param in enumerate(module.params):
                 if param.count is not None: integer(0x9a + slot * 4, 4, param.count); integer(0x6a + slot * 4, 4, 0)
+            raw = []
+            for slot, param in enumerate(module.params):
+                for offset, value in [(0xca, param.formatter_word), (0xfa, param.widget_word), (0x12a, param.word_12a)]:
+                    if value is None: continue
+                    if isinstance(value, int): integer(offset + slot * 4, 4, value)
+                    else: raw.append({'offset':offset + slot * 4,'unit':value[0],'symbol':value[1]})
             lo, hi = native.penable(module.active_params, module.linked_params)
             integer(native.P_PENABLE_LO, 4, lo); integer(native.P_PENABLE_HI, 4, hi)
-            descriptors.append(dict(old, sourceSha256=sources[f'modules/{module.name}/manifest.py'], integers=integers, strings=strings))
+            extra = {'inheritedEnable': list(module.inherited_enable), 'rawPointers':raw, 'replaces':module.menu.replaces} if module.menu.stock_dsp else {}
+            descriptors.append(dict(old, sourceSha256=sources[f'modules/{module.name}/manifest.py'], integers=integers, strings=strings, **extra))
         products['descriptor-recipes.json'] = dict(baseline['descriptor-recipes.json'], **provenance, recipes=descriptors)
         groups = []
         for old in baseline['platform-writes.json']['groups']:
@@ -402,9 +441,9 @@ def main():
     if args.verify_existing:
         for name in ['dsp-packages.json', 'coldfire-packages.json', 'rom-packages.json']:
             key = 'id' if name == 'dsp-packages.json' else 'label'
-            expected = {row[key]: row for row in baseline[name]['packages']}
+            expected = {(row[key],row.get('tag')): row for row in baseline[name]['packages']}
             for row in products[name]['packages']:
-                if row['code'] != expected[row[key]]['code']: raise ValueError(name + ': compiled code differs from native baseline for ' + row[key])
+                if row['code'] != expected[(row[key],row.get('tag'))]['code']: raise ValueError(name + ': compiled code differs from native baseline for ' + row[key])
         if products['resident-dsp.json']['character']['code'] != baseline['resident-dsp.json']['character']['code']: raise ValueError('Resident Character differs from baseline')
         # Placement and dispatch bindings change composed firmware as much as code bytes do.
         for row, old in zip(products['resident-dsp.json']['variants'], baseline['resident-dsp.json']['variants']):

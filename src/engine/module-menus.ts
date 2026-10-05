@@ -1,9 +1,10 @@
 import { requestedRom, requestedTables, requestedHooks } from './requested-modules.ts'
 import { composeUtilityRom } from './utility-modules.ts'
 import type { CfRuntimeLink } from './coldfire-link.ts'
+import descriptorRecipes from './assets/descriptor-recipes.json' with { type: 'json' }
 import recipes from './assets/menu-recipes.json' with { type: 'json' }
 import { CATALOG_SOURCE, resolveSelection } from '../catalog/modules.ts'
-import { composeDescriptors } from './descriptors.ts'
+import { composeDescriptors, placementOrder } from './descriptors.ts'
 import { emitLabelFormatter, emitModeFormatter, type ModeRenames } from './menu-formatters.ts'
 import { readRomPackage, linkRomText, createWideDial } from './rom-package.ts'
 import { applyGuardedOsWrites, type OsWrite } from './os-patches.ts'
@@ -18,8 +19,8 @@ function pointer(value: number) {
   if (!Number.isInteger(value) || value < 0 || value > 0xffffffff) throw new Error('A module menu pointer is outside its address range.')
   const bytes = new Uint8Array(4); new DataView(bytes.buffer).setUint32(0, value); return bytes
 }
-export async function composeModuleMenus(original: Uint8Array, ids: readonly string[], caveLimit = MENU_CAVE_END, runtime: CfRuntimeLink | null = null) {
-  const modules = resolveSelection(ids), baseline = await composeDescriptors(original, ids)
+export async function composeModuleMenus(original: Uint8Array, ids: readonly string[], caveLimit = MENU_CAVE_END, runtime: CfRuntimeLink | null = null, leading: readonly string[] = []) {
+  const modules = placementOrder(resolveSelection(ids), leading), baseline = await composeDescriptors(original, ids, leading)
   if (recipes.schema !== 1 || recipes.revision !== CATALOG_SOURCE.revision || ![MENU_CAVE_END, MENU_LONG_LIST].includes(caveLimit)) throw new Error('The module menus do not match the pinned placement profile.')
   if (baseline.caveCursor > caveLimit) throw new Error('The descriptor clones run into the chooser list.')
   const writes: OsWrite[] = [...baseline.writes], regions: { address: number; bytes: number; note: string }[] = []
@@ -29,6 +30,28 @@ export async function composeModuleMenus(original: Uint8Array, ids: readonly str
     if (!Number.isInteger(address) || address % 2 || !bytes.length || !((address >= baseline.caveCursor && address + bytes.length <= caveLimit) || (address >= OVERFLOW_START && address + bytes.length <= OVERFLOW_END) || (address === 0x400c45b0 && address + bytes.length <= 0x400c4702))) throw new Error('A module menu cave exceeds its reserved region.')
     writes.push({ address, guardLength: bytes.length, guardSha256: await zeroHash(bytes.length), bytes, note }); regions.push({ address, bytes: bytes.length, note })
   }
+  // ROM units a descriptor points into (raw formatter/widget words). Native places units in chooser order, so a module that leads
+  // (replaces a kept stock effect) places its units ahead of Repitch's; every other module's units follow it.
+  async function placeRawPointers(descriptor: (typeof baseline.descriptors)[number]) {
+    const recipe = descriptorRecipes.recipes.find(recipe => recipe.id === descriptor.id)!
+    if (!recipe.rawPointers) return
+    const symbols = new Map<string, number>()
+    for (const unit of [...new Set(recipe.rawPointers.map(pointer => pointer.unit))]) {
+      let address = align(cursor, 128), linked = linkRomText(await readRomPackage(unit), address)
+      const inside = address + linked.bytes.length <= caveLimit
+      if (!inside) { address = align(overflow, 4); linked = linkRomText(await readRomPackage(unit), address) }
+      await cave(address, linked.bytes, descriptor.id + ' ' + unit + ' ROM unit')
+      for (const [name, value] of linked.symbols) symbols.set(unit + ':' + name, value)
+      if (inside) cursor = address + linked.bytes.length
+      else overflow = align(address + linked.bytes.length, 4)
+    }
+    for (const field of recipe.rawPointers) {
+      const address = symbols.get(field.unit + ':' + field.symbol)
+      if (address === undefined || !Number.isInteger(field.offset) || field.offset < 0 || field.offset + 4 > descriptor.bytes.length) throw new Error('A raw descriptor pointer has no linked symbol.')
+      new DataView(descriptor.bytes.buffer).setUint32(field.offset, address)
+    }
+  }
+  for (const descriptor of baseline.descriptors) if (leading.includes(descriptor.id)) await placeRawPointers(descriptor)
   if (modules.some(module => module.id === 'repitch')) {
     const address = align(cursor, 128), linked = linkRomText(await readRomPackage('repitch'), address)
     await cave(address, linked.bytes, 'Repitch ROM unit'); cursor = address + linked.bytes.length
@@ -54,6 +77,8 @@ export async function composeModuleMenus(original: Uint8Array, ids: readonly str
   cursor = rom.cursor; overflow = rom.overflow
   const utilityUnits = await composeUtilityRom(ids, cursor, overflow, caveLimit, cave, 'linked')
   cursor = utilityUnits.cursor; overflow = utilityUnits.overflow; writes.push(...utilityUnits.writes)
+  // Catalog order puts a replacing module after the requested and utility modules, so its units follow theirs unless it leads.
+  for (const descriptor of baseline.descriptors) if (!leading.includes(descriptor.id)) await placeRawPointers(descriptor)
   const requestedSymbols = new Map([...(runtime?.symbols ?? []), ...rom.symbols])
   if (modules.some(module => module.id === 'spectrum')) {
     const descriptor = baseline.descriptors.find(descriptor => descriptor.id === 'spectrum')!

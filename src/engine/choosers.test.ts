@@ -7,8 +7,11 @@ import { moduleBuildPending } from '../catalog/build-support'
 describe('effect chooser composition', () => {
   it('preserves stock effects and puts selected effects in their working slots', () => {
     const ids = MODULES.filter(module=>!moduleBuildPending(module.id)).map(module => module.id), profile = defaultChoosers(ids, true, true)
-    expect(profile.fx1.slice(0, metadata.stockFx1.length)).toEqual(metadata.stockFx1)
-    expect(profile.fx2.slice(0, metadata.stockFx2.length)).toEqual(metadata.stockFx2)
+    // Sidechain Compressor takes COMPRESSOR's row on both menus; every other stock row keeps its place.
+    const replaced = (keys: readonly string[]) => keys.map(key => key === 'COMPRESSOR' ? 'SIDECHAIN_COMPRESSOR' : key)
+    expect(profile.fx1.slice(0, metadata.stockFx1.length)).toEqual(replaced(metadata.stockFx1))
+    expect(profile.fx2.slice(0, metadata.stockFx2.length)).toEqual(replaced(metadata.stockFx2))
+    expect(profile.fx2.filter(key => key === 'SIDECHAIN_COMPRESSOR')).toHaveLength(1)
     for (const key of ['SPECTRUM','MODULATION','CHARACTER']) {
       expect(profile.fx1).toContain(key); expect(profile.fx2).not.toContain(key)
     }
@@ -18,7 +21,20 @@ describe('effect chooser composition', () => {
     expect(validateChoosers(ids, profile).hidden).toEqual(['SPECTRUM','MODULATION','CHARACTER'])
     const compact = defaultChoosers(ids, false)
     expect(compact.fx1).toEqual(profile.fx1)
-    expect(compact.fx2).toEqual(['MINIVERB','TAPE ECHO','EUCLID','TAPEHEAD'])
+    expect(compact.fx2).toEqual(['MINIVERB','TAPE ECHO','EUCLID','TAPEHEAD','SIDECHAIN_COMPRESSOR'])
+  })
+  it('lets a module replace a stock effect in place on both menus, giving up only the reverb its code needs', () => {
+    const swapped = (keys: readonly string[]) => keys.map(key => key === 'COMPRESSOR' ? 'SIDECHAIN_COMPRESSOR' : key)
+    expect(defaultChoosers(['sidechain-compressor'], true)).toEqual({ fx1: swapped(metadata.stockFx1), fx2: swapped(metadata.stockFx2).filter(key => key !== 'SPRING REV') })
+    expect(defaultChoosers(['sidechain-compressor'], false)).toEqual({ fx1: swapped(metadata.stockFx1), fx2: ['SIDECHAIN_COMPRESSOR'] })
+    // The replaced effect is not offered a second time, and the replacement appears once on each menu.
+    for (const keep of [true, false]) {
+      const profile = defaultChoosers(['sidechain-compressor'], keep)
+      expect(profile.fx1).not.toContain('COMPRESSOR'); expect(profile.fx2).not.toContain('COMPRESSOR')
+      expect(profile.fx1.filter(key => key === 'SIDECHAIN_COMPRESSOR')).toHaveLength(1)
+      expect(validateChoosers(['sidechain-compressor'], profile).hidden).toEqual([])
+    }
+    expect(metadata.modules.find(module => module.id === 'sidechain-compressor')).toMatchObject({ fxId: 24, fx1: true, fx1Only: false, replaces: 'COMPRESSOR' })
   })
   it('without the loader, leaves out only the stock FX2 effects whose code the modules take', () => {
     const others = (ids: string[]) => metadata.stockFx2.filter(key => !defaultChoosers(ids).fx2.includes(key))

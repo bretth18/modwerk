@@ -233,6 +233,7 @@ _DEF_ASM = {m.key: m.dsp.asm for m in _CLONED}
 # DSP code reached from STOCK code rather than a chooser row
 # (schema.DspSection.hooks with no MenuEntry): placed like an effect, on
 # the payloads it names, with no dispatch entry. USB AUDIO IN's RX inject.
+STOCK_DSP = {m.key for m in _CLONED if m.menu.stock_dsp}
 HOOKED = [k for k in REMIX.modules
           if _MODS[k].dsp is not None and _MODS[k].menu is None]
 for _k in HOOKED:
@@ -616,7 +617,7 @@ def _loadable_text(m):
     it is not a plain insert (see above)."""
     d = m.dsp
     if not (DYNAMIC and not DEV and m.menu is not None and d is not None
-            and not m.is_stock and not d.resident and not d.arena
+            and not m.is_stock and not m.menu.stock_dsp and not d.subst and not d.resident and not d.arena
             and m.key != REMIX.fallback and d.payloads == frozenset({"A", "B"})
             and not d.hooks and d.bus_role is BusRole.NONE and d.ybase is YBase.NEVER
             and d.r7_latch_slot is None and not d.override_markers
@@ -816,6 +817,12 @@ def main():
                 wr32(clone_P + 0x9a + idx * 4, cnt)
                 wr32(clone_P + 0x6a + idx * 4, 0)   # min 0: slot 7 showed -64   # P+0x9a = count array
         lo, hi = penable(ACTIVE_PARAMS[name], LINKED_PARAMS.get(name, ()))
+        for slot in _MODS[name].inherited_enable:
+            at = P_PENABLE_LO if slot < 8 else P_PENABLE_HI
+            shift = (slot if slot < 8 else slot-8)*4
+            inherited = (rd32(clone_P+at) >> shift) & 15
+            if slot < 8: lo = (lo & ~(15<<shift)) | (inherited<<shift)
+            else: hi = (hi & ~(15<<shift)) | (inherited<<shift)
         wr32(clone_P + P_PENABLE_LO, lo)
         wr32(clone_P + P_PENABLE_HI, hi)
         clone_addr[name] = clone_P
@@ -1282,6 +1289,17 @@ def main():
         if _inside:
             _cave_top = _c.cave_addr + len(_b)
 
+    for name in CLONED_ORDER:
+        for slot, param in enumerate(_MODS[name].params):
+            for array, value in zip((0x0ca,0x0fa,0x12a), param.raw_words):
+                if value is None: continue
+                if isinstance(value,tuple):
+                    unit,symbol=value
+                    if unit not in _sym or symbol not in _sym[unit]:
+                        sys.exit(f"{name}: unresolved descriptor {unit}:{symbol}")
+                    value=_sym[unit][symbol]
+                wr32(clone_addr[name]+array+slot*4,value)
+
     # ==== 1c. loader-appended DRAM runtimes (schema.Runtime) =================
     # The third placement class: the OS image GROWS by an append (early
     # loader + stage + packed runtime) and the runtime executes from DRAM.
@@ -1532,7 +1550,7 @@ def main():
         if name in BLANKED:
             continue
         for _i, _p in enumerate(_MODS[name].params):
-            if not (_p.active and _p.labels):
+            if not _p.prints_labels:
                 continue
             # A MODE select with views gets the BIGGER cave: it renames the
             # knobs around it before printing its own word, so the panel
@@ -2247,6 +2265,7 @@ mkgo:""",
         _listed = set(REMIX.modules) | set(
             REMIX.fx1 or [k for k in stock_mod.p_spans("A")
                           if _MODS[k].menu.fx2_id in stock_mod.fx1_ids()])
+        _listed.update(_MODS[k].menu.replaces for k in STOCK_DSP)
         # ⚠️ IN ADDRESS ORDER. DEV's CHORUS sits BELOW the reverbs, and the
         # report lists the donors in this order -- appending it put CHORUS
         # last and changed every DEV case's report hash (refhash caught it).
@@ -2573,6 +2592,7 @@ mkgo:""",
         for _k in CARRIED + [k for k in HOOKED if tag in _MODS[k].dsp.payloads]:
             if _k not in _texts and _k in ASM_SRC:
                 _src_k = pathlib.Path(ASM_SRC[_k]).read_text()
+                _src_k = _MODS[_k].dsp.source_for(tag, _src_k)
                 _mk = remix_modules().get(_k)
                 if (_x and _mk is not None and _mk.harness is not None
                         and _mk.harness.bus_client):
@@ -2595,9 +2615,10 @@ mkgo:""",
                 _an = _mk.dsp.arena if _mk is not None and _mk.dsp else ""
                 if _an and f"@{_an}@" not in _src_k:
                     sys.exit(f"{_k}: arena {_an} has no @{_an}@ in its source")
-                if re.search(r"@[A-Z][A-Z0-9_]*@", _src_k.replace(f"@{_an}@", "") if _an else _src_k):
+                _marker_text = "\n".join(line.partition(";")[0] for line in _src_k.splitlines()) if _mk.dsp.subst else _src_k
+                if re.search(r"@[A-Z][A-Z0-9_]*@", _marker_text.replace(f"@{_an}@", "") if _an else _marker_text):
                     sys.exit(f"{_k}: an @NAME@ marker survives in its source: "
-                             f"{re.search(r'@[A-Z][A-Z0-9_]*@', _src_k).group(0)}")
+                             f"{re.search(r'@[A-Z][A-Z0-9_]*@', _marker_text).group(0)}")
                 _texts[_k] = _src_k
 
         def _ybase(m, src):
@@ -2943,11 +2964,12 @@ hostquit:
             _r, tab, src, cursor, words, _syms = _fit
             _hooks = remix_modules()[name].dsp.hooks if name in remix_modules() else ()
             init_a, proc_a = _syms.get("init"), _syms.get("proc")
-            if name not in HOOKED and (init_a is None or proc_a is None):
+            if name not in HOOKED and name not in STOCK_DSP and (init_a is None or proc_a is None):
                 sys.exit(f"payload {tag}: {name} has no init/proc labels")
             for _h in _hooks:
+                _site = _h.site_on(tag)
                 if _h.label not in _syms:
-                    sys.exit(f"payload {tag}: {name}'s hook at P:0x{_h.site:05x} names "
+                    sys.exit(f"payload {tag}: {name}'s hook at P:0x{_site:05x} names "
                              f"label {_h.label!r}, which the source does not define")
             if tab is not None and _xa is not None:
                 if len(tab) != _xa[1]:
@@ -2981,18 +3003,19 @@ hostquit:
             place(words, cursor)
             _r["cursor"] = cursor + len(words)
             for _h in _hooks:
+                _site = _h.site_on(tag)
                 # the two stock words become `jsr >label`; the section
                 # replays the displaced instruction (schema.DspHook)
-                _got = (rdw_p_at(_h.site), rdw_p_at(_h.site + 1))
+                _got = (rdw_p_at(_site), rdw_p_at(_site + 1))
                 if _got != tuple(_h.stock):
-                    sys.exit(f"payload {tag}: {name}'s hook site P:0x{_h.site:05x} holds "
+                    sys.exit(f"payload {tag}: {name}'s hook site P:0x{_site:05x} holds "
                              f"{_got[0]:06x} {_got[1]:06x}, not stock "
                              f"{_h.stock[0]:06x} {_h.stock[1]:06x}; refusing")
-                wrw_p_at(_h.site, 0x0BF080)
-                wrw_p_at(_h.site + 1, _syms[_h.label])
-                print(f"  {'HOOK':13} P:0x{_h.site:05x} -> {name} {_h.label} "
+                wrw_p_at(_site, 0x0BF080)
+                wrw_p_at(_site + 1, _syms[_h.label])
+                print(f"  {'HOOK':13} P:0x{_site:05x} -> {name} {_h.label} "
                       f"P:0x{_syms[_h.label]:05x}  {_h.note}")
-            if name in HOOKED:
+            if name in HOOKED or name in STOCK_DSP:
                 print(f"  {name:13} P:0x{cursor:05x}..0x{cursor + len(words):05x} "
                       f"({len(words):4} words)  no dispatch entry: reached by its hook(s)")
                 cursor += len(words)

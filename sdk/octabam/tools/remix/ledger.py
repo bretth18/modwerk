@@ -26,6 +26,15 @@ Checked, and how it knows:
   core-private Y     derived by scanning the module's source for `y:>$09xx`.
                      Low Y is per core, not per instance, so every effect
                      sharing a core shares these words.
+  DSP data ranges    declared (Claims.dsp_ranges), per payload. Two modules
+                     whose ranges overlap, in one core's private X/Y or in
+                     the shared window, which both cores see as one memory.
+  data literals      derived: an absolute `x:`/`y:` literal in one module's
+                     source that falls inside another module's declared
+                     range. A bus client's `$9xx` scratch reads are taken
+                     where the build puts them (the shared window under
+                     XBUS=1, `build_bus.py`'s `xbus`), so a client that the
+                     build moves away from a private claim is not refused.
   stock buffers      declared (Claims.stock_instance_buffer). A stock effect
                      that takes an instance buffer from the host's bump
                      allocator gets a per-track base -- the addresses
@@ -48,10 +57,11 @@ donor region is not here either: placement refuses to overrun it, exactly.
 
 from __future__ import annotations
 
+import os
 import pathlib
 import re
 
-from remix.schema import YBase
+from remix.schema import SHARED_WINDOW, YBase
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 
@@ -68,6 +78,57 @@ def private_y(m) -> set[int]:
     if getattr(m, "claims", None) is not None:
         words |= set(m.claims.reserved_private_y)
     return words
+
+
+# What stock firmware itself keeps in the shared window (Y:0x30000-0x3FFFF, where X, Y and P alias), measured
+# in the stock payloads: payload A's per-frame parameter staging (payload B reads X:0x30000-0x30045 and writes
+# X:0x30044), and the 16-word cross-core mailbox that payload B fills and payload A reads (it sits at 0x38000
+# in this base; newer octabam moves it to 0x37F00 in every build, for BusDelay's line). A declared range that
+# meets either is refused. A stock FX2 effect's buffer lies in its 16,384-word track slot but is written no
+# further than slot + 0x3DA2, so a claim in the last 0x25E words of a slot (Sidechain's key window) is clear.
+STOCK_SHARED_TENANTS = ((0x30000, 0x30048, "payload A's per-frame parameter staging"),
+                        (0x38000, 0x38010, "the stock cross-core mailbox"))
+
+
+def _payloads(m) -> frozenset:
+    """The payloads a module's DSP code runs on. A module without a DspSection
+    or with no payload set counts as on both."""
+    p = getattr(getattr(m, "dsp", None), "payloads", None)
+    return frozenset(p) if p else frozenset({"A", "B"})
+
+
+# An absolute data address in code, as `y:>$7f0` or `x:<$20`. Register-relative
+# forms (`y:(r1+$10)`) address from a base only the running code knows and are
+# not read here: a module that reaches a claimed word that way declares its own
+# range instead.
+_ABS_ADDR = re.compile(r"\b([xy]):[<>]?\$([0-9a-f]+)\b", re.I)
+# The bus scratch literals the build relocates under XBUS (build_bus.py `xbus`).
+_BUS_SCRATCH = re.compile(r"9[0-9a-f]{2}", re.I)
+
+
+def data_literals(m, xbus: bool) -> set[tuple[str, int]]:
+    """(space, address) for every absolute X/Y literal in the module's own
+    source, as the build will emit it. Under XBUS a bus client's `$9xx` scratch
+    literals move to XBUS_BASE + 0x9xx; any other module's stay where they
+    are. Comments are not read."""
+    if m.dsp is None:
+        return set()
+    src = ROOT / m.dsp.asm
+    if not src.exists():
+        return set()
+    code = "\n".join(l.split(";", 1)[0] for l in src.read_text().splitlines())
+    harness = getattr(m, "harness", None)
+    client = bool(xbus and harness is not None and harness.bus_client)
+    base = int(os.environ.get("XBUS_BASE", "36000"), 16)
+    found: set[tuple[str, int]] = set()
+    for space, digits in _ABS_ADDR.findall(code):
+        addr = int(digits, 16)
+        if addr == 0x30000 and m.dsp.ybase is not YBase.NEVER:
+            continue                    # the per-payload Y base the build substitutes, not an absolute word
+        if client and _BUS_SCRATCH.fullmatch(digits):
+            addr = base + int(digits[1:], 16)
+        found.add((space.lower(), addr))
+    return found
 
 
 # An X-space reference by literal: absolute, register-relative with a
@@ -155,11 +216,12 @@ def check(selected) -> list[str]:
     for m in selected:
         for h in (m.dsp.hooks if m.dsp is not None else ()):
             for pl in sorted(m.dsp.payloads):
-                if (pl, h.site) in dsp_hooks:
-                    clash("DSP hook site", dsp_hooks[(pl, h.site)], m.name,
-                          f"P:0x{h.site:05x} on payload {pl} -- the second jsr "
+                site = h.site_on(pl)
+                if (pl, site) in dsp_hooks:
+                    clash("DSP hook site", dsp_hooks[(pl, site)], m.name,
+                          f"P:0x{site:05x} on payload {pl} -- the second jsr "
                           f"overwrites the first, so the first section never runs")
-                dsp_hooks[(pl, h.site)] = m.name
+                dsp_hooks[(pl, site)] = m.name
 
     # ---- on-chip SRAM windows (Claims.sram) --------------------------------
     sram: list[tuple[int, int, str, str]] = []
@@ -364,12 +426,9 @@ def check(selected) -> list[str]:
            if getattr(m, "claims", None) is not None
            and m.claims.owns_fx2_buffers]
 
-    def _pay(m):
-        p = getattr(getattr(m, "dsp", None), "payloads", None)
-        return frozenset(p) if p else frozenset({"A", "B"})
     for i, a in enumerate(buf):
         for b in buf[i + 1:]:
-            if not (_pay(a) & _pay(b)):
+            if not (_payloads(a) & _payloads(b)):
                 continue
             clash("FX2 instance buffers", a.name, b.name,
                   "Y:0x4000-0xBFFF -- that region is per CORE, so only one "
@@ -460,5 +519,55 @@ def check(selected) -> list[str]:
                       f"y:$0{w:03x} -- low Y is per core, so effects sharing "
                       f"a core share this word")
             owner[w] = m.name
+
+    # ---- DSP data ranges (Claims.dsp_ranges) --------------------------------
+    # Each range is resolved on every payload its module runs on: a core-private
+    # range lives in "<payload>:<space>", so only a module on the SAME core can
+    # meet it; a range in the shared window is one memory for both cores and
+    # for X, Y and P alike. A half-relative range resolves to a different
+    # address per payload, so one module never meets itself across cores.
+    claimed: list[tuple[str, int, int, str, str]] = [
+        ("shared", start, end, "stock firmware", what) for start, end, what in STOCK_SHARED_TENANTS]
+    reported: set[tuple] = set()
+
+    def report(what, a, b, detail, key):
+        if key not in reported:
+            reported.add(key)
+            clash(what, a, b, detail)
+
+    for m in selected:
+        for r in (m.claims.dsp_ranges if getattr(m, "claims", None) else ()):
+            for pl in sorted(_payloads(m)):
+                domain, start, end = r.resolve(pl)
+                for d2, s2, e2, owner2, what2 in claimed:
+                    if owner2 != m.name and d2 == domain and s2 < end and start < e2:
+                        lo, hi = max(s2, start), min(e2, end) - 1
+                        report("DSP data range overlap", f"{owner2}'s {what2}",
+                               f"{m.name}'s {r.what}",
+                               f"{domain} 0x{lo:05x}..0x{hi:05x} (payload {pl}) -- the "
+                               f"words overlap, so each corrupts the other's state",
+                               (domain, lo, hi, *sorted((owner2, m.name))))
+                claimed.append((domain, start, end, m.name, r.what))
+
+    # ---- one module's data literals inside another's declared range ---------
+    # Derived, so a module that reads or writes a word another claims is caught
+    # without it declaring anything. Taken where the build puts the literal:
+    # XBUS=1 moves a bus client's `$9xx` scratch into the shared window.
+    xbus = os.environ.get("XBUS") == "1"
+    for m in selected:
+        harness = getattr(m, "harness", None)
+        unmoved_client = not xbus and harness is not None and harness.bus_client
+        for space, addr in sorted(data_literals(m, xbus)):
+            for pl in sorted(_payloads(m)):
+                domain = "shared" if addr >= SHARED_WINDOW[0] else f"{pl}:{space}"
+                for d2, s2, e2, owner2, what2 in claimed:
+                    if owner2 != m.name and d2 == domain and s2 <= addr < e2:
+                        report("DSP data range reference", f"{owner2}'s {what2}",
+                               f"{m.name}'s {space}:${addr:x} literal",
+                               f"{domain} 0x{addr:05x} (payload {pl}) -- the source "
+                               f"addresses a word the other module reserves"
+                               + ("; under XBUS=1 this bus client's `$9xx` scratch "
+                                  "moves to the shared window" if unmoved_client else ""),
+                               (domain, addr, *sorted((owner2, m.name))))
 
     return problems

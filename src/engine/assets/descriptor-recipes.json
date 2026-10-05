@@ -2353,6 +2353,179 @@
         }
       ],
       "sourceSha256": "16c234de1d2ac45a3a4d229769e4708a1af428ac5a47ac5da53848a85dbbebd3"
+    },
+    {
+      "id": "sidechain-compressor",
+      "key": "SIDECHAIN_COMPRESSOR",
+      "author": "Zac-Kyoti",
+      "fxId": 24,
+      "donorAddress": 1074616962,
+      "donorSha256": "6551e9d59470876caf0289527347a006438c738ed4476a816187a40dac20bacc",
+      "fx2Slot": 1074618428,
+      "slotSha256": "06d8069bda9c7d7b2344398c9e6d6d4a629c8fca671c3a11315ab25bd5d622da",
+      "integers": [
+        {
+          "offset": 3,
+          "width": 1,
+          "value": 24
+        },
+        {
+          "offset": 102,
+          "width": 1,
+          "value": 0
+        },
+        {
+          "offset": 103,
+          "width": 1,
+          "value": 64
+        },
+        {
+          "offset": 104,
+          "width": 1,
+          "value": 64
+        },
+        {
+          "offset": 105,
+          "width": 1,
+          "value": 0
+        },
+        {
+          "offset": 186,
+          "width": 4,
+          "value": 9
+        },
+        {
+          "offset": 138,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 190,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 142,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 194,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 146,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 198,
+          "width": 4,
+          "value": 2
+        },
+        {
+          "offset": 150,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 286,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 242,
+          "width": 4,
+          "value": 1073989536
+        },
+        {
+          "offset": 290,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 246,
+          "width": 4,
+          "value": 1073987916
+        },
+        {
+          "offset": 294,
+          "width": 4,
+          "value": 1074032400
+        },
+        {
+          "offset": 398,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 394,
+          "width": 4,
+          "value": 4369
+        }
+      ],
+      "strings": [
+        {
+          "offset": 4,
+          "width": 5,
+          "value": "COMP"
+        },
+        {
+          "offset": 9,
+          "width": 13,
+          "value": "COMPRESSOR"
+        },
+        {
+          "offset": 70,
+          "width": 6,
+          "value": "KEY"
+        },
+        {
+          "offset": 76,
+          "width": 6,
+          "value": "KFLT"
+        },
+        {
+          "offset": 82,
+          "width": 6,
+          "value": "KGN"
+        },
+        {
+          "offset": 88,
+          "width": 6,
+          "value": "MON"
+        }
+      ],
+      "inheritedEnable": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "rawPointers": [
+        {
+          "offset": 234,
+          "unit": "sc_cf",
+          "symbol": "key_fmt"
+        },
+        {
+          "offset": 282,
+          "unit": "sc_cf",
+          "symbol": "key_list_fix"
+        },
+        {
+          "offset": 238,
+          "unit": "sc_cf",
+          "symbol": "kfilt_fmt"
+        }
+      ],
+      "replaces": "COMPRESSOR",
+      "sourceSha256": "aaa7c593ec62745a540cf82d7b4d7ac2f17f393cfedd5a9e1ff1a1453165ecd7"
     }
   ],
   "sourceCommit": null,
@@ -2370,6 +2543,7 @@
     "usb-audio-out-tracks-main-cue": "0.1.2-experimental",
     "quantizer": "0.1.2-experimental",
     "previewvol": "0.1.2-experimental",
-    "cc-map": "0.1.2-experimental"
+    "cc-map": "0.1.2-experimental",
+    "sidechain-compressor": "0.1.1-experimental"
   }
 }

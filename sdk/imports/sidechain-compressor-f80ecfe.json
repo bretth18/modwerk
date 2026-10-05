@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/sambanks/octabam",
+  "revision": "f80ecfeabc187a33403588678e707443161afc96",
+  "moduleVersion": "0.1.1-experimental",
+  "root": "sdk/octabam/modules/sidechain-compressor",
+  "modules": [
+    "sidechain-compressor"
+  ],
+  "authorPin": {
+    "repository": "https://github.com/Zac-Kyoti/octatrack-kyoti-fw",
+    "revision": "d3e0801a5f666abc04bc05fc1cb37969d7fb38d0"
+  },
+  "files": [
+    {
+      "path": "upstream/tools/patch_sidechain.s",
+      "repository": "https://github.com/Zac-Kyoti/octatrack-kyoti-fw",
+      "revision": "d3e0801a5f666abc04bc05fc1cb37969d7fb38d0",
+      "sourcePath": "tools/patch_sidechain.s",
+      "sourceBytes": 6178,
+      "sourceGitBlob": "350f26e5f8862b3c290dbc977f8b3a1c9e44239c",
+      "sourceSha256": "74d6e29c2d7ae523824bde725ac258421ed0ea8e2de4ab6ca73e437987c33cdf",
+      "vendoredSha256": "74d6e29c2d7ae523824bde725ac258421ed0ea8e2de4ab6ca73e437987c33cdf"
+    },
+    {
+      "path": "upstream/tools/patch_sc_dsp3.asm",
+      "repository": "https://github.com/Zac-Kyoti/octatrack-kyoti-fw",
+      "revision": "d3e0801a5f666abc04bc05fc1cb37969d7fb38d0",
+      "sourcePath": "tools/patch_sc_dsp3.asm",
+      "sourceBytes": 45415,
+      "sourceGitBlob": "0b015f242711048eaa2827e24cb24a4a57839112",
+      "sourceSha256": "aaa1a1c947a8bcb5d19ebc9454ec3f020d1f00afe51fe786fe1f3ed4d5eccde3",
+      "vendoredSha256": "aaa1a1c947a8bcb5d19ebc9454ec3f020d1f00afe51fe786fe1f3ed4d5eccde3"
+    },
+    {
+      "path": "upstream/tools/sc_tables.py",
+      "repository": "https://github.com/Zac-Kyoti/octatrack-kyoti-fw",
+      "revision": "d3e0801a5f666abc04bc05fc1cb37969d7fb38d0",
+      "sourcePath": "tools/sc_tables.py",
+      "sourceBytes": 4645,
+      "sourceGitBlob": "27874ae2d385c2294397051f0d6cdbad066a1f4b",
+      "sourceSha256": "8045e06f97fa462ca3f986b5a46e8ee48f9f9663691ae291221ce8ed6489c71a",
+      "vendoredSha256": "8045e06f97fa462ca3f986b5a46e8ee48f9f9663691ae291221ce8ed6489c71a"
+    },
+    {
+      "path": "upstream/LICENSE",
+      "repository": "https://github.com/Zac-Kyoti/octatrack-kyoti-fw",
+      "revision": "d3e0801a5f666abc04bc05fc1cb37969d7fb38d0",
+      "sourcePath": "LICENSE",
+      "sourceBytes": 4451,
+      "sourceGitBlob": "3e76489f7da43570add4342b27fd9e1aff949672",
+      "sourceSha256": "0d3f46fdaa57dcf513b0d62975eb019334f4eb9cc8ea0b973ce191dd661741f5",
+      "vendoredSha256": "0d3f46fdaa57dcf513b0d62975eb019334f4eb9cc8ea0b973ce191dd661741f5"
+    },
+    {
+      "path": "upstream/octabam-modules/sidechain-compressor/README.md",
+      "repository": "https://github.com/Zac-Kyoti/octatrack-kyoti-fw",
+      "revision": "d3e0801a5f666abc04bc05fc1cb37969d7fb38d0",
+      "sourcePath": "octabam-modules/sidechain-compressor/README.md",
+      "sourceBytes": 4135,
+      "sourceGitBlob": "db28206482e6e0d48a0b65135a7555fc8eca7b29",
+      "sourceSha256": "ae229b1423a8078505368e748d245bc6b18eef436ec6d5e17405ddbff4cb8b44",
+      "vendoredSha256": "ae229b1423a8078505368e748d245bc6b18eef436ec6d5e17405ddbff4cb8b44"
+    },
+    {
+      "path": "manifest.py",
+      "repository": "https://github.com/Zac-Kyoti/octatrack-kyoti-fw",
+      "revision": "d3e0801a5f666abc04bc05fc1cb37969d7fb38d0",
+      "sourcePath": "octabam-modules/sidechain-compressor/manifest.py",
+      "sourceSha256": "1098ccb699d551ffd9c18c253360ea11ffce69a1fad1a9ee8b94f1158497a7d9",
+      "sourceGitBlob": "7bfa73ec20f32ddaff4d051f37fe79ea9e6faf94",
+      "vendoredSha256": "aaa7c593ec62745a540cf82d7b4d7ac2f17f393cfedd5a9e1ff1a1453165ecd7",
+      "transforms": [
+        "module-local tool paths",
+        "lazy local stock DSP guard declarations",
+        "stock COMPRESSOR kept and hooked: MenuEntry(replaces, stock_dsp), inherited stock enable nibbles (Param active=None), raw descriptor formatter/widget words into the module's ColdFire unit",
+        "per-core hook sites and substitutions (DspHook with payload addresses, DspSection.subst)",
+        "declared DSP data ranges (Claims.dsp_ranges) for the keybus and cross-core window",
+        "author, author_url and category"
+      ]
+    },
+    {
+      "path": "upstream/tools/sc_assemble_oracle.py",
+      "repository": "https://github.com/Zac-Kyoti/octatrack-kyoti-fw",
+      "revision": "d3e0801a5f666abc04bc05fc1cb37969d7fb38d0",
+      "sourcePath": "tools/build_sidechain_compressor.py",
+      "sourceSha256": "bbe430f6442b05f67151d6b090d661d5a5afdc028355b43bc844e5d2f30b11bc",
+      "sourceGitBlob": "f07c5bfa6035ea7b5f037eab280db84e8d278052",
+      "vendoredSha256": "5363c74485a17efee1e41cca9f91f895d4dd051d9c62e264913e66a742c43887",
+      "transforms": [
+        "AST extraction of sc_assemble only; excludes standalone stock expectation spans and firmware packaging code"
+      ]
+    },
+    {
+      "path": "upstream/tools/dsp_asm_util.py",
+      "repository": "https://github.com/Zac-Kyoti/octatrack-kyoti-fw",
+      "revision": "d3e0801a5f666abc04bc05fc1cb37969d7fb38d0",
+      "sourcePath": "tools/dsp_asm_util.py",
+      "sourceSha256": "11cb6148335cb9434268e679895b853bc57fc4ba1e01583878381a678c64c6bc",
+      "sourceGitBlob": "724c582018258c47255d066dba6a88bcf8d21287",
+      "vendoredSha256": "11cb6148335cb9434268e679895b853bc57fc4ba1e01583878381a678c64c6bc",
+      "sourceBytes": 1942
+    }
+  ],
+  "stockGuards": [
+    {
+      "kind": "guarded-local-dsp-read",
+      "payload": "A",
+      "address": 1191,
+      "words": 2,
+      "sha256": "92441a8fc9f1dd20359d87c8342e3d5653d8c853a274358df0cfc0451c57115b",
+      "note": "Both payloads have the same guarded instruction at their declared sites; recover expectations only from a verified local stock OS."
+    },
+    {
+      "kind": "guarded-local-dsp-read",
+      "payload": "A",
+      "address": 6833,
+      "words": 2,
+      "sha256": "114aacb95ee45437fff14f2dcd91b67e26d8bc42ef3ba2e9f6ae0cb8be1574fa",
+      "note": "Both payloads have the same guarded instruction at their declared sites; recover expectations only from a verified local stock OS."
+    },
+    {
+      "kind": "guarded-local-dsp-read",
+      "payload": "A",
+      "address": 1294,
+      "words": 2,
+      "sha256": "9dad4262559be3a41c85136d50f7d017f161cff9a609d17d21da895cd2137118",
+      "note": "Both payloads have the same guarded instruction at their declared sites; recover expectations only from a verified local stock OS."
+    }
+  ],
+  "status": "Pinned; built by Modwerk's shared firmware builder and compared with native octabam on 2,048 + 512 module selections; hardware evidence owner-waived.",
+  "nativeProof": {
+    "report": "evidence/common-builder.json",
+    "builderRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+    "referenceRevision": "f80ecfeabc187a33403588678e707443161afc96",
+    "profile": "every selection of the visible modules that contains the module, with and without stock FX2",
+    "status": "passed; refusals match native, module-owned writes reproduce native outside the platform writes, and the module's own bytes equal the author-form image. Not hardware qualification."
+  },
+  "nativeSourceSha256": "301d7dc13d0f7f4567e9bb121e8fc50c8cebbc1fb4bf544c511c28769370edbc",
+  "releaseRequirements": [
+    "Stock descriptor clone/formatter and per-core DSP hook/substitution integration, with unchanged native output for the existing SDK modules",
+    "Source-only package generation reproduced in the pinned container",
+    "Browser/native composition and refusal comparison on every selection containing the module",
+    "Worst-case cycle and complete memory qualification",
+    "Owner-reviewed hardware decision: fresh hardware evidence waived on 5 October 2026",
+    "Licence moduleComponents mapping for the module",
+    "Owner-reviewed PR merge and release reproduction"
+  ]
+}

@@ -160,3 +160,7 @@ companions. No mixed compositions or future versions inherit it. Unknown
 hardware timing and memory bounds remain explicitly unknown. UI, provenance,
 licence, documentation, stock isolation and owner-merged PR review still apply.
 The frozen eleven-module baseline and two utility waivers are unchanged.
+
+## Sidechain Compressor hardware-only exception
+
+On 5 October 2026 the owner explicitly approved sidechain-compressor@0.1.1-experimental without fresh physical hardware evidence. `sdk/sidechain-compressor-build-approval.json` binds that exception to the exact source, image and complete folder, and `scripts/module-qualification.mjs` refuses it for anything else. Both processor cycle bounds, sixteen-instance memory accounting, the composition comparison with native octabam, rejection checks, licensing and actual LCD documentation remain mandatory. Hardware status stays historical; no chip wall-clock timing or current-image hardware pass is claimed.

@@ -45,6 +45,12 @@
       "key": "TAPEHEAD",
       "fxId": 31,
       "priority": 17
+    },
+    {
+      "id": "sidechain-compressor",
+      "key": "SIDECHAIN_COMPRESSOR",
+      "fxId": 24,
+      "priority": 30
     }
   ],
   "customIds": [

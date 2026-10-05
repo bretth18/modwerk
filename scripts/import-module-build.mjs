@@ -1,6 +1,7 @@
 import { readFile, lstat, realpath, copyFile, writeFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
+import { isDeepStrictEqual } from 'node:util'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { fetchOwnerApproval } from '../src/release/approval.ts'
@@ -9,8 +10,8 @@ import { parseColdFireObject } from '../src/engine/coldfire-elf.ts'
 import { PACKAGE_FILES as expected, moduleSourcePaths, compiledModuleVersions } from './module-source.mjs'
 import { NOTICE_NAME, renderLicenseNotices } from './license-notices.mjs'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const args = process.argv.slice(2), folder = args[0] && resolve(args[0]), development = args.includes('--development'), checkOnly = args.includes('--check-only')
-if (!folder) throw new Error('Usage: node scripts/import-module-build.mjs artifact-directory [--development] [--check-only]')
+const args = process.argv.slice(2), folder = args[0] && resolve(args[0]), development = args.includes('--development'), checkOnly = args.includes('--check-only'), verifyExisting = args.includes('--verify-existing')
+if (!folder) throw new Error('Usage: node scripts/import-module-build.mjs artifact-directory [--development] [--check-only] [--verify-existing]')
 const sha = bytes => createHash('sha256').update(bytes).digest('hex')
 const json = async path => JSON.parse(await readFile(path, 'utf8'))
 const hash = value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value)
@@ -82,9 +83,9 @@ for(const pkg of utility.packages) {
 }
 // Release automation never sees firmware, so it cannot prove native parity. Publish only packages that
 // reproduce the committed, locally parity-verified ones; provenance is the only permitted difference.
-if (!development) for (const [name, doc] of packages) {
-  const withoutProvenance = doc => JSON.stringify({ ...doc, sourceCommit: null })
-  if (withoutProvenance(doc) !== withoutProvenance(await json(resolve(root,'src/engine/assets',name)))) throw new Error('Compiled ' + name + ' does not reproduce the committed, parity-verified package. Rebuild locally, verify native parity and commit the result.')
+if (!development || verifyExisting) for (const [name, doc] of packages) {
+  const withoutProvenance = doc => ({ ...doc, sourceCommit: null })
+  if (!isDeepStrictEqual(withoutProvenance(doc), withoutProvenance(await json(resolve(root,'src/engine/assets',name))))) throw new Error('Compiled ' + name + ' does not reproduce the committed, parity-verified package. Rebuild locally, verify native parity and commit the result.')
 }
 if(checkOnly){console.log('All source-package artifacts, complete source inventory and version pins validated ('+(development?'development':'owner-approved')+').');process.exit(0)}
 // Validate the complete artifact before touching any frontend file.

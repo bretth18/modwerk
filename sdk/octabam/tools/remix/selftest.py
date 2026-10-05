@@ -18,8 +18,8 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1])); import too
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 
 from remix import ledger, registry, schema, state, stock  # noqa: E402
-from remix.schema import (CavePatch, Claims, DspHook, DspSection, Kind, MenuEntry,  # noqa: E402
-                          Module, Param, YBase)
+from remix.schema import (CavePatch, Claims, DspHook, DspRange, DspSection, Harness,  # noqa: E402
+                          Kind, MenuEntry, Module, Param, YBase)
 
 
 def _effect(name, fx2_id, priority=0, reserved=(), buffers=False,
@@ -58,6 +58,37 @@ def _hooked(name, site=0x88, payloads=frozenset({"A"}), sram=()):
         dsp=DspSection(asm="does/not/exist.asm", priority=20, payloads=payloads,
                        hooks=(DspHook(site, (0x627000, 0x000204), "inject"),)),
         claims=Claims(sram=sram) if sram else None,
+    )
+
+
+# Sources the ledger derives data literals from (absolute paths: ledger joins
+# them to ROOT, which pathlib leaves absolute). `$990`/`$991` are written in the
+# three-digit form real bus clients use.
+_LIT_ASM = _HARD_ASM.parent / "literal.asm"
+_LIT_ASM.write_text("        move    y:>$812,x0              ; inside the keybus\n"
+                    "        rts\n")
+_COMMENT_ASM = _HARD_ASM.parent / "comment.asm"
+_COMMENT_ASM.write_text("        rts                     ; y:>$812 only in a comment\n")
+_CLIENT_ASM = _HARD_ASM.parent / "client.asm"
+_CLIENT_ASM.write_text("        move    y:>$990,x0\n"
+                       "        move    y:$991,a\n"
+                       "        rts\n")
+_BOTH = frozenset({"A", "B"})
+_KEYBUS = DspRange("y", 0x7f0, 0x210, "keybus")
+_WINDOW = DspRange("y", 0x3dfe, 0x202, "key window", half_relative=True)
+
+
+def _ranged(name, *ranges, site, payloads=_BOTH, asm="does/not/exist.asm",
+            bus_client=False):
+    """A DSP section that claims data ranges (Claims.dsp_ranges) and reads
+    whatever `asm` addresses by literal. `site` keeps two fixtures' hooks apart."""
+    return Module(
+        name=name, key=name.upper(), kind=Kind.HYBRID, doc="fixture",
+        dsp=DspSection(asm=str(asm), priority=20, payloads=payloads,
+                       hooks=(DspHook(site, (0x627000, 0x000204), "inject"),)),
+        claims=Claims(dsp_ranges=tuple(ranges)) if ranges else None,
+        harness=(Harness(layout_char="2", is_server=False, bus_client=True)
+                 if bus_client else None),
     )
 
 
@@ -122,6 +153,36 @@ CASES = [
     ("a table module beside a module addressing the stock curve bank",
      [_effect("alpha", 0x07, ptable=(1, 2, 3)),
       _effect("beta", 0x1e, asm=str(_HARD_ASM))], "X:0x4840 curve bank"),
+    # DspRange: per payload, per core. Private Y is each core's own, so the
+    # overlap is only real on a payload both modules run on.
+    ("two modules claiming overlapping core-private Y ranges",
+     [_ranged("alpha", _KEYBUS, site=0x88),
+      _ranged("beta", DspRange("y", 0x800, 0x20, "probe"), site=0x90)],
+     "DSP data range overlap"),
+    ("overlapping half-relative shared-window ranges on one payload",
+     [_ranged("alpha", _WINDOW, site=0x88, payloads=frozenset({"A"})),
+      _ranged("beta", DspRange("y", 0x3e00, 0x20, "probe", half_relative=True),
+              site=0x90, payloads=frozenset({"A"}))],
+     "DSP data range overlap"),
+    # The shared window is one memory for X, Y and P and for both cores, so an
+    # X claim at the other core's half still meets a Y claim there.
+    ("an absolute X claim inside the other core's half of a shared-window Y range",
+     [_ranged("alpha", _WINDOW, site=0x88),
+      _ranged("beta", DspRange("x", 0x3be00, 0x10, "probe"), site=0x90)],
+     "DSP data range overlap"),
+    ("a shared-window range on the stock cross-core mailbox",
+     [_ranged("stock firmware", site=0x88),
+      _ranged("beta", DspRange("y", 0x38008, 0x10, "probe"), site=0x90)],
+     "DSP data range overlap"),
+    ("a half-relative range on payload A's parameter staging",
+     [_ranged("stock firmware", site=0x88),
+      _ranged("beta", DspRange("x", 0x0, 0x40, "probe", half_relative=True), site=0x90,
+              payloads=frozenset({"A"}))],
+     "DSP data range overlap"),
+    ("a source addressing another module's claimed word by literal",
+     [_ranged("alpha", _KEYBUS, site=0x88),
+      _ranged("beta", site=0x90, asm=_LIT_ASM)],
+     "DSP data range reference"),
 ]
 
 CLEAN = [_effect("alpha", 0x07, reserved=(0x0905,)),
@@ -138,6 +199,30 @@ CLEAN_STOCK_PAIR = [_stock("chorus", 0x12, True), _stock("comb", 0x13, True),
 # One site, two payloads: no clash, each core has its own P.
 CLEAN_HOOK_PAIR = [_hooked("alpha", payloads=frozenset({"A"})),
                    _hooked("beta", payloads=frozenset({"B"}))]
+# Disjoint ranges; the same private range on different cores (each core has its
+# own low Y); one half-relative window offset on different payloads (it resolves
+# to 0x33dfe on A and 0x3bdfe on B); a literal that is only in a comment; and a
+# module reading its own range.
+CLEAN_RANGES = [
+    ("disjoint core-private Y ranges",
+     [_ranged("alpha", _KEYBUS, site=0x88),
+      _ranged("beta", DspRange("y", 0xa00, 0x20, "probe"), site=0x90)]),
+    ("one private range on different payloads",
+     [_ranged("alpha", _KEYBUS, site=0x88, payloads=frozenset({"A"})),
+      _ranged("beta", DspRange("y", 0x800, 0x20, "probe"), site=0x90,
+              payloads=frozenset({"B"}))]),
+    ("one half-relative window offset on different payloads",
+     [_ranged("alpha", _WINDOW, site=0x88, payloads=frozenset({"A"})),
+      _ranged("beta", _WINDOW, site=0x90, payloads=frozenset({"B"}))]),
+    # The tail of a stock buffer slot, past the +0x3DA2 stock writes, beside the mailbox and the staging words.
+    ("the key window beside stock's own shared-window tenants",
+     [_ranged("alpha", _WINDOW, site=0x88)]),
+    ("a claimed address that only appears in a comment",
+     [_ranged("alpha", _KEYBUS, site=0x88),
+      _ranged("beta", site=0x90, asm=_COMMENT_ASM)]),
+    ("a module addressing its own claimed range",
+     [_ranged("alpha", _KEYBUS, site=0x88, asm=_LIT_ASM)]),
+]
 
 
 def _submodule_preflight() -> int:
@@ -222,6 +307,39 @@ def main():
             print(f"  [FAIL] {label} were reported: {found}")
         else:
             print(f"  [PASS] {label} are left alone")
+
+    saved_xbus = os.environ.get("XBUS")
+    try:
+        for label, mods in CLEAN_RANGES:
+            for xbus in ("0", "1"):
+                os.environ["XBUS"] = xbus
+                found = ledger.check(mods)
+                if found:
+                    bad += 1
+                    print(f"  [FAIL] {label} (XBUS={xbus}) was reported: {found}")
+            print(f"  [PASS] {label} is left alone")
+        # A bus client's `$9xx` scratch literals are core-private Y until the
+        # build moves them to the shared window under XBUS=1, so the same pair
+        # is a collision without XBUS and clean with it -- exactly what the
+        # build does with Character's `y:$990/$991` beside a 0x7f0..0x9ff claim.
+        pair = [_ranged("alpha", _KEYBUS, site=0x88),
+                _ranged("beta", site=0x90, asm=_CLIENT_ASM, bus_client=True)]
+        for xbus, refused in (("0", True), ("1", False)):
+            os.environ["XBUS"] = xbus
+            found = [p for p in ledger.check(pair) if p.startswith("DSP data range reference")]
+            if bool(found) != refused or (refused and not all("beta" in p for p in found)):
+                bad += 1
+                print(f"  [FAIL] a bus client reading $990/$991 beside a $7f0..$9ff claim, "
+                      f"XBUS={xbus}: expected {'a collision' if refused else 'no collision'}, "
+                      f"got {found}")
+            else:
+                print(f"  [PASS] a bus client reading $990/$991 beside a $7f0..$9ff claim, "
+                      f"XBUS={xbus}: {'refused' if refused else 'moved to the shared window, left alone'}")
+    finally:
+        if saved_xbus is None:
+            os.environ.pop("XBUS", None)
+        else:
+            os.environ["XBUS"] = saved_xbus
 
     try:
         _effect("hijack", 0x0c)
