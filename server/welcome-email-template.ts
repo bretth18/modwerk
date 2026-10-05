@@ -1,6 +1,6 @@
-/** Approved first welcome. Keep the HTML and text previews in docs/news in sync. */
-export const WELCOME_EMAIL_VERSION = 'modwerk-welcome-001'
-export const welcomeEmail = {
+/** Keep queued payloads stable for provider retries, and the current previews in docs/news in sync. */
+export const WELCOME_EMAIL_VERSION = 'modwerk-welcome-002'
+const firstWelcomeEmail = {
   subject: 'Hello from Modwerk',
   html: `<!doctype html>
 <html lang="en">
@@ -75,4 +75,32 @@ https://modwerk.app/#account
 
 Modwerk · https://modwerk.app/
 `,
+}
+
+const discordHtml = `        <p style="margin:0 0 16px;color:#c4c4ce;font-size:15px;line-height:25px;">Come say hi on Discord and share what you’re working on.</p>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr><td align="center" style="padding:4px 0 26px;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+              <tr><td bgcolor="#303036" style="border-radius:7px;text-align:center;">
+                <a href="https://discord.gg/QQxFb85m7" style="display:inline-block;padding:15px 22px;border:1px solid #555561;border-radius:7px;color:#ffffff;font-size:15px;font-weight:bold;line-height:20px;text-decoration:none;">Join us on Discord</a>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>
+`
+const discordText = `Come say hi on Discord and share what you’re working on.
+
+Join us on Discord:
+https://discord.gg/QQxFb85m7
+
+`
+const signatureHtml = '        <p style="margin:0;color:#f4f4f8;font-size:15px;line-height:25px;">See you around,'
+export const welcomeEmail = {
+  ...firstWelcomeEmail,
+  html: firstWelcomeEmail.html.replace(signatureHtml, discordHtml + signatureHtml),
+  text: firstWelcomeEmail.text.replace('See you around,\nJannik', discordText + 'See you around,\nJannik'),
+}
+export const welcomeEmailVersions: Readonly<Record<string, typeof welcomeEmail>> = {
+  'modwerk-welcome-001': firstWelcomeEmail,
+  [WELCOME_EMAIL_VERSION]: welcomeEmail,
 }

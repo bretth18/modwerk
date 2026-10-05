@@ -5,7 +5,7 @@ import { testServer } from './test-server'
 import { COMMUNITY_RULES_VERSION } from '../legal/policy'
 import { digest } from '../../server/security'
 import { sendMemberWelcomes } from '../../server/welcome-mail'
-import { welcomeEmail } from '../../server/welcome-email-template'
+import { welcomeEmail, welcomeEmailVersions, WELCOME_EMAIL_VERSION } from '../../server/welcome-email-template'
 import worker from '../../worker'
 
 type Sent = { to: string[]; subject: string; text: string; html: string }
@@ -49,7 +49,8 @@ describe('new member welcome email', () => {
     expect(messages).toHaveLength(2)
     expect(messages[1]).toMatchObject({ to: [member.email], ...welcomeEmail })
     expect(db.prepare('SELECT enabled FROM account_news_preferences WHERE user_id=?').get(member.id)).toEqual({ enabled: 0 })
-    expect(db.prepare('SELECT state,attempts FROM member_welcome_mail WHERE user_id=?').get(member.id)).toEqual({ state: 'accepted', attempts: 1 })
+    expect(db.prepare('SELECT state,attempts,template_version FROM member_welcome_mail WHERE user_id=?').get(member.id)).toEqual({ state: 'accepted', attempts: 1, template_version: WELCOME_EMAIL_VERSION })
+    expect(keys[1]).toBe(WELCOME_EMAIL_VERSION + '-' + await digest(member.id))
     expect(db.prepare("SELECT accepted FROM account_mail_daily WHERE purpose='welcome'").get()).toEqual({ accepted: 1 })
     expect((await call('/auth/login', 'POST', { email: member.email, password })).status).toBe(200)
     expect((await run()).sent).toBe(0)
@@ -61,7 +62,28 @@ describe('new member welcome email', () => {
     const plain = readFileSync(new URL('../../docs/news/001-member-welcome.txt', import.meta.url), 'utf8')
     expect(plain).toBe('Subject: ' + welcomeEmail.subject + '\nPreheader: More modules are coming, and the repo is open for contributions.\n\n' + welcomeEmail.text)
     expect(welcomeEmail.html).toContain('https://github.com/repeat98/modwerk')
+    expect(welcomeEmail.html).toContain('href="https://discord.gg/QQxFb85m7"')
+    expect(welcomeEmail.text).toContain('Join us on Discord:\nhttps://discord.gg/QQxFb85m7')
     expect(welcomeEmail.html).not.toMatch(/opted in|<script|<img|<iframe|<form|mailto:|—/i)
+  })
+
+  it('keeps queued messages and retry keys stable while new members receive the Discord CTA', async () => {
+    const { register, run, db } = await fixture(), queued = await register('queuedmember')
+    await queued.verify()
+    db.prepare('INSERT INTO member_welcome_mail(user_id,template_version,first_attempt_at,attempts) VALUES(?,?,?,1)')
+      .run(queued.id, 'modwerk-welcome-001', Math.floor(Date.now() / 1000))
+    expect((await run()).sent).toBe(1)
+    expect(messages.at(-1)).toMatchObject({ to: [queued.email], ...welcomeEmailVersions['modwerk-welcome-001'] })
+    expect(messages.at(-1)!.html).not.toContain('discord.gg')
+    expect(keys.at(-1)).toBe('modwerk-welcome-001-' + await digest(queued.id))
+
+    const member = await register('discordmember')
+    await member.verify()
+    expect((await run()).sent).toBe(1)
+    expect(messages.at(-1)).toMatchObject({ to: [member.email], ...welcomeEmail })
+    expect(keys.at(-1)).toBe(WELCOME_EMAIL_VERSION + '-' + await digest(member.id))
+    expect((await run()).sent).toBe(0)
+    expect(messages).toHaveLength(4)
   })
 
   it('waits for social signup completion and excludes suspended members', async () => {
@@ -144,5 +166,11 @@ describe('new member welcome email', () => {
     db.exec(readFileSync(new URL('0029_member_welcome.sql', folder), 'utf8'))
     expect(db.prepare('SELECT user_id,state FROM member_welcome_mail').all()).toEqual([{ user_id: 'oldmember', state: 'existing' }])
     expect(db.prepare("SELECT accepted FROM account_mail_daily WHERE purpose='verify'").get()).toEqual({ accepted: 12 })
+    db.prepare('INSERT INTO member_welcome_mail(user_id,first_attempt_at,attempts) VALUES(?,?,?)').run('unfinished', 1234, 2)
+    db.exec(readFileSync(new URL('0030_welcome_template_version.sql', folder), 'utf8'))
+    expect(db.prepare('SELECT user_id,state,template_version,first_attempt_at,attempts FROM member_welcome_mail ORDER BY user_id').all()).toEqual([
+      { user_id: 'oldmember', state: 'existing', template_version: 'modwerk-welcome-001', first_attempt_at: null, attempts: 0 },
+      { user_id: 'unfinished', state: 'pending', template_version: 'modwerk-welcome-001', first_attempt_at: 1234, attempts: 2 },
+    ])
   })
 })

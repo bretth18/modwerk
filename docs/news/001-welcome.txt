@@ -1,7 +1,7 @@
 Subject: Hello from Modwerk
 Preheader: More modules are coming, and the repo is open for contributions.
 
-A note from Jannik · Welcome
+A note from Jannik · News #001
 
 Thanks for joining Modwerk.
 
@@ -28,7 +28,7 @@ https://discord.gg/QQxFb85m7
 See you around,
 Jannik
 
-You’re receiving this welcome email because you joined Modwerk. You can manage future news emails in your account settings:
+You’re receiving this because you opted in to Modwerk news. You can turn news emails off in your account settings at any time:
 https://modwerk.app/#account
 
 Modwerk · https://modwerk.app/
