@@ -1,7 +1,7 @@
 import { SUPPORT_EMAIL } from '../src/support'
 
 const BRAND = 'Modwerk'
-const escape = (value: string) => value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!)
+export const escape = (value: string) => value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!)
 
 /** Tables and inline styles work without scripts, remote fonts, images or tracking. */
 export function renderAccountEmail(purpose: 'verify' | 'reset', link: string) {

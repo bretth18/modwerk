@@ -1,4 +1,5 @@
 import { NewsPreferences } from './NewsPreferences'
+import { NotificationPreferences, Unsubscribe } from './NotificationPreferences'
 import { AccountRemovalRequest } from './AccountRequests'
 import { useEffect, useState } from 'react'
 import { PrivateIssueDetail } from './PrivateIssueDetail'
@@ -57,7 +58,7 @@ function AccountContent({route}:{route:string}) {
         {mode==='register'&&<label>Public username<input name="username" required minLength={3} maxLength={24} pattern="[A-Za-z0-9_]+" autoComplete="username" spellCheck={false}/><small>3–24 letters, numbers or underscores.</small></label>}
         {mode!=='verify'&&mode!=='reset'&&<label>Email address<input type="email" name="email" required maxLength={254} autoComplete="email" placeholder="you@example.com"/></label>}
         {['register','login','verify','reset'].includes(mode)&&<label>{mode==='verify'?'Password you chose when registering':mode==='reset'?'New password':'Password'}<input type="password" name="password" required minLength={15} maxLength={128} autoComplete={mode==='register'||mode==='reset'?'new-password':'current-password'}/>{(mode==='register'||mode==='reset')&&<small>At least 15 characters. Try a few unrelated words.</small>}</label>}
-        {mode==='register'&&<><p className="service-note">Use a verified email or social account to post, rate, report issues and build firmware. Your username and posts are public; your email is private. Read the <a href="#privacy">privacy notice</a> and <a href="#impressum">Impressum</a>. Account emails cover verification and recovery. Usage counts are optional and off by default.</p><label className="risk-accept"><input name="rulesAccepted" type="checkbox" required/><span>I agree to the <a href="#community-rules">community rules</a>.</span></label></>}
+        {mode==='register'&&<><p className="service-note">Use a verified email or social account to post, rate, report issues and build firmware. Your username and posts are public; your email is private. Read the <a href="#privacy">privacy notice</a> and <a href="#impressum">Impressum</a>. Account emails cover verification and recovery. Activity digests about replies, mentions, likes and your modules are on by default; turn them off in your account or with the link in every email. Usage counts are optional and off by default.</p><label className="risk-accept"><input name="rulesAccepted" type="checkbox" required/><span>I agree to the <a href="#community-rules">community rules</a>.</span></label></>}
         {mode==='register'&&<label className="risk-accept"><input name="newsletter" type="checkbox"/><span>Email me occasional Modwerk news and updates (optional).</span></label>}
         {mode==='verify'&&<p className="service-note">Only continue if you created this account. If you did not, you can ignore this message.</p>}
         <button className="button button-primary" disabled={busy||(mode==='register'&&(!session.registrationAvailable||!emailAvailable))||(['forgot','resend'].includes(mode)&&!emailAvailable)}>{busy?'Please wait…':mode==='login'?'Sign in':mode==='register'?'Create account':mode==='verify'?'Verify email':mode==='reset'?'Save new password':'Send email'}</button>
@@ -67,6 +68,7 @@ function AccountContent({route}:{route:string}) {
     </section>}
     {!linkAction&&<DeveloperVerification route={route}/>}
     </div>
+    {member&&<NotificationPreferences key={'notifications-'+session.user!.id} focus={action==='notifications'}/>}
     {member&&<NewsPreferences key={'news-'+session.user!.id}/>}
     {member&&<AccountExport/>}
     {member&&<AccountRemovalRequest key={'removal-'+session.user!.id}/>}
@@ -77,4 +79,4 @@ function AccountContent({route}:{route:string}) {
   </div>
 }
 
-export function AccountPage({route}:{route:string}) { return route==='account/sso'||route.startsWith('account/sso/')?<SocialReturn code={route.split('/')[2]??''}/>:<AccountContent route={route}/> }
+export function AccountPage({route}:{route:string}) { return route==='account/sso'||route.startsWith('account/sso/')?<SocialReturn code={route.split('/')[2]??''}/>:route.startsWith('account/unsubscribe/')?<Unsubscribe token={route.split('/')[2]??''}/>:<AccountContent route={route}/> }

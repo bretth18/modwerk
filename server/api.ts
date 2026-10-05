@@ -1,4 +1,5 @@
 import { forum } from './forum'
+import { notificationRoutes, notifyModuleMaintainers, unsubscribe, withdrawModuleLike } from './notifications'
 import { notifyBugDevelopers, publicBugDetails } from './bug-reports'
 import { developerAuthentication, developerUser } from './developer-auth'
 import { developerApi } from './developers'
@@ -33,6 +34,11 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if (!env.DB) throw new HttpError(503,'Community services are not connected yet.')
       return response(await handleGithubWebhook(request,env,env.DB,await boundedBody(request,1024*1024)))
     }
+    // Mail clients post one-click unsubscribes (RFC 8058) without an Origin or session; a signed token authorizes them.
+    if (path === '/api/notifications/unsubscribe' && request.method === 'POST') {
+      if (!env.DB) throw new HttpError(503,'Community services are not connected yet.')
+      return await unsubscribe(request,env,env.DB)
+    }
     checkOrigin(request,env)
     const auth = await authentication(request,env,path)
     if (auth) return auth
@@ -51,6 +57,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if(developer)return developer
     const discussion = await forum(request,db,user,admin)
     if(discussion)return discussion
+    const notifications = await notificationRoutes(request,env,db,user)
+    if(notifications)return notifications
     let match: RegExpMatchArray | null
     if ((match = path.match(/^\/api\/media\/([^/]+)$/)) && request.method === 'GET') {
       const item = await db.prepare('SELECT m.*,s.status,s.owner_id,p.submission_id AS published FROM media m JOIN submissions s ON s.id=m.submission_id LEFT JOIN module_publications p ON p.submission_id=s.id WHERE m.id=?').bind(match[1]).first<Media & {status:string;owner_id:string;published:string|null}>()
@@ -80,14 +88,14 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       else if(match[2]==='rating'&&(!Number.isInteger(body.value)||Number(body.value)<1||Number(body.value)>5))throw new HttpError(400,'Choose a rating from 1 to 5.')
       const owner=needMember(user)
       await throttle(db,'community:' + owner.id,30)
-      if (match[2] === 'comments') { await db.prepare('INSERT INTO comments(id,module_id,user_id,body) VALUES(?,?,?,?)').bind(crypto.randomUUID(),match[1],owner.id,required(body.body,'Comment',2000)).run() }
-      else if(match[2]==='like'){if(typeof body.liked!=='boolean')throw new HttpError(400,'Choose liked or unliked.');if(body.liked)await db.prepare('INSERT INTO likes(module_id,user_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(match[1],owner.id).run();else await db.prepare('DELETE FROM likes WHERE module_id=? AND user_id=?').bind(match[1],owner.id).run()}
-      else { const rating = Number(body.value); if (!Number.isInteger(rating) || rating < 1 || rating > 5) throw new HttpError(400,'Choose a rating from 1 to 5.'); await db.prepare('INSERT INTO ratings(module_id,user_id,value) VALUES(?,?,?) ON CONFLICT(module_id,user_id) DO UPDATE SET value=excluded.value').bind(match[1],owner.id,rating).run() }
+      if (match[2] === 'comments') { const comment=crypto.randomUUID(); await db.batch([db.prepare('INSERT INTO comments(id,module_id,user_id,body) VALUES(?,?,?,?)').bind(comment,match[1],owner.id,required(body.body,'Comment',2000)),...notifyModuleMaintainers(db,match[1],'module_comment',owner.id,comment)]) }
+      else if(match[2]==='like'){if(typeof body.liked!=='boolean')throw new HttpError(400,'Choose liked or unliked.');if(body.liked)await db.batch([db.prepare('INSERT INTO likes(module_id,user_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(match[1],owner.id),...notifyModuleMaintainers(db,match[1],'module_like',owner.id)]);else await db.batch([db.prepare('DELETE FROM likes WHERE module_id=? AND user_id=?').bind(match[1],owner.id),withdrawModuleLike(db,match[1],owner.id)])}
+      else { const rating = Number(body.value); if (!Number.isInteger(rating) || rating < 1 || rating > 5) throw new HttpError(400,'Choose a rating from 1 to 5.'); await db.batch([db.prepare('INSERT INTO ratings(module_id,user_id,value) VALUES(?,?,?) ON CONFLICT(module_id,user_id) DO UPDATE SET value=excluded.value').bind(match[1],owner.id,rating),...notifyModuleMaintainers(db,match[1],'module_rating',owner.id)]) }
       return response({ok:true})
     }
     if ((match = path.match(/^\/api\/comments\/([^/]+)$/)) && request.method === 'DELETE') {
-      if (admin) await db.prepare('DELETE FROM comments WHERE id=?').bind(match[1]).run()
-      else await db.prepare('DELETE FROM comments WHERE id=? AND user_id=?').bind(match[1],needUser(user).id).run()
+      const removed = admin ? await db.prepare('DELETE FROM comments WHERE id=? RETURNING id').bind(match[1]).first() : await db.prepare('DELETE FROM comments WHERE id=? AND user_id=? RETURNING id').bind(match[1],needUser(user).id).first()
+      if (removed) await db.prepare('DELETE FROM notifications WHERE comment_id=?').bind(match[1]).run()
       return response({ok:true})
     }
     if ((match=path.match(/^\/api\/modules\/([a-z0-9-]+)\/issues$/)) && request.method==='POST') {

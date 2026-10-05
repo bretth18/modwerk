@@ -270,9 +270,9 @@ describe('public bug reporting and developer delivery',()=>{
       expect((await call('/forum/threads/'+forumThreadId+'/replies','POST',{body:'I see this too.'},other.token)).status).toBe(201)
     }
     const notifications=await(await call('/developer/notifications','GET',undefined,'',developer.token)).json()
-    expect(notifications).toHaveLength(4);expect(notifications.every((item:{seen:number})=>item.seen===0)).toBe(true)
+    expect(notifications).toHaveLength(4);expect(notifications.every((item:{seen:boolean})=>!item.seen)).toBe(true)
     expect((await call('/developer/notifications','PATCH',{},'',developer.token)).status).toBe(200)
-    expect((await(await call('/developer/notifications','GET',undefined,'',developer.token)).json()).every((item:{seen:number})=>item.seen===1)).toBe(true)
+    expect((await(await call('/developer/notifications','GET',undefined,'',developer.token)).json()).every((item:{seen:boolean})=>item.seen)).toBe(true)
     expect((await call('/developer/notifications','GET',undefined,reporter.token)).status).toBe(401)
     expect((await call('/admin/issues','GET',undefined,'',developer.token)).status).toBe(403)
     expect(db.prepare("SELECT COUNT(*) AS count FROM forum_threads WHERE user_id<>'modwerk'").get()!.count).toBe(2)
@@ -317,7 +317,7 @@ describe('public bug reporting and developer delivery',()=>{
     db.exec('UPDATE module_maintainers SET revoked=1')
     expect(await(await call('/developer/notifications','GET',undefined,'',developer.token)).json()).toEqual([])
     expect((await call('/forum/threads','POST',payload,reporter.token)).status).toBe(201)
-    expect(db.prepare('SELECT COUNT(*) AS count FROM forum_notifications').get()!.count).toBe(1)
+    expect(db.prepare('SELECT COUNT(*) AS count FROM notifications').get()!.count).toBe(1)
   })
   it('rolls back the public thread and developer delivery if storing the validated log fails',async()=>{
     const {call,githubLogin,member,db}=await fixture(),module=COMMUNITY_MODULES.find(module=>module.id==='miniverb')!,developer=await githubLogin(module.author),reporter=await member()
@@ -326,7 +326,7 @@ describe('public bug reporting and developer delivery',()=>{
     const log=readFileSync(new URL('../../sdk/runtime/logging/tests/expected.log',import.meta.url),'utf8')
     const result=await call('/modules/miniverb/issues','POST',{...details,context:{model:'mk2',flash:'flashed',os:'1.40C',modules:[],keepStockFx2:true,build:''},log,visibility:'forum'},reporter.token)
     expect(result.status).toBe(500)
-    for(const table of ['issues','issue_logs','forum_threads','forum_posts','forum_follows','forum_notifications'])expect(db.prepare('SELECT COUNT(*) AS count FROM '+table).get()!.count).toBe(0)
+    for(const table of ['issues','issue_logs','forum_threads','forum_posts','forum_follows','notifications'])expect(db.prepare('SELECT COUNT(*) AS count FROM '+table).get()!.count).toBe(0)
   })
   it('does not publish old private clients or rejected and unverified submissions',async()=>{
     const {call,member,db}=await fixture(),reporter=await member()

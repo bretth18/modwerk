@@ -5,6 +5,7 @@ import { FORUM_CATEGORIES, forumMachine, sharedConfiguration } from '../src/comm
 import { communityModule } from '../src/community/modules'
 import { notifyBugDevelopers } from './bug-reports'
 import { ensureModuleThreadsOnce, SYSTEM_AUTHOR } from './module-threads'
+import { notifyMentions, notifyPostLike, notifyReplies, RECIPIENTS } from './notifications'
 
 type Thread = {id:string;user_id:string;locked:number;hidden:number;configuration_json:string|null;issue_json:string|null}
 function page(url: URL) { const value = Number(url.searchParams.get('page') ?? 0); if (!Number.isInteger(value) || value < 0 || value > 10000) throw new HttpError(400,'Invalid page.'); return value }
@@ -61,10 +62,12 @@ export async function forum(request: Request, db: Database, user: User|null, adm
   }
   if (path === '/api/forum/notifications' && request.method === 'GET') {
     const member = needMember(user)
-    return response((await db.prepare('SELECT n.id,n.thread_id,n.post_id,n.seen,n.created_at,t.title FROM forum_notifications n JOIN forum_threads t ON t.id=n.thread_id JOIN forum_posts p ON p.id=n.post_id WHERE n.user_id=? AND t.hidden=0 AND p.hidden=0 ORDER BY n.created_at DESC,n.id LIMIT 100').bind(member.id).all()).results)
+    // Superseded by /api/notifications; kept with its original shape for frontends deployed before the bell.
+    return response((await db.prepare(`SELECT n.id,n.thread_id,n.post_id,n.seen,n.created_at,t.title FROM notifications n JOIN forum_threads t ON t.id=n.thread_id JOIN forum_posts p ON p.id=n.post_id WHERE n.kind IN ('reply','mention','bug_report') AND n.user_id IN (${RECIPIENTS}) AND t.hidden=0 AND p.hidden=0 ORDER BY n.created_at DESC,n.id LIMIT 100`).bind(member.id,member.id).all()).results)
   }
   if (path === '/api/forum/notifications' && request.method === 'PATCH') {
-    await db.prepare('UPDATE forum_notifications SET seen=1 WHERE user_id=?').bind(needMember(user).id).run()
+    const member = needMember(user)
+    await db.prepare(`UPDATE notifications SET seen=1 WHERE kind IN ('reply','mention','bug_report') AND user_id IN (${RECIPIENTS})`).bind(member.id,member.id).run()
     return response({ok:true})
   }
   if ((match=path.match(/^\/api\/forum\/profiles\/([a-z0-9_]{3,24})$/)) && request.method === 'GET') {
@@ -108,6 +111,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
       db.prepare('INSERT INTO forum_threads(id,user_id,title,category,machine,module_id,configuration_json,issue_json) VALUES(?,?,?,?,?,?,?,?)').bind(id,member.id,title,body.category,machine ?? moduleMachine ?? configMachine,module,config?JSON.stringify(config):null,issue?JSON.stringify(issue):null),
       db.prepare('INSERT INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').bind(postId,id,member.id,content),
       db.prepare('INSERT INTO forum_follows(thread_id,user_id) VALUES(?,?)').bind(id,member.id),
+      ...notifyMentions(db,content,id,postId,member.id),
       ...(body.category==='issues'?notifyBugDevelopers(db,module,id,postId,member.id):[]),
     ])
     return response({id},201)
@@ -120,7 +124,8 @@ export async function forum(request: Request, db: Database, user: User|null, adm
       const result=await db.batch([
         db.prepare('INSERT INTO forum_posts(id,thread_id,user_id,body) SELECT ?,?,?,? WHERE EXISTS(SELECT 1 FROM forum_threads WHERE id=? AND locked=0 AND hidden=0)').bind(id,thread.id,member.id,text,thread.id),
         db.prepare('UPDATE forum_threads SET updated_at=CURRENT_TIMESTAMP WHERE id=? AND EXISTS(SELECT 1 FROM forum_posts WHERE id=?)').bind(thread.id,id),
-        db.prepare('INSERT INTO forum_notifications(id,user_id,thread_id,post_id) SELECT lower(hex(randomblob(16))),f.user_id,f.thread_id,? FROM forum_follows f JOIN users u ON u.id=f.user_id WHERE f.thread_id=? AND f.user_id<>? AND u.suspended=0 AND EXISTS(SELECT 1 FROM forum_posts WHERE id=?)').bind(id,thread.id,member.id,id),
+        ...notifyMentions(db,text,thread.id,id,member.id),
+        notifyReplies(db,thread.id,id,member.id),
         db.prepare('INSERT INTO forum_follows(thread_id,user_id) SELECT ?,? WHERE EXISTS(SELECT 1 FROM forum_posts WHERE id=?) ON CONFLICT DO NOTHING').bind(thread.id,member.id,id),
       ])
       if(!(result[0] as {meta:{changes:number}}).meta.changes)throw new HttpError(409,'This thread is locked or unavailable.')
@@ -146,8 +151,11 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     const post=await db.prepare('SELECT p.id,p.user_id,p.thread_id,t.locked FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id WHERE p.id=? AND p.hidden=0 AND t.hidden=0').bind(match[1]).first<{id:string;user_id:string;thread_id:string;locked:number}>()
     if(!post)throw new HttpError(404,'Post not found.')
     if(match[2]==='react'&&request.method==='POST'){
-      if(bool(body.liked))await db.prepare('INSERT INTO forum_reactions(post_id,user_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(post.id,member.id).run()
-      else await db.prepare('DELETE FROM forum_reactions WHERE post_id=? AND user_id=?').bind(post.id,member.id).run()
+      const liked=!!bool(body.liked)
+      await db.batch([
+        liked?db.prepare('INSERT INTO forum_reactions(post_id,user_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(post.id,member.id):db.prepare('DELETE FROM forum_reactions WHERE post_id=? AND user_id=?').bind(post.id,member.id),
+        notifyPostLike(db,post.id,member.id,liked),
+      ])
       return response({ok:true})
     }
     if(match[2]==='report'&&request.method==='POST'){
