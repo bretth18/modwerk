@@ -8,7 +8,7 @@ export async function adminInsights(db: Database, now = new Date()): Promise<Adm
   const [totals, ages, published, metrics, meta] = await Promise.all([
     db.prepare(`SELECT (SELECT COUNT(*) FROM issues WHERE status='open') AS openIssues,
       (SELECT COUNT(*) FROM issues WHERE status='closed') AS closedIssues,
-      (SELECT COUNT(*) FROM comments) AS comments, (SELECT COUNT(*) FROM likes) AS likes,
+      (SELECT COUNT(*) FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id WHERE t.id='module-' || t.module_id AND p.id<>t.id AND p.hidden=0 AND t.hidden=0) AS comments, (SELECT COUNT(*) FROM likes) AS likes,
       (SELECT COUNT(*) FROM ratings) AS ratings, (SELECT COALESCE(SUM(downloads),0) FROM module_downloads) AS downloads,
       (SELECT COUNT(*) FROM module_publications) AS published, (SELECT COALESCE(SUM(bytes),0) FROM media) AS mediaBytes`).first<AdminInsights['totals']>(),
     db.prepare(`WITH ages AS (SELECT created_at, MAX(0,CAST(julianday(?) - julianday(created_at) AS INTEGER)) AS age FROM issues WHERE status='open')
@@ -16,8 +16,9 @@ export async function adminInsights(db: Database, now = new Date()): Promise<Adm
       COALESCE(SUM(age>=30),0) AS overMonth, MIN(created_at) AS oldest FROM ages`).bind(now.toISOString()).first<AdminInsights['issueAges']>(),
     db.prepare('SELECT p.module_id,s.title FROM module_publications p JOIN submissions s ON s.id=p.submission_id').all<{module_id:string;title:string}>(),
     // Aggregate each source before joining so independent comments, ratings and issues never multiply totals.
-    db.prepare(`WITH ids AS (SELECT module_id FROM comments UNION SELECT module_id FROM issues UNION SELECT module_id FROM likes UNION SELECT module_id FROM ratings UNION SELECT module_id FROM module_downloads),
-      c AS (SELECT module_id,COUNT(*) AS comments FROM comments GROUP BY module_id),
+    db.prepare(`WITH discussion AS (SELECT t.module_id,p.id FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id WHERE t.id='module-' || t.module_id AND p.id<>t.id AND p.hidden=0 AND t.hidden=0),
+      ids AS (SELECT module_id FROM discussion UNION SELECT module_id FROM issues UNION SELECT module_id FROM likes UNION SELECT module_id FROM ratings UNION SELECT module_id FROM module_downloads),
+      c AS (SELECT module_id,COUNT(*) AS comments FROM discussion GROUP BY module_id),
       i AS (SELECT module_id,COUNT(*) AS openIssues FROM issues WHERE status='open' GROUP BY module_id),
       l AS (SELECT module_id,COUNT(*) AS likes FROM likes GROUP BY module_id),
       r AS (SELECT module_id,COUNT(*) AS ratings,AVG(value) AS ratingAverage FROM ratings GROUP BY module_id)

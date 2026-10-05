@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -53,6 +54,8 @@ describe('compliance access boundaries',()=>{
   expect((await call('/auth/data-export','POST',{password},owner.token,'','https://evil.test')).status).toBe(403)
   for(let i=0;i<105;i++)db.prepare('INSERT INTO comments(id,module_id,user_id,body) VALUES(?,?,?,?)').run('own-'+i,'miniverb',owner.id,'own comment '+i)
   db.prepare('INSERT INTO comments(id,module_id,user_id,body) VALUES(?,?,?,?)').run('other-comment','miniverb',other.id,'other private text')
+  // Legacy comment exports now come from their migrated forum posts.
+  db.exec(readFileSync(new URL('../../migrations/0028_unified_module_discussions.sql',import.meta.url),'utf8'))
   db.prepare('INSERT INTO issues(id,module_id,author_login,reporter_id,title,body) VALUES(?,?,?,?,?,?)').run('own-issue','miniverb','author',owner.id,'private issue','own report')
   db.prepare('INSERT INTO issue_logs(issue_id,text,bytes,summary_json) VALUES(?,?,?,?)').run('own-issue','own synthetic log',17,'{}')
   db.prepare('INSERT INTO configurations(id,user_id,name,modules_json) VALUES(?,?,?,?)').run('own-config',owner.id,'local legacy choice','[]')
@@ -65,7 +68,7 @@ describe('compliance access boundaries',()=>{
   expect(result.status).toBe(200);expect(result.headers.get('Cache-Control')).toBe('no-store');expect(result.headers.get('Content-Disposition')).toContain('attachment')
   expect(exported.data.account[0]).toMatchObject({id:owner.id,email:owner.email})
   expect(exported.data.comments).toHaveLength(105);expect(exported.data.configurations).toHaveLength(1);expect(exported.data.issueLogs[0].text).toBe('own synthetic log')
-  expect(exported.data.posts[0]).toMatchObject({body:'own post',hidden:1})
+  expect(exported.data.posts.find((post:{body:string})=>post.body==='own post')).toMatchObject({body:'own post',hidden:1})
   expect(exported.data.policyAcceptances[0].version).toBe(COMMUNITY_RULES_VERSION)
   for(const secret of [other.email,other.id,'another members reply','other private text',owner.token,'password','accessToken','refreshToken','review_note'])expect(text).not.toContain(secret)
   expect(text).not.toContain(rawCredentials)

@@ -4,7 +4,7 @@ import { HttpError, jsonBody, required, response } from './security'
 import { FORUM_CATEGORIES, forumMachine, sharedConfiguration } from '../src/community/forum-contract'
 import { communityModule } from '../src/community/modules'
 import { notifyBugDevelopers } from './bug-reports'
-import { ensureModuleThreadsOnce, SYSTEM_AUTHOR } from './module-threads'
+import { ensureDiscussionThread, ensureModuleThreadsOnce, SYSTEM_AUTHOR } from './module-threads'
 import { notifyMentions, notifyPostLike, notifyReplies, RECIPIENTS } from './notifications'
 import { attachMedia, postAttachments } from './forum-media'
 import { shoutbox } from './shoutbox'
@@ -19,9 +19,10 @@ async function threadById(db: Database, id: string, admin: boolean) {
 }
 function bool(value: unknown) { if (typeof value !== 'boolean') throw new HttpError(400,'Choose on or off.'); return Number(value) }
 function cleanBody(value: unknown) { return required(value,'Post',12000) }
-function moduleId(value: unknown) {
+async function moduleId(db: Database, value: unknown) {
   if (value === '' || value === undefined || value === null) return null
-  if (typeof value !== 'string' || !communityModule(value)) throw new HttpError(400,'Choose a known module.')
+  if (typeof value !== 'string') throw new HttpError(400,'Choose a known module.')
+  if (!communityModule(value)) { try { await ensureDiscussionThread(db,value) } catch(error) { if(error instanceof HttpError&&error.status===404)throw new HttpError(400,'Choose a known module.'); throw error } }
   return value
 }
 export async function forum(request: Request, db: Database, user: User|null, admin: boolean): Promise<Response|null> {
@@ -30,6 +31,8 @@ export async function forum(request: Request, db: Database, user: User|null, adm
   const chat = await shoutbox(request,db,user,admin)
   if (chat) return chat
   await ensureModuleThreadsOnce(db)
+  const home=path.match(/^\/api\/forum\/threads\/module-([a-z0-9-]+)(?:\/(?:replies|follow|bookmark|status))?$/)
+  if(home&&!await db.prepare('SELECT id FROM forum_threads WHERE id=?').bind('module-'+home[1]).first())await ensureDiscussionThread(db,home[1])
   let match: RegExpMatchArray|null
   if (path.startsWith('/api/admin/forum')) {
     if (!admin) throw new HttpError(403,'Administrator access is required.')
@@ -55,7 +58,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     throw new HttpError(404,'Moderation route not found.')
   }
   if (path === '/api/forum/threads' && request.method === 'GET') {
-    const category = url.searchParams.get('category') ?? '', module = moduleId(url.searchParams.get('module')), query = (url.searchParams.get('q') ?? '').trim().slice(0,120), saved = url.searchParams.get('saved') === '1', following = url.searchParams.get('following') === '1', author = url.searchParams.get('author') ?? ''
+    const category = url.searchParams.get('category') ?? '', module = await moduleId(db,url.searchParams.get('module')), query = (url.searchParams.get('q') ?? '').trim().slice(0,120), saved = url.searchParams.get('saved') === '1', following = url.searchParams.get('following') === '1', author = url.searchParams.get('author') ?? ''
     const sort = url.searchParams.get('sort') ?? 'active'
     if (!['active','newest'].includes(sort)) throw new HttpError(400,'Choose a supported discussion order.')
     if (category && !Object.hasOwn(FORUM_CATEGORIES,category)) throw new HttpError(400,'Unknown category.')
@@ -115,11 +118,11 @@ export async function forum(request: Request, db: Database, user: User|null, adm
   if ((match=path.match(/^\/api\/forum\/threads\/([a-zA-Z0-9-]+)$/)) && request.method === 'GET') {
     const thread = await threadById(db,match[1],admin)
     const summary = await db.prepare(`SELECT ${threadFields},t.hidden FROM forum_threads t JOIN users u ON u.id=t.user_id WHERE t.id=?`).bind(thread.id).first()
-    const posts = (await db.prepare('SELECT p.*,u.username,(SELECT COUNT(*) FROM forum_reactions r WHERE r.post_id=p.id) AS likes,EXISTS(SELECT 1 FROM forum_reactions r WHERE r.post_id=p.id AND r.user_id=?) AS liked FROM forum_posts p JOIN users u ON u.id=p.user_id WHERE p.thread_id=? ORDER BY p.created_at,p.rowid LIMIT 31 OFFSET ?').bind(user?.id??'',thread.id,page(url)*30).all<{id:string;user_id:string;hidden:number;body:string;username:string;created_at:string;edited_at:string|null;likes:number;liked:number}>()).results
+    const posts = (await db.prepare('SELECT p.*,u.username,u.display_name AS displayName,(SELECT COUNT(*) FROM forum_reactions r WHERE r.post_id=p.id) AS likes,EXISTS(SELECT 1 FROM forum_reactions r WHERE r.post_id=p.id AND r.user_id=?) AS liked FROM forum_posts p JOIN users u ON u.id=p.user_id WHERE p.thread_id=? ORDER BY p.created_at,p.rowid LIMIT 31 OFFSET ?').bind(user?.id??'',thread.id,page(url)*30).all<{id:string;user_id:string;hidden:number;body:string;username:string;displayName:string;created_at:string;edited_at:string|null;likes:number;liked:number}>()).results
     const following = !!user && !!await db.prepare('SELECT user_id FROM forum_follows WHERE thread_id=? AND user_id=?').bind(thread.id,user.id).first()
     const bookmarked = !!user && !!await db.prepare('SELECT user_id FROM forum_bookmarks WHERE thread_id=? AND user_id=?').bind(thread.id,user.id).first()
     const attachments = await postAttachments(db,posts.slice(0,30).filter(post=>admin||!post.hidden).map(post=>post.id))
-    return response({thread:summary,posts:posts.slice(0,30).map(post=>({attachments:attachments.get(post.id)??[],canRemoveMedia:!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,id:post.id,body:post.hidden&&!admin?'':post.body,username:post.hidden&&!admin?null:post.username,created_at:post.created_at,edited_at:post.edited_at,hidden:post.hidden,likes:post.hidden?0:post.likes,liked:!post.hidden&&!!post.liked,canEdit:!thread.locked&&!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,official:post.user_id===SYSTEM_AUTHOR,...(admin?{user_id:post.user_id}:{})})),configuration:thread.configuration_json?JSON.parse(thread.configuration_json):null,issue:thread.issue_json?JSON.parse(thread.issue_json):null,following,bookmarked,hasMore:posts.length>30})
+    return response({thread:summary,posts:posts.slice(0,30).map(post=>({attachments:attachments.get(post.id)??[],canRemoveMedia:!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,id:post.id,body:post.hidden&&!admin?'':post.body,username:post.hidden&&!admin?null:post.username,displayName:post.hidden&&!admin?null:post.displayName,created_at:post.created_at,edited_at:post.edited_at,hidden:post.hidden,likes:post.hidden?0:post.likes,liked:!post.hidden&&!!post.liked,canEdit:!thread.locked&&!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,official:post.user_id===SYSTEM_AUTHOR,...(admin?{user_id:post.user_id}:{})})),configuration:thread.configuration_json?JSON.parse(thread.configuration_json):null,issue:thread.issue_json?JSON.parse(thread.issue_json):null,following,bookmarked,hasMore:posts.length>30})
   }
   const member = needMember(user)
   await throttle(db,'forum:'+member.id,60)
@@ -128,10 +131,10 @@ export async function forum(request: Request, db: Database, user: User|null, adm
   if (path === '/api/forum/threads' && request.method === 'POST') {
     await throttle(db,'new-thread:'+member.id,10)
     if (typeof body.category !== 'string' || !Object.hasOwn(FORUM_CATEGORIES,body.category)) throw new HttpError(400,'Choose a category.')
-    const title=required(body.title,'Title',160), content=cleanBody(body.body), module=moduleId(body.moduleId), id=crypto.randomUUID(), postId=crypto.randomUUID()
+    const title=required(body.title,'Title',160), content=cleanBody(body.body), module=await moduleId(db,body.moduleId), id=crypto.randomUUID(), postId=crypto.randomUUID()
     let machine: string | null
     try { machine = forumMachine(body.machine) } catch (error) { throw new HttpError(400, error instanceof Error ? error.message : 'Unknown machine.') }
-    const moduleMachine = module ? communityModule(module)!.machine : null
+    const moduleMachine = module ? communityModule(module)?.machine??(module.startsWith('remix-')?'octatrack':null) : null
     if (moduleMachine && machine && machine !== moduleMachine) throw new HttpError(400,'The module belongs to a different machine.')
     let config=null,issue=null
     if(body.category==='configs'){try{config=sharedConfiguration(body.configuration)}catch(error){throw new HttpError(400,error instanceof Error?error.message:'Invalid configuration.')}}
@@ -170,7 +173,8 @@ export async function forum(request: Request, db: Database, user: User|null, adm
         db.prepare('INSERT INTO forum_follows(thread_id,user_id) SELECT ?,? WHERE EXISTS(SELECT 1 FROM forum_posts WHERE id=?) ON CONFLICT DO NOTHING').bind(thread.id,member.id,id),
       ])
       if(!(result[0] as {meta:{changes:number}}).meta.changes)throw new HttpError(409,'This thread is locked or unavailable.')
-      return response({id},201)
+      const position=await db.prepare('SELECT CAST(COUNT(*)/30 AS INTEGER) AS page FROM forum_posts preceding JOIN forum_posts posted ON posted.id=? WHERE preceding.thread_id=posted.thread_id AND (preceding.created_at<posted.created_at OR (preceding.created_at=posted.created_at AND preceding.rowid<posted.rowid))').bind(id).first<{page:number}>()
+      return response({id,page:position?.page??0},201)
     }
     if((action==='follow'||action==='bookmark')&&request.method==='POST'){
       const table=action==='follow'?'forum_follows':'forum_bookmarks'

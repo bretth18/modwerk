@@ -1,5 +1,6 @@
-import { DigiIssueReport } from '../community/DigiIssueReport'
-import { ModuleCommunity } from '../community/ModuleCommunity'
+import { DigiModPreview } from './DigiModPreview'
+export { DigiModPreview } from './DigiModPreview'
+export { DigiModDetail } from './DigiModDetail'
 import { useRef, useState, type ReactNode } from 'react'
 import { downloadDigiSelection, parseDigiSelection } from '../config/digi-selection'
 import { DIGI_DOWNLOADS_ENABLED } from '../engine/elekloader/protocol'
@@ -16,7 +17,7 @@ import { compareModules, downloadCoverage, type ModuleStatistics } from '../comm
 import { ModulePopularity } from '../community/ModulePopularity'
 import { DeviceImage, PhotoCredit } from './DeviceImage'
 import { DEVICES, DEVICES_BY_ID, DEVICE_STEPS, STATUS_LABELS, deviceHref, deviceTitle, stepsDone, type DeviceProfile } from './registry'
-import { DIGI_CORES, DIGI_MODS, categorySlug, estimateCombination, type DigiMod } from './digi-mods'
+import { DIGI_CORES, DIGI_MODS, estimateCombination, type DigiMod } from './digi-mods'
 import { MemberGate } from '../community/MemberGate'
 import { useDigiFirmware } from '../hooks/useDigiFirmware'
 import { DigiFirmwarePanel } from '../components/DigiFirmwarePanel'
@@ -26,33 +27,6 @@ type DigiDevice = DeviceProfile & { id: DigiMod['device'] }
 const STEP_LABELS = { done: 'Done', started: 'Started', open: 'Open' } as const
 
 function kib(bytes: number) { return (bytes / 1024).toFixed(bytes < 10240 ? 1 : 0) + ' KiB' }
-
-// Cover art drawn from the mod's kind, in the library's existing preview style.
-export function DigiModPreview({ mod, compact = false }: { mod: DigiMod; compact?: boolean }) {
-  const kind = categorySlug(mod.category)
-  return (
-    <div className={'module-preview ' + (compact ? 'compact-preview' : '')} data-module={'digi-' + kind} aria-hidden="true">
-      <div className="preview-label"><span>{mod.title}</span><span className="preview-led" /></div>
-      <svg viewBox="0 0 320 192" className="signal-art" fill="none">
-        <g className="signal-grid">{[52, 97, 142].map(y => <path key={y} d={'M20 ' + y + 'H300'} />)}{[64, 128, 192, 256].map(x => <path key={x} d={'M' + x + ' 33V163'} />)}</g>
-        {kind === 'sampling' && <g>
-          {Array.from({ length: 64 }, (_, i) => { const h = (Math.abs(Math.sin(i * 1.7 + mod.id.length)) * 38 + 6) * Math.exp(-(i % 16) / 9); return <path key={i} className={i % 16 < 3 ? 'signal-main' : 'signal-secondary'} d={'M' + (30 + i * 4.1) + ' ' + (97 - h) + 'v' + h * 2} /> })}
-          {[30, 95.6, 161.2, 226.8].map(x => <path key={x} className="signal-ghost" d={'M' + x + ' 40V154'} strokeDasharray="3 5" />)}
-          <text x="25" y="177">SLICES</text>
-        </g>}
-        {kind === 'synthesis' && <g>
-          <path className="signal-ghost" d={Array.from({ length: 121 }, (_, i) => (i ? 'L' : 'M') + (28 + i * 2.2).toFixed(1) + ' ' + (97 + Math.sin(i / 7) * 46).toFixed(1)).join(' ')} />
-          <path className="signal-main" d={Array.from({ length: 121 }, (_, i) => (i ? 'L' : 'M') + (28 + i * 2.2).toFixed(1) + ' ' + (97 + Math.sin(i / 5 + Math.sin(i / 3) * 2.2) * 34 * Math.exp(-i / 90)).toFixed(1)).join(' ')} />
-          <text x="25" y="177">OP A → OP B</text>
-        </g>}
-        {kind === 'performance' && <g>
-          {[0.62, 0.38, 0.81, 0.27].map((level, i) => <g key={i}><path className="signal-ghost" d={'M' + (58 + i * 62) + ' 150V44'} /><path className="signal-main" d={'M' + (58 + i * 62) + ' 150V' + (150 - level * 106)} strokeWidth="9" /></g>)}
-          <text x="25" y="177">CPU · DSP · RAM · DRIVE</text>
-        </g>}
-      </svg>
-    </div>
-  )
-}
 
 function DigiModCard({ mod, selected, compared, canCompare, onToggle, onCompare }: { mod: DigiMod; selected: boolean; compared: boolean; canCompare: boolean; onToggle: () => void; onCompare: () => void }) {
   const href = deviceHref(mod.device, 'module/' + mod.id)
@@ -147,40 +121,6 @@ export function DigiLibrary({ device, category, query, selectedIds, onToggle, fa
       <p className="popularity-note">Popularity counts and addition dates are not available yet. These sorts use name order until counts are available.</p>
       {!mods.length && <div className="no-results"><Icon name="search" size={30} /><h2>{term || libraryFamily!=='all' ? 'No modules found' : 'No ' + device.name + ' modules here yet'}</h2><p>{term || libraryFamily!=='all' ? 'Try another name, type or author.' : 'Browse all ' + device.name + ' modules, or help write the first one.'}</p><a className="button button-quiet" href={deviceHref(device.id)}>All {device.name} modules</a></div>}
       <div className="library-note"><span className="status-dot" /><p>Built from each author’s pinned public release, with credit and licence.</p></div>
-    </div>
-  )
-}
-
-export function DigiModDetail({ device, mod, selected, onToggle }: { device: DigiDevice; mod: DigiMod; selected: boolean; onToggle: () => void }) {
-  const core = DIGI_CORES[device.id]
-  const others = DIGI_MODS.filter(other => other.device === device.id && other.id !== mod.id)
-  return (
-    <div className="detail-page">
-      <div className="module-page-actions"><a className="back-link" href={deviceHref(device.id)}><Icon name="back" size={15} /> All {device.name} modules</a></div>
-      <section className="detail-hero" aria-labelledby="module-title">
-        <DigiModPreview mod={mod} />
-        <div className="detail-intro">
-          <div className="detail-tags"><span className="pill">{mod.category}</span><span className="subtle">v{mod.version} · {mod.license}</span></div>
-          <h1 id="module-title">{mod.title}</h1>
-          <a className="author-link" href={mod.repository} target="_blank" rel="noreferrer">by {mod.author} ↗</a>
-          <p>{mod.summary}</p>
-          <button className={'button ' + (selected ? 'button-added' : 'button-primary')} onClick={onToggle} aria-pressed={selected}><Icon name={selected ? 'check' : 'plus'} size={16} />{selected ? 'Added to configuration' : 'Add to configuration'}</button>
-        </div>
-      </section>
-      <section className="detail-section"><h2>Resources</h2>
-        <dl className="device-facts"><dt>Memory</dt><dd>{kib(mod.ramBytes)} of the {kib(core.areaBytes)} all mods share ({kib(core.ramBytes)} reserved for the core and alignment)</dd><dt>Claims</dt><dd>{mod.claims.join(', ')}</dd><dt>Source</dt><dd><a className="author-link" href={mod.repository} target="_blank" rel="noreferrer">{mod.repository.replace('https://github.com/', '')} ↗</a></dd><dt>Hardware</dt><dd>{mod.hardware ?? 'No hardware report yet.'}</dd></dl>
-      </section>
-      {others.length > 0 && <section className="detail-section"><h2>Combines with</h2>
-        <ul className="feature-list">{others.map(other => {
-          const estimate = estimateCombination(device.id, [mod.id, other.id])
-          const ok = estimate.fits && !estimate.clashes.length
-          return <li key={other.id}><Icon name={ok ? 'check' : 'close'} size={15} /><a href={deviceHref(device.id, 'module/' + other.id)}>{other.title}</a><span className="subtle">{ok ? 'fits together (' + kib(estimate.usedBytes) + ')' : estimate.fits ? 'cannot be used together' : 'too large together (' + kib(estimate.usedBytes) + ')'}</span></li>
-        })}</ul>
-        <p className="combination-footnote">Estimated from code and data sizes. The build’s own check decides.</p>
-      </section>}
-      <section className="detail-section"><h2>Support & discussion</h2><a className="text-button" href={'#forum?machine='+device.id+'&module='+device.id+'-'+mod.id}>Discuss this module →</a></section>
-      <DigiIssueReport id={device.id+'-'+mod.id}/>
-      <ModuleCommunity id={device.id+'-'+mod.id} mode="discussion"/>
     </div>
   )
 }
