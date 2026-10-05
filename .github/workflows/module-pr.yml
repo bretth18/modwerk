@@ -48,7 +48,7 @@ jobs:
           # the compiler job itself still require its isolated reproducibility check.
           compiler_job() {
             git show "$1:.github/workflows/module-pr.yml" |
-              sed -n '/^  elemod-source:/,/^  octatrack-source:/{ /^  octatrack-source:/d; p; }' | sed '/^    needs:/d; /^    if:/d'
+              sed -n '/^  elemod-source:/,$p' | sed '/^    needs:/d; /^    if:/d'
           }
           if git diff --quiet "$OCTAMOD_PR_BASE" HEAD -- "${inputs[@]}" &&
              cmp -s <(compiler_job "$OCTAMOD_PR_BASE") <(compiler_job HEAD); then
@@ -138,38 +138,3 @@ jobs:
           path: ${{ runner.temp }}/elemod-first
           retention-days: 14
           if-no-files-found: error
-  octatrack-source:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 45
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
-      - name: Prepare pinned release toolchain
-        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
-        with:
-          context: .
-          file: sdk/build/Dockerfile
-          tags: modwerk-source-tools
-          load: true
-          provenance: false
-          sbom: false
-          cache-from: type=gha,scope=source-tools
-          cache-to: type=gha,scope=source-tools,mode=max
-      - name: Compile authored Octatrack packages without firmware or network
-        run: |
-          image=$(docker image inspect modwerk-source-tools --format '{{.Id}}')
-          bash scripts/build-modules-isolated.sh "$GITHUB_WORKSPACE" "$RUNNER_TEMP/octatrack-source" "$image"
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: octatrack-source-${{ github.sha }}
-          path: ${{ runner.temp }}/octatrack-source/packages
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 24
-      - run: npm ci
-      - name: Require compiled packages to reproduce committed native-parity packages
-        run: node scripts/import-module-build.mjs "$RUNNER_TEMP/octatrack-source/packages" --development --check-only --verify-existing

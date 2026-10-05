@@ -2,7 +2,6 @@
 // Initial seven: b16a5e3 (2026-10-01); requested four: 98190bb (2026-10-01).
 // Register each newly approved catalog module here with its original addition date.
 export const MODULE_ADDED_AT: Readonly<Record<string, string>> = {
-  'sidechain-compressor': '2026-10-05T12:00:00Z',
   spectrum: '2026-10-01T06:53:41Z',
   modulation: '2026-10-01T06:53:41Z',
   character: '2026-10-01T06:53:41Z',

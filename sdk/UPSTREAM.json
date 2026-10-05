@@ -118,17 +118,6 @@
       "internalDependencies": [],
       "root": "octabam/modules/previewvol",
       "status": "0.1.2-experimental software-verified release; owner waiver for physical stress/chip timing; exact source/version pin"
-    },
-    {
-      "record": "imports/sidechain-compressor-f80ecfe.json",
-      "repository": "https://github.com/sambanks/octabam",
-      "revision": "f80ecfeabc187a33403588678e707443161afc96",
-      "modules": [
-        "sidechain-compressor"
-      ],
-      "internalDependencies": [],
-      "root": "octabam/modules/sidechain-compressor",
-      "status": "0.1.0-experimental standalone release; native complete-update parity, conditional software cycle bounds and exact memory verified; fresh hardware evidence explicitly owner-waived."
     }
   ]
 }

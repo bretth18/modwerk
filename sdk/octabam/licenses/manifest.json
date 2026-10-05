@@ -252,20 +252,6 @@
       "usedIn": [
         "browser UI"
       ]
-    },
-    {
-      "id": "kyoti-sidechain",
-      "name": "Zac Kyoti Sidechain Compressor",
-      "spdx": "MIT",
-      "noticeFile": "kyoti-sidechain.txt",
-      "sources": [
-        {
-          "path": "sdk/octabam/modules/sidechain-compressor/upstream/LICENSE"
-        }
-      ],
-      "usedIn": [
-        "modules/sidechain-compressor"
-      ]
     }
   ],
   "moduleComponents": {
@@ -290,9 +276,6 @@
     "tapehead": [
       "jsfxclones",
       "devilfish707-tapehead"
-    ],
-    "sidechain-compressor": [
-      "kyoti-sidechain"
     ]
   }
 }

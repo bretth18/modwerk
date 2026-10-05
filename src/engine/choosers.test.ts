@@ -6,7 +6,7 @@ import { MODULES } from '../catalog/modules'
 import { moduleBuildPending } from '../catalog/build-support'
 describe('effect chooser composition', () => {
   it('preserves stock effects and puts selected effects in their working slots', () => {
-    const ids = MODULES.filter(module=>!moduleBuildPending(module.id)&&module.id!=='sidechain-compressor').map(module => module.id), profile = defaultChoosers(ids, true, true)
+    const ids = MODULES.filter(module=>!moduleBuildPending(module.id)).map(module => module.id), profile = defaultChoosers(ids, true, true)
     expect(profile.fx1.slice(0, metadata.stockFx1.length)).toEqual(metadata.stockFx1)
     expect(profile.fx2.slice(0, metadata.stockFx2.length)).toEqual(metadata.stockFx2)
     for (const key of ['SPECTRUM','MODULATION','CHARACTER']) {

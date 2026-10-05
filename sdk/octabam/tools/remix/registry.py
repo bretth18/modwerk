@@ -73,9 +73,6 @@ def modules() -> dict[str, object]:
     directories = list(sorted(MODULES_DIR.iterdir())) if MODULES_DIR.is_dir() else []
     directories += [PLATFORM_DIR / name for name in PLATFORM_NAMES]
     for d in directories:
-        # Newer sidechain manifest dialect has its own reviewed standalone compiler.
-        if d.name == "sidechain-compressor":
-            continue
         if not d.is_dir() or d.name.startswith(("_", ".")):
             continue
         manifest = d / "manifest.py"

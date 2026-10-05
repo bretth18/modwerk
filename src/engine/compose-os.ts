@@ -1,4 +1,3 @@
-import { composeSidechain } from './sidechain-compressor.ts'
 import { composeLoggedMidiScenes } from './midi-scenes-logged.ts'
 import { installCoreLogger, LOGGER_RETAINED_BYTES } from './core-logger.ts'
 import { compiledModuleSource } from './module-build.ts'
@@ -19,10 +18,6 @@ export async function composeOs(original: Uint8Array, ids: readonly string[], pr
   const pending = moduleBuildError(ids)
   if (pending) throw new Error(pending)
   compiledModuleSource()
-  if (ids.includes('sidechain-compressor')) {
-    if (ids.length !== 1) throw new Error('Sidechain Compressor supports standalone firmware only. Remove the other modules.')
-    return composeSidechain(original)
-  }
   if (ids.includes('midi-scenes')) {
     if (ids.length !== 1) throw new Error('MIDI Scenes supports standalone firmware only. Remove the other modules.')
     return composeLoggedMidiScenes(original)
@@ -42,7 +37,6 @@ export async function composeOs(original: Uint8Array, ids: readonly string[], pr
  *  stock FX2 effect whose code the modules do not take; when that longer FX2 list leaves the module menus
  *  too little room, they use the compact FX2 menu, as both menus are native-verified profiles. */
 export async function composeSelection(original: Uint8Array, ids: readonly string[], keepStockFx2: boolean) {
-  if (ids.includes("sidechain-compressor")) return composeOs(original, ids)
   const keep = DSP_LOADER ? keepStockFx2 : true
   try { return await composeOs(original, ids, defaultChoosers(ids, keep)) }
   catch (error) {

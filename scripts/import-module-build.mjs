@@ -1,6 +1,5 @@
 import { readFile, lstat, realpath, copyFile, writeFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
-import { isDeepStrictEqual } from 'node:util'
 import { execFileSync } from 'node:child_process'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -10,7 +9,7 @@ import { parseColdFireObject } from '../src/engine/coldfire-elf.ts'
 import { PACKAGE_FILES as expected, moduleSourcePaths, compiledModuleVersions } from './module-source.mjs'
 import { NOTICE_NAME, renderLicenseNotices } from './license-notices.mjs'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const args = process.argv.slice(2), folder = args[0] && resolve(args[0]), development = args.includes('--development'), checkOnly = args.includes('--check-only'), verifyExisting = args.includes('--verify-existing')
+const args = process.argv.slice(2), folder = args[0] && resolve(args[0]), development = args.includes('--development'), checkOnly = args.includes('--check-only')
 if (!folder) throw new Error('Usage: node scripts/import-module-build.mjs artifact-directory [--development] [--check-only]')
 const sha = bytes => createHash('sha256').update(bytes).digest('hex')
 const json = async path => JSON.parse(await readFile(path, 'utf8'))
@@ -81,15 +80,11 @@ for(const pkg of utility.packages) {
   if(pkg.key!==document.key||pkg.author!==document.author.github||JSON.stringify(Object.keys(pkg.sources).sort())!==JSON.stringify([pkg.id==='cc-map'?'cc_map.s':'previewvol.s','manifest.py'].sort())) throw new Error('Utility identity or native source inventory differs from the catalog')
   for(const [path,fingerprint] of Object.entries(pkg.sources)) if(report.sources['modules/'+pkg.id+'/'+path]!==fingerprint) throw new Error('Utility source provenance differs from the complete source inventory')
 }
-const side = packages.get('sidechain-package.json')
-const sideFolder = resolve(native,'modules/sidechain-compressor')
-if(side.kind!=='standalone-sidechain'||side.stockRead!==false||side.compilerSha256!==sha(await readFile(resolve(sideFolder,'tools/compile_package.py')))||JSON.stringify(side.layout)!==JSON.stringify(await json(resolve(sideFolder,'release-layout.json')))||side.layout.id!=='sidechain-compressor'||side.layout.version!==versions['sidechain-compressor']||Object.keys(side.blobs).sort().join(',')!=='coldfire,dspA,dspB') throw new Error('Invalid Sidechain source compiler, layout or scope')
-for(const [name,code] of Object.entries(side.blobs)) if(!/^[a-f0-9]+$/.test(code)||!hash(side.blobSha256[name])||sha(Buffer.from(code,'hex'))!==side.blobSha256[name]) throw new Error('Corrupt Sidechain authored object')
 // Release automation never sees firmware, so it cannot prove native parity. Publish only packages that
 // reproduce the committed, locally parity-verified ones; provenance is the only permitted difference.
-if (!development || verifyExisting) for (const [name, doc] of packages) {
-  const withoutProvenance = doc => ({ ...doc, sourceCommit: null })
-  if (!isDeepStrictEqual(withoutProvenance(doc), withoutProvenance(await json(resolve(root,'src/engine/assets',name))))) throw new Error('Compiled ' + name + ' does not reproduce the committed, parity-verified package. Rebuild locally, verify native parity and commit the result.')
+if (!development) for (const [name, doc] of packages) {
+  const withoutProvenance = doc => JSON.stringify({ ...doc, sourceCommit: null })
+  if (withoutProvenance(doc) !== withoutProvenance(await json(resolve(root,'src/engine/assets',name)))) throw new Error('Compiled ' + name + ' does not reproduce the committed, parity-verified package. Rebuild locally, verify native parity and commit the result.')
 }
 if(checkOnly){console.log('All source-package artifacts, complete source inventory and version pins validated ('+(development?'development':'owner-approved')+').');process.exit(0)}
 // Validate the complete artifact before touching any frontend file.

@@ -11,13 +11,6 @@ export function selectionConflicts(ids: readonly string[], keepStockFx2 = false)
   const modules = resolveSelection(ids), selected = new Set(modules.map(module => module.id))
   const dsp = modules.filter(module => customDspIds.includes(module.id))
   const conflicts: SelectionConflict[] = []
-  if (selected.has('sidechain-compressor') && modules.length > 1) {
-    const companions = modules.filter(module => module.id !== 'sidechain-compressor')
-    conflicts.push({ id: 'sidechain-standalone', title: 'Build Sidechain Compressor on its own',
-      description: 'Sidechain Compressor supports standalone firmware. Remove the other modules to build this configuration.',
-      moduleIds: modules.map(module => module.id),
-      fixes: [{ label: 'Keep Sidechain Compressor', removeIds: companions.map(module => module.id) }, { label: 'Remove Sidechain Compressor', removeIds: ['sidechain-compressor'] }] })
-  }
   if (selected.has('midi-scenes') && modules.length > 1) {
     const companions = modules.filter(module => module.id !== 'midi-scenes')
     conflicts.push({ id: 'midi-scenes-standalone', title: 'Build MIDI Scenes on its own',

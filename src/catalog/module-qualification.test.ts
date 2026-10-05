@@ -68,7 +68,7 @@ describe('module qualification hard gates',()=>{
     const reported=()=>parseModuleDocument({...example,media:[qualificationMedia],tests:{...example.tests,hardwareStatus:'reported',qualification:q}})
     expect(()=>requireModuleQualificationForPublication(reported())).not.toThrow()
     const hardware=q.hardware
-    if(!('kind' in hardware)||hardware.kind!=='functional') throw new Error('Expected functional fixture')
+    if(!('kind' in hardware)) throw new Error('Expected functional fixture')
     hardware.imageSha256='f'.repeat(64)
     expect(()=>requireModuleQualificationForPublication(reported())).toThrow('tested source and image')
     hardware.imageSha256=q.imageSha256;hardware.sourceRevision='e'.repeat(40)

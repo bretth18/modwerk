@@ -57,10 +57,6 @@
     {
       "id": "cc-map",
       "version": "0.1.2-experimental"
-    },
-    {
-      "id": "sidechain-compressor",
-      "version": "0.1.0-experimental"
     }
   ]
 }
