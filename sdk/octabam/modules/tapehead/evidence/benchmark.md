@@ -1,13 +1,13 @@
 # Reproduced TapeHead benchmark
 
-Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modules/tapehead/benchmark.py`. Network-disabled container with 256 MiB temporary shared memory for both cores. Executed instructions exclude stalls and common processing; no hardware-cycle claim.
+Version 0.1.2-experimental, 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modules/tapehead/benchmark.py` on Octamod `866ea9e` with the 0.1.2 source in the module folder, `make image REMIX=tapehead-spring BUILD=7`. Executed instructions exclude stalls and common processing; no hardware-cycle claim. 0.1.1's run (image `bb700652…`) measured 4,287 per block for one instance and a 17,616 worst peak per core.
 
 ```json
 {
   "units": "executed DSP instructions (not hardware cycles)",
   "blocks": 2048,
   "stock_sha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
-  "image_sha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
+  "image_sha256": "774aa99723625fb698e5f0bb6fc32ea3196996931f55beb10ce1ec53eccc328b",
   "summary": {
     "SPRING REV": {
       "one_instance_mean_per_block": 4185.9,
@@ -18,10 +18,10 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "init_instructions_per_core": 380
     },
     "TAPEHEAD": {
-      "one_instance_mean_per_block": 4287.0,
-      "one_instance_per_sample": 267.9,
-      "eight_worst_peak_per_core_block": 17616,
-      "eight_worst_per_core_sample": 1101.0,
+      "one_instance_mean_per_block": 4383.0,
+      "one_instance_per_sample": 273.9,
+      "eight_worst_peak_per_core_block": 18000,
+      "eight_worst_per_core_sample": 1125.0,
       "worst_case": "eight_mod_split1",
       "init_instructions_per_core": 24
     }
@@ -539,8 +539,8 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 4287.0,
-          "peak_block": 4287,
+          "mean_block": 4383.0,
+          "peak_block": 4383,
           "peak_at": 0,
           "init_instructions": 6
         },
@@ -552,7 +552,7 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
           "init_instructions": 0
         }
       ],
-      "peak_audio": 2680197,
+      "peak_audio": 2048136,
       "clipped_samples": 0
     },
     {
@@ -563,20 +563,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17148.0,
-          "peak_block": 17148,
+          "mean_block": 17532.0,
+          "peak_block": 17532,
           "peak_at": 0,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17148.0,
-          "peak_block": 17148,
+          "mean_block": 17532.0,
+          "peak_block": 17532,
           "peak_at": 0,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 2755887,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -587,21 +587,21 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17154.428571428572,
-          "peak_block": 17160,
+          "mean_block": 17538.428571428572,
+          "peak_block": 17544,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17154.428571428572,
-          "peak_block": 17160,
+          "mean_block": 17538.428571428572,
+          "peak_block": 17544,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 8388608,
-      "clipped_samples": 26
+      "peak_audio": 2097152,
+      "clipped_samples": 0
     },
     {
       "effect": "TAPEHEAD",
@@ -611,21 +611,21 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 8388608,
-      "clipped_samples": 26
+      "peak_audio": 2097152,
+      "clipped_samples": 0
     },
     {
       "effect": "TAPEHEAD",
@@ -635,21 +635,21 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 8388608,
-      "clipped_samples": 26
+      "peak_audio": 2097152,
+      "clipped_samples": 0
     },
     {
       "effect": "TAPEHEAD",
@@ -659,20 +659,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17154.428571428572,
-          "peak_block": 17160,
+          "mean_block": 17538.428571428572,
+          "peak_block": 17544,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17154.428571428572,
-          "peak_block": 17160,
+          "mean_block": 17538.428571428572,
+          "peak_block": 17544,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -683,20 +683,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -707,20 +707,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -731,20 +731,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -755,20 +755,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -779,20 +779,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -803,20 +803,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -827,20 +827,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -851,20 +851,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -875,20 +875,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -899,20 +899,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -923,20 +923,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -947,20 +947,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -971,20 +971,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -995,20 +995,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     },
     {
@@ -1019,20 +1019,20 @@ Reviewer run: 2 October 2026. `BLOCKS=2048 REMIX=tapehead-spring python3 -B modu
       "cores": [
         {
           "core": 0,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         },
         {
           "core": 1,
-          "mean_block": 17604.85714285714,
-          "peak_block": 17616,
+          "mean_block": 17988.85714285714,
+          "peak_block": 18000,
           "peak_at": 384,
           "init_instructions": 24
         }
       ],
-      "peak_audio": 7466111,
+      "peak_audio": 2097152,
       "clipped_samples": 0
     }
   ]

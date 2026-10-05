@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/devilfish707/octamod",
+  "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+  "modules": [
+    "tapehead"
+  ],
+  "authorPins": {
+    "algorithm": {
+      "repository": "https://github.com/JClones/JSFXClones",
+      "revision": "88a1503d668c378ced4c166e772378272f3b72ea",
+      "sourcePath": "jsfx/JClones_TapeHead.jsfx",
+      "license": "MIT",
+      "sourceSha256": "5f489b004093d2f9c58f173e2259f5b31ae448812b53920fdebee1e50d18ac1b",
+      "noticeSha256": "6b02462491863709fffdf5411a42f3ccdb70781c33de179b96ed2f9cf6180029"
+    }
+  },
+  "status": "TapeHead 0.1.2-experimental: the input-level update (PR #53's draft) promoted to the released module; functional hardware evidence explicitly labelled",
+  "files": [
+    {
+      "path": "modules/tapehead/LICENSE",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/LICENSE",
+      "sourceSha256": "26e4667947ca26f5dcf1976bdbbca34e9fd088be68b4a15c70ad7fee7e11c4ce",
+      "vendoredSha256": "26e4667947ca26f5dcf1976bdbbca34e9fd088be68b4a15c70ad7fee7e11c4ce",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/README.md",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/README.md",
+      "sourceSha256": "1a8b29da8f007d16b5d37711eca62dc26c14f5bc8fd82b9401eac01db100c16d",
+      "vendoredSha256": "3caeb6a18333032f548b9974d232bea85caa6aee2cfd7a08991b81623362f16d",
+      "note": "Octamod release integration: status, licence path, pinned source/evidence revision and parity record; native DSP and manifest unchanged from the draft"
+    },
+    {
+      "path": "modules/tapehead/TESTING.md",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/TESTING.md",
+      "sourceSha256": "23c1625ef1215147ad3ec33c38b2e97f6ad2c9cd9b97ef477db9e7052ac74020",
+      "vendoredSha256": "f3e6649e2e98e25494d942e7847058b26da12086e2567cac88c1ae1e3fa8a666",
+      "note": "Octamod release integration: status, licence path, pinned source/evidence revision and parity record; native DSP and manifest unchanged from the draft"
+    },
+    {
+      "path": "modules/tapehead/benchmark.py",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/benchmark.py",
+      "sourceSha256": "ae2a65f52238df0dae470a8d2320224094ee4d91417c3373265069f9b35f99ca",
+      "vendoredSha256": "ae2a65f52238df0dae470a8d2320224094ee4d91417c3373265069f9b35f99ca",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/evidence/benchmark.md",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/evidence/benchmark.md",
+      "sourceSha256": "9595eacbed11a1603da68257c615eb9f2ef6f5dbe2a6ce7fdafd5840db698eff",
+      "vendoredSha256": "9595eacbed11a1603da68257c615eb9f2ef6f5dbe2a6ce7fdafd5840db698eff",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/evidence/cycles.md",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/evidence/cycles.md",
+      "sourceSha256": "6d0fb4b59a87ca118a5fb4e9f7bbee1e1423bd647aa0c683ca5a6ecfd16fd282",
+      "vendoredSha256": "6d0fb4b59a87ca118a5fb4e9f7bbee1e1423bd647aa0c683ca5a6ecfd16fd282",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/evidence/hardware.md",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/evidence/hardware.md",
+      "sourceSha256": "589a2cc5e49e36ed15d314739a0cd7ef141524bb6942d98d2553f73e73adb9b1",
+      "vendoredSha256": "589a2cc5e49e36ed15d314739a0cd7ef141524bb6942d98d2553f73e73adb9b1",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/evidence/memory.md",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/evidence/memory.md",
+      "sourceSha256": "9732c4a5a4a366bc531fd27de27c5d73fcdb325702952407e4f7bef2be805a02",
+      "vendoredSha256": "9732c4a5a4a366bc531fd27de27c5d73fcdb325702952407e4f7bef2be805a02",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/gen_constants.py",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/gen_constants.py",
+      "sourceSha256": "3c24cf0a00882a718742b4385ea60bec90935616d9bb8f6af46c306199f46903",
+      "vendoredSha256": "3c24cf0a00882a718742b4385ea60bec90935616d9bb8f6af46c306199f46903",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/hardware-test-remix.py",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/hardware-test-remix.py",
+      "sourceSha256": "8323d7972a4e3bae7820c83bd4a834e8f3fe492c92ee7809eeea77bc6a209fad",
+      "vendoredSha256": "8323d7972a4e3bae7820c83bd4a834e8f3fe492c92ee7809eeea77bc6a209fad",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/manifest.py",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/manifest.py",
+      "sourceSha256": "16c234de1d2ac45a3a4d229769e4708a1af428ac5a47ac5da53848a85dbbebd3",
+      "vendoredSha256": "16c234de1d2ac45a3a4d229769e4708a1af428ac5a47ac5da53848a85dbbebd3",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/media/LICENSE.md",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/media/LICENSE.md",
+      "sourceSha256": "249e7696bc1bd9c1de6aad265367303224bb15b2cf4708ebc5d4b95facea6146",
+      "vendoredSha256": "249e7696bc1bd9c1de6aad265367303224bb15b2cf4708ebc5d4b95facea6146",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/media/capture.json",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/media/capture.json",
+      "sourceSha256": "5f5553a4e5adf7e92da3c33f9b8e2fa8dea6c0165dcbce866157da20e9750b58",
+      "vendoredSha256": "e164c6a1a0da3b23baf7f3b7cec80b1c4d88ea024cff241ee22e165910d37171",
+      "note": "Octamod release integration: status, licence path, pinned source/evidence revision and parity record; native DSP and manifest unchanged from the draft"
+    },
+    {
+      "path": "modules/tapehead/octamod.module.json",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/octamod.module.json",
+      "sourceSha256": "6207c42c6714787669c462f2a1760b9a1d4e112404f94708e73412d6b18889d9",
+      "vendoredSha256": "21e5e5c60a61e68e657674fb29bbc4278b5cbb0ab0e3af47f70db40c85914610",
+      "note": "Octamod release integration: status, licence path, pinned source/evidence revision and parity record; native DSP and manifest unchanged from the draft"
+    },
+    {
+      "path": "modules/tapehead/presentation/thumbnail.svg",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/presentation/thumbnail.svg",
+      "sourceSha256": "bcdc1b4ce2b8edd50424c5d2b0213a2237cd83e462cba55584c6368f858d7ad5",
+      "vendoredSha256": "bcdc1b4ce2b8edd50424c5d2b0213a2237cd83e462cba55584c6368f858d7ad5",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/reference.py",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/reference.py",
+      "sourceSha256": "abf2488446d8e947808194f0d2c0687c1dbb829734df0e78b81125623b7f1356",
+      "vendoredSha256": "abf2488446d8e947808194f0d2c0687c1dbb829734df0e78b81125623b7f1356",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/tapehead.asm",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/tapehead.asm",
+      "sourceSha256": "d102114c6eb47a89bbd5f74cc601e53d0657e2d9abffe07a4ffcbec20e23fa12",
+      "vendoredSha256": "d102114c6eb47a89bbd5f74cc601e53d0657e2d9abffe07a4ffcbec20e23fa12",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/verify.py",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/verify.py",
+      "sourceSha256": "658d816746274ae6463750f55ecdf476dfc1f76843a7c8b3d37fc19654585dba",
+      "vendoredSha256": "658d816746274ae6463750f55ecdf476dfc1f76843a7c8b3d37fc19654585dba",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/JCLONES_NOTICE.md",
+      "repository": "https://github.com/JClones/JSFXClones",
+      "revision": "88a1503d668c378ced4c166e772378272f3b72ea",
+      "sourcePath": "NOTICE",
+      "sourceSha256": "6b02462491863709fffdf5411a42f3ccdb70781c33de179b96ed2f9cf6180029",
+      "vendoredSha256": "6b02462491863709fffdf5411a42f3ccdb70781c33de179b96ed2f9cf6180029",
+      "note": "Imported unchanged; original creator provenance"
+    },
+    {
+      "path": "modules/tapehead/evidence/parity.md",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/evidence/parity.md",
+      "sourceSha256": "015789a8ee8ededdc16d611f9ba83893b8d8b18eeda420ce18a2f58a8565e735",
+      "vendoredSha256": "8c4346e4d53b62d335c42f78716a4616a0e125e7dcbffda5c5f13ce826976b26",
+      "note": "Octamod release integration: status, licence path, pinned source/evidence revision and parity record; native DSP and manifest unchanged from the draft"
+    },
+    {
+      "path": "modules/tapehead/media/ot-color.png",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/media/ot-color.png",
+      "sourceSha256": "3a332ec2af2420d9a914f6be081efb040880017fe52f1f0d064907089279eb23",
+      "vendoredSha256": "3a332ec2af2420d9a914f6be081efb040880017fe52f1f0d064907089279eb23",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/media/ot-controls.png",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/media/ot-controls.png",
+      "sourceSha256": "21a1f1b3f276edcfe7e16836d63743e759c5a9f6cae58dd7f2d38ca6cc23fef3",
+      "vendoredSha256": "21a1f1b3f276edcfe7e16836d63743e759c5a9f6cae58dd7f2d38ca6cc23fef3",
+      "note": "Imported unchanged"
+    },
+    {
+      "path": "modules/tapehead/media/ot-location.png",
+      "repository": "https://github.com/devilfish707/octamod",
+      "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+      "sourcePath": "sdk/drafts/tapehead/media/ot-location.png",
+      "sourceSha256": "1ce79afcc79eee6bd9473bafc0c0e7a6c84f7c1555fa0874255f11cbd3b09d61",
+      "vendoredSha256": "1ce79afcc79eee6bd9473bafc0c0e7a6c84f7c1555fa0874255f11cbd3b09d61",
+      "note": "Imported unchanged"
+    }
+  ]
+}

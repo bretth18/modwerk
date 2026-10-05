@@ -26,8 +26,18 @@
 ; float JSFX over COLOR x DRIVE {0,36,127} x TRIM {0,18,127} x impulse,
 ; step and 220 Hz-12 kHz tones at -2 dBFS. Before them: 1.6.
 ;
+; 2 Oct 2026, after the hardware listen ("saturates less than the JSFX"):
+; the arithmetic was right, the LEVEL was not. The unit applies AMP VOL as
+; (v/127)^2 BEFORE the FX chain, so at the default VOL 64 a 0 dBFS sample
+; reaches this module at 0.254 FS, -11.9 dB below what the JSFX sees in a
+; DAW. TapeHead is level-dependent, so DRIVE 36 measured 22 dB less THD
+; than the JSFX on the same sample. Fixed by INPUT_GAIN (note 5). Its 12
+; words were paid back in the recursion: each multiply-and-add is one `mac`
+; (exactly the old mpy + add/sub) and y1n/y3 go to y1 from the accumulator
+; instead of being reloaded from the word just stored. Output bit-identical.
+;
 ; Disassembled (dsp56kDisassemble): every `mpy y1,y0` / `x0,y1` / `x1,y0`
-; decodes as signed mpy, so poly6's negative coefficients in y0 are safe.
+; and the recursion's `mac y1,y0` / `mac -y1,y0` decode as signed, so poly6's negative coefficients in y0 are safe.
 ; The knob squares are `mpy x0,x0`: the two `mpy x0,x1` octabam had there
 ; encoded as mpysu, which the Octamod build refuses unless audited. No
 ; mpysu remains; verify.py pins that.
@@ -85,14 +95,10 @@
 ;        Inflator's CLIP knob), so v1 doesn't expose the "off" position.
 ;        Because Clip=on is *also* the JSFX's own default, this changes
 ;        nothing about the default sound.
-;      - The input sample itself needs no explicit clip: it arrives at
-;        x:(r0) already a valid Q1.23 value by construction, so the JSFX's
-;        input-stage clip() is a no-op on this hardware and is omitted.
-;      - The final output clip is FREE: the caller's `move a,x:(r0)`
-;        naturally saturates to +/-1 (Inflator's own "LIMITING move"), so
-;        no explicit clamp is coded for it -- whatever the recursion/gain
-;        stages produce past +/-1 gets hard-limited there, exactly
-;        matching TapeHead_clip(y) under hard_clip=on.
+;      - The JSFX's input clip and output clip are both LIMITING moves
+;        (`move a,x0` from an accumulator whose extension is in use
+;        saturates to +/-1, Inflator's own "LIMITING move"), applied at
+;        the JSFX's scale, i.e. to 4x and to y before the /4 of note 5.
 ;      - Drive and Trim are exposed as smooth 128-position knobs (poly6
 ;        fits over the knob fraction) rather than the JSFX's 10/22-step
 ;        integer sliders -- a deliberate UI choice, not a limitation: the
@@ -110,6 +116,18 @@
 ;    and G3_MAG_HALF are single fixed constants with no knob dependence
 ;    at all (K1=5/7 always; g3 depends only on K1 and a fixed 1.4 pivot
 ;    that's constant because this project's SR is always under 88.2 kHz).
+;
+; 5. INPUT_GAIN = 4 (+12.04 dB), fixed. The module computes
+;        out = JSFX(4x) / 4
+;    so a 0 dBFS sample at the default AMP VOL 64 (0.254 FS here) drives
+;    the tape model as a 0 dBFS sample drives the JSFX (1.016 vs 1.0), and
+;    the /4 after it keeps the JSFX's wet/dry level relation. A power of two,
+;    so it costs shifts, not a multiply: the /4 headroom of note 1 absorbs
+;    the x4 on the way in. Above VOL 64 a full-scale sample reaches the
+;    JSFX's input clip, as a sample hotter than 0 dBFS would in a DAW; AMP
+;    VOL is therefore a second drive control. Cost: +6 instructions a
+;    channel. Character's TAPE took the same lesson (+12 dB DRV drive,
+;    23 Sep 2026, "much too subtle" on the unit).
 ;
 ; r7 memory map:
 ;   $00       L y1 (persistent, true/4)
@@ -288,36 +306,40 @@ tapeend:
 ; one straight-line sequence ending in a single `rts`.
 ; ---------------------------------------------------------------------------
 tapehead_l:
-        asr     #$2,a,a                  ; a = Xs = x/4 (the only place the
-                                          ; state's /4 headroom factor needs
-                                          ; an explicit step -- see header)
+; ---- input: Xs = clip(4x)/4. The +12 dB is INPUT_GAIN (header note 5);
+; the /4 is the state's headroom factor (header note 1), so 4x/4 needs no
+; shift at all and only the JSFX's input clip remains. asl #2 leaves 4x in
+; the accumulator with its extension; the move to x0 is a LIMITING move,
+; which is TapeHead_clip(x) at +/-1 exactly as the JSFX does it. ----
+        asl     #$2,a,a                  ; a = 4x (extension carries > 1)
+        move    a,x0                     ; x0 = clip(4x)  (limiting move)
+        move    x0,a
+        asr     #$2,a,a                  ; a = Xs = clip(4x)/4
         move    a,x0                     ; stash Xs
 
 ; ---- y1n = y1_old + k2*y2_old ----
         move    x:(r7+$1),y1             ; y2_old (signed, first)
         move    x:(r7+$4),y0             ; k2 (>=0, second)
-        mpy     y1,y0,a
-        move    x:(r7+$0),b              ; y1_old
-        add     b,a                      ; a = y1n
+        move    x:(r7+$0),a              ; y1_old
+        mac     y1,y0,a                  ; a = y1n (exact: = mpy then add)
         move    a,x:(r7+$20)             ; Y1N_L
         move    a,x:(r7+$0)              ; commit new y1 (old y1 now dead)
 
 ; ---- y3 = k1*y1n + y2_old - Xs ----
-        move    x:(r7+$20),y1            ; y1n (signed, first)
+        move    a,y1                     ; y1n (signed, first; a1 = the
+                                          ; word just stored, same limiter)
         move    #>$5B6DB6,y0             ; K1 = 5/7 (>=0, second)
-        mpy     y1,y0,a
-        move    x:(r7+$1),b              ; y2_old -- still needed, not yet
+        move    x:(r7+$1),a              ; y2_old -- still needed, not yet
                                           ; overwritten
-        add     b,a
+        mac     y1,y0,a
         sub     x0,a                     ; a = y3
         move    a,x:(r7+$21)             ; Y3_L
 
 ; ---- y2n = y2_old - k3_mag*y3  (subtract: true k3 is negative) ----
-        move    x:(r7+$21),y1            ; y3 (signed, first)
+        move    a,y1                     ; y3 (signed, first)
         move    x:(r7+$5),y0             ; k3_mag (>=0, second)
-        mpy     y1,y0,a
         move    x:(r7+$1),b              ; y2_old, last use
-        sub     a,b                      ; b = y2n
+        mac     -y1,y0,b                 ; b = y2n (exact: = mpy then sub)
         move    b,x:(r7+$22)             ; Y2N_L
         move    b,x:(r7+$1)              ; commit new y2
 
@@ -437,9 +459,11 @@ tapehead_l:
         move    a,y1                     ; raw_sum/4 (signed, first)
         move    x:(r7+$7),y0             ; trim_k (>=0, second)
         mpy     y1,y0,a
-        asl     #$2,a,a                  ; a = y_out (true; caller's store
-                                          ; saturates naturally if this is
-                                          ; still past +/-1)
+        asl     #$2,a,a                  ; a = y (the JSFX's output, unclipped)
+        move    a,x0                     ; x0 = clip(y)  (limiting move: the
+                                          ; JSFX's output clip, at +/-1)
+        move    x0,a
+        asr     #$2,a,a                  ; a = clip(y)/4: undo INPUT_GAIN
         rts
 
 tapehead_r:
@@ -447,30 +471,30 @@ tapehead_r:
 ; bank ($2/$3 instead of $0/$1) and scratch moved to $30.. instead of
 ; $20.. -- same reasoning as Inflator's onechan_r. Same full inlining as
 ; tapehead_l, for the same reason (see tapehead_l's own header above).
-        asr     #$2,a,a
+        asl     #$2,a,a                  ; 4x
+        move    a,x0                     ; clip(4x), limiting move
+        move    x0,a
+        asr     #$2,a,a                  ; Xs = clip(4x)/4
         move    a,x0
 
         move    x:(r7+$3),y1
         move    x:(r7+$4),y0
-        mpy     y1,y0,a
-        move    x:(r7+$2),b
-        add     b,a
+        move    x:(r7+$2),a
+        mac     y1,y0,a
         move    a,x:(r7+$30)
         move    a,x:(r7+$2)
 
-        move    x:(r7+$30),y1
+        move    a,y1
         move    #>$5B6DB6,y0
-        mpy     y1,y0,a
-        move    x:(r7+$3),b
-        add     b,a
+        move    x:(r7+$3),a
+        mac     y1,y0,a
         sub     x0,a
         move    a,x:(r7+$31)
 
-        move    x:(r7+$31),y1
+        move    a,y1
         move    x:(r7+$5),y0
-        mpy     y1,y0,a
         move    x:(r7+$3),b
-        sub     a,b
+        mac     -y1,y0,b
         move    b,x:(r7+$32)
         move    b,x:(r7+$3)
 
@@ -583,7 +607,10 @@ tapehead_r:
         move    a,y1
         move    x:(r7+$7),y0
         mpy     y1,y0,a
-        asl     #$2,a,a
+        asl     #$2,a,a                  ; y
+        move    a,x0                     ; clip(y), limiting move
+        move    x0,a
+        asr     #$2,a,a                  ; clip(y)/4: undo INPUT_GAIN
         rts
 
 ; ---------------------------------------------------------------------------

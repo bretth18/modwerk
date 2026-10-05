@@ -3,7 +3,7 @@
   "id": "tapehead",
   "key": "TAPEHEAD",
   "name": "TapeHead",
-  "version": "0.1.1-experimental",
+  "version": "0.1.2-experimental",
   "category": "effects",
   "author": {
     "github": "devilfish707",
@@ -76,23 +76,23 @@
     ]
   },
   "resources": {
-    "recorded": "2 Oct 2026, static, emulator and benchmark.py",
+    "recorded": "2 Oct 2026 (0.1.2), static, emulator and benchmark.py",
     "storage": {
       "label": "DSP program",
-      "display": "416 words P, 31 words X per instance, no buffer",
-      "value": 416,
+      "display": "422 words P, 31 words X per instance, no buffer",
+      "value": 422,
       "unit": "words",
       "method": "static",
-      "conditions": "Composed build report (both payloads place 416 words in the donor region). State and scratch use 31 words of the instance's own r7 block; no allocator buffer, no Y memory. SPRING REV: 1,063 words plus the 16,384-word FX2 instance buffer.",
+      "conditions": "Composed build report (both payloads place 422 words in the donor region). State and scratch use 31 words of the instance's own r7 block; no allocator buffer, no Y memory. SPRING REV: 1,063 words plus the 16,384-word FX2 instance buffer.",
       "source": "TESTING.md"
     },
     "processing": {
       "label": "DSP estimate",
-      "display": "288 cycles/sample",
-      "value": 288,
+      "display": "295 cycles/sample",
+      "value": 295,
       "unit": "cycles/sample",
       "method": "static",
-      "conditions": "tools/build/cycle_count.py static word count, the same at every setting. benchmark.py, executed instructions: 268/sample for one instance (SPRING REV 262); four per core worst 17,616 per 16-sample block (SPRING REV 20,376). Not a hardware load figure.",
+      "conditions": "tools/build/cycle_count.py static word count, the same at every setting. benchmark.py, executed instructions: 274/sample for one instance (SPRING REV 262); four per core worst 18,000 per 16-sample block (SPRING REV 20,376). Not a hardware load figure.",
       "source": "TESTING.md"
     },
     "impact": {
@@ -106,48 +106,48 @@
       "dsp": {
         "level": "moderate",
         "basis": "source-estimate",
-        "rationale": "288 cycles/sample per instance by the static counter. benchmark.py: one instance executes 2% more than stock SPRING REV (4,287 vs 4,186 instructions per block); four per core peak 14% lower (17,616 vs 20,376) because Spring's costlier types and splits are absent.",
+        "rationale": "295 cycles/sample per instance by the static counter. benchmark.py: one instance executes 5% more than stock SPRING REV (4,383 vs 4,186 instructions per block); four per core peak 12% lower (18,000 vs 20,376) because Spring's costlier types and splits are absent.",
         "source": "TESTING.md"
       },
       "memory": {
         "level": "low",
         "basis": "source-estimate",
-        "rationale": "416 words of DSP program per payload and 31 words of state in each instance's existing r7 block. No allocator buffer, tables or Y memory, where SPRING REV takes 1,063 words and a 16,384-word instance buffer.",
+        "rationale": "422 words of DSP program per payload and 31 words of state in each instance's existing r7 block. No allocator buffer, tables or Y memory, where SPRING REV takes 1,063 words and a 16,384-word instance buffer.",
         "source": "TESTING.md"
       }
     }
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Native render matches the JClones reference within 4.7e-4. Both-core modulated/split benchmark, static cycle accounting and exact memory inventory are documented in TESTING.md. The local test image reproduces the image devilfish707 tested on an Octatrack: working audio, parameter locks and no reported overloads. Model, duration and track/instance count were not reported.",
+    "summary": "Native render matches the JClones reference within 5.4e-4 at the JSFX's own level, with the Octatrack's AMP VOL gain staging compensated (+12 dB in, -12 dB out). Both-core modulated/split benchmark, static cycle accounting and exact memory inventory are documented in TESTING.md. devilfish707 compared the level fix with the JSFX on an Octatrack MKII and reported it working, then ran this build for about three minutes on seven tracks with p-lock automation and scenes. Browser packages and native parity proofs for 0.1.2 are pending.",
     "hardwareStatus": "reported",
-    "evidenceRevision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
+    "evidenceRevision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
     "gates": [
-      "verify.py: reference error, silence, COLOR and stereo isolation",
+      "verify.py: reference error at two input levels, the AMP VOL level match, silence, COLOR and stereo isolation",
       "benchmark.py: both cores, moving controls and all 16 trigger splits",
       "Static worst-case cycle and exact memory accounting",
-      "Native/browser byte parity and placement/rejection checks",
+      "Native/browser byte parity and placement/rejection checks (0.1.1; pending for 0.1.2)",
       "Owner-reviewed functional hardware report"
     ],
     "qualification": {
-      "moduleVersion": "0.1.1-experimental",
-      "sourceSha256": "e3ad652cac1554ea9c1d9f3c4db51b4368942b1600c19a2b0e575c459f971897",
-      "imageSha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
+      "moduleVersion": "0.1.2-experimental",
+      "sourceSha256": "9b005a4f1a186cc7731c5bf973d59ebef9538190ac63fddba26f0e60c96c8646",
+      "imageSha256": "774aa99723625fb698e5f0bb6fc32ea3196996931f55beb10ce1ec53eccc328b",
       "cycles": [
         {
           "processor": "dsp",
-          "worstCase": 6000,
-          "maxConfiguration": 48000,
+          "worstCase": 6130,
+          "maxConfiguration": 49040,
           "maxInstances": 8,
           "budget": 49920,
           "unit": "cycles/block",
           "method": "static",
           "conditions": {
-            "parameterExtremes": "DRIVE/TRIM endpoints and defaults, every COLOR: reference render; straight-line stereo loop costs 288 code cycles/sample at all settings.",
+            "parameterExtremes": "DRIVE/TRIM endpoints and defaults, every COLOR, at -2 dBFS and at the unit's 0.22 FS working level: reference render; straight-line stereo loop costs 295 code cycles/sample at all settings.",
             "parameterModulation": "Both-core benchmark changes every active parameter at every 16-sample block; all 16 trigger splits. LFO, p-lock, CC and scene edits converge on these same parameter words. Hardware p-lock operation is author-reported.",
             "modeSwitching": "COLOR branch paths are bounded; two processing calls per block cover a trigger split, with reselection init charged separately. NONE bypass reduces work. Part/recovery behavior was not measured on hardware.",
             "maxLoad": "Eight inserts per core, FX1 and FX2 on each of four tracks, sixteen total. The static model includes control updates, a split and initialization; eight-FX2-instance render covers both cores. Standard dispatcher/streaming reserve is deducted from the core budget. Bus stalls are not measured.",
-            "inputConditions": "Reference render covers silence, impulses, steps and 220 Hz\u201312 kHz tones. The sample loop and saturating stores contain no signal-dependent control transfers; full-scale input has the same instruction path."
+            "inputConditions": "Reference render covers silence, impulses, steps and 220 Hz–12 kHz tones. The sample loop and saturating stores contain no signal-dependent control transfers; full-scale input has the same instruction path."
           },
           "report": "evidence/cycles.md"
         }
@@ -155,11 +155,11 @@
       "memory": {
         "regions": [
           {
-            "name": "Program: 416 logical P words on each DSP core",
+            "name": "Program: 422 logical P words on each DSP core",
             "space": "dsp-p",
-            "words": 832,
+            "words": 844,
             "wordBits": 24,
-            "bytes": 2496,
+            "bytes": 2532,
             "scope": "shared"
           },
           {
@@ -188,24 +188,24 @@
           }
         ],
         "perInstanceBytes": 93,
-        "sharedBytes": 2972,
+        "sharedBytes": 3008,
         "maxInstances": 16,
-        "totalBytes": 4460,
+        "totalBytes": 4496,
         "conditions": "Both-core logical allocation, including descriptor stride and COLOR formatter. Each 31-word state/scratch subset reuses an existing 256-word dispatcher block. No new Y buffer, heap, sample table, SDRAM or CPU RAM. Existing chooser/dispatcher scaffolding is accounted separately in evidence/memory.md; firmware storage packs DSP records into 3-byte words.",
         "report": "evidence/memory.md"
       },
       "hardware": {
         "kind": "functional",
         "status": "reported",
-        "model": null,
+        "model": "MKII",
         "testedOn": "2026-10-02",
         "tester": "devilfish707",
-        "sourceRevision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
-        "imageSha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
-        "summary": "The author reports testing TapeHead on an Octatrack, using parameter locks without overloads; perceived CPU load was similar to Spring Reverb. The owner supplied and accepted this report.",
+        "sourceRevision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
+        "imageSha256": "774aa99723625fb698e5f0bb6fc32ea3196996931f55beb10ce1ec53eccc328b",
+        "summary": "On an Octatrack MKII the author flashed OCTABAM7 (this source), played about three minutes with TapeHead on seven tracks under parameter-lock automation and scene changes, and reported it sounds the same as OCTABAM6, which had been compared with the JSFX and reported working after 0.1.1 saturated less.",
         "limitations": [
-          "MKI/MKII model, duration, track and instance counts were not reported.",
-          "No measured hardware cycle, memory-canary, recording, recovery or maximum-load stress report was supplied."
+          "A listening report of about three minutes on seven tracks: not a measured hardware cycle, memory-canary, recording, recovery or maximum-load stress test.",
+          "Seven instances, not the sixteen-insert maximum the cycle model prices; no overload was reported, but none was measured either."
         ],
         "report": "evidence/hardware.md"
       },
@@ -245,8 +245,8 @@
         "page": "FX2 SETUP",
         "shows": "location",
         "firmware": "1.40C",
-        "moduleVersion": "0.1.1-experimental",
-        "imageSha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "774aa99723625fb698e5f0bb6fc32ea3196996931f55beb10ce1ec53eccc328b",
         "setup": "ot_emu (MKII panel) on 1.40C composed with the tapehead-spring remix: stock effects, TAPEHEAD in SPRING REV's FX2 row, stock DSP code built in; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
       }
     },
@@ -262,8 +262,8 @@
         "page": "FX2 main",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.1.1-experimental",
-        "imageSha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "774aa99723625fb698e5f0bb6fc32ea3196996931f55beb10ce1ec53eccc328b",
         "setup": "ot_emu (MKII panel) on 1.40C composed with the tapehead-spring remix: stock effects, TAPEHEAD in SPRING REV's FX2 row, stock DSP code built in; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
       }
     },
@@ -279,8 +279,8 @@
         "page": "FX2 main, COLOR = MED",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.1.1-experimental",
-        "imageSha256": "bb700652540fc42068d1f92791960fb3c86b672932d113f538776c2b1441a0f7",
+        "moduleVersion": "0.1.2-experimental",
+        "imageSha256": "774aa99723625fb698e5f0bb6fc32ea3196996931f55beb10ce1ec53eccc328b",
         "setup": "ot_emu (MKII panel) on 1.40C composed with the tapehead-spring remix: stock effects, TAPEHEAD in SPRING REV's FX2 row, stock DSP code built in; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
       }
     }
@@ -301,7 +301,7 @@
   },
   "source": {
     "repository": "https://github.com/devilfish707/octamod",
-    "revision": "c53daa9c5855b8bd0bd113bf7fbce3d2a394e89c",
+    "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
     "path": "sdk/drafts/tapehead"
   }
 }

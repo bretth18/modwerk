@@ -343,6 +343,10 @@ A clean-commit source-only container build reproduces all ten parity-verified
 authored package artifacts; only source-commit provenance differs.
 
 
+## TapeHead 0.1.2 release integration — 5 October 2026
+
+TapeHead 0.1.2-experimental, the input-level update merged as a draft in PR #53, moves into `sdk/octabam/modules/tapehead/`. Only `tapehead.asm` changes at runtime (`JSFX(4x)/4`, 422 words, 295 cycles/sample); the manifest, descriptor, ID and chooser rows are unchanged. The source-only compiler rebuilt the TapeHead DSP package (`c54070fc…`, matching native fresh assembly at four origins); every other package recompiled byte for byte or was carried over unchanged with new version pins. With the owner's local 1.40C fingerprint, the browser composer's TapeHead selection matched the native `tapehead-spring` build's complete DSP payloads on both cores word for word, and the 16 native TapeHead profiles buildable without the m68k-elf toolchain built or refused as with 0.1.1. The committed full-image proof files remain the 0.1.1, pre-logger record; see `sdk/octabam/modules/tapehead/evidence/parity.md`. Hardware: the author's MKII, about three minutes on seven tracks with parameter locks and scene changes, reported working; not a stress run.
+
 ## TapeHead release integration — 2 October 2026
 
 TapeHead 0.1.1-experimental moves from PR #42's draft into native discovery,

@@ -19,9 +19,13 @@ plausible one:
      know becomes mpysu, which silently corrupts a negative second operand
      (and the Octamod build refuses an unaudited one).
   3. Zero in -> exactly zero out, every COLOR, maximum DRIVE.
-  4. Peak error against reference.py <= 1e-3 over COLOR x DRIVE {0,36,127}
-     x TRIM {0,18,127} x impulse, step, 220 Hz .. 12 kHz at -2 dBFS. The
-     unfixed octabam code measured 1.6 here.
+  4. Peak error against reference.py <= 1e-3, in the JSFX's units (the
+     module's error x INPUT_GAIN), over COLOR x DRIVE {0,36,127} x TRIM
+     {0,18,127} x impulse, step, 220 Hz .. 12 kHz, each at -2 dBFS (the
+     input clip engaged) and at 0.22 FS (a normalized sample at the default
+     AMP VOL 64). The unfixed octabam code measured 1.6 here.
+  7. The level fix: at the unit's working level, DRIVE 36 has the JSFX's
+     THD on a normalized 100 Hz sine within 1 dB (it was 22 dB short).
   5. COLOR = 1 renders MEDIUM, not BRIGHT (the decode of a value<<16 word).
   6. L and R are independent: a stereo render equals two mono renders,
      bit for bit.
@@ -130,12 +134,23 @@ def run(work, mem, syms, knobs, samples, stereo=False, tag="r"):
     return o, float(meter.group(1)) if meter else None
 
 
-def signal(kind, n=4800):
+def signal(kind, n=4800, amp=None):
     if kind == "impulse":
-        return [round(0.9 * Q) if i == 0 else 0 for i in range(n)]
+        return [round((amp or 0.9) * Q) if i == 0 else 0 for i in range(n)]
     if kind == "step":
-        return [round(0.5 * Q)] * n
-    return [round(0.8 * (Q - 1) * math.sin(2 * math.pi * kind * i / 44100)) for i in range(n)]
+        return [round((amp or 0.5) * Q)] * n
+    return [round((amp or 0.8) * (Q - 1) * math.sin(2 * math.pi * kind * i / 44100))
+            for i in range(n)]
+
+
+def thd_db(y, f, sr=44100):
+    import numpy as np
+    y = np.asarray(y[len(y) // 2:])
+    Y = np.abs(np.fft.rfft(y * np.hanning(len(y))))
+    def b(k):
+        c = int(round(k * f * len(y) / sr))
+        return Y[c - 2:c + 3].max()
+    return 20 * math.log10(math.sqrt(sum(b(k) ** 2 for k in range(2, 10))) / b(1))
 
 
 def main():
@@ -170,15 +185,17 @@ def main():
             for drive in (0, 36, 127):
                 for trim in (0, 18, 127):
                     for kind in ("impulse", "step", 220, 1000, 4000, 12000):
-                        x = signal(kind)
-                        o, m = run(work, mem, syms, [drive, trim, color], x, tag="grid")
-                        ipc = max(ipc, m or 0)
-                        ref = reference.render(drive, trim, color, [v / Q for v in x])
-                        e = max(abs(a / Q - b) for a, b in zip(o[0::2], ref))
-                        if e > worst:
-                            worst, where = e, (color, drive, trim, kind)
-        gate(f"peak error vs the float JSFX <= {TOL}", worst <= TOL,
-             f"worst {worst:.2e} at COLOR/DRIVE/TRIM/signal {where}")
+                        for amp in (None, 0.22):
+                            x = signal(kind, amp=amp)
+                            o, m = run(work, mem, syms, [drive, trim, color], x, tag="grid")
+                            ipc = max(ipc, m or 0)
+                            ref = reference.render(drive, trim, color, [v / Q for v in x])
+                            e = max(abs(a / Q - b) for a, b in zip(o[0::2], ref))
+                            e *= reference.INPUT_GAIN
+                            if e > worst:
+                                worst, where = e, (color, drive, trim, kind, amp or "hot")
+        gate(f"peak error vs the float JSFX <= {TOL} (JSFX units)", worst <= TOL,
+             f"worst {worst:.2e} at COLOR/DRIVE/TRIM/signal/level {where}")
         print(f"       meter: {ipc:.1f} instructions/sample (one instance, dsp_host)")
 
         # 5. COLOR = 1 is MEDIUM
@@ -197,6 +214,17 @@ def main():
         mr, _ = run(work, mem, syms, [100, 18, 2], right, tag="mr")
         gate("stereo render == two mono renders, bit for bit",
              st[0::2] == ml[0::2] and st[1::2] == mr[1::2])
+
+        # 7. the level fix: unit level vs the JSFX at DAW level
+        n = 22050
+        daw = [0.89 * math.sin(2 * math.pi * 100 * i / 44100) for i in range(n)]
+        unit = [round(v * 0.254 * (Q - 1)) for v in daw]
+        o, _ = run(work, mem, syms, [36, 18, 0], unit, tag="thd")
+        t_mod = thd_db([v / Q for v in o[0::2]], 100)
+        t_jsfx = thd_db(reference.render_jsfx(36, 18, 0, daw), 100)
+        gate("DRIVE 36 at AMP VOL 64 saturates like the JSFX at 0 dBFS",
+             abs(t_mod - t_jsfx) <= 1.0,
+             f"THD module {t_mod:.1f} dB, JSFX {t_jsfx:.1f} dB")
     finally:
         shutil.rmtree(work, ignore_errors=True)
 
