@@ -28,6 +28,7 @@
     "licenses:generate": "node scripts/licenses.mjs --write",
     "licenses:check": "node scripts/licenses.mjs && node --test scripts/license-notices.node-test.mjs",
     "module:new": "node scripts/scaffold-module.mjs",
+    "module:verify": "node scripts/module-verify.mjs",
     "sdk:check": "node scripts/sdk-check.mjs",
     "modules:build": "python3 -B scripts/build-module-packages.py",
     "modules:build:elemod": "node scripts/build-elemod-packages.mjs",

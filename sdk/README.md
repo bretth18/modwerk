@@ -32,10 +32,11 @@ Stock code that modules depend on is described by address, length and SHA-256 gu
 
 ### Native verifiers
 
-Each verifier compares Modwerk's browser builder with native octabam on your own firmware. They run locally, never in CI, and remove the firmware-containing outputs they create.
+Each verifier compares Modwerk's browser builder with native octabam on your own firmware. They run locally, never in CI, and keep no firmware in the checkout.
 
 | Script | Compares |
 | --- | --- |
+| `npm run module:verify -- <id> --os <OS update>` | any module, on its coverage set, in the toolchain image; writes `native-comparisons/<id>.json`. `--all --check` repeats the browser side of every record |
 | `scripts/verify-sdk-native.py --raw-os <MAIN OS> --vendor <tools>` | the original seven modules and the loader |
 | `scripts/verify-requested-native.mjs <OS update> <proofs>` | Analog BD, MIDI Scenes, USB Audio and Scale Quantizer |
 | `scripts/verify-utility-native.mjs <OS update> <proofs> <packaging>` | every subset of the buildable modules with CC Map and Preview Vol |

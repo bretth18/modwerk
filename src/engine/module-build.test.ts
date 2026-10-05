@@ -1,9 +1,10 @@
+import sdkCatalog from '../../sdk/catalog.json'
 import { describe, expect, it } from 'vitest'
 import { compiledModuleSource, validateCompiledModules } from './module-build'
 describe('source-built module identity', () => {
   it('binds compiled packages and the guarded standalone MIDI Scenes recipe', () => {
     const source = compiledModuleSource()
-    expect(Object.keys(source.moduleVersions)).toHaveLength(15)
+    expect(Object.keys(source.moduleVersions).sort()).toEqual(sdkCatalog.modules.map(module => module.id).sort())
     expect(source.moduleVersions['midi-scenes']).toBe('0.2.4-experimental')
     expect(source.sourceTreeSha256).toMatch(/^[a-f0-9]{64}$/)
   })

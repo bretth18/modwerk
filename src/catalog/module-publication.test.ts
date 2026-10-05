@@ -13,7 +13,7 @@ it('checks real PR publication changes without executing module source', async (
   const root=mkdtempSync(resolve(tmpdir(),'octamod-publication-test.'))
   const folder=resolve(root,'sdk/octabam/modules',example.id)
   const document={...structuredClone(example),access:{...example.access,screenshots:[] as string[]}}
-  const catalog={schemaVersion:1,sourceRevision:'a'.repeat(40),modules:[{id:document.id,version:document.version}]}
+  const catalog={schemaVersion:1,sourceRevision:'a'.repeat(40),modules:[{id:document.id,version:document.version,addedAt:'2026-10-05T12:00:00Z'}]}
   const put=(path:string,value:string)=>{mkdirSync(dirname(path),{recursive:true});writeFileSync(path,value)}
   const save=()=>{
     put(resolve(folder,'octamod.module.json'),JSON.stringify(document))
@@ -39,6 +39,10 @@ it('checks real PR publication changes without executing module source', async (
     put(impactsPath,JSON.stringify({schemaVersion:1,modules:[]}))
     expect(run('--write').stderr).toContain('release requires populated CPU, DSP core and memory gauges')
     put(impactsPath,impactBytes)
+    // The library's Recently added sort reads each entry's first addition date.
+    put(resolve(root,'sdk/catalog.json'),JSON.stringify({...catalog,modules:[{id:document.id,version:document.version}]}))
+    expect(run('--write').stderr).toContain('Catalog entry needs addedAt')
+    save()
     expect(run('--write').status).toBe(0)
     git('init','--quiet')
     git('add','.')
@@ -94,7 +98,7 @@ it('checks real PR publication changes without executing module source', async (
     expect(run('--write').status).toBe(0)
     git('add','.')
     git('-c','user.name=Publication test','-c','user.email=fixture@example.invalid','commit','--quiet','-m','Unpublished draft fixture')
-    catalog.modules=[{id:document.id,version:document.version}]
+    catalog.modules=[{id:document.id,version:document.version,addedAt:'2026-10-05T12:00:00Z'}]
     save()
     expect(failure()).toContain('actual screenshots')
   } finally { rmSync(root,{recursive:true,force:true}) }

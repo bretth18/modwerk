@@ -1,5 +1,5 @@
 import { MODULE_DOCUMENTS } from './documents.ts'
-import { MODULE_ADDED_AT } from './module-additions.ts'
+import sdkCatalog from '../../sdk/catalog.json' with { type: 'json' }
 export const CATALOG_SOURCE = {
   repository: 'https://github.com/repeat98/octamad',
   revision: 'b8deefc88b2c3e5f3c6158e364eb741df1924e1d',
@@ -19,6 +19,8 @@ const LIBRARY_CATEGORY_OVERRIDES: Readonly<Partial<Record<string, ModuleCategory
   quantizer: 'system',
   repitch: 'system',
 }
+// When each module first entered the catalog, kept through version updates for the Recently added sort.
+export const MODULE_ADDED_AT: Readonly<Record<string, string>> = Object.fromEntries(sdkCatalog.modules.map(item => [item.id, item.addedAt]))
 export type FirmwareModule = {
   id: string
   key: string
@@ -41,6 +43,9 @@ export const MODULES: readonly FirmwareModule[] = MODULE_DOCUMENTS.map(document=
   author:document.author.github,authorName:document.author.name??document.author.github,authorUrl:'https://github.com/'+document.author.github,
   sourcePath:'sdk/octabam/modules/'+document.id+'/manifest.py',version:document.version,addedAt:MODULE_ADDED_AT[document.id],fxId:document.compatibility.effectId??undefined,
 }))
+
+// Every module with an effect ID adds DSP code, paused ones included.
+export const DSP_EFFECT_IDS: readonly string[] = MODULES.filter(module => module.fxId !== undefined).map(module => module.id)
 
 export function getModuleSource(module: FirmwareModule): string {
   const source = MODULE_DOCUMENTS.find(document => document.id === module.id)?.source

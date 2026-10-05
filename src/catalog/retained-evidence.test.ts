@@ -25,7 +25,7 @@ beforeEach(async () => {
   put('src/engine/assets/dsp-packages.json',JSON.stringify({sourceCommit:null,moduleVersions:{[document.id]:document.version},packages:[{id:document.id,version:document.version,code:'synthetic bytes',address:4096}]}))
   document.tests.qualification!.sourceSha256=await moduleNativeSourceSha256(folder,document)
   save()
-  put('sdk/catalog.json',JSON.stringify({schemaVersion:1,sourceRevision:'a'.repeat(40),modules:[{id:document.id,version:document.version}]}))
+  put('sdk/catalog.json',JSON.stringify({schemaVersion:1,sourceRevision:'a'.repeat(40),modules:[{id:document.id,version:document.version,addedAt:'2026-10-05T12:00:00Z'}]}))
   git('init','--quiet');git('add','.')
   git('-c','user.name=Evidence test','-c','user.email=fixture@example.invalid','commit','--quiet','-m','Synthetic approved publication')
   commit=git('rev-parse','HEAD');git('update-ref','refs/remotes/origin/main',commit)

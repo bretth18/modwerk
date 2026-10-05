@@ -7,13 +7,18 @@ import { resourceImpactFixture } from './test-fixtures/resource-impact'
 import example from '../../public/module-repository.example.json'
 import baseline from '../../sdk/module-qualification-baseline.json'
 import retained from '../../sdk/module-resource-estimates.json'
+import waivers from '../../sdk/module-release-waivers.json'
+import midiScenesApproval from '../../sdk/midi-scenes-build-approval.json'
+import sdkCatalog from '../../sdk/catalog.json'
 
 const draft = () => parseModuleDocument(example)
 const rated = () => parseModuleDocument({ ...example, resources: { ...example.resources, impact: resourceImpactFixture() } })
 
 describe('required relative module resource gauges', () => {
   it('populates CPU, DSP and memory for every current version without inventing measurements', () => {
-    expect(MODULE_DOCUMENTS).toHaveLength(15)
+    expect(MODULE_DOCUMENTS).toHaveLength(sdkCatalog.modules.length)
+    // Only versions under an owner exception may go without a qualification record; none is invented for them.
+    const exempt = new Set([...baseline.modules, ...waivers.modules, midiScenesApproval].map(module => module.id))
     for (const document of MODULE_DOCUMENTS) {
       const indicators = moduleResourceIndicators(document)
       expect(indicators.map(indicator => indicator.id)).toEqual(['cpu', 'dsp', 'memory'])
@@ -24,8 +29,8 @@ describe('required relative module resource gauges', () => {
         expect(indicator.value).not.toContain('%')
       }
       if(document.id==='sidechain-compressor') expect(document.tests.hardwareStatus).toBe('historical')
-      else if(document.id==='tapehead') expect(document.tests.hardwareStatus).toBe('reported')
-      else expect(document.tests.qualification).toBeUndefined()
+      if(document.id==='tapehead') expect(document.tests.hardwareStatus).toBe('reported')
+      if(!document.tests.qualification) expect(exempt, document.id + ' needs tests.qualification').toContain(document.id)
     }
   })
 

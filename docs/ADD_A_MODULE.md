@@ -42,7 +42,8 @@ Its folder, `sdk/<platform>/modules/<id>/`, holds:
 - `README.md` with the sections Overview, Controls, Usage, Compatibility and limitations, Tests and measurements, Authorship and licences, and Screens and audio. It also has a tutorial of at least three steps (set it up and select it, use one control, hear the result and stop or bypass it), which must match the manifest;
 - `TESTING.md` with the commands, the exact source revision and every result;
 - `LICENSE` with every author's terms;
-- `media/` with real black-and-white screenshots of where the module is selected and of its control pages, their provenance in `capture.json`, and an original SVG thumbnail.
+- `media/` with real black-and-white screenshots of where the module is selected and of its control pages, and their provenance in `capture.json`;
+- an original 320×192 SVG thumbnail: `presentation/thumbnail.svg` on the Octatrack, `media/thumbnail.svg` on Digitakt and Digitone.
 
 The checks reject missing sections, coloured screenshots and a version that did not increase. They cannot tell whether the documentation is true; the owner reviews that.
 
@@ -58,22 +59,28 @@ The checks reject missing sections, coloured screenshots and a version that did 
    - Add a hardware report from a real unit, stating its model, how long it ran, what was tested and the limitations. There is no minimum duration or track count.
    - If you could not test on hardware, say so in the pull request. Only the owner can waive this, for one exact version.
    - Hardware tests are planned to run automatically over USB with a customised test firmware ([decision](DECISIONS.md#5-october-2026--a-faster-module-workflow)).
-4. **List it and compile the packages without firmware.** The build compiles every module in `sdk/catalog.json`, so add your module's id and version there first. From then on, `modules:check` also requires the complete qualification record, documentation and screenshots. Commit, then run this from the clean checkout. The output folder must not exist yet.
+4. **List it and compile the packages without firmware.** The build compiles every module in `sdk/catalog.json`, so add an entry for yours first: `id`, `version` and `addedAt`, the UTC time it was first added (for example `2026-10-05T12:00:00Z`). From then on, `modules:check` also requires the complete qualification record, documentation and screenshots. Commit, then run this from the clean checkout. The output folder must not exist yet.
    ```sh
    image=$(docker image inspect modwerk-source-tools --format '{{.Id}}')
    bash scripts/build-modules-isolated.sh . ../module-packages "$image"
    npm run modules:import -- ../module-packages/packages --development
    ```
    Commit what the import changes. CI compiles the same packages again and fails if they differ.
-5. **Compare with native octabam** on your own 1.40C. Modwerk's browser builder must refuse every selection that native octabam refuses, and reproduce every selection that it builds. Run this on the selections that contain your module. [Sidechain Compressor's TESTING.md](../sdk/octabam/modules/sidechain-compressor/TESTING.md) and `scripts/verify-sidechain-native.mjs` are the current worked example. A module with a shape no earlier module had, such as one that replaces a stock effect or claims new memory, needs changes in both `src/engine/` and `sdk/octabam/tools/build/build_bus.py`.
+5. **Compare with native octabam** on your own 1.40C update file:
+   ```sh
+   npm run module:verify -- <id> --os ~/path/to/OCTATRACK_OS1.40C.bin
+   ```
+   - **What it builds.** Native octabam builds your module inside the toolchain image, without network: alone, beside each other module, in the fullest selections and in a fixed sample in between, each with and without the stock FX2 effects.
+   - **What must match.** Modwerk's browser builder must refuse what native refuses, and reproduce what native builds.
+   - **What it updates.** It records the declaration checks and your module's chooser entry, and writes `sdk/native-comparisons/<id>.json`. Commit everything it changed.
+   - **Reruns.** Native results are cached, so after a fix only the affected builds run again. After a change to `src/engine/` alone, `npm run module:verify -- --all --os <file> --check` repeats only the browser side for every recorded module.
+   - **Your firmware.** The MAIN OS extracted from your file stays in `~/.cache/modwerk-native`, outside the checkout, with the cache. `npm run module:verify -- --clean` deletes it.
+   - **New shapes.** A module with a shape no earlier module had, such as one that replaces a stock effect or claims new memory, needs changes in both `src/engine/` and `sdk/octabam/tools/build/build_bus.py`. Expect the comparison to point at them.
 6. **Capture the screenshots** in the headless emulator with `scripts/capture-module-ui.py` ([how](MODULE_UI_CAPTURES.md)). Open every image before keeping it.
-7. **Show it on the site.** This step is still manual:
-   - `src/catalog/availability.ts`: add the id to `AVAILABLE_MODULE_IDS`. Otherwise the library and configurator hide the module.
-   - `src/catalog/module-additions.ts`: add the date the module was added.
-   - `src/components/ModulePreview.tsx`: wire in the thumbnail.
-   - `src/catalog/selection-conflicts.ts` and `src/engine/analog-bd.ts`: list the module if it is a custom DSP effect, since Analog BD refuses those.
-   - Tests that count catalog modules: `npm test` names the ones that need updating.
-   - `docs/VERIFICATION.md`: add a short entry with what you compared and the result.
+7. **Check how it shows on the site.** The catalog entry puts the module in the library and the configurator; `npm run dev` shows it.
+   - The library card draws `presentation/thumbnail.svg` (320×192). Hand-drawn art in `src/components/ModulePreview.tsx` is optional.
+   - Analog BD automatically refuses any module with an `effectId`, since it builds only beside stock effects. If your effect builds beside the stock FX2 effects, add it to `FITS_BESIDE_STOCK_FX2` in `src/catalog/selection-conflicts.ts`.
+   - Add a short entry to `docs/VERIFICATION.md` with what you compared and the result.
 8. **Open the pull request.** Say what you tested, what you did not test and why.
 
 ## Digitakt and Digitone

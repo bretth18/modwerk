@@ -1,5 +1,4 @@
 import { MODULES } from '../catalog/modules'
-import { MODULE_ADDED_AT } from '../catalog/module-additions'
 import { describe, expect, it } from 'vitest'
 import { compareModules, type ModuleStatistics } from './module-statistics'
 const modules=[{id:'a',name:'Alpha',authorName:'Zed'},{id:'b',name:'Beta',authorName:'Amy'},{id:'c',name:'Gamma',authorName:'Amy'}]
@@ -30,8 +29,8 @@ it('sorts by the first addition date, with alphabetical ties and unknown dates l
  expect(additions.slice(0,2).sort((a,b) => compareModules(a,b,'recent',statistics)).map(module => module.id)).toEqual(['c','a'])
 })
 
-it('requires a valid addition date for every catalog entry and puts Sidechain Compressor first, then TapeHead and the four earlier additions', () => {
- expect(Object.keys(MODULE_ADDED_AT).sort()).toEqual(MODULES.map(module => module.id).sort())
+it('gives every catalog module a valid addition date and lists the newest first', () => {
  expect(MODULES.every(module => Number.isFinite(Date.parse(module.addedAt)))).toBe(true)
- expect([...MODULES].sort((a,b) => compareModules(a,b,'recent',null)).slice(0,8).map(module => module.id)).toEqual(['sidechain-compressor','tapehead','cc-map','previewvol','analog-bassdrum','midi-scenes','quantizer','usb-audio-out-tracks-main-cue'])
+ const recent = [...MODULES].sort((a,b) => compareModules(a,b,'recent',null))
+ for (let i = 1; i < recent.length; i++) expect(Date.parse(recent[i - 1].addedAt)).toBeGreaterThanOrEqual(Date.parse(recent[i].addedAt))
 })

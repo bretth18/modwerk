@@ -6,6 +6,8 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('worktree',type=pathlib.Path);p.add_argument('destination',type=pathlib.Path);p.add_argument('--app',type=pathlib.Path,required=True);p.add_argument('--stock-bin',type=pathlib.Path);p.add_argument('--static-stock',action='store_true',help='Loader-free builds: stock DSP code stays built in; every module subset with and without stock FX2')
     p.add_argument('--vendored-sdk',action='store_true',help='Verify reviewed SDK sources against the app checkout instead of the legacy upstream worktree')
     p.add_argument('--suite',choices=['original','tapehead','tapehead-utilities','sidechain','sidechain-visible','sidechain-analog-bd','visible'],default='original')
+    p.add_argument('--modules',help='Generic mode (scripts/module-verify.mjs): the comparison pool, comma-separated in catalog order. Builds only the --select profiles, with chooser menus from --menus keyed by selection.')
+    p.add_argument('--metadata-only',action='store_true',help='Write chooser-metadata.json for the --modules pool and build nothing.')
     p.add_argument('--cache',action='store_true',help="Reuse octabam's content-addressed compiler memo (source, options and tool bytes are in its key; placement and validation still run). Evidence is made without it unless this is given.")
     p.add_argument('--verbose',action='store_true',help='Print each native build log (placement addresses, no firmware bytes).')
     p.add_argument('--image-dir',type=pathlib.Path,help='Write each native image here for private diffing. Stock-derived: keep it outside the checkout and delete it afterwards.')
@@ -27,7 +29,8 @@ def main():
         revision=subprocess.check_output(['git','-C',str(root),'rev-parse','HEAD'],text=True).strip()
         if revision!=json.loads((app/'src/catalog/native-metadata.json').read_text())['revision']:p.error('Use the pinned worktree.')
         if subprocess.run(['git','-C',str(root),'diff','--quiet','HEAD']).returncode:p.error('Native tracked sources must be clean.')
-    if a.suite!='original' and not(a.vendored_sdk and a.static_stock):p.error('TapeHead suite requires the reviewed vendored SDK and static stock mode.')
+    if (a.suite!='original' or a.modules) and not(a.vendored_sdk and a.static_stock):p.error('This suite requires the reviewed vendored SDK and static stock mode.')
+    if a.metadata_only and not a.modules:p.error('--metadata-only needs --modules.')
     original=(root/'out/raw/section_3_MAIN_OS.bin').read_bytes();sourceHash=json.loads((app/'src/engine/assets/stock-dsp-metadata.json').read_text())['sourceSha256']
     if sha(original)!=sourceHash:p.error('Original OS fingerprint mismatch.')
     sys.path[:0]=[str(root/'tools/build'),str(root/'tools')];os.chdir(root)
@@ -36,8 +39,12 @@ def main():
     dm.IMG=root/'out/raw/section_3_MAIN_OS.bin'
     from remix import registry,stock
     from remix.schema import Remix
+    known=registry.modules()
+    # build_bus reads a remix when it is imported. The vendored SDK carries no remixes, so it gets an empty probe; every case below
+    # installs its own before importing build_bus again.
+    if a.vendored_sdk:registry.remix=lambda _:registry.with_platform(Remix(name='octamod-probe',doc='Import probe; never built.',modules=(),fallback='NONE'),known)
     from build_bus import fx1_hazard
-    known=registry.modules();order=['spectrum','modulation','character','miniverb','tapeecho','euclid','repitch']+(['tapehead'] if a.vendored_sdk else []);
+    order=['spectrum','modulation','character','miniverb','tapeecho','euclid','repitch']+(['tapehead'] if a.vendored_sdk else []);
     if a.suite=='tapehead':order=['miniverb','tapeecho','euclid','repitch','tapehead','analog-bassdrum','usb-audio-out-tracks-main-cue','quantizer']
     if a.suite=='tapehead-utilities':order=['repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map']
     if a.suite=='sidechain':order=['spectrum','modulation','character','miniverb','tapeecho','euclid','repitch','tapehead','sidechain-compressor']
@@ -45,13 +52,15 @@ def main():
     if a.suite=='sidechain-visible':order=['miniverb','tapeecho','euclid','repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map','sidechain-compressor']
     if a.suite=='visible':order=['miniverb','tapeecho','euclid','repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map']
     if a.suite=='sidechain-analog-bd':order=['analog-bassdrum','miniverb','tapeecho','euclid','repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map','sidechain-compressor']
+    if a.modules:order=a.modules.split(',')
     if a.vendored_sdk:order=[row['id'] for row in json.loads((app/'sdk/catalog.json').read_text())['modules'] if row['id'] in order]
     byid={m.name:m for m in known.values()}
     stockKeys={m.menu.fx2_id:m.key for m in known.values() if m.is_stock and m.menu is not None}
     stockFx1=[stockKeys[id] for id in stock.fx1_order() if id];stockFx2=[stockKeys[id] for id in stock._chooser_order(stock.FX2_CHOOSER) if id]
     # CPU Tape Echo is a post-FX2 contribution; a hazard-free DSP shim alone
     # does not establish that its ColdFire effect runs on FX1.
-    fx1Capable={'spectrum','modulation','character','euclid','tapehead','sidechain-compressor'}
+    # Effects whose manifest places them on FX1 (spectrum, modulation, character, euclid, tapehead and sidechain-compressor today).
+    fx1Capable={row['id'] for row in json.loads((app/'src/catalog/module-documents.json').read_text())['modules'] if 'FX1' in row['compatibility']['location']}
     modules=[]
     for id in order:
         m=byid[id]
@@ -63,7 +72,7 @@ def main():
         fx2=stockFx2+[m.key for m in selected if m.menu and m.key not in hidden] if default else [m.key for m in selected if m.menu and m.key not in hidden]
         return {'fx1':fx1,'fx2':fx2,'hidden':hidden}
     cases=[([],False),(['repitch'],False),(['tapeecho','euclid'],False),(order,False),([],True),(['spectrum','modulation','character','euclid'],True),(order[:-1],True),(['miniverb','tapeecho','euclid','repitch'],True),(order,True)]
-    if a.static_stock:
+    if a.static_stock and not a.modules:
         # The site's own chooser rule, read from choosers.ts defaultChoosers (Node 24): stock FX1 plus FX1-capable
         # modules; stock FX2 minus the effects whose code the modules take when kept, none when not. Every subset,
         # both ways, so each selection a visitor can make has an oracle.
@@ -76,12 +85,26 @@ def main():
             menu=siteMenus[(tuple(ids),keep)];selected=[byid[id] for id in order if id in ids]
             hidden=[m.key for m in selected if m.key in menu['fx1'] and m.claims and m.claims.fx1_only]
             return {'fx1':menu['fx1'],'fx2':menu['fx2'],'hidden':hidden}
+    if a.modules:
+        menusByKey=json.loads(a.menus.read_text()) if a.menus else {}
+        cases=[]
+        for row in a.select or []:
+            names,keep=row.rsplit(':',1);ids=[id for id in order if id in names.split('+')]
+            if sorted(ids)!=sorted(names.split('+')) or keep not in ('true','false'):p.error('--select names a module outside --modules: '+row)
+            cases.append((ids,keep=='true'))
+        missing=[ids for ids,keep in cases if '+'.join(sorted(ids))+':'+str(keep).lower() not in menusByKey]
+        if missing:p.error('--menus has no chooser profile for '+'+'.join(missing[0]))
+        def profile(ids,keep):
+            menu=menusByKey['+'.join(sorted(ids))+':'+str(keep).lower()];selected=[byid[id] for id in order if id in ids]
+            hidden=[m.key for m in selected if m.key in menu['fx1'] and m.claims and m.claims.fx1_only]
+            return {'fx1':menu['fx1'],'fx2':menu['fx2'],'hidden':hidden}
     if a.suite=='tapehead':cases=[(ids,keep) for ids,keep in cases if 'tapehead' in ids and any(id in ids for id in ['analog-bassdrum','usb-audio-out-tracks-main-cue','quantizer'])]
     if a.suite=='tapehead-utilities':cases=[(ids,keep) for ids,keep in cases if 'tapehead' in ids and any(id in ids for id in ['previewvol','cc-map'])]
     if a.suite=='sidechain':cases=[(ids,keep) for ids,keep in cases if 'sidechain-compressor' in ids]
     if a.suite=='sidechain-visible':cases=[(ids,keep) for ids,keep in cases if 'sidechain-compressor' in ids]
     if a.suite=='sidechain-analog-bd':cases=[(ids,keep) for ids,keep in cases if 'sidechain-compressor' in ids and 'analog-bassdrum' in ids and len(ids) in (2,3,len(order))]
-    if a.select:
+    if a.metadata_only:cases=[]
+    if a.select and not a.modules:
         wanted={(tuple(sorted(row.rsplit(':',1)[0].split('+') if row.rsplit(':',1)[0] else [])),row.rsplit(':',1)[1]=='true') for row in a.select}
         cases=[(ids,keep) for ids,keep in cases if (tuple(sorted(ids)),keep) in wanted]
         if len(cases)!=len(wanted):p.error('--select named a profile this suite does not carry.')
@@ -153,6 +176,7 @@ def main():
     finally:
         registry.remix=originalRemix
         if packTemp is not None:packTemp.cleanup()
+    if a.metadata_only or not cases:build=sys.modules['build_bus']   # nothing built: the layout comes from the import probe
     # Address, id and membership facts; no descriptor, list or instruction bytes.
     metadata={'schema':1,'revision':revision,'sourceSha256':sourceHash,'curveReaders':sorted({key for keys in stock.curve_bank_readers().values() for key in keys}),'stockFx1':stockFx1,'stockFx2':stockFx2,'stockEffects':[{'key':m.key,'fxId':m.menu.fx2_id} for m in known.values() if m.is_stock and m.menu is not None],'modules':modules,'customIds':sorted({m.menu.fx2_id for m in known.values() if m.menu and not m.is_stock and not m.menu.replaces}),'layout':{k:getattr(build,k) for k in ['FX1_IDS','FX1_LIST','FX1_NONE','FX1_ID2POS','FX1_ROWCOUNT_INSN','FX1_ROWCOUNT_AT','FX2_IDS','FX2_LIST','ID2POS','ROWCOUNT_INSN','ROWCOUNT_AT','NEW_LIST','LONG_LIST','ZERO_RUN_END','OVERFLOW_RUN','OVERFLOW_RUN_END']},'fx1References':build.FX1_LIST_REFS,'fx2References':build.LIST_REFS}
     (dest/'chooser-metadata.json').write_text(json.dumps(metadata,indent=2)+'\n')

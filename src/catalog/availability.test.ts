@@ -1,8 +1,8 @@
 import { moduleBuildError } from './build-support'
 import { checkSelection } from './compatibility'
 import { describe, expect, it } from 'vitest'
-import { AVAILABLE_MODULES, isModuleAvailable, moduleAvailabilityError } from './availability'
-import { resolveSelection } from './modules'
+import { AVAILABLE_MODULES, PAUSED_MODULE_IDS, isModuleAvailable, moduleAvailabilityError } from './availability'
+import { MODULES, resolveSelection } from './modules'
 import { newConfiguration, validateConfiguration } from '../config/workspace'
 
 describe('temporary module availability', () => {
@@ -12,8 +12,9 @@ describe('temporary module availability', () => {
       expect(checkSelection([module.id], false).checked).toBe(true)
     }
   })
-  it('offers the requested imports alongside the four existing modules and retains their GitHub identity', () => {
-    expect(AVAILABLE_MODULES.map(module => module.id)).toEqual(['miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', 'analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer','previewvol','cc-map','sidechain-compressor'])
+  it('offers every catalog module that is not paused and retains their GitHub identity', () => {
+    expect(AVAILABLE_MODULES.map(module => module.id)).toEqual(MODULES.map(module => module.id).filter(id => !PAUSED_MODULE_IDS.includes(id)))
+    expect(AVAILABLE_MODULES.map(module => module.id)).toContain('sidechain-compressor')
     for (const module of AVAILABLE_MODULES.filter(module=>['miniverb','tapeecho','euclid','repitch','analog-bassdrum'].includes(module.id))) {
       expect(module.authorName).toBe('Jannik Aßfalg')
       expect(module.author).toBe('repeat98')

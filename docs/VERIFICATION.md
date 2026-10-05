@@ -2,6 +2,29 @@
 
 **Owner-approved logger release (3 October 2026):** the owner explicitly lifted the logger addition’s qualification restrictions, authorized local firmware/DSP checks, approved the current module versions and logger for release, and waived hardware testing. Downloads are enabled with the logger included. This exception does not claim measured chip timing, complete stress qualification or new hardware evidence. Existing firmware isolation, original-source provenance, compatibility checks, stock fingerprint guards and packaging integrity remain in force. MIDI Scenes keeps its pinned standalone code and 12-page reservation; the logger occupies the top 16 pages of the arena, and a one-page guard separates it from the sample arena; guarded arena updates reserve all 29 pages. Mixed MIDI Scenes configurations remain incompatible. The earlier full-image proofs below predate logger integration; local verification of this change is recorded separately. See [logger evidence and limitations](../sdk/runtime/logging/TESTING.md).
 
+## One command for the native comparison — 5 October 2026
+
+`npm run module:verify -- <id> --os <your 1.40C update>` replaces the per-module suites and verifier scripts for new modules (owner decision in [DECISIONS.md](DECISIONS.md#5-october-2026--a-faster-module-workflow)).
+
+**What it runs.**
+- Native octabam runs in the pinned toolchain image: no network, the checkout mounted read-only, the extracted MAIN OS kept in a private work directory outside the repository.
+- It builds the module's coverage set from `scripts/module-coverage.mjs`, in parallel. The set is the module alone, beside each other offered module, every module together, every module together but one, and a fixed sample of 24 selections in between. Each runs with and without the stock FX2 effects.
+- Each native result is cached by the SDK sources, the exporter, the image, the original OS and the menus.
+- The browser side is the same comparison as before, now in `scripts/native-comparison.mjs`.
+- The record, `sdk/native-comparisons/<id>.json`, holds fingerprints and refusal messages only.
+
+**Checked on Sidechain Compressor 0.1.1-experimental** with the owner's original 1.40C (MAIN OS `164f3122…`):
+
+| Check | Result |
+| --- | --- |
+| Coverage set | 90 selections: 62 built, all matching native (20 identical outright, 42 identical outside the platform writes); 28 matching refusals; 0 mismatches |
+| Same native builder as before | All 90 native results, run in the image, are identical to the host-built results in the three Sidechain suites above: image sizes, full and masked SHA-256 and refusals |
+| Speed | First run 60 s with eight jobs; a rerun from the cache 13 s, writing a byte-identical record; `--all --check` 12 s |
+| It catches a real difference | With today's stale-FX1-row fix in `src/engine/choosers.ts` undone, `--check` reports 62 mismatches and exits nonzero |
+| No new declaration records or chooser entry needed | All 1,024 declaration checks for the module were already recorded, and the native chooser metadata matched the committed file |
+
+`src/catalog/native-comparisons.test.ts` requires a record that matches the current code of every offered module. The modules compared by the earlier exhaustive suites are exempt only while their code fingerprint is unchanged.
+
 ## Sidechain Compressor on the shared builder — 5 October 2026
 
 Sidechain Compressor 0.1.1-experimental takes stock COMPRESSOR's row on both effect menus, keeps its dispatch and carries its code in three guarded hooks per core. It is built by the same composer as every other module. The owner waived fresh hardware evidence only; software, composition and documentation gates are unchanged. [Its testing report](../sdk/octabam/modules/sidechain-compressor/TESTING.md) and [evidence record](../sdk/octabam/modules/sidechain-compressor/evidence/common-builder.json) carry the details.

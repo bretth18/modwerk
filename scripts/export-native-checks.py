@@ -24,6 +24,7 @@ def main():
     p.add_argument('--scope', required=True, help='Comma-separated module ids that may accompany it')
     p.add_argument('--verify-existing', action='store_true', help='Check every committed record again; fail if one is no longer clean')
     p.add_argument('--write', action='store_true', help='Append the new records to src/catalog/native-metadata.json')
+    p.add_argument('--output', type=pathlib.Path, help='With --write, write the table here instead (the app is read-only in a container)')
     a = p.parse_args()
     root, app = a.root.resolve(), a.app.resolve()
     for directory in ['modules', 'platform', 'tools', 'dsp']:
@@ -71,7 +72,7 @@ def main():
         print('  refused:', key)
     if a.write and fresh:
         metadata['checks'].update(fresh)
-        path.write_text(json.dumps(metadata, indent=2) + '\n')
+        (a.output or path).write_text(json.dumps(metadata, indent=2) + '\n')
         print('Appended', len(fresh), 'records.')
 
 

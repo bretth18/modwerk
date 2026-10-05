@@ -5,6 +5,7 @@ import { dspWordsHash } from './stock-dsp.ts'
 import { OS_LOAD_ADDRESS, applyGuardedOsWrites, type OsWrite } from './os-patches.ts'
 import { rollingHash, runtimeStageLayout, BOOTSTRAP_ADDRESS } from './bootstrap.ts'
 import { packGka3, unpackGka3 } from './runtime-pack.ts'
+import { DSP_EFFECT_IDS } from '../catalog/modules.ts'
 import { parseColdFireObject, relocateColdFireObject } from './coldfire-elf.ts'
 const UNCACHED = 0x08000000
 // The stock effect whose code holds the engine. Its routine that DARK REV calls is moved, not lost.
@@ -18,7 +19,7 @@ function payload(raw: Uint8Array, destination: number, stage: number) {
   return { raw, blob, destination, stage, rawHash: rollingHash(raw), packedHash: rollingHash(packed) }
 }
 export async function composeAnalogBd(original: Uint8Array, patched: Uint8Array, ids: readonly string[], profile: { fx1: readonly string[]; fx2: readonly string[] }) {
-  if (ids.some(id => ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'tapehead', 'sidechain-compressor'].includes(id))) throw new Error('Analog BD currently composes with stock effects only.')
+  if (ids.some(id => DSP_EFFECT_IDS.includes(id))) throw new Error('Analog BD currently composes with stock effects only.')
   if ([...profile.fx1, ...profile.fx2].includes(ANALOG_BD_DONOR)) throw new Error('Analog BD needs the space used by ' + ANALOG_BD_DONOR + '.')
   const uploads = [], writes: OsWrite[] = [], recipe = facts.analog
   for (const variant of recipe.variants) {
