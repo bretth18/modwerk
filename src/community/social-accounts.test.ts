@@ -164,7 +164,7 @@ describe('social account sign-in',()=>{
     expect(new URL(denied.headers.get('Location')!).hash).toBe('#account/sso-error')
     f.setIdentity('another','member@example.test')
     const linking=await f.begin('discord','register','newhandle'), refused=await handleCommunity(new Request(linking.callback,{headers:{Cookie:linking.cookie}}),f.env)
-    expect(new URL(refused.headers.get('Location')!).hash).toBe('#account/sso-error')
+    expect(new URL(refused.headers.get('Location')!).hash).toBe('#account/sso-error?reason=exists')
     f.env.REGISTRATION_OPEN='false'
     expect((await f.call('/auth/sso','POST',{provider:'github',mode:'register',username:'newmember',challenge:'a'.repeat(64)})).status).toBe(503)
     expect((await f.call('/auth/build-access','POST',{},existing)).status).toBe(200)

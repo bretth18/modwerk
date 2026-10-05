@@ -23,7 +23,8 @@ export async function socialRoutes(request: Request, env: Env, db: Database, pat
       // Provider/Better Auth failures arrive as ?error=<code> on the redirect; log only the code (visible in `wrangler tail`).
       const reason = (() => { try { return new URL(result.headers.get('Location') ?? '', env.APP_URL!).searchParams.get('error') } catch { return null } })()
       console.warn('social sign-in failed', callback[1], 'status=' + result.status, 'reason=' + (reason ?? (session ? 'missing_flow' : 'no_session')))
-      return redirect(returnUrl(env, 'account/sso-error'))
+      // Only the verified owner of the provider email reaches this; tell them to use their original sign-in.
+      return redirect(returnUrl(env, reason === 'account_not_linked' ? 'account/sso-error?reason=exists' : 'account/sso-error'))
     }
     const code = token(), payload = await symmetricEncrypt({ key: env.AUTH_SECRET!, data: JSON.stringify({ session, cookies: result.headers.getSetCookie() }) })
     const flow = await db.prepare("UPDATE social_flows SET token_hash=?,stage='complete',payload=?,expires=? WHERE token_hash=? AND provider=? AND stage='started' AND expires>? RETURNING token_hash").bind(await digest(code), payload, now() + 60, flowHash, callback[1], now()).first()
