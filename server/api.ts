@@ -4,7 +4,8 @@ import { notificationRoutes, notifyModuleMaintainers, unsubscribe, withdrawModul
 import { notifyBugDevelopers, publicBugDetails } from './bug-reports'
 import { developerAuthentication, developerUser } from './developer-auth'
 import { developerApi } from './developers'
-import { communityModule } from '../src/community/modules'
+import { communityModule, moduleThreadId } from '../src/community/modules'
+import { ensureDiscussionThread } from './module-threads'
 import { validateDigiIssueContext } from '../src/community/digi-issue-context'
 import { recordAnonymousCount, recordUsage, recordModuleDownload, usageStatistics } from './usage'
 import { moduleStatistics } from './module-statistics'
@@ -73,7 +74,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if (path === '/api/catalog' && request.method === 'GET') return response((await db.prepare("SELECT s.module_id,s.title,s.repository_url,s.description,s.usage,s.resource_notes,s.test_report_url,s.reviewed_at,(SELECT strftime('%Y-%m-%dT%H:%M:%SZ', MIN(first.reviewed_at)) FROM submissions first WHERE first.module_id=s.module_id AND first.status='approved') AS added_at,u.github_login AS author FROM module_publications p JOIN submissions s ON s.id=p.submission_id JOIN users u ON u.id=s.owner_id ORDER BY s.reviewed_at DESC").all()).results)
     if ((match = path.match(/^\/api\/modules\/([a-z0-9-]+)$/)) && request.method === 'GET') {
       await knownModule(db,match[1])
-      const comments = (await db.prepare('SELECT c.id,c.body,c.created_at,u.display_name AS author,c.user_id FROM comments c JOIN users u ON u.id=c.user_id WHERE c.module_id=? ORDER BY c.created_at DESC LIMIT 100').bind(match[1]).all<{id:string;body:string;created_at:string;author:string;user_id:string}>()).results.map(comment => ({...comment,user_id:undefined,canDelete:admin || comment.user_id === user?.id}))
+      await ensureDiscussionThread(db,match[1])
+      const comments = (await db.prepare("SELECT p.id,p.body,p.created_at,u.display_name AS author,p.user_id,t.locked FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id JOIN users u ON u.id=p.user_id WHERE t.id=? AND p.id<>t.id AND p.hidden=0 AND (t.hidden=0 OR ?=1) ORDER BY p.created_at DESC,p.rowid DESC LIMIT 100").bind(moduleThreadId(match[1]),Number(admin)).all<{id:string;body:string;created_at:string;author:string;user_id:string;locked:number}>()).results.map(({locked,...comment}) => ({...comment,user_id:undefined,canDelete:admin || !locked && comment.user_id === user?.id}))
       const ratings = await db.prepare('SELECT AVG(value) AS average,COUNT(*) AS count FROM ratings WHERE module_id=?').bind(match[1]).first()
       const ownRating = user ? await db.prepare('SELECT value FROM ratings WHERE module_id=? AND user_id=?').bind(match[1],user.id).first<{value:number}>() : null
       const media = (await db.prepare("SELECT m.id,m.kind,m.caption,m.capture_type FROM media m JOIN module_publications p ON p.submission_id=m.submission_id WHERE p.module_id=?").bind(match[1]).all()).results
@@ -91,14 +93,23 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       else if(match[2]==='rating'&&(!Number.isInteger(body.value)||Number(body.value)<1||Number(body.value)>5))throw new HttpError(400,'Choose a rating from 1 to 5.')
       const owner=needMember(user)
       await throttle(db,'community:' + owner.id,30)
-      if (match[2] === 'comments') { const comment=crypto.randomUUID(); await db.batch([db.prepare('INSERT INTO comments(id,module_id,user_id,body) VALUES(?,?,?,?)').bind(comment,match[1],owner.id,required(body.body,'Comment',2000)),...notifyModuleMaintainers(db,match[1],'module_comment',owner.id,comment)]) }
+      if (match[2] === 'comments') {
+        await ensureDiscussionThread(db,match[1])
+        const reply=await forum(new Request(new URL('/api/forum/threads/'+moduleThreadId(match[1])+'/replies',request.url),{method:'POST',headers:request.headers,body:JSON.stringify({body:required(body.body,'Comment',2000)})}),db,user,admin)
+        if (!reply) throw new HttpError(500,'The reply could not be saved.')
+        return response({ok:true,...await reply.json() as {id:string;page:number}})
+      }
       else if(match[2]==='like'){if(typeof body.liked!=='boolean')throw new HttpError(400,'Choose liked or unliked.');if(body.liked)await db.batch([db.prepare('INSERT INTO likes(module_id,user_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(match[1],owner.id),...notifyModuleMaintainers(db,match[1],'module_like',owner.id)]);else await db.batch([db.prepare('DELETE FROM likes WHERE module_id=? AND user_id=?').bind(match[1],owner.id),withdrawModuleLike(db,match[1],owner.id)])}
       else { const rating = Number(body.value); if (!Number.isInteger(rating) || rating < 1 || rating > 5) throw new HttpError(400,'Choose a rating from 1 to 5.'); await db.batch([db.prepare('INSERT INTO ratings(module_id,user_id,value) VALUES(?,?,?) ON CONFLICT(module_id,user_id) DO UPDATE SET value=excluded.value').bind(match[1],owner.id,rating),...notifyModuleMaintainers(db,match[1],'module_rating',owner.id)]) }
       return response({ok:true})
     }
     if ((match = path.match(/^\/api\/comments\/([^/]+)$/)) && request.method === 'DELETE') {
-      const removed = admin ? await db.prepare('DELETE FROM comments WHERE id=? RETURNING id').bind(match[1]).first() : await db.prepare('DELETE FROM comments WHERE id=? AND user_id=? RETURNING id').bind(match[1],needUser(user).id).first()
-      if (removed) await db.prepare('DELETE FROM notifications WHERE comment_id=?').bind(match[1]).run()
+      const owner=admin?null:needUser(user)
+      // Compatibility removal hides the canonical post, including migrated comment IDs.
+      await db.batch([
+        db.prepare("UPDATE forum_posts SET hidden=1 WHERE (id=? OR id='comment-' || ?) AND EXISTS(SELECT 1 FROM forum_threads t WHERE t.id=forum_posts.thread_id AND t.id='module-' || t.module_id AND forum_posts.id<>t.id AND (?=1 OR (t.hidden=0 AND t.locked=0 AND forum_posts.user_id=?)))").bind(match[1],match[1],Number(admin),owner?.id??''),
+        ...(admin?[db.prepare("INSERT INTO forum_moderation(id,actor_id,target,action,reason) SELECT ?,?,p.id,'hidden:1','Removed through the module comment compatibility endpoint.' FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id WHERE (p.id=? OR p.id='comment-' || ?) AND t.id='module-' || t.module_id AND p.id<>t.id").bind(crypto.randomUUID(),ADMIN_ACTOR,match[1],match[1])]:[]),
+      ])
       return response({ok:true})
     }
     if ((match=path.match(/^\/api\/modules\/([a-z0-9-]+)\/issues$/)) && request.method==='GET') {
@@ -164,7 +175,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if (path === '/api/admin/insights' && request.method === 'GET') return response(await adminInsights(db))
       if (path === '/api/admin/accounts' && request.method === 'GET') return response(await adminAccounts(db))
       if (path === '/api/admin/statistics' && request.method === 'GET') return await usageStatistics(db,Number(url.searchParams.get('days') ?? 7))
-      if (path === '/api/admin/overview' && request.method === 'GET') return response(await db.prepare("SELECT (SELECT COUNT(*) FROM submissions WHERE status='pending') AS pending,(SELECT COUNT(*) FROM module_publications) AS published,(SELECT COUNT(*) FROM comments) AS comments,(SELECT COUNT(*) FROM issues WHERE status='open') AS issues,(SELECT COALESCE(SUM(bytes),0) FROM media) AS mediaBytes").first())
+      if (path === '/api/admin/overview' && request.method === 'GET') return response(await db.prepare("SELECT (SELECT COUNT(*) FROM submissions WHERE status='pending') AS pending,(SELECT COUNT(*) FROM module_publications) AS published,(SELECT COUNT(*) FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id WHERE t.id='module-' || t.module_id AND p.id<>t.id AND p.hidden=0 AND t.hidden=0) AS comments,(SELECT COUNT(*) FROM issues WHERE status='open') AS issues,(SELECT COALESCE(SUM(bytes),0) FROM media) AS mediaBytes").first())
       if (path === '/api/admin/history' && request.method === 'GET') return response((await db.prepare('SELECT e.id,e.module_id,e.action,e.note,e.created_at,u.display_name AS actor FROM review_events e JOIN users u ON u.id=e.actor_id ORDER BY e.rowid DESC LIMIT 100').all()).results)
       if (path === '/api/admin/issues' && request.method === 'GET') {
         const moduleId = url.searchParams.has('moduleId') ? required(url.searchParams.get('moduleId'),'Module ID',100) : '', status = url.searchParams.get('status')??'all'
@@ -194,7 +205,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
         if(config&&issue.github_number){try{await setGithubIssueState(config,issue.github_number,body.status);github='synced'}catch{github='failed'}}
         return response({ok:true,github})
       }
-      if (path === '/api/admin/comments' && request.method === 'GET') return response((await db.prepare('SELECT c.id,c.module_id,c.body,c.created_at,u.display_name AS author FROM comments c JOIN users u ON u.id=c.user_id ORDER BY c.created_at DESC LIMIT 100').all()).results)
+      if (path === '/api/admin/comments' && request.method === 'GET') return response((await db.prepare("SELECT p.id,t.module_id,p.body,p.created_at,u.display_name AS author FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id JOIN users u ON u.id=p.user_id WHERE t.id='module-' || t.module_id AND p.id<>t.id AND p.hidden=0 AND t.hidden=0 ORDER BY p.created_at DESC,p.rowid DESC LIMIT 100").all()).results)
       if ((match=path.match(/^\/api\/admin\/modules\/([a-z0-9-]+)\/withdraw$/)) && request.method === 'POST') {
         const body=await jsonBody(request),note=required(body.note,'Withdrawal reason',2000),event=crypto.randomUUID(),id=match[1]
         const [recorded]=await db.batch([

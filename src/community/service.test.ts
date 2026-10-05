@@ -331,7 +331,8 @@ describe('administrator insights',()=>{
   vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(new Date('2026-10-03T12:00:00Z'))
   const {call,admin,db}=await fixture()
   for(const [id,module,date,status] of [['fresh','miniverb','2026-10-03 11:00:00','open'],['week','miniverb','2026-09-26 12:00:00','open'],['almost-week','miniverb','2026-09-26 12:01:00','open'],['month','removed-module','2026-09-03 12:00:00','open'],['closed','miniverb','2026-08-01 12:00:00','closed']])db.prepare("INSERT INTO issues(id,module_id,author_login,reporter_id,title,body,created_at,status) VALUES(?,?,'author','author','Private report title','Private report body',?,?)").run(id,module,date,status)
-  for(const id of ['one','two'])db.prepare("INSERT INTO comments(id,module_id,user_id,body) VALUES(?,'miniverb','author','A comment body')").run(id)
+  await call('/modules/miniverb')
+  for(const id of ['one','two'])db.prepare("INSERT INTO forum_posts(id,thread_id,user_id,body) VALUES(?,'module-miniverb','author','A comment body')").run(id)
   for(const user of ['author','other']){db.prepare("INSERT INTO likes(module_id,user_id) VALUES('miniverb',?)").run(user);db.prepare("INSERT INTO ratings(module_id,user_id,value) VALUES('miniverb',?,?)").run(user,user==='author'?5:4)}
   db.prepare("INSERT INTO module_downloads(module_id,downloads) VALUES('miniverb',8)").run()
   const result=await (await call('/admin/insights','GET',undefined,'',undefined,admin)).json()

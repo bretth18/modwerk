@@ -88,8 +88,8 @@ describe('activity notifications', () => {
     expect((await call('/modules/miniverb/rating', 'POST', { value: 5 }, fan.session)).status).toBe(200)
     expect((await call('/modules/miniverb/like', 'POST', { liked: true }, fan.session)).status).toBe(200)
     const listed = (await items(maintainer.session)).items
-    expect(listed.map(item => item.kind).sort()).toEqual(['module_comment', 'module_like', 'module_rating'])
-    expect(listed.find(item => item.kind === 'module_comment')).toMatchObject({ module_id: 'miniverb', actor: 'fanone', excerpt: 'Lovely on pads.' })
+    expect(listed.map(item => item.kind).sort()).toEqual(['module_like', 'module_rating', 'reply'])
+    expect(listed.find(item => item.kind === 'reply')).toMatchObject({ module_id: 'miniverb', actor: 'fanone', excerpt: 'Lovely on pads.' })
     expect(listed.find(item => item.kind === 'module_rating')!.rating).toBe(5)
     // The maintainer's own activity does not notify them, and removed comments take their notification along.
     expect((await call('/modules/miniverb/comments', 'POST', { body: 'Thanks!' }, maintainer.session)).status).toBe(200)
@@ -97,7 +97,7 @@ describe('activity notifications', () => {
     const comment = (await (await call('/modules/miniverb', 'GET', undefined, fan.session)).json()).comments.find((item: { canDelete: boolean }) => item.canDelete)
     expect((await call('/comments/' + comment.id, 'DELETE', undefined, fan.session)).status).toBe(200)
     expect((await items(maintainer.session)).items.map(item => item.kind).sort()).toEqual(['module_like', 'module_rating'])
-    expect((await items(fan.session)).items).toEqual([])
+    expect((await items(fan.session)).items).toMatchObject([{kind:'reply',thread_id:'module-miniverb',excerpt:'Thanks!'}])
   })
 
   it('emails one escaped digest per interval, skipping what was read, turned off or hidden', async () => {

@@ -290,3 +290,7 @@ li[data-status="error"] .forum-media-status { color: #f0a6ad; }
   .forum-media-pending li, .forum-media-pending li[data-kind="audio"] { grid-template-columns: minmax(0, 1fr) auto; }
   .forum-media-pending-preview { grid-column: 1 / -1; height: auto; min-height: 48px; }
 }
+
+.module-discussion { min-width: 0; }
+.module-discussion .forum-post { margin-inline: 0; }
+.module-discussion .forum-thread-actions { margin-top: 0; }
