@@ -107,6 +107,19 @@ describe('Digi library parity', () => {
     expect(switched).toContain('View SOPHIE')
   })
 
+  it('finds DigiSophie by its developer in both libraries', () => {
+    for (const query of ['Sjoerd', 'soejrd']) {
+      const digi = renderToStaticMarkup(createElement(DigiLibrary, { ...digiProps, query }))
+      const all = renderToStaticMarkup(createElement(AllMachinesLibrary, { ...props, query, octatrackModules: [] }))
+      for (const html of [digi, all]) {
+        expect(html).toContain('View SOPHIE')
+        expect(html).toContain('>Sjoerd (Soejrd)</a>')
+        expect(html).not.toContain('View DIGISLICER')
+        expect(html).not.toContain('>Matt Estela</a>')
+      }
+    }
+  })
+
   it('limits comparison to three cards while permitting removal and scopes matching module IDs by machine', () => {
     const html = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, comparison: ['digitakt-digihealth','digitone-digihealth','miniverb']}))
     expect(html).toContain('Compare (3)')
