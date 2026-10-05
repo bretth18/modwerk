@@ -43,7 +43,7 @@ export async function authentication(request:Request,env:Env,path:string):Promis
   const user=db?await currentUser(request,db,env):null
   const emailAvailable=!!db&&emailReady(env)&&authReady(env)
   const providers=socialProviders(env)
-  return response({available:!!db,emailAvailable,ssoProviders:providers,registrationAvailable:!!db&&authReady(env)&&(emailAvailable||providers.length>0)&&env.REGISTRATION_OPEN==='true'&&env.PRIVACY_READY==='true',admin:db?await isAdmin(request,env,db):false,user:user?{id:user.id,displayName:user.display_name,username:user.username??null,verified:!!user.email_verified}:null})
+  return response({available:!!db,emailAvailable,ssoProviders:providers,forumMedia:!!env.MEDIA,registrationAvailable:!!db&&authReady(env)&&(emailAvailable||providers.length>0)&&env.REGISTRATION_OPEN==='true'&&env.PRIVACY_READY==='true',admin:db?await isAdmin(request,env,db):false,user:user?{id:user.id,displayName:user.display_name,username:user.username??null,verified:!!user.email_verified}:null})
  }
  if(!path.startsWith('/api/auth/'))return null
  if(/^\/api\/auth\/(github(\/callback)?|complete)$/.test(path))throw new HttpError(410,'Use your Octamod email account to sign in.')

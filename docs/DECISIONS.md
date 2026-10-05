@@ -123,3 +123,12 @@ Community feedback pointed out that tracking the same bug in the site's report i
 - **Status and replies flow back from GitHub.** Signed `issues` and `issue_comment` webhooks update the report status and notify the reporter in the bell and activity email; bot comments and redelivered events are ignored.
 - **The form checks for duplicates first** by listing the module's open mirrored issues and linking GitHub's full list for the label.
 - **Fallback.** Without `GITHUB_TOKEN`, public reports keep using the Bug Reports forum as before. Earlier forum threads stay and follow their GitHub issue if one is created later.
+
+## 5 October 2026 — Images and sound clips in the forum
+
+The owner asked for images and audio snippets in forum posts, compressed well (Opus and WebP).
+
+- **Compression happens in the browser.** Images are redrawn to WebP (JPEG where the browser cannot encode WebP) at most 2048 px on the long side, which also drops metadata such as GPS. Sound is decoded, resampled to 48 kHz and encoded with WebCodecs to Opus at 96 kbit/s in an Ogg file; a 30-second WAV becomes roughly 360 KB. Browsers without an Opus encoder upload WAV, MP3 or Ogg unchanged within the size limit.
+- **The server still decides the type** from the file's bytes (PNG, JPEG, WebP, WAV, MP3, Ogg) and rejects everything else, including firmware. Limits: 5 MB per image, 10 MB per sound clip, four files per post, 20 uploads and 100 MB per member per day.
+- **Files are attached to posts, not embedded in the text,** so post bodies stay plain escaped text. They are stored in the `MEDIA` R2 bucket and served by the Worker with a fixed type, `nosniff`, a sandbox CSP and byte ranges (Safari needs them to play audio).
+- **Deleting an account removes its files** while the post text stays with anonymous attribution, because pictures and recordings are more likely to contain personal data than the discussion around them. Authors can remove their own files at any time; administrators can delete a file permanently. Unused uploads are purged after a day.

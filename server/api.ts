@@ -1,4 +1,5 @@
 import { forum } from './forum'
+import { forumMedia } from './forum-media'
 import { notificationRoutes, notifyModuleMaintainers, unsubscribe, withdrawModuleLike } from './notifications'
 import { notifyBugDevelopers, publicBugDetails } from './bug-reports'
 import { developerAuthentication, developerUser } from './developer-auth'
@@ -55,6 +56,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     const admin = await isAdmin(request,env,db)
     const developer = await developerApi(request,db,user,admin,await developerUser(request,env,db))
     if(developer)return developer
+    const media = await forumMedia(request,env,db,user,admin)
+    if(media)return media
     const discussion = await forum(request,db,user,admin)
     if(discussion)return discussion
     const notifications = await notificationRoutes(request,env,db,user)

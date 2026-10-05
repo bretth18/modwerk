@@ -6,6 +6,7 @@ import { communityModule } from '../src/community/modules'
 import { notifyBugDevelopers } from './bug-reports'
 import { ensureModuleThreadsOnce, SYSTEM_AUTHOR } from './module-threads'
 import { notifyMentions, notifyPostLike, notifyReplies, RECIPIENTS } from './notifications'
+import { attachMedia, postAttachments } from './forum-media'
 
 type Thread = {id:string;user_id:string;locked:number;hidden:number;configuration_json:string|null;issue_json:string|null}
 function page(url: URL) { const value = Number(url.searchParams.get('page') ?? 0); if (!Number.isInteger(value) || value < 0 || value > 10000) throw new HttpError(400,'Invalid page.'); return value }
@@ -31,11 +32,13 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     if (!admin) throw new HttpError(403,'Administrator access is required.')
     if (path === '/api/admin/forum/reports' && request.method === 'GET') return response((await db.prepare('SELECT r.id,r.reason,r.resolved,r.created_at,p.id AS post_id,p.body,p.hidden,p.thread_id,p.user_id,u.username,t.title FROM forum_reports r JOIN forum_posts p ON p.id=r.post_id JOIN forum_threads t ON t.id=p.thread_id JOIN users u ON u.id=p.user_id ORDER BY r.resolved,r.created_at DESC LIMIT 100').all()).results)
     if (path === '/api/admin/forum/history' && request.method === 'GET') return response((await db.prepare('SELECT id,target,action,reason,created_at FROM forum_moderation ORDER BY rowid DESC LIMIT 100').all()).results)
-    if ((match = path.match(/^\/api\/admin\/forum\/(posts|threads|users|reports)\/([a-zA-Z0-9-]+)$/)) && request.method === 'PATCH') {
+    if ((match = path.match(/^\/api\/admin\/forum\/(posts|threads|users|reports|media)\/([a-zA-Z0-9-]+)$/)) && request.method === 'PATCH') {
       const body = await jsonBody(request), reason = required(body.reason,'Moderation reason',1000), target = match[2]
-      const allowed = match[1] === 'posts' ? ['hidden'] : match[1] === 'threads' ? ['locked','pinned','hidden'] : match[1] === 'users' ? ['suspended'] : ['resolved']
+      const allowed = match[1] === 'posts' ? ['hidden'] : match[1] === 'threads' ? ['locked','pinned','hidden'] : match[1] === 'users' ? ['suspended'] : match[1] === 'media' ? ['removed'] : ['resolved']
       if (typeof body.action !== 'string' || !allowed.includes(body.action)) throw new HttpError(400,'Unknown moderation action.')
-      const value = bool(body.value), table = {posts:'forum_posts',threads:'forum_threads',users:'users',reports:'forum_reports'}[match[1]]!
+      const value = bool(body.value), table = {posts:'forum_posts',threads:'forum_threads',users:'users',reports:'forum_reports',media:'forum_media'}[match[1]]!
+      // The hourly job deletes removed files from the bucket, so removal cannot be undone.
+      if (match[1] === 'media' && !value) throw new HttpError(400,'Removed files cannot be restored.')
       if (target === ADMIN_ACTOR || target === SYSTEM_AUTHOR) throw new HttpError(400,'This system account cannot be suspended.')
       const result = await db.batch([
         db.prepare(`UPDATE ${table} SET ${body.action}=? WHERE id=?`).bind(value,target),
@@ -81,7 +84,8 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     const posts = (await db.prepare('SELECT p.*,u.username,(SELECT COUNT(*) FROM forum_reactions r WHERE r.post_id=p.id) AS likes,EXISTS(SELECT 1 FROM forum_reactions r WHERE r.post_id=p.id AND r.user_id=?) AS liked FROM forum_posts p JOIN users u ON u.id=p.user_id WHERE p.thread_id=? ORDER BY p.created_at,p.rowid LIMIT 31 OFFSET ?').bind(user?.id??'',thread.id,page(url)*30).all<{id:string;user_id:string;hidden:number;body:string;username:string;created_at:string;edited_at:string|null;likes:number;liked:number}>()).results
     const following = !!user && !!await db.prepare('SELECT user_id FROM forum_follows WHERE thread_id=? AND user_id=?').bind(thread.id,user.id).first()
     const bookmarked = !!user && !!await db.prepare('SELECT user_id FROM forum_bookmarks WHERE thread_id=? AND user_id=?').bind(thread.id,user.id).first()
-    return response({thread:summary,posts:posts.slice(0,30).map(post=>({id:post.id,body:post.hidden&&!admin?'':post.body,username:post.hidden&&!admin?null:post.username,created_at:post.created_at,edited_at:post.edited_at,hidden:post.hidden,likes:post.hidden?0:post.likes,liked:!post.hidden&&!!post.liked,canEdit:!thread.locked&&!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,official:post.user_id===SYSTEM_AUTHOR,...(admin?{user_id:post.user_id}:{})})),configuration:thread.configuration_json?JSON.parse(thread.configuration_json):null,issue:thread.issue_json?JSON.parse(thread.issue_json):null,following,bookmarked,hasMore:posts.length>30})
+    const attachments = await postAttachments(db,posts.slice(0,30).filter(post=>admin||!post.hidden).map(post=>post.id))
+    return response({thread:summary,posts:posts.slice(0,30).map(post=>({attachments:attachments.get(post.id)??[],canRemoveMedia:!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,id:post.id,body:post.hidden&&!admin?'':post.body,username:post.hidden&&!admin?null:post.username,created_at:post.created_at,edited_at:post.edited_at,hidden:post.hidden,likes:post.hidden?0:post.likes,liked:!post.hidden&&!!post.liked,canEdit:!thread.locked&&!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,official:post.user_id===SYSTEM_AUTHOR,...(admin?{user_id:post.user_id}:{})})),configuration:thread.configuration_json?JSON.parse(thread.configuration_json):null,issue:thread.issue_json?JSON.parse(thread.issue_json):null,following,bookmarked,hasMore:posts.length>30})
   }
   const member = needMember(user)
   await throttle(db,'forum:'+member.id,60)
@@ -107,9 +111,11 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     }
     const configMachine = config ? config.device ?? 'octatrack' : null
     if (configMachine && ((machine && machine !== configMachine) || (moduleMachine && moduleMachine !== configMachine))) throw new HttpError(400,'The configuration belongs to a different machine.')
+    const media = await attachMedia(db,member.id,postId,body.attachments)
     await db.batch([
       db.prepare('INSERT INTO forum_threads(id,user_id,title,category,machine,module_id,configuration_json,issue_json) VALUES(?,?,?,?,?,?,?,?)').bind(id,member.id,title,body.category,machine ?? moduleMachine ?? configMachine,module,config?JSON.stringify(config):null,issue?JSON.stringify(issue):null),
       db.prepare('INSERT INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').bind(postId,id,member.id,content),
+      ...media,
       db.prepare('INSERT INTO forum_follows(thread_id,user_id) VALUES(?,?)').bind(id,member.id),
       ...notifyMentions(db,content,id,postId,member.id),
       ...(body.category==='issues'?notifyBugDevelopers(db,module,id,postId,member.id):[]),
@@ -120,9 +126,10 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     const thread = await threadById(db,match[1],false), action=match[2]
     if(action==='replies'&&request.method==='POST'){
       if(thread.locked)throw new HttpError(409,'This thread is locked.')
-      const text=cleanBody(body.body),id=crypto.randomUUID()
+      const text=cleanBody(body.body),id=crypto.randomUUID(),media=await attachMedia(db,member.id,id,body.attachments)
       const result=await db.batch([
         db.prepare('INSERT INTO forum_posts(id,thread_id,user_id,body) SELECT ?,?,?,? WHERE EXISTS(SELECT 1 FROM forum_threads WHERE id=? AND locked=0 AND hidden=0)').bind(id,thread.id,member.id,text,thread.id),
+        ...media,
         db.prepare('UPDATE forum_threads SET updated_at=CURRENT_TIMESTAMP WHERE id=? AND EXISTS(SELECT 1 FROM forum_posts WHERE id=?)').bind(thread.id,id),
         ...notifyMentions(db,text,thread.id,id,member.id),
         notifyReplies(db,thread.id,id,member.id),
