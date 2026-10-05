@@ -1,0 +1,41 @@
+name: Deploy community Worker
+# Merging to main redeploys the account/forum API when its sources change.
+# Secrets stay attached to the Worker; only code and the vars below are replaced.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'server/**'
+      - 'worker.ts'
+      - 'wrangler.worker.jsonc'
+      - 'package-lock.json'
+      - 'src/legal/**'
+      - '.github/workflows/worker.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: octamod-worker
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx tsc -p tsconfig.server.json --noEmit
+      - run: npx vitest run src/community
+      # wrangler.worker.jsonc keeps registration closed by default; production is open
+      # (owner-approved launch), so pass the live values explicitly. Change here to close it.
+      - name: Deploy
+        run: npx wrangler deploy --config wrangler.worker.jsonc --var REGISTRATION_OPEN:true --var PRIVACY_READY:true --message "${GITHUB_SHA::7} ${GITHUB_WORKFLOW}"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
