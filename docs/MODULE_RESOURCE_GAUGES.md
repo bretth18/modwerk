@@ -15,7 +15,7 @@ Explain what performs the work and why the tier is reasonable relative to simple
 
 `scripts/modules.mjs` validates every module, verifies the referenced records exist and are nonempty, and rejects missing/incomplete gauge ratings. This gate runs in `modules:check`, `modules:generate`, `npm run check`, `npm run build`, PR CI and release CI. Draft manifests remain parseable without ratings, but cannot enter a release. There is no build flag or UI fallback that supplies generic ratings for missing metadata.
 
-These UI estimates **do not replace** the existing [qualification requirements](MODULE_QUALIFICATION.md) for worst-case cycle evidence, exact memory inventory and passed real-hardware stress projects. The existing cycle budget is an explicitly documented test basis, not a gauge claiming an exact whole-chip headroom percentage.
+These UI estimates **do not replace** the existing [qualification requirements](MODULE_QUALIFICATION.md) for worst-case cycle evidence, exact memory inventory and real-hardware evidence. The existing cycle budget is an explicitly documented test basis, not a gauge claiming an exact whole-chip headroom percentage.
 
 ## Existing frozen versions
 

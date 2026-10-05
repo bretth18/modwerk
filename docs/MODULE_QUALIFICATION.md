@@ -1,5 +1,14 @@
 # Module qualification gates
 
+**In short.** A new Octatrack module, or a change to how one runs, records the following in `tests.qualification`:
+
+- the worst-case cycles for each processor it uses;
+- its exact memory regions and totals;
+- a hardware report: a functional report that gives the model, date, tester, summary and limitations is enough, with no minimum duration or track count;
+- its tutorial and screenshot paths.
+
+All of it is bound to the module version, its native-source SHA-256 and the SHA-256 of the local image it was tested with. A change to documentation or media alone uses `tests.retainedEvidence` instead. The steps are in [Add or port a module](ADD_A_MODULE.md). The rest of this page is the field reference and the record of owner exceptions.
+
 From 2 October 2026, new modules and updates affecting runtime behavior, stability, cycles, memory or load must provide **worst-case cycle counts, exact memory accounting, attributed real-hardware test evidence and complete documentation**. These are publication requirements. Missing measurements, nominal/average CPU percentages, emulator-only evidence, historical evidence for another source and failed detailed hardware checks cannot qualify a submission. On 2 October 2026 the owner removed the mandatory 60-minute, eight-track stress run. A clearly labelled functional hardware report is accepted alongside the cycle, memory, source, UI and integration evidence below.
 
 `npm run modules:check`, `npm run modules:generate`, PR CI and release validation enforce the record. PR CI also checks version increases against the exact base commit. Configure `module-contract` as a required status check on protected main. The owner verifies the actual reports and merges the PR to approve the version; there is no extra website approval. Metadata checks do not run submitted source or perform physical hardware tests. A contributor declaration cannot replace reviewer verification.

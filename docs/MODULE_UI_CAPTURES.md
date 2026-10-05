@@ -1,6 +1,6 @@
 # OT UI screenshots for module publication
 
-For agents, execute [the complete module-addition workflow](MODULE_ADDITION_WORKFLOW.md), including the actual captures; this document defines the capture contract.
+The steps for a whole module are in [Add or port a module](ADD_A_MODULE.md); this document defines the capture contract.
 
 Every new module and update needs actual OT UI captures that explain where it
 lives and how to reach it. Capture the module's chooser or enable location and

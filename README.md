@@ -10,7 +10,7 @@
   <p>
     <a href="#get-started">Get started</a> ·
     <a href="sdk/README.md">SDK guide</a> ·
-    <a href="sdk/octabam/docs/remixer/MODULES.md">Writing modules</a> ·
+    <a href="docs/ADD_A_MODULE.md">Add or port a module</a> ·
     <a href="CONTRIBUTING.md">Contribute</a>
   </p>
   <p>
@@ -58,7 +58,7 @@ The scaffold is untested: choose an unused effect ID for DSP modules and replace
 
 ## Develop and validate
 
-Follow [Writing a module](sdk/octabam/docs/remixer/MODULES.md), using [Character](sdk/octabam/modules/character/) for a DSP example or [Repitch](sdk/octabam/modules/repitch/) for ColdFire. Keep native controls and module metadata synchronized, and record actual measurements in `TESTING.md`.
+The whole process, including porting from octabam or elekloader, is in [Add or port a module](docs/ADD_A_MODULE.md). For the native code, follow [Writing a module](sdk/octabam/docs/remixer/MODULES.md), using [Character](sdk/octabam/modules/character/) for a DSP example or [Repitch](sdk/octabam/modules/repitch/) for ColdFire. Keep native controls and module metadata synchronized, and record actual measurements in `TESTING.md`.
 
 Run these from the repository root:
 
@@ -80,7 +80,8 @@ Open a pull request with source, documentation, test results, attribution and li
 
 | Need | Start here |
 | --- | --- |
-| SDK setup and current limits | [SDK guide](sdk/README.md) |
+| Add, port or update a module | [Add or port a module](docs/ADD_A_MODULE.md) |
+| SDK layout and native verifiers | [SDK README](sdk/README.md) |
 | Native module declarations | [Writing modules](sdk/octabam/docs/remixer/MODULES.md) |
 | Memory and compatibility | [Placement](sdk/octabam/docs/remixer/PLACEMENT.md) |
 | Metadata and version rules | [Module contract](docs/MODULE_REPOSITORIES.md) |

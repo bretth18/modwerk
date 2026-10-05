@@ -9,8 +9,8 @@ export function DevelopmentGuide() {
     <ol>
       <li>
         <strong>Fork and set up</strong>
-        <p>Fork the Modwerk repository, use Node.js 24 and run <code>npm ci</code>. Read the SDK guide for your machine. Keep your own original OS in local, ignored storage; it must never enter a PR or source-build job.</p>
-        {repository && <a href={repository + '/blob/main/docs/SDK.md'} target="_blank" rel="noreferrer">SDK setup ↗</a>}
+        <p>Fork the Modwerk repository, use Node.js 24 and run <code>npm ci</code>. Follow the module guide: it covers porting from octabam or elekloader and writing your own, step by step. Keep your own original OS in local, ignored storage; it must never enter a PR or source-build job.</p>
+        {repository && <a href={repository + '/blob/main/docs/ADD_A_MODULE.md'} target="_blank" rel="noreferrer">Add or port a module ↗</a>}
       </li>
       <li>
         <strong>Scaffold for your machine</strong>
@@ -20,7 +20,7 @@ export function DevelopmentGuide() {
       <li>
         <strong>Prove and document its behavior</strong>
         <p>Follow your machine’s measurement and hardware requirements. Record worst-case processing under modulation, mode changes and maximum load, exact memory use and the tested source/build. Attribute every hardware report and describe its model, OS, duration, workload and limitations. Emulator results alone do not qualify a release.</p>
-        <p>New Octatrack modules and updates require at least 60 minutes on real hardware with all eight audio tracks active and maximum supported instances. Populate CPU, DSP core and memory gauges with documented load estimates; those gauges do not show exact remaining headroom.</p>
+        <p>New Octatrack modules and updates need a hardware report from a real unit that states its model, how long it ran, what was tested and the limitations. There is no minimum duration or track count. Populate CPU, DSP core and memory gauges with documented load estimates; those gauges do not show exact remaining headroom.</p>
         <p>Write complete control and compatibility documentation and a practical tutorial. Add an original thumbnail and actual UI captures showing where to select or enable the module and its relevant controls, with exact access steps and capture provenance. Follow the machine’s screenshot rules; Octatrack requires real black-and-white PNG captures. Keep tutorial steps and screenshot paths synchronized with README.</p>
       </li>
       <li>

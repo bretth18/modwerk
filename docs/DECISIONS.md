@@ -144,3 +144,23 @@ The owner explicitly requires local review before any production rollout. The is
 ## New-member welcome · 5 October 2026
 
 Each new verified, fully onboarded member receives the approved welcome once, including members with optional news disabled. The footer explains signup as the reason for the welcome. Further news remains opt-in. Existing completed members are excluded at rollout, and a persistent delivery record with provider duplicate protection prevents repeats. The five-minute job shares the account-mail budget; hourly cleanup and activity digests keep their schedule.
+
+## 5 October 2026 — A faster module workflow
+
+Adding Sidechain Compressor took a whole day. Most of it went to comparing Modwerk's browser builder with native octabam on every selection that contains the module: 1,558 firmware builds, rerun after each fix. `npm run check` takes about 15 seconds and was not the bottleneck. A new module also meant hand edits in about fifty files outside its folder, and the guidance was spread over long documents that contradicted each other.
+
+The owner decided:
+
+- **One guide.** [Add or port a module](ADD_A_MODULE.md) replaces the agent workflow. Contributors and their coding agents start there; the other module documents are field references.
+- **A smaller native comparison.** A new module is compared with native octabam on a coverage set instead of every combination:
+  - the module alone;
+  - beside each other module;
+  - the fullest selections that build;
+  - the selections at the edge of being refused.
+
+  Each runs with and without the stock FX2 effects. Results are cached by their inputs, so a fix reruns only the selections it affects.
+- **Approval bound to code.** An owner approval and the compiled packages bind to the module's code fingerprint. Editing only its documentation or media needs no re-approval or package rebuild.
+- **Integration from the manifest.** Library visibility, the date a module was added, its thumbnail and its effect conflicts should come from the module's manifest instead of hand-kept lists.
+- **Automated hardware tests later.** Hardware testing is to be automated over USB, using a customised test firmware that runs the checks on the unit and reports the results. Until then, a person's functional hardware report is the evidence. The 60-minute, eight-track stress run has not been required since 2 October 2026.
+
+Separate pull requests implement these. Until each lands, the current checks apply.

@@ -68,7 +68,8 @@
     "Required platform migration now passes two native composition identities and the crowded-selection rejection; portable setup and source-release automation remain pending.",
     "Removed tools/remix/stock_labels.json: copied stock label data must be recovered locally, not carried by the SDK.",
     "Required dynamic-loader infrastructure is isolated under platform/, outside the public module catalog; native SDK composition parity passed.",
-    "The revision and native identities above cover the initial seven only. Later imports retain their own pinned provenance; they do not update or inherit native proof."
+    "The revision and native identities above cover the initial seven only. Later imports retain their own pinned provenance; they do not update or inherit native proof.",
+    "AGENTS.md, octabam's list of build and hardware traps that its code and docs cite, restored unchanged from revision b8deefc88b2c3e5f3c6158e364eb741df1924e1d (Git blob 0aab900cabca0f469b8547108dd33e25f433ef72, SHA-256 bd3a81fa730e927103b4c79814c3ba853d6c48edc430e8f1e4ee36453d8a9c26) on 5 October 2026. An earlier ignore rule had kept it out."
   ],
   "imports": [
     {

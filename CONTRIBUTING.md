@@ -1,43 +1,47 @@
-# Contributing to Octamod
+# Contributing to Modwerk
 
-Contribute modules, fixes, documentation, screenshots and audio through GitHub pull requests in this one repository. Guest site comments and author issue reports do not require registration or email. The owner merging your PR approves that module version; the website has no second approval queue.
+Contribute modules, fixes, documentation, screenshots and audio as pull requests to this repository. The owner merging your pull request approves it; the website has no second approval step. Guest comments and author issue reports on the site need no registration.
 
-Agents adding or updating modules must execute [the standard module-addition workflow](docs/MODULE_ADDITION_WORKFLOW.md), including the thumbnail, complete documentation/tutorial and actual screenshots before reporting completion.
+## Modules
 
-## First module
+Follow [Add or port a module](docs/ADD_A_MODULE.md). It covers porting from octabam or elekloader and writing your own, for every machine, with the commands to run.
 
-1. Fork and clone the Octamod repository. Use Node 24 and `npm ci`.
-2. Read [the SDK quickstart](sdk/README.md), then run `npm run module:new -- my-module --kind dsp --author your-github-login` (or `--kind coldfire`). Keep source and site metadata together under `sdk/octabam/modules/my-module/`.
-3. Implement the native contribution, assign a free ID where applicable, document all controls and declare claims/conflicts. Supply your own stock OS only in ignored local storage when native development requires it.
-4. Record worst-case cycle counts under parameter modulation and maximum load, exact memory regions/totals, and passed real-hardware stress-project results in TESTING.md and `tests.qualification`. Require at least 60 minutes on a real MKI/MKII with all eight audio tracks active. Follow [the mandatory qualification gates](docs/MODULE_QUALIFICATION.md); unmeasured costs, emulator-only or historical results cannot qualify a new module/update. A passing assembly or metadata check is insufficient.
-5. Capture the actual OT UI showing where the module is selected/enabled and its control pages. Add button/menu instructions and capture provenance to the manifest; see [the capture workflow](docs/MODULE_UI_CAPTURES.md).
-6. Validate the strict site manifest. Run `npm run modules:generate` for catalog changes and `npm run check`. New modules also need approved engine package integration and native parity/rejection evidence before they can be included in `sdk/catalog.json`; metadata alone cannot install executable code.
-7. Open a PR against the Octamod repository. Include authorship/licence/media-rights declarations and validation results. Updates must remain reviewable as one source/documentation change.
+What review expects for a new module, or for a change to how a module runs:
 
-## Required version increase
+- worst-case cycle counts and exact memory accounting (Octatrack, see [qualification](docs/MODULE_QUALIFICATION.md));
+- a hardware report from a real unit that states its model, how long it ran, what was tested and the limitations. There is no minimum duration or track count;
+- complete documentation with a short tutorial, and real black-and-white screenshots of where the module is selected and of its controls ([captures](docs/MODULE_UI_CAPTURES.md));
+- every author's credit and licence.
 
-Every module requires a semantic `version` in octamod.module.json. Any change in its folder requires a strictly greater version than main, including code, native manifest, descriptions, README, evidence and media. Update the matching catalog entry when that module is already included. Run `npm run modules:check -- --base origin/main` after rebasing onto current main. Never overwrite a released version. Explain parameter-layout/ID migrations and old-project compatibility for breaking changes.
+A change to a module's documentation or media alone can keep its existing test evidence ([retained evidence](docs/MODULE_QUALIFICATION.md#risk-based-update-checks--3-october-2026)).
 
-## Mandatory performance and hardware qualification
+## Versions
 
-New modules and runtime-impacting updates must provide `tests.qualification` with worst-case integer cycle counts for each processor used (including modulation, mode changes and maximum configuration), exact word/byte memory accounting and passed hardware stress-project evidence tied to the submitted version, native-source SHA-256 and local image SHA-256. Cycle budgets and memory totals are checked automatically; each local text report must exist and be nonempty. Hardware testing requires at least one hour with eight active audio tracks and documented audio continuity, transport, control, memory-integrity and recovery checks. Complete module documentation, a short practical tutorial and real black-and-white PNG screenshots in the online modules’ style are also mandatory. Release validation checks populated README sections, matching tutorial steps, screenshot links and monochrome pixels; yellow screenshots fail. The owner verifies the actual reports, documentation completeness and workload coverage before merge. See [the field contract and procedure](docs/MODULE_QUALIFICATION.md) and [qualification template](public/module-qualification.example.json).
-
-The existing eleven modules are retained at their exact current versions/folder contents in a frozen baseline. Their evidence and existing availability restrictions stay intact; no missing measurements are invented. Any later folder change loses that exact exemption. Documentation/media/display-only updates may retain the prior evidence using the checked `tests.retainedEvidence` path; changes to source, defaults, stability, cycles, memory, load or compatibility still require full qualification. Do not expand or rewrite the baseline. These gates run in local validation, PR CI and release validation without executing unreviewed native source or placing firmware in automation. Configure the `module-contract` status as required on protected main.
+Every change inside a module folder needs a strictly higher semantic `version` than on `main`, including documentation and media. Update the module's entry in `sdk/catalog.json` to match when it is listed. Never reuse a released version. Explain parameter-layout or ID changes and what happens to existing projects. `npm run modules:check -- --base origin/main` checks this after you rebase onto current `main`.
 
 ## Intellectual property
 
-Only original or properly licensed source and media may be submitted. Keep every author and full licence text, document third-party provenance, and give accurate declarations. Do not include Elektron firmware images, extracted instructions/routines/tables, stock slices, upgrade/SysEx files or infringing third-party work in source, media, PRs or build artifacts. Firmware-dependent content must come from the user's local verified OS at composition time. Hashes/addresses/lengths are the guard pattern. Review and contributor declarations are not automatic legal clearance.
+Submit only original or properly licensed source and media.
 
-For adapted components, preserve their copyright notices and full terms in the module's `LICENSE`, add their provenance and terms to `sdk/octabam/licenses/manifest.json` and its notice files, and declare all applicable licences using an SPDX expression (for example, `MIT AND ISC AND BSD-3-Clause`). Add the component to that module's `moduleComponents` mapping. Run `npm run licenses:generate` and `npm run licenses:check`; the generated bundle accompanies the app and compiled module packages. Keep the module version, catalog pin, README and TESTING record synchronized for licence updates too.
+- Do not include Elektron firmware, extracted instructions, routines or tables, stock slices, upgrade or SysEx files, or anyone else's work you have no licence for. Firmware-dependent content comes from each user's own verified OS at build time, matched by address, length and hash.
+- For adapted components, keep their copyright notices and full terms in the module's `LICENSE`. Add their provenance to `sdk/octabam/licenses/manifest.json`, and declare every licence as an SPDX expression, for example `MIT AND ISC`.
+- Run `npm run licenses:generate` and `npm run licenses:check`.
+
+Review and contributor declarations are not legal clearance.
 
 ## Screenshots and audio
 
-Store assets in the module's media/ folder and list them in the manifest, with capture type, caption, alt text, credit, licence and original/source provenance. Hardware captures and emulator captures must be labelled accurately. PNG/JPEG/WebP: 5 MB maximum; WAV/MP3/Ogg: 12 MB maximum; eight assets maximum. No executable files, firmware, path escapes or symlinks. Every new module and module update with an OT UI requires actual OT UI screenshots. A verified editorial-only update may retain existing captures with their original tested-version/build provenance instead of recapturing identical UI. Automatic USB modules with no dedicated OT page must document the narrow `access.noUiReason` exception for reviewer verification. The manifest's `access` section must explain the location, prerequisites and exact button/menu sequence, and reference declared `media` images with `otUi` provenance. Show the chooser/enable location and all relevant main/setup/control pages; one image can cover both when it clearly shows both. Capture the real LCD pixels from hardware or the headless emulator. Generic OT photos, illustrations, reconstructed labels and mockups do not satisfy this requirement. Audio remains optional.
+Put assets in the module's `media/` folder and declare them in the manifest with caption, alt text, credit, licence and provenance. Screenshots must be real LCD captures from hardware or the headless emulator, never mock-ups or redrawn labels. Label which one each capture is.
 
-`npm run modules:check -- --base origin/main` enforces this requirement for new/changed module folders and modules newly added to the catalog. Unchanged previously approved versions remain available. A draft may have empty screenshots, but it cannot pass publication checks. Each capture records the module version, base OS, local build SHA-256 and hardware/emulator setup; the reviewer verifies that the pictures and instructions match the current UI, including every relevant control page. Capture metadata validation cannot prove authenticity or completeness. Record capture commands and any limitations in TESTING.md. Capture evidence does not change hardware qualification. See [the capture workflow](docs/MODULE_UI_CAPTURES.md).
+Limits: up to eight assets; images (PNG, JPEG or WebP) up to 5 MB; audio (WAV, MP3 or Ogg) up to 12 MB. Audio is optional.
 
 ## Review and release
 
-The maintainer checks behavior, tests, resource claims, provenance and compatibility in the PR. Require owner review and successful checks on the latest revision before merge; configure [protected-branch reviews and required status checks](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches) when the repository is created. Merge is approval. A release binds the module version and source commit to immutable compiled-package hashes. Release automation never sees firmware, so it cannot prove native parity itself: a PR that changes compiled packages must include them, rebuilt with `npm run modules:build -- --vendor <toolchain> --output <new-dir>` and `npm run modules:import -- <new-dir> --development`, plus native parity results from your own original OS. After merge, automation recompiles the reviewed commit without network, credentials or firmware and publishes only if it reproduces the committed packages exactly (apart from the commit stamp). The browser composes approved packages with the user's local base. Pending PRs never replace the current release. A failed release build keeps the previous release intact.
+The owner reviews behaviour, tests, resource claims, provenance and compatibility, and merges when the checks pass on the latest commit.
 
-Repository, Pages publication and backend credentials are configured by the owner. The site is published at https://modwerk.app with its community API on Cloudflare. Record native qualification that has not run as pending, not passed; `npm run check` does not perform firmware, DSP or hardware qualification.
+After the merge, release automation:
+
+1. recompiles the reviewed commit without network, credentials or firmware;
+2. publishes only if the result reproduces the committed packages.
+
+A failed release keeps the previous one available. A pull request that changes compiled packages must include them, rebuilt as described in the guide.
