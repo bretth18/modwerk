@@ -4,6 +4,7 @@ import { testServer } from './test-server'
 import type { DatabaseSync } from 'node:sqlite'
 import { digest } from '../../server/security'
 import { MODULES } from '../catalog/modules'
+import { COMMUNITY_MODULES } from './modules'
 import { handleCommunity } from '../../server/transport'
 const databases:DatabaseSync[]=[]
 const sent:{to:string[];text:string}[]=[]
@@ -31,10 +32,11 @@ describe('verified email accounts',()=>{
   const octatrack=await call('/forum/threads','POST',thread,author.session);expect(octatrack.status).toBe(201)
   expect((await call('/forum/threads','POST',{...thread,machine:'not-a-box'},author.session)).status).toBe(400)
   expect((await call('/forum/threads','POST',{...thread,machine:'digitone'},author.session)).status).toBe(400)
-  const listed=await(await call('/forum/threads?machine=digitakt')).json();expect(listed.threads.map((item:{title:string;machine:string})=>[item.title,item.machine])).toEqual([['Slicing ideas','digitakt']])
+  const listed=await(await call('/forum/threads?machine=digitakt')).json();expect(listed.threads.filter((item:{official:number})=>!item.official).map((item:{title:string;machine:string})=>[item.title,item.machine])).toEqual([['Slicing ideas','digitakt']])
   expect((await(await call('/forum/threads?machine=octatrack')).json()).threads[0].machine).toBe('octatrack')
   expect((await call('/forum/threads?machine=not-a-box')).status).toBe(400)
-  const machines=await(await call('/forum/machines')).json();expect(Object.fromEntries(machines.map((row:{machine:string;threads:number})=>[row.machine,row.threads]))).toEqual({digitakt:1,octatrack:1})
+  const machines=await(await call('/forum/machines')).json();const moduleThreads=(machine:string)=>COMMUNITY_MODULES.filter(module=>module.machine===machine).length
+  expect(Object.fromEntries(machines.map((row:{machine:string;threads:number})=>[row.machine,row.threads]))).toEqual({digitakt:moduleThreads('digitakt')+1,digitone:moduleThreads('digitone'),octatrack:moduleThreads('octatrack')+1})
  })
  it('requires inbox verification and a signed session, keeping secrets out of public/session responses',async()=>{
   const {call,db}=await fixture(),email='listener@example.test'
@@ -169,10 +171,10 @@ describe('forum ownership and sharing',()=>{
   expect((await call('/forum/threads/'+id+'/replies','POST',{body:'Bypass lock'},author.session)).status).toBe(409)
   expect((await call('/admin/forum/posts/'+postId,'PATCH',{action:'hidden',value:true,reason:'Spam'},'',admin)).status).toBe(200)
   expect((await(await call('/forum/threads/'+id)).json()).posts[0].body).toBe('')
-  expect((await(await call('/forum/threads?q=Share')).json()).threads).toHaveLength(0)
+  expect((await(await call('/forum/threads?q=Share%20your')).json()).threads).toHaveLength(0)
   expect((await call('/admin/forum/threads/'+id,'PATCH',{action:'hidden',value:true,reason:'Spam'},'',admin)).status).toBe(200)
   expect((await call('/forum/threads/'+id)).status).toBe(404)
-  expect((await(await call('/forum/threads')).json()).threads).toHaveLength(0)
+  expect((await(await call('/forum/threads')).json()).threads.filter((item:{official:number})=>!item.official)).toHaveLength(0)
   await call('/admin/forum/users/'+reports[0].user_id,'PATCH',{action:'suspended',value:true,reason:'Repeated spam'},'',admin)
   expect((await(await call('/auth/session','GET',undefined,author.session)).json()).user).toBeNull()
   expect((await call('/forum/threads','POST',thread,author.session)).status).toBe(401)

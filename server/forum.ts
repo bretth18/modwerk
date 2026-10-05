@@ -4,10 +4,11 @@ import { HttpError, jsonBody, required, response } from './security'
 import { FORUM_CATEGORIES, forumMachine, sharedConfiguration } from '../src/community/forum-contract'
 import { communityModule } from '../src/community/modules'
 import { notifyBugDevelopers } from './bug-reports'
+import { ensureModuleThreadsOnce, SYSTEM_AUTHOR } from './module-threads'
 
 type Thread = {id:string;user_id:string;locked:number;hidden:number;configuration_json:string|null;issue_json:string|null}
 function page(url: URL) { const value = Number(url.searchParams.get('page') ?? 0); if (!Number.isInteger(value) || value < 0 || value > 10000) throw new HttpError(400,'Invalid page.'); return value }
-const threadFields = 't.id,t.title,t.category,t.machine,t.module_id,t.status,t.locked,t.pinned,t.created_at,t.updated_at,u.username,(SELECT MAX(COUNT(*)-1,0) FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0) AS replies'
+const threadFields = `t.id,t.title,t.category,t.machine,t.module_id,t.status,t.locked,t.pinned,t.created_at,t.updated_at,u.username,t.user_id='${SYSTEM_AUTHOR}' AS official,(SELECT MAX(COUNT(*)-1,0) FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0) AS replies`
 async function threadById(db: Database, id: string, admin: boolean) {
   const thread = await db.prepare('SELECT * FROM forum_threads WHERE id=? AND (hidden=0 OR ?=1)').bind(id, Number(admin)).first<Thread>()
   if (!thread) throw new HttpError(404,'Thread not found.')
@@ -23,6 +24,7 @@ function moduleId(value: unknown) {
 export async function forum(request: Request, db: Database, user: User|null, admin: boolean): Promise<Response|null> {
   const url = new URL(request.url), path = url.pathname
   if (!path.startsWith('/api/forum') && !path.startsWith('/api/admin/forum')) return null
+  await ensureModuleThreadsOnce(db)
   let match: RegExpMatchArray|null
   if (path.startsWith('/api/admin/forum')) {
     if (!admin) throw new HttpError(403,'Administrator access is required.')
@@ -33,7 +35,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
       const allowed = match[1] === 'posts' ? ['hidden'] : match[1] === 'threads' ? ['locked','pinned','hidden'] : match[1] === 'users' ? ['suspended'] : ['resolved']
       if (typeof body.action !== 'string' || !allowed.includes(body.action)) throw new HttpError(400,'Unknown moderation action.')
       const value = bool(body.value), table = {posts:'forum_posts',threads:'forum_threads',users:'users',reports:'forum_reports'}[match[1]]!
-      if (target === ADMIN_ACTOR) throw new HttpError(400,'The administrator cannot be suspended here.')
+      if (target === ADMIN_ACTOR || target === SYSTEM_AUTHOR) throw new HttpError(400,'This system account cannot be suspended.')
       const result = await db.batch([
         db.prepare(`UPDATE ${table} SET ${body.action}=? WHERE id=?`).bind(value,target),
         db.prepare(`INSERT INTO forum_moderation(id,actor_id,target,action,reason) SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM ${table} WHERE id=?)`).bind(crypto.randomUUID(),ADMIN_ACTOR,target,`${body.action}:${value}`,reason,target),
@@ -51,7 +53,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     try { machine = forumMachine(url.searchParams.get('machine')) } catch { throw new HttpError(400,'Unknown machine.') }
     if (saved) needMember(user)
     const escaped = '%' + query.replace(/[\\%_]/g, '\\$&') + '%'
-    const rows = (await db.prepare(`SELECT ${threadFields} FROM forum_threads t JOIN users u ON u.id=t.user_id WHERE t.hidden=0 AND (?='' OR t.category=?) AND (? IS NULL OR t.machine=?) AND (? IS NULL OR t.module_id=?) AND (?='' OR u.username=?) AND (?=0 OR EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?)) AND (?='' OR t.title LIKE ? ESCAPE '\\' OR EXISTS(SELECT 1 FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0 AND p.body LIKE ? ESCAPE '\\')) ORDER BY t.pinned DESC,t.updated_at DESC,t.id LIMIT 31 OFFSET ?`).bind(category,category,machine,machine,module,module,author,author,Number(saved),user?.id??'',query,escaped,escaped,page(url)*30).all()).results
+    const rows = (await db.prepare(`SELECT ${threadFields} FROM forum_threads t JOIN users u ON u.id=t.user_id WHERE t.hidden=0 AND (?='' OR t.category=?) AND (? IS NULL OR t.machine=?) AND (? IS NULL OR t.module_id=?) AND (?='' OR u.username=?) AND (?=0 OR EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?)) AND (?='' OR t.title LIKE ? ESCAPE '\\' OR EXISTS(SELECT 1 FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0 AND p.body LIKE ? ESCAPE '\\')) ORDER BY t.pinned DESC,(? IS NOT NULL AND t.user_id='${SYSTEM_AUTHOR}') DESC,t.updated_at DESC,t.id LIMIT 31 OFFSET ?`).bind(category,category,machine,machine,module,module,author,author,Number(saved),user?.id??'',query,escaped,escaped,module,page(url)*30).all()).results
     return response({threads:rows.slice(0,30),hasMore:rows.length>30})
   }
   if (path === '/api/forum/machines' && request.method === 'GET') {
@@ -76,7 +78,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     const posts = (await db.prepare('SELECT p.*,u.username,(SELECT COUNT(*) FROM forum_reactions r WHERE r.post_id=p.id) AS likes,EXISTS(SELECT 1 FROM forum_reactions r WHERE r.post_id=p.id AND r.user_id=?) AS liked FROM forum_posts p JOIN users u ON u.id=p.user_id WHERE p.thread_id=? ORDER BY p.created_at,p.rowid LIMIT 31 OFFSET ?').bind(user?.id??'',thread.id,page(url)*30).all<{id:string;user_id:string;hidden:number;body:string;username:string;created_at:string;edited_at:string|null;likes:number;liked:number}>()).results
     const following = !!user && !!await db.prepare('SELECT user_id FROM forum_follows WHERE thread_id=? AND user_id=?').bind(thread.id,user.id).first()
     const bookmarked = !!user && !!await db.prepare('SELECT user_id FROM forum_bookmarks WHERE thread_id=? AND user_id=?').bind(thread.id,user.id).first()
-    return response({thread:summary,posts:posts.slice(0,30).map(post=>({id:post.id,body:post.hidden&&!admin?'':post.body,username:post.hidden&&!admin?null:post.username,created_at:post.created_at,edited_at:post.edited_at,hidden:post.hidden,likes:post.hidden?0:post.likes,liked:!post.hidden&&!!post.liked,canEdit:!thread.locked&&!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,...(admin?{user_id:post.user_id}:{})})),configuration:thread.configuration_json?JSON.parse(thread.configuration_json):null,issue:thread.issue_json?JSON.parse(thread.issue_json):null,following,bookmarked,hasMore:posts.length>30})
+    return response({thread:summary,posts:posts.slice(0,30).map(post=>({id:post.id,body:post.hidden&&!admin?'':post.body,username:post.hidden&&!admin?null:post.username,created_at:post.created_at,edited_at:post.edited_at,hidden:post.hidden,likes:post.hidden?0:post.likes,liked:!post.hidden&&!!post.liked,canEdit:!thread.locked&&!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,official:post.user_id===SYSTEM_AUTHOR,...(admin?{user_id:post.user_id}:{})})),configuration:thread.configuration_json?JSON.parse(thread.configuration_json):null,issue:thread.issue_json?JSON.parse(thread.issue_json):null,following,bookmarked,hasMore:posts.length>30})
   }
   const member = needMember(user)
   await throttle(db,'forum:'+member.id,60)

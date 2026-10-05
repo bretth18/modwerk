@@ -1,7 +1,8 @@
 import type { Database, User } from './platform'
 import { ADMIN_ACTOR, needMember, throttle } from './auth'
+import { SYSTEM_AUTHOR } from './module-threads'
 import { HttpError, jsonBody, required, response } from './security'
-import { COMMUNITY_MODULES, communityModule, developerModules } from '../src/community/modules'
+import { COMMUNITY_MODULES, communityModule, developerModules, moduleThreadId } from '../src/community/modules'
 
 export async function maintainedModules(db: Database, user: User) {
   const rows = (await db.prepare('SELECT module_id,github_login FROM module_maintainers WHERE user_id=? AND revoked=0').bind(user.id).all<{module_id:string;github_login:string}>()).results
@@ -46,7 +47,7 @@ export async function developerApi(request:Request,db:Database,user:User|null,ad
       if(existing?.revoked)throw new HttpError(403,'Access was revoked. Contact the administrator.')
       if(existing&&existing.user_id!==member.id)throw new HttpError(409,'This maintainer handle is already linked to another GitHub identity. Ask the administrator to review the source identity.')
       await throttle(db,'module-claim:'+member.id,30)
-      await db.batch([db.prepare('INSERT INTO module_maintainers(module_id,user_id,github_login) VALUES(?,?,?) ON CONFLICT(module_id,user_id) DO NOTHING').bind(module.id,member.id,member.github_login),db.prepare('INSERT INTO developer_events(id,actor_id,module_id,action) VALUES(?,?,?,?)').bind(crypto.randomUUID(),member.id,module.id,'module-claimed')])
+      await db.batch([db.prepare('INSERT INTO module_maintainers(module_id,user_id,github_login) VALUES(?,?,?) ON CONFLICT(module_id,user_id) DO NOTHING').bind(module.id,member.id,member.github_login),db.prepare('INSERT INTO developer_events(id,actor_id,module_id,action) VALUES(?,?,?,?)').bind(crypto.randomUUID(),member.id,module.id,'module-claimed'),db.prepare('INSERT INTO forum_follows(thread_id,user_id) SELECT id,? FROM forum_threads WHERE id=? ON CONFLICT DO NOTHING').bind(member.id,moduleThreadId(module.id))])
       return response({ok:true},201)
     }
     const requested = url.searchParams.get('moduleId') ?? ''
@@ -54,7 +55,7 @@ export async function developerApi(request:Request,db:Database,user:User|null,ad
     if (path === '/api/developer/notifications') {
       const ids=modules.map(module=>module.id)
       if(!ids.length)return response(request.method==='GET'?[]:{ok:true})
-      const scope=`SELECT t.id FROM forum_threads t WHERE t.module_id IN (${ids.map(()=>'?').join(',')}) AND t.category='issues' AND t.hidden=0`
+      const scope=`SELECT t.id FROM forum_threads t WHERE t.module_id IN (${ids.map(()=>'?').join(',')}) AND (t.category='issues' OR t.user_id='${SYSTEM_AUTHOR}') AND t.hidden=0`
       if(request.method==='GET')return response((await db.prepare(`SELECT n.id,n.thread_id,n.seen,n.created_at,t.title,t.module_id FROM forum_notifications n JOIN forum_threads t ON t.id=n.thread_id JOIN forum_posts p ON p.id=n.post_id WHERE n.user_id=? AND p.hidden=0 AND n.thread_id IN (${scope}) ORDER BY n.created_at DESC,n.id LIMIT 100`).bind(member.id,...ids).all()).results)
       if(request.method==='PATCH'){
         await throttle(db,'developer-notifications:'+member.id,30)
