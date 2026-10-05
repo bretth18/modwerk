@@ -4,6 +4,10 @@
 
 Nothing has been built or tested in Modwerk yet. Evidence tier: `none`. Modwerk’s elemod engine and core are in development.
 
+## Authorship correction
+
+Modwerk metadata version `1.1.13-experimental.1` credits Sjoerd (Soejrd, @soejrd) as DigiSophie’s developer and maintainer, and Matt Estela (@mestela) as the original Sophie for Schwung algorithm author. The pinned upstream revision, native source, build inputs, compatibility and resource estimates are unchanged. Evidence remains `none`; this correction claims no new native or hardware validation.
+
 ## Upstream
 
 The author documents their own checks in [upstream/README.md](upstream/README.md). Those results belong to the author’s v1.1.13 build with elekloader’s toolchain and core; they do not qualify a Modwerk build.

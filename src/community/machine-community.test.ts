@@ -190,6 +190,19 @@ describe('GitHub developer claims and private report access',()=>{
     expect((await call('/developer/auth/callback?code=synthetic-code&state='+state,'GET',undefined,'','','',start.headers.get('Set-Cookie')!.split(';')[0],null)).status).toBe(400)
     expect((await call('/developer/auth/complete','POST',{code:login.code,verifier:login.verifier},'','','','','https://evil.test')).status).toBe(403)
   })
+  it('lets DigiSophie’s developer claim it without granting access to the upstream algorithm author',async()=>{
+    const {call,githubLogin,db,member}=await fixture(),login=await githubLogin('soejrd'),reporter=await member()
+    const modules=await(await call('/developer/modules','GET',undefined,'',login.token)).json()
+    expect(modules.map((module:{id:string})=>module.id)).toEqual(['digitakt-digisophie'])
+    expect((await call('/developer/modules/digitakt-digisophie/claim','POST',{},'',login.token)).status).toBe(201)
+    expect((await call('/admin/maintainers','GET',undefined,'',login.token)).status).toBe(403)
+    const moduleVersion=COMMUNITY_MODULES.find(module=>module.id==='digitakt-digisophie')!.version
+    expect((await call('/modules/digitakt-digisophie/issues','POST',{...details,context:{...context,moduleVersion,modules:[{id:'digisophie',version:moduleVersion}]}},reporter.token)).status).toBe(201)
+    expect(db.prepare('SELECT author_login FROM issues WHERE module_id=?').get('digitakt-digisophie')!.author_login).toBe('soejrd')
+    await githubLogin('mestela',43,false)
+    expect(db.prepare('SELECT COUNT(*) AS count FROM users WHERE github_id=?').get(43)!.count).toBe(0)
+  })
+
   it('lets developers claim declared modules while matching forum usernames confer no access',async()=>{
     const {call,githubLogin,member}=await fixture(),login=await githubLogin(),pretender=await member('irpina')
     const modules=await(await call('/developer/modules','GET',undefined,'',login.token)).json()

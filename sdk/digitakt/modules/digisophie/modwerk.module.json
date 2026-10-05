@@ -2,20 +2,20 @@
   "schemaVersion": 3,
   "id": "digisophie",
   "name": "SOPHIE",
-  "version": "1.1.13-experimental",
+  "version": "1.1.13-experimental.1",
   "machine": "digitakt",
   "category": "machines",
   "exclusive": false,
   "author": {
-    "github": "mestela",
+    "github": "soejrd",
     "credits": [
-      "Matt Estela — Sophie algorithm (Sophie for Schwung) and the Digitakt adaptation",
-      "soejrd — digisophie repository"
+      "Sjoerd (Soejrd) — DigiSophie development and Digitakt adaptation",
+      "Matt Estela (@mestela) — original Sophie for Schwung algorithm"
     ],
-    "name": "Matt Estela"
+    "name": "Sjoerd (Soejrd)"
   },
   "maintainers": [
-    "mestela"
+    "soejrd"
   ],
   "source": {
     "repository": "https://github.com/soejrd/digisophie",
@@ -126,7 +126,7 @@
   },
   "evidence": {
     "tier": "none",
-    "moduleVersion": "1.1.13-experimental",
+    "moduleVersion": "1.1.13-experimental.1",
     "sourceSha256": null,
     "reports": [],
     "hardware": null,

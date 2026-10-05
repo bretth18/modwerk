@@ -58,6 +58,17 @@ describe('module detail parity across machines', () => {
     }
   })
 
+  it('credits DigiSophie’s developer separately from its original algorithm author', () => {
+    const mod = DIGI_MODS.find(mod => mod.device === 'digitakt' && mod.id === 'digisophie')!
+    const html = render(digiPage(mod))
+    expect(html).toContain('by Sjoerd (Soejrd)')
+    expect(html).toContain('href="https://github.com/soejrd/digisophie"')
+    expect(html).toContain('Matt Estela (@mestela) — original Sophie for Schwung algorithm')
+    expect(html).toContain('For @soejrd')
+    expect(html).not.toContain('>by Matt Estela')
+    expect(html).not.toContain('For @mestela')
+  })
+
   it('keeps missing processor measurements distinct from zero load', () => {
     const html = render(digiPage(DIGI_MODS[0]))
     for (const label of ['CPU', 'DSP core']) {
