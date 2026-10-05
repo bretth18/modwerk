@@ -6,6 +6,7 @@ import { handleCommunity } from '../../server/transport'
 import { digest } from '../../server/security'
 import { COMMUNITY_MODULES } from './modules'
 import { sharedConfiguration } from './forum-contract'
+import { ensureModuleThreads } from '../../server/module-threads'
 import { newConfiguration, configurationDevice } from '../config/workspace'
 
 const databases:DatabaseSync[]=[]
@@ -72,7 +73,7 @@ describe('machine-aware community',()=>{
       expect(snapshot).toEqual(configuration)
       const local=newConfiguration(snapshot.name,snapshot.moduleIds,snapshot.keepStockFx2,snapshot.moduleVersions,snapshot.device)
       expect(configurationDevice(local)).toBe(device);expect(local.moduleIds).toEqual(['digihealth'])
-      expect((await(await call('/forum/threads?machine='+device+'&module='+device+'-digihealth')).json()).threads).toHaveLength(1)
+      expect((await(await call('/forum/threads?machine='+device+'&module='+device+'-digihealth')).json()).threads.filter((item:{official:number})=>!item.official)).toHaveLength(1)
       expect((await call('/forum/threads','POST',{title:'Wrong machine',body:'Text',category:'modules',machine:device,moduleId:'miniverb'},reporter.token)).status).toBe(400)
       expect((await call('/forum/threads','POST',{title:'Wrong snapshot',body:'Text',category:'configs',machine:device==='digitakt'?'digitone':'digitakt',configuration},reporter.token)).status).toBe(400)
     }
@@ -274,7 +275,7 @@ describe('public bug reporting and developer delivery',()=>{
     expect((await(await call('/developer/notifications','GET',undefined,'',developer.token)).json()).every((item:{seen:number})=>item.seen===1)).toBe(true)
     expect((await call('/developer/notifications','GET',undefined,reporter.token)).status).toBe(401)
     expect((await call('/admin/issues','GET',undefined,'',developer.token)).status).toBe(403)
-    expect(db.prepare('SELECT COUNT(*) AS count FROM forum_threads').get()!.count).toBe(2)
+    expect(db.prepare("SELECT COUNT(*) AS count FROM forum_threads WHERE user_id<>'modwerk'").get()!.count).toBe(2)
   })
   it('keeps Octatrack logs and full configuration private while publishing the reproduction details',async()=>{
     const {call,githubLogin,member}=await fixture(),module=COMMUNITY_MODULES.find(module=>module.id==='miniverb')!,developer=await githubLogin(module.author),reporter=await member()
@@ -335,5 +336,31 @@ describe('public bug reporting and developer delivery',()=>{
     db.prepare('UPDATE users SET email_verified=0 WHERE id=?').run(reporter.id)
     expect((await call('/modules/digitakt-digihealth/issues','POST',{...details,context,visibility:'forum'},reporter.token)).status).toBe(403)
     expect(db.prepare('SELECT COUNT(*) AS count FROM forum_threads').get()!.count).toBe(0)
+  })
+})
+
+describe('module forum threads',()=>{
+  it('gives every catalog module one server-created thread that its claimed maintainers follow',async()=>{
+    const {call,githubLogin,member,db,env}=await fixture()
+    const listed=await(await call('/forum/threads?module=digitakt-digihealth')).json()
+    expect(listed.threads[0]).toMatchObject({id:'module-digitakt-digihealth',title:COMMUNITY_MODULES.find(module=>module.id==='digitakt-digihealth')!.name+' discussion',category:'modules',machine:'digitakt',module_id:'digitakt-digihealth',username:null,official:1,replies:0})
+    expect(db.prepare("SELECT module_id FROM forum_threads WHERE user_id='modwerk' ORDER BY module_id").all().map(row=>row.module_id)).toEqual(COMMUNITY_MODULES.map(module=>module.id).sort())
+    const detail=await(await call('/forum/threads/module-miniverb')).json()
+    expect(detail.posts).toHaveLength(1);expect(detail.posts[0]).toMatchObject({official:true,canEdit:false,username:null})
+    expect(detail.posts[0].body).toContain(COMMUNITY_MODULES.find(module=>module.id==='miniverb')!.summary)
+    // A user thread about the module still lists after the home thread when filtering by that module.
+    const reader=await member('reader')
+    expect((await call('/forum/threads','POST',{title:'Mini Verb on drums',body:'Short decay works.',category:'modules',moduleId:'miniverb'},reader.token)).status).toBe(201)
+    expect((await(await call('/forum/threads?module=miniverb')).json()).threads.map((item:{id:string})=>item.id)[0]).toBe('module-miniverb')
+    const developer=await githubLogin()
+    expect((await call('/developer/modules/digitakt-digihealth/claim','POST',{},'',developer.token)).status).toBe(201)
+    expect((await call('/forum/threads/module-digitakt-digihealth/replies','POST',{body:'Does FAST AUDIO help with SOPHIE?'},reader.token)).status).toBe(201)
+    const notifications=await(await call('/developer/notifications','GET',undefined,'',developer.token)).json()
+    expect(notifications.map((item:{thread_id:string})=>item.thread_id)).toEqual(['module-digitakt-digihealth'])
+    expect((await(await call('/forum/threads/module-digitakt-digihealth')).json()).thread.replies).toBe(1)
+    const {token:admin}=await(await call('/auth/admin','POST',{key:'e'.repeat(64)})).json()
+    expect((await call('/admin/forum/users/modwerk','PATCH',{action:'suspended',value:true,reason:'Test'},'','',admin)).status).toBe(400)
+    // Repeated runs, as in the hourly job, add nothing.
+    expect(await ensureModuleThreads(env.DB!)).toBe(0)
   })
 })
