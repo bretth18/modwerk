@@ -3,6 +3,8 @@
   "compatibility_date": "2026-09-30",
   "compatibility_flags": ["nodejs_compat"],
   "triggers": { "crons": ["17 * * * *"] },
+  // Workers Logs: searchable request logs and exceptions in the Cloudflare dashboard, kept for a few days.
+  "observability": { "enabled": true },
   // Production values. Local development overrides vars through the ignored .dev.vars file.
   "vars": {
     "APP_URL": "https://modwerk.app/",

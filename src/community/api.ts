@@ -17,7 +17,8 @@ export async function apiFetch(path: string, options: RequestInit = {}): Promise
   if ((path.startsWith('/developer/')||path.startsWith('/issues/'))&&/^[a-f0-9]{64}$/.test(developer)) headers.set('X-Modwerk-Developer',developer)
   let result: Response
   try { result = await fetch(apiUrl(path), { ...options, headers, credentials: 'same-origin', redirect: 'error' }) }
-  catch { throw new Error('Community services are not connected yet. Your local workspace still works.') }
+  // The request never completed: offline, a dropped connection, or a content blocker stopped it.
+  catch { throw new Error('Couldn’t reach the Modwerk community service. Check your connection or content blocker, then try again. Your local workspace still works.') }
   const next = result.headers.get('X-Octamod-Session')
   const nextDeveloper=result.headers.get('X-Modwerk-Developer')
   if(result.ok&&nextDeveloper!==null){try{if(/^[a-f0-9]{64}$/.test(nextDeveloper))localStorage.setItem(developerKey(),nextDeveloper);else if(nextDeveloper==='')localStorage.removeItem(developerKey())}catch{throw new Error('Enable site storage to keep your developer sign-in.')}}
@@ -31,7 +32,8 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
   const result = await apiFetch(path, options)
   let body: T & { error?: string }
   try { body = await result.json() as T & { error?: string } }
-  catch { throw new Error('Community services are not connected yet. Your local workspace still works.') }
+  // The Worker always answers in JSON, so anything else came from the network path, such as a Cloudflare error page.
+  catch { throw new Error('The Modwerk community service sent an unexpected response (HTTP ' + result.status + '). Try again in a moment. Your local workspace still works.') }
   if (!result.ok) throw new Error(body.error ?? 'The request could not be completed.')
   return body
 }
