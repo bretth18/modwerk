@@ -184,6 +184,20 @@ describe('social account sign-in',()=>{
     expect((await(await call('/auth/session')).json()).ssoProviders).toEqual([])
   })
 })
+describe('member administrator role',()=>{
+  it('grants the admin workspace only to a verified member who holds the role',async()=>{
+    const f=await fixture(),session=await f.member('github','owner')
+    expect((await f.call('/admin/overview')).status).toBe(403)
+    expect((await f.call('/admin/overview','GET',undefined,session)).status).toBe(403)
+    expect((await (await f.call('/auth/session','GET',undefined,session)).json()).admin).toBe(false)
+    f.db.exec("UPDATE users SET is_admin=1 WHERE username='owner'")
+    expect((await f.call('/admin/overview','GET',undefined,session)).status).toBe(200)
+    expect((await (await f.call('/auth/session','GET',undefined,session)).json()).admin).toBe(true)
+    expect((await f.call('/admin/overview')).status).toBe(403)
+    f.db.exec("UPDATE users SET suspended=1 WHERE username='owner'")
+    expect((await f.call('/admin/overview','GET',undefined,session)).status).toBe(403)
+  })
+})
 describe('social onboarding from either account entry point',()=>{
   it.each((['google','github','discord'] as const).flatMap(provider=>(['login','register'] as const).map(mode=>[provider,mode] as const)))('authenticates %s from %s without a username, then activates only after rules confirmation',async(provider,mode)=>{
     const f=await fixture(),pending=await f.complete(provider,mode,'')
