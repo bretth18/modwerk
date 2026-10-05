@@ -36,7 +36,7 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .skip-link { position: fixed; top: -80px; left: 16px; z-index: 30; padding: 12px; border-radius: 6px; background: var(--surface); }
 .skip-link:focus { top: 12px; }
-.app-shell { display: grid; grid-template-columns: 264px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); height: 100dvh; min-height: 0; overflow: hidden; }
+.app-shell { display: grid; grid-template-columns: 264px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); position: fixed; inset: 0; min-height: 0; overflow: hidden; }
 .sidebar { overflow-y: auto; scrollbar-width: thin; background: var(--sidebar); border-right: 1px solid var(--line); padding: 20px 13px 0; display: flex; flex-direction: column; min-height: 0; }
 .sidebar > * { flex-shrink: 0; }
 .app-brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; margin-bottom: 39px; }
@@ -824,11 +824,11 @@ h1 { font-size: 28px; }
 .contribution-files span {color:var(--muted)}
 @media(max-width:700px){.contribution-start {flex-direction:column}.contribution-files li {grid-template-columns:1fr;gap:4px}}
 
-/* Match the preferred 90% desktop view while retaining the full viewport height.
+/* Match the preferred 90% desktop view while filling the viewport via fixed insets (viewport units misresolve under zoom).
    Small screens keep their existing text sizes and touch targets. */
 @supports (zoom: .9) {
   @media (min-width: 821px) {
-    .app-shell { zoom: .9; height: calc(100dvh / .9); }
+    .app-shell { zoom: .9; }
   }
 }
 
