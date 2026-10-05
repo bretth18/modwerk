@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "sidechain-compressor",
+  "version": "0.1.0-experimental",
+  "approvedBy": "repeat98",
+  "approvedOn": "2026-10-05",
+  "waived": [
+    "current-build-hardware"
+  ],
+  "reason": "Owner explicitly approved release without fresh physical hardware evidence; upstream author reports live MKI operation. Cycles, memory and software checks are still required.",
+  "sourceSha256": "d82a431aa6e42611096d43c0a5299ace342c2f5ac6e21baa526b92777cf77dc9",
+  "imageSha256": "b5aa8cee7787a3dc0ea53007fe31358ba14d155421ebec9c7f98948de740675f",
+  "folderSha256": "c855074c30c1c24cf5806b1c3d0c98d28bca22c3fb830469fb6296d9d9cebeac"
+}

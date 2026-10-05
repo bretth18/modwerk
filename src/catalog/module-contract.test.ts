@@ -6,7 +6,7 @@ import catalog from './module-documents.json'
 describe('module folder contract',()=>{
  it('requires exact versions and retains honest evidence for every catalog module',()=>{
   expect(parseModuleDocument(example).version).toBe('0.1.0')
-  expect(catalog.modules.map(module=>parseModuleDocument(module).id)).toEqual(['spectrum','modulation','character','miniverb','tapeecho','euclid','repitch','tapehead','analog-bassdrum','midi-scenes','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map'])
+  expect(catalog.modules.map(module=>parseModuleDocument(module).id)).toEqual(['spectrum','modulation','character','miniverb','tapeecho','euclid','repitch','tapehead','analog-bassdrum','midi-scenes','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map','sidechain-compressor'])
   expect(parseModuleDocument(catalog.modules.find(m=>m.id==='tapeecho')).tests.summary).toContain('seventh freezing')
   expect(parseModuleDocument(catalog.modules.find(m=>m.id==='miniverb')).tests.hardwareStatus).toBe('untested')
  })

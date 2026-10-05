@@ -14,6 +14,17 @@ export function ModulePreview({ id, compact = false }: { id: string; compact?: b
       <div className="preview-label"><span>{DETAILS[id].label}</span><span className="preview-led" /></div>
       <svg viewBox="0 0 320 192" className="signal-art" fill="none">
         <g className="signal-grid">{[52, 97, 142].map((y) => <path key={y} d={'M20 ' + y + 'H300'} />)}{[64, 128, 192, 256].map((x) => <path key={x} d={'M' + x + ' 33V163'} />)}</g>
+        {id === 'sidechain-compressor' && <g><g fill="none" stroke="#b5a0ff" strokeLinecap="round" strokeLinejoin="round">
+<path d="M27 61H42V40L48 61H85V40L91 61H128V40L134 61H157" strokeWidth="2.3"/>
+<path d="M157 61H182V91" strokeWidth="1.7" opacity=".5"/>
+<rect x="161" y="96" width="43" height="37" rx="5" strokeWidth="1.7" opacity=".6"/>
+<path d="M28 125L34 104L40 144L46 104L52 144L58 104L64 144L70 104L76 144L82 104L88 144L94 104L100 144L106 104L112 144L118 104L124 144L130 104L136 144L142 104L148 144L154 125H161" opacity=".23" strokeWidth="1.7"/>
+<path d="M205 125L211 116L217 134L223 110L229 140L235 105L241 145L247 104L253 145L259 116L265 133L271 112L277 138L283 107L289 143L295 125" strokeWidth="2.3"/>
+<path d="M211 114C227 112 236 102 250 102M260 114C277 112 284 102 296 102" opacity=".4" strokeWidth="1.3"/>
+<path d="M182 78L178 73M182 78L186 73" strokeWidth="1.7"/>
+</g>
+<g fill="#b5a0ff" fontFamily="monospace" fontSize="9" letterSpacing=".6"><text x="27" y="28" opacity=".7">T1 / KEY</text><text x="168" y="119">COMP</text><text x="25" y="177" opacity=".65">T5 / INPUT</text><text x="207" y="177" opacity=".65">DUCKED OUTPUT</text></g>
+</g>}
         {id === 'spectrum' && <g>
           <path className="signal-ghost" d="M25 136C84 136 109 135 130 116S146 57 164 63 181 137 206 144 262 147 296 147" />
           <path className="signal-secondary" d="M25 116H117C147 116 160 39 177 43S189 120 209 132 263 138 296 138" />

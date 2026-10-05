@@ -12,7 +12,7 @@ ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid'
 REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer']
 UTILITIES = ['previewvol', 'cc-map']
 ASSET_NAMES = ['dsp-packages.json', 'coldfire-packages.json', 'resident-dsp.json', 'rom-packages.json',
-               'bootstrap-package.json', 'menu-recipes.json', 'descriptor-recipes.json', 'platform-writes.json', 'requested-packages.json', 'utility-packages.json']
+               'bootstrap-package.json', 'menu-recipes.json', 'descriptor-recipes.json', 'platform-writes.json', 'requested-packages.json', 'utility-packages.json', 'sidechain-package.json']
 HASH = lambda data: hashlib.sha256(data).hexdigest()
 
 
@@ -61,7 +61,7 @@ def fingerprint(reference, address):
 
 def requested_release_scope(buildable):
     """Permit the reviewed scope; MIDISC2.0 is a standalone local-stock recipe."""
-    ordinary = [id for id in buildable if id not in UTILITIES]
+    ordinary = [id for id in buildable if id not in UTILITIES and id != "sidechain-compressor"]
     if [id for id in buildable if id in UTILITIES] not in ([], UTILITIES):
         raise ValueError('Unsupported utility module scope')
     scopes = (ORDER, ORDER + REQUESTED, ORDER + [id for id in REQUESTED if id != 'midi-scenes'])
@@ -170,7 +170,7 @@ def main():
     if args.include_requested and args.source_commit: parser.error('Pending modules may be compiled only for local development verification')
     sdk = APP / 'sdk/octabam'
     sources = source_hashes(sdk)
-    baseline = {name: json_file(APP / 'src/engine/assets' / name) for name in ASSET_NAMES}
+    baseline = {name: json_file(APP / 'src/engine/assets' / name) for name in ASSET_NAMES if (APP / 'src/engine/assets' / name).exists()}
     catalog = json_file(APP / 'sdk/catalog.json')
     catalog_documents = {module['id']: json_file(sdk / 'modules' / module['id'] / 'octamod.module.json') for module in catalog['modules']}
     for module in catalog['modules']:
@@ -426,6 +426,10 @@ def main():
         spec = importlib.util.spec_from_file_location('octamod_utility_compiler', APP / 'scripts/build-utility-packages.py')
         compiler = importlib.util.module_from_spec(spec); spec.loader.exec_module(compiler)
         products['utility-packages.json'] = compiler.compile_packages(APP, provenance=provenance)
+    side_folder = sdk / 'modules/sidechain-compressor'
+    spec = importlib.util.spec_from_file_location('sidechain_compiler', side_folder / 'tools/compile_package.py')
+    compiler = importlib.util.module_from_spec(spec); spec.loader.exec_module(compiler)
+    products['sidechain-package.json'] = compiler.compile_package(side_folder, vendor, provenance, revision)
     destination.mkdir(parents=True)
     files = {}
     notice_name = 'THIRD_PARTY_NOTICES.txt'

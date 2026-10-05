@@ -87,6 +87,13 @@ export async function requireFolderQualification(folder, document, baseline, wai
   }
   requireModuleQualificationForPublication(document)
   if(document.tests.qualification.sourceSha256!==await moduleNativeSourceSha256(folder,document)) throw new Error(document.id+': qualification source SHA-256 differs from current native source; remeasure and retest this source')
+  if(document.tests.qualification.hardware.kind==='owner-waived') {
+    const q=document.tests.qualification
+    const approval=JSON.parse(await readFile(new URL('../sdk/sidechain-compressor-build-approval.json',import.meta.url),'utf8'))
+    if(approval.id!==document.id||approval.version!==document.version||approval.approvedBy!=='repeat98'||approval.approvedOn!=='2026-10-05'||JSON.stringify(approval.waived)!==JSON.stringify(['current-build-hardware'])||approval.sourceSha256!==q.sourceSha256||approval.imageSha256!==q.imageSha256||approval.folderSha256!==await moduleFolderSha256(folder)) throw new Error('Sidechain: hardware-only approval does not cover this exact source, image and folder')
+    const software=JSON.parse(await readFile(resolve(folder,'evidence/software.json'),'utf8'))
+    if(software.sourceSha256!==q.sourceSha256||software.imageSha256!==q.imageSha256||software.moduleVersion!==document.version||software.nativeBrowserParity?.status!=='passed'||software.nativeBrowserParity.changedBaseRefused!==true||software.nativeBrowserParity.companionsRefused!==14||software.nativeBrowserParity.mainSha256!==q.imageSha256||software.cycles?.staticPerCore!==q.cycles[0].maxConfiguration||software.memory?.totalBytes!==q.memory.totalBytes) throw new Error('Sidechain: incomplete or stale software qualification')
+  }
   for(const path of qualificationReports(document)) {
     const report=await readFile(resolve(folder,path),'utf8')
     if(!report.trim()) throw new Error(document.id+': qualification report is empty: '+path)

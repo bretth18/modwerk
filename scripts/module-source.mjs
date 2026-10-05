@@ -5,7 +5,7 @@ import { readdir, readFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { resolve } from 'node:path'
 import { parseModuleDocument } from '../src/catalog/module-contract.ts'
-export const PACKAGE_FILES = ['dsp-packages.json','coldfire-packages.json','resident-dsp.json','rom-packages.json','bootstrap-package.json','menu-recipes.json','descriptor-recipes.json','platform-writes.json','requested-packages.json','utility-packages.json']
+export const PACKAGE_FILES = ['dsp-packages.json','coldfire-packages.json','resident-dsp.json','rom-packages.json','bootstrap-package.json','menu-recipes.json','descriptor-recipes.json','platform-writes.json','requested-packages.json','utility-packages.json','sidechain-package.json']
 export const SOURCE_GROUPS = ['modules','platform','tools','dsp','licenses']
 const sha = bytes => createHash('sha256').update(bytes).digest('hex')
 async function inventory(folder,prefix) { const files=[];for(const item of await readdir(folder,{withFileTypes:true})){if(item.name==='__pycache__'||item.name.endsWith('.pyc')||item.name==='.DS_Store')continue;if(item.isSymbolicLink())throw new Error('Source symlinks are prohibited.');const path=prefix+'/'+item.name;if(item.isDirectory())files.push(...await inventory(resolve(folder,item.name),path));else if(item.isFile())files.push(path);else throw new Error('Source must be a regular file.')}return files }

@@ -13,7 +13,7 @@ const rated = () => parseModuleDocument({ ...example, resources: { ...example.re
 
 describe('required relative module resource gauges', () => {
   it('populates CPU, DSP and memory for every current version without inventing measurements', () => {
-    expect(MODULE_DOCUMENTS).toHaveLength(14)
+    expect(MODULE_DOCUMENTS).toHaveLength(15)
     for (const document of MODULE_DOCUMENTS) {
       const indicators = moduleResourceIndicators(document)
       expect(indicators.map(indicator => indicator.id)).toEqual(['cpu', 'dsp', 'memory'])
@@ -23,8 +23,9 @@ describe('required relative module resource gauges', () => {
         expect(indicator.description.length).toBeGreaterThan(20)
         expect(indicator.value).not.toContain('%')
       }
-      if(document.id!=='tapehead') expect(document.tests.qualification).toBeUndefined()
-      else expect(document.tests.hardwareStatus).toBe('reported')
+      if(document.id==='sidechain-compressor') expect(document.tests.hardwareStatus).toBe('historical')
+      else if(document.id==='tapehead') expect(document.tests.hardwareStatus).toBe('reported')
+      else expect(document.tests.qualification).toBeUndefined()
     }
   })
 
