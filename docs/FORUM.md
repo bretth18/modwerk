@@ -68,6 +68,8 @@ One private `notifications` store (migration 0024, which replaces `forum_notific
 - likes on a member's posts;
 - comments, ratings and likes on a catalog module, for its current claimed maintainers, and new bug reports and their replies (unchanged delivery rules).
 
+The operator can also announce something to every member. An announcement is a separate record rather than an activity entry: it appears in the bell of every verified member who joined before it was sent, is never mailed, and each member's read state is private. It is sent from the Admin workspace (see [Announcements to every member](COMMUNITY_OPERATIONS.md#announcements-to-every-member)).
+
 Likes and ratings notify once per person and target. Unliking withdraws a notification nobody has read or been emailed about yet. Deleting a module comment deletes its notifications. Entries whose post, thread or comment was hidden or removed, or whose actor is suspended, are not shown or mailed. Nobody is notified about their own activity.
 
 Maintainer events are addressed to the GitHub developer identity, which has no email address. A member account receives them in the bell and by email when it has a GitHub social sign-in for the same GitHub account; both sides are proven through GitHub OAuth, never a typed handle. Without that link they stay in the developer workspace.

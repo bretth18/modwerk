@@ -11,6 +11,7 @@ import { recordAnonymousCount, recordUsage, recordModuleDownload, usageStatistic
 import { moduleStatistics } from './module-statistics'
 import { adminInsights } from './admin-insights'
 import { adminAccounts } from './admin-accounts'
+import { adminAnnouncements } from './announcements'
 import recipes from '../src/catalog/module-sets.json'
 import type { Database, Env, Media, User } from './platform'
 import { withPrivacyDeadline } from './privacy-deadline'
@@ -180,6 +181,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if(path==='/api/admin/account-requests'&&request.method==='GET')return response((await db.prepare("SELECT r.id,r.user_id,r.status,r.created_at,r.updated_at,r.review_note,u.username FROM account_removal_requests r JOIN users u ON u.id=r.user_id ORDER BY CASE WHEN r.status IN ('requested','reviewing') THEN 0 ELSE 1 END,r.created_at ASC,r.rowid ASC LIMIT 100").all<{created_at:string}>()).results.map(withPrivacyDeadline))
       if(path==='/api/admin/account-mail'&&request.method==='GET')return response((await db.prepare('SELECT day,purpose,accepted,failed,limited FROM account_mail_daily ORDER BY day DESC,purpose LIMIT 60').all()).results)
       if((match=path.match(/^\/api\/admin\/account-requests\/([a-zA-Z0-9-]+)$/))&&request.method==='PATCH')return reviewAccountRequest(request,db,match[1])
+      const announcements = await adminAnnouncements(request, db, path)
+      if (announcements) return announcements
       if (path === '/api/admin/insights' && request.method === 'GET') return response(await adminInsights(db))
       if (path === '/api/admin/accounts' && request.method === 'GET') return response(await adminAccounts(db))
       if (path === '/api/admin/statistics' && request.method === 'GET') return await usageStatistics(db,Number(url.searchParams.get('days') ?? 7))

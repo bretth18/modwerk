@@ -1,9 +1,9 @@
 import { communityModule } from './modules'
-import type { NotificationItem } from './notification-contract'
+import type { BellItem } from './notification-contract'
 
 export type NotificationLine = { text: string; excerpt: string | null; href: string; ids: string[]; seen: boolean; created_at: string }
 const quote = (value: string | null) => '“' + (value ?? 'a discussion') + '”'
-function people(items: NotificationItem[]) {
+function people(items: BellItem[]) {
   const names = [...new Set(items.map(item => item.actorOfficial ? 'Modwerk' : item.actor ? '@' + item.actor : 'A deleted member'))]
   return names.length === 1 ? names[0] : names.length === 2 ? names.join(' and ') : `${names[0]}, ${names[1]} and ${names.length - 2} ${names.length === 3 ? 'other' : 'others'}`
 }
@@ -15,11 +15,11 @@ function excerpt(value: string | null) {
 
 /** Shared by the bell and activity email. Likes on the same post or module collapse into one line; other
  * entries keep their own line in the given (newest first) order. `link` turns an app hash into an href. */
-export function notificationLines(items: NotificationItem[], link: (hash: string) => string = hash => hash): NotificationLine[] {
+export function notificationLines(items: BellItem[], link: (hash: string) => string = hash => hash): NotificationLine[] {
   const moduleName = (id: string | null) => (id && communityModule(id)?.name) ?? id ?? 'your module'
   const moduleHref = (id: string | null) => link((id && communityModule(id)?.href) ?? '#library')
-  const threadHref = (item: NotificationItem) => link('#forum/thread/' + item.thread_id + (item.post_id && item.post_id !== item.thread_id ? '?post=' + item.post_id : ''))
-  const lines: (NotificationLine | NotificationItem[])[] = [], groups = new Map<string, NotificationItem[]>()
+  const threadHref = (item: BellItem) => link('#forum/thread/' + item.thread_id + (item.post_id && item.post_id !== item.thread_id ? '?post=' + item.post_id : ''))
+  const lines: (NotificationLine | BellItem[])[] = [], groups = new Map<string, BellItem[]>()
   for (const item of items) {
     if (item.kind === 'post_like' || item.kind === 'module_like') {
       const key = item.kind + ':' + (item.post_id ?? item.module_id)
@@ -28,6 +28,7 @@ export function notificationLines(items: NotificationItem[], link: (hash: string
       continue
     }
     const actor = people([item]), base = { ids: [item.id], seen: item.seen, created_at: item.created_at }
+    if (item.kind === 'announcement') { lines.push({ ...base, text: `Modwerk: ${item.title ?? 'News'}`, excerpt: excerpt(item.excerpt), href: item.url ?? (item.module_id ? moduleHref(item.module_id) : link('#library')) }); continue }
     if (item.kind === 'reply') lines.push({ ...base, text: `${actor} replied in ${quote(item.title)}`, excerpt: excerpt(item.excerpt), href: threadHref(item) })
     else if (item.kind === 'mention') lines.push({ ...base, text: `${actor} mentioned you in ${quote(item.title)}`, excerpt: excerpt(item.excerpt), href: threadHref(item) })
     else if (item.kind === 'bug_report') lines.push({ ...base, text: `New bug report for ${moduleName(item.module_id)} from ${actor}: ${quote(item.title)}`, excerpt: excerpt(item.excerpt), href: threadHref(item) })

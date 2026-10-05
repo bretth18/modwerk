@@ -4,12 +4,12 @@ import { useCommunity } from './context'
 import { Icon } from '../components/Icon'
 import { NotificationList } from './NotificationList'
 import { notificationLines, type NotificationLine } from './notification-text'
-import type { NotificationItem } from './notification-contract'
+import type { BellItem } from './notification-contract'
 
 const POLL_MS = 60000
 export function NotificationBell() {
   const { session } = useCommunity(), member = session.available && !!session.user?.verified
-  const [unread, setUnread] = useState(0), [open, setOpen] = useState(false), [items, setItems] = useState<NotificationItem[] | null>(null), [error, setError] = useState('')
+  const [unread, setUnread] = useState(0), [open, setOpen] = useState(false), [items, setItems] = useState<BellItem[] | null>(null), [error, setError] = useState('')
   const root = useRef<HTMLDivElement>(null), button = useRef<HTMLButtonElement>(null)
   const count = useCallback(() => { void api<{ unread: number }>('/notifications/unread').then(value => setUnread(value.unread)).catch(() => {}) }, [])
   useEffect(() => {
@@ -24,7 +24,7 @@ export function NotificationBell() {
   useEffect(() => {
     if (!open) return
     let cancelled = false
-    void api<{ items: NotificationItem[]; unread: number }>('/notifications').then(value => { if (!cancelled) { setItems(value.items); setUnread(value.unread) } }).catch(error => { if (!cancelled) setError(error instanceof Error ? error.message : 'Notifications could not load.') })
+    void api<{ items: BellItem[]; unread: number }>('/notifications').then(value => { if (!cancelled) { setItems(value.items); setUnread(value.unread) } }).catch(error => { if (!cancelled) setError(error instanceof Error ? error.message : 'Notifications could not load.') })
     const outside = (event: PointerEvent) => { if (!root.current?.contains(event.target as Node)) setOpen(false) }
     const escape = (event: KeyboardEvent) => { if (event.key === 'Escape') { setOpen(false); button.current?.focus() } }
     document.addEventListener('pointerdown', outside); document.addEventListener('keydown', escape)

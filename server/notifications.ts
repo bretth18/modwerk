@@ -5,6 +5,7 @@ import { communityModule } from '../src/community/modules'
 import { moduleDevelopers } from './bug-reports'
 import { SYSTEM_AUTHOR } from './module-threads'
 import { emailReady } from './email'
+import { ANNOUNCEMENT_PREFIX, announcementItems, announcementUnread, markAnnouncementsRead } from './announcements'
 import type { NotificationItem, NotificationPreferences } from '../src/community/notification-contract'
 
 const newId = 'lower(hex(randomblob(16)))'
@@ -110,18 +111,24 @@ export async function notificationRoutes(request: Request, env: Env, db: Databas
   const member = needMember(user)
   if (path === '/api/notifications/unread' && request.method === 'GET') {
     const row = await db.prepare(`SELECT COUNT(*) AS unread FROM (${ITEM_SQL} WHERE n.user_id IN (${RECIPIENTS}) AND n.seen=0 AND ${VISIBLE})`).bind(member.id, member.id).first<{ unread: number }>()
-    return response({ unread: row?.unread ?? 0 })
+    return response({ unread: (row?.unread ?? 0) + await announcementUnread(db, member.id) })
   }
   if (path === '/api/notifications' && request.method === 'GET') {
     const rows = (await db.prepare(`${ITEM_SQL} WHERE n.user_id IN (${RECIPIENTS}) AND ${VISIBLE} ORDER BY n.created_at DESC,n.rowid DESC LIMIT 50`).bind(member.id, member.id).all<Row>()).results
-    return response({ items: rows.map(toItem), unread: rows.filter(row => !row.seen).length })
+    // Announcements are not mailed and not addressed to anyone in particular; they join the newest entries.
+    const items = [...rows.map(toItem), ...await announcementItems(db, member.id)].sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 50)
+    return response({ items, unread: rows.filter(row => !row.seen).length + await announcementUnread(db, member.id) })
   }
   if (path === '/api/notifications' && request.method === 'PATCH') {
     const body = await jsonBody(request)
-    if (body.ids === undefined) await db.prepare(`UPDATE notifications SET seen=1 WHERE seen=0 AND user_id IN (${RECIPIENTS})`).bind(member.id, member.id).run()
-    else {
+    if (body.ids === undefined) {
+      await db.prepare(`UPDATE notifications SET seen=1 WHERE seen=0 AND user_id IN (${RECIPIENTS})`).bind(member.id, member.id).run()
+      await markAnnouncementsRead(db, member.id, null)
+    } else {
       if (!Array.isArray(body.ids) || !body.ids.length || body.ids.length > 50 || body.ids.some(id => typeof id !== 'string' || id.length > 64)) throw new HttpError(400, 'Choose up to 50 notifications.')
-      await db.prepare(`UPDATE notifications SET seen=1 WHERE id IN (${body.ids.map(() => '?').join(',')}) AND user_id IN (${RECIPIENTS})`).bind(...body.ids, member.id, member.id).run()
+      const ids = body.ids as string[], announced = ids.filter(id => id.startsWith(ANNOUNCEMENT_PREFIX)), activity = ids.filter(id => !id.startsWith(ANNOUNCEMENT_PREFIX))
+      if (activity.length) await db.prepare(`UPDATE notifications SET seen=1 WHERE id IN (${activity.map(() => '?').join(',')}) AND user_id IN (${RECIPIENTS})`).bind(...activity, member.id, member.id).run()
+      await markAnnouncementsRead(db, member.id, announced)
     }
     return response({ ok: true })
   }

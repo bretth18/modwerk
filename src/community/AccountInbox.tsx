@@ -3,11 +3,11 @@ import { api, post } from './api'
 import { useCommunity } from './context'
 import { NotificationList } from './NotificationList'
 import { notificationLines } from './notification-text'
-import type { NotificationItem } from './notification-contract'
+import type { BellItem } from './notification-contract'
 type Report={id:string;module_id:string;author_login:string;title:string;body:string;status:string;created_at:string;github_url:string|null;forum_thread_id:string|null}
 export function AccountInbox(){
- const {session}=useCommunity(),[reports,setReports]=useState<Report[]|null>(null),[notifications,setNotifications]=useState<NotificationItem[]>([]),[error,setError]=useState('')
- useEffect(()=>{let cancelled=false;void Promise.all([api<Report[]>('/issues/mine'),session.user?.verified?api<{items:NotificationItem[]}>('/notifications').then(value=>value.items):Promise.resolve([])]).then(([reports,notifications])=>{if(!cancelled){setReports(reports);setNotifications(notifications)}}).catch(error=>{if(!cancelled)setError(error.message)});return()=>{cancelled=true}},[session.user?.id,session.user?.verified])
+ const {session}=useCommunity(),[reports,setReports]=useState<Report[]|null>(null),[notifications,setNotifications]=useState<BellItem[]>([]),[error,setError]=useState('')
+ useEffect(()=>{let cancelled=false;void Promise.all([api<Report[]>('/issues/mine'),session.user?.verified?api<{items:BellItem[]}>('/notifications').then(value=>value.items):Promise.resolve([])]).then(([reports,notifications])=>{if(!cancelled){setReports(reports);setNotifications(notifications)}}).catch(error=>{if(!cancelled)setError(error.message)});return()=>{cancelled=true}},[session.user?.id,session.user?.verified])
  async function markRead(ids?:string[]){try{await post('/notifications',ids?{ids}:{},'PATCH');setNotifications(items=>items.map(item=>!ids||ids.includes(item.id)?{...item,seen:true}:item))}catch(error){setError(error instanceof Error?error.message:'Unable to mark notifications read.')}}
  return <>
   {session.user?.verified&&<section className="configuration-section account-notifications" id="account-notifications"><div className="section-title"><h2>Notifications</h2><button className="text-button" disabled={!notifications.some(item=>!item.seen)} onClick={()=>void markRead()}>Mark all read</button></div>{notifications.length?<NotificationList lines={notificationLines(notifications)} onOpen={line=>{if(!line.seen)void markRead(line.ids)}}/>:<p className="service-note">Replies in threads you follow, mentions, likes on your posts and activity on modules you maintain appear here and in the bell.</p>}<a href="#forum?saved=1">Your bookmarks →</a></section>}
