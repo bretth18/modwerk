@@ -79,9 +79,10 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     }
     if ((match = path.match(/^\/api\/modules\/([a-z0-9-]+)$/)) && request.method === 'GET') {
       await knownModule(db,match[1])
-      await ensureDiscussionThread(db,match[1])
+      const isSet=match[1].startsWith('remix-')
+      if (!isSet) await ensureDiscussionThread(db,match[1])
       const [posts,statistics,media] = await Promise.all([
-        db.prepare("SELECT p.id,p.body,p.created_at,u.display_name AS author,p.user_id,t.locked FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id JOIN users u ON u.id=p.user_id WHERE t.id=? AND p.id<>t.id AND p.hidden=0 AND (t.hidden=0 OR ?=1) ORDER BY p.created_at DESC,p.rowid DESC LIMIT 100").bind(moduleThreadId(match[1]),Number(admin)).all<{id:string;body:string;created_at:string;author:string;user_id:string;locked:number}>(),
+        isSet ? Promise.resolve({results:[]}) : db.prepare("SELECT p.id,p.body,p.created_at,u.display_name AS author,p.user_id,t.locked FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id JOIN users u ON u.id=p.user_id WHERE t.id=? AND p.id<>t.id AND p.hidden=0 AND (t.hidden=0 OR ?=1) ORDER BY p.created_at DESC,p.rowid DESC LIMIT 100").bind(moduleThreadId(match[1]),Number(admin)).all<{id:string;body:string;created_at:string;author:string;user_id:string;locked:number}>(),
         db.prepare(`WITH requested AS (SELECT ? AS module_id,? AS user_id) SELECT
           (SELECT AVG(value) FROM ratings WHERE module_id=requested.module_id) AS average,
           (SELECT COUNT(*) FROM ratings WHERE module_id=requested.module_id) AS count,

@@ -2,7 +2,6 @@ import type { Database } from './platform'
 import { COMMUNITY_MODULES, communityModule, moduleThreadId, type CommunityModule } from '../src/community/modules'
 import { DEVICES_BY_ID } from '../src/devices/registry'
 import { followModuleDevelopers } from './bug-reports'
-import recipes from '../src/catalog/module-sets.json'
 import { HttpError } from './security'
 
 /** Fixed author row for server-created threads; it has no username, sign-in or session. */
@@ -35,17 +34,17 @@ export async function ensureModuleThreads(db: Database, modules: readonly Commun
   return missing.length
 }
 
-/** Published contributions and module sets use the same fixed thread ID as catalog modules. */
+/** Published contributions use the same fixed thread ID as catalog modules. */
 export async function ensureDiscussionThread(db: Database, moduleId: string) {
+  if (moduleId.startsWith('remix-')) throw new HttpError(404,'Module sets do not have discussions. Use the included module’s discussion.')
   const module = communityModule(moduleId)
   if (module) { await ensureModuleThreads(db,[module]); return }
-  const recipe = recipes.find(recipe => 'remix-'+recipe.id===moduleId)
-  const published = recipe ? null : await db.prepare('SELECT s.title,s.description FROM module_publications p JOIN submissions s ON s.id=p.submission_id WHERE p.module_id=?').bind(moduleId).first<{title:string;description:string}>()
-  if (!recipe && !published) throw new HttpError(404,'Module not found.')
-  const id=moduleThreadId(moduleId),name=published?.title??'Module set · '+recipe!.id
+  const published = await db.prepare('SELECT s.title,s.description FROM module_publications p JOIN submissions s ON s.id=p.submission_id WHERE p.module_id=?').bind(moduleId).first<{title:string;description:string}>()
+  if (!published) throw new HttpError(404,'Module not found.')
+  const id=moduleThreadId(moduleId),name=published.title
   await db.batch([
-    db.prepare("INSERT OR IGNORE INTO forum_threads(id,user_id,title,category,machine,module_id) VALUES(?,?,?,'modules',?,?)").bind(id,SYSTEM_AUTHOR,name+' discussion',recipe?'octatrack':null,moduleId),
-    db.prepare('INSERT OR IGNORE INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').bind(id,id,SYSTEM_AUTHOR,(published?.description??recipe!.description)+'\n\nShare settings, questions, ideas and feedback here.'),
+    db.prepare("INSERT OR IGNORE INTO forum_threads(id,user_id,title,category,machine,module_id) VALUES(?,?,?,'modules',?,?)").bind(id,SYSTEM_AUTHOR,name+' discussion',null,moduleId),
+    db.prepare('INSERT OR IGNORE INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').bind(id,id,SYSTEM_AUTHOR,published.description+'\n\nShare settings, questions, ideas and feedback here.'),
   ])
 }
 

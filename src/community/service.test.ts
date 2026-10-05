@@ -106,7 +106,7 @@ describe('community access and review',()=>{
   expect((await call('/modules/spectrum/like','POST',{liked:true},session)).status).toBe(200)
   expect((await (await call('/modules/spectrum','GET',undefined,session)).json()).likes).toBe(1)
   expect((await call('/submissions','POST',details,session)).status).toBe(410)
-  expect((await call('/modules/remix-miniverb/comments','POST',{body:'Guest remix discussion'},session)).status).toBe(200)
+  expect((await call('/modules/remix-miniverb/comments','POST',{body:'Guest remix discussion'},session)).status).toBe(404)
   expect((await call('/modules/remix-miniverb/rating','POST',{value:4},session)).status).toBe(200)
   expect((await call('/auth/email','POST',{email:'unused@example.test'})).status).toBe(404)
   const own=await (await call('/auth/session','GET',undefined,session)).json()

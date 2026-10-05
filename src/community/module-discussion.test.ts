@@ -5,6 +5,7 @@ import { testServer } from './test-server'
 import { digest } from '../../server/security'
 import { ensureModuleThreads } from '../../server/module-threads'
 import { communityModule } from './modules'
+import recipes from '../catalog/module-sets.json'
 
 const databases:DatabaseSync[]=[]
 afterEach(()=>{for(const db of databases.splice(0))db.close()})
@@ -68,12 +69,12 @@ describe('one module discussion',()=>{
     expect(secondPage.thread.replies).toBe(28)
   })
 
-  it('gives published modules and module sets the same fixed home thread and forum filter',async()=>{
+  it('gives published modules the same fixed home thread and forum filter',async()=>{
     const {call,db,id,token}=await fixture()
     await call('/forum/threads')
     db.prepare("INSERT INTO submissions(id,owner_id,module_id,title,repository_url,description,usage,test_report_url,stress_notes,quality_notes,resource_notes,license,status) VALUES('publication',?,'community-filter','Community Filter','https://github.com/example/filter','A published filter','Use it','https://github.com/example/filter','Checked','Checked','Checked','MIT','approved')").run(id)
     db.prepare("INSERT INTO module_publications(module_id,submission_id) VALUES('community-filter','publication')").run()
-    for(const module of ['community-filter','remix-miniverb']){
+    for(const module of ['community-filter']){
       const posted=await call('/modules/'+module+'/comments','POST',{body:'Shared module discussion'},token)
       expect(posted.status).toBe(200)
       const detail=await (await call('/forum/threads/module-'+module)).json()
@@ -81,6 +82,50 @@ describe('one module discussion',()=>{
       expect((await (await call('/forum/threads?module='+module)).json()).threads[0].id).toBe('module-'+module)
     }
     expect((await call('/forum/threads?module=does-not-exist')).status).toBe(400)
+  })
+
+  it('never creates set discussions through page reads, old composers or forum filters',async()=>{
+    const {call,db,token}=await fixture()
+    for(const recipe of recipes){
+      const module='remix-'+recipe.id
+      const detail=await call('/modules/'+module)
+      expect(detail.status).toBe(200)
+      expect((await detail.json()).comments).toEqual([])
+      expect((await call('/modules/'+module+'/comments','POST',{body:'Old set composer'},token)).status).toBe(404)
+      expect((await call('/forum/threads/module-'+module)).status).toBe(404)
+      expect((await call('/forum/threads?module='+module)).status).toBe(400)
+      expect((await call('/forum/threads','POST',{title:'A set thread',body:'Opening post',category:'modules',moduleId:module},token)).status).toBe(400)
+    }
+    // Legacy set statistics remain usable without opening a discussion.
+    expect((await call('/modules/remix-tapeecho/like','POST',{liked:true},token)).status).toBe(200)
+    expect((await call('/modules/remix-tapeecho/rating','POST',{value:4},token)).status).toBe(200)
+    expect((await (await call('/modules/remix-tapeecho','GET',undefined,token)).json())).toMatchObject({comments:[],liked:true,ownRating:4})
+    expect(db.prepare("SELECT COUNT(*) AS count FROM forum_threads WHERE module_id GLOB 'remix-*'").get()!.count).toBe(0)
+    expect((await call('/forum/threads/module-tapeecho')).status).toBe(200)
+  })
+
+  it('removes automatic set threads from public views once while preserving posts and other discussions',async()=>{
+    const {call,db,id,token}=await fixture()
+    await call('/forum/threads/module-tapeecho')
+    db.prepare("INSERT INTO forum_threads(id,user_id,title,category,module_id,machine) VALUES('module-remix-tapeecho','modwerk','Module set · tapeecho discussion','modules','remix-tapeecho','octatrack'),('member-set-thread',?,'A member conversation','general','remix-tapeecho','octatrack')").run(id)
+    db.prepare("INSERT INTO forum_posts(id,thread_id,user_id,body) VALUES('module-remix-tapeecho','module-remix-tapeecho','modwerk','Set intro'),('set-reply','module-remix-tapeecho',?,'Retained reply')").run(id)
+    db.prepare("INSERT INTO forum_follows(thread_id,user_id) VALUES('module-remix-tapeecho',?)").run(id)
+    db.prepare("INSERT INTO forum_bookmarks(thread_id,user_id) VALUES('module-remix-tapeecho',?)").run(id)
+    db.prepare("INSERT INTO notifications(id,user_id,kind,actor_id,thread_id,post_id) VALUES('set-notification',?,'reply',?,'module-remix-tapeecho','set-reply')").run(id,id)
+    const migration=readFileSync(new URL('../../migrations/0033_remove_module_set_discussions.sql',import.meta.url),'utf8')
+    db.exec(migration);db.exec(migration)
+    expect(db.prepare("SELECT hidden,locked FROM forum_threads WHERE id='module-remix-tapeecho'").get()).toEqual({hidden:1,locked:1})
+    expect(db.prepare("SELECT hidden,locked FROM forum_threads WHERE id='module-tapeecho'").get()).toEqual({hidden:0,locked:0})
+    expect(db.prepare("SELECT hidden,locked FROM forum_threads WHERE id='member-set-thread'").get()).toEqual({hidden:0,locked:0})
+    expect(db.prepare("SELECT body FROM forum_posts WHERE id='set-reply'").get()!.body).toBe('Retained reply')
+    expect(db.prepare("SELECT COUNT(*) AS count FROM forum_moderation WHERE target='module-remix-tapeecho'").get()!.count).toBe(1)
+    expect(db.prepare('PRAGMA foreign_key_check').all()).toEqual([])
+    expect((await call('/forum/threads/module-remix-tapeecho')).status).toBe(404)
+    expect((await call('/forum/threads/module-remix-tapeecho/replies','POST',{body:'No new set replies'},token)).status).toBe(404)
+    expect((await (await call('/forum/threads')).json()).threads.map((thread:{id:string})=>thread.id)).not.toContain('module-remix-tapeecho')
+    expect((await (await call('/modules/remix-tapeecho')).json()).comments).toEqual([])
+    expect((await (await call('/notifications','GET',undefined,token)).json()).items).not.toContainEqual(expect.objectContaining({id:'set-notification'}))
+    expect(db.prepare("SELECT hidden,locked FROM forum_threads WHERE id='module-remix-tapeecho'").get()).toEqual({hidden:1,locked:1})
   })
 
   it('migrates historical comments once, preserving identity, order, moderation and notification state',async()=>{
