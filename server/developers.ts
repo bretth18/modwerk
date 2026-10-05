@@ -1,6 +1,6 @@
 import type { Database, User } from './platform'
 import { ADMIN_ACTOR, needMember, throttle } from './auth'
-import { SYSTEM_AUTHOR } from './module-threads'
+import { ITEM_SQL, toItem, VISIBLE } from './notifications'
 import { HttpError, jsonBody, required, response } from './security'
 import { COMMUNITY_MODULES, communityModule, developerModules, moduleThreadId } from '../src/community/modules'
 
@@ -55,11 +55,12 @@ export async function developerApi(request:Request,db:Database,user:User|null,ad
     if (path === '/api/developer/notifications') {
       const ids=modules.map(module=>module.id)
       if(!ids.length)return response(request.method==='GET'?[]:{ok:true})
-      const scope=`SELECT t.id FROM forum_threads t WHERE t.module_id IN (${ids.map(()=>'?').join(',')}) AND (t.category='issues' OR t.user_id='${SYSTEM_AUTHOR}') AND t.hidden=0`
-      if(request.method==='GET')return response((await db.prepare(`SELECT n.id,n.thread_id,n.seen,n.created_at,t.title,t.module_id FROM forum_notifications n JOIN forum_threads t ON t.id=n.thread_id JOIN forum_posts p ON p.id=n.post_id WHERE n.user_id=? AND p.hidden=0 AND n.thread_id IN (${scope}) ORDER BY n.created_at DESC,n.id LIMIT 100`).bind(member.id,...ids).all()).results)
+      // Only modules the developer still maintains; revoked or removed claims drop out of the inbox.
+      const scope=`n.user_id=? AND n.module_id IN (${ids.map(()=>'?').join(',')})`
+      if(request.method==='GET')return response((await db.prepare(`${ITEM_SQL} WHERE ${scope} AND ${VISIBLE} ORDER BY n.created_at DESC,n.rowid DESC LIMIT 100`).bind(member.id,...ids).all<Parameters<typeof toItem>[0]>()).results.map(toItem))
       if(request.method==='PATCH'){
         await throttle(db,'developer-notifications:'+member.id,30)
-        await db.prepare(`UPDATE forum_notifications SET seen=1 WHERE user_id=? AND thread_id IN (${scope})`).bind(member.id,...ids).run()
+        await db.prepare(`UPDATE notifications SET seen=1 WHERE id IN (SELECT n.id FROM notifications n WHERE ${scope})`).bind(member.id,...ids).run()
         return response({ok:true})
       }
       throw new HttpError(405,'Choose a supported notification action.')

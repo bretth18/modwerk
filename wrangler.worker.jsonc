@@ -9,7 +9,9 @@
     "AUTH_BASE_URL": "https://octamod-community.octamod.workers.dev/api/auth",
     "REGISTRATION_OPEN": "false",
     "PRIVACY_READY": "false",
-    "SESSION_TRANSPORT": "bearer"
+    "SESSION_TRANSPORT": "bearer",
+    // Activity digests per day. 15 leaves the free Resend tier (100/day) room for account mail; raise after upgrading.
+    "ACTIVITY_MAIL_DAILY_LIMIT": "15"
   },
   "d1_databases": [
     {

@@ -35,6 +35,9 @@ async function fixture(){
  db.exec(readFileSync(new URL('../../migrations/0015_forum_machines.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0016_module_maintainers.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0020_issue_forum_threads.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0014_account_requests.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0023_module_forum_threads.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0024_activity_notifications.sql',import.meta.url),'utf8'))
  const env:Env={DB:adapter(db),APP_URL:'https://octamod.test',ADMIN_KEY_SHA256:await digest(adminKey)}
  const objects=new Map<string,ArrayBuffer>()
  env.MEDIA={async put(key,bytes){objects.set(key,bytes)},async get(key){const bytes=objects.get(key);return bytes?{body:new ReadableStream({start(controller){controller.enqueue(new Uint8Array(bytes));controller.close()}})}:null},async delete(key){objects.delete(key)}}
@@ -366,7 +369,7 @@ describe('private aggregate usage statistics',()=>{
   expect(result.collectionStarted).toMatch(/^\d{4}-\d{2}-\d{2}T/)
   expect(JSON.stringify(db.prepare('SELECT * FROM usage_visitors').all())).not.toContain(first.visitor)
   expect(JSON.stringify(db.prepare('SELECT * FROM usage_events').all())).not.toContain(first.eventId)
-  expect(db.prepare('SELECT COUNT(*) AS n FROM users').get()).toEqual({n:3}) // No visitor accounts are created.
+  expect(db.prepare("SELECT COUNT(*) AS n FROM users WHERE id<>'modwerk'").get()).toEqual({n:3}) // No visitor accounts are created.
   expect((await call('/admin/statistics?days=365','GET',undefined,'',undefined,admin)).status).toBe(400)
   expect((await handleApi(new Request('https://octamod.test/api/admin/statistics',{headers:{'X-Octamod-Admin':admin}}),{DB:adapter(db),APP_URL:'https://octamod.test'})).status).toBe(403)
  })
@@ -468,7 +471,7 @@ describe('public module popularity',()=>{
   expect((await (await call('/modules/tapeecho')).json()).downloads).toBe(1)
   expect((await call('/admin/statistics')).status).toBe(403)
   expect(db.prepare('SELECT COUNT(*) AS n FROM usage_daily').get()).toEqual({n:0})
-  expect(db.prepare('SELECT COUNT(*) AS n FROM users').get()).toEqual({n:3})
+  expect(db.prepare("SELECT COUNT(*) AS n FROM users WHERE id<>'modwerk'").get()).toEqual({n:3})
   expect((await call('/modules/miniverb/like','POST',{liked:false},'octamod_session='+tokens.author)).status).toBe(200)
   expect((await (await call('/community/summary')).json()).find((item:{module_id:string})=>item.module_id==='miniverb').likes).toBe(0)
  })
