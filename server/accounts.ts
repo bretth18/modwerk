@@ -12,7 +12,7 @@ import { AccountMailError, emailReady, sendAccountEmail } from './email'
 import { accountRequest } from './account-requests'
 import { accountExport } from './account-export'
 import { COMMUNITY_RULES_VERSION } from '../src/legal/policy'
-import { googleTokenBinding, socialOptions, validUsername } from './social-config'
+import { googleTokenBinding, socialOptions, suggestUsername, validUsername } from './social-config'
 
 export function authReady(env: Env) { return !!env.AUTH_SECRET && env.AUTH_SECRET.length >= 32 }
 export function accountAuth(env: Env, db: Database) {
@@ -56,6 +56,10 @@ export function accountAuth(env: Env, db: Database) {
         if(env.REGISTRATION_OPEN!=='true'||env.PRIVACY_READY!=='true'||!flow)return false
         if(flow.username&&(flow.rules_version!==COMMUNITY_RULES_VERSION||!validUsername(flow.username)))return false
         let publicName=flow.username
+        if(!publicName&&(ctx?.params?.id==='github'||ctx?.params?.id==='discord')){
+          const suggestion=suggestUsername(user.name)
+          if(suggestion&&!await db.prepare('SELECT id FROM users WHERE username=? COLLATE NOCASE').bind(suggestion).first())publicName=suggestion
+        }
         if(!publicName){
           // Never derive a public name from a provider's real name or private email.
           do { publicName='member_'+randomToken().slice(0,12) } while(await db.prepare('SELECT id FROM users WHERE username=? COLLATE NOCASE').bind(publicName).first())
