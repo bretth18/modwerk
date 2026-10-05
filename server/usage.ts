@@ -39,10 +39,20 @@ export async function recordUsage(request: Request, env: Env, db: Database) {
   ])
   return response({ok:true})
 }
-/** Identifier-free counts: only a closed event name (and, for downloads, one public module ID) is accepted.
- * Nothing is read from or stored on the device. The client IP is used only as a keyed, daily-rotated digest
- * for abuse limiting in rate_limits, which expires within the hour; it never reaches the count tables.
- * Unique visitors are never derived here; only opted-in browsers contribute to usage_daily.visitors. */
+/** Daily random salt for estimating unique visitors. It lives only in usage_meta and is deleted by the first
+ * hourly cleanup of the next UTC day, after which that day's visitor digests can no longer be recomputed or linked. */
+async function visitorSalt(db: Database, today: string) {
+  const random = Array.from(crypto.getRandomValues(new Uint8Array(32)),b=>b.toString(16).padStart(2,'0')).join('')
+  await db.prepare('INSERT INTO usage_meta(key,value) VALUES(?,?) ON CONFLICT DO NOTHING').bind('visitor-salt:' + today,random).run()
+  const saved = await db.prepare('SELECT value FROM usage_meta WHERE key=?').bind('visitor-salt:' + today).first<{value:string}>()
+  if (!saved) throw new HttpError(503,'Usage counts are not available right now.')
+  return saved.value
+}
+/** Counts without consent: only a closed event name (and, for downloads, one public module ID) is accepted.
+ * Nothing is read from or stored on the device. Unique visitors are estimated from a digest of IP address and
+ * User-Agent, keyed with the backend secret and a daily salt; the raw values are never stored and digests are
+ * kept only until the hourly cleanup removes the previous day (at most about 48 hours). A separate keyed IP
+ * digest limits abuse in rate_limits and expires within the hour. */
 export async function recordAnonymousCount(request: Request, env: Env, db: Database) {
   if (request.headers.get('DNT') === '1' || request.headers.get('Sec-GPC') === '1') return new Response(null,{status:204})
   const secret = env.ADMIN_KEY_SHA256?.trim().toLowerCase() ?? ''
@@ -64,8 +74,11 @@ export async function recordAnonymousCount(request: Request, env: Env, db: Datab
     return response({ok:true})
   }
   const metric = columns[body.event as UsageEvent] // Selected only from the closed enum above, never from arbitrary SQL input.
+  const visitor = await privateHash(secret,today + ':anonymous-visitor:' + await visitorSalt(db,today) + ':' + (request.headers.get('CF-Connecting-IP') ?? 'local') + ':' + (request.headers.get('User-Agent') ?? ''))
   await db.batch([
-    db.prepare(`INSERT INTO usage_daily(day,${metric}) VALUES(?,1) ON CONFLICT(day) DO UPDATE SET ${metric}=${metric}+1`).bind(today),
+    db.prepare('INSERT INTO usage_visitors(day,visitor_hash) VALUES(?,?) ON CONFLICT DO NOTHING').bind(today,visitor),
+    db.prepare(`INSERT INTO usage_daily(day,visitors,${metric}) VALUES(?,(SELECT COUNT(*) FROM usage_visitors WHERE day=? AND visitor_hash=? AND counted=0),1) ON CONFLICT(day) DO UPDATE SET visitors=visitors+excluded.visitors,${metric}=${metric}+1`).bind(today,today,visitor),
+    db.prepare('UPDATE usage_visitors SET counted=1 WHERE day=? AND visitor_hash=?').bind(today,visitor),
     db.prepare("INSERT INTO usage_meta(key,value) VALUES('collection_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
   ])
   return response({ok:true})
@@ -76,6 +89,7 @@ export async function cleanupUsage(db: Database, now = new Date()) {
     db.prepare('DELETE FROM usage_events WHERE day<?').bind(before(now,1)),
     db.prepare('DELETE FROM module_download_events WHERE day<?').bind(before(now,1)),
     db.prepare('DELETE FROM usage_visitors WHERE day<?').bind(before(now,1)),
+    db.prepare("DELETE FROM usage_meta WHERE key LIKE 'visitor-salt:%' AND key<?").bind('visitor-salt:' + day(now)),
     db.prepare('DELETE FROM usage_daily WHERE day<?').bind(before(now,89)),
     db.prepare('DELETE FROM rate_limits WHERE expires<?').bind(Math.floor(now.getTime()/1000)),
   ])
