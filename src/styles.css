@@ -1204,7 +1204,25 @@ h1 { font-size: 28px; }
 .account-deletion .button-danger { border-color: #b76c6c; color: #ffc5c5; }
 
 .sidebar-nav .sidebar-feature-new { margin-left: auto; flex: 0 0 auto; padding: 2px 6px; border-radius: 4px; border: 1px solid #9788de; color: #d5c9ff; font-size: 10px; line-height: 1.4; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
-.login-prompt-dialog .dialog-actions { flex-wrap: wrap; }
+.member-gate { align-items: center; }
+.member-gate h2 { margin-bottom: 8px; }
+.member-gate > div > p { max-width: 48ch; margin-bottom: 0; line-height: 1.6; }
+.member-gate .button { min-height: 44px; }
+.login-prompt-dialog { padding: 24px; max-height: calc(100dvh - 32px); overflow-y: auto; }
+.login-prompt-header { display: flex; align-items: center; gap: 12px; }
+.login-prompt-header h2 { flex: 1; margin: 0; font-size: 20px; line-height: 1.35; }
+.login-prompt-header .icon-button { width: 44px; height: 44px; flex-shrink: 0; }
+.login-prompt-dialog #login-prompt-message { margin-top: 8px; }
+.login-prompt-notice { margin-top: 20px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--background); }
+.login-prompt-notice p { font-size: 13px; line-height: 1.6; }
+.login-prompt-notice p + p { margin-top: 12px; }
+.login-prompt-notice strong { color: #e3ddff; font-weight: 600; }
+.login-prompt-dialog #login-prompt-privacy { margin-top: 16px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.login-prompt-dialog .dialog-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 24px; }
+.login-prompt-dialog .dialog-actions .button { min-height: 44px; padding: 9px 8px; }
+@media (max-width: 600px) {
+  .login-prompt-dialog { padding: 20px; }
+}
 
 .profile-bio { white-space: pre-wrap; overflow-wrap: anywhere; }
 
