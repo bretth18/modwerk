@@ -34,7 +34,8 @@ export function NotificationBell() {
   function markRead(ids?: string[]) {
     setItems(current => current?.map(item => !ids || ids.includes(item.id) ? { ...item, seen: true } : item) ?? null)
     setUnread(current => ids ? Math.max(0, current - (items?.filter(item => ids.includes(item.id) && !item.seen).length ?? 0)) : 0)
-    void post('/notifications', ids ? { ids } : {}, 'PATCH').catch(() => count())
+    // Say why a read did not stick instead of quietly restoring the count.
+    void post('/notifications', ids ? { ids } : {}, 'PATCH').catch(error => { setError(error instanceof Error ? error.message : 'Notifications could not be marked as read.'); setOpen(true); count() })
   }
   const lines = items ? notificationLines(items) : []
   return <div className="notification-bell" ref={root}>

@@ -19,7 +19,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "types": [
-      "node"
+      "node",
+      "vite/client"
     ]
   },
   "include": [
