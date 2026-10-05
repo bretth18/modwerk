@@ -1,0 +1,111 @@
+import { afterEach, describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
+import type { DatabaseSync } from 'node:sqlite'
+import { testServer } from './test-server'
+import { digest } from '../../server/security'
+import { ensureModuleThreads } from '../../server/module-threads'
+import { communityModule } from './modules'
+
+const databases:DatabaseSync[]=[]
+afterEach(()=>{for(const db of databases.splice(0))db.close()})
+async function fixture(){
+  const server=await testServer();databases.push(server.db)
+  const id='discussion-reader',token='d'.repeat(64)
+  server.db.prepare("INSERT INTO users(id,display_name,username,email_verified) VALUES(?,'Reader','reader',1)").run(id)
+  server.db.prepare('INSERT INTO sessions(token_hash,user_id,expires) VALUES(?,?,?)').run(await digest(token),id,Math.floor(Date.now()/1000)+600)
+  return {...server,id,token}
+}
+
+describe('one module discussion',()=>{
+  it('shares replies, edits, moderation and counts between the module API and forum',async()=>{
+    const {call,db,token}=await fixture()
+    const legacy=await call('/modules/miniverb/comments','POST',{body:'A question from the module page.'},token)
+    expect(legacy.status).toBe(200)
+    const {id:first}=await legacy.json()
+    const forum=await (await call('/forum/threads/module-miniverb')).json()
+    expect(forum.posts.map((post:{id:string})=>post.id)).toContain(first)
+    expect(forum.thread.replies).toBe(1)
+    const reply=await call('/forum/threads/module-miniverb/replies','POST',{body:'**Same discussion** from the forum.'},token)
+    expect(reply.status).toBe(201)
+    const {id:second}=await reply.json()
+    expect((await (await call('/modules/miniverb', 'GET', undefined, token)).json()).comments.map((post:{id:string})=>post.id)).toEqual([second,first])
+    expect(db.prepare('SELECT COUNT(*) AS count FROM comments').get()!.count).toBe(0)
+    expect((await call('/forum/posts/'+first,'PATCH',{body:'Edited in the forum.'},token)).status).toBe(200)
+    expect((await (await call('/modules/miniverb')).json()).comments.find((post:{id:string})=>post.id===first).body).toBe('Edited in the forum.')
+    expect((await call('/comments/'+second,'DELETE',undefined,token)).status).toBe(200)
+    expect((await (await call('/modules/miniverb')).json()).comments.map((post:{id:string})=>post.id)).toEqual([first])
+    expect((await (await call('/forum/threads/module-miniverb')).json()).posts.find((post:{id:string})=>post.id===second)).toMatchObject({hidden:1,body:'',displayName:null})
+    expect((await (await call('/forum/threads/module-miniverb')).json()).thread.replies).toBe(1)
+  })
+
+  it('applies forum visibility, locking, ownership and verified membership to legacy clients',async()=>{
+    const {call,db,id,token}=await fixture()
+    expect((await call('/modules/miniverb/comments','POST',{body:'Anonymous'})).status).toBe(401)
+    const posted=await (await call('/modules/miniverb/comments','POST',{body:'Visible'},token)).json()
+    db.prepare("UPDATE forum_threads SET locked=1 WHERE id='module-miniverb'").run()
+    expect((await call('/modules/miniverb/comments','POST',{body:'Locked'},token)).status).toBe(409)
+    expect((await (await call('/modules/miniverb','GET',undefined,token)).json()).comments[0].canDelete).toBe(false)
+    await call('/comments/'+posted.id,'DELETE',undefined,token)
+    expect(db.prepare('SELECT hidden FROM forum_posts WHERE id=?').get(posted.id)!.hidden).toBe(0)
+    db.prepare("UPDATE forum_threads SET hidden=1,locked=0 WHERE id='module-miniverb'").run()
+    expect((await call('/modules/miniverb/comments','POST',{body:'Hidden'},token)).status).toBe(404)
+    expect((await (await call('/modules/miniverb')).json()).comments).toEqual([])
+    db.prepare("UPDATE forum_threads SET hidden=0 WHERE id='module-miniverb'").run()
+    db.prepare('UPDATE users SET email_verified=0 WHERE id=?').run(id)
+    expect((await call('/modules/miniverb/comments','POST',{body:'Unverified'},token)).status).toBe(403)
+  })
+
+  it('returns the new reply page including hidden placeholders so either composer can show it',async()=>{
+    const {call,db,id,token}=await fixture()
+    await call('/modules/miniverb')
+    for(let index=0;index<35;index++)db.prepare("INSERT INTO forum_posts(id,thread_id,user_id,body,hidden) VALUES(?,'module-miniverb',?,'An earlier reply',?)").run('earlier-'+index,id,index<8?1:0)
+    const posted=await call('/forum/threads/module-miniverb/replies','POST',{body:'On the second page.'},token)
+    expect(posted.status).toBe(201)
+    const result=await posted.json()
+    expect(result.page).toBe(1)
+    const secondPage=await (await call('/forum/threads/module-miniverb?page='+result.page)).json()
+    expect(secondPage.posts.map((post:{id:string})=>post.id)).toContain(result.id)
+    expect(secondPage.thread.replies).toBe(28)
+  })
+
+  it('gives published modules and module sets the same fixed home thread and forum filter',async()=>{
+    const {call,db,id,token}=await fixture()
+    await call('/forum/threads')
+    db.prepare("INSERT INTO submissions(id,owner_id,module_id,title,repository_url,description,usage,test_report_url,stress_notes,quality_notes,resource_notes,license,status) VALUES('publication',?,'community-filter','Community Filter','https://github.com/example/filter','A published filter','Use it','https://github.com/example/filter','Checked','Checked','Checked','MIT','approved')").run(id)
+    db.prepare("INSERT INTO module_publications(module_id,submission_id) VALUES('community-filter','publication')").run()
+    for(const module of ['community-filter','remix-miniverb']){
+      const posted=await call('/modules/'+module+'/comments','POST',{body:'Shared module discussion'},token)
+      expect(posted.status).toBe(200)
+      const detail=await (await call('/forum/threads/module-'+module)).json()
+      expect(detail.thread).toMatchObject({module_id:module,replies:1,official:1})
+      expect((await (await call('/forum/threads?module='+module)).json()).threads[0].id).toBe('module-'+module)
+    }
+    expect((await call('/forum/threads?module=does-not-exist')).status).toBe(400)
+  })
+
+  it('migrates historical comments once, preserving identity, order, moderation and notification state',async()=>{
+    const {call,db,env,id}=await fixture()
+    db.prepare("INSERT INTO users(id,display_name) VALUES('old-guest','Historical guest')").run()
+    db.prepare("INSERT INTO forum_threads(id,user_id,title,category,module_id,machine,locked,hidden,created_at,updated_at) VALUES('module-miniverb','modwerk','Mini Verb discussion','modules','miniverb','octatrack',1,1,'2024-01-01','2024-01-01')").run()
+    db.prepare("INSERT INTO forum_posts(id,thread_id,user_id,body,created_at) VALUES('module-miniverb','module-miniverb','modwerk','Original introduction','2024-01-01')").run()
+    db.prepare("INSERT INTO forum_posts(id,thread_id,user_id,body,created_at) VALUES('existing-reply','module-miniverb',?,'Existing forum reply','2023-01-01')").run(id)
+    db.prepare("INSERT INTO comments(id,module_id,user_id,body,created_at) VALUES('legacy-one','miniverb','old-guest','Historical question','2020-01-01'),('legacy-two','spectrum',?,'Another question','2021-01-01')").run(id)
+    db.prepare("INSERT INTO notifications(id,user_id,kind,actor_id,module_id,comment_id,seen,emailed) VALUES('old-notification',?,'module_comment','old-guest','miniverb','legacy-one',1,1)").run(id)
+    const migration=readFileSync(new URL('../../migrations/0028_unified_module_discussions.sql',import.meta.url),'utf8')
+    db.exec(migration);db.exec(migration)
+    await ensureModuleThreads(env.DB!)
+    expect(db.prepare("SELECT id,body,user_id,created_at FROM forum_posts WHERE thread_id='module-miniverb' ORDER BY created_at,rowid").all()).toEqual([
+      {id:'module-miniverb',body:'Original introduction',user_id:'modwerk',created_at:'2020-01-01'},
+      {id:'comment-legacy-one',body:'Historical question',user_id:'old-guest',created_at:'2020-01-01'},
+      {id:'existing-reply',body:'Existing forum reply',user_id:id,created_at:'2023-01-01'},
+    ])
+    expect(db.prepare("SELECT locked,hidden FROM forum_threads WHERE id='module-miniverb'").get()).toEqual({locked:1,hidden:1})
+    expect(db.prepare("SELECT title,machine FROM forum_threads WHERE id='module-spectrum'").get()).toEqual({title:communityModule('spectrum')!.name+' discussion',machine:'octatrack'})
+    expect(db.prepare("SELECT kind,thread_id,post_id,comment_id,seen,emailed FROM notifications WHERE id='old-notification'").get()).toEqual({kind:'reply',thread_id:'module-miniverb',post_id:'comment-legacy-one',comment_id:null,seen:1,emailed:1})
+    const admin=await (await call('/auth/admin','POST',{key:'e'.repeat(64)})).json()
+    const detail=await (await call('/forum/threads/module-miniverb','GET',undefined,'',admin.token)).json()
+    expect(detail.posts[1]).toMatchObject({displayName:'Historical guest',username:null,canEdit:false,official:false})
+    await call('/comments/legacy-one','DELETE',undefined,'',admin.token)
+    expect(db.prepare("SELECT hidden FROM forum_posts WHERE id='comment-legacy-one'").get()!.hidden).toBe(1)
+  })
+})

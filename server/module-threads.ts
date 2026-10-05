@@ -1,7 +1,9 @@
 import type { Database } from './platform'
-import { COMMUNITY_MODULES, moduleThreadId, type CommunityModule } from '../src/community/modules'
+import { COMMUNITY_MODULES, communityModule, moduleThreadId, type CommunityModule } from '../src/community/modules'
 import { DEVICES_BY_ID } from '../src/devices/registry'
 import { followModuleDevelopers } from './bug-reports'
+import recipes from '../src/catalog/module-sets.json'
+import { HttpError } from './security'
 
 /** Fixed author row for server-created threads; it has no username, sign-in or session. */
 export const SYSTEM_AUTHOR = 'modwerk'
@@ -13,18 +15,38 @@ export function moduleThreadIntro(module: CommunityModule) {
 /** Create the missing module threads. Fixed IDs make concurrent or repeated runs harmless. */
 export async function ensureModuleThreads(db: Database, modules: readonly CommunityModule[] = COMMUNITY_MODULES) {
   // A primary-key range instead of an IN list keeps the query within D1's bound-parameter limit as the catalog grows.
-  const existing = new Set((await db.prepare("SELECT id FROM forum_threads WHERE id>='module-' AND id<'module.'").all<{ id: string }>()).results.map(row => row.id))
+  const existing = new Map((await db.prepare("SELECT id,title FROM forum_threads WHERE id>='module-' AND id<'module.'").all<{ id: string; title: string }>()).results.map(row => [row.id,row.title]))
   const missing = modules.filter(module => !existing.has(moduleThreadId(module.id)))
-  if (!missing.length) return 0
-  await db.batch(missing.flatMap(module => {
+  // Migration 0028 uses IDs for modules whose home thread did not exist yet. Fill in catalog metadata.
+  const repairs = modules.filter(module => existing.get(moduleThreadId(module.id)) === module.id + ' discussion')
+  if (!missing.length && !repairs.length) return 0
+  await db.batch([...repairs.flatMap(module => [
+    db.prepare("UPDATE forum_threads SET title=?,machine=? WHERE id=? AND user_id=?").bind(module.name+' discussion',module.machine,moduleThreadId(module.id),SYSTEM_AUTHOR),
+    db.prepare("UPDATE forum_posts SET body=? WHERE id=? AND user_id=? AND body='Share settings, questions, ideas and feedback about this module here.'").bind(moduleThreadIntro(module),moduleThreadId(module.id),SYSTEM_AUTHOR),
+    followModuleDevelopers(db,module,moduleThreadId(module.id)),
+  ]),...missing.flatMap(module => {
     const id = moduleThreadId(module.id)
     return [
       db.prepare("INSERT OR IGNORE INTO forum_threads(id,user_id,title,category,machine,module_id) VALUES(?,?,?,'modules',?,?)").bind(id, SYSTEM_AUTHOR, module.name + ' discussion', module.machine, module.id),
       db.prepare('INSERT OR IGNORE INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').bind(id, id, SYSTEM_AUTHOR, moduleThreadIntro(module)),
       followModuleDevelopers(db, module, id),
     ]
-  }))
+  })])
   return missing.length
+}
+
+/** Published contributions and module sets use the same fixed thread ID as catalog modules. */
+export async function ensureDiscussionThread(db: Database, moduleId: string) {
+  const module = communityModule(moduleId)
+  if (module) { await ensureModuleThreads(db,[module]); return }
+  const recipe = recipes.find(recipe => 'remix-'+recipe.id===moduleId)
+  const published = recipe ? null : await db.prepare('SELECT s.title,s.description FROM module_publications p JOIN submissions s ON s.id=p.submission_id WHERE p.module_id=?').bind(moduleId).first<{title:string;description:string}>()
+  if (!recipe && !published) throw new HttpError(404,'Module not found.')
+  const id=moduleThreadId(moduleId),name=published?.title??'Module set · '+recipe!.id
+  await db.batch([
+    db.prepare("INSERT OR IGNORE INTO forum_threads(id,user_id,title,category,machine,module_id) VALUES(?,?,?,'modules',?,?)").bind(id,SYSTEM_AUTHOR,name+' discussion',recipe?'octatrack':null,moduleId),
+    db.prepare('INSERT OR IGNORE INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').bind(id,id,SYSTEM_AUTHOR,(published?.description??recipe!.description)+'\n\nShare settings, questions, ideas and feedback here.'),
+  ])
 }
 
 const checked = new WeakSet<Database>()
@@ -32,5 +54,5 @@ const checked = new WeakSet<Database>()
 export async function ensureModuleThreadsOnce(db: Database) {
   if (checked.has(db)) return
   // Reading the forum must keep working if this fails (for example before migration 0023); the next request retries.
-  try { await ensureModuleThreads(db); checked.add(db) } catch (error) { console.error('Module threads could not be created.', error) }
+  try { await ensureModuleThreads(db); const published=(await db.prepare('SELECT module_id FROM module_publications').all<{module_id:string}>()).results; for(const module of published)await ensureDiscussionThread(db,module.module_id); checked.add(db) } catch (error) { console.error('Module threads could not be created.', error) }
 }

@@ -7,8 +7,9 @@ import type { PublicMedia } from './api'
 import { useCommunity } from './context'
 import { Icon } from '../components/Icon'
 import { ModulePopularity } from './ModulePopularity'
-import { communityModule, moduleThreadId } from './modules'
-type Data = {comments:{id:string;body:string;created_at:string;author:string;canDelete:boolean}[];ratings:{average:number|null;count:number};ownRating:number;likes:number;liked:boolean;downloads?:number;downloadsStarted?:string|null;media:PublicMedia[]}
+import { moduleThreadId } from './modules'
+import { ForumThreadView } from './ForumThreadView'
+type Data = {ratings:{average:number|null;count:number};ownRating:number;likes:number;liked:boolean;downloads?:number;downloadsStarted?:string|null;media:PublicMedia[]}
 function MediaPreview({item,privatePreview}:{item:PublicMedia;privatePreview:boolean}) {
   const [preview,setPreview]=useState<{id:string;url:string}|null>(null),[error,setError]=useState('')
   useEffect(()=>{
@@ -31,23 +32,20 @@ export function MediaGallery({media,privatePreview=false}:{media:PublicMedia[];p
 export function ModuleCommunity({id,mode='all',onDiscuss}:{id:string;mode?:'all'|'media'|'discussion'|'overview';onDiscuss?:()=>void}) {
   const {session,refresh} = useCommunity()
   const document=MODULE_DOCUMENTS_BY_ID[id],sourceMedia=document?.media??[]
-  const [data,setData] = useState<Data | null>(null), [comment,setComment] = useState(''), [rating,setRating] = useState(0), [error,setError] = useState(''), [busy,setBusy] = useState(false), [notice,setNotice] = useState('')
+  const [data,setData] = useState<Data | null>(null), [rating,setRating] = useState(0), [error,setError] = useState(''), [busy,setBusy] = useState(false), [notice,setNotice] = useState('')
   useEffect(() => {
     let cancelled=false
     // A successful load clears an earlier failure, so a passing network blip does not leave a stale error.
     if (session.available) void api<Data>('/modules/' + id).then(value => {if (!cancelled) {setData(value);setRating(value.ownRating);setError('')}}).catch(error => {if(!cancelled)setError(error.message)})
     return () => {cancelled=true}
   },[id,session.available,session.user?.id])
-  async function send(kind:'comments'|'rating'|'like') {
+  async function send(kind:'rating'|'like') {
     setBusy(true);setError('');setNotice('')
     try {
-      await post('/modules/' + id + '/' + kind,kind==='comments'?{body:comment}:kind==='like'?{liked:!data?.liked}:{value:rating})
-      await refresh();setData(await api<Data>('/modules/' + id)); if(kind==='comments')setComment('')
-      setNotice(kind==='comments'?'Comment posted.':kind==='like'?(data?.liked?'Like removed.':'Liked.'):'Rating saved.')
+      await post('/modules/' + id + '/' + kind,kind==='like'?{liked:!data?.liked}:{value:rating})
+      await refresh();setData(await api<Data>('/modules/' + id))
+      setNotice(kind==='like'?(data?.liked?'Like removed.':'Liked.'):'Rating saved.')
     } catch(error){setError(error instanceof Error?error.message:'Unable to save.')} finally{setBusy(false)}
-  }
-  async function removeComment(commentId:string) {
-    try {await api('/comments/' + commentId,{method:'DELETE'});setData(await api<Data>('/modules/' + id))} catch(error){setError(error instanceof Error?error.message:'Unable to remove.')}
   }
   const mediaSection = <section className="detail-section"><div className="section-title"><h2>Screenshots & audio</h2><a className="text-button" href={'#submit/' + id}>Add media <Icon name="plus" size={15}/></a></div>{sourceMedia.length ? <div className="media-gallery">{sourceMedia.map(item=>{const url=assetUrl('module-media/'+id+'/'+document.version+'/'+item.path);return <figure key={item.path}>{item.captureType==='audio'?<audio controls preload="none" src={url}>Audio preview</audio>:<a href={url} target="_blank" rel="noreferrer"><img className={item.otUi ? 'ot-ui-capture' : undefined} src={url} alt={item.alt} loading="lazy"/></a>}<figcaption>{item.caption}<span>{item.captureType==='hardware'?'Hardware capture':item.captureType==='emulator'?'Emulator capture':'Audio preview'} · {item.credit} · {item.license}</span>{item.source!=='original'&&<a href={item.source} target="_blank" rel="noreferrer">Original source ↗</a>}</figcaption></figure>})}</div> : null}{!!data?.media.length && <MediaGallery media={data.media}/>} {!sourceMedia.length && !data?.media.length && <div className="media-empty"><Icon name="file" size={24}/><div><strong>No media yet</strong><p>Share a screenshot or audio preview via PR.</p></div></div>}</section>
   if(mode==='overview')return <>
@@ -64,13 +62,12 @@ export function ModuleCommunity({id,mode='all',onDiscuss}:{id:string;mode?:'all'
     </div>
     {error&&<p className="file-error" role="alert">{error}</p>}{notice&&<p className="success-note" role="status">{notice}</p>}
   </>
-  if(mode!=='media'&&session.available&&!data)return <section className="detail-section"><h2>Community</h2>{error?<><p className="file-error" role="alert">{error}</p><button className="button button-quiet" onClick={()=>{setError('');void api<Data>('/modules/'+id).then(value=>{setData(value);setRating(value.ownRating)}).catch(error=>setError(error.message))}}>Try again</button></>:<p className="service-note" role="status">Loading community…</p>}</section>
   return <>
     {mode !== 'discussion' && mediaSection}
-    {mode !== 'media' && <div className="community-grid"><section className="detail-section comments-section"><h2>Discussion <span className="subtle">{data?.comments.length ?? 0}</span></h2>{data?.comments.length ? <div className="comments-list">{data.comments.map(item => <article key={item.id}><div><strong>{item.author}</strong><time>{new Date(item.created_at.replace(' ','T')+'Z').toLocaleDateString()}</time>{item.canDelete && <button className="text-button" onClick={()=>void removeComment(item.id)}>Remove</button>}</div><p>{item.body}</p></article>)}</div> : <div className="comment-empty"><strong>No comments yet</strong><p>Questions, experiences and useful tips about this module.</p></div>}<MemberPrompt/>{communityModule(id)&&<div className="forum-actions"><a className="button button-quiet" href={'#forum/thread/'+moduleThreadId(id)}><Icon name="message" size={15}/>Open the module’s forum thread</a><a className="text-button" href={'#forum?module='+id}>All forum threads about this module →</a></div>}<label className="sr-only" htmlFor={'comment-'+id}>Comment</label><textarea disabled={!session.user?.verified} id={'comment-'+id} value={comment} onChange={event=>setComment(event.target.value)} maxLength={2000} placeholder="Share your experience or ask a question…" rows={3}/><div className="composer-footer">{session.user?<span>Posting as {session.user.displayName}</span>:<span>Sign in with a verified account</span>}<button className="button button-quiet" disabled={!session.user?.verified||!session.available||busy||!comment.trim()} onClick={()=>void send('comments')}>Post comment</button></div></section>
+    {mode !== 'media' && <div className="community-grid"><section className="detail-section module-discussion forum-page"><ForumThreadView key={id} id={moduleThreadId(id)} embedded/></section>
     <section className="detail-section ratings-section"><div className="section-title"><h2>Ratings</h2><button className="button button-quiet like-button" aria-label={(data?.liked?'Unlike ':'Like ')+id} aria-pressed={data?.liked??false} disabled={!session.user?.verified||!session.available||busy} onClick={()=>void send('like')}>{data?.liked?'♥':'♡'} {data?.likes??0}</button></div><ModulePopularity statistics={data??undefined}/><div className="rating-empty"><strong>{data?.ratings.average?.toFixed(1) ?? '—'}</strong><div><span className="star-line">{[1,2,3,4,5].map(i=><span key={i} className={data?.ratings.average && i<=Math.round(data.ratings.average)?'is-filled':''}><Icon name="star" size={16}/></span>)}</span><span>{data?.ratings.count ? data.ratings.count+(data.ratings.count===1?' rating':' ratings'):'No ratings yet'}</span></div></div><fieldset className="rating-picker" disabled={!session.user?.verified}><legend>Your rating</legend><div>{[1,2,3,4,5].map(i=><button key={i} className={rating>=i?'is-filled':''} aria-label={i+(i===1?' star':' stars')} aria-pressed={rating===i} onClick={()=>setRating(i)}><Icon name="star" size={23}/></button>)}</div></fieldset><button className="button button-quiet rating-save" disabled={!session.user?.verified||!session.available||busy||!rating} onClick={()=>void send('rating')}>Save rating</button><MemberPrompt/></section></div>}
-    {mode !== 'media' && <p className="community-privacy">Usernames, comments, ratings and likes are public. Sign in to manage your activity across devices. Email addresses stay private. Older guest names remain unverified. Posts are moderated.</p>}
-    {mode !== 'media' && !session.available && <p className="service-note">Community is unavailable. Comments and ratings are paused.</p>}
+    {mode !== 'media' && <p className="community-privacy">Usernames, posts, ratings and likes are public. Sign in to manage your activity across devices. Email addresses stay private. Older guest names remain unverified. Posts are moderated.</p>}
+    {mode !== 'media' && !session.available && <p className="service-note">Community is unavailable. Discussions and ratings are paused.</p>}
     {error&&<p className="file-error" role="alert">{error}</p>}{notice&&<p className="success-note" role="status">{notice}</p>}
   </>
 }

@@ -31,7 +31,7 @@ export function notifyMentions(db: Database, body: string, threadId: string, pos
 }
 
 export function notifyReplies(db: Database, threadId: string, postId: string, authorId: string) {
-  return db.prepare(`INSERT INTO notifications(id,user_id,kind,actor_id,thread_id,post_id,module_id) SELECT ${newId},f.user_id,'reply',?,t.id,?,t.module_id FROM forum_follows f JOIN users u ON u.id=f.user_id JOIN forum_threads t ON t.id=f.thread_id WHERE f.thread_id=? AND f.user_id<>? AND u.suspended=0 AND EXISTS(SELECT 1 FROM forum_posts WHERE id=?) AND NOT EXISTS(SELECT 1 FROM notifications n WHERE n.post_id=? AND n.user_id=f.user_id)`).bind(authorId, postId, threadId, authorId, postId, postId)
+  return db.prepare(`INSERT INTO notifications(id,user_id,kind,actor_id,thread_id,post_id,module_id) SELECT ${newId},f.user_id,'reply',?,t.id,?,t.module_id FROM forum_follows f JOIN users u ON u.id=f.user_id JOIN forum_threads t ON t.id=f.thread_id WHERE f.thread_id=? AND f.user_id<>? AND u.suspended=0 AND NOT EXISTS(SELECT 1 FROM auth_accounts g WHERE g.userId=? AND g.providerId='github' AND g.accountId=u.github_id) AND EXISTS(SELECT 1 FROM forum_posts WHERE id=?) AND NOT EXISTS(SELECT 1 FROM notifications n WHERE n.post_id=? AND n.user_id=f.user_id)`).bind(authorId, postId, threadId, authorId, authorId, postId, postId)
 }
 
 export function notifyPostLike(db: Database, postId: string, actorId: string, liked: boolean) {

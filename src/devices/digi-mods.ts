@@ -87,3 +87,10 @@ export function resolveDigiSelection(device: DigiMod['device'], ids: readonly st
   if (unknown.length) throw new Error('Unknown module: ' + unknown.join(', '))
   return mods.filter(mod => ids.includes(mod.id))
 }
+
+/** Keep the complete documentation available to detail pages; library cards use DigiMod's summary. */
+export function digiModuleDocument(mod: Pick<DigiMod, 'device' | 'id'>): ModwerkModule {
+  const document = (MACHINE_MODULES.modules as ModwerkModule[]).find(document => document.machine === mod.device && document.id === mod.id)
+  if (!document) throw new Error('Unknown module: ' + mod.device + '/' + mod.id)
+  return document
+}
