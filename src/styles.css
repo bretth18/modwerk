@@ -36,7 +36,7 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .skip-link { position: fixed; top: -80px; left: 16px; z-index: 30; padding: 12px; border-radius: 6px; background: var(--surface); }
 .skip-link:focus { top: 12px; }
-.app-shell { display: grid; grid-template-columns: 264px minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); position: fixed; inset: 0; min-height: 0; overflow: hidden; }
+.app-shell { --sidebar-width: 264px; display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); position: fixed; inset: 0; min-height: 0; overflow: hidden; }
 .sidebar { overflow-y: auto; scrollbar-width: thin; background: var(--sidebar); border-right: 1px solid var(--line); padding: 20px 13px 0; display: flex; flex-direction: column; min-height: 0; }
 .sidebar > * { flex-shrink: 0; }
 .app-brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; margin-bottom: 39px; }
@@ -401,7 +401,7 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 /* Desktop column thresholds follow the compact 90% layout below. */
 @media (min-width: 1485px) { .module-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @media (max-width: 990px) {
-  .app-shell { grid-template-columns: 248px minmax(0, 1fr); }
+  .app-shell { --sidebar-width: 260px; }
   .sidebar { padding-left: 10px; padding-right: 10px; }
   .app-brand { padding-left: 5px; gap: 8px; }
   .app-brand small { font-size: 12px; }
@@ -417,7 +417,7 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .detail-intro > p { font-size: 13px; }
 }
 @media (max-width: 820px) {
-  .app-shell { grid-template-columns: 232px minmax(0, 1fr); }
+  .app-shell { --sidebar-width: 252px; }
   .sidebar-nav a { font-size: 12px; gap: 8px; padding-left: 8px; padding-right: 8px; }
   .app-brand > span { font-size: 16px; }
   .app-brand img { width: 29px; height: 29px; }
@@ -1246,12 +1246,12 @@ h1 { font-size: 28px; }
 
 /* Desktop notifications sit beside the sidebar brand; phones keep the toolbar bell. */
 .sidebar-brand { position: relative; margin-bottom: 24px; }
-.sidebar-brand .app-brand { display: grid; grid-template-columns: 35px minmax(0, 1fr); column-gap: 10px; margin: 0; }
+.sidebar-brand .app-brand { display: grid; grid-template-columns: 35px minmax(0, 1fr); gap: 2px 10px; margin: 0; }
 .sidebar-brand .app-brand > img { grid-row: 1 / 3; }
-.sidebar-brand .app-brand > span { padding-right: 40px; line-height: 28px; }
-.sidebar-brand .app-brand > small { grid-column: 2; white-space: nowrap; }
-.sidebar-brand .notification-bell { position: absolute; top: -6px; right: 3px; margin-left: 0; }
-.sidebar-brand .notification-panel { position: fixed; top: 84px; left: 16px; right: auto; }
+.sidebar-brand .app-brand > span { padding-right: 40px; line-height: 24px; }
+.sidebar-brand .app-brand > small { grid-column: 2; margin: 0; line-height: 16px; white-space: nowrap; }
+.sidebar-brand .notification-bell { position: absolute; top: 0; right: 3px; bottom: 0; display: flex; align-items: center; margin-left: 0; }
+.sidebar-brand .notification-panel { position: fixed; top: 72px; left: calc(var(--sidebar-width) - 24px); right: auto; width: min(380px, calc(100vw - var(--sidebar-width) + 8px)); }
 .notification-bell { position: relative; margin-left: auto; flex-shrink: 0; }
 .notification-bell ~ .configuration-button, .notification-bell ~ .mobile-menu { margin-left: 0; }
 .notification-bell-button { position: relative; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 9px; background: transparent; color: #c7c7d2; cursor: pointer; }
