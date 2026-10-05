@@ -2,6 +2,19 @@ name: Module PR checks
 on:
   pull_request:
     branches: [main, 'modwerk/**', 'codex/modwerk-*']
+    # Skip the module/SDK checks when a PR only touches the frontend. A PR that
+    # also touches anything outside this list still runs them.
+    paths-ignore:
+      - 'src/components/**'
+      - 'src/community/**'
+      - 'src/hooks/**'
+      - 'src/legal/**'
+      - 'src/App.tsx'
+      - 'src/main.tsx'
+      - 'src/styles.css'
+      - 'src/**/*.css'
+      - 'public/**'
+      - 'index.html'
 permissions:
   contents: read
 concurrency:
