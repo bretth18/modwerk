@@ -21,12 +21,12 @@ RUN curl -fsSLo /tmp/gcc.tar.xz "https://gcc.gnu.org/pub/gcc/releases/gcc-$GCC_V
  && echo "$GCC_SHA512  /tmp/gcc.tar.xz" | sha512sum -c - \
  && mkdir /tmp/gcc /tmp/gcc-build && tar -xJf /tmp/gcc.tar.xz -C /tmp/gcc --strip-components=1 \
  && cd /tmp/gcc-build && /tmp/gcc/configure --target=m68k-elf --prefix=/usr/local --enable-languages=c --without-headers --disable-bootstrap --disable-multilib --disable-nls --disable-shared --disable-threads \
- && make -j2 all-gcc && make install-gcc && cd / && rm -rf /tmp/gcc /tmp/gcc-build /tmp/gcc.tar.xz
+ && make -j"$(nproc)" all-gcc && make install-gcc && cd / && rm -rf /tmp/gcc /tmp/gcc-build /tmp/gcc.tar.xz
 WORKDIR /opt/toolchain
 COPY sdk/octabam/scripts/vendor.sh scripts/vendor.sh
 COPY sdk/octabam/tools/patches/dsp56300.patch tools/patches/dsp56300.patch
 COPY sdk/octabam/tools/harness/dsp_host/ tools/harness/dsp_host/
-RUN bash scripts/vendor.sh dsp56300 && cmake -S vendor/dsp56300 -B vendor/dsp56300/build -DCMAKE_BUILD_TYPE=Release -DDSP56300_DEBUGGER=OFF && cmake --build vendor/dsp56300/build --target dsp_asm dsp56kDisassemble --parallel 2
+RUN bash scripts/vendor.sh dsp56300 && cmake -S vendor/dsp56300 -B vendor/dsp56300/build -DCMAKE_BUILD_TYPE=Release -DDSP56300_DEBUGGER=OFF && cmake --build vendor/dsp56300/build --target dsp_asm dsp56kDisassemble --parallel "$(nproc)"
 RUN /usr/local/bin/m68k-elf-as --version && /usr/local/bin/m68k-elf-gcc --version && node --version && git -C vendor/dsp56300 rev-parse HEAD
 WORKDIR /source
 # Runtime always overrides these mounts with clean source and an empty output.
