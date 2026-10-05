@@ -192,7 +192,8 @@ describe('social onboarding from either account entry point',()=>{
     expect(exchanged.headers.get('X-Octamod-Session')).toBeNull()
     expect(exchanged.headers.get('Set-Cookie')).toBeNull()
     const {onboarding}=await exchanged.json()
-    expect(onboarding.username).toMatch(/^member_[a-f0-9]{12}$/)
+    // GitHub and Discord suggest their public handle; Google has none and keeps a generated name.
+    expect(onboarding.username).toMatch(provider==='google'?/^member_[a-f0-9]{12}$/:/^provider_handle$/)
     expect((await f.call('/forum/profiles/'+onboarding.username)).status).toBe(404)
     expect(JSON.stringify(onboarding)).not.toMatch(/Private provider|member@example|synthetic-access/)
     expect(f.db.prepare('SELECT COUNT(*) AS count FROM account_policy_acceptances').get()).toEqual({count:0})
