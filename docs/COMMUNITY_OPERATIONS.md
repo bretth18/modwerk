@@ -93,3 +93,10 @@ Developer OAuth setup and report-consent boundaries are documented in [DEVELOPER
 ## Administrator role
 
 A verified, unsuspended member whose `users.is_admin` is `1` sees the Admin workspace and passes every `/api/admin/*` check; nobody else sees it, and the page tells other visitors it is for administrators only. The role cannot be set through the API. The owner grants or removes it directly in D1 (`UPDATE users SET is_admin=1 WHERE username='…'`). Migration 0022 adds the column and must be applied **before** the Worker that reads it is deployed. The separate administrator key (`ADMIN_KEY_SHA256`, `POST /api/auth/admin`) still works for API access as break-glass access, but the website no longer offers a key form.
+
+## Member statistics
+
+The Statistics and Accounts tabs of the Admin workspace show aggregate account numbers from `GET /api/admin/accounts`: active members, unverified and unfinished social sign-ups, suspended and deleted accounts, administrators, news opt-ins, sign-ins by method and daily sign-ups for the last 30 UTC days. They are computed from the account tables on request, so they need no opt-in and cover every sign-up since launch. Removed accounts drop out of the history. No email address, provider profile or per-member row is returned.
+
+Usage counts (visitors, page views, builds, downloads) are different: they are opt-in per browser since 2026-10-04, and consent stored on octamod.app does not carry over to modwerk.app. Days without opted-in visitors have no data, and missing days cannot be reconstructed.
+

@@ -20,5 +20,5 @@ export function useWorkspaceReportContext(machine = 'octatrack') {
 }
 export const REPORT_OS = BASE_FIRMWARE.version
 /** Mirrored issue reports live in the Octamod repository's GitHub issues. */
-export function issueRepository() { try { return sourceRepository() || 'https://github.com/repeat98/octamod' } catch { return 'https://github.com/repeat98/octamod' } }
+export function issueRepository() { try { return sourceRepository() || 'https://github.com/repeat98/modwerk' } catch { return 'https://github.com/repeat98/modwerk' } }
 export function moduleIssuesUrl(id: string) { return issueRepository() + '/issues?q=' + encodeURIComponent('is:issue label:"module:' + id + '"') }
