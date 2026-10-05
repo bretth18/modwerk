@@ -90,7 +90,6 @@
 .digi-mod-title strong { color: #f0f0f6; font-size: 14px; }
 .digi-mod-title small { color: var(--muted); font-size: 12px; }
 
-.sidebar > .app-brand { margin-bottom: 24px; }
 .machine-switcher { position: relative; margin: 0 0 28px; }
 .sidebar-device { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border: 1px solid #3a3a43; border-radius: 8px; background: #26262b; color: inherit; text-align: left; transition: border-color .15s, background .15s; }
 .sidebar-device:hover, .sidebar-device[aria-expanded="true"] { border-color: #53535f; background: #2b2b31; }

@@ -7,7 +7,7 @@ import { ForumTime } from './ForumTime'
 
 export function ForumShoutbox({archive=false,page=0,floating=false}:{archive?:boolean;page?:number;floating?:boolean}) {
   const {session}=useCommunity()
-  const [data,setData]=useState<ForumShouts|null>(null),[error,setError]=useState(''),[notice,setNotice]=useState(''),[draft,setDraft]=useState(''),[busy,setBusy]=useState(false),[collapsed,setCollapsed]=useState(false),[revision,setRevision]=useState(0),[editing,setEditing]=useState<string|null>(null),[editBody,setEditBody]=useState('')
+  const [data,setData]=useState<ForumShouts|null>(null),[error,setError]=useState(''),[notice,setNotice]=useState(''),[draft,setDraft]=useState(''),[busy,setBusy]=useState(false),[collapsed,setCollapsed]=useState(()=>!archive&&typeof window!=='undefined'&&window.matchMedia('(max-width: 600px)').matches),[revision,setRevision]=useState(0),[editing,setEditing]=useState<string|null>(null),[editBody,setEditBody]=useState('')
   const list=useRef<HTMLDivElement>(null),followEnd=useRef(true),minimizeButton=useRef<HTMLButtonElement>(null)
   function expand(){setCollapsed(false);window.requestAnimationFrame(()=>minimizeButton.current?.focus())}
   function minimize(){setCollapsed(true);window.requestAnimationFrame(()=>document.getElementById('shoutbox-launcher')?.focus())}

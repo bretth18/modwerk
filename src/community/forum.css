@@ -4,6 +4,7 @@
 .forum-heading { margin-bottom: 26px; }
 .forum-heading > .button { flex-shrink: 0; }
 .community-page.account-page { max-width: 820px; }
+.community-page.account-page-member { max-width: 900px; }
 .community-page.account-page-recovery { max-width: 480px; }
 .forum-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 16px 0; }
 .forum-actions > a[aria-current="page"] { color: #ececf1; font-weight: 700; }
@@ -143,9 +144,67 @@
 .account-recovery-links { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px; border-top: 1px solid var(--line); padding-top: 12px; }
 .account-recovery-links a { display: inline-flex; align-items: center; min-height: 32px; color: var(--muted); font-size: 12px; }
 .account-recovery-links a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-.account-member > p { color: var(--muted); font-size: 13px; line-height: 1.7; margin-top: 8px; }
-.account-member h3 { font-size: 13px; margin: 24px 0 12px; }
-.account-member > .button { margin-top: 16px; white-space: normal; }
+.account-member { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px 24px; padding: 20px 24px; margin-bottom: 20px; }
+.account-identity { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.account-identity > div { min-width: 0; }
+.account-identity .forum-avatar { width: 44px; height: 44px; font-size: 13px; }
+.account-identity h2 { overflow-wrap: anywhere; }
+.account-identity p { display: flex; flex-wrap: wrap; gap: 6px 12px; color: var(--muted); font-size: 12px; line-height: 1.6; margin-top: 4px; overflow-wrap: anywhere; }
+.account-identity p > span { color: #aeb6df; }
+.account-member-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; }
+.account-member-actions .text-button { display: inline-flex; align-items: center; min-height: 36px; color: #bdc3f3; font-size: 12px; }
+.account-member-actions button { color: var(--muted); }
+.account-navigation { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 24px; padding: 5px; border: 1px solid var(--line); border-radius: 10px; background: #202024; }
+.account-navigation a { display: flex; align-items: center; justify-content: center; flex: 1 1 auto; min-height: 42px; padding: 10px 16px; border-radius: 6px; color: var(--muted); font-size: 13px; font-weight: 500; }
+.account-navigation a:hover { color: #e1e1ec; background: #28282f; }
+.account-navigation a[aria-current="page"] { background: #34384f; color: #d4d8ff; box-shadow: inset 0 1px #ffffff08; }
+.account-workspace { margin-bottom: 24px; }
+.account-workspace .configuration-section h2 { font-size: 15px; line-height: 1.45; }
+.account-workspace > .configuration-section:last-child { margin-bottom: 0; }
+.account-workspace-security, .account-workspace-notifications { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 20px; }
+.account-workspace-security > .configuration-section, .account-workspace-notifications > .configuration-section { min-width: 0; margin-bottom: 0; }
+.account-workspace > :is(.success-note, .file-error) { grid-column: 1 / -1; }
+.account-workspace-security > :is(.account-sessions, .account-deletion) { grid-column: 1 / -1; }
+.account-card-description { margin: 8px 0 18px; max-width: 65ch; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.account-card-note { margin-top: 14px; max-width: 65ch; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.account-card-note a, .account-details a { color: #bdc3f3; }
+.account-facts { display: grid; gap: 9px; margin: 16px 0 20px; }
+.account-facts > div { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px; }
+.account-facts dt { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.account-facts dd { margin: 0; color: #d5d5df; font-size: 12px; line-height: 1.6; }
+.account-action-details { margin-top: 16px; }
+.account-action-details > summary { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; padding: 10px 14px; border: 1px solid #4c4c58; border-radius: 7px; background: #2e2e35; color: #e0e0eb; font-size: 13px; cursor: pointer; list-style: none; }
+.account-action-details > summary::-webkit-details-marker { display: none; }
+.account-action-details > summary:hover { border-color: #64647a; background: #373740; }
+.account-action-details[open] > summary { border-color: #666b94; background: #303348; }
+.account-action-details .community-form { margin: 18px 0 0; gap: 16px; }
+.account-details { margin-top: 18px; padding-top: 4px; border-top: 1px solid var(--line); }
+.account-details > summary { min-height: 40px; padding-block: 10px; color: var(--muted); font-size: 12px; cursor: pointer; }
+.account-details p, .account-details ul { color: var(--muted); font-size: 13px; line-height: 1.75; }
+.account-details p + p { margin-top: 12px; }
+.account-details ul { margin: 8px 0 12px; padding-left: 18px; }
+.account-details li + li { margin-top: 6px; }
+.account-deletion-overview { display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; }
+.account-deletion-overview > div { min-width: 0; }
+.account-deletion-overview .account-card-description { margin-bottom: 0; }
+.account-deletion-overview > .button { flex-shrink: 0; min-height: 44px; }
+.account-deletion .community-form { max-width: 540px; margin-bottom: 0; }
+.account-removal > .button { margin-top: 14px; min-height: 44px; }
+.account-profile-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.account-profile .community-form { gap: 16px; margin-bottom: 0; }
+.account-profile .community-form .service-note { margin: 0; }
+.account-profile .community-form > .button { align-self: flex-start; min-width: 160px; }
+.account-session-list { list-style: none; padding: 0; margin: 18px 0; border-block: 1px solid var(--line); }
+.account-session-list li { display: flex; align-items: center; justify-content: space-between; gap: 6px 16px; padding-block: 14px; }
+.account-session-list li + li { border-top: 1px solid var(--line); }
+.account-session-list li > span { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 13px; }
+.account-session-list .pill { font-size: 10px; }
+.account-session-list small { color: var(--muted); font-size: 12px; }
+.account-sessions > .button { min-height: 44px; }
+.account-deletion { border-color: #694747; }
+.account-auth .account-divider { display: flex; align-items: center; gap: 12px; font-size: 12px; margin: 24px 0 0; }
+.account-auth .account-divider::before, .account-auth .account-divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.account-auth .community-form > .button { width: 100%; min-height: 42px; }
 .developer-verification { display: flex; flex-direction: column; gap: 18px; }
 .developer-verification-heading { display: flex; align-items: center; gap: 12px; }
 .developer-verification-icon { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; border: 1px solid #45495f; border-radius: 10px; color: #b8beff; background: #303345; }
@@ -163,11 +222,24 @@
 .account-help a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .account-help p + p { margin-top: 4px; font-size: 11px; }
 @media (max-width: 1000px) {
-  .community-page.account-page { max-width: 480px; }
-  .account-access-grid { grid-template-columns: minmax(0, 1fr); }
+  .community-page.account-page:not(.account-page-member) { max-width: 480px; }
+  .account-access-grid, .account-workspace-security, .account-workspace-notifications { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 600px) {
   .account-access-grid { gap: 16px; margin-bottom: 20px; }
+  .account-member { padding: 16px; gap: 8px; margin-bottom: 16px; }
+  .account-member-actions { width: 100%; justify-content: space-between; gap: 8px; }
+  .account-member-actions .text-button { min-height: 44px; }
+  .account-navigation { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); margin-bottom: 16px; }
+  .account-navigation a { grid-column: span 2; min-height: 44px; padding-inline: 8px; }
+  .account-navigation a:nth-last-child(-n+2) { grid-column: span 3; }
+  .account-workspace-security, .account-workspace-notifications { gap: 16px; }
+  .account-session-list li { flex-direction: column; align-items: flex-start; }
+  .account-sessions > .button { width: 100%; }
+  .account-deletion-overview { flex-direction: column; align-items: stretch; }
+  .account-profile-fields { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .account-profile .community-form > .button { width: 100%; }
+  .account-page .community-form input:not([type="checkbox"]), .account-page .community-form textarea { font-size: 16px; }
   .account-access-grid > .configuration-section { padding: 20px; }
   .account-auth-tabs a, .account-recovery-links a { min-height: 44px; }
   .account-auth .community-form > .button { min-height: 44px; }

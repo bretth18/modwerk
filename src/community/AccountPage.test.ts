@@ -31,14 +31,42 @@ describe('email action links in a signed-in browser',()=>{
   expect(html).toContain('Password you chose when registering')
   expect(html).not.toContain('Your issue reports')
  })
- it('keeps the normal account workspace available away from action links',()=>{
+ it('opens profile editing first with navigation to other account settings',()=>{
   const html=render('account')
   expect(html).toContain('Your account')
-  expect(html).toContain('Active sessions')
-  expect(html).toContain('Account removal')
-  expect(html).toContain('Download your account data')
+  expect(html).toContain('aria-label="Account settings"')
+  expect(html).toContain('href="#account" aria-current="page"')
   expect(html).toContain('Edit your profile')
-  expect(html).toContain('Delete account')
+  for(const route of ['activity','notifications','security','developer'])expect(html).toContain('href="#account/'+route+'"')
+  for(const title of ['Active sessions','Activity email','Delete account','Your issue reports'])expect(html).not.toContain(title)
+ })
+ it('groups sessions, exports and removal controls in security without showing the profile form',()=>{
+  const html=render('account/security')
+  expect(html).toContain('href="#account/security" aria-current="page"')
+  for(const title of ['Active sessions','Account removal','Download your account data','Delete account'])expect(html).toContain(title)
+  expect(html).not.toContain('Edit your profile')
+  expect(html).not.toContain('Activity email')
+ })
+ it('keeps the activity email link working with both email preference sections',()=>{
+  const html=render('account/notifications')
+  expect(html).toContain('href="#account/notifications" aria-current="page"')
+  expect(html).toContain('Activity email')
+  expect(html).toContain('News emails')
+  expect(html).not.toContain('Delete account')
+ })
+ it('gives notifications and issue reports their own activity view',()=>{
+  const html=render('account/activity')
+  expect(html).toContain('href="#account/activity" aria-current="page"')
+  expect(html).toContain('id="account-notifications"')
+  expect(html).toContain('Your issue reports')
+  expect(html).not.toContain('Edit your profile')
+ })
+ it('keeps private report links in the activity view without exposing the report token',()=>{
+  const html=render('account/report/synthetic-private-report')
+  expect(html).toContain('href="#account/activity" aria-current="page"')
+  expect(html).toContain('Back to inbox')
+  expect(html).toContain('Loading report')
+  expect(html).not.toContain('synthetic-private-report')
  })
  it.each(['account/sso/synthetic-private-code','account/sso'])('keeps %s in the social return flow through a session refresh',route=>{
   const html=render(route)
@@ -49,16 +77,16 @@ describe('email action links in a signed-in browser',()=>{
 })
 describe('developer account verification',()=>{
  it('offers verification on the account page without exposing the workspace to regular members',()=>{
-  const html=render('account',{available:true,user:null})
+  const html=render('account/developer',{available:true,user:null})
   expect(html).toContain('Verify developer account with GitHub')
   expect(html).not.toContain('href="#developer"')
   expect(html).not.toContain('Developer workspace')
  })
  it('keeps workspace links hidden while checking verification or when services are unavailable',()=>{
-  for(const developer of [null,{available:false,user:null}])expect(render('account',developer)).not.toContain('href="#developer"')
+  for(const developer of [null,{available:false,user:null}])expect(render('account/developer',developer)).not.toContain('href="#developer"')
  })
  it('offers the workspace only after server-verified developer sign-in',()=>{
-  const html=render('account',{available:true,user:{login:'irpina'}})
+  const html=render('account/developer',{available:true,user:{login:'irpina'}})
   expect(html).toContain('Verified developer: @irpina')
   expect(html).toContain('href="#developer"')
  })

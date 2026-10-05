@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Icon } from '../components/Icon'
 import { AccountConfirmation } from './AccountConfirmation'
 import { apiFetch } from './api'
 export function AccountExport(){
@@ -15,5 +16,13 @@ export function AccountExport(){
       form.reset();setMessage('Your account data download was requested.')
     }catch(error){setError(error instanceof Error?error.message:'Unable to download account data.')}finally{setBusy(false)}
   }
-  return <section className="configuration-section"><h2>Download your account data</h2><p>Get your account details, contributions, private reports and community activity as a JSON file. This file contains personal data; store it privately. Saved firmware and local configurations stay on this device and are managed from Configuration.</p><details><summary>Download personal data</summary><form className="community-form" onSubmit={event=>{event.preventDefault();void download(event.currentTarget)}}><AccountConfirmation onReady={setReady}/><button className="button button-quiet" disabled={busy||!ready}>{busy?'Preparing download…':'Download my data'}</button></form></details>{error&&<p className="file-error" role="alert">{error}</p>}{message&&<p className="success-note" role="status">{message}</p>}</section>
+  return <section className="configuration-section account-data-export">
+    <h2>Download your account data</h2>
+    <p className="account-card-description">Save a private copy of your account and contributions.</p>
+    <dl className="account-facts"><div><dt>Format</dt><dd>JSON file</dd></div><div><dt>Local configurations</dt><dd>Stay on this device</dd></div></dl>
+    <details className="account-action-details"><summary>Download personal data<Icon name="download" size={16}/></summary><form className="community-form" onSubmit={event=>{event.preventDefault();void download(event.currentTarget)}}><AccountConfirmation onReady={setReady}/><button className="button button-primary" disabled={busy||!ready}>{busy?'Preparing download…':'Download my data'}</button></form></details>
+    <p className="account-card-note">This file contains personal data. Store it privately.</p>
+    <details className="account-details"><summary>What’s included</summary><ul><li>Your account details and community contributions.</li><li>Your private reports and community activity.</li></ul><p>Saved firmware and local configurations stay on this device and are managed from Configuration.</p></details>
+    {error&&<p className="file-error" role="alert">{error}</p>}{message&&<p className="success-note" role="status">{message}</p>}
+  </section>
 }

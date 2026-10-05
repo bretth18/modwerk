@@ -835,11 +835,27 @@ h1 { font-size: 28px; }
   }
 }
 
-.selection-conflict-link { display: flex; align-items: center; gap: 12px; padding: 16px; margin-top: 22px; border: 1px solid #715235; background: #2d2721; border-radius: 9px; color: #f0c792; }
-.selection-conflict-link > span { flex: 1; min-width: 0; }
-.selection-conflict-link strong { font-size: 13px; }
-.selection-conflict-link small { display: block; color: #d0bca4; font-size: 12px; line-height: 1.6; margin-top: 4px; }
-.selection-conflict-link:hover { background: #382d23; }
+.selection-warning { position: fixed; z-index: 35; right: 22px; bottom: 54px; }
+.selection-warning-toggle { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 15px; border: 1px solid #94704a; border-radius: 24px; background: #382d23; color: #f0c792; box-shadow: 0 5px 24px #0006; font-size: 13px; font-weight: 600; cursor: pointer; }
+.selection-warning-toggle:hover, .selection-warning-toggle[aria-expanded="true"] { background: #463629; }
+.selection-warning-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.selection-warning-panel { position: absolute; right: 0; bottom: calc(100% + 10px); width: min(360px, calc(100vw - 32px)); max-height: min(420px, calc(100dvh - 220px)); display: flex; flex-direction: column; border: 1px solid #715235; border-radius: 12px; background: #2d2721; color: #f0c792; box-shadow: 0 12px 40px #0008; overflow: hidden; }
+.selection-warning-panel[hidden] { display: none; }
+.selection-warning-panel > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-bottom: 1px solid #715235; }
+.selection-warning-panel h2 { font-size: 14px; }
+.selection-warning-panel .icon-button { flex-shrink: 0; min-width: 36px; min-height: 36px; }
+.selection-warning-list { overflow-y: auto; scrollbar-width: thin; }
+.selection-warning-list > a { display: grid; gap: 8px; padding: 16px; }
+.selection-warning-list > a + a { border-top: 1px solid #715235; }
+.selection-warning-list > a:hover, .selection-warning-list > a:focus-visible { background: #382d23; }
+.selection-warning-list strong { font-size: 13px; line-height: 1.5; }
+.selection-warning-list span { color: #d0bca4; font-size: 12px; line-height: 1.6; }
+.selection-warning-list small { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; }
+.library-page:has(.selection-warning) { padding-bottom: 56px; }
+@media (max-width: 600px) {
+  .selection-warning { right: 16px; bottom: calc(72px + env(safe-area-inset-bottom)); }
+  .selection-warning-panel .icon-button { min-width: 44px; min-height: 44px; }
+}
 
 .firmware-help { margin-top: 16px; font-size: 12px; line-height: 1.7; }
 .firmware-help a { display: inline-flex; align-items: center; gap: 6px; color: var(--accent); }
@@ -1014,6 +1030,8 @@ h1 { font-size: 28px; }
  .status-bar .legal-links { flex:1 0 100%; justify-content:space-between; }
  .status-bar .legal-links a { min-height:32px; }
  .status-bar > span:first-of-type { font-size:10px; }
+ .status-bar.is-all-machines { min-height:44px; }
+ .status-bar.is-all-machines > :not(.legal-links) { display:none; }
 }
 @media(max-width:850px) { .statistics-analysis { grid-template-columns:minmax(0,1fr); } .statistics-highlights { grid-template-columns:repeat(3,minmax(0,1fr)); } .statistics-highlights > div { padding:12px; } }
 @media(max-width:650px) { .statistics-cards { grid-template-columns:repeat(2,minmax(0,1fr)); } .admin-statistics .section-title { flex-wrap:wrap; gap:12px; } .statistics-highlights { grid-template-columns:minmax(0,1fr); } .statistics-highlights > div { padding:16px; } .statistics-module-controls label { width:100%; } .statistics-controls { align-items:center; } .admin-page > .page-heading { flex-wrap:wrap; } }
@@ -1226,7 +1244,14 @@ h1 { font-size: 28px; }
 
 .profile-bio { white-space: pre-wrap; overflow-wrap: anywhere; }
 
-/* Notification bell: sits at the right of the toolbar, before the configuration button or phone menu. */
+/* Desktop notifications sit beside the sidebar brand; phones keep the toolbar bell. */
+.sidebar-brand { position: relative; margin-bottom: 24px; }
+.sidebar-brand .app-brand { display: grid; grid-template-columns: 35px minmax(0, 1fr); column-gap: 10px; margin: 0; }
+.sidebar-brand .app-brand > img { grid-row: 1 / 3; }
+.sidebar-brand .app-brand > span { padding-right: 40px; line-height: 28px; }
+.sidebar-brand .app-brand > small { grid-column: 2; white-space: nowrap; }
+.sidebar-brand .notification-bell { position: absolute; top: -6px; right: 3px; margin-left: 0; }
+.sidebar-brand .notification-panel { position: fixed; top: 84px; left: 16px; right: auto; }
 .notification-bell { position: relative; margin-left: auto; flex-shrink: 0; }
 .notification-bell ~ .configuration-button, .notification-bell ~ .mobile-menu { margin-left: 0; }
 .notification-bell-button { position: relative; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 9px; background: transparent; color: #c7c7d2; cursor: pointer; }
@@ -1253,6 +1278,7 @@ h1 { font-size: 28px; }
 .notification-list time { color: #8f8f9b; font-size: 11px; }
 .account-notifications .notification-list { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 12px 0; }
 @media (max-width: 600px) {
+  .sidebar-brand { display: none; }
   .notification-bell { margin-left: 0; }
   .notification-bell-button { width: 44px; height: 44px; border-radius: 10px; }
   .notification-panel { position: fixed; top: 64px; left: 16px; right: 16px; width: auto; }

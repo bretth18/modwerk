@@ -42,7 +42,7 @@ export function NotificationBell() {
     {open && <section className="notification-panel" id="notification-panel" aria-label="Notifications">
       <header><h2>Notifications</h2><button type="button" className="text-button" disabled={!items?.some(item => !item.seen)} onClick={() => markRead()}>Mark all read</button></header>
       {error ? <p className="file-error" role="alert">{error}</p> : !items ? <p className="notification-empty" role="status">Loading…</p> : lines.length ? <NotificationList lines={lines} onOpen={(line: NotificationLine) => { if (!line.seen) markRead(line.ids); setOpen(false) }} /> : <p className="notification-empty">You're all caught up. Replies, mentions, likes and activity on your modules show up here.</p>}
-      <footer><a href="#account" onClick={() => setOpen(false)}>All notifications</a><a href="#account/notifications" onClick={() => setOpen(false)}>Email settings</a></footer>
+      <footer><a href="#account/activity" onClick={() => setOpen(false)}>All notifications</a><a href="#account/notifications" onClick={() => setOpen(false)}>Email settings</a></footer>
     </section>}
   </div>
 }

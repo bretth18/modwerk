@@ -18,6 +18,7 @@ import { compareModules, downloadCoverage, type ModuleStatistics } from './commu
 import { ModulePopularity } from './community/ModulePopularity'
 import { selectionConflicts, type ConflictFix } from './catalog/selection-conflicts'
 import { CompatibilityPanel } from './components/CompatibilityPanel'
+import { SelectionWarning } from './components/SelectionWarning'
 import { useCommunity } from './community/context'
 import { SubmissionPage } from './community/SubmissionPage'
 import { AdminPage } from './community/AdminPage'
@@ -221,7 +222,10 @@ export default function App() {
     <div className="app-shell">
       <a className="skip-link" href="#main-content" onClick={(event) => { event.preventDefault(); mainRef.current?.focus() }}>Skip to content</a>
       <aside className="sidebar" aria-label="App sidebar">
-        <a className="app-brand" href={'#' + ALL_MACHINES}><img src={import.meta.env.BASE_URL + 'modwerk-mark.svg'} width="34" height="34" alt="" /><span>Modwerk<small>Custom Elektron firmware</small></span></a>
+        <div className="sidebar-brand">
+          <a className="app-brand" href={'#' + ALL_MACHINES}><img src={import.meta.env.BASE_URL + 'modwerk-mark.svg'} width="34" height="34" alt="" /><span>Modwerk</span><small>Custom Elektron firmware</small></a>
+          {!phoneLayout && <NotificationBell />}
+        </div>
         {!phoneLayout && <MachineSwitcher current={currentDevice} all={allMachines} counts={machineCounts} />}
         <div className="sidebar-section-label">Library</div>
         <nav className="sidebar-nav" aria-label="Module library" ref={libraryNavRef}>
@@ -251,7 +255,7 @@ export default function App() {
           <a className="toolbar-brand" href={'#' + ALL_MACHINES}><img src={import.meta.env.BASE_URL + 'modwerk-mark.svg'} width="30" height="30" alt="" /><span>Modwerk</span></a>
           <div className="toolbar-title"><Icon name={route === 'faq' ? 'help' : configuration || machineView === 'configuration' ? 'file' : 'grid'} size={17} /><span>{route === 'faq' ? 'FAQ & flashing guide' : configuration || machineView === 'configuration' ? 'Configuration' : route === 'privacy' ? 'Privacy' : route === 'impressum' ? 'Impressum' : route === 'community-rules' ? 'Community rules' : route === 'report-content' ? 'Report content' : communityRoute ? 'Community' : route.startsWith('module-set') ? 'Module sets' : 'Modules'}</span>{(detailModule?.name ?? digiMod?.title) && <><span className="breadcrumb-divider">/</span><strong>{detailModule?.name ?? digiMod?.title}</strong></>}<span className="preview-badge">Preview</span></div>
           {(['library',...LIBRARY_CATEGORIES,'module-sets'].includes(route) || allRoute || (digiDevice && machineView === 'library')) && <><label className={'search' + (searchExpanded ? ' is-open' : '')}><Icon name="search" size={15} /><input ref={searchRef} type="search" aria-label={route==='module-sets'?'Search module sets':'Search modules'} placeholder={route==='module-sets'?'Search sets':'Search modules'} value={query} onChange={(event) => setQuery(event.target.value)} onBlur={() => { if (!query) setSearchOpen(false) }} onKeyDown={(event) => { if (phoneLayout && event.key === 'Escape') closeSearch() }} /></label><button ref={searchToggleRef} type="button" className="toolbar-icon search-toggle" aria-label={route==='module-sets'?'Search module sets':'Search modules'} onClick={openSearch}><Icon name="search" size={20} /></button><button type="button" className="search-cancel" onClick={closeSearch}>Cancel</button></>}
-          <NotificationBell />
+          {phoneLayout && <NotificationBell />}
           <MobileMenu route={route} selectedCount={machineSelected.length} configurationHref={machineHasMods ? deviceHref(currentDevice.id, 'configuration') : undefined} admin={session.admin} developer={!!developer?.user} onSupport={PAYPAL_DONATION_URL ? () => setSupportOpen(true) : undefined} />
           {machineHasMods && <a className="configuration-button" href={deviceHref(currentDevice.id, 'configuration')} aria-label={"Open configuration, " + machineSelected.length + " modules selected"}><Icon name="sliders" size={16} /><span>Configuration</span><span className="toolbar-count">{machineSelected.length}</span></a>}
         </header>
@@ -293,7 +297,7 @@ export default function App() {
           ) : (
             <div className="library-page">
               <div className="page-heading"><div><p className="page-kicker">MODWERK / OCTATRACK</p><h1>{filter === 'all' ? 'Module library' : categoryLabels[filter]}</h1><p>{filter === 'standalone' ? STANDALONE_NOTE : 'A different way to play your Octatrack.'}</p></div><span className="library-total">{visibleModules.length} modules</span></div>
-              {!!conflicts.length && <a className="selection-conflict-link" href="#configuration"><Icon name="sliders" size={18}/><span><strong>Your selection needs a change</strong><small>Some modules cannot run together. Choose a compatible set in your configuration.</small></span><Icon name="arrow" size={18}/></a>}
+              {!!conflicts.length && <SelectionWarning warnings={[{id: 'octatrack', title: 'Octatrack: your selection needs a change', description: 'Some modules cannot run together. Choose a compatible set in your configuration.', href: '#configuration'}]} />}
               <div className="library-subheading"><span>{query.trim() ? 'Results for “' + query.trim() + '”' : filter === 'all' ? 'Explore the collection' : filter === 'effects' ? 'Filters, texture & space' : 'New ways to play'}</span><span className="subtle">Octatrack · OS 1.40C</span></div>
               <LibraryTools family={libraryFamily} families={Array.from(new Set(AVAILABLE_MODULES.map(module=>DETAILS[module.id].family)))} onFamilyChange={setFamily} sort={sort} onSortChange={setSort} comparisonCount={comparison.length} onCompare={()=>setCompareOpen(true)} />
               <div className="module-grid">{visibleModules.map((module) => {
@@ -310,7 +314,7 @@ export default function App() {
           {phoneLayout && projectNotice}
         </main>
         {forumRoute&&!route.startsWith('forum/shoutbox')&&<ForumShoutbox floating/>}
-        <footer className="status-bar"><nav className="legal-links" aria-label="Legal information"><a href="#privacy">Privacy</a><a href="#impressum">Impressum</a><a href="#report-content">Report content</a></nav><span><span className={'status-dot ' + (!allMachines && currentDevice.id === 'octatrack' && firmware ? 'verified' : '')} />{allMachines ? 'All machines' : currentDevice.id !== 'octatrack' ? currentDevice.name + (machineHasMods ? DIGI_DOWNLOADS_ENABLED ? ' · local builds' : ' · builds in preview' : ' · no mods yet') : firmware ? 'OS 1.40C verified' : 'No base firmware selected'}</span><span className="status-build" role="status">{workspace.saving ? "Saving…" : workspace.storageError ? "Changes not saved" : "Workspace saved on device"}</span>{machineHasMods ? <a href={deviceHref(currentDevice.id, 'configuration')} aria-live="polite">{machineSelected.length} {machineSelected.length === 1 ? 'module' : 'modules'} selected <Icon name="arrow" size={12} /></a> : <span />}</footer>
+        <footer className={'status-bar'+(allMachines?' is-all-machines':'')}><nav className="legal-links" aria-label="Legal information"><a href="#privacy">Privacy</a><a href="#impressum">Impressum</a><a href="#report-content">Report content</a></nav><span><span className={'status-dot ' + (!allMachines && currentDevice.id === 'octatrack' && firmware ? 'verified' : '')} />{allMachines ? 'All machines' : currentDevice.id !== 'octatrack' ? currentDevice.name + (machineHasMods ? DIGI_DOWNLOADS_ENABLED ? ' · local builds' : ' · builds in preview' : ' · no mods yet') : firmware ? 'OS 1.40C verified' : 'No base firmware selected'}</span><span className="status-build" role="status">{workspace.saving ? "Saving…" : workspace.storageError ? "Changes not saved" : "Workspace saved on device"}</span>{machineHasMods ? <a href={deviceHref(currentDevice.id, 'configuration')} aria-live="polite">{machineSelected.length} {machineSelected.length === 1 ? 'module' : 'modules'} selected <Icon name="arrow" size={12} /></a> : <span />}</footer>
       </div>
     </div>
   )
