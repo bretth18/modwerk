@@ -4,13 +4,13 @@ import { describe, expect, it } from 'vitest'
 import { AccountStatisticsReport } from './AccountStatistics'
 import type { AdminAccounts } from './admin-insights-contract'
 
-const day = (day: string, signups: number, completed: number, visitors: number | null) => ({ day, signups, completed, visitors })
-const data: AdminAccounts = { generatedAt: '2026-10-06T12:00:00Z', from: '2026-09-30', to: '2026-10-06', days: 7, visitorsFrom: '2026-10-01',
-  totals: { members: 12, unverified: 1, pendingSocial: 0, suspended: 0, deleted: 0, administrators: 1, newsOptIns: 4, activeWeek: 5, postersMonth: 3 },
+const day = (day: string, signups: number, completed: number, visitors: number | null, active: number | null = null) => ({ day, signups, completed, visitors, active })
+const data: AdminAccounts = { generatedAt: '2026-10-06T12:00:00Z', from: '2026-09-30', to: '2026-10-06', days: 7, visitorsFrom: '2026-10-01', activeFrom: null,
+  totals: { members: 12, unverified: 1, pendingSocial: 0, suspended: 0, deleted: 0, administrators: 1, newsOptIns: 4, online: 2, activeDay: 3, activeWeek: 5, activeMonth: 8, postersMonth: 3 },
   signups: { today: 2, last7: 9, last30: 20 }, methods: [{ method: 'credential', members: 8 }, { method: 'google', members: 3 }, { method: 'github', members: 2 }, { method: 'discord', members: 0 }],
   daily: [day('2026-09-30', 1, 1, null), day('2026-10-01', 2, 2, 10), day('2026-10-02', 1, 1, 100), day('2026-10-03', 0, 0, 50), day('2026-10-04', 3, 1, 50), day('2026-10-05', 0, 0, 0), day('2026-10-06', 2, 0, 30)],
   previous: { from: '2026-09-24', to: '2026-09-29', signups: 4, completed: 4, visitors: 400 } }
-const render = (value: AdminAccounts, metric: 'signups' | 'completed' | 'rate' = 'signups') => renderToStaticMarkup(createElement(AccountStatisticsReport, { data: value, loading: false, metric, onMetric: () => {}, selectedDay: '', onSelectDay: () => {}, periodControl: null }))
+const render = (value: AdminAccounts, metric: 'signups' | 'completed' | 'rate' | 'active' = 'signups') => renderToStaticMarkup(createElement(AccountStatisticsReport, { data: value, loading: false, metric, onMetric: () => {}, selectedDay: '', onSelectDay: () => {}, periodControl: null }))
 
 describe('member statistics report', () => {
   it('shows sign-up rate, completion and activity figures from completed days', () => {
@@ -21,7 +21,9 @@ describe('member statistics report', () => {
     expect(html).toContain('<dd>2%</dd>')
     expect(html).toContain('Previous period: 1%')
     expect(html).toContain('5 of 7 sign-ups verified and onboarded')
-    expect(html).toContain('Signed in within 7 days · 3 members posted in 30 days')
+    expect(html).toContain('Online now</dt><dd><span class="online-dot" aria-hidden="true"></span>2</dd>')
+    expect(html).toContain('3 in 24 hours · 8 in 30 days</small><small>3 members posted in 30 days')
+    expect(html).toContain('Counting has not begun.')
     expect(html).toContain('collection began on')
     expect(html).not.toMatch(/NaN|undefined|Infinity/)
   })
@@ -33,5 +35,16 @@ describe('member statistics report', () => {
     expect(html).toContain('+7 · previous period: 0')
     expect((html.match(/class="uncollected"/g) ?? []).length).toBe(7)
     expect(html).not.toMatch(/NaN|undefined|Infinity/)
+  })
+  it('charts active members from the first counted day and notes the partial start', () => {
+    const counted = { ...data, activeFrom: '2026-10-03', daily: data.daily.map((row, index) => ({ ...row, active: index < 3 ? null : index })) }
+    const html = render(counted, 'active')
+    expect(html).toContain('Active members per UTC day · scale 0–6')
+    expect((html.match(/class="uncollected"/g) ?? []).length).toBe(3)
+    expect(html).toContain('2026-09-30: members not counted yet')
+    expect(html).toContain('2026-10-03: 3 active members, partial collection day')
+    expect(html).toContain('3 in 24 hours · 8 in 30 days · counting since')
+    expect(html).toContain('Counting began on')
+    expect(html).not.toMatch(/NaN|undefined|Infinity|visitors not collected/)
   })
 })

@@ -24,6 +24,8 @@ export type AdminAccountsDay = {
   completed: number
   /** Estimated daily visitors from the site statistics; null before usage collection began. */
   visitors: number | null
+  /** Distinct members whose visible tab was open on this day; null before presence counting began. */
+  active: number | null
 }
 export type AdminAccounts = {
   generatedAt: string
@@ -32,10 +34,16 @@ export type AdminAccounts = {
   days: number
   /** First UTC day of usage collection, or null when no visit has been counted yet. That day is partial. */
   visitorsFrom: string | null
+  /** First UTC day of member presence counting. That day is partial. */
+  activeFrom: string | null
   totals: {
     members: number; unverified: number; pendingSocial: number; suspended: number; deleted: number; administrators: number; newsOptIns: number
-    /** Members whose sign-in session was used within the last 7 days. */
+    /** Members with the site open in a visible tab within the last 5 minutes. */
+    online: number
+    /** Members seen within the last 24 hours, 7 days and 30 days. */
+    activeDay: number
     activeWeek: number
+    activeMonth: number
     /** Members who wrote a forum post in the last 30 days. */
     postersMonth: number
   }

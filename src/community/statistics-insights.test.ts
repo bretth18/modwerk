@@ -49,9 +49,9 @@ describe('admin statistics interpretation',() => {
   })
 })
 
-const accountDay = (day: string, signups: number, completed: number, visitors: number | null) => ({day,signups,completed,visitors})
-const accounts: AdminAccounts = {generatedAt:'2026-10-06T12:00:00Z',from:'2026-09-30',to:'2026-10-06',days:7,visitorsFrom:'2026-10-01',
-  totals:{members:12,unverified:1,pendingSocial:0,suspended:0,deleted:0,administrators:1,newsOptIns:4,activeWeek:5,postersMonth:3},
+const accountDay = (day: string, signups: number, completed: number, visitors: number | null, active: number | null = null) => ({day,signups,completed,visitors,active})
+const accounts: AdminAccounts = {generatedAt:'2026-10-06T12:00:00Z',from:'2026-09-30',to:'2026-10-06',days:7,visitorsFrom:'2026-10-01',activeFrom:null,
+  totals:{members:12,unverified:1,pendingSocial:0,suspended:0,deleted:0,administrators:1,newsOptIns:4,online:2,activeDay:3,activeWeek:5,activeMonth:8,postersMonth:3},
   signups:{today:2,last7:9,last30:20},methods:[{method:'credential',members:8},{method:'google',members:3},{method:'github',members:2},{method:'discord',members:0}],
   daily:[accountDay('2026-09-30',1,1,null),accountDay('2026-10-01',2,2,10),accountDay('2026-10-02',1,1,100),accountDay('2026-10-03',0,0,50),accountDay('2026-10-04',3,1,50),accountDay('2026-10-05',0,0,0),accountDay('2026-10-06',2,0,30)],
   previous:{from:'2026-09-24',to:'2026-09-29',signups:4,completed:4,visitors:null}}
@@ -76,5 +76,10 @@ describe('member statistics interpretation',() => {
     expect(compared.rate.previous).toBe(1)
     expect(accountDayValue(accountDay('2026-10-01',3,3,0),'rate',null)).toBe(0)
     expect(accountDayValue(accountDay('2026-10-01',3,3,0),'rate','2026-10-01')).toBeNull()
+  })
+  it('charts active members as counted, leaving days before counting began empty',() => {
+    expect(accountDayValue(accountDay('2026-10-01',0,0,null,null),'active',null)).toBeNull()
+    expect(accountDayValue(accountDay('2026-10-02',0,0,null,0),'active',null)).toBe(0)
+    expect(accountDayValue(accountDay('2026-10-03',0,0,null,4),'active',null)).toBe(4)
   })
 })

@@ -49,13 +49,13 @@ export function usageCsv(data: UsageStatistics) {
   })].join('\n')+'\n'
 }
 
-export const accountMetrics = [['signups', 'Sign-ups'], ['completed', 'Completed sign-ups'], ['rate', 'Sign-ups per 100 visitors']] as const
+export const accountMetrics = [['signups', 'Sign-ups'], ['completed', 'Completed sign-ups'], ['rate', 'Sign-ups per 100 visitors'], ['active', 'Active members']] as const
 export type AccountMetric = typeof accountMetrics[number][0]
 
 const percent = (current: number, previous: number) => previous ? (current - previous) / previous * 100 : null
 const sum = (rows: readonly AdminAccountsDay[], key: 'signups' | 'completed' | 'visitors') => rows.reduce((total, row) => total + (row[key] ?? 0), 0)
 
-/** One day's chart value: null marks a day whose visitors were not collected, so no rate exists. */
+/** One day's chart value: null marks a day whose visitors or members were not counted, so no value exists. */
 export function accountDayValue(row: AdminAccountsDay, metric: AccountMetric, partialDay: string | null): number | null {
   if (metric !== 'rate') return row[metric]
   if (row.visitors === null || row.day === partialDay) return null

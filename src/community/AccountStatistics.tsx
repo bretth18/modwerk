@@ -41,7 +41,10 @@ export function AccountStatisticsReport({ data, loading, metric, onMetric, selec
   const values = data.daily.map(row => insights.value(row, metric)), max = Math.max(1, ...values.map(value => value ?? 0)), methodMax = Math.max(1, ...data.methods.map(row => row.members))
   const label = accountMetrics.find(([key]) => key === metric)![1]
   const selected = data.daily.find(row => row.day === selectedDay) ?? data.daily[data.daily.length - 1]
-  const describe = (index: number) => { const value = values[index], day = data.daily[index].day; return value === null ? 'visitors not collected' : (metric === 'rate' ? rate(value) : format(value)) + ' ' + label.toLowerCase() + (day === data.to ? ', partial day' : day === data.visitorsFrom ? ', partial collection day' : '') }
+  const partialFrom = metric === 'active' ? data.activeFrom : data.visitorsFrom
+  const describe = (index: number) => { const value = values[index], day = data.daily[index].day; return value === null ? (metric === 'active' ? 'members not counted yet' : 'visitors not collected') : (metric === 'rate' ? rate(value) : format(value)) + ' ' + label.toLowerCase() + (day === data.to ? ', partial day' : day === partialFrom ? ', partial collection day' : '') }
+  // Presence counting starts with its deployment, so recent windows undercount until 30 days have passed.
+  const activeSince = data.activeFrom && data.activeFrom > new Date(Date.parse(data.generatedAt) - 30 * 86400000).toISOString().slice(0, 10) ? ' · counting since ' + dateLabel(data.activeFrom) : ''
   const period = data.days - 1
   return <section className="configuration-section" aria-busy={loading}>
     <div className="section-title"><div><h2>Members</h2><p className="service-note">Current accounts · {dateLabel(data.from)} – {dateLabel(data.to)} UTC · updated {new Date(data.generatedAt).toLocaleTimeString(undefined, { timeZone: 'UTC' })} UTC</p></div>{periodControl}</div>
@@ -55,11 +58,12 @@ export function AccountStatisticsReport({ data, loading, metric, onMetric, selec
       <div><dt>Completed sign-ups</dt><dd>{rate(insights.completion.percent)}</dd><small>{insights.completion.signups ? format(insights.completion.completed) + ' of ' + plural(insights.completion.signups, 'sign-up') + ' verified and onboarded' : 'No sign-ups in this period'}</small>
         {insights.completion.previous !== null && <small className="statistics-change">Previous period: {rate(insights.completion.previous)}</small>}</div>
       <div><dt>Awaiting completion</dt><dd>{format(totals.unverified + totals.pendingSocial)}</dd><small>{format(totals.unverified)} unverified email · {format(totals.pendingSocial)} social sign-ups choosing a username</small></div>
-      <div><dt>Active members</dt><dd>{format(totals.activeWeek)}</dd><small>Signed in within 7 days · {plural(totals.postersMonth, 'member')} posted in 30 days</small></div>
+      <div><dt>Online now</dt><dd><span className="online-dot" aria-hidden="true"/>{format(totals.online)}</dd><small>Site open in a visible tab within 5 minutes</small></div>
+      <div><dt>Active members, 7 days</dt><dd>{format(totals.activeWeek)}</dd><small>{format(totals.activeDay)} in 24 hours · {format(totals.activeMonth)} in 30 days{activeSince}</small><small>{plural(totals.postersMonth, 'member')} posted in 30 days</small></div>
       <div><dt>News opt-ins</dt><dd>{format(totals.newsOptIns)}</dd><small>{plural(totals.administrators, 'administrator')} · {format(totals.suspended)} suspended · {format(totals.deleted)} deleted</small></div>
     </dl>
     <figure className="visitors-chart">
-      <div className="statistics-chart-heading"><figcaption>Daily sign-ups</figcaption><label><span className="sr-only">Chart metric</span><select value={metric} onChange={event => onMetric(event.target.value as AccountMetric)}>{accountMetrics.map(([key, title]) => <option key={key} value={key}>{title}</option>)}</select></label></div>
+      <div className="statistics-chart-heading"><figcaption>Daily members</figcaption><label><span className="sr-only">Chart metric</span><select value={metric} onChange={event => onMetric(event.target.value as AccountMetric)}>{accountMetrics.map(([key, title]) => <option key={key} value={key}>{title}</option>)}</select></label></div>
       <p className="statistics-scale">{label} per UTC day · scale 0–{metric === 'rate' ? rate(max) : format(max)}</p>
       <div className="visitors-bars" role="group" aria-label={label + ' by UTC day; use arrow keys to inspect days'}>
         {data.daily.map(({ day }, index) => <button key={day} type="button" className={values[index] === null ? 'uncollected' : day === data.to ? 'is-today' : ''} title={dateLabel(day) + ': ' + describe(index)}
@@ -77,7 +81,8 @@ export function AccountStatisticsReport({ data, loading, metric, onMetric, selec
     <details className="statistics-definitions"><summary>How member figures are counted</summary>
       <p>Counts include only existing accounts; removed accounts no longer appear in the sign-up history. A member can use more than one sign-in method. Period totals, rates and comparisons use completed UTC days: today is excluded, and the previous period is the equally long window just before ({dateLabel(data.previous.from)} – {dateLabel(data.previous.to)}).</p>
       <p>The sign-up rate divides sign-ups by the estimated daily visitors of the same days from the site statistics, so it needs the usage collection described there and skips days before {data.visitorsFrom ? 'collection began on ' + dateLabel(data.visitorsFrom) + ' UTC' : 'collection begins'}. Daily visitors are rotating identifiers, so the rate approximates sign-ups per 100 visits, not per 100 people, and visitors who object to counting or send Do Not Track are missing from the denominator.</p>
-      <p>A sign-up is completed once the email address is verified and any social onboarding has finished; recent days are naturally lower while verification is pending. Active members have used a sign-in session within the last 7 days. Posting members wrote at least one visible forum post in the last 30 days.</p>
+      <p>A sign-up is completed once the email address is verified and any social onboarding has finished; recent days are naturally lower while verification is pending. Posting members wrote at least one visible forum post in the last 30 days.</p>
+      <p>A member is seen while they are signed in and have the site open in a visible tab: the notification bell checks in once a minute, and the time is saved at most every two minutes. Online now means seen within 5 minutes; active members were seen within 24 hours, 7 or 30 days, and the chart counts each member once per UTC day. Guests, background tabs and members who are signed out are not counted. {data.activeFrom ? 'Counting began on ' + dateLabel(data.activeFrom) + ' UTC; that day is partial and earlier days are unknown.' : 'Counting has not begun.'}</p>
     </details>
   </section>
 }

@@ -1,3 +1,4 @@
+import { notePresence } from './presence'
 import { MENTION_SOURCE } from '../src/community/forum-contract'
 import type { Database, Env, Statement, User } from './platform'
 import { needMember, throttle } from './auth'
@@ -116,6 +117,8 @@ export async function notificationRoutes(request: Request, env: Env, db: Databas
   if (!path.startsWith('/api/notifications')) return null
   const member = needMember(user)
   if (path === '/api/notifications/unread' && request.method === 'GET') {
+    // The bell polls this every minute while a tab is visible, which makes it the member's presence signal.
+    await notePresence(db, member.id)
     const row = await db.prepare(`SELECT COUNT(*) AS unread FROM (${ITEM_SQL} WHERE n.user_id IN (${RECIPIENTS}) AND n.seen=0 AND ${VISIBLE})`).bind(member.id, member.id).first<{ unread: number }>()
     return response({ unread: (row?.unread ?? 0) + await announcementUnread(db, member.id) })
   }
