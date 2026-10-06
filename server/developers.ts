@@ -19,7 +19,7 @@ async function accessIssue(db:Database,id:string,user:User|null,admin:boolean,de
   if (!admin && !reporter && !maintainer) throw new HttpError(404,'Report not found.')
   return {issue,reporter,canManage:admin || maintainer,actor:admin?{id:ADMIN_ACTOR,display_name:'Administrator'}:reporter?user:developer}
 }
-export async function developerApi(request:Request,db:Database,user:User|null,admin:boolean,developer:User|null):Promise<Response|null> {
+export async function developerApi(request:Request,db:Database,user:User|null,admin:boolean,developer:User|null,adminId:string|null=admin?ADMIN_ACTOR:null):Promise<Response|null> {
   const url = new URL(request.url), path = url.pathname
   if (path === '/api/admin/maintainers') {
     if (!admin) throw new HttpError(403,'Administrator access is required.')
@@ -32,7 +32,7 @@ export async function developerApi(request:Request,db:Database,user:User|null,ad
     if (!['DELETE','PATCH'].includes(request.method)) throw new HttpError(405,'Choose a supported maintainer action.')
     const body = await jsonBody(request), note = required(body.note,'Revocation reason',1000)
     await db.batch([
-      db.prepare('INSERT INTO developer_events(id,actor_id,module_id,action,note) SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM module_maintainers WHERE module_id=? AND user_id=?)').bind(crypto.randomUUID(),ADMIN_ACTOR,match[1],request.method==='DELETE'?'maintainer-revoked':'maintainer-restored',note,match[1],match[2]),
+      db.prepare('INSERT INTO developer_events(id,actor_id,module_id,action,note) SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM module_maintainers WHERE module_id=? AND user_id=?)').bind(crypto.randomUUID(),adminId??ADMIN_ACTOR,match[1],request.method==='DELETE'?'maintainer-revoked':'maintainer-restored',note,match[1],match[2]),
       db.prepare('UPDATE module_maintainers SET revoked=? WHERE module_id=? AND user_id=?').bind(request.method==='DELETE'?1:0,match[1],match[2]),
     ])
     return response({ok:true})

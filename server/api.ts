@@ -19,7 +19,7 @@ import recipes from '../src/catalog/module-sets.json'
 import type { Database, Env, Media, User } from './platform'
 import { withPrivacyDeadline } from './privacy-deadline'
 import { reviewAccountRequest } from './account-requests'
-import { ADMIN_ACTOR, authentication, currentUser, needMember, isAdmin, throttle } from './auth'
+import { ADMIN_ACTOR, adminActor, authentication, currentUser, needMember, throttle } from './auth'
 import { boundedBody, checkOrigin, HttpError, jsonBody, required, response } from './security'
 import { MODULES } from '../src/catalog/modules'
 import { handleGithubWebhook, githubConfig, mirrorIssue, setGithubIssueState } from './github'
@@ -60,14 +60,15 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     const developerAuth = await developerAuthentication(request,env,db)
     if(developerAuth)return developerAuth
     const user = await currentUser(request,db,env)
-    const admin = await isAdmin(request,env,db)
+    // Private history rows name the administrator account that acted; the key falls back to the fixed administrator row.
+    const adminId = await adminActor(request,env,db), admin = !!adminId
     const push = await pushRoutes(request,env,db,user,admin)
     if(push)return push
-    const developer = await developerApi(request,db,user,admin,await developerUser(request,env,db))
+    const developer = await developerApi(request,db,user,admin,await developerUser(request,env,db),adminId)
     if(developer)return developer
     const media = await forumMedia(request,env,db,user,admin)
     if(media)return media
-    const discussion = await forum(request,db,user,admin)
+    const discussion = await forum(request,db,user,admin,adminId)
     if(discussion)return discussion
     const notifications = await notificationRoutes(request,env,db,user)
     if(notifications)return notifications
@@ -111,7 +112,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       await throttle(db,'community:' + owner.id,30)
       if (match[2] === 'comments') {
         await ensureDiscussionThread(db,match[1])
-        const reply=await forum(new Request(new URL('/api/forum/threads/'+moduleThreadId(match[1])+'/replies',request.url),{method:'POST',headers:request.headers,body:JSON.stringify({body:required(body.body,'Comment',2000)})}),db,user,admin)
+        const reply=await forum(new Request(new URL('/api/forum/threads/'+moduleThreadId(match[1])+'/replies',request.url),{method:'POST',headers:request.headers,body:JSON.stringify({body:required(body.body,'Comment',2000)})}),db,user,admin,adminId)
         if (!reply) throw new HttpError(500,'The reply could not be saved.')
         return response({ok:true,...await reply.json() as {id:string;page:number}})
       }
@@ -124,7 +125,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       // Compatibility removal hides the canonical post, including migrated comment IDs.
       await db.batch([
         db.prepare("UPDATE forum_posts SET hidden=1 WHERE (id=? OR id='comment-' || ?) AND EXISTS(SELECT 1 FROM forum_threads t WHERE t.id=forum_posts.thread_id AND t.id='module-' || t.module_id AND forum_posts.id<>t.id AND (?=1 OR (t.hidden=0 AND t.locked=0 AND forum_posts.user_id=?)))").bind(match[1],match[1],Number(admin),owner?.id??''),
-        ...(admin?[db.prepare("INSERT INTO forum_moderation(id,actor_id,target,action,reason) SELECT ?,?,p.id,'hidden:1','Removed through the module comment compatibility endpoint.' FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id WHERE (p.id=? OR p.id='comment-' || ?) AND t.id='module-' || t.module_id AND p.id<>t.id").bind(crypto.randomUUID(),ADMIN_ACTOR,match[1],match[1])]:[]),
+        ...(admin?[db.prepare("INSERT INTO forum_moderation(id,actor_id,target,action,reason) SELECT ?,?,p.id,'hidden:1','Removed through the module comment compatibility endpoint.' FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id WHERE (p.id=? OR p.id='comment-' || ?) AND t.id='module-' || t.module_id AND p.id<>t.id").bind(crypto.randomUUID(),adminId,match[1],match[1])]:[]),
       ])
       return response({ok:true})
     }
@@ -226,7 +227,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if ((match=path.match(/^\/api\/admin\/modules\/([a-z0-9-]+)\/withdraw$/)) && request.method === 'POST') {
         const body=await jsonBody(request),note=required(body.note,'Withdrawal reason',2000),event=crypto.randomUUID(),id=match[1]
         const [recorded]=await db.batch([
-          db.prepare("INSERT INTO review_events(id,actor_id,module_id,submission_id,action,note) SELECT ?,?,module_id,submission_id,'withdrawn',? FROM module_publications WHERE module_id=?").bind(event,ADMIN_ACTOR,note,id),
+          db.prepare("INSERT INTO review_events(id,actor_id,module_id,submission_id,action,note) SELECT ?,?,module_id,submission_id,'withdrawn',? FROM module_publications WHERE module_id=?").bind(event,adminId,note,id),
           db.prepare('DELETE FROM module_publications WHERE module_id=? AND EXISTS(SELECT 1 FROM review_events WHERE id=?)').bind(id,event),
         ])
         if (!(recorded as {meta:{changes:number}}).meta.changes) throw new HttpError(404,'Published contribution not found.')

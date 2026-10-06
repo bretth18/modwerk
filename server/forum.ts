@@ -25,7 +25,7 @@ async function moduleId(db: Database, value: unknown) {
   if (!communityModule(value)) { try { await ensureDiscussionThread(db,value) } catch(error) { if(error instanceof HttpError&&error.status===404)throw new HttpError(400,'Choose a known module.'); throw error } }
   return value
 }
-export async function forum(request: Request, db: Database, user: User|null, admin: boolean): Promise<Response|null> {
+export async function forum(request: Request, db: Database, user: User|null, admin: boolean, adminId: string|null = admin ? ADMIN_ACTOR : null): Promise<Response|null> {
   const url = new URL(request.url), path = url.pathname
   if (!path.startsWith('/api/forum') && !path.startsWith('/api/admin/forum')) return null
   const chat = await shoutbox(request,db,user,admin)
@@ -38,7 +38,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     if (!admin) throw new HttpError(403,'Administrator access is required.')
     if (path === '/api/admin/forum/reports' && request.method === 'GET') return response((await db.prepare(`SELECT * FROM (SELECT r.id,r.reason,r.resolved,r.created_at,p.id AS post_id,p.body,p.hidden,p.thread_id,p.user_id,u.username,t.title,'post' AS kind FROM forum_reports r JOIN forum_posts p ON p.id=r.post_id JOIN forum_threads t ON t.id=p.thread_id JOIN users u ON u.id=p.user_id
       UNION ALL SELECT r.id,r.reason,r.resolved,r.created_at,s.id AS post_id,s.body,s.hidden,NULL AS thread_id,s.user_id,u.username,'Shoutbox' AS title,'shout' AS kind FROM forum_shout_reports r JOIN forum_shouts s ON s.id=r.shout_id JOIN users u ON u.id=s.user_id) ORDER BY resolved,created_at DESC LIMIT 100`).all()).results)
-    if (path === '/api/admin/forum/history' && request.method === 'GET') return response((await db.prepare('SELECT id,target,action,reason,created_at FROM forum_moderation ORDER BY rowid DESC LIMIT 100').all()).results)
+    if (path === '/api/admin/forum/history' && request.method === 'GET') return response((await db.prepare('SELECT m.id,m.target,m.action,m.reason,m.created_at,u.display_name AS actor FROM forum_moderation m JOIN users u ON u.id=m.actor_id ORDER BY m.rowid DESC LIMIT 100').all()).results)
     if ((match = path.match(/^\/api\/admin\/forum\/(posts|threads|users|reports|media|shouts|shout-reports)\/([a-zA-Z0-9-]+)$/)) && request.method === 'PATCH') {
       const body = await jsonBody(request), reason = required(body.reason,'Moderation reason',1000), target = match[2]
       const allowed = (match[1] === 'posts' || match[1] === 'shouts') ? ['hidden'] : match[1] === 'threads' ? ['locked','pinned','hidden'] : match[1] === 'users' ? ['suspended'] : match[1] === 'media' ? ['removed'] : ['resolved']
@@ -49,7 +49,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
       if (target === ADMIN_ACTOR || target === SYSTEM_AUTHOR) throw new HttpError(400,'This system account cannot be suspended.')
       const result = await db.batch([
         db.prepare(`UPDATE ${table} SET ${body.action}=? WHERE id=?`).bind(value,target),
-        db.prepare(`INSERT INTO forum_moderation(id,actor_id,target,action,reason) SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM ${table} WHERE id=?)`).bind(crypto.randomUUID(),ADMIN_ACTOR,target,`${body.action}:${value}`,reason,target),
+        db.prepare(`INSERT INTO forum_moderation(id,actor_id,target,action,reason) SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM ${table} WHERE id=?)`).bind(crypto.randomUUID(),adminId??ADMIN_ACTOR,target,`${body.action}:${value}`,reason,target),
         ...(body.action === 'suspended' && value ? [db.prepare('DELETE FROM sessions WHERE user_id=?').bind(target),db.prepare('DELETE FROM auth_sessions WHERE userId=?').bind(target),db.prepare('DELETE FROM developer_sessions WHERE user_id=?').bind(target),db.prepare('DELETE FROM developer_auth_codes WHERE user_id=?').bind(target)] : []),
       ])
       if (!(result[0] as {meta:{changes:number}}).meta.changes) throw new HttpError(404,'Item not found.')
