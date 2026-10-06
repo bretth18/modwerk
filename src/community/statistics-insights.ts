@@ -1,5 +1,5 @@
 import type { UsageDay, UsageStatistics } from './usage-contract'
-import type { AdminModuleInsight } from './admin-insights-contract'
+import type { AdminAccounts, AdminAccountsDay, AdminModuleInsight } from './admin-insights-contract'
 
 export const usageMetrics = [
   ['visitors', 'Daily visitors'], ['page_views', 'Page views'], ['configurations', 'Configurations started'],
@@ -47,4 +47,37 @@ export function usageCsv(data: UsageStatistics) {
     const coverage = !counts ? 'uncollected' : day===data.to || day===data.collectionStarted?.slice(0,10) ? 'partial' : 'complete'
     return [day,coverage,...usageMetrics.map(([key]) => counts?.[key]??'')].join(',')
   })].join('\n')+'\n'
+}
+
+export const accountMetrics = [['signups', 'Sign-ups'], ['completed', 'Completed sign-ups'], ['rate', 'Sign-ups per 100 visitors']] as const
+export type AccountMetric = typeof accountMetrics[number][0]
+
+const percent = (current: number, previous: number) => previous ? (current - previous) / previous * 100 : null
+const sum = (rows: readonly AdminAccountsDay[], key: 'signups' | 'completed' | 'visitors') => rows.reduce((total, row) => total + (row[key] ?? 0), 0)
+
+/** One day's chart value: null marks a day whose visitors were not collected, so no rate exists. */
+export function accountDayValue(row: AdminAccountsDay, metric: AccountMetric, partialDay: string | null): number | null {
+  if (metric !== 'rate') return row[metric]
+  if (row.visitors === null || row.day === partialDay) return null
+  return row.visitors ? row.signups / row.visitors * 100 : 0
+}
+
+/** Reads the member statistics the way the usage dashboard reads traffic: today is partial and excluded from
+ * period totals, rates and comparisons. The sign-up rate divides sign-ups by the estimated daily visitors of the
+ * same days, counting only days whose visitors were fully collected. Daily visitors are rotating identifiers,
+ * so the rate is an approximation of sign-ups per 100 visits, not per 100 people. */
+export function accountInsights(data: AdminAccounts) {
+  const completed = data.daily.filter(row => row.day < data.to)
+  const covered = completed.filter(row => row.visitors !== null && row.day !== data.visitorsFrom)
+  const visitors = sum(covered, 'visitors'), signups = sum(completed, 'signups'), finished = sum(completed, 'completed')
+  const rate = visitors ? sum(covered, 'signups') / visitors * 100 : null
+  const previousRate = data.previous.visitors ? data.previous.signups / data.previous.visitors * 100 : null
+  return {
+    completedDays: completed.length,
+    signups: { current: signups, previous: data.previous.signups, percent: percent(signups, data.previous.signups) },
+    completion: { signups, completed: finished, percent: signups ? finished / signups * 100 : null,
+      previous: data.previous.signups ? data.previous.completed / data.previous.signups * 100 : null },
+    rate: { value: rate, coveredDays: covered.length, visitors, previous: previousRate },
+    value: (row: AdminAccountsDay, metric: AccountMetric) => accountDayValue(row, metric, data.visitorsFrom),
+  }
 }

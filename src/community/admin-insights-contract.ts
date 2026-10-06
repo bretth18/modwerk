@@ -16,13 +16,34 @@ export type AdminInsights = {
   issueAges: { underWeek: number; weekToMonth: number; overMonth: number; oldest: string | null }
   modules: AdminModuleInsight[]
 }
+export type AdminAccountsDay = {
+  day: string
+  /** Accounts created on this UTC day that still exist. */
+  signups: number
+  /** Those of the day's sign-ups that have since verified their email and finished any social onboarding. */
+  completed: number
+  /** Estimated daily visitors from the site statistics; null before usage collection began. */
+  visitors: number | null
+}
 export type AdminAccounts = {
   generatedAt: string
   from: string
   to: string
-  totals: { members: number; unverified: number; pendingSocial: number; suspended: number; deleted: number; administrators: number; newsOptIns: number }
+  days: number
+  /** First UTC day of usage collection, or null when no visit has been counted yet. That day is partial. */
+  visitorsFrom: string | null
+  totals: {
+    members: number; unverified: number; pendingSocial: number; suspended: number; deleted: number; administrators: number; newsOptIns: number
+    /** Members whose sign-in session was used within the last 7 days. */
+    activeWeek: number
+    /** Members who wrote a forum post in the last 30 days. */
+    postersMonth: number
+  }
   signups: { today: number; last7: number; last30: number }
   methods: { method: 'credential' | 'google' | 'github' | 'discord'; members: number }[]
   /** One row per UTC day from `from` to `to`, including days without sign-ups. */
-  daily: { day: string; signups: number }[]
+  daily: AdminAccountsDay[]
+  /** Totals for the equally long window of completed days before the current one; today is excluded from both.
+   * `visitors` is null unless every day of that window was collected, retained and complete. */
+  previous: { from: string; to: string; signups: number; completed: number; visitors: number | null }
 }

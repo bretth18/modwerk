@@ -977,7 +977,7 @@ h1 { font-size: 28px; }
 .statistics-controls select,.statistics-chart-heading select,.statistics-module-controls select,.statistics-module-controls input { min-height:40px; padding:8px 10px; border:1px solid var(--line); border-radius:5px; background:var(--surface); color:#ececf1; max-width:100%; }
 .statistics-cards { grid-template-columns:repeat(3,minmax(0,1fr)); }
 .statistics-cards small,.statistics-workload small,.statistics-highlights small { display:block; color:var(--muted); font-size:12px; line-height:1.5; margin-top:8px; }
-.statistics-cards .statistics-change { color:#c2c6ff; }
+.statistics-cards .statistics-change,.statistics-workload .statistics-change { color:#c2c6ff; }
 .statistics-analysis { display:grid; grid-template-columns:minmax(0,1.8fr) minmax(0,1fr); gap:18px; margin:24px 0; }
 .visitors-chart { min-width:0; margin:0; padding:18px; border:1px solid var(--line); border-radius:7px; background:#202024; }
 .statistics-chart-heading { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; }

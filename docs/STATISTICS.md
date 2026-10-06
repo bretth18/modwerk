@@ -1,6 +1,6 @@
 # Site statistics and module popularity
 
-The Statistics tab is the first tab and default view in `#admin`. It reports visits and use of the local configurator, module engagement and current moderation workload. All private reads require the existing server-verified administrator session; the public collector has no read endpoint. Guest participation stays account-free. No credentials, real visitor records or real usage counts belong in the public repository.
+The Statistics tab is the first tab and default view in `#admin`. It reports member growth and the sign-up rate against traffic (see [COMMUNITY_OPERATIONS.md](COMMUNITY_OPERATIONS.md#member-statistics)), visits and use of the local configurator, module engagement and current moderation workload. All private reads require the existing server-verified administrator session; the public collector has no read endpoint. Guest participation stays account-free. No credentials, real visitor records or real usage counts belong in the public repository.
 
 ## Definitions and coverage
 
