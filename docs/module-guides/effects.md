@@ -41,6 +41,39 @@ Octabam names three (`sdk/octabam/docs/remixer/MODULES.md`, "Decide first"). Cho
 - [ ] **A missing module degrades safely.** A project that selects your effect on a build without it falls back to SEND (a bus) or NONE (no bus); `MODULES.md`, "What an unimplemented id falls back to". State what a musician sees.
 - [ ] **Timing.** Anything tied to steps, tempo or swing follows [sequencing.md](sequencing.md).
 
+## Sound quality
+
+The checklist above is how the effect behaves in the instrument; this is how it sounds. The DSP works in 24-bit fixed point at 44.1 kHz, so the usual effect-design hazards are the fixed-point ones. `npm run fx:audit` measures the four a program can: aliasing, clipping, DC and what the effect does once the input stops. No gate in CI runs it, because the renders it reads come from the native harness and CI never has firmware; a green `npm run check` says nothing about it. Run it, or write "not tested" in TESTING.md.
+
+- [ ] **Aliasing.** Anything that bends a waveform makes harmonics: saturation, waveshaping, folding, clipping, bit reduction, ring modulation, and a compressor or gate whose gain moves at audio speed. At 44.1 kHz a harmonic above 22.05 kHz does not disappear, it folds back below Nyquist as a tone unrelated to the note, and it gets harsher the higher a musician plays. A delay, grain or playback read at a fractional position (chorus, flanger, pitch shift) has the same problem twice over: interpolation error, which is largest at high frequencies, and content that a faster read pushes above Nyquist. **Check:** `fx:audit` plays four tones (about 1.1, 2.7, 5.3 and 9.1 kHz, each at -12 and -1 dBFS) through the effect at its dearest settings and prints, per tone, the true harmonics and the aliased energy in dBc. It places each tone so that a folded harmonic never lands on a true one, which is how the two are told apart. The audit's default limit is -60 dBc: a judgement, not a repository rule (`--alias-limit` moves it; say in TESTING.md why). **Fix**, usually cheapest first: limit the bandwidth that reaches the nonlinearity; use a smoother curve, since an abrupt corner makes far more high harmonics than a rounded one; smooth any gain applied to audio; interpolate modulated reads better than linearly (cubic or Hermite); oversample around the nonlinearity, or use antiderivative antialiasing for a static waveshaper. Every fix costs cycles per sample, so measure the cycles again afterwards. A deliberately lo-fi mode (bit or rate reduction) may exceed the limit: record the figure in the README and say it is intended.
+- [ ] **Headroom and clipping.** A result larger than full scale is limited to full scale when it is stored (octabam's [AGENTS.md](../../sdk/octabam/AGENTS.md) calls it the store's limiter), and a limit is a hard clip: it makes harmonics, and they alias. A wet plus dry sum, a resonant peak or a gain stage after a boost can all reach it. `fx:audit` counts the samples on the limit for every tone and notes them. **Verify** whether the effect meant to limit there, in which case give it a deliberate soft limit, or whether something unintended is limiting (see the accumulator-extension trap in AGENTS.md). The audit cannot tell the two apart; a full-scale 100 Hz sine rendered through the effect and opened as a waveform can.
+- [ ] **DC offset.** An asymmetric curve, a biased filter state or a truncation bias adds DC. It costs headroom downstream and thumps when the effect is bypassed or changes mode. `fx:audit` reports it for every tone; its default limit is -60 dBFS (`--dc-limit`). Use a symmetric curve, or a DC blocker (a one-pole high-pass below about 20 Hz) after the asymmetric stage.
+- [ ] **After the input stops.** A fixed-point feedback loop can latch into a one-LSB limit cycle or a DC value, and a loop that is too hot never decays. `fx:audit` sends a burst and then 3 seconds of silence and looks at the last half second: digital silence is ok, activity of a few LSB is noted, and anything above -90 dBFS fails (`--idle-limit`): not settled, because of a runaway, a limit cycle, or a tail longer than the render (`plan --tail` lengthens it for a long reverb or delay). `verify_dirtystate.py` is the neighbour: it starts from garbage state on silence.
+- [ ] **Denormals.** Not a concern here: the DSP is fixed point and has none. Its counterparts are the clipping and idle checks above.
+- [ ] **Extremes of filters and feedback.** **Verify** every endpoint of every cutoff, resonance and feedback knob, and with the knob parked there, not only passing through: a filter that is stable at 1 kHz can ring forever or overflow near Nyquist or at a very low cutoff once its coefficients are 24-bit. Feedback at its maximum must decay or be limited deliberately. Excite it with an impulse and with noise; the idle row of the audit covers "does it settle".
+- [ ] **Dry and wet stay aligned.** **Verify.** A wet path with latency (a look-ahead, a linear-phase filter, a delay) is matched by the same delay on the dry path, or the mix combs at partial settings. State the latency in the README. The mix has no dip or jump in level across its range.
+
+**Run it.**
+
+```sh
+npm run fx:audit -- plan out/fx            # nine signals, as .raw and .wav; nothing runs yet
+# render each through your effect (below), keeping the file names, then:
+npm run fx:audit -- check out/fx out/fx-renders
+```
+
+Render with every knob at its dearest setting and any modulation off, so that sidebands do not read as aliasing; render a modulated read separately with its modulation on and read the *residual* column, which holds sidebands and noise. The signals are mono and the effect sees them on both channels. `dsp_host` reads the `.raw` files with `-in` (mono is copied to both channels) and writes interleaved stereo int32 words with `-out`; `verify_knob_clicks.py`'s `render()` builds that command for a module. `rig_render.py` reads the `.wav` files as stems and writes `T1.wav`; `--mixer off --amp 1.0` makes the level in the table the level the effect sees (with the mixer model on, a 0 dBFS stem enters the effect at 0.254 FS):
+
+```sh
+cd sdk/octabam      # a built image and your own OS 1.40C: SDK README, "Octatrack native development"
+for f in ../../out/fx/*.wav; do n=$(basename "$f" .wav)
+  python3 tools/harness/rig_render.py --remix <remix> --tracks T1=<KEY> --set T1:<KNOB>=<value> \
+    --mixer off --amp 1.0 --stem T1="$f" --out ../../out/fx-renders/"$n"
+  mv ../../out/fx-renders/"$n"/T1.wav ../../out/fx-renders/"$n".wav
+done
+```
+
+**Verify** the loop on your first run: it uses the harness's documented options, but nothing in CI runs it. `check` reads `.raw` renders as interleaved stereo (`--mono` for one channel) and 44.1 kHz WAV renders, judges the worse channel, and exits 1 on a FAIL. Paste its table into TESTING.md with the knob values you rendered at. The analysis itself is tested without firmware (`scripts/fx-audit.test.mjs` proves that it flags a known aliasing drive and passes the same drive computed at 8x oversampling), so a surprising number is as likely to be the render as the effect: compare the `out dBFS` column with the level you sent first. What it cannot hear: voicing, which is judged by ear (see Traps), and anything the render does not exercise.
+
 ## Integrate
 
 - [ ] `sdk/catalog.json` has the entry (`id`, `version`, `addedAt`), so the library, the configurator and the module page show it.
@@ -55,7 +88,7 @@ Octabam names three (`sdk/octabam/docs/remixer/MODULES.md`, "Decide first"). Cho
 
 ## Test
 
-Octabam's behaviour tests run through its DSP host and need a native toolchain ([SDK README](../../sdk/README.md#octatrack-native-development)). The pattern to copy is `verify_<module>.py`: render through `dsp_host` against predictable arithmetic or a reference. Drive any knob offline with `send_probe.py --set NAME=VALUE`. In TESTING.md say which you ran, and mark everything else "not tested".
+Octabam's behaviour tests run through its DSP host and need a native toolchain ([SDK README](../../sdk/README.md#octatrack-native-development)). The pattern to copy is `verify_<module>.py`: render through `dsp_host` against predictable arithmetic or a reference. Drive any knob offline with `send_probe.py --set NAME=VALUE`. For sound quality, only the render needs the toolchain: `npm run fx:audit` analyses it offline (see Sound quality). In TESTING.md say which you ran, and mark everything else "not tested".
 
 ## Traps
 

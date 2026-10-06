@@ -52,6 +52,11 @@ function octatrack(id) {
   if (!LIBRARY_CATEGORIES.includes(document.category)) fail('category guide', 'category ' + document.category + ' is not a library category', 'use one of ' + LIBRARY_CATEGORIES.join(', '))
   else if (!exists('docs/module-guides/' + document.category + '.md')) fail('category guide', 'docs/module-guides/' + document.category + '.md is missing', 'write the guide for this category')
   else ok('category guide', 'walk docs/module-guides/' + document.category + '.md (and sequencing.md if it acts in time)')
+  // No gate can see how an effect sounds, so this only points at the check and says whether TESTING.md already answers it.
+  if (document.category === 'effects') {
+    const testing = exists(folder + '/TESTING.md') ? readFileSync(resolve(root, folder + '/TESTING.md'), 'utf8') : ''
+    info('sound quality', (/alias/i.test(testing) ? 'TESTING.md mentions aliasing' : 'TESTING.md does not mention aliasing') + '. If it processes audio: npm run fx:audit (aliasing, DC, clipping, idle), or write "not tested" (guide: Sound quality)')
+  }
 
   const art = readFileSync(resolve(root, 'src/components/ModulePreview.tsx'), 'utf8')
   if (exists(folder + '/presentation/thumbnail.svg') || new RegExp("^\\s+'?" + id + "'?: \\(\\) =>", 'm').test(art)) ok('thumbnail', 'the library card has art')

@@ -19,7 +19,7 @@ A module's category is the `category` field of its manifest (`octamod.module.jso
 
 1. Read the category guide, then [octabam's trap list](../../sdk/octabam/AGENTS.md) before any DSP or ColdFire code.
 2. Follow [Add or port a module](../ADD_A_MODULE.md) for the folder, the manifest, the packages and the comparison with native octabam.
-3. Walk the guide's **Behave like the instrument** and **Integrate** checklists. Tick an item only when you did it.
+3. Walk the guide's checklists: **Behave like the instrument** and **Integrate**, and for an effect **Sound quality** (aliasing, clipping, DC, idle behaviour). Tick an item only when you did it.
 4. Run `npm run module:doctor -- <id>` until every line is green. It reads the repository only: no firmware and no module code runs.
 5. Run `npm run check`, and `npm run module:verify -- <id> --os <your 1.40C update>` for an Octatrack module.
 
@@ -51,6 +51,7 @@ A module's category is the `category` field of its manifest (`octamod.module.jso
 | A real project on the built image under the ColdFire port | `sdk/octabam/tools/verify/verify_set.py` |
 | Drive any knob of a DSP module offline | `sdk/octabam/tools/harness/send_probe.py --set NAME=VALUE` |
 | Zipper noise on every continuous knob while it moves | `sdk/octabam/tools/verify/verify_knob_clicks.py` |
+| Aliasing, clipping, DC and idle behaviour of an effect, from renders you make with the harness | `npm run fx:audit` ([effects.md](effects.md#sound-quality)); not a CI gate |
 | Mode words, chooser tables, hidden engines, stock ids | `verify_labels.py`, `verify_menu.py`, `verify_hidden.py`, `verify_replaces.py` |
 | Screenshots of the real LCD | `scripts/capture-module-ui.py` ([guide](../MODULE_UI_CAPTURES.md)) |
 

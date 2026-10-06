@@ -71,6 +71,7 @@ The checks reject missing sections, coloured screenshots and a version that did 
 2. **Fill in the manifest** from [the template](../public/module-repository.example.json): every control, the access steps, compatibility and conflicts. Add the resource gauges (`resources.impact`, see [gauges](MODULE_RESOURCE_GAUGES.md)) and the qualification record (`tests.qualification`, see [fields](MODULE_QUALIFICATION.md)).
 3. **Measure and test.**
    - Record the worst-case cycles for each processor and the exact memory regions and totals.
+   - For an effect, also check how it sounds: aliasing, clipping, DC and idle behaviour (`npm run fx:audit`, [effects guide](module-guides/effects.md#sound-quality)). Paste the table into TESTING.md, or write "not tested". No gate in CI runs it.
    - Add a hardware report from a real unit, stating its model, how long it ran, what was tested and the limitations. There is no minimum duration or track count.
    - If you could not test on hardware, say so in the pull request. Only the owner can waive this, for one exact version.
    - Hardware tests are planned to run automatically over USB with a customised test firmware ([decision](DECISIONS.md#5-october-2026--a-faster-module-workflow)).
