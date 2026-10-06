@@ -53,7 +53,7 @@ async function device(label: string) {
 async function decrypt(record: Captured, receiver: Awaited<ReturnType<typeof device>>): Promise<DevicePush> {
   const bytes = new Uint8Array(record.options.body as ArrayBuffer), salt = bytes.slice(0, 16), keyLength = bytes[20], sender = bytes.slice(21, 21 + keyLength)
   expect(new DataView(bytes.buffer).getUint32(16)).toBe(4096); expect(keyLength).toBe(65)
-  expect(record.options.redirect).toBe('error')
+  expect(record.options.redirect).toBe('manual')
   const server = await crypto.subtle.importKey('raw', sender, { name: 'ECDH', namedCurve: 'P-256' }, false, [])
   const shared = await crypto.subtle.deriveBits({ name: 'ECDH', public: server }, receiver.keys.privateKey, 256)
   const encoder = new TextEncoder()

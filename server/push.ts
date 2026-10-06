@@ -96,7 +96,8 @@ async function deliver(env: Env, row: SubscriptionRow, message: DevicePush, ttl:
   const config = pushConfig(env)!
   try {
     const payload = await buildPushPayload({ data: message, options: { ttl, urgency: 'normal' } }, { endpoint: row.endpoint, expirationTime: null, keys: { p256dh: row.p256dh, auth: row.auth } }, config)
-    const result = await fetch(row.endpoint, { ...payload, redirect: 'error', signal: AbortSignal.timeout(10000) })
+    // Workers supports manual redirects; the caller rejects every non-2xx status without following it.
+    const result = await fetch(row.endpoint, { ...payload, redirect: 'manual', signal: AbortSignal.timeout(10000) })
     await result.body?.cancel()
     return result.status
   } catch { return 0 }
