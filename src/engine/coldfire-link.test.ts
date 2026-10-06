@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { linkColdFireRuntime, runtimeCatalogObject } from './coldfire-link'
 import { readColdFirePackage, PLATFORM_UNITS } from './coldfire-package'
 import { serializeRuntimeCatalog } from './runtime-catalog'
+import suffix from './test-fixtures/coldfire-suffix.json'
+import { parseColdFireObject } from './coldfire-elf'
 import fixtures from './assets/coldfire-runtime-oracles.json'
 async function hash(bytes: Uint8Array) { const digest = await crypto.subtle.digest('SHA-256', new Uint8Array(bytes).buffer); return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('') }
 async function inputs() { return Promise.all(PLATFORM_UNITS.map(readColdFirePackage)) }
@@ -15,6 +17,13 @@ describe('native ColdFire runtime link parity', () => {
     expect(await hash(linked.bytes)).toBe(fixture.expected.sha256)
     expect(Object.fromEntries(linked.symbols)).toEqual(fixture.expected.exports)
     expect(linked.sections.filter(section => section.size)).toEqual(fixture.expected.sections)
+  })
+  it('matches GNU shared nonempty and empty string suffix ownership', async () => {
+    const object = parseColdFireObject(Uint8Array.from(suffix.objectHex.match(/../g)!, byte => parseInt(byte, 16)))
+    const linked = linkColdFireRuntime([{ label: 'suffix', object }], suffix.base)
+    expect(linked.bytes.length).toBe(suffix.bytes)
+    expect(await hash(linked.bytes)).toBe(suffix.sha256)
+    for (const [name, address] of Object.entries(suffix.symbols)) expect(linked.symbols.get(name)).toBe(address)
   })
   it('rejects incompatible, duplicate, unbounded and unsupported runtime inputs', async () => {
     const units = await inputs()

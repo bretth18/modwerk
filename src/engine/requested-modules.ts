@@ -1,6 +1,7 @@
 // Reviewed source packages only. Inherited bytes come from the verified local OS.
 import facts from './assets/requested-packages.json' with { type: 'json' }
 import { CATALOG_SOURCE, MODULES, resolveSelection } from '../catalog/modules.ts'
+import { validateStockCopies } from './stock-copy.ts'
 import { parseColdFireObject } from './coldfire-elf.ts'
 import { linkRomText } from './rom-package.ts'
 import { OS_LOAD_ADDRESS, type OsWrite } from './os-patches.ts'
@@ -36,11 +37,12 @@ export async function readRequestedObject(label: string, original?: Uint8Array) 
   const bytes = Uint8Array.from({ length: pkg.bytes }, (_, i) => parseInt(pkg.code.slice(i * 2, i * 2 + 2), 16))
   if (await bytesHash(bytes) !== pkg.sha256) throw new Error('Requested object checksum does not match.')
   const object = parseColdFireObject(bytes)
+  validateStockCopies(object, pkg.stockCopies)
   for (const copy of pkg.stockCopies) {
     const section = object.sections[copy.section], at = copy.source - OS_LOAD_ADDRESS
-    if (!original || !section || copy.bytes !== 23 || copy.offset < 0 || copy.offset + copy.bytes > section.data.length || at < 0 || at + copy.bytes > original.length || section.data.subarray(copy.offset, copy.offset + copy.bytes).some(b => b)) throw new Error('The inherited USB descriptor span needs verified local firmware.')
+    if (!original || at < 0 || at + copy.bytes > original.length) throw new Error('The inherited stock span needs verified local firmware.')
     const inherited = original.slice(at, at + copy.bytes)
-    if (await bytesHash(inherited) !== copy.sha256) throw new Error('The inherited USB descriptor fingerprint differs.')
+    if (await bytesHash(inherited) !== copy.sha256) throw new Error('The inherited stock span fingerprint differs.')
     section.data.set(inherited, copy.offset)
   }
   return { label, object }

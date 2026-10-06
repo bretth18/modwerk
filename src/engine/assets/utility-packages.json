@@ -3,7 +3,7 @@
   "kind": "authored-utility-packages",
   "stockRead": false,
   "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
-  "sourceCommit": "5f3e27336c7e6bddfee88b6405e17c8f1fb8a7fd",
+  "sourceCommit": "a4989b337a06da76c3d9645d8cc0eb420567e896",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
@@ -20,7 +20,8 @@
     "synth": "0.1.1-experimental",
     "previewvol": "0.1.2-experimental",
     "cc-map": "0.1.2-experimental",
-    "sidechain-compressor": "0.1.1-experimental"
+    "sidechain-compressor": "0.1.1-experimental",
+    "vector": "0.2.3-experimental"
   },
   "compilerSha256": "ba4cfc6b0c5948f8b0a2809d5b73bea85633eb32f82ffc761a6373d9c4d48c5f",
   "qualification": "Source assembly and relocation only. Hardware and release approval are not supplied by this artifact.",

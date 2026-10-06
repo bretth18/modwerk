@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "id": "vector",
+  "moduleVersion": "0.2.3-experimental",
+  "sourceSha256": "34151c0e360314dd50d25ae8447cfa175838d7eddfd80cba13bc26dc4513668e",
+  "imageSha256": "48c0ec735bc9fcc7f050b448b15b3204fa5b968812f4a2aacdf6a4a2c0b1c6e2",
+  "hardwareStatus": "untested",
+  "currentBuildHardware": "owner-waived",
+  "chipWallClockCycles": null,
+  "sequenceChecks": "passed",
+  "poolChecks": "passed",
+  "cycles": {
+    "mode": "conditional-static-bound",
+    "staticPerEvent": 185200000,
+    "budget": 264000000,
+    "instructionsPerCommitCeiling": 700000,
+    "cyclesPerInstructionAllowance": 32,
+    "stockUiSchedulingReserve": 6000000,
+    "burstCommits": 8,
+    "burstPeriodSeconds": 1,
+    "measuredInstructions": {
+      "generator": 65099,
+      "writer": 25380,
+      "nativeCommit": 472499
+    },
+    "cases": 3840,
+    "notClaimed": "The instruction probe uses synthetic state and stock callees without RTOS/audio boot. The conditional model is not physical timing, a continuous knob-rate guarantee or a maximum-audio-load headroom measurement."
+  },
+  "memory": {
+    "totalBytes": 11096779,
+    "perInstanceBytes": 74656,
+    "sharedBytes": 10499531,
+    "maxInstances": 8,
+    "linkedRuntimeBytes": 24604,
+    "sections": {
+      "text": 12650,
+      "rodata": 391,
+      "data": 3368,
+      "padding": 8195
+    },
+    "newHeapBytes": 0,
+    "stack": {
+      "generatorObserved": 968,
+      "writerObserved": 40,
+      "nativeCommitObserved": 1048,
+      "capacityCeiling": 1216
+    },
+    "hardwareCanaries": null
+  },
+  "commonWorker": {
+    "result": "passed",
+    "moduleVersion": "0.2.3-experimental",
+    "mainSha256": "9ecf5b58e489a0bd59bb4e6f6ab88c2487ecd874bfa0a7af3f795c2189d75e61",
+    "updateSha256": "051818edea53faefd732f46acbd50eda1dd33dea50d46405f5794885f43d947a",
+    "mainBytes": 1125350,
+    "updateBytes": 459780,
+    "containerRoundTrip": true,
+    "stockSeedAndTailPreserved": true,
+    "conflictsRefused": true,
+    "changedBaseRefused": true,
+    "staleSessionRefused": true
+  }
+}

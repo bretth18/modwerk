@@ -162,6 +162,13 @@
       "fx1": true,
       "fx1Only": false,
       "replaces": "COMPRESSOR"
+    },
+    {
+      "id": "vector",
+      "key": "VECTOR",
+      "fxId": null,
+      "fx1": false,
+      "fx1Only": false
     }
   ],
   "customIds": [

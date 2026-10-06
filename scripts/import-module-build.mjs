@@ -1,3 +1,4 @@
+import { validateStockCopies } from '../src/engine/stock-copy.ts'
 import { readFile, lstat, realpath, copyFile, writeFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
@@ -64,12 +65,14 @@ for (const variant of packages.get('resident-dsp.json').variants) {
 }
 const requested = packages.get('requested-packages.json')
 for (const pkg of requested.objects) {
-  if (!Array.isArray(pkg.stockCopies) || pkg.stockCopies.length !== (pkg.label === 'usbmidi_cfg' ? 4 : 0)) throw new Error('Invalid inherited USB placeholder inventory')
+  if (!Array.isArray(pkg.stockCopies) || pkg.stockCopies.length !== (['usbmidi_cfg', 'vector'].includes(pkg.label) ? 4 : 0)) throw new Error('Invalid inherited stock placeholder inventory')
   if (!hash(pkg.sha256) || !/^[a-f0-9]+$/.test(pkg.code) || pkg.code.length !== pkg.bytes * 2 || sha(Buffer.from(pkg.code, 'hex')) !== pkg.sha256) throw new Error('Invalid requested authored object')
   const object = parseColdFireObject(new Uint8Array(Buffer.from(pkg.code, 'hex')))
+  validateStockCopies(object, pkg.stockCopies)
+  const group = requested.groups.find(group => group.moduleId === pkg.moduleId)
   for (const copy of pkg.stockCopies) {
-    const section = object.sections[copy.section]
-    if (!section || copy.bytes !== 23 || !Number.isSafeInteger(copy.offset) || copy.offset < 0 || copy.offset + copy.bytes > section.data.length || !hash(copy.sha256) || section.data.subarray(copy.offset, copy.offset + copy.bytes).some(byte => byte !== 0)) throw new Error('Inherited USB spans must contain only zero placeholders')
+    if (pkg.label === 'usbmidi_cfg' && copy.bytes !== 23) throw new Error('Invalid inherited USB descriptor length')
+    if (pkg.label !== 'usbmidi_cfg' && !group?.detours.some(hook => hook.address === copy.source && hook.guardLength === copy.bytes && hook.guardSha256 === copy.sha256)) throw new Error('Inherited replay span must match its declared native detour guard')
   }
 }
 const utility = packages.get('utility-packages.json')

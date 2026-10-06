@@ -19,8 +19,14 @@ export function selectionConflicts(ids: readonly string[], keepStockFx2 = false)
       moduleIds: modules.map(module => module.id),
       fixes: [{ label: 'Keep MIDI Scenes', removeIds: companions.map(module => module.id) }, { label: 'Remove MIDI Scenes', removeIds: ['midi-scenes'] }] })
   }
+  if (selected.has('vector') && selected.has('analog-bassdrum')) conflicts.push({
+    id: 'vector-analog-bd', title: 'Choose VECTOR or Analog BD',
+    description: 'VECTOR and Analog BD use the same native machine chooser hooks. Build them separately.',
+    moduleIds: ['vector', 'analog-bassdrum'],
+    fixes: [{ label: 'Keep VECTOR', removeIds: ['analog-bassdrum'] }, { label: 'Keep Analog BD', removeIds: ['vector'] }],
+  })
   if (selected.has('synth')) {
-    const companions = modules.filter(module => ['analog-bassdrum', 'quantizer'].includes(module.id))
+    const companions = modules.filter(module => ['analog-bassdrum', 'quantizer', 'vector'].includes(module.id))
     if (companions.length) conflicts.push({ id: 'synth-machine-conflict', title: 'Choose FM Synth or overlapping machine modules',
       description: 'FM Synth bundles Scale Quantizer and uses the machine chooser hooks. It cannot run alongside ' + companions.map(module => module.name).join(', ') + '.',
       moduleIds: ['synth', ...companions.map(module => module.id)],

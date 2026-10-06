@@ -7,6 +7,7 @@ import { readFile, readdir, mkdtemp, mkdir, writeFile, rm, lstat } from 'node:fs
 import { tmpdir } from 'node:os'
 import { resolve, dirname } from 'node:path'
 import { isDeepStrictEqual } from 'node:util'
+import { loadBuilderPreservation } from './builder-preservation.mjs'
 import { parseModuleDocument } from '../src/catalog/module-contract.ts'
 import { compareModuleVersions } from '../src/catalog/versions.ts'
 import { requireModuleDocumentation } from './module-documentation.mjs'
@@ -79,15 +80,17 @@ function editorial(path, document) {
     || /^(LICENSE|LICENCE|COPYING)(\..*)?$/i.test(path)
     || /^media\/.*\.(png|jpg|jpeg|webp|svg|wav|mp3|ogg)$/i.test(path)
 }
-function engineAsset(bytes, path, document, previousVersion) {
+function engineAsset(bytes, path, document, previousVersion, addedIds = []) {
   const value = JSON.parse(bytes.toString('utf8'))
   // Rebuilt package provenance and the version label change for editorial
   // releases. Preserve every byte, address, recipe, limit and test verdict.
   delete value.sourceCommit
+  for (const id of addedIds) if (value.moduleVersions) delete value.moduleVersions[id]
   if (value.moduleVersions?.[document.id] === document.version) value.moduleVersions[document.id] = previousVersion
   if (path === 'src/engine/assets/module-build.json') {
     delete value.approval
     delete value.sourceTreeSha256
+    if (addedIds.length) delete value.compilerSha256
     delete value.files // Derived file hashes; package payloads are checked below.
     // The release independently verifies and stamps owner approval. This
     // provenance changes on every release, without changing runtime inputs.
@@ -96,17 +99,20 @@ function engineAsset(bytes, path, document, previousVersion) {
   function visit(item) {
     if (!item || typeof item !== 'object') return
     if ((item.id === document.id || item.moduleId === document.id) && item.version === document.version) item.version = previousVersion
-    for (const child of Object.values(item)) visit(child)
+    for (const [key, child] of Object.entries(item)) {
+      if (Array.isArray(child)) item[key] = child.filter(row => !row || typeof row !== 'object' || !addedIds.includes(row.moduleId ?? row.id))
+      visit(item[key])
+    }
   }
   visit(value)
   return value
 }
-function sameFiles(previous, current, skip, label, compare = (a, b) => a.equals(b)) {
+function sameFiles(previous, current, skip, label, compare = (a, b) => a.equals(b), preserved = () => false) {
   const paths = new Set([...previous.keys(), ...current.keys()])
   for (const path of paths) {
     if (skip(path)) continue
     const before = previous.get(path), after = current.get(path)
-    if (!before || !after || !compare(before, after, path)) throw new Error(label + ': runtime, resource or evidence input changed: ' + path + '; full qualification is required')
+    if (!(before && after && compare(before, after, path)) && !preserved(before, after, path)) throw new Error(label + ': runtime, resource or evidence input changed: ' + path + '; full qualification is required')
   }
 }
 
@@ -148,6 +154,7 @@ export async function requireRetainedEvidence(root, folder, document, baseline, 
   if (!isDeepStrictEqual(runtimeFields(previous), runtimeFields(document))) throw new Error(label + ': native declarations, control values, resource claims, compatibility, provenance or test evidence changed; full qualification is required')
   const relative = new Map([...files].map(([path, bytes]) => [path.slice(prefix.length), bytes]))
   sameFiles(relative, await currentFiles(folder), path => editorial(path, previous) && editorial(path, document), label)
+  const preservation = await loadBuilderPreservation(root, approvedRef, document.id)
   let changedInfrastructure
   for (const path of infrastructure) {
     const before = tree(root, record.commit, path)
@@ -161,8 +168,9 @@ export async function requireRetainedEvidence(root, folder, document, baseline, 
     } catch (error) { if (error.code !== 'ENOENT') throw error }
     try { sameFiles(before, after, file => path === 'src/engine' && (file.endsWith('.test.ts') || file.startsWith('src/engine/test-fixtures/')), label,
       (a, b, file) => path === 'src/engine' && file.endsWith('.json')
-        ? isDeepStrictEqual(engineAsset(a, file, document, previous.version), engineAsset(b, file, document, previous.version))
-        : a.equals(b)) } catch(error) { changedInfrastructure ??= error }
+        ? isDeepStrictEqual(engineAsset(a, file, document, previous.version, preservation?.addedModuleIds), engineAsset(b, file, document, previous.version, preservation?.addedModuleIds))
+        : a.equals(b), preservation?.matchesFile) } catch(error) { changedInfrastructure ??= error }
+
   }
   if (changedInfrastructure) {
     // This one reviewed additive extension keeps Euclid's original folder,

@@ -93,11 +93,19 @@ export async function requireFolderQualification(folder, document, baseline, wai
     // The owner waived only fresh hardware evidence, for this exact version, source and image. Documentation and media are not part of that binding. The approval is a
     // separate record, so the module folder cannot grant it to itself; every software record must still describe the same build.
     const q=document.tests.qualification
-    const approval=JSON.parse(await readFile(new URL('../sdk/sidechain-compressor-build-approval.json',import.meta.url),'utf8'))
-    if(approval.id!==document.id||approval.version!==document.version||approval.approvedBy!=='repeat98'||approval.approvedOn!=='2026-10-05'||JSON.stringify(approval.waived)!==JSON.stringify(['current-build-hardware'])||approval.sourceSha256!==q.sourceSha256||approval.imageSha256!==q.imageSha256) throw new Error(document.id+': hardware-only approval does not cover this exact version, source and image')
-    const software=JSON.parse(await readFile(resolve(folder,'evidence/software.json'),'utf8')),builder=JSON.parse(await readFile(resolve(folder,'evidence/common-builder.json'),'utf8'))
-    if(software.sourceSha256!==q.sourceSha256||software.imageSha256!==q.imageSha256||software.moduleVersion!==document.version||software.hardwareStatus!=='historical'||software.currentBuildHardware!=='owner-waived'||software.chipWallClockCycles!==null||software.cycles?.staticPerCore!==q.cycles[0].maxConfiguration||software.memory?.totalBytes!==q.memory.totalBytes||software.memory?.hardwareCanaries!==null) throw new Error(document.id+': software evidence does not match the qualification record')
-    if(builder.moduleVersion!==document.version||builder.images?.sharedBuilderNative?.sha256!==q.imageSha256||builder.differenceFromStandalone?.sidechainOwnedBytesDiffering!==0||builder.composition?.platformOrLoggerWritesOverlappingModuleOwnedWrites!==0||builder.composition?.browserRefusalsMatchNative!==builder.composition?.nativeRefused||builder.composition?.browserModuleOwnedWritesMatchNativeOutsidePlatformWrites!==builder.composition?.nativeBuilt) throw new Error(document.id+': shared-builder evidence does not show matching composition')
+    const approval=JSON.parse(await readFile(new URL('../sdk/'+document.id+'-build-approval.json',import.meta.url),'utf8'))
+    if(approval.id!==document.id||approval.version!==document.version||approval.approvedBy!=='repeat98'||approval.approvedOn!==q.hardware.approvedOn||JSON.stringify(approval.waived)!==JSON.stringify(['current-build-hardware'])||approval.sourceSha256!==q.sourceSha256||approval.imageSha256!==q.imageSha256) throw new Error(document.id+': hardware-only approval does not cover this exact version, source and image')
+    const software=JSON.parse(await readFile(resolve(folder,'evidence/software.json'),'utf8'))
+    if(software.sourceSha256!==q.sourceSha256||software.imageSha256!==q.imageSha256||software.moduleVersion!==document.version||software.hardwareStatus!==document.tests.hardwareStatus||software.currentBuildHardware!=='owner-waived'||software.chipWallClockCycles!==null||software.memory?.totalBytes!==q.memory.totalBytes||software.memory?.hardwareCanaries!==null) throw new Error(document.id+': software evidence does not match the qualification record')
+    if(document.id==='sidechain-compressor') {
+      const builder=JSON.parse(await readFile(resolve(folder,'evidence/common-builder.json'),'utf8'))
+      if(software.cycles?.staticPerCore!==q.cycles[0].maxConfiguration) throw new Error(document.id+': processor bounds differ from the software evidence')
+      if(builder.moduleVersion!==document.version||builder.images?.sharedBuilderNative?.sha256!==q.imageSha256||builder.differenceFromStandalone?.sidechainOwnedBytesDiffering!==0||builder.composition?.platformOrLoggerWritesOverlappingModuleOwnedWrites!==0||builder.composition?.browserRefusalsMatchNative!==builder.composition?.nativeRefused||builder.composition?.browserModuleOwnedWritesMatchNativeOutsidePlatformWrites!==builder.composition?.nativeBuilt) throw new Error(document.id+': shared-builder evidence does not show matching composition')
+    } else if(document.id==='vector') {
+      const capture=JSON.parse(await readFile(resolve(folder,'media/capture.json'),'utf8'))
+      if(software.cycles?.staticPerEvent!==q.cycles[0].maxConfiguration||software.cycles?.mode!=='conditional-static-bound'||software.sequenceChecks!=='passed'||software.poolChecks!=='passed'||capture.imageSha256!==q.imageSha256||capture.sourceSha256!==q.sourceSha256) throw new Error(document.id+': current emulator behavior and resource evidence must cover the qualified source and image')
+    }
+
   }
   for(const path of qualificationReports(document)) {
     const report=await readFile(resolve(folder,path),'utf8')

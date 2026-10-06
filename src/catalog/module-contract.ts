@@ -10,7 +10,7 @@ export type ModuleUiCapture = { page: string; shows: 'location' | 'controls' | '
 export type QualificationConditions = { parameterExtremes: string; parameterModulation: string; modeSwitching: string; maxLoad: string; inputConditions: string }
 export type DetailedHardwareQualification = { status: 'pending' | 'failed' | 'passed'; model: 'MKI' | 'MKII'; testedOn: string; tester: string; project: { name: string; sha256: string; recipe: string }; durationMinutes: number; audioTracks: number; midiTracks: number; maxInstances: number; conditions: QualificationConditions; checks: { audioContinuity: 'passed' | 'failed'; transport: 'passed' | 'failed'; controls: 'passed' | 'failed'; memoryIntegrity: 'passed' | 'failed'; recovery: 'passed' | 'failed' }; report: string }
 export type FunctionalHardwareQualification = { kind: 'functional'; status: 'reported'; model: 'MKI' | 'MKII' | null; testedOn: string; tester: string; sourceRevision: string; imageSha256: string; summary: string; limitations: string[]; report: string }
-export type OwnerWaivedHardwareQualification = { kind: 'owner-waived'; status: 'waived'; approvedBy: 'repeat98'; approvedOn: '2026-10-05'; reason: string; report: string }
+export type OwnerWaivedHardwareQualification = { kind: 'owner-waived'; status: 'waived'; approvedBy: 'repeat98'; approvedOn: '2026-10-05' | '2026-10-06'; reason: string; report: string }
 export type ModuleQualification = {
   documentation: { tutorial: { title: string; steps: string[] }; screenshots: string[]; screenshotStyle: 'black-and-white' }
   moduleVersion: string; sourceSha256: string; imageSha256: string
@@ -118,7 +118,7 @@ function qualification(value: unknown): ModuleQualification {
   const result={documentation,moduleVersion,sourceSha256:sha256(q.sourceSha256,path+'.sourceSha256'),imageSha256:sha256(q.imageSha256,path+'.imageSha256'),cycles,memory:{regions,perInstanceBytes,sharedBytes,maxInstances,totalBytes,conditions:text(m.conditions,p+'.conditions'),report:qualificationReport(m.report,p+'.report')}}
   if(q.hardware && typeof q.hardware==='object' && 'kind' in q.hardware && q.hardware.kind==='owner-waived') {
     const hpath=path+'.hardware',h=object(q.hardware,hpath,['kind','status','approvedBy','approvedOn','reason','report'])
-    return {...result,hardware:{kind:'owner-waived',status:enumeration(h.status,hpath+'.status',['waived']),approvedBy:enumeration(h.approvedBy,hpath+'.approvedBy',['repeat98']),approvedOn:enumeration(h.approvedOn,hpath+'.approvedOn',['2026-10-05']),reason:text(h.reason,hpath+'.reason'),report:qualificationReport(h.report,hpath+'.report')}}
+    return {...result,hardware:{kind:'owner-waived',status:enumeration(h.status,hpath+'.status',['waived']),approvedBy:enumeration(h.approvedBy,hpath+'.approvedBy',['repeat98']),approvedOn:enumeration(h.approvedOn,hpath+'.approvedOn',['2026-10-05','2026-10-06']),reason:text(h.reason,hpath+'.reason'),report:qualificationReport(h.report,hpath+'.report')}}
   }
   if(q.hardware && typeof q.hardware==='object' && 'kind' in q.hardware && q.hardware.kind==='functional') {
     const hpath=path+'.hardware',h=object(q.hardware,hpath,['kind','status','model','testedOn','tester','sourceRevision','imageSha256','summary','limitations','report'])
@@ -259,8 +259,11 @@ export function requireModuleQualificationForPublication(document: ModuleDocumen
   if(q.moduleVersion!==document.version) fail(path+'.moduleVersion','qualification must cover this module version')
   if(q.cycles.some(c=>c.maxConfiguration>c.budget)) fail(path+'.cycles','worst-case maximum configuration exceeds the declared real-time budget')
   if('kind' in q.hardware && q.hardware.kind==='owner-waived') {
-    if(document.id!=='sidechain-compressor'||document.version!=='0.1.1-experimental'||document.tests.hardwareStatus!=='historical') fail(path+'.hardware','hardware-only owner approval covers only the exact Sidechain Compressor release')
-    if(q.cycles.length!==2||!q.cycles.some(c=>c.processor==='coldfire')||!q.cycles.some(c=>c.processor==='dsp')||q.memory.maxInstances!==16) fail(path,'hardware-only approval still requires both processor bounds and complete sixteen-instance memory')
+    if(document.id==='sidechain-compressor' && document.version==='0.1.1-experimental' && document.tests.hardwareStatus==='historical' && q.hardware.approvedOn==='2026-10-05') {
+      if(document.tests.hardwareStatus!=='historical'||q.cycles.length!==2||!q.cycles.some(c=>c.processor==='coldfire')||!q.cycles.some(c=>c.processor==='dsp')||q.memory.maxInstances!==16) fail(path,'hardware-only approval still requires both processor bounds and complete sixteen-instance memory')
+    } else if(document.id==='vector' && document.version==='0.2.3-experimental' && q.hardware.approvedOn==='2026-10-06') {
+      if(document.tests.hardwareStatus!=='untested'||q.cycles.length!==1||q.cycles[0].processor!=='coldfire'||q.cycles[0].maxInstances!==8||q.memory.maxInstances!==8) fail(path,'VECTOR hardware-only approval requires honest untested status, ColdFire bounds and complete eight-track memory')
+    } else fail(path+'.hardware','hardware-only owner approval covers only exact approved releases')
   } else if('kind' in q.hardware) {
     if(document.tests.hardwareStatus!=='reported'||q.hardware.imageSha256!==q.imageSha256||q.hardware.sourceRevision!==document.tests.evidenceRevision) fail(path+'.hardware','the attributed hardware report must match the tested source and image; it is reported evidence, not verified stress qualification')
   } else {

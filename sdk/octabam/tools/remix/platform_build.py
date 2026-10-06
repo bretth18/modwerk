@@ -72,6 +72,9 @@ def link_runtime(units, work: pathlib.Path, defsyms: dict, base: int, includes=N
             assemble_coldfire(ROOT / u.source, '54455', obj, incdir=inc[1] if inc else None, cwd=work)
         except subprocess.CalledProcessError as error:
             sys.exit(f"platform build: m68k-elf-as failed\n{error.stderr[-3000:]}")
+        if u.stock_copies:
+            from remix.stock_copies import fill_object
+            fill_object(obj, u.stock_copies)
         objs.append(obj)
     elf, raw = work / "runtime.elf", work / "runtime.bin"
     _run(["m68k-elf-ld", f"-Ttext=0x{base:x}",

@@ -761,6 +761,15 @@ class NameSelect:
 
 
 @dataclass(frozen=True)
+class StockCopy:
+    """Fill a zero placeholder at an authored ELF symbol from guarded local OS.
+    Source-only packages retain the zeros and address/length/hash recipe.
+    """
+    symbol: str
+    span: object
+
+
+@dataclass(frozen=True)
 class Linked:
     """One GNU-as source unit, assembled and LINKED BY THE BUILD at whatever
     address it lands -- placement by the build, not by the author's memory
@@ -802,6 +811,7 @@ class Linked:
     # on which modules are in the image (mode-defaults' view table) is
     # otherwise unlinkable: the source cannot know the remix.
     include: object | None = None
+    stock_copies: tuple[StockCopy, ...] = ()
 
 
 @dataclass(frozen=True)

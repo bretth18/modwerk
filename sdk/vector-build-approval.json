@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "vector",
+  "version": "0.2.3-experimental",
+  "approvedBy": "repeat98",
+  "approvedOn": "2026-10-06",
+  "waived": [
+    "current-build-hardware"
+  ],
+  "reason": "Owner explicitly approved release using the current emulator evidence on 6 October 2026 because their Octatrack is in repair. This waives current-build physical hardware testing only; software behavior, source packaging, resource accounting and browser/native parity remain required.",
+  "sourceSha256": "34151c0e360314dd50d25ae8447cfa175838d7eddfd80cba13bc26dc4513668e",
+  "imageSha256": "48c0ec735bc9fcc7f050b448b15b3204fa5b968812f4a2aacdf6a4a2c0b1c6e2"
+}

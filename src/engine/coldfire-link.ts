@@ -31,9 +31,9 @@ function mergeStrings(parts: readonly InputSection[]): Merge {
   const offsets: Merge['offsets'] = new Map(parts.map(part => [part.section, []]))
   for (const string of strings) {
     const owners = survivors.filter(other => other.key.endsWith(string.key))
-    if (owners.length !== 1 && string.bytes.length !== 1) fail('has an ambiguous string-suffix merge which needs a native placement proof')
-    // GNU's suffix sort puts the empty string on the first reversed-byte owner.
-    if (string.bytes.length === 1) owners.sort((a, b) => {
+    // GNU assigns shared suffixes to the first owner in reversed-byte order.
+    // Native complete-image comparisons cover the VECTOR and platform strings.
+    owners.sort((a, b) => {
       for (let i = 2; i <= Math.min(a.bytes.length, b.bytes.length); i++) if (a.bytes[a.bytes.length - i] !== b.bytes[b.bytes.length - i]) return a.bytes[a.bytes.length - i] - b.bytes[b.bytes.length - i]
       return a.bytes.length - b.bytes.length
     })

@@ -8,7 +8,7 @@ import { execFileSync } from 'node:child_process'
 import { compiledModuleVersions, moduleSourcePaths, moduleSourceFingerprint, sourceEntryHash, isDocumentationPath } from './module-source.mjs'
 const root = fileURLToPath(new URL('../', import.meta.url))
 const catalog = JSON.parse(await readFile(resolve(root, 'sdk/catalog.json'), 'utf8'))
-const requested = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer', 'synth']
+const requested = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer', 'synth', 'vector']
 const verifiedRequested = requested.filter(id => id !== 'midi-scenes')
 describe('release package scope and reviewed source inventory', () => {
   it('keeps the committed release identity bound to the complete SDK source and compiler', async () => {
@@ -19,11 +19,11 @@ describe('release package scope and reviewed source inventory', () => {
   })
   it('binds approved standalone MIDI Scenes without compiling its archived 8.2 port', async () => {
     const versions = await compiledModuleVersions(root, catalog), paths = await moduleSourcePaths(root)
-    expect(Object.keys(versions)).toEqual(['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', ...requested,'previewvol','cc-map','sidechain-compressor'])
+    expect(Object.keys(versions)).toEqual(['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', ...requested.filter(id => id !== 'vector'),'previewvol','cc-map','sidechain-compressor','vector'])
     expect(versions['midi-scenes']).toBe('0.2.4-experimental')
     expect(versions.miniverb).toBe('0.1.2-experimental')
     for (const id of verifiedRequested) {
-      expect(versions[id]).toBe(id === 'synth' ? '0.1.1-experimental' : '0.1.2-experimental')
+      expect(versions[id]).toBe(id === 'vector' ? '0.2.3-experimental' : id === 'synth' ? '0.1.1-experimental' : '0.1.2-experimental')
       expect(paths).toContain('modules/' + id + '/manifest.py')
     }
     expect(paths).toContain('modules/midi-scenes/recipe.json')

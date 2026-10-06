@@ -10,7 +10,7 @@ import argparse, hashlib, importlib.util, json, os, re, shutil, struct, subproce
 APP = Path(__file__).resolve().parents[1]
 ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead']
 HOOKED = ['sidechain-compressor']
-REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer', 'synth']
+REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer', 'synth', 'vector']
 UTILITIES = ['previewvol', 'cc-map']
 ASSET_NAMES = ['dsp-packages.json', 'coldfire-packages.json', 'resident-dsp.json', 'rom-packages.json',
                'bootstrap-package.json', 'menu-recipes.json', 'descriptor-recipes.json', 'platform-writes.json', 'requested-packages.json', 'utility-packages.json']
@@ -102,10 +102,11 @@ def retain_pending_requested(compiled, baseline, ids, standalone=False):
     for field, key in [('objects', 'label'), ('groups', 'moduleId')]:
         actual = {row[key]: row for row in compiled[field]}
         expected = {row[key] for row in baseline[field] if row['moduleId'] not in pending}
-        expected.update(row[key] for row in compiled[field] if row['moduleId'] == 'synth')
-        if len(actual) != len(compiled[field]) or set(actual) != expected:
+        previous = {row[key] for row in baseline[field]}
+        new = {row[key] for row in compiled[field] if row[key] not in previous and row['moduleId'] in ids}
+        if len(actual) != len(compiled[field]) or set(actual) != expected | new:
             raise ValueError('Compiled requested package scope differs from the verified baseline')
-        compiled[field] = [row if row['moduleId'] in pending else actual[row[key]] for row in baseline[field]] + [row for row in compiled[field] if row['moduleId'] == 'synth' and row[key] not in {old[key] for old in baseline[field]}]
+        compiled[field] = [row if row['moduleId'] in pending else actual[row[key]] for row in baseline[field]] + [actual[k] for k in actual if k in new]
     return compiled
 
 
@@ -126,6 +127,9 @@ def compile_requested(root, known, documents, versions, revision, provenance, na
             obj = work / 'unit.o'; cpu = '54455' if u.dram else u.cpu
             run(['m68k-elf-as', '-mcpu=' + cpu, *extra, '-o', obj, root / u.source], root)
             data = bytearray(obj.read_bytes()); copies = []
+            if u.stock_copies:
+                from remix.stock_copies import object_copies
+                copies.extend(object_copies(data, u.stock_copies))
             if u.label == 'usbmidi_cfg':
                 shoff, = struct.unpack_from('>I', data, 32); shnum, = struct.unpack_from('>H', data, 48)
                 headers = [struct.unpack_from('>10I', data, shoff + i * 40) for i in range(shnum)]

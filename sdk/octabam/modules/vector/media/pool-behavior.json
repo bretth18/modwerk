@@ -1,0 +1,272 @@
+{
+  "schemaVersion": 1,
+  "moduleVersion": "0.2.3-experimental",
+  "testedOn": "2026-10-06",
+  "imageSha256": "48c0ec735bc9fcc7f050b448b15b3204fa5b968812f4a2aacdf6a4a2c0b1c6e2",
+  "result": "passed",
+  "observations": [
+    {
+      "action": "assigned-modal",
+      "backingPool": "STATIC",
+      "highlightedChoice": 0,
+      "poolBrowserOpen": false,
+      "browserPool": "STATIC",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "319ae315b9f80a930396d2d47fce67b96e7aaa1050c87a4c0e3c42a7148fc5c6"
+    },
+    {
+      "action": "cancel-choice",
+      "backingPool": "STATIC",
+      "highlightedChoice": null,
+      "poolBrowserOpen": false,
+      "browserPool": "STATIC",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "319ae315b9f80a930396d2d47fce67b96e7aaa1050c87a4c0e3c42a7148fc5c6"
+    },
+    {
+      "action": "generated-before-pools",
+      "backingPool": "STATIC",
+      "highlightedChoice": null,
+      "poolBrowserOpen": false,
+      "browserPool": "STATIC",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "track-modal",
+      "backingPool": "STATIC",
+      "highlightedChoice": 0,
+      "poolBrowserOpen": false,
+      "browserPool": null,
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "machines-left",
+      "backingPool": "STATIC",
+      "highlightedChoice": null,
+      "poolBrowserOpen": true,
+      "browserPool": "VECTOR",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "modal-reopen",
+      "backingPool": "STATIC",
+      "highlightedChoice": 0,
+      "poolBrowserOpen": false,
+      "browserPool": "VECTOR",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "flex-highlight",
+      "backingPool": "STATIC",
+      "highlightedChoice": 1,
+      "poolBrowserOpen": false,
+      "browserPool": "VECTOR",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "flex-pool",
+      "backingPool": "STATIC",
+      "highlightedChoice": null,
+      "poolBrowserOpen": true,
+      "browserPool": "FLEX",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "flex-back",
+      "backingPool": "STATIC",
+      "highlightedChoice": 1,
+      "poolBrowserOpen": false,
+      "browserPool": "FLEX",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "flex-files",
+      "backingPool": "STATIC",
+      "highlightedChoice": null,
+      "poolBrowserOpen": true,
+      "browserPool": "FLEX",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "flex-loaded",
+      "backingPool": "STATIC",
+      "highlightedChoice": null,
+      "poolBrowserOpen": true,
+      "browserPool": "FLEX",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "flex-sample-confirm",
+      "backingPool": "FLEX",
+      "highlightedChoice": null,
+      "poolBrowserOpen": true,
+      "browserPool": "FLEX",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "flex-src",
+      "backingPool": "FLEX",
+      "highlightedChoice": null,
+      "poolBrowserOpen": false,
+      "browserPool": "FLEX",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "flex-edit",
+      "backingPool": "FLEX",
+      "highlightedChoice": null,
+      "poolBrowserOpen": false,
+      "browserPool": "FLEX",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "flex-play",
+      "backingPool": "FLEX",
+      "highlightedChoice": null,
+      "poolBrowserOpen": false,
+      "browserPool": "FLEX",
+      "playing": true,
+      "nativeNextStep": 9,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "flex-advance",
+      "backingPool": "FLEX",
+      "highlightedChoice": null,
+      "poolBrowserOpen": false,
+      "browserPool": "FLEX",
+      "playing": true,
+      "nativeNextStep": 2,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "static-highlight",
+      "backingPool": "FLEX",
+      "highlightedChoice": 0,
+      "poolBrowserOpen": false,
+      "browserPool": "VECTOR",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "static-pool",
+      "backingPool": "FLEX",
+      "highlightedChoice": null,
+      "poolBrowserOpen": true,
+      "browserPool": "STATIC",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "static-files",
+      "backingPool": "FLEX",
+      "highlightedChoice": null,
+      "poolBrowserOpen": true,
+      "browserPool": "STATIC",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "static-loaded",
+      "backingPool": "FLEX",
+      "highlightedChoice": null,
+      "poolBrowserOpen": true,
+      "browserPool": "STATIC",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "static-sample-confirm",
+      "backingPool": "STATIC",
+      "highlightedChoice": null,
+      "poolBrowserOpen": true,
+      "browserPool": "STATIC",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "static-src",
+      "backingPool": "STATIC",
+      "highlightedChoice": null,
+      "poolBrowserOpen": false,
+      "browserPool": "STATIC",
+      "playing": false,
+      "nativeNextStep": 0,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "static-play",
+      "backingPool": "STATIC",
+      "highlightedChoice": null,
+      "poolBrowserOpen": false,
+      "browserPool": "STATIC",
+      "playing": true,
+      "nativeNextStep": 8,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    },
+    {
+      "action": "static-advance",
+      "backingPool": "STATIC",
+      "highlightedChoice": null,
+      "poolBrowserOpen": false,
+      "browserPool": "STATIC",
+      "playing": true,
+      "nativeNextStep": 2,
+      "trackRecordSha256": "5295f202c7f4c6e471f20e23d83a616b2c151e0c6ef5ee38b15f299a0532094f"
+    }
+  ],
+  "checks": {
+    "automaticPoolModal": true,
+    "doubleTrackReopensModal": true,
+    "leftReturnsToMachines": true,
+    "rightReopensModal": true,
+    "rightOpensHighlightedPool": true,
+    "heldLeftReturnsSafely": true,
+    "arrowsPreserveAssignedPool": true,
+    "noCancelsChoice": true,
+    "bothStockSampleLists": true,
+    "bothStockFileBrowsers": true,
+    "staticFileLoadedToSecondSlot": true,
+    "flexFileLoadedToFirstSlot": true,
+    "sampleConfirmationCommitsBackingPool": true,
+    "sampleConfirmationKeepsVector": true,
+    "generatorSettingsUnchanged": true,
+    "generatedSequenceUnchanged": true,
+    "otherSevenTracksUnchanged": true,
+    "stepsAdvanceWithFlex": true,
+    "stepsAdvanceWithStatic": true
+  },
+  "limitations": "Focused emulator checks on one 16-step track using a test tone loaded through both native pools. Read-only GDB pauses invalidate audio-continuity and exact timing conclusions. Hardware, persistence and maximum load remain pending.",
+  "sourceSha256": "34151c0e360314dd50d25ae8447cfa175838d7eddfd80cba13bc26dc4513668e"
+}

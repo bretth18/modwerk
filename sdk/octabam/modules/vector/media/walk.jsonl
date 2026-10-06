@@ -1,0 +1,129 @@
+{"wait_text": "PTCH", "timeout_ms": 45000}
+{"wait_ms": 5000}
+{"wait_guest_ms": 5000}
+{"tap": "SRC", "double": 1, "until": "PICKUP", "timeout_ms": 15000}
+{"wait_guest_ms": 1000}
+{"tap": "DOWN", "wait_guest_ms": 350}
+{"tap": "DOWN", "wait_guest_ms": 350}
+{"tap": "DOWN", "wait_guest_ms": 350}
+{"tap": "DOWN", "wait_guest_ms": 350}
+{"tap": "DOWN", "wait_guest_ms": 350}
+{"tap": "YES", "wait_guest_ms": 1000}
+{"tap": "NO", "wait_guest_ms": 500}
+{"tap": "SRC", "until": "DENS", "timeout_ms": 10000}
+{"mark": "baseline"}
+{"wait_ms": 500}
+{"wait_guest_ms": 400}
+{"screenshot": "CAPTURE_DIR/src.ppm"}
+{"tap": "REC", "wait_guest_ms": 300}
+{"tap": "TRIG1", "wait_guest_ms": 300}
+{"tap": "REC", "wait_guest_ms": 300}
+{"mark": "empty"}
+{"wait_ms": 500}
+{"tap": "PLAY", "wait_guest_ms": 325}
+{"mark": "first-play"}
+{"wait_ms": 500}
+{"wait_guest_ms": 325}
+{"mark": "first-advance"}
+{"wait_ms": 500}
+{"wait_guest_ms": 425}
+{"mark": "first-advance-2"}
+{"wait_ms": 500}
+{"encoder": 0, "delta": -2, "wait_guest_ms": 325}
+{"mark": "type"}
+{"wait_ms": 500}
+{"encoder": 1, "delta": 3, "wait_guest_ms": 325}
+{"mark": "density-playing"}
+{"wait_ms": 500}
+{"encoder": 2, "delta": 2, "wait_guest_ms": 325}
+{"mark": "root"}
+{"wait_ms": 500}
+{"encoder": 3, "delta": 1, "wait_guest_ms": 325}
+{"mark": "scale"}
+{"wait_ms": 500}
+{"encoder": 4, "delta": 6, "wait_guest_ms": 325}
+{"mark": "gate"}
+{"wait_ms": 500}
+{"encoder": 5, "delta": 8, "wait_guest_ms": 325}
+{"mark": "accent"}
+{"wait_ms": 500}
+{"wait_guest_ms": 325}
+{"mark": "live-advance"}
+{"wait_ms": 500}
+{"wait_guest_ms": 425}
+{"mark": "live-advance-2"}
+{"wait_ms": 500}
+{"wait_guest_ms": 400}
+{"screenshot": "CAPTURE_DIR/playing.ppm"}
+{"tap": "SRC", "double": 1, "wait_guest_ms": 500}
+{"wait_text": "SEED", "timeout_ms": 5000}
+{"mark": "page2"}
+{"wait_ms": 500}
+{"wait_guest_ms": 400}
+{"screenshot": "CAPTURE_DIR/page2.ppm"}
+{"encoder": 0, "delta": 5, "wait_guest_ms": 325}
+{"mark": "seed"}
+{"wait_ms": 500}
+{"encoder": 1, "delta": -2, "wait_guest_ms": 325}
+{"mark": "span"}
+{"wait_ms": 500}
+{"encoder": 2, "delta": 2, "wait_guest_ms": 325}
+{"mark": "offset"}
+{"wait_ms": 500}
+{"encoder": 3, "delta": 3, "wait_guest_ms": 325}
+{"mark": "rotation"}
+{"wait_ms": 500}
+{"encoder": 4, "delta": 4, "wait_guest_ms": 325}
+{"mark": "repeat"}
+{"wait_ms": 500}
+{"encoder": 5, "delta": 1, "wait_guest_ms": 325}
+{"mark": "direction"}
+{"wait_ms": 500}
+{"wait_guest_ms": 325}
+{"mark": "page2-advance"}
+{"wait_ms": 500}
+{"wait_guest_ms": 425}
+{"mark": "page2-advance-2"}
+{"wait_ms": 500}
+{"wait_guest_ms": 400}
+{"screenshot": "CAPTURE_DIR/secondary-edited.ppm"}
+{"tap": "SRC", "wait_guest_ms": 400}
+{"wait_text": "DENS", "timeout_ms": 5000}
+{"tap": "YES", "wait_guest_ms": 400}
+{"mark": "yes"}
+{"wait_ms": 500}
+{"wait_guest_ms": 400}
+{"screenshot": "CAPTURE_DIR/generated.ppm"}
+{"tap": "ENC7", "wait_guest_ms": 400}
+{"wait_text": "PTCH", "timeout_ms": 5000}
+{"mark": "edit"}
+{"wait_ms": 500}
+{"wait_guest_ms": 400}
+{"screenshot": "CAPTURE_DIR/edit.ppm"}
+{"tap": "ENC7", "wait_guest_ms": 400}
+{"wait_text": "DENS", "timeout_ms": 5000}
+{"tap": "REC"}
+{"press": "TRIG1"}
+{"wait_guest_ms": 400}
+{"wait_text": "PTCH", "timeout_ms": 5000}
+{"wait_guest_ms": 400}
+{"screenshot": "CAPTURE_DIR/held-trig.ppm"}
+{"release": "TRIG1"}
+{"tap": "REC"}
+{"wait_guest_ms": 400}
+{"tap": "STOP", "wait_guest_ms": 400}
+{"mark": "stopped"}
+{"wait_ms": 500}
+{"encoder": 1, "delta": -5, "wait_guest_ms": 400}
+{"mark": "density-stopped"}
+{"wait_ms": 500}
+{"tap": "PLAY", "wait_guest_ms": 325}
+{"mark": "restart"}
+{"wait_ms": 500}
+{"wait_guest_ms": 325}
+{"mark": "restart-advance"}
+{"wait_ms": 500}
+{"wait_guest_ms": 425}
+{"mark": "restart-advance-2"}
+{"wait_ms": 500}
+{"tap": "STOP"}

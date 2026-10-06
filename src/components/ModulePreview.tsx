@@ -13,6 +13,14 @@ function sine(offset: number, amplitude = 30, frequency = 2.2) {
 
 // Hand-drawn art for the catalog modules. A module without an entry shows its presentation/thumbnail.svg.
 const ART: Readonly<Record<string, () => ReactElement>> = {
+  vector: () => <g>
+    {[3, 5, 8, 5, 10, 8, 5, 3, 5, 8, 12, 10, 8, 5, 3, 5].map((pitch, i) => <g key={i}>
+      <path className="signal-secondary" d={'M' + (32 + i * 17) + ' 144V' + (132 - pitch * 7)} />
+      <rect className={i % 3 === 1 ? 'rhythm-off' : 'rhythm-on'} x={27 + i * 17} y={126 - pitch * 7} width="10" height="10" rx="2" />
+    </g>)}
+    <path className="signal-ghost" d="M25 151H296" />
+    <text x="25" y="177">SEED → NOTES → TRIGS</text>
+  </g>,
   synth: () => <g>
     <rect className="signal-main" x="24" y="46" width="76" height="44" rx="8" />
     <rect className="signal-main" x="146" y="46" width="90" height="44" rx="8" />

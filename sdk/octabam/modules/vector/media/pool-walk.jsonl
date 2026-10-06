@@ -1,0 +1,145 @@
+{"wait_text": "PTCH", "timeout_ms": 45000}
+{"wait_ms": 5000}
+{"wait_guest_ms": 5000}
+{"tap": "SRC", "double": 1, "until": "PICKUP", "timeout_ms": 15000}
+{"wait_guest_ms": 1000}
+{"tap": "DOWN", "wait_guest_ms": 400}
+{"tap": "DOWN", "wait_guest_ms": 400}
+{"tap": "DOWN", "wait_guest_ms": 400}
+{"tap": "DOWN", "wait_guest_ms": 400}
+{"tap": "DOWN", "wait_guest_ms": 400}
+{"tap": "YES", "wait_guest_ms": 400}
+{"mark": "assigned-modal"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/assigned-modal.ppm"}
+{"tap": "NO", "wait_guest_ms": 400}
+{"mark": "cancel-choice"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/cancel-choice.ppm"}
+{"tap": "SRC", "wait_guest_ms": 400}
+{"wait_text": "DENS", "timeout_ms": 5000}
+{"encoder": 1, "delta": 1, "wait_guest_ms": 400}
+{"mark": "generated-before-pools"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/generated-before-pools.ppm"}
+{"tap": "TRACK1", "wait_guest_ms": 400, "double": 1}
+{"mark": "track-modal"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/track-modal.ppm"}
+{"tap": "LEFT", "wait_guest_ms": 400}
+{"mark": "machines-left"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/machines-left.ppm"}
+{"tap": "RIGHT", "wait_guest_ms": 400}
+{"mark": "modal-reopen"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/modal-reopen.ppm"}
+{"tap": "DOWN", "wait_guest_ms": 400}
+{"mark": "flex-highlight"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/flex-highlight.ppm"}
+{"tap": "RIGHT", "wait_guest_ms": 400}
+{"mark": "flex-pool"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/flex-pool.ppm"}
+{"press": "LEFT"}
+{"wait_guest_ms": 1200}
+{"release": "LEFT"}
+{"wait_guest_ms": 400}
+{"mark": "flex-back"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/flex-back.ppm"}
+{"tap": "RIGHT", "wait_guest_ms": 400}
+{"tap": "RIGHT", "wait_guest_ms": 400}
+{"mark": "flex-files"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/flex-files.ppm"}
+{"tap": "YES", "wait_guest_ms": 400}
+{"wait_guest_ms": 1500}
+{"mark": "flex-loaded"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/flex-loaded.ppm"}
+{"tap": "YES", "wait_guest_ms": 400}
+{"mark": "flex-sample-confirm"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/flex-sample-confirm.ppm"}
+{"tap": "NO", "wait_guest_ms": 400}
+{"tap": "SRC", "until": "DENS", "timeout_ms": 10000}
+{"mark": "flex-src"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/flex-src.ppm"}
+{"tap": "ENC7", "wait_guest_ms": 400}
+{"mark": "flex-edit"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/flex-edit.ppm"}
+{"tap": "ENC7", "wait_guest_ms": 400}
+{"tap": "PLAY", "wait_guest_ms": 400}
+{"mark": "flex-play"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/flex-play.ppm"}
+{"wait_guest_ms": 325}
+{"mark": "flex-advance"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/flex-advance.ppm"}
+{"tap": "STOP", "wait_guest_ms": 400}
+{"tap": "TRACK1", "wait_guest_ms": 400, "double": 1}
+{"tap": "UP", "wait_guest_ms": 400}
+{"mark": "static-highlight"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/static-highlight.ppm"}
+{"tap": "RIGHT", "wait_guest_ms": 400}
+{"mark": "static-pool"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/static-pool.ppm"}
+{"tap": "DOWN", "wait_guest_ms": 400}
+{"tap": "RIGHT", "wait_guest_ms": 400}
+{"mark": "static-files"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/static-files.ppm"}
+{"tap": "YES", "wait_guest_ms": 400}
+{"wait_guest_ms": 1500}
+{"mark": "static-loaded"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/static-loaded.ppm"}
+{"tap": "YES", "wait_guest_ms": 400}
+{"mark": "static-sample-confirm"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/static-sample-confirm.ppm"}
+{"tap": "NO", "wait_guest_ms": 400}
+{"tap": "SRC", "until": "DENS", "timeout_ms": 10000}
+{"mark": "static-src"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/static-src.ppm"}
+{"tap": "PLAY", "wait_guest_ms": 400}
+{"mark": "static-play"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/static-play.ppm"}
+{"wait_guest_ms": 325}
+{"mark": "static-advance"}
+{"wait_ms": 500}
+{"wait_guest_ms": 350}
+{"screenshot": "CAPTURE_DIR/static-advance.ppm"}
+{"tap": "STOP", "wait_guest_ms": 400}

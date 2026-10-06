@@ -2528,7 +2528,7 @@
       "sourceSha256": "aaa7c593ec62745a540cf82d7b4d7ac2f17f393cfedd5a9e1ff1a1453165ecd7"
     }
   ],
-  "sourceCommit": "5f3e27336c7e6bddfee88b6405e17c8f1fb8a7fd",
+  "sourceCommit": "a4989b337a06da76c3d9645d8cc0eb420567e896",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
@@ -2545,6 +2545,7 @@
     "synth": "0.1.1-experimental",
     "previewvol": "0.1.2-experimental",
     "cc-map": "0.1.2-experimental",
-    "sidechain-compressor": "0.1.1-experimental"
+    "sidechain-compressor": "0.1.1-experimental",
+    "vector": "0.2.3-experimental"
   }
 }
