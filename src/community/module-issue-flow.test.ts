@@ -5,7 +5,7 @@ import { CommunityContext, emptySession } from './context'
 import { ForumPage } from './ForumPage'
 import { ModuleIssueNotice } from './ModuleIssueNotice'
 import { ForumThreadView } from './ForumThreadView'
-import { moduleIssueHref } from './modules'
+import { communityModule, moduleIssueHref, moduleThreadId } from './modules'
 
 function renderForum(route: string, member = true) {
   const session = member ? { available: true, admin: false, user: { id: 'member', displayName: 'Member', username: 'member', verified: true } } : emptySession
@@ -22,7 +22,7 @@ describe('module issue entry points', () => {
     expect(html).toContain('Keep discussions for questions, tips, ideas and feedback.')
   })
 
-  it.each(['miniverb', 'digitakt-digihealth', 'digitone-digihealth'])('turns old bug composer links for %s into the dedicated report entry point', id => {
+  it.each(['miniverb', 'synth', 'digitakt-digihealth', 'digitone-digihealth'])('turns old bug composer links for %s into the dedicated report entry point', id => {
     for (const member of [true, false]) {
       const html = renderForum('forum/new?category=issues&module=' + id, member)
       expect(html).toContain('Report a module issue')
@@ -50,6 +50,12 @@ describe('module issue entry points', () => {
     const html = renderToStaticMarkup(createElement(ForumThreadView, { id: 'module-miniverb', embedded: true }))
     expect(html).toContain('class="button button-danger">Report an issue</button>')
     expect(html).toContain('Keep discussions for questions, tips, ideas and feedback.')
+  })
+
+  it('uses FM Synth links while retaining existing community and configuration IDs', () => {
+    expect(communityModule('synth')).toMatchObject({ id: 'synth', moduleId: 'synth', href: '#module/fm-synth', sourcePath: 'sdk/octabam/modules/synth' })
+    expect(moduleIssueHref('synth')).toBe('#module/fm-synth?report=1')
+    expect(moduleThreadId('synth')).toBe('module-synth')
   })
 
   it('links module sets and reviewed contributions to their own issue forms', () => {

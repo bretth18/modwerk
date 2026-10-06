@@ -1,4 +1,5 @@
 import { MODULES } from '../catalog/modules'
+import { moduleSlug } from '../catalog/module-links'
 import { MODULE_DOCUMENTS_BY_ID } from '../catalog/documents'
 import MACHINE_MODULES from '../catalog/machine-modules.json'
 import type { ModwerkModule } from '../catalog/module-contract-v3'
@@ -9,7 +10,7 @@ export const COMMUNITY_MODULES = [
   ...MODULES.map(module => ({
     id: module.id, moduleId: module.id, machine: 'octatrack', name: module.name,
     version: module.version, author: module.author, maintainers: [module.author],
-    href: '#module/' + module.id, sourcePath: 'sdk/octabam/modules/' + module.id, summary: module.description,
+    href: '#module/' + moduleSlug(module.id), sourcePath: 'sdk/octabam/modules/' + module.id, summary: module.description,
     evidence: MODULE_DOCUMENTS_BY_ID[module.id].tests.summary,
   })),
   ...(MACHINE_MODULES.modules as ModwerkModule[]).map(module => ({

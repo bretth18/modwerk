@@ -11,6 +11,12 @@ on:
       - 'wrangler.worker.jsonc'
       - 'package-lock.json'
       - 'src/legal/**'
+      # The API compiles this shared catalog; new frontend modules must be known to it.
+      - 'src/community/modules.ts'
+      - 'src/catalog/**'
+      - '!src/catalog/**/*.test.ts'
+      - 'src/devices/**'
+      - '!src/devices/**/*.test.ts'
       - '.github/workflows/worker.yml'
   workflow_dispatch:
 permissions:

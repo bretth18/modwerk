@@ -1,8 +1,9 @@
 import { assetUrl } from './hosting'
+import { moduleIdFromSlug, modulePath, moduleSlug } from './catalog/module-links'
 
 const moduleRoute = /^module\/([a-z0-9-]+)$/
 
-export function moduleHref(id: string) { return assetUrl('module/' + id + '/') }
+export function moduleHref(id: string) { return assetUrl(modulePath(id)) }
 
 /** Only app destinations participate; assets, downloads and external links keep normal browser behavior. */
 export function routeFromUrl(url: URL, appUrl: URL, fallback = 'library'): string | undefined {
@@ -11,17 +12,19 @@ export function routeFromUrl(url: URL, appUrl: URL, fallback = 'library'): strin
   const module = /^module\/([a-z0-9-]+)\/(?:index\.html)?$/.exec(path)
   if (path && path !== 'index.html' && !module) return undefined
   const route = url.hash.slice(1) || (module ? 'module/' + module[1] : fallback)
+  const nativeRoute = route.replace(/^module\/([a-z0-9-]+)(?=\?|$)/, (_match, slug: string) => 'module/' + moduleIdFromSlug(slug))
   // The forum's account page replaced the separate activity page; old #activity links open it.
-  return route === 'remixes' ? 'module-sets' : route === 'activity' ? 'account' : route.startsWith('remix/') ? 'module-set/' + route.slice(6) : route
+  return route === 'remixes' ? 'module-sets' : route === 'activity' ? 'account' : route.startsWith('remix/') ? 'module-set/' + route.slice(6) : nativeRoute
 }
 
 export function canonicalRouteUrl(url: URL, appUrl: URL, moduleIds: readonly string[]): URL {
   const route = routeFromUrl(url, appUrl)
   if (!route) return url
   const module = moduleRoute.exec(route)
+  const publicRoute = route.replace(/^module\/([a-z0-9-]+)(?=\?|$)/, (_match, id: string) => 'module/' + moduleSlug(id))
   const target = module && moduleIds.includes(module[1])
-    ? new URL(route + '/', appUrl)
-    : url.hash ? new URL('#' + route, appUrl) : url
+    ? new URL(modulePath(module[1]), appUrl)
+    : url.hash ? new URL('#' + publicRoute, appUrl) : url
   target.search = url.search
   return target
 }

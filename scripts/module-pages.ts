@@ -6,6 +6,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import sharp from 'sharp'
 import type { Plugin, ResolvedConfig } from 'vite'
 import { MODULES } from '../src/catalog/modules.ts'
+import { modulePath } from '../src/catalog/module-links.ts'
 import type { FirmwareModule } from '../src/catalog/modules.ts'
 import { DETAILS } from '../src/catalog/details.ts'
 import { ModulePreview } from '../src/components/ModulePreview.tsx'
@@ -45,7 +46,7 @@ export function modulePageHtml(html: string, module: FirmwareModule, imagePath: 
   const home = html.match(/<meta property="og:url" content="([^"]+)"/)?.[1]
   if (!home) throw new Error('Missing public site URL for module previews.')
   const appUrl = new URL(base.startsWith('/') ? base : '.', home)
-  const pageUrl = new URL('module/' + module.id + '/', appUrl).href
+  const pageUrl = new URL(modulePath(module.id), appUrl).href
   const imageUrl = new URL(imagePath, appUrl).href
   const siteName = html.match(/<meta property="og:site_name" content="([^"]+)"/)?.[1] ?? 'Modwerk'
   const title = module.name + ' — ' + siteName
@@ -80,7 +81,12 @@ export function modulePages(): Plugin {
         const hash = createHash('sha256').update(thumbnail).digest('hex').slice(0, 12)
         const imagePath = `module-thumbnails/${module.id}-${hash}.jpg`
         this.emitFile({ type: 'asset', fileName: imagePath, source: thumbnail })
-        this.emitFile({ type: 'asset', fileName: `module/${module.id}/index.html`, source: modulePageHtml(html, module, imagePath, config.base) })
+        const page = modulePageHtml(html, module, imagePath, config.base)
+        this.emitFile({ type: 'asset', fileName: modulePath(module.id) + 'index.html', source: page })
+        // Keep existing links loadable; startRouting replaces them with the public canonical URL.
+        if (modulePath(module.id) !== `module/${module.id}/`) {
+          this.emitFile({ type: 'asset', fileName: `module/${module.id}/index.html`, source: page })
+        }
       }
     },
   }

@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { expect, it } from 'vitest'
 import sharp from 'sharp'
 import { MODULES } from '../src/catalog/modules.ts'
-import { modulePageHtml, moduleThumbnail } from './module-pages.ts'
+import { modulePageHtml, modulePages, moduleThumbnail } from './module-pages.ts'
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8').replace('%BASE_URL%', './')
 const stylesheet = readFileSync(new URL('../src/styles.css', import.meta.url), 'utf8')
@@ -26,6 +26,19 @@ it('keeps canonical URLs, thumbnails and app assets under a Pages project base',
   expect(page).toContain('<base href="/octamod/" />')
   expect(page).toContain('content="https://modwerk.app/octamod/module/analog-bassdrum/"')
   expect(page).toContain('content="https://modwerk.app/octamod/module-thumbnails/analog.jpg"')
+})
+
+it('builds the FM Synth canonical page and keeps the old URL loadable', async () => {
+  const plugin = modulePages()
+  plugin.configResolved({ root: new URL('../', import.meta.url).pathname, base: './' })
+  const assets = []
+  await plugin.generateBundle.call({ emitFile(asset) { assets.push(asset) } }, {}, { 'index.html': { type: 'asset', source: html } })
+  const canonical = assets.find(asset => asset.fileName === 'module/fm-synth/index.html')
+  const legacy = assets.find(asset => asset.fileName === 'module/synth/index.html')
+  expect(canonical.source).toContain('<title>FM Synth — Modwerk</title>')
+  expect(canonical.source).toContain('<link rel="canonical" href="https://modwerk.app/module/fm-synth/" />')
+  expect(canonical.source).toContain('<meta property="og:url" content="https://modwerk.app/module/fm-synth/" />')
+  expect(legacy.source).toBe(canonical.source)
 })
 
 it('escapes catalog text in metadata and titles', () => {
