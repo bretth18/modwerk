@@ -3,56 +3,24 @@
   "components": [
     {
       "id": "elekloader",
-      "name": "elekloader (vendored Digitakt/Digitone builder)",
-      "spdx": "GPL-2.0-or-later",
+      "name": "elekloader's kit (vendored Digitakt/Digitone builder)",
+      "spdx": "GPL-3.0-or-later",
       "noticeFile": "elekloader.txt",
       "sources": [
         {
-          "path": "vendor/elekloader/NOTICE"
+          "path": "vendor/elekloader/kit/NOTICE"
         },
         {
-          "path": "vendor/elekloader/LICENSE"
+          "path": "vendor/elekloader/kit/LICENSE"
         },
         {
-          "url": "https://github.com/irpina/elekloader/tree/e4d8ba84841900db78144030a991e1d69816b6a4",
-          "revision": "e4d8ba84841900db78144030a991e1d69816b6a4"
+          "url": "https://github.com/irpina/elekloader/tree/a1be3ce0c006ea0c46fa82c6f254c11a05d42beb/js",
+          "revision": "a1be3ce0c006ea0c46fa82c6f254c11a05d42beb"
         }
       ],
       "usedIn": [
-        "vendor/elekloader",
+        "vendor/elekloader/kit",
         "Digitakt/Digitone browser builder"
-      ]
-    },
-    {
-      "id": "pyodide",
-      "name": "Pyodide 314.0.7",
-      "spdx": "MPL-2.0",
-      "noticeFile": "pyodide.txt",
-      "sources": [
-        {
-          "url": "https://raw.githubusercontent.com/pyodide/pyodide/314.0.7/LICENSE",
-          "revision": "314.0.7",
-          "path": "LICENSE"
-        }
-      ],
-      "usedIn": [
-        "Digitakt/Digitone browser builder runtime"
-      ]
-    },
-    {
-      "id": "cpython",
-      "name": "CPython 3.14.2 (built into Pyodide)",
-      "spdx": "PSF-2.0",
-      "noticeFile": "cpython.txt",
-      "sources": [
-        {
-          "url": "https://raw.githubusercontent.com/python/cpython/v3.14.2/LICENSE",
-          "revision": "v3.14.2",
-          "path": "LICENSE"
-        }
-      ],
-      "usedIn": [
-        "Digitakt/Digitone browser builder runtime"
       ]
     },
     {
@@ -62,15 +30,14 @@
       "noticeFile": "digi-mods.txt",
       "sources": [
         {
-          "path": "vendor/elekloader/UPSTREAM.json"
+          "path": "vendor/elekloader/catalog/catalog.json"
         },
         {
           "path": "sdk/digitakt/modules/digislicer/LICENSE"
         }
       ],
       "usedIn": [
-        "vendor/elekloader/core",
-        "vendor/elekloader/shop"
+        "vendor/elekloader/catalog"
       ]
     },
     {
@@ -84,7 +51,7 @@
         }
       ],
       "usedIn": [
-        "vendor/elekloader/shop/digisophie-1.1.13.elemod"
+        "vendor/elekloader/catalog/digisophie-1.1.13.elemod"
       ]
     }
   ]

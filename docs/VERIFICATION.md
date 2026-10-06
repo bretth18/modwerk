@@ -615,3 +615,150 @@ Digitakt and Digitone now use the Octatrack library toolbar, with working type f
 ## Toolchain image caching — 5 October 2026
 
 Adding GCC 16.2.0 to `sdk/build/Dockerfile` made `source-packages` take about 16 minutes, of which 12.5 were the `make -j2 all-gcc` layer and 4 seconds the module compilation. Both `pages.yml` and `module-pr.yml` now build the image with `docker/setup-buildx-action` 4.4.1 and `docker/build-push-action` 7.4.0, pinned to their release commit SHAs (Node 24; `context`, `file`, `tags`, `load`, `provenance`, `sbom`, `cache-from` and `cache-to` verified at those commits), and share layers through the GitHub Actions cache under scope `source-tools`. Every layer input is pinned by digest or archive checksum, so a cached layer is the layer a fresh build would produce. GitHub scopes caches by ref: pull-request runs can read main's cache but write only their own, so the release workflow restores only layers built on main. GCC, binutils and dsp56300 now build with all runner cores; the parallelism does not change the compiler's configuration. The isolated compilation step, its image-ID check and the reproduction gate are unchanged. Not run locally: no Docker daemon was available, so the first CI run after merge is the first real image build with these settings.
+
+## elekloader's TypeScript engine — 5 October 2026
+
+Digitakt/Digitone builds now run elekloader's TypeScript engine: `js/src` at commit `28c5469676c9c4807a500bd4b317c15a8af50cfb`, GPL-3.0-or-later, vendored unchanged in `vendor/elekloader/engine` and bundled into the builder worker. It replaces the Python package and web bridge from commit `e4d8ba8`, which ran in Pyodide 314.0.7. The cores and mods are unchanged. `npm run elekloader:check` verifies every vendored file, the engine's included, against `UPSTREAM.json` (schema 2).
+
+**Old against new.** Both builders were driven through the calls the worker makes, in the order `prepareBuild` and the build make them:
+- **the old one:** the vendored Python package and `bridge.py`, unchanged, natively under CPython 3.14;
+- **the new one:** the vendored engine under Node 24.
+
+There were 35 cases on the owner's four stock files:
+- **27 module subsets**, the cases of the 4 October record: Digitakt 1.53: 16, 1.54: 8, Digitone 1.43: 2, 1.44: the core alone.
+- **8 more:**
+  - the Digitakt 1.53 zip as downloaded;
+  - an Octatrack OS, for which the site has no core;
+  - a core in place of a stock file;
+  - a 1.53 mod on 1.54;
+  - a mod whose SHA-256 is not the pinned one;
+  - three version fields: too long, non-ASCII, and empty.
+
+Every reply was compared:
+- the stock result, each added mod and tick, the mod list;
+- the check and the version field;
+- the build result: each output file's SHA-256 and size, the facts, and the log without its times.
+
+Results:
+- **34 of 35 cases are identical.** All 22 builds are byte-identical. The 13 other cases end the same way, word for word: 12 refusals, and the Octatrack OS, which no core on the site fits. Two of the builds, as recorded on 4 October: Digitakt 1.53 DIGISLICER `01be49ea…6c7711` and Digitone 1.43 digihealth `09f43f1b…92117a`.
+- **The one difference:** a file that is not a stock OS is refused with a "Supported:" list that now also names Digitakt II 1.17, which the newer engine knows. Modwerk does not offer Digitakt II.
+- **Median build:** 3.9 s for the Python natively, 0.42 s for the engine.
+
+elekloader checks the engine against its Python with its own tools (`js/tools`), on the owner's files.
+
+**Browser.** In Chromium, against the production build (`vite preview`, CSP meta tag without `'wasm-unsafe-eval'`), the built builder worker was driven with the client's messages:
+- the engine loaded with the four cores in 30 ms;
+- each build took about 0.4 s and matched the runs above, and every file matched its reported SHA-256:
+  - Digitakt 1.53 NEIGHBOR + DIGISLICER: `624481b9…`;
+  - Digitakt 1.54 DIGISLICER: `10e61410…`;
+  - Digitone 1.43 digihealth: `09f43f1b…`;
+- NEIGHBOR + SOPHIE was refused with elekloader's conflict report, and so was an off-site base URL;
+- no request left the site.
+
+The configuration page itself was not exercised: it needs a signed-in member and the local Worker. Its calls and their replies are unchanged.
+
+**The build page's log.** While it builds, the Digitakt/Digitone panel now shows the Octatrack page's three steps, driven by the engine's log: the "linked" line ends Build modules, and "packed" ends Prepare file. The status line follows each log line. The whole log, with each line's time, stays under the result, or under the error if a build fails, with a Download build log button. The text file gives:
+- the device and OS;
+- the builder's commit and catalog revision;
+- the mods and the OS version shown;
+- each output's size and SHA-256;
+- every log line.
+
+It holds no stock file name and no firmware. This was checked in the development server, with a local stand-in for the community API that answers as a signed-in member:
+- DIGISLICER on Digitakt 1.53 went through the three steps live and built `01be49ea…`;
+- the log and its downloaded file read as above;
+- at 375 px there was no horizontal overflow.
+
+**Checks (Node 24, Windows 11).**
+- **Pass:** `elekloader:check`, `licenses:check`, `typecheck`, `lint` and the production build.
+- **Vitest:** 646 tests pass (on main at `217ee59`, with the build log's three).
+  - Two fail as they do without this change on this machine: `scaffold.test.ts` needs `python3`, and `module-publication.test.ts`.
+  - `src/tooling/check.test.ts` was left out because on Windows it starts itself again and again.
+- **Not run:** no firmware, DSP or hardware test.
+
+Stock files and builds stayed local and temporary.
+
+## elekloader's kit — 5 October 2026
+
+The Digitakt/Digitone builder now runs elekloader's kit:
+- **The kit:** `elekloader-kit-0.4.0.zip`, from elekloader commit `aca353742b2eb05a67e102d81098e77204c8248f`, protocol 1. It is vendored unchanged in `vendor/elekloader/kit`.
+- **The catalog:** the same 4 cores and 8 mods as before, in the kit's format, with revision `e4d8ba8`. It was made by the kit's own `feed` from the previous pins: each file read by the engine, and each sha256 checked against its pin.
+- **The lock:** `vendor/elekloader/elekloader.lock.json`, written by the kit's `lock`. Both the kit's `verify --lock` and `npm run elekloader:check` pass against it.
+
+**Tests:**
+- `engine.test.ts` drives the kit's worker logic with the vendored catalog, served as the site serves it:
+  - the 4 cores load;
+  - every mod adds for its release;
+  - a core or mod that is not the pinned file is refused;
+  - a file that is not a stock OS is refused.
+- `digi-build.test.ts` covers the adapter: plan, prepare, the build steps and the build log.
+
+**Browser.** The development server ran with a local stand-in for the community API, answering as a signed-in member. On the real configuration page with Digitakt 1.53, digihealth + DIGISLICER:
+- the kit's worker was the one started (`vendor/elekloader/kit/src/kit/worker.ts`);
+- the check passed, and the three steps ran live;
+- the build verified in 0.39 s as `3c9fe6fc…729633`, the same identity as in the parity record above;
+- the downloaded build log named kit 0.4.0, its commit and the catalog revision.
+
+**Checks (Node 24, Windows 11).**
+- **Pass:** `elekloader:check`, `licenses:check`, `typecheck`, `lint` and the production build. The worker is 84 KB, and `elekloader/catalog.json` is emitted with its files.
+- **Vitest:** 643 tests pass. Two fail as they do without this change on this machine: `scaffold.test.ts` needs `python3`, and `module-publication.test.ts`.
+- **Not run:** no firmware, DSP or hardware test. Stock files and builds stayed local and temporary.
+
+## The update command and backups across catalogs — 5 October 2026
+
+**Tests.**
+- `src/tooling/elekloader-update.test.ts`:
+  - `KIT_PROTOCOL` is the vendored kit's, and `DEVICES` matches `digi-build.ts`;
+  - a kit zip yields exactly the files Modwerk vendors;
+  - a changed, missing or extra file, protocol 2, a mismatched folder, two folders and a path outside the folder are refused;
+  - catalog changes and the follow-ups: a module file to update, one to remove, a mod not in the library, a licence path that is gone.
+- `digi-selection.test.ts`: an older-catalog backup imports, with notes for a module left out and a version changed; one whose modules are all gone is refused; a current-catalog backup has no notes; an empty or missing revision is refused.
+
+**Runs** (each reverted after):
+- The kit zip built by `packaging/build_kit.py` from elekloader main `a1be3ce` (sha256 `576b7d44…bf70ad`), with the dev server running:
+  - 2 of 31 vendored files changed (`README.md`, `kit.json`), since the engine is the same as `aca3537`'s;
+  - the lock, the licence entry and both notices moved to `a1be3ce`, and the vendor check passed.
+- The current catalog fed back in: nothing downloaded, no file changed.
+- The catalog without SOPHIE, under a new revision:
+  - `digisophie-1.1.13.elemod` removed and the lock rewritten;
+  - it listed `sdk/digitakt/modules/digisophie/modwerk.module.json` and the `digisophie` licence entry as left to do.
+
+**Browser.** A Digitakt backup naming another revision, with digihealth 0.9.0, DIGISLICER 2.1.0 and a module that no longer exists, imported with digihealth and DIGISLICER. The page said the retired module was left out and that digihealth is 1.0.1 now.
+
+**Checks (Node 24, Windows 11).** `typecheck`, `lint`, `elekloader:check`, `licenses:check` and the production build pass. Vitest, on main `5897804`: 709 pass, and the same two fail as above.
+- **Note:** run Vitest without npm's environment, for example `node node_modules/vitest/vitest.mjs run`. Under `npx vitest` on Windows, `check.test.ts` starts the real `npm run test`, which runs the suite again and again.
+
+## elekloader kit at a1be3ce — 5 October 2026
+
+The vendored kit moved from `aca3537` (the kit branch) to `a1be3ce`, elekloader main after the kit was merged (#48), with `npm run elekloader:update`:
+- **The zip:** `elekloader-kit-0.4.0.zip`, built by `packaging/build_kit.py` from a clean checkout of `a1be3ce`, sha256 `576b7d44639d4abeb1351a7771b4e3a1ef91f0b7cbcc69f64db9bb5255bf70ad`. elekloader's [kit-v0.4.0](https://github.com/irpina/elekloader/releases/tag/kit-v0.4.0) pre-release attaches the same zip, by that sha256, and `npm run elekloader:update` on the release's download changes no file.
+- **What changed:** 2 of 31 vendored files, `README.md` (the merged integration guide) and `kit.json` (the commit). Every engine and kit source is byte for byte the same, so builds are too. The lock, the elekloader licence entry and both notices name `a1be3ce`. The catalog is unchanged (`e4d8ba8`).
+- **Browser:** Digitakt 1.53, digihealth + NEIGHBOR + DIGISLICER built `5031993c…eebe6b`, the identity from before the move, and again after the rebase onto main `5897804`, with digihealth + DIGISLICER at the parity record's `3c9fe6fc…729633`. The file identity names elekloader `a1be3ce`. digihealth + NEIGHBOR + DIGISLICER + SOPHIE is still refused for its conflicts.
+- **Checks (Node 24, Windows 11):**
+  - `elekloader:check`, `licenses:check`, `typecheck`, `lint` and the production build pass;
+  - Vitest, on main `5897804`: 709 pass, and the same two fail as above;
+  - not run: no firmware, DSP or hardware test. Stock files and builds stayed local and temporary.
+
+## The update command takes elekloader's whole catalog — 5 October 2026
+
+`npm run elekloader:update -- elekloader-catalog.json --library` keeps only the mods Modwerk's library lists, with the mods they require on the same device and OS, so elekloader's published catalog goes in as it is. The change list now goes file by file: a catalog can hold two cores for one OS, and a core added beside another was reported as replacing it. A changed core is listed as left to do, because the builds of its OS change.
+
+**Tests.** `elekloader-update.test.ts` adds:
+- a catalog cut to the library keeps a required mod for its OS only, drops other devices, and keeps the catalog's other fields;
+- the change list for a replaced, an added and a removed file, and a second core added for one OS;
+- the follow-ups for a changed core and for a mod kept only as a requirement.
+
+**Run** (reverted after). elekloader's [kit-v0.4.0](https://github.com/irpina/elekloader/releases/tag/kit-v0.4.0) `elekloader-catalog.json` with `--library`:
+- it left out the 7 Digitakt and Digitone mods the library does not list: digichain, digieq, digimatrix, digimono, digipoly, digiutils and digitables;
+- it downloaded only `core-dn1-2.2.elemod`, kept the same 8 mod files, and the lock and vendor check passed;
+- it listed the Digitone 1.43 core 2.2 as left to do, since Digitone 1.43 builds would use it.
+
+## elekloader update review fixes — 6 October 2026
+
+The updater now rebuilds `vendor/licenses/elekloader.txt` from the incoming kit's complete `NOTICE` and `LICENSE` before regenerating the distributed notices. Its staged kit generates and verifies the catalog lock before installation, including kit-only updates. Installation, notice-generation or final vendor-check failures restore the original kit, catalog, lock, licence manifest and all generated notices; original files remain in the reported temporary folder if a filesystem error prevents restoration.
+
+Four CLI regression cases use temporary repositories and the real vendored kit, without firmware or network downloads: changed copyright notices reach the text and HTML distributions and an identical update changes no bytes; a protocol-1 kit with an unsupported catalog schema changes no installed file; notice-generation and final vendor-validation failures restore a combined kit/catalog update, including removed catalog files and notices that did not exist before the update. All four cases fail against the original updater and pass with these fixes.
+
+On Node 24, `npm run check` passed: 716 Vitest tests, licence, machine, module and vendor checks, SDK checks, lint, type checking and the production bundle. No kit, catalog pin, firmware-build output or hardware qualification changed.
+
+**Checks (Node 24, Windows 11).** `licenses:check`, `machines:check`, `modules:check`, `elekloader:check`, `sdk:check`, `lint` and the production build pass. Vitest, on main `5897804` with the pull request it builds on: 710 pass, and the same two fail as above.

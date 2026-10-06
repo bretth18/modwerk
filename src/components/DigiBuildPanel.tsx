@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { useState } from 'react'
 import { DIGI_MODS, type DigiMod } from '../devices/digi-mods'
-import { BUILDER_SOURCE, planBuild } from '../engine/elekloader/digi-build'
+import { BUILDER_SOURCE, buildLogText, planBuild } from '../engine/elekloader/digi-build'
 import { DIGI_DOWNLOADS_ENABLED } from '../engine/elekloader/protocol'
 import { FIRMWARE_SHARING_NOTICE, FLASHING_RISKS } from '../firmware-notices'
 import { assetUrl } from '../hosting'
@@ -10,8 +10,8 @@ import type { useDigiFirmware } from '../hooks/useDigiFirmware'
 import { Icon } from './Icon'
 import { BuildProgressIndicator } from './BuildProgressIndicator'
 
-function save(buffer: ArrayBuffer, name: string) {
-  const url = URL.createObjectURL(new Blob([buffer], { type: 'application/octet-stream' })), link = document.createElement('a')
+function save(data: BlobPart, name: string, type = 'application/octet-stream') {
+  const url = URL.createObjectURL(new Blob([data], { type })), link = document.createElement('a')
   link.href = url; link.download = name
   document.body.append(link); link.click(); link.remove(); window.setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
@@ -32,7 +32,7 @@ export function DigiBuildPanel({ device, firmware, moduleIds, onExport, exported
   const busy = state.phase === 'loading' || state.phase === 'checking' || state.phase === 'building'
   const message = !ready ? 'Add your original ' + device.name + ' OS file above. Builds run in this browser; nothing is uploaded.'
     : missing.length ? missing.join(', ') + (missing.length === 1 ? ' is' : ' are') + ' not available for OS ' + release + '. Remove ' + (missing.length === 1 ? 'it' : 'them') + ' or use another OS file.'
-    : state.phase === 'idle' ? 'Check this selection with the builder. The first check loads the build engine (about 14 MB) once.'
+    : state.phase === 'idle' ? 'Check this selection with the builder. The first check loads the build engine once.'
     : state.phase === 'loading' ? 'Loading the build engine…'
     : state.phase === 'checking' ? 'Checking these mods together…'
     : state.phase === 'ready' ? (moduleIds.length ? 'Ready to build: the core and ' + moduleIds.length + (moduleIds.length === 1 ? ' mod fit' : ' mods fit') + ' together on OS ' + release + '.' : 'Ready to build the core alone on OS ' + release + '.')
@@ -42,12 +42,21 @@ export function DigiBuildPanel({ device, firmware, moduleIds, onExport, exported
     : state.phase !== 'built' ? ''
     : !result ? 'The displayed OS version changed. Build again to use the new version.'
     : 'Firmware built and verified: ' + result.files[0].name + '.'
+  // the engine's log of the last build, built or failed: shown under the result, and saved as text for bug reports
+  const done = state.phase === 'built' || state.phase === 'failed' ? state : undefined
+  const outcome = done?.result, lines = outcome?.log ?? []
+  function saveLog() {
+    if (!done || !outcome) return
+    const text = buildLogText({ device: done.device.name, release: release ?? '', version: outcome.ok ? outcome.version : shown, enabled: done.enabled, result: outcome })
+    save(text, (outcome.ok ? outcome.files[0].name.replace(/\.syx$/i, '') : device.id + '-build-failed') + '.log.txt', 'text/plain')
+  }
   return <>
     <aside className="risk-note"><strong>Before you flash</strong><p>{FLASHING_RISKS} Back up your projects and samples, review the module test records, and keep the original OS. Flash at your own risk.</p><p>{FIRMWARE_SHARING_NOTICE}</p><label className="risk-accept"><input type="checkbox" checked={riskAccepted} onChange={event => setAccepted(event.target.checked ? approvalKey : '')}/><span>I understand the risks of flashing custom firmware.</span></label></aside>
     <section className="build-section" aria-labelledby="digi-build-title" aria-busy={busy}>
       <div><h2 id="digi-build-title">{result ? 'Firmware ready' : 'Build firmware'}</h2>
         <p id="digi-build-status" role={state.phase === 'blocked' || state.phase === 'failed' ? 'alert' : 'status'}>{message}</p>
         {state.phase === 'blocked' && state.check?.problems?.length ? <details className="build-report"><summary>Show the builder’s report</summary><ul className="build-problems">{state.check.problems.map(problem => <li key={problem}>{problem}</li>)}</ul></details> : null}
+        {state.phase === 'building' && <BuildProgressIndicator phase={state.step} finished={false}/>}
         {result && <BuildProgressIndicator finished/>}
         <span className="subtle">No firmware upload. Local validation does not qualify this configuration on hardware.</span>
 
@@ -63,7 +72,7 @@ export function DigiBuildPanel({ device, firmware, moduleIds, onExport, exported
         <button className="button button-quiet" disabled={!canExport} onClick={onExport}><Icon name="download" size={16}/>Export configuration</button><p className="export-note" aria-live="polite">{exported ? 'Configuration exported as JSON.' : 'JSON backup · no firmware included'}</p>
       </div>
     </section>
-    <p className="file-footnote"><span>Builder: <a href={BUILDER_SOURCE.repository} target="_blank" rel="noreferrer">elekloader ↗</a> by irpina (GPL-2.0-or-later), with each mod’s pinned author release. It runs in this browser.</span></p>
+    <p className="file-footnote"><span>Builder: <a href={BUILDER_SOURCE.repository} target="_blank" rel="noreferrer">elekloader ↗</a> by irpina (GPL-3.0-or-later), with each mod’s pinned author release. It runs in this browser.</span></p>
     {result && <div className="build-facts"><span>Size <strong>{kib(result.bytes)}</strong></span><span>OS version <strong>{result.version}</strong></span><span>Built in <strong>{result.seconds.toFixed(1)} s</strong></span></div>}
     {result && !DIGI_DOWNLOADS_ENABLED && <aside className="risk-note" role="note"><strong>Downloads open after review</strong><p>The build ran and verified in this browser. Modwerk will offer {device.name} firmware files once their release is approved. Nothing was uploaded.</p></aside>}
     {result && DIGI_DOWNLOADS_ENABLED && <section className="configuration-section install-guide" aria-labelledby="digi-install-title"><div className="section-title"><h2 id="digi-install-title">Install on your {device.name}</h2><span className="pill">{result.version}</span></div>
@@ -74,7 +83,11 @@ export function DigiBuildPanel({ device, firmware, moduleIds, onExport, exported
       {downloaded === key && <p className="success-note" role="status">Download requested. Check your browser’s downloads folder.</p>}</section>}
     {result && <section className="configuration-section"><details><summary>File identity &amp; builder</summary><dl className="build-identity">
       <dt>SHA-256</dt><dd>{result.sha256}</dd><dt>Mods</dt><dd>{result.mods.join(', ')}</dd>
-      <dt>Builder</dt><dd><a href={BUILDER_SOURCE.repository + '/tree/' + BUILDER_SOURCE.commit} target="_blank" rel="noreferrer">elekloader {BUILDER_SOURCE.commit.slice(0, 7)} ↗</a> by irpina, GPL-2.0-or-later · <a href={assetUrl('licenses/THIRD_PARTY_NOTICES.html')} target="_blank" rel="noreferrer">Licence notices</a></dd>
+      <dt>Builder</dt><dd><a href={BUILDER_SOURCE.repository + '/tree/' + BUILDER_SOURCE.commit} target="_blank" rel="noreferrer">elekloader {BUILDER_SOURCE.commit.slice(0, 7)} ↗</a> by irpina, GPL-3.0-or-later · <a href={assetUrl('licenses/THIRD_PARTY_NOTICES.html')} target="_blank" rel="noreferrer">Licence notices</a></dd>
     </dl></details></section>}
+    {lines.length > 0 && <section className="configuration-section"><details open={state.phase === 'failed'}><summary>Build log</summary>
+      <ol className="build-log">{lines.map(([seconds, line], index) => <li key={index}><span className="build-log-time">{seconds.toFixed(2)} s</span><span>{line}</span></li>)}</ol>
+      <button className="button button-quiet" onClick={saveLog}><Icon name="download" size={16}/>Download build log</button>
+    </details></section>}
   </>
 }

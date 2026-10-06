@@ -1,0 +1,47 @@
+{
+ "schema": 1,
+ "kind": "elekloader-kit-lock",
+ "kit": {
+  "version": "0.4.0",
+  "protocol": 1,
+  "files": {
+   "LICENSE": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+   "NOTICE": "8c4bdbdd7553262a0c725ed4da01ef09c2d60858d8006cb9c9ee5225ce1dd315",
+   "README.md": "ea990c3ec8a4f28305cc18369c6dc4902bebe21c0b5e2cdb332703456bcc4fde",
+   "kit.json": "41d656979a8cd2ed90719e0ddb23b9aaf996f2e79df097c61ef7504b1046ff5c",
+   "src/bridge.ts": "842365a5abae7996152a25751259b2e28f26711dbf986acc2ab5c012090372a7",
+   "src/bytes.ts": "57fb9de1346e41ab42bbc1418dfcca9af1c03fbee9e025ec0b47d233f399df55",
+   "src/codec/aplib.ts": "80d10ac92fd99a829f539b0a4c6fc0d9a993b3643bb69a3c71df3bab5388a26d",
+   "src/codec/elz.ts": "e77fe13378826accdec3605d0e5f288746a8ccfa4f882b4c06a63c846bed63a0",
+   "src/codec/transport.ts": "bf575eac1abe57228e6ee60d177692dfbed7ebee116a3619ef0d83548ead001d",
+   "src/devices.ts": "1ae87d99201928d80f68b5ee530840cb33c241363dc9fda812292198d1b24dd9",
+   "src/elek.ts": "10ccfac398938d0d6f9af5c3f3cfdd57c2372a44e6a076cdfb9020e69270d30c",
+   "src/elemod.ts": "38047f1179a856073af08ebf5b2be9a3510c17f7b8dd018648897870c5793f74",
+   "src/formats.ts": "8c550e1093a166f07900f913131c54e6a616501ce4ee7e215edc2ef1d7d3b170",
+   "src/index.ts": "cf39ea7b427ae888a2b8c6f64bc8a35af414782f8bcaba692bea6f93e49fecb8",
+   "src/isa/coldfire.ts": "aeb6147554b5bfe9523f9bb41bcbd30d2489a1b98dbff5f04a82390fb763e131",
+   "src/kit/build.ts": "f00f199d7bf9159f8281f78f994f0b7b9e6d50e8f196ef16715f8e7201163013",
+   "src/kit/catalog.ts": "2f6a2425e1b8da091aae7a1ea375ff9e360ae9441352a102b9e8296ce3765749",
+   "src/kit/client.ts": "0ee5b26d006efe64a77a004f8e633a40fe454cd24879ac74efac9c4a965e7550",
+   "src/kit/index.ts": "a746f36a7a48dfb4394642b9e8761067a5bd2381b00b0089a9ebdd6c11f7dca9",
+   "src/kit/protocol.ts": "66739e5a3d66109e1ca8f951c523114729ca5ceaaa6f22eebcd409f0ebb6a945",
+   "src/kit/serve.ts": "ff17f0f50d08de29cd3ba0b305e0bb59bf1cb62a080212d28206bd6efd644fb7",
+   "src/kit/worker.ts": "35d21e7826b39d9f1e33591b6a9038772843ed6f28c965b9109071379d31ecf8",
+   "src/link.ts": "2c534fe94bf176389ab62e603e18aa519fb119430df2e7b3d5589e07fe4fff8a",
+   "src/model.ts": "95a13de0fc57729a01d0ecd47f0330ceee42b58bdbb724de86581a16436af2c1",
+   "src/patch.ts": "f035d6e326580915b870d3316276acf31de77fd8ee693cf65e4714369c9549de",
+   "src/py.ts": "1d21753c9de9d382296bd2de018c8a2ba39df6d958258d5e5d8e8450340d069e",
+   "src/pyjson.ts": "802c43912cb588a1da522e09dd1538462b341fec6226503fdb6497400b7a33a7",
+   "src/syx.ts": "0ee93ef902feaeccd7ec6ae00bba94b773b7d9dd0de6b16cebf5cb5c085b9705",
+   "src/version.ts": "c828593dc24ac0f29a6a190bd71c1b7c9fd94bb814d3839314713435692348cc",
+   "src/zip.ts": "a0e343e90263bef716d3d08c00436d9f44f023978a7ab2c8cf7857c97c481288",
+   "tools/kit.ts": "653c2db415aeaabe07650eff616ee42b3ecb7f06c35a3f7ce3159dd3cce3f432"
+  }
+ },
+ "catalog": {
+  "revision": "e4d8ba84841900db78144030a991e1d69816b6a4",
+  "sha256": "c8a8d6cbc8d843b993022972882bcd2d3580887ecb9787d0f533834690bcdf8d",
+  "cores": 4,
+  "mods": 8
+ }
+}

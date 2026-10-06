@@ -1,55 +1,57 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Digitakt/Digitone builds through the vendored elekloader builder: Modwerk module ids map to the pinned
-// release files its online builder uses, and elekloader's own check decides whether a set builds.
-import UPSTREAM from '../../../vendor/elekloader/UPSTREAM.json'
-import type { BuilderClient } from './client'
-import type { BuilderCatalog, BuilderCheck, BuilderDevice, BuilderMachine, PinnedFile } from './protocol'
+// Digitakt/Digitone builds through elekloader's kit (vendor/elekloader/kit): its builder worker and client, and the
+// catalog Modwerk serves under elekloader/ (vendor/elekloader/catalog, pinned with the kit by elekloader.lock.json).
+// Modwerk's machine ids map to the kit's device keys; Modwerk's module ids are the catalog's mod ids.
+import CATALOG_JSON from '../../../vendor/elekloader/catalog/catalog.json'
+import KIT from '../../../vendor/elekloader/kit/kit.json'
+import {
+  buildLogText as kitBuildLogText, createBuilder, parseCatalog, planBuild as kitPlanBuild, prepare, releases,
+  type Builder, type Catalog, type Plan, type Prepared,
+} from '../../../vendor/elekloader/kit/src/kit/index.ts'
+import type { BuilderMachine, BuilderResult } from './protocol'
 
-export const BUILDER_CATALOG = { commit: UPSTREAM.commit, cores: UPSTREAM.cores, mods: UPSTREAM.mods } as BuilderCatalog
-export const BUILDER_SOURCE = { repository: UPSTREAM.repository, commit: UPSTREAM.commit, pyodide: UPSTREAM.pyodide.npm.replace('pyodide@', '') }
+export { buildStep } from '../../../vendor/elekloader/kit/src/kit/index.ts'
+export type { Builder }
 
-export type BuildPlan = { core?: PinnedFile; mods: (PinnedFile & { module: string })[]; missing: string[] }
+export const BUILDER_CATALOG: Catalog = parseCatalog(CATALOG_JSON)
+export const DEVICE: Record<BuilderMachine, string> = { digitakt: 'digitakt-mk1', digitone: 'digitone-mk1' }
+// The kit's version and commit, apart from the catalog's revision: configuration backups name the revision, so they
+// survive a kit update and change only with the catalog.
+export const BUILDER_SOURCE = {
+  repository: 'https://github.com/irpina/elekloader', commit: KIT.commit, version: KIT.version, protocol: KIT.protocol,
+  catalogRevision: BUILDER_CATALOG.revision,
+}
 
-/** The pinned files for a selection on one OS release; modules without a file for it are `missing`. */
-export function planBuild(machine: BuilderMachine, release: string, moduleIds: readonly string[], catalog: BuilderCatalog = BUILDER_CATALOG): BuildPlan {
-  const core = catalog.cores.find(item => item.machine === machine && item.release === release)
-  const mods: BuildPlan['mods'] = [], missing: string[] = []
-  for (const id of moduleIds) {
-    const file = catalog.mods.find(item => item.module === id && item.machine === machine && item.release === release)
-    if (file) mods.push(file)
-    else missing.push(id)
-  }
-  return { core, mods, missing }
+/** One builder per page session: the kit's worker, which loads the catalog Modwerk serves under elekloader/. */
+export function createDigiBuilder(): Builder {
+  return createBuilder({
+    base: new URL('elekloader/', document.baseURI).href,
+    worker: () => new Worker(new URL('../../../vendor/elekloader/kit/src/kit/worker.ts', import.meta.url), { type: 'module' }),
+  })
+}
+
+/** The catalog files for a selection on one OS release, with what each mod requires; modules without a file for it
+ * are `missing`. */
+export function planBuild(machine: BuilderMachine, release: string, moduleIds: readonly string[], catalog: Catalog = BUILDER_CATALOG): Plan {
+  return kitPlanBuild(catalog, DEVICE[machine], release, moduleIds)
 }
 
 /** OS releases a module can be built for. */
-export function builderReleases(machine: BuilderMachine, moduleId: string, catalog: BuilderCatalog = BUILDER_CATALOG) {
-  return catalog.mods.filter(item => item.machine === machine && item.module === moduleId).map(item => item.release)
+export function builderReleases(machine: BuilderMachine, moduleId: string, catalog: Catalog = BUILDER_CATALOG) {
+  return releases(catalog, DEVICE[machine], moduleId)
 }
 
-export type PreparedBuild =
-  | { ok: true; enabled: string[]; check: BuilderCheck; device: BuilderDevice }
-  | { ok: false; error: string; device?: BuilderDevice; check?: BuilderCheck }
+export type PreparedBuild = Prepared
 
 /** Loads the owner's verified file and the selection into the builder and runs elekloader's check. */
-export async function prepareBuild(client: BuilderClient, input: { machine: BuilderMachine; release: string; stock: File; moduleIds: readonly string[] }): Promise<PreparedBuild> {
-  const plan = planBuild(input.machine, input.release, input.moduleIds)
-  if (!plan.core) return { ok: false, error: 'No core is available for OS ' + input.release + '.' }
-  if (plan.missing.length) return { ok: false, error: 'Not available for OS ' + input.release + ': ' + plan.missing.join(', ') + '.' }
-  await client.load()
-  const stock = await client.setStock(input.stock)
-  if (!stock.ok) return { ok: false, error: stock.error }
-  let enabled: string[] = []
-  for (const mod of plan.mods) {
-    const added = await client.addMod(mod.file, mod.sha256)
-    if (!added.ok) return { ok: false, error: added.error, device: stock.dev }
-    enabled = await client.tick(enabled, added.mod.path)
-  }
-  if (!enabled.length) {
-    const core = (await client.mods()).find(mod => mod.builtin && mod.id === 'core' && mod.fits)
-    if (!core) return { ok: false, error: 'No core fits this OS file.', device: stock.dev }
-    enabled = await client.tick([], core.path)
-  }
-  const check = await client.check(enabled)
-  return check.ok ? { ok: true, enabled, check, device: stock.dev } : { ok: false, error: check.headline ?? 'These mods cannot be built together.', check, device: stock.dev }
+export function prepareBuild(builder: Builder, input: { machine: BuilderMachine; release: string; stock: File; moduleIds: readonly string[] }): Promise<PreparedBuild> {
+  return prepare(builder, { catalog: BUILDER_CATALOG, device: DEVICE[input.machine], os: input.release, stock: input.stock, ids: input.moduleIds })
+}
+
+/** A build's log as a text file for a bug report (the kit's format, titled for Modwerk). */
+export function buildLogText(input: { device: string; release: string; version: string; enabled: readonly string[]; result: BuilderResult }) {
+  return kitBuildLogText({
+    title: 'Modwerk build log', device: input.device, os: input.release, version: input.version, enabled: input.enabled, result: input.result,
+    builder: `elekloader kit ${KIT.version} (${KIT.commit.slice(0, 12)}, protocol ${KIT.protocol}), catalog ${BUILDER_CATALOG.revision}`,
+  })
 }

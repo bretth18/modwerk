@@ -127,7 +127,7 @@ export function DigiLibrary({ device, category, query, selectedIds, onToggle, fa
 }
 
 export function DigiConfiguration({ device, configuration, configurations, onSelect, onDialog, onToggle, onImport }: { device: DigiDevice; configuration?: Configuration; configurations: Configuration[]; onSelect: (id: string) => void; onDialog: (mode: 'create' | 'rename' | 'duplicate' | 'delete') => void; onToggle: (id: string) => void; onImport: (configuration: ReturnType<typeof parseDigiSelection>) => void }) {
-  const importRef = useRef<HTMLInputElement>(null), [importError, setImportError] = useState(''), [exported, setExported] = useState('')
+  const importRef = useRef<HTMLInputElement>(null), [importError, setImportError] = useState(''), [importNotes, setImportNotes] = useState<string[]>([]), [exported, setExported] = useState('')
   const firmware = useDigiFirmware(device.id)
   const ids = configuration?.moduleIds ?? []
   const selection = DIGI_MODS.filter(mod => mod.device === device.id && ids.includes(mod.id))
@@ -136,8 +136,8 @@ export function DigiConfiguration({ device, configuration, configurations, onSel
   const exportKey = JSON.stringify(configuration)
   async function importBackup(file?: File) {
     if (!file) return
-    setImportError('')
-    try { if (file.size > 32 * 1024) throw new Error('Configuration backups must be smaller than 32 KB.'); onImport(parseDigiSelection(await file.text(), device.id)) }
+    setImportError(''); setImportNotes([])
+    try { if (file.size > 32 * 1024) throw new Error('Configuration backups must be smaller than 32 KB.'); const imported = parseDigiSelection(await file.text(), device.id); onImport(imported); setImportNotes(imported.notes) }
     catch(error) { setImportError(error instanceof Error ? error.message : 'Unable to import this configuration.') }
   }
   return (
@@ -150,6 +150,7 @@ export function DigiConfiguration({ device, configuration, configurations, onSel
       </div>
       <input ref={importRef} type="file" accept="application/json,.json" hidden aria-label="Import configuration backup" onChange={event => { void importBackup(event.target.files?.[0]); event.target.value = '' }}/>
       {importError && <p className="file-error" role="alert">{importError}</p>}
+      {importNotes.length > 0 && <div className="import-notes" role="status"><strong>Imported from an older catalog</strong>{importNotes.map(note => <p key={note}>{note}</p>)}</div>}
       <section className={'compatibility-panel compatibility-' + (estimate.fits && !estimate.clashes.length ? 'clear' : 'conflict')} aria-live="polite" aria-labelledby="digi-compatibility-title"><div className="compatibility-heading"><span className="compatibility-icon"><Icon name={estimate.fits && !estimate.clashes.length ? 'shield' : 'sliders'} size={20}/></span><div><h2 id="digi-compatibility-title">{!estimate.fits || estimate.clashes.length ? 'Your selection needs a change' : selection.length ? 'No declared conflicts' : 'Choose your modules'}</h2><p>{!estimate.fits || estimate.clashes.length ? 'Review the resources below and choose a compatible set.' : selection.length ? 'Choose your base firmware for placement checks.' : 'Add a module from the library, or build the core alone. Compatibility updates as you make changes.'}</p></div></div></section>
       <section className="configuration-section" aria-labelledby="digi-firmware-title"><div className="section-title"><h2 id="digi-firmware-title">Base firmware</h2><span className="subtle">Read locally</span></div>
         <DigiFirmwarePanel name={device.name} releases={device.firmware?.releases ?? []} firmware={firmware} />

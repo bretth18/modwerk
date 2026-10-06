@@ -285,6 +285,9 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .file-footnote { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; color: #9292a5; font-size: 12px; line-height: 1.7; }
 .file-footnote .text-button { font-size: 12px; white-space: nowrap; }
 .file-error { background: #36272a; border: 1px solid #6a4348; color: #e4b0b4; border-radius: 6px; font-size: 13px; line-height: 1.7; margin-top: 12px; padding: 12px; }
+.import-notes { border: 1px solid var(--line); border-radius: 6px; font-size: 13px; line-height: 1.7; margin-top: 12px; padding: 12px; }
+.import-notes strong { font-weight: 500; }
+.import-notes p { margin: 4px 0 0; color: #a5a5b6; }
 .selected-list { list-style: none; padding: 0; margin: 0; }
 .selected-list li { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--line); }
 .selected-list li:first-child { border: 0; padding-top: 0; }
@@ -818,6 +821,10 @@ h1 { font-size: 28px; }
 .install-guide details {margin-top:16px}
 .build-identity {font-size:12px;line-height:1.6}
 .build-identity dd {margin:2px 0 12px;overflow-wrap:anywhere;font-family:monospace}
+.build-log {margin:10px 0 14px;padding:0;list-style:none;font:12px/1.6 var(--mono);color:#b0b0c0;white-space:pre-wrap;overflow-wrap:anywhere}
+.build-log li {display:grid;grid-template-columns:5.2em minmax(0,1fr);gap:10px}
+.build-log-time {color:#8a8a9c;text-align:right;white-space:nowrap}
+@media (max-width: 600px) {.build-log {white-space:normal}}
 
 .contribution-start {display:flex;gap:24px;align-items:flex-start;justify-content:space-between}
 .contribution-start p {color:var(--muted);line-height:1.65;margin-top:10px}
