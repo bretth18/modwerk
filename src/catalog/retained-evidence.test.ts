@@ -23,6 +23,7 @@ beforeEach(async () => {
   put('sdk/octabam/modules/'+example.id+'/media/ui.png',qualificationPng)
   put('src/engine/compose-os.ts','// synthetic runtime dependency\n')
   put('src/engine/assets/dsp-packages.json',JSON.stringify({sourceCommit:null,moduleVersions:{[document.id]:document.version},packages:[{id:document.id,version:document.version,code:'synthetic bytes',address:4096}]}))
+  put('src/engine/assets/module-build.json',JSON.stringify({schemaVersion:1,kind:'source-packages',sourceCommit:null,sourceTreeSha256:'a'.repeat(64),compilerSha256:'c'.repeat(64),moduleVersions:{[document.id]:document.version},files:{},approval:null,qualification:'assembly only; no new hardware qualification'}))
   document.tests.qualification!.sourceSha256=await moduleNativeSourceSha256(folder,document)
   save()
   put('sdk/catalog.json',JSON.stringify({schemaVersion:1,sourceRevision:'a'.repeat(40),modules:[{id:document.id,version:document.version,addedAt:'2026-10-05T12:00:00Z'}]}))
@@ -112,6 +113,21 @@ describe('risk-based retained module evidence',()=>{
     put(path,JSON.stringify(artifact));await expect(check()).rejects.toThrow('full qualification')
     artifact.packages[0].address--
     artifact.packages[0].code='changed browser code'
+    put(path,JSON.stringify(artifact));await expect(check()).rejects.toThrow('full qualification')
+  })
+  it('accepts release approval metadata while protecting compiler identity and qualification verdicts',async()=>{
+    const path='src/engine/assets/module-build.json'
+    const artifact=JSON.parse(readFileSync(resolve(root,path),'utf8'))
+    artifact.sourceCommit='b'.repeat(40)
+    artifact.sourceTreeSha256='d'.repeat(64)
+    artifact.moduleVersions[document.id]=document.version
+    artifact.approval={repository:'example/modules',commit:artifact.sourceCommit,pullRequest:42,mergedById:1}
+    put(path,JSON.stringify(artifact))
+    expect(await check()).toBe('retained-evidence')
+    artifact.compilerSha256='e'.repeat(64)
+    put(path,JSON.stringify(artifact));await expect(check()).rejects.toThrow('full qualification')
+    artifact.compilerSha256='c'.repeat(64)
+    artifact.qualification='New hardware pass'
     put(path,JSON.stringify(artifact));await expect(check()).rejects.toThrow('full qualification')
   })
   it('preserves historical status when retaining a frozen baseline release',async()=>{

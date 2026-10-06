@@ -86,6 +86,9 @@ function engineAsset(bytes, path, document, previousVersion) {
   if (path === 'src/engine/assets/module-build.json') {
     delete value.sourceTreeSha256
     delete value.files // Derived file hashes; package payloads are checked below.
+    // The release independently verifies and stamps owner approval. This
+    // provenance changes on every release, without changing runtime inputs.
+    delete value.approval
   }
   function visit(item) {
     if (!item || typeof item !== 'object') return
