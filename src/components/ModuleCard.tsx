@@ -55,9 +55,9 @@ export function ModuleCard({ module, selected, statistics, viewedVersion, baseli
         <div className="module-card-heading"><a href={moduleHref(module.id)}>{module.name}</a><ModuleRelease module={module} viewedVersion={viewedVersion} baseline={baseline} /></div>
         <AddButton name={module.name} selected={selected} onToggle={onToggle} />
       </div>
-      <div className="card-meta"><span><a href={module.authorUrl} target="_blank" rel="noreferrer">{module.authorName}</a></span><span>{module.detail}</span><span>{DETAILS[module.id].family}</span></div>
+      <div className="card-credit"><a href={module.authorUrl} target="_blank" rel="noreferrer">{module.authorName}</a><span>{module.detail}</span></div>
       <p className="card-description">{module.description}</p>
-      <CardStats statistics={statistics} />
+      <div className="card-bottom"><span>{DETAILS[module.id].family}</span><CardStats statistics={statistics} /></div>
       <CardProof evidence={moduleEvidence(module.id)} name={module.name} compared={compared} canCompare={canCompare} onCompare={onCompare} />
     </div>
   </article>

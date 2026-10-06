@@ -39,9 +39,9 @@ function DigiModCard({ mod, selected, statistics, compared, canCompare, onToggle
         <div className="module-card-heading"><a href={href}>{mod.title}</a><div className="card-release"><span className="card-version">v{mod.version}</span></div></div>
         <AddButton name={mod.title} selected={selected} onToggle={onToggle} />
       </div>
-      <div className="card-meta"><span><a href={mod.repository} target="_blank" rel="noreferrer">{mod.author}</a></span><span>{mod.category}</span><span>{mod.license}</span></div>
+      <div className="card-credit"><a href={mod.repository} target="_blank" rel="noreferrer">{mod.author}</a><span>{mod.license}</span></div>
       <p className="card-description">{mod.summary}</p>
-      <CardStats statistics={statistics}><span className="card-stat">{kib(mod.ramBytes)} memory</span></CardStats>
+      <div className="card-bottom"><span>{mod.category}</span><CardStats statistics={statistics}><span className="card-stat">{kib(mod.ramBytes)} memory</span></CardStats></div>
       <CardProof evidence={evidence} name={mod.title + ' for ' + DEVICES_BY_ID[mod.device].name} compared={compared} canCompare={canCompare} onCompare={onCompare} />
     </div>
   </article>
