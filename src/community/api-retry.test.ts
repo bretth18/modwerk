@@ -36,6 +36,21 @@ describe('community read recovery',()=>{
   expect(await result).toEqual([])
   expect(fetch).toHaveBeenCalledTimes(2)
  })
+ it('retries marking notifications read, which is idempotent',async()=>{
+  const fetch=vi.fn().mockRejectedValueOnce(new TypeError('connection dropped')).mockResolvedValueOnce(Response.json({ok:true}))
+  vi.stubGlobal('fetch',fetch)
+  const result=post('/notifications',{ids:['n1']},'PATCH')
+  await vi.advanceTimersByTimeAsync(200)
+  expect(await result).toEqual({ok:true})
+  expect(fetch).toHaveBeenCalledTimes(2)
+  expect(fetch.mock.calls.map(([,options])=>(options as RequestInit).body)).toEqual(['{"ids":["n1"]}','{"ids":["n1"]}'])
+ })
+ it('does not replay other notification changes',async()=>{
+  const fetch=vi.fn().mockRejectedValue(new TypeError('connection dropped'))
+  vi.stubGlobal('fetch',fetch)
+  await expect(post('/notifications/preferences',{likes:false},'PATCH')).rejects.toThrow('Couldn’t reach')
+  expect(fetch).toHaveBeenCalledTimes(1)
+ })
  it('does not replay a mutation when the connection drops',async()=>{
   const fetch=vi.fn().mockRejectedValue(new TypeError('connection dropped'))
   vi.stubGlobal('fetch',fetch)

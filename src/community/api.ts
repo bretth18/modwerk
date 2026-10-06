@@ -17,8 +17,10 @@ export async function apiFetch(path: string, options: RequestInit = {}): Promise
   if (!publicRead&&/^[a-f0-9]{64}$/.test(admin)) headers.set('X-Octamod-Admin', admin)
   const developer=savedDeveloper()
   if ((path.startsWith('/developer/')||path.startsWith('/issues/'))&&/^[a-f0-9]{64}$/.test(developer)) headers.set('X-Modwerk-Developer',developer)
-  // Retry reads once; account handoffs and mutations must never be replayed.
-  const attempts=method==='GET'&&(!path.includes('/auth/')||path==='/auth/session'||path==='/developer/auth/session')?2:1
+  // Retry reads once; account handoffs and mutations must never be replayed. Marking notifications read only
+  // sets them seen, so a dropped request retries like a read instead of leaving them unread.
+  const replayable=method==='GET'?!path.includes('/auth/')||path==='/auth/session'||path==='/developer/auth/session':method==='PATCH'&&path==='/notifications'
+  const attempts=replayable?2:1
   const unreachable=()=>new Error('Couldn’t reach the Modwerk community service. Check your connection or content blocker, then try again. Your local workspace still works.')
   let result: Response|null=null
   for(let attempt=0;attempt<attempts;attempt++){
