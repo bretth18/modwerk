@@ -1,6 +1,8 @@
+import type { ReactNode } from 'react'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { forumLink } from './forum-links'
+import { forumLink, youTubeVideo } from './forum-links'
+import { YouTubeEmbed } from './YouTubeEmbed'
 import { splitMentions } from './forum-contract'
 
 type Node = { type: string; value?: string; url?: string; children?: Node[]; data?: Record<string, unknown> }
@@ -20,11 +22,30 @@ function remarkMentions() {
   }
   return (tree: Node) => { walk(tree) }
 }
+/** A paragraph that is only a YouTube link becomes a video. Links inside a sentence, a quote or a list stay links. */
+function remarkVideos() {
+  return (tree: Node) => {
+    for (const node of tree.children ?? []) {
+      const [link, ...rest] = node.children ?? []
+      if (node.type !== 'paragraph' || link?.type !== 'link' || rest.length || !link.url) continue
+      const video = youTubeVideo(link.url)
+      if (!video) continue
+      const label = (link.children ?? []).map(child => child.value ?? '').join('')
+      node.data = { hProperties: { 'data-youtube': video.id, 'data-start': video.start, 'data-label': label === link.url ? '' : label } }
+    }
+  }
+}
 const mentionName = (node: unknown) => { const text = (node as { children?: { value?: string }[] })?.children?.[0]?.value ?? ''; return text.startsWith('@') ? text.slice(1) : '' }
+
+// remarkVideos marks the paragraphs that hold a video as data attributes.
+function Paragraph({ children, ...props }: { children?: ReactNode }) {
+  const data = props as Record<string, unknown>
+  return typeof data['data-youtube'] === 'string' ? <YouTubeEmbed video={{ id: data['data-youtube'], start: Number(data['data-start']) || 0 }} label={String(data['data-label'] ?? '')} /> : <p>{children}</p>
+}
 
 const allowed = ['p','br','strong','em','del','a','code','pre','blockquote','ul','ol','li','h2','h3','hr']
 export function ForumPostBody({ body }: { body: string }) {
-  return <div className="forum-post-body"><Markdown remarkPlugins={[remarkGfm, remarkMentions]} allowedElements={allowed} unwrapDisallowed
+  return <div className="forum-post-body"><Markdown remarkPlugins={[remarkGfm, remarkMentions, remarkVideos]} allowedElements={allowed} unwrapDisallowed
     urlTransform={value=>forumLink(value)??''}
-    components={{code:({children})=><code>{typeof children==='string'?children.replace(/\n$/,''):children}</code>,a:({href,children,className,node})=>String(className??'').includes('forum-mention')&&mentionName(node)?<a className="forum-mention" href={'#forum/profile/'+encodeURIComponent(mentionName(node))}>{children}</a>:href?<a href={href} target="_blank" rel="noopener noreferrer nofollow">{children}</a>:<span>{children}</span>}}>{body}</Markdown></div>
+    components={{p:Paragraph,code:({children})=><code>{typeof children==='string'?children.replace(/\n$/,''):children}</code>,a:({href,children,className,node})=>String(className??'').includes('forum-mention')&&mentionName(node)?<a className="forum-mention" href={'#forum/profile/'+encodeURIComponent(mentionName(node))}>{children}</a>:href?<a href={href} target="_blank" rel="noopener noreferrer nofollow">{children}</a>:<span>{children}</span>}}>{body}</Markdown></div>
 }

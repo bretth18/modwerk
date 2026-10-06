@@ -594,6 +594,21 @@ li[data-status="error"] .forum-media-status { color: #f0a6ad; }
   .forum-shoutbox.is-floating { right: 12px; bottom: calc(16px + env(safe-area-inset-bottom)); width: 360px; max-height: calc(100dvh - 90px); }
 }
 
+/* A YouTube link on its own line becomes a player that loads only when played. */
+.forum-video { margin: 0; max-width: 560px; }
+.forum-post-body > .forum-video:not(:first-child) { margin-top: 16px; }
+.forum-video iframe, .forum-video-play { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 10px; }
+.forum-video iframe { border: 0; background: #000; }
+.forum-video-play { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 12px; border: 1px solid #3d3d48; background: linear-gradient(135deg, #272730, #1b1b21); color: #dedde8; text-align: center; transition: border-color .15s, background .15s; }
+.forum-video-play:hover { border-color: #5b6084; background: linear-gradient(135deg, #2d2f40, #1d1e27); }
+.forum-video-icon { display: grid; place-items: center; width: 52px; height: 52px; margin-bottom: 6px; border-radius: 50%; background: #727dde; color: #fff; }
+.forum-video-icon svg { fill: currentColor; }
+.forum-video-play strong { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 600; }
+.forum-video-play small { color: var(--muted); font-size: 11px; }
+.forum-video figcaption { margin-top: 6px; font-size: 12px; }
+.forum-video figcaption a { color: var(--muted); text-decoration: none; }
+.forum-video figcaption a:hover { color: #c6cbff; text-decoration: underline; }
+.shout-message .forum-video, .forum-dm-bubble .forum-video { margin-top: 8px; }
 .module-discussion { min-width: 0; }
 .module-discussion .forum-post { margin-inline: 0; }
 .module-discussion .forum-thread-actions { margin-top: 0; }

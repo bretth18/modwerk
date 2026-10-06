@@ -8,6 +8,7 @@ import { ForumAvatar } from './ForumIdentity'
 import { ForumTime } from './ForumTime'
 import { MESSAGE_MAX_LENGTH } from './forum-contract'
 import { MentionText, useTextareaMentions } from './mentions'
+import { TextVideo } from './YouTubeEmbed'
 
 type Conversation = { id: string; updated_at: string; username: string; displayName: string; avatar: string | null; excerpt: string | null; mine: number; unread: number }
 type Inbox = { conversations: Conversation[]; enabled: boolean }
@@ -74,7 +75,7 @@ function ConversationPage({ username }: { username: string }) {
       {view.hasMore && <p className="service-note">Only the latest {view.messages.length} messages are shown.</p>}
       <ol className="forum-dm-list" ref={list} aria-label={'Messages with @' + view.member.username}>
         {view.messages.length ? view.messages.map(item => <li key={item.id} data-mine={item.mine || undefined} data-hidden={item.hidden || undefined}>
-          <div className="forum-dm-bubble">{item.hidden ? <em>This message was removed by the administrator.</em> : <p className="preserve-lines"><MentionText text={item.body}/></p>}</div>
+          <div className="forum-dm-bubble">{item.hidden ? <em>This message was removed by the administrator.</em> : <><p className="preserve-lines"><MentionText text={item.body}/></p><TextVideo text={item.body}/></>}</div>
           <ForumTime value={item.created_at} relative />
         </li>) : <li className="forum-dm-empty">No messages yet. Say hello.</li>}
       </ol>
