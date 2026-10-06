@@ -218,6 +218,26 @@ describe('new module release announcements', () => {
     expect(db.prepare('SELECT COUNT(*) AS count FROM announcements').get()!.count).toBe(1)
     expect(db.prepare('SELECT version FROM module_release_state WHERE module_id=?').get('vector')!.version).toBe('10.0.0')
   })
+
+  it('announces the missed Digitakt and Digitone imports exactly as the automatic announcement would, once, and only where members exist', async () => {
+    const migration = readFileSync(new URL('../../migrations/0039_announce_digitakt_digitone_imports.sql', import.meta.url), 'utf8')
+    const imports = [['digitakt-digichain', '1.6.0'], ['digitakt-digieq', '1.0.0'], ['digitakt-digimatrix', '1.0.0'], ['digitakt-digimono', '0.13.0'], ['digitakt-digipoly', '2.0.0'], ['digitakt-digiutils', '1.9.0'], ['digitone-digitables', '1.3.0']]
+      .map(([id, version]) => release(id, version + '-experimental'))
+    const rows = (db: DatabaseSync) => db.prepare('SELECT slug,title,body,url,module_id,created_by FROM announcements ORDER BY slug').all()
+    // The automatic path, on a library that was already baselined, is the reference for the text and keys.
+    const automatic = testDatabase(); databases.push(automatic.db)
+    await recordModuleReleases(automatic.adapter, [release('miniverb')]); await recordModuleReleases(automatic.adapter, imports)
+    expect(rows(automatic.db)).toHaveLength(7)
+    const { db, adapter } = testDatabase(); databases.push(db)
+    // The migration already ran while this database had no members, so it announced to nobody.
+    expect(rows(db)).toEqual([])
+    db.prepare('INSERT INTO users(id,display_name,username,email_verified) VALUES(?,?,?,1)').run('member', 'Member', 'member')
+    db.exec(migration); db.exec(migration)
+    expect(rows(db)).toEqual(rows(automatic.db))
+    // When the hourly check does reach these modules later, it finds each already announced.
+    await recordModuleReleases(adapter, [release('miniverb')]); await recordModuleReleases(adapter, imports)
+    expect(rows(db)).toHaveLength(7)
+  })
 })
 
 describe('report status notifications', () => {
