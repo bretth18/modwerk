@@ -10,6 +10,19 @@ import { cleanupForumMedia } from './server/forum-media'
 import { handleCommunity } from './server/transport'
 import type { Env } from './server/platform'
 
+/** Runs every hourly task even when one fails, and names the failed task in Workers Logs. */
+export async function runHourly(tasks: Record<string, () => Promise<unknown>>) {
+  const results = await Promise.allSettled(Object.values(tasks).map(task => task()))
+  const names = Object.keys(tasks), failed: string[] = []
+  results.forEach((result, index) => {
+    if (result.status !== 'rejected') return
+    failed.push(names[index])
+    const detail = result.reason instanceof Error ? result.reason.stack ?? result.reason.message : String(result.reason)
+    console.error(`Hourly task "${names[index]}" failed: ${detail}`)
+  })
+  return failed
+}
+
 export default {
   fetch(request: Request, env: Env, context?: { waitUntil(promise: Promise<unknown>): void }) { return handleCommunity(request, env, context) },
   scheduled(event: { cron: string }, env: Env, context: { waitUntil(promise: Promise<unknown>): void }) {
@@ -22,7 +35,11 @@ export default {
       context.waitUntil(sendMemberWelcomes(env, env.DB))
       return
     }
-    const activity=syncModuleReleases(env,env.DB).catch(()=>{console.warn('Published module versions could not be checked; retrying next hour.')}).then(()=>sendActivityDigests(env,env.DB!))
-    context.waitUntil(Promise.all([cleanupPush(env.DB), cleanupUsage(env.DB), cleanupAccounts(env.DB), cleanupDeveloperAuth(env.DB), ensureModuleThreads(env.DB), activity, cleanupForumMedia(env)]))
+    const db = env.DB
+    const activity = () => syncModuleReleases(env, db).catch(() => { console.warn('Published module versions could not be checked; retrying next hour.') }).then(() => sendActivityDigests(env, db))
+    context.waitUntil(runHourly({
+      'push cleanup': () => cleanupPush(db), 'usage cleanup': () => cleanupUsage(db), 'account cleanup': () => cleanupAccounts(db),
+      'developer auth cleanup': () => cleanupDeveloperAuth(db), 'module threads': () => ensureModuleThreads(db), 'activity digests': activity, 'forum media cleanup': () => cleanupForumMedia(env),
+    }))
   },
 }

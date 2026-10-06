@@ -197,13 +197,17 @@ export async function accountRoutes(request: Request, env: Env, db: Database, pa
     throw error
   }
 }
+// Better Auth writes its date columns as ISO-8601 text on SQLite, and SQLite orders any text above any
+// integer, so a numeric comparison alone never matches. Compare text as text and keep the numeric form
+// for rows written as epoch milliseconds.
+const AUTH_EXPIRED="CASE typeof(expiresAt) WHEN 'text' THEN expiresAt<=? ELSE expiresAt<=? END"
 export async function cleanupAccounts(db:Database){
- const now=Math.floor(Date.now()/1000)
+ const now=Math.floor(Date.now()/1000),iso=new Date(now*1000).toISOString()
  // Pending identities cannot publish or build, so no public contributions need retention.
  await db.batch([
   db.prepare('DELETE FROM users WHERE id IN(SELECT user_id FROM social_pending_accounts WHERE expires<=?)').bind(now),
   db.prepare('DELETE FROM auth_users WHERE id IN(SELECT user_id FROM social_pending_accounts WHERE expires<=?)').bind(now),
   db.prepare('DELETE FROM social_flows WHERE expires<=?').bind(now),
  ])
-  await db.batch([db.prepare('DELETE FROM account_tokens WHERE expires<=?').bind(now),db.prepare('DELETE FROM sessions WHERE expires<=?').bind(now),db.prepare('DELETE FROM rate_limits WHERE expires<=?').bind(now),db.prepare('DELETE FROM admin_sessions WHERE expires<=?').bind(now),db.prepare('DELETE FROM auth_sessions WHERE expiresAt<=?').bind(now*1000),db.prepare('DELETE FROM auth_verifications WHERE expiresAt<=?').bind(now*1000)])
+  await db.batch([db.prepare('DELETE FROM account_tokens WHERE expires<=?').bind(now),db.prepare('DELETE FROM sessions WHERE expires<=?').bind(now),db.prepare('DELETE FROM rate_limits WHERE expires<=?').bind(now),db.prepare('DELETE FROM admin_sessions WHERE expires<=?').bind(now),db.prepare('DELETE FROM auth_sessions WHERE '+AUTH_EXPIRED).bind(iso,now*1000),db.prepare('DELETE FROM auth_verifications WHERE '+AUTH_EXPIRED).bind(iso,now*1000)])
 }

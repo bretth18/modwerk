@@ -235,5 +235,13 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       throw new HttpError(404,'API route not found.')
     }
     throw new HttpError(404,'API route not found.')
-  } catch (error) { return response({error:error instanceof HttpError ? error.message : 'The community service could not complete this request.'},error instanceof HttpError ? error.status : 500) }
+  } catch (error) {
+    if (!(error instanceof HttpError)) reportFailure(request, error)
+    return response({error:error instanceof HttpError ? error.message : 'The community service could not complete this request.'},error instanceof HttpError ? error.status : 500)
+  }
+}
+/** Logs an unexpected failure for Workers Logs: method, path and the error only, never a body, query or header. */
+export function reportFailure(request: Request, error: unknown) {
+  const detail = error instanceof Error ? error.stack ?? error.message : String(error)
+  console.error(`Unhandled failure in ${request.method} ${new URL(request.url).pathname}: ${detail}`)
 }

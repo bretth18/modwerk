@@ -1,5 +1,5 @@
 import { startPush } from './push'
-import { handleApi } from './api'
+import { handleApi, reportFailure } from './api'
 import type { Env } from './platform'
 import { appOrigin, HttpError, response } from './security'
 import { withAccountAuth } from './accounts'
@@ -24,7 +24,10 @@ async function handleRequest(request: Request, env: Env, context?: { waitUntil(p
     result.headers.set('Access-Control-Max-Age', '600')
   } else {
     try { result = await handleApi(request, env) }
-    catch (error) { result = response({ error: error instanceof HttpError ? error.message : 'The request could not be completed.' }, error instanceof HttpError ? error.status : 500) }
+    catch (error) {
+      if (!(error instanceof HttpError)) reportFailure(request, error)
+      result = response({ error: error instanceof HttpError ? error.message : 'The request could not be completed.' }, error instanceof HttpError ? error.status : 500)
+    }
   }
   if(context && !['GET','HEAD','OPTIONS'].includes(request.method) && result.ok)startPush(env,context)
   const headers = new Headers(result.headers)

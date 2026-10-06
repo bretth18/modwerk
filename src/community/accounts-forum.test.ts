@@ -5,6 +5,7 @@ import type { DatabaseSync } from 'node:sqlite'
 import { digest } from '../../server/security'
 import { MODULES } from '../catalog/modules'
 import { handleCommunity } from '../../server/transport'
+import { cleanupAccounts } from '../../server/accounts'
 const databases:DatabaseSync[]=[]
 const sent:{to:string[];text:string}[]=[]
 const password='a long original test passphrase'
@@ -92,6 +93,22 @@ describe('verified email accounts',()=>{
   const session=await handleCommunity(new Request('https://octamod.test/api/auth/session',{headers:{Cookie:cookie}}),env)
   expect((await session.json()).user.username).toBe(user.username)
   expect((await handleCommunity(new Request('https://octamod.test/api/auth/logout',{method:'POST',headers:{Cookie:cookie}}),env)).status).toBe(403)
+ })
+ it('removes expired sessions and verification links in the hourly cleanup and keeps current ones',async()=>{
+  const {call,db,env,member}=await fixture()
+  const earlier=await member('earlier')
+  expect((await call('/auth/forgot','POST',{email:earlier.email})).status).toBe(202)
+  expect(db.prepare('SELECT COUNT(*) AS count FROM auth_sessions').get()).toEqual({count:1})
+  expect(db.prepare('SELECT COUNT(*) AS count FROM auth_verifications').get()).toEqual({count:1})
+  expect(db.prepare("SELECT typeof(expiresAt) AS type FROM auth_sessions").get()).toEqual({type:'text'})
+  vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(Date.now()+30*24*60*60*1000)
+  try{
+   const current=await member('later')
+   await cleanupAccounts(env.DB!)
+   expect(db.prepare('SELECT COUNT(*) AS count FROM auth_sessions').get()).toEqual({count:1})
+   expect(db.prepare('SELECT COUNT(*) AS count FROM auth_verifications').get()).toEqual({count:0})
+   expect((await call('/auth/build-access','POST',{},current.session)).status).toBe(200)
+  }finally{vi.useRealTimers()}
  })
  it('rejects expired verification and recovery links, weak passwords and reserved usernames',async()=>{
   const {call,db}=await fixture()
