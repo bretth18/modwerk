@@ -33,7 +33,7 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
         <a className="author-link" href={authorUrl} target="_blank" rel="noreferrer">by {author} ↗</a>
         <p>{description}</p>
         {notice}
-        <div className="detail-rating"><button className="text-button" onClick={showDiscussion}>Reviews & discussion</button></div>
+        <div className="detail-rating"><button className="text-button" onClick={showDiscussion}>Reviews & discussion{discussionCount !== null && <span className="tab-count">{discussionCount}<span className="sr-only">{discussionCount === 1 ? ' comment' : ' comments'}</span></span>}</button></div>
         <button className={'button ' + (selected ? 'button-added' : 'button-primary')} onClick={onToggle} aria-pressed={selected}><Icon name={selected ? 'check' : 'plus'} size={16} />{selected ? 'Added to configuration' : 'Add to configuration'}</button>
         <ModuleUpdateButton id={id} />
       </div>
@@ -47,7 +47,7 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
         if (event.key === 'Home') next = tabs[0]
         if (event.key === 'End') next = tabs[2]
         if (next) { event.preventDefault(); setTab(next); document.getElementById('tab-' + next)?.focus() }
-      }}>{value}{value === 'Discussion' && discussionCount !== null && <span className="tab-count">{discussionCount}</span>}</button>)}
+      }}>{value}{value === 'Discussion' && discussionCount !== null && <span className="tab-count">{discussionCount}<span className="sr-only">{discussionCount === 1 ? ' comment' : ' comments'}</span></span>}</button>)}
     </div>
     <div id="detail-content" role="tabpanel" aria-labelledby={'tab-' + tab} tabIndex={0}>
       {tab === 'Overview' && <>
