@@ -122,6 +122,15 @@
 .forum-posts { border: 1px solid #3a3a43; border-radius: 12px; background: #202024; overflow: hidden; }
 .forum-post { position: relative; display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 16px; scroll-margin-block: 24px; margin: 0; padding: 22px 24px 16px; }
 .forum-post + .forum-post { border-top: 1px solid #33333c; }
+/* Opening post of a module home thread: one line until opened. */
+.forum-intro { border-bottom: 1px solid #33333c; background: #1d1d22; }
+.forum-intro > summary { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 6px 24px; cursor: pointer; list-style: none; color: var(--muted); font-size: 12px; }
+.forum-intro > summary::-webkit-details-marker { display: none; }
+.forum-intro > summary strong { color: #e1e1ec; font-size: 12px; font-weight: 600; }
+.forum-intro > summary:hover { color: #d7d7ea; }
+.forum-intro > summary > svg { margin-left: auto; transition: transform .15s; }
+.forum-intro[open] > summary > svg { transform: rotate(90deg); }
+.forum-intro[open] > summary { border-bottom: 1px solid #33333c; }
 .forum-post[data-author="true"] { background: #23232b; box-shadow: inset 3px 0 #929bff80; }
 .forum-post > header { display: contents; }
 .forum-post > header > .forum-avatar { grid-row: 1; width: 40px; height: 40px; }
@@ -709,6 +718,7 @@ li[data-status="error"] .forum-media-status { color: #f0a6ad; }
   .forum-post-author { min-height: 32px; margin-bottom: 6px; }
   .forum-post-author > .forum-meta { margin-left: 0; flex-basis: 100%; }
   .forum-posts > .forum-post:first-child .forum-post-body { font-size: 15px; }
+  .forum-intro > summary { padding-inline: 16px; }
   .forum-post-actions { margin-left: -8px; }
   .forum-post-action { padding-inline: 8px; }
   .forum-editor-toolbar { flex-wrap: nowrap; gap: 2px; padding: 6px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; }
