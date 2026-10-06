@@ -31,6 +31,6 @@ export function moveDiscussionIssueDraft(from: string, to: string) {
 }
 
 export function useDiscussionIssueDraft(id: string) {
-  const [draft] = useState(() => readDiscussionIssueDraft(id))
-  return { draft, clearDraft: () => clearDiscussionIssueDraft(id) }
+  const [draft, setDraft] = useState(() => readDiscussionIssueDraft(id))
+  return { draft, clearDraft: () => { clearDiscussionIssueDraft(id); setDraft(null) } }
 }

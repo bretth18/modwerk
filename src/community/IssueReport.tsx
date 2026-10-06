@@ -27,7 +27,9 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
  const [log,setLog]=useState<OtLog|null>(null),[logError,setLogError]=useState('')
  const [reading,setReading]=useState(false),[logName,setLogName]=useState(''),[logNote,setLogNote]=useState('')
  const [sent,setSent]=useState<BugReportResult|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('')
+ const [formKey,setFormKey]=useState(0),[follow,setFollow]=useState(true)
  useEffect(()=>{if(sent){success.current?.focus();report.current?.scrollIntoView({block:'start'})}},[sent])
+ useEffect(()=>{if(formKey)title.current?.focus()},[formKey])
  const inConfiguration=workspace.modules.some(item=>item.id===id)||id.startsWith('remix-')
 
  async function readLogs(files:File[]){
@@ -57,6 +59,8 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   ++readRequest.current;setReading(false);setLog(null);setLogError('');setLogNote('')
   if(fileInput.current)fileInput.current.value=''
  }
+ /** A fresh form for the next bug; the Octatrack, running state and follow choice stay as answered. */
+ function reportAnother(){removeLog();setSent(null);setError('');setFormKey(key=>key+1)}
  async function send(form:HTMLFormElement){
   if(!model||reading||busy)return
   setBusy(true);setError('')
@@ -66,6 +70,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   try{
    const result=await post<BugReportResult>('/modules/'+id+'/issues',{title:fields.title,steps:fields.steps,expected:fields.expected,actual:fields.actual,context,visibility:'forum',notifyUpdates:fields.notifyUpdates==='on',...(log?{log:log.text}:{})})
    setSent(result)
+   setFollow(fields.notifyUpdates==='on')
    window.dispatchEvent(new Event('modwerk-module-updates'))
    clearDraft()
   }catch(error){setError(error instanceof Error?error.message:'Unable to send issue.')}
@@ -74,9 +79,9 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
 
  return <details ref={report} className="issue-report" onToggle={event=>{if(event.currentTarget.open)setOpened(true)}}><summary>Report an issue <span>For @{author}</span></summary>
   {sent?<div ref={success} className="issue-report-success" role="status" tabIndex={-1}>
-   <BugReportSuccess report={sent}/>
+   <BugReportSuccess report={sent} onReportAnother={reportAnother}/>
   </div>:!session.user?.verified?<MemberPrompt/>:
-  <form className="community-form" aria-busy={busy} onSubmit={event=>{event.preventDefault();void send(event.currentTarget)}}>
+  <form key={formKey} className="community-form" aria-busy={busy} onSubmit={event=>{event.preventDefault();void send(event.currentTarget)}}>
    <ExistingIssues id={id} tracker={tracker}/>
    {draft&&<DiscussionIssueDraft body={draft.body}/>}
    <label>Title<input ref={title} name="title" required maxLength={160} defaultValue={draft?.title??''} placeholder="What went wrong, in one line"/></label>
@@ -107,7 +112,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
    </details>
    <ReportConfiguration workspace={workspace} inConfiguration={inConfiguration} os={REPORT_OS}/>
    <BugReportNotice tracker={tracker}/>
-   <ReportNotifications id={id}/>
+   <ReportNotifications id={id} defaultChecked={follow}/>
    <button className="button button-primary" disabled={busy||reading}>{busy?'Posting…':'Post report'}</button>
   </form>}
   {error&&<p className="file-error" role="alert">{error}</p>}</details>

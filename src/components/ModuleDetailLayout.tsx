@@ -53,10 +53,11 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
       {tab === 'Overview' && <>
         <ModuleCommunity id={id} mode="overview" onDiscuss={showDiscussion} onDiscussionCount={setDiscussionCount} />
         <div className="module-guide">{guide}</div>
-        {issueReport(issueOpenRequest)}
       </>}
       {tab === 'Media' && <ModuleCommunity id={id} mode="media" onDiscussionCount={setDiscussionCount} />}
       {tab === 'Discussion' && <ModuleCommunity id={id} mode="discussion" onReportIssue={showIssueReport} onDiscussionCount={setDiscussionCount} />}
+      {/* Stays mounted on the other tabs so a report in progress is not lost. */}
+      <div hidden={tab !== 'Overview'}>{issueReport(issueOpenRequest)}</div>
     </div>
   </div>
 }
