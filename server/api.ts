@@ -17,6 +17,7 @@ import { moduleStatistics } from './module-statistics'
 import { membersOnline } from './presence'
 import { adminInsights } from './admin-insights'
 import { adminAccounts } from './admin-accounts'
+import { adminActivity } from './admin-activity'
 import { adminAnnouncements } from './announcements'
 import recipes from '../src/catalog/module-sets.json'
 import type { Database, Env, Media, User } from './platform'
@@ -204,6 +205,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       const announcements = await adminAnnouncements(request, db, path)
       if (announcements) return announcements
       if (path === '/api/admin/insights' && request.method === 'GET') return response(await adminInsights(db))
+      if (path === '/api/admin/activity' && request.method === 'GET') return response(await adminActivity(db,new Date(),Number(url.searchParams.get('days') ?? 30)))
       if (path === '/api/admin/accounts' && request.method === 'GET') return response(await adminAccounts(db,new Date(),Number(url.searchParams.get('days') ?? 30)))
       if (path === '/api/admin/statistics' && request.method === 'GET') return await usageStatistics(db,Number(url.searchParams.get('days') ?? 7))
       if (path === '/api/admin/overview' && request.method === 'GET') return response(await db.prepare("SELECT (SELECT COUNT(*) FROM submissions WHERE status='pending') AS pending,(SELECT COUNT(*) FROM module_publications) AS published,(SELECT COUNT(*) FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id WHERE t.id='module-' || t.module_id AND p.id<>t.id AND p.hidden=0 AND t.hidden=0) AS comments,(SELECT COUNT(*) FROM issues WHERE status='open') AS issues,(SELECT COALESCE(SUM(bytes),0) FROM media) AS mediaBytes").first())

@@ -1011,6 +1011,12 @@ h1 { font-size: 28px; }
 .statistics-issue-ages progress::-webkit-progress-bar { background:var(--line); }
 .statistics-issue-ages progress::-webkit-progress-value { background:var(--accent); }
 .statistics-issue-ages strong { text-align:right; font-variant-numeric:tabular-nums; }
+.statistics-unanswered { max-width:650px; margin:24px 0; }
+.statistics-unanswered h3 { font-size:14px; margin:0 0 12px; }
+.statistics-unanswered ul { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+.statistics-unanswered li { display:flex; align-items:baseline; justify-content:space-between; gap:16px; font-size:13px; }
+.statistics-unanswered li a { min-width:0; overflow-wrap:anywhere; }
+.statistics-unanswered li small { flex:0 0 auto; color:var(--muted); font-size:12px; font-variant-numeric:tabular-nums; }
 .statistics-engagement-totals { display:flex; flex-wrap:wrap; gap:20px 40px; margin:24px 0; }
 .statistics-engagement-totals dt { color:var(--muted); font-size:12px; }
 .statistics-engagement-totals dd { margin:8px 0 0; font-size:24px; font-variant-numeric:tabular-nums; }
