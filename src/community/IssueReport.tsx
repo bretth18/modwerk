@@ -9,18 +9,16 @@ import type { FlashState, IssueContext, LogMissingReason, OtModel } from './issu
 import { describeOtLog, OT_LOG_MAX_BYTES, OT_LOG_NAME, OtLogError, parseOtLog } from './ot-log'
 import type { OtLog } from './ot-log'
 import { REPORT_OS, useWorkspaceReportContext } from './report-context'
+import { useOpenIssueReport } from './useOpenIssueReport'
+import { DiscussionIssueDraft } from './DiscussionIssueDraft'
+import { useDiscussionIssueDraft } from './discussion-issue-draft'
 
 export function IssueReport({id,author,openRequest=0}:{id:string;author:string;openRequest?:number}){
  const {session}=useCommunity()
  const report=useRef<HTMLDetailsElement>(null),title=useRef<HTMLInputElement>(null),success=useRef<HTMLDivElement>(null)
  const fileInput=useRef<HTMLInputElement>(null),readRequest=useRef(0),helpId=useId()
- useEffect(()=>{
-  if(!openRequest||!report.current)return
-  report.current.open=true
-  const target=title.current??report.current.querySelector('summary')
-  target?.focus()
-  report.current.scrollIntoView({block:'start'})
- },[openRequest])
+ useOpenIssueReport(report,title,openRequest)
+ const {draft,clearDraft}=useDiscussionIssueDraft(id)
  const workspace=useWorkspaceReportContext()
  const [opened,setOpened]=useState(false),tracker=useIssueTracker(id,opened)
  const [model,setModel]=useState<OtModel|''>(''),[flash,setFlash]=useState<FlashState|''>('')
@@ -65,10 +63,12 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   if(!logReady){setError('Attach '+OT_LOG_NAME+', or tick “I can’t attach” and choose why.');return}
   setBusy(true);setError('')
   const fields=Object.fromEntries(new FormData(form)) as Record<string,string>
+  if(fields.actual.length>2000){setError('Keep the actual result under 2,000 characters. Your complete discussion draft is available above for reference.');setBusy(false);return}
   const context:IssueContext={model,flash,os:REPORT_OS,modules:workspace.modules,keepStockFx2:workspace.keepStockFx2,build:workspace.build}
   try{
    const result=await post<BugReportResult>('/modules/'+id+'/issues',{title:fields.title,steps:fields.steps,expected:fields.expected,actual:fields.actual,context,visibility:'forum',...(log?{log:log.text}:{logMissing:{reason,note}})})
    setSent(result)
+   clearDraft()
   }catch(error){setError(error instanceof Error?error.message:'Unable to send issue.')}
   finally{setBusy(false)}
  }
@@ -81,14 +81,15 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
    <BugReportNotice tracker={tracker}/>
    <ExistingIssues id={id} tracker={tracker}/>
    <fieldset><legend>1. Describe the problem</legend>
-   <label>Issue title<input ref={title} name="title" required maxLength={160} placeholder="What went wrong, in one line"/></label>
+   {draft&&<DiscussionIssueDraft body={draft.body}/>}
+   <label>Issue title<input ref={title} name="title" required maxLength={160} defaultValue={draft?.title??''} placeholder="What went wrong, in one line"/></label>
    <div className="issue-report-row">
     <label>Octatrack<select required value={model} onChange={event=>setModel(event.target.value as OtModel)}><option value="" disabled>Choose…</option>{(Object.keys(OT_MODELS) as OtModel[]).map(key=><option key={key} value={key}>{OT_MODELS[key]}</option>)}</select></label>
     <label>It is running<select required value={flash} onChange={event=>setFlash(event.target.value as FlashState)}><option value="" disabled>Choose…</option>{(Object.keys(FLASH_STATES) as FlashState[]).map(key=><option key={key} value={key}>{FLASH_STATES[key]}</option>)}</select></label>
    </div>
    <label>Steps to reproduce<textarea name="steps" required maxLength={3000} rows={4} placeholder={'1. Load a project with …\n2. Set FX1 to …\n3. Turn …'}/></label>
    <label>Expected result<textarea name="expected" required maxLength={1000} rows={2}/></label>
-   <label>Actual result<textarea name="actual" required maxLength={2000} rows={2} placeholder="What happened instead: sound, screen message, freeze, reboot …"/></label>
+   <label>Actual result<textarea name="actual" required maxLength={2000} rows={draft?4:2} defaultValue={draft?.body??''} placeholder="What happened instead: sound, screen message, freeze, reboot …"/>{draft&&<span className="service-note">Copied from your discussion draft. Review and keep this under 2,000 characters.</span>}</label>
 
    </fieldset>
    <fieldset className="issue-report-attached"><legend>2. Check your configuration</legend>

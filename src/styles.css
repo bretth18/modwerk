@@ -682,6 +682,12 @@ h1 { font-size: 28px; }
 .guide-rights p { margin-top: 7px; }
 .issue-report { scroll-margin-top: 24px; border: 1px solid var(--line); border-radius: 7px; margin: 22px 0; padding: 14px 17px; }
 .issue-report summary { cursor: pointer; color: #d1cede; font-size: 13px; }
+.issue-report > summary { color: #ffc5c5; }
+.issue-report-draft pre { max-height: 180px; overflow: auto; padding: 12px; border: 1px solid var(--line); border-radius: 6px; background: #1e1e24; font: 12px/1.7 var(--mono); }
+.module-discussion-dialog .section-title { align-items: flex-start; }
+.module-discussion-dialog .section-title h2 { margin-bottom: 0; }
+.module-discussion-dialog .dialog-actions { flex-direction: column; align-items: stretch; }
+.module-discussion-dialog p + p { margin-top: 14px; }
 .issue-report summary span { color: #9997ad; font-size: 12px; margin-left: 12px; }
 .issue-report .community-form { max-width: 620px; gap: 14px; margin-top: 15px; }
 .issue-report button { align-self: flex-start; }

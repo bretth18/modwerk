@@ -72,11 +72,13 @@ Saved configurations, duplicates and imported JSON backups automatically select 
 
 Public discussions are readable without an account. Registration and verified email are required to open threads, reply, comment, rate, like or submit issues. Better Auth supplies password and session handling through a small server-side facade. Resend sends verification and recovery emails; the frontend never receives mail credentials. See [forum setup, local sample data, security controls and operational limits](FORUM.md).
 
-The forum supports general discussion, module help, structured public bug reports and fixed configuration snapshots, plus search, bookmarks, a notification bell with activity email digests and protected moderation. Config snapshots contain only module metadata. Private reports on module pages stay visible only to their reporter and the administrator. Activity email is on by default as a batched digest with one-click unsubscribe; see [FORUM.md](FORUM.md#notifications-and-activity-email).
+The forum supports general discussion, module help, public bug-report follow-up and fixed configuration snapshots, plus search, bookmarks, a notification bell with activity email digests and protected moderation. Config snapshots contain only module metadata. Private reports on module pages stay visible only to their reporter and the administrator. Activity email is on by default as a batched digest with one-click unsubscribe; see [FORUM.md](FORUM.md#notifications-and-activity-email).
 
 Historical guest identities retain access to their private reports on the original device until their session expires or is replaced on sign-in. Names never transfer ownership to an account. New guest participation is closed. Administration continues to use its separate server-side key and tab session.
 
 ### Issue reports
+
+New module bugs use the module page’s red “Report an issue” action. Module discussions warn before posting and offer to copy the written draft into that form; the forum composer cannot create bug reports.
 
 Reports are structured, so authors can reproduce a problem across this many modules and configurations. Each report carries:
 

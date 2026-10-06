@@ -3,7 +3,6 @@ import { ADMIN_ACTOR, needMember, throttle } from './auth'
 import { HttpError, jsonBody, required, response } from './security'
 import { FORUM_CATEGORIES, forumMachine, sharedConfiguration } from '../src/community/forum-contract'
 import { communityModule } from '../src/community/modules'
-import { notifyBugDevelopers } from './bug-reports'
 import { ensureDiscussionThread, ensureModuleThreadsOnce, SYSTEM_AUTHOR } from './module-threads'
 import { notifyMentions, notifyPostLike, notifyReplies, RECIPIENTS } from './notifications'
 import { attachMedia, postAttachments } from './forum-media'
@@ -140,32 +139,25 @@ export async function forum(request: Request, db: Database, user: User|null, adm
   const body = await jsonBody(request)
   if (path === '/api/forum/threads' && request.method === 'POST') {
     await throttle(db,'new-thread:'+member.id,10)
+    if (body.category === 'issues' || body.issue !== undefined) throw new HttpError(400,'Use “Report an issue” on the affected module’s page to report a bug. Discussions are for questions, tips and feedback.')
     if (typeof body.category !== 'string' || !Object.hasOwn(FORUM_CATEGORIES,body.category)) throw new HttpError(400,'Choose a category.')
     const title=required(body.title,'Title',160), content=cleanBody(body.body), module=await moduleId(db,body.moduleId), id=crypto.randomUUID(), postId=crypto.randomUUID()
     let machine: string | null
     try { machine = forumMachine(body.machine) } catch (error) { throw new HttpError(400, error instanceof Error ? error.message : 'Unknown machine.') }
     const moduleMachine = module ? communityModule(module)?.machine??(module.startsWith('remix-')?'octatrack':null) : null
     if (moduleMachine && machine && machine !== moduleMachine) throw new HttpError(400,'The module belongs to a different machine.')
-    let config=null,issue=null
+    let config=null
     if(body.category==='configs'){try{config=sharedConfiguration(body.configuration)}catch(error){throw new HttpError(400,error instanceof Error?error.message:'Invalid configuration.')}}
     else if(body.configuration!==undefined)throw new HttpError(400,'Shared configurations belong in the configurations category.')
-    if(body.category==='issues'){
-      if(!module&&(!machine||['octatrack','digitakt','digitone'].includes(machine)))throw new HttpError(400,'Choose the affected module.')
-      if(!body.issue||typeof body.issue!=='object'||Array.isArray(body.issue))throw new HttpError(400,'Include the device, module version and reproduction steps.')
-      const item=body.issue as Record<string,unknown>
-      if(Object.keys(item).some(key=>!['device','version','steps','expected','actual'].includes(key)))throw new HttpError(400,'Unexpected issue field. Attachments are not accepted.')
-      issue={device:required(item.device,'Device',80),version:required(item.version,'Module version',80),steps:required(item.steps,'Steps',4000),expected:required(item.expected,'Expected result',2000),actual:required(item.actual,'Actual result',2000)}
-    }
     const configMachine = config ? config.device ?? 'octatrack' : null
     if (configMachine && ((machine && machine !== configMachine) || (moduleMachine && moduleMachine !== configMachine))) throw new HttpError(400,'The configuration belongs to a different machine.')
     const media = await attachMedia(db,member.id,postId,body.attachments)
     await db.batch([
-      db.prepare('INSERT INTO forum_threads(id,user_id,title,category,section,machine,module_id,configuration_json,issue_json) VALUES(?,?,?,?,?,?,?,?,?)').bind(id,member.id,title,['introductions','showcase','requests','tutorials'].includes(body.category)?'general':body.category,['introductions','showcase','requests','tutorials'].includes(body.category)?body.category:null,machine ?? moduleMachine ?? configMachine,module,config?JSON.stringify(config):null,issue?JSON.stringify(issue):null),
+      db.prepare('INSERT INTO forum_threads(id,user_id,title,category,section,machine,module_id,configuration_json) VALUES(?,?,?,?,?,?,?,?)').bind(id,member.id,title,['introductions','showcase','requests','tutorials'].includes(body.category)?'general':body.category,['introductions','showcase','requests','tutorials'].includes(body.category)?body.category:null,machine ?? moduleMachine ?? configMachine,module,config?JSON.stringify(config):null),
       db.prepare('INSERT INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').bind(postId,id,member.id,content),
       ...media,
       db.prepare('INSERT INTO forum_follows(thread_id,user_id) VALUES(?,?)').bind(id,member.id),
       ...notifyMentions(db,content,id,postId,member.id),
-      ...(body.category==='issues'?notifyBugDevelopers(db,module,id,postId,member.id):[]),
     ])
     return response({id},201)
   }

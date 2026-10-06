@@ -10,7 +10,7 @@ export const FORUM_CATEGORY_DESCRIPTIONS: Record<keyof typeof FORUM_CATEGORIES, 
   tutorials: 'Share what you learned, from first flash to building mods.',
   modules: 'Ask questions and exchange tips with module developers.',
   configs: 'Share module combinations others can try.',
-  issues: 'Report a problem with steps others can reproduce.',
+  issues: 'Browse reported bugs. Report new issues from the affected module’s page.',
 }
 export type ForumCategorySummary = { category: keyof typeof FORUM_CATEGORIES; threads: number; replies: number }
 export type ForumShout = { id: string; body: string; username: string | null; created_at: string; edited_at: string | null; hidden: number; canEdit: boolean }

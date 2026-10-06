@@ -8,19 +8,17 @@ import { communityModule } from './modules'
 import { DEVICES_BY_ID } from '../devices/registry'
 import { BugReportNotice, BugReportSuccess, ExistingIssues } from './BugReportNotice'
 import { useIssueTracker, type BugReportResult } from './issue-tracker'
+import { useOpenIssueReport } from './useOpenIssueReport'
+import { DiscussionIssueDraft } from './DiscussionIssueDraft'
+import { useDiscussionIssueDraft } from './discussion-issue-draft'
 
 export function DigiIssueReport({ id, openRequest = 0 }: { id: string; openRequest?: number }) {
   const module = communityModule(id)!, device = DEVICES_BY_ID[module.machine], workspace = useWorkspaceReportContext(module.machine), { session } = useCommunity()
   const report = useRef<HTMLDetailsElement>(null), title = useRef<HTMLInputElement>(null), success = useRef<HTMLDivElement>(null)
   const [sent, setSent] = useState<BugReportResult | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState('')
   const [opened, setOpened] = useState(false), tracker = useIssueTracker(id, opened)
-  useEffect(() => {
-    if (!openRequest || !report.current) return
-    report.current.open = true
-    const target = title.current ?? report.current.querySelector('summary')
-    target?.focus()
-    report.current.scrollIntoView({ block: 'start' })
-  }, [openRequest])
+  useOpenIssueReport(report, title, openRequest)
+  const { draft, clearDraft } = useDiscussionIssueDraft(id)
   useEffect(() => { if (sent) { success.current?.focus(); report.current?.scrollIntoView({ block: 'start' }) } }, [sent])
   const inConfiguration = workspace.modules.some(item => item.id === module.moduleId)
   async function send(form: HTMLFormElement) {
@@ -28,8 +26,10 @@ export function DigiIssueReport({ id, openRequest = 0 }: { id: string; openReque
     setBusy(true); setError('')
     try {
       const fields = Object.fromEntries(new FormData(form)) as Record<string, string>
+      if (fields.actual.length > 2000) throw new Error('Keep the actual result under 2,000 characters. Your complete discussion draft is available above for reference.')
       const context: DigiIssueContext = { machine: module.machine as DigiIssueContext['machine'], model: fields.model, flash: fields.flash as FlashState, os: fields.os, moduleVersion: fields.moduleVersion, modules: workspace.modules, keepStockFx2: null, build: workspace.build }
       setSent(await post<BugReportResult>('/modules/' + id + '/issues', { title: fields.title, steps: fields.steps, expected: fields.expected, actual: fields.actual, context, visibility: 'forum' }))
+      clearDraft()
     } catch (error) { setError(error instanceof Error ? error.message : 'Unable to send the report.') } finally { setBusy(false) }
   }
   return <details ref={report} className="issue-report" onToggle={event => { if (event.currentTarget.open) setOpened(true) }}><summary>Report an issue <span>For @{module.author}</span></summary>
@@ -37,11 +37,12 @@ export function DigiIssueReport({ id, openRequest = 0 }: { id: string; openReque
       <BugReportNotice tracker={tracker} />
       <ExistingIssues id={id} tracker={tracker} />
       <fieldset><legend>1. Describe the problem</legend>
-        <label>Issue title<input ref={title} name="title" required maxLength={160} placeholder="What went wrong, in one line" /></label>
+        {draft && <DiscussionIssueDraft body={draft.body} />}
+        <label>Issue title<input ref={title} name="title" required maxLength={160} defaultValue={draft?.title ?? ''} placeholder="What went wrong, in one line" /></label>
         <div className="issue-report-row"><label>{device.name} model<select name="model" defaultValue="" required><option value="" disabled>Choose…</option>{(device.variants ?? [device.name]).map(model => <option key={model}>{model}</option>)}</select></label><label>It is running<select name="flash" defaultValue="" required><option value="" disabled>Choose…</option>{Object.entries(FLASH_STATES).map(([key, label]) => <option key={key} value={key}>{label.replace('an Octamod', 'a Modwerk')}</option>)}</select></label></div>
         <label>Steps to reproduce<textarea name="steps" required maxLength={3000} rows={4} placeholder={'1. Load a project with …\n2. Select …\n3. Turn …'} /></label>
         <label>Expected result<textarea name="expected" required maxLength={1000} rows={2} /></label>
-        <label>Actual result<textarea name="actual" required maxLength={2000} rows={2} placeholder="What happened instead: sound, screen message, freeze, reboot …" /></label>
+        <label>Actual result<textarea name="actual" required maxLength={2000} rows={draft ? 4 : 2} defaultValue={draft?.body ?? ''} placeholder="What happened instead: sound, screen message, freeze, reboot …" />{draft && <span className="service-note">Copied from your discussion draft. Review and keep this under 2,000 characters.</span>}</label>
       </fieldset>
       <fieldset className="issue-report-attached"><legend>2. Check your configuration</legend>
         <div className="issue-report-row"><label>Base OS<select name="os" defaultValue="" required><option value="" disabled>Choose the OS you used…</option>{device.firmware?.releases.map(release => <option key={release}>{release}</option>)}</select></label><label>Module version<input name="moduleVersion" required maxLength={80} defaultValue={module.version} /></label></div>

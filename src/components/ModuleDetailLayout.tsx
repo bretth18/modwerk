@@ -17,10 +17,11 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
     setTab('Discussion')
     document.getElementById('tab-Discussion')?.focus()
   }
+  function showIssueReport() { setTab('Overview'); setIssueOpenRequest(request => request + 1) }
   return <div className="detail-page">
     <div className="module-page-actions">
       <a className="back-link" href={backHref}><Icon name="back" size={15} />{backLabel}</a>
-      <button type="button" className="button button-quiet module-issue-action" onClick={() => { setTab('Overview'); setIssueOpenRequest(request => request + 1) }}><Icon name="message" size={15} />Report an issue</button>
+      <button type="button" className="button button-danger module-issue-action" onClick={showIssueReport}><Icon name="message" size={15} />Report an issue</button>
     </div>
     <section className="detail-hero detail-hero-with-resources" aria-labelledby="module-title">
       {preview}
@@ -52,7 +53,7 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
         {issueReport(issueOpenRequest)}
       </>}
       {tab === 'Media' && <ModuleCommunity id={id} mode="media" />}
-      {tab === 'Discussion' && <ModuleCommunity id={id} mode="discussion" />}
+      {tab === 'Discussion' && <ModuleCommunity id={id} mode="discussion" onReportIssue={showIssueReport} />}
     </div>
   </div>
 }

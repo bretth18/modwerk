@@ -31,3 +31,8 @@ export const machineModules = (machine: string) => COMMUNITY_MODULES.filter(modu
 export function nativeModule(machine: string, id: string) { return machineModules(machine).find(module => module.moduleId === id) }
 /** Each module has one server-created forum thread with this fixed ID. */
 export const moduleThreadId = (id: string) => 'module-' + id
+/** Open the dedicated report form for catalog modules, sets and reviewed contributions. */
+export function moduleIssueHref(id: string) {
+  const href = communityModule(id)?.href ?? (id.startsWith('remix-') ? '#module-set/' + id.slice(6) : '#community-module/' + id)
+  return href + '?report=1'
+}

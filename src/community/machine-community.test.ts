@@ -318,18 +318,20 @@ describe('public bug reporting and developer delivery',()=>{
     expect((await call('/admin/issues/'+id,'PATCH',{status:'closed'},'','',admin)).status).toBe(200)
     expect((await(await call('/forum/threads/'+forumThreadId)).json()).thread.status).toBe('resolved')
   })
-  it('notifies developers about bugs started in the forum and removes revoked or hidden notifications',async()=>{
+  it('notifies developers through the issue report flow and removes revoked or hidden notifications',async()=>{
     const {call,githubLogin,member,db}=await fixture(),developer=await githubLogin(),reporter=await member()
     await call('/developer/modules/digitakt-digihealth/claim','POST',{},'',developer.token)
-    const payload={title:details.title,body:'Public reproduction.',category:'issues',machine:'digitakt',moduleId:'digitakt-digihealth',issue:{device:'mk1',version:context.moduleVersion,steps:details.steps,expected:details.expected,actual:details.actual}}
-    const {id}=await(await call('/forum/threads','POST',payload,reporter.token)).json()
+    const payload={...details,context,visibility:'forum'}
+    const result=await call('/modules/digitakt-digihealth/issues','POST',payload,reporter.token)
+    expect(result.status).toBe(201)
+    const {forumThreadId:id}=await result.json()
     expect((await(await call('/developer/notifications','GET',undefined,'',developer.token)).json())[0].thread_id).toBe(id)
     db.prepare('UPDATE forum_threads SET hidden=1 WHERE id=?').run(id)
     expect(await(await call('/developer/notifications','GET',undefined,'',developer.token)).json()).toEqual([])
     db.prepare('UPDATE forum_threads SET hidden=0 WHERE id=?').run(id)
     db.exec('UPDATE module_maintainers SET revoked=1')
     expect(await(await call('/developer/notifications','GET',undefined,'',developer.token)).json()).toEqual([])
-    expect((await call('/forum/threads','POST',payload,reporter.token)).status).toBe(201)
+    expect((await call('/modules/digitakt-digihealth/issues','POST',payload,reporter.token)).status).toBe(201)
     expect(db.prepare('SELECT COUNT(*) AS count FROM notifications').get()!.count).toBe(1)
   })
   it('rolls back the public thread and developer delivery if storing the validated log fails',async()=>{

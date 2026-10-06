@@ -24,7 +24,7 @@ describe('module detail parity across machines', () => {
     for (const mod of DIGI_MODS) {
       const html = render(digiPage(mod))
       for (const markup of [
-        'class="module-page-actions"', 'class="button button-quiet module-issue-action"',
+        'class="module-page-actions"', 'class="button button-danger module-issue-action"',
         'class="detail-hero detail-hero-with-resources"', 'class="module-resource-summary"',
         'Reviews &amp; discussion', 'role="tablist" aria-label="Module information"',
         'id="tab-Overview" aria-selected="true"', 'id="tab-Media" aria-selected="false"',

@@ -18,6 +18,26 @@ async function fixture(){
 }
 
 describe('one module discussion',()=>{
+  it('rejects bug reports through the thread composer, including structured issues in other categories',async()=>{
+    const {call,db,token}=await fixture()
+    await call('/forum/threads')
+    const before=Object.fromEntries(['forum_threads','forum_posts','forum_follows','notifications','issues'].map(table=>[table,db.prepare('SELECT COUNT(*) AS count FROM '+table).get()!.count]))
+    const issue={device:'Octatrack MKII',version:communityModule('miniverb')!.version,steps:'Select Mini Verb.',expected:'Audio plays.',actual:'Audio stops.'}
+    for(const payload of [
+      {category:'issues',moduleId:'miniverb',issue},
+      {category:'issues',moduleId:'digitakt-digihealth',machine:'digitakt',issue},
+      {category:'issues',moduleId:'digitone-digihealth',machine:'digitone',issue},
+      {category:'issues',machine:'syntakt'},
+      {category:'general',moduleId:'miniverb',issue},
+    ]){
+      const result=await call('/forum/threads','POST',{title:'A module bug',body:'Reproduction details.',...payload},token)
+      expect(result.status).toBe(400)
+      expect((await result.json()).error).toContain('Report an issue')
+    }
+    for(const [table,count] of Object.entries(before))expect(db.prepare('SELECT COUNT(*) AS count FROM '+table).get()!.count).toBe(count)
+    expect((await call('/forum/threads','POST',{title:'Mini Verb settings',body:'Share your favorite settings.',category:'modules',moduleId:'miniverb'},token)).status).toBe(201)
+  })
+
   it('keeps member feeds, pagination and summaries separate from automatic module homes',async()=>{
     const {call,db,id,token}=await fixture()
     expect((await (await call('/forum/threads')).json()).threads).toEqual([])
