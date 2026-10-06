@@ -213,16 +213,20 @@
     },
     {
       "id": "octa-panel",
-      "name": "octa-panel Scale Quantizer",
+      "name": "octatrick Scale Quantizer and FM Synth",
       "spdx": "MIT",
       "noticeFile": "octa-panel.txt",
       "sources": [
         {
           "path": "sdk/octabam/modules/quantizer/upstream/LICENSE"
+        },
+        {
+          "path": "sdk/octabam/modules/synth/upstream/LICENSE"
         }
       ],
       "usedIn": [
-        "modules/quantizer/upstream"
+        "modules/quantizer/upstream",
+        "modules/synth/upstream"
       ]
     },
     {
@@ -293,6 +297,9 @@
     ],
     "sidechain-compressor": [
       "kyoti-sidechain"
+    ],
+    "synth": [
+      "octa-panel"
     ]
   }
 }

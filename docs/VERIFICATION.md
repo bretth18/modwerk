@@ -762,3 +762,16 @@ Four CLI regression cases use temporary repositories and the real vendored kit, 
 On Node 24, `npm run check` passed: 716 Vitest tests, licence, machine, module and vendor checks, SDK checks, lint, type checking and the production bundle. No kit, catalog pin, firmware-build output or hardware qualification changed.
 
 **Checks (Node 24, Windows 11).** `licenses:check`, `machines:check`, `modules:check`, `elekloader:check`, `sdk:check`, `lint` and the production build pass. Vitest, on main `5897804` with the pull request it builds on: 710 pass, and the same two fail as above.
+
+## 6 October 2026 — FM Synth dedicated-machine draft
+
+`sdk/drafts/synth` originally pinned octabam `949f3be` and octatrick v2.9 `525f4b1`. Isolated native preview build, seven actual LCD pages, T1–T8 Part/shadow tags, sample-slot preservation, reselection, return to FLEX, and sample-free Octemu audio/double-STOP pass. No current hardware, worst-case cycles, full memory accounting or native/browser package/composition parity is claimed. The draft remains outside native discovery and the public catalog; see its TESTING.md and sanitized evidence.
+
+
+## FM Synth experimental release — 6 October 2026
+
+FM Synth 0.1.1-experimental is now prepared under sdk/octabam/modules/synth for the ordinary source compiler and common firmware worker, with a dedicated FM SYNTH chooser entry. The owner explicitly approved missing current hardware evidence, chip worst-case timing and complete stack/memory bounds for this exact release; hardware remains untested, and both unknown measurements remain null. sdk/synth-build-approval.json and the source-native SHA-256 bind that exception. No frozen baseline or earlier exception is expanded.
+
+The native/browser coverage set passes all 94 cases: 37 builds matching outside existing platform/logger writes, 57 matching refusals and zero mismatches. Native declarations record 512 clean selections containing FM and refuse 1,536 overlapping sets. The common worker’s MAIN image c1fbc0b2eaf284e72692b7048d1dfd3693f3e3e90c71229159a619d585b52c95 and update 831e7cd878398ee8d1e268e9fc2bcfd902f48e785965e8e510bff58abc1405a6 pass full container round-trip, stock boot/seed preservation, conflict refusal and changed-base/session invalidation. That MAIN passes sample-free Octemu playback (169-frame carrier period, about 261 Hz) and double-STOP silence. Native panel/storage checks and seven real LCD captures retain the separately reproduced byte-identical standalone native image. Full condition and source records are in the module’s TESTING.md and evidence/software.json.
+
+Every existing compiled module byte, address and recipe matches approved pre-FM main after removing only global provenance and additive synth rows. Both committed composition records were replayed: Sidechain Compressor’s 90 cases (62 builds, 28 refusals) and FM Synth’s 94 cases have no mismatches. The additive shared integration is fingerprinted explicitly for unchanged Euclid retained evidence; another protected change blocks reuse. Browser inspection confirms the dedicated-machine page, tutorial/screens, selected FM configuration and a clear Analog BD conflict with working choices. Mixed-build audio, maximum voices, project reload, modulation, MIDI and hardware performance remain unqualified. Local firmware/recordings/cards stay outside Git.

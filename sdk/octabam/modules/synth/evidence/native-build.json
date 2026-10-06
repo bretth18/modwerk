@@ -1,0 +1,48 @@
+{
+  "imageSha256": "6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a",
+  "baseSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+  "imageBytes": 1125220,
+  "profile": {
+    "modules": [
+      "FILTER",
+      "EQUALIZER",
+      "DJ EQ",
+      "PHASER",
+      "FLANGER",
+      "CHORUS",
+      "SPATIALIZER",
+      "COMB FILTER",
+      "COMPRESSOR",
+      "LO-FI",
+      "DELAY",
+      "PLATE REV",
+      "SPRING REV",
+      "DARK REV",
+      "SYNTH MACHINE"
+    ],
+    "fx1": [
+      "FILTER",
+      "EQUALIZER",
+      "DJ EQ",
+      "PHASER",
+      "FLANGER",
+      "CHORUS",
+      "SPATIALIZER",
+      "COMB FILTER",
+      "COMPRESSOR",
+      "LO-FI"
+    ],
+    "staticStock": true
+  },
+  "builderSha256": "f923fbb0d3e5d42722c794864f066bc1a053aa0f2a91d4c7bd37c040bdc13fe8",
+  "arenaLayout": {
+    "loader": 1074855408,
+    "base": 1084839392,
+    "runtime_end": 1084863132,
+    "stage": 1084866560,
+    "stage_end": 1084878988,
+    "ceiling": 1095327200,
+    "size": 10487808
+  },
+  "qualification": "Platform extents only; full module memory and chip cycles pending."
+}

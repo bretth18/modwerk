@@ -10,7 +10,7 @@ import argparse, hashlib, importlib.util, json, os, re, shutil, struct, subproce
 APP = Path(__file__).resolve().parents[1]
 ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead']
 HOOKED = ['sidechain-compressor']
-REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer']
+REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer', 'synth']
 UTILITIES = ['previewvol', 'cc-map']
 ASSET_NAMES = ['dsp-packages.json', 'coldfire-packages.json', 'resident-dsp.json', 'rom-packages.json',
                'bootstrap-package.json', 'menu-recipes.json', 'descriptor-recipes.json', 'platform-writes.json', 'requested-packages.json', 'utility-packages.json']
@@ -102,9 +102,10 @@ def retain_pending_requested(compiled, baseline, ids, standalone=False):
     for field, key in [('objects', 'label'), ('groups', 'moduleId')]:
         actual = {row[key]: row for row in compiled[field]}
         expected = {row[key] for row in baseline[field] if row['moduleId'] not in pending}
+        expected.update(row[key] for row in compiled[field] if row['moduleId'] == 'synth')
         if len(actual) != len(compiled[field]) or set(actual) != expected:
             raise ValueError('Compiled requested package scope differs from the verified baseline')
-        compiled[field] = [row if row['moduleId'] in pending else actual[row[key]] for row in baseline[field]]
+        compiled[field] = [row if row['moduleId'] in pending else actual[row[key]] for row in baseline[field]] + [row for row in compiled[field] if row['moduleId'] == 'synth' and row[key] not in {old[key] for old in baseline[field]}]
     return compiled
 
 

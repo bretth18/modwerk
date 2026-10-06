@@ -20,7 +20,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { decodeFirmware } from '../src/engine/elek.ts'
 import { AVAILABLE_MODULES } from '../src/catalog/availability.ts'
-import { MODULE_DOCUMENTS_BY_ID } from '../src/catalog/documents.ts'
+import { parseModuleDocument } from '../src/catalog/module-contract.ts'
 import { CATALOG_SOURCE } from '../src/catalog/modules.ts'
 import { comparisonPool, coverageSelections, selectionKey } from './module-coverage.mjs'
 import { moduleSourceFingerprint } from './module-source.mjs'
@@ -84,8 +84,11 @@ if (check) {
   if (failed) process.exitCode = 1
   else console.log('Browser composer matches the recorded native results; a changed original OS is refused; no firmware written.')
 } else {
-  const id = positional[0], document = MODULE_DOCUMENTS_BY_ID[id]
-  if (!document) throw new Error(id + ' is not in sdk/catalog.json. List it there first (docs/ADD_A_MODULE.md, step 4).')
+  const id = positional[0]
+  if (!json(join(root, 'sdk/catalog.json')).modules.some(module => module.id === id)) throw new Error(id + ' is not in sdk/catalog.json. List it there first (docs/ADD_A_MODULE.md, step 4).')
+  // Fingerprint the current source manifest: generated documents can still carry
+  // the previous release's evidence paths while a new record is being prepared.
+  const document = parseModuleDocument(json(join(root, 'sdk/octabam/modules', id, 'octamod.module.json')))
   if (!AVAILABLE_MODULES.some(module => module.id === id)) throw new Error(id + ' is paused; it is not offered, so it is not compared.')
   const image = option('--image') ?? 'modwerk-source-tools'
   let imageId

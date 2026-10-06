@@ -15,6 +15,13 @@ export function selectedRequestedGroups(ids: readonly string[]) {
   if (selection.has('usb-audio-out-tracks-main-cue')) selection.add('usb-midi')
   if (facts.schema !== 1 || facts.revision !== CATALOG_SOURCE.revision) throw new Error('The requested packages do not match the pinned catalog.')
   const groups = facts.groups.filter(g => selection.has(g.moduleId))
+  // Refuse overlapping native hooks before linking or placing either module.
+  const claims = new Map<number, string>()
+  for (const group of groups.filter(group => group.moduleId !== 'usb-midi')) for (const row of [...group.detours, ...group.refs, ...group.pokes, ...group.tables.flatMap(table => table.refs)]) {
+    const owner = claims.get(row.address)
+    if (owner && owner !== group.moduleId) throw new Error('The selected modules have conflicting native declarations: ' + owner + ' and ' + group.moduleId + '.')
+    claims.set(row.address, group.moduleId)
+  }
   for (const g of groups) {
     const m = MODULES.find(m => m.id === g.moduleId)
     const internal = g.moduleId === 'usb-midi' && g.key === 'USB MIDI' && g.author === 'markandrus' && g.nativeAuthor === 'markandrus/octemu'

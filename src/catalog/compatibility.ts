@@ -10,6 +10,7 @@ export function checkSelection(ids: readonly string[], keepStockFx2 = false) {
  if(pending)return result([pending])
  if(metadata.revision!==CATALOG_SOURCE.revision)return result(['Compatibility metadata does not match this catalog revision.'])
  if(modules.length===1&&modules[0].id==='midi-scenes')return result([],true)
+ if(conflicts.length)return result([])
  const key=modules.map(m=>m.id).sort().join('+')
  const checks:Record<string,string[]>=metadata.checks
  return result(checks[key]??['This selection has no recorded declaration check.'],key in checks)

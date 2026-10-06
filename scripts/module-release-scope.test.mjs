@@ -13,12 +13,12 @@ scope, retain = r['requested_release_scope'], r['retain_pending_requested']
   return execFileSync(python, ['-B', '-c', setup + body], { cwd: root, encoding: 'utf8' }).trim()
 }
 describe('source compilation with standalone MIDISC2.0', () => {
-  it('excludes the local-stock recipe from compilation while retaining the three reviewed requested modules', () => {
+  it('excludes the local-stock recipe from compilation while retaining the reviewed requested modules', () => {
     const actual = metadataCheck(`catalog = json.load(open('sdk/catalog.json'))
 ids = [m['id'] for m in catalog['modules'] if json.load(open('sdk/octabam/modules/' + m['id'] + '/octamod.module.json')).get('build', {}).get('status') != 'pending']
 print(json.dumps(scope(ids)))
 `)
-    expect(JSON.parse(actual)).toEqual(['analog-bassdrum', 'usb-audio-out-tracks-main-cue', 'quantizer'])
+    expect(JSON.parse(actual)).toEqual(['analog-bassdrum', 'usb-audio-out-tracks-main-cue', 'quantizer', 'synth'])
   })
   it('removes legacy 8.2 objects and preserves the other authored package inventory', () => {
     expect(metadataCheck(`baseline = json.load(open('src/engine/assets/requested-packages.json'))

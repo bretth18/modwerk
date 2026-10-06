@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "root": "sdk/octabam/modules/synth",
+  "moduleVersion": "0.1.1-experimental",
+  "status": "owner-approved-experimental-release",
+  "repository": "https://github.com/sambanks/octabam",
+  "revision": "949f3be15eae5d3d16a7682b9e3218d42f6c1284",
+  "sourcePath": "modules/synth",
+  "authorPin": {
+    "repository": "https://github.com/timhastie/octatrick-modules",
+    "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
+    "path": "synth",
+    "version": "v2.9"
+  },
+  "files": [
+    {
+      "path": "upstream/synth/manifest.py",
+      "repository": "https://github.com/timhastie/octatrick-modules",
+      "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
+      "sourcePath": "synth/manifest.py",
+      "sourceBytes": 42772,
+      "sourceSha256": "df25a9e073040fde8d93a29d4f018464ff218a53194d308388e9d8267091dc45",
+      "sourceGitBlob": "d2a847057b12d4128e67f25e2b002434a95ddf39",
+      "vendoredSha256": "58c7acd5684fe0b59c42501f7fdbfd1b288b3bfb71938dcadf43bc1774b3e5e8",
+      "changes": [
+        "Replace embedded stock expectations with lazy address/length/SHA-256 guards; keep the renderer address as an integer.",
+        "Guard the second LFO-depth site independently; remove the embedded stock-prefix assertion.",
+        "Remove unused precompiled PINNED_PAGE blob; compile authored page.s through Linked instead."
+      ]
+    },
+    {
+      "path": "manifest.py",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "949f3be15eae5d3d16a7682b9e3218d42f6c1284",
+      "sourcePath": "modules/synth/manifest.py",
+      "sourceBytes": 4182,
+      "sourceSha256": "11cb5133f7f20357e23cc1fa43f602d08a491fcd944ed4d56d31abffc139b631",
+      "sourceGitBlob": "eb4613241957b8edeb9cfeb55f6dfaaf0de7264a",
+      "vendoredSha256": "780dbb5617d20167a5e3e67d49af7f9525021b89657a559ca678b95c5ae88f79",
+      "changes": [
+        "Replace upstream wrapper with dedicated FM chooser and Part-tag integration; bundle matching quantizer privately; retain untested publication status."
+      ]
+    },
+    {
+      "path": "upstream/synth/poly.s",
+      "repository": "https://github.com/timhastie/octatrick-modules",
+      "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
+      "sourcePath": "synth/poly.s",
+      "sourceBytes": 249549,
+      "sourceSha256": "2b1feb174f228dddfca028afe53b885261209d1f22d2e77f93ee883a07efeef8",
+      "sourceGitBlob": "8ef1f3661b2558882756967f5be01de22b9774ba",
+      "vendoredSha256": "5f6e39e55c813cd351538d00e0b02eb56cc253f803f95ca9450e140442064d60",
+      "changes": [
+        "Dedicated FM machine integration: Part signature recognition and sample-free source transport.",
+        "Sample-free native supplier/START callback; publish active stock lifecycle for STOP/kill; cache signed-track renderer each frame; retain stock paths for other tracks.",
+        "ColdFire-safe signature tests and preserve d0 on ordinary LFO page paths."
+      ]
+    },
+    {
+      "path": "upstream/synth/page.s",
+      "repository": "https://github.com/timhastie/octatrick-modules",
+      "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
+      "sourcePath": "synth/page.s",
+      "sourceBytes": 26098,
+      "sourceSha256": "9b3f0adf494ea5d9f4c3f3a7a0d6f53a2002e3bd79f3132d4dddf956ab996542",
+      "sourceGitBlob": "5dd26dc20809bf29649cf3b7fe2ed79aad64cfbf",
+      "vendoredSha256": "25e2a0624fcc30ee3a8db5966954113119fb5942855042f765e664a2f8544a70",
+      "changes": [
+        "Dedicated FM machine integration: Part signature recognition and sample-free source transport."
+      ]
+    },
+    {
+      "path": "upstream/synth/README.md",
+      "repository": "https://github.com/timhastie/octatrick-modules",
+      "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
+      "sourcePath": "synth/README.md",
+      "sourceBytes": 255707,
+      "sourceSha256": "810ece9805aef09aea1fab319185cbd4833ddb7bef42c7dd0af182da59b798d8",
+      "sourceGitBlob": "df115d416029fb86efbf7c0cee40f8fb0b584b86",
+      "vendoredSha256": "810ece9805aef09aea1fab319185cbd4833ddb7bef42c7dd0af182da59b798d8"
+    },
+    {
+      "path": "upstream/LICENSE",
+      "repository": "https://github.com/timhastie/octatrick-modules",
+      "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
+      "sourcePath": "LICENSE",
+      "sourceBytes": 1902,
+      "sourceSha256": "a8fe424c82a030f34f2e3f88df1f2585f97ae61710e1b799f2e6e818120396a0",
+      "sourceGitBlob": "8c25b6e8a09f56ad4c956d953705f21f3e8e1e15",
+      "vendoredSha256": "a8fe424c82a030f34f2e3f88df1f2585f97ae61710e1b799f2e6e818120396a0"
+    },
+    {
+      "path": "OCTABAM.md",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "949f3be15eae5d3d16a7682b9e3218d42f6c1284",
+      "sourcePath": "modules/synth/README.md",
+      "sourceBytes": 6000,
+      "sourceSha256": "876e518fb5f33c2e4db2e3d9cf881fd66ef2082921d977d79c1b15d069cdc7a9",
+      "sourceGitBlob": "86521c63a351be51a5fdd9b015a9e3cbe4b645a3",
+      "vendoredSha256": "876e518fb5f33c2e4db2e3d9cf881fd66ef2082921d977d79c1b15d069cdc7a9"
+    },
+    {
+      "path": "OCTABAM-LICENSE",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "949f3be15eae5d3d16a7682b9e3218d42f6c1284",
+      "sourcePath": "LICENSE",
+      "sourceBytes": 2112,
+      "sourceSha256": "f91a43799d9e31ccc3540f385f68c4d6ff5a096f93ae933be2ce98f6b3f7f113",
+      "sourceGitBlob": "112114d5d319dc4a789dacf1e84b867420a03614",
+      "vendoredSha256": "f91a43799d9e31ccc3540f385f68c4d6ff5a096f93ae933be2ce98f6b3f7f113"
+    },
+    {
+      "path": "upstream/quantizer/README.md",
+      "repository": "https://github.com/timhastie/octatrick-modules",
+      "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
+      "sourcePath": "quantizer/README.md",
+      "sourceSha256": "25b9e9a1d1fb4be217514727374922e60010fc0067fe8c5c3f17ced909c8d94e",
+      "vendoredSha256": "25b9e9a1d1fb4be217514727374922e60010fc0067fe8c5c3f17ced909c8d94e",
+      "sourceIdentity": "Already-reviewed Modwerk quantizer import; see sdk/imports/octabam-363861e.json",
+      "changes": [
+        "Stock guards retained from the reviewed SDK; quantizer.s additionally recognizes FM/1 Parts."
+      ]
+    },
+    {
+      "path": "upstream/quantizer/core.s",
+      "repository": "https://github.com/timhastie/octatrick-modules",
+      "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
+      "sourcePath": "quantizer/core.s",
+      "sourceSha256": "2992b6c85cff440de03ae84eb22dee8b8a83a84f23e94b699404d28940b6f958",
+      "vendoredSha256": "2992b6c85cff440de03ae84eb22dee8b8a83a84f23e94b699404d28940b6f958",
+      "sourceIdentity": "Already-reviewed Modwerk quantizer import; see sdk/imports/octabam-363861e.json",
+      "changes": [
+        "Stock guards retained from the reviewed SDK; quantizer.s additionally recognizes FM/1 Parts."
+      ]
+    },
+    {
+      "path": "upstream/quantizer/keys.s",
+      "repository": "https://github.com/timhastie/octatrick-modules",
+      "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
+      "sourcePath": "quantizer/keys.s",
+      "sourceSha256": "e2ffdbfae34b0828794a4eb4cc229e3efcaed25dc953bf7c05c13f6e37f65587",
+      "vendoredSha256": "e2ffdbfae34b0828794a4eb4cc229e3efcaed25dc953bf7c05c13f6e37f65587",
+      "sourceIdentity": "Already-reviewed Modwerk quantizer import; see sdk/imports/octabam-363861e.json",
+      "changes": [
+        "Stock guards retained from the reviewed SDK; quantizer.s additionally recognizes FM/1 Parts."
+      ]
+    },
+    {
+      "path": "upstream/quantizer/manifest.py",
+      "repository": "https://github.com/timhastie/octatrick-modules",
+      "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
+      "sourcePath": "quantizer/manifest.py",
+      "sourceSha256": "b28a9a120e3e6e5e4a5719404f8ff56667c22b582a0fd4595315b4d20ac7d9a4",
+      "vendoredSha256": "3a8ba2d366320ce702b02129386e3d384f0e9d6ae7df64e4811b32f3e08e4011",
+      "sourceIdentity": "Already-reviewed Modwerk quantizer import; see sdk/imports/octabam-363861e.json",
+      "changes": [
+        "Stock guards retained from the reviewed SDK; quantizer.s additionally recognizes FM/1 Parts."
+      ]
+    },
+    {
+      "path": "upstream/quantizer/quantizer.s",
+      "repository": "https://github.com/timhastie/octatrick-modules",
+      "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
+      "sourcePath": "quantizer/quantizer.s",
+      "sourceSha256": "91f34be65891fdc61988a3d3a7736b55457572355ffc42d0f423df688e1698fb",
+      "vendoredSha256": "8dd8f8c59b480dbf63e7c37b7ac11a5c2f03b3e7afbbbb3ca2f84e3a01fc114a",
+      "sourceIdentity": "Already-reviewed Modwerk quantizer import; see sdk/imports/octabam-363861e.json",
+      "changes": [
+        "Stock guards retained from the reviewed SDK; quantizer.s additionally recognizes FM/1 Parts."
+      ]
+    },
+    {
+      "path": "upstream/quantizer/scale.s",
+      "repository": "https://github.com/timhastie/octatrick-modules",
+      "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
+      "sourcePath": "quantizer/scale.s",
+      "sourceSha256": "82242c407847ac61a6f60fe15bdc5b0b4fc852bac82c39745b5c838ec9389c64",
+      "vendoredSha256": "82242c407847ac61a6f60fe15bdc5b0b4fc852bac82c39745b5c838ec9389c64",
+      "sourceIdentity": "Already-reviewed Modwerk quantizer import; see sdk/imports/octabam-363861e.json",
+      "changes": [
+        "Stock guards retained from the reviewed SDK; quantizer.s additionally recognizes FM/1 Parts."
+      ]
+    }
+  ],
+  "exclusions": [
+    "Git history and submodules",
+    "Retired synth.s engine",
+    "Author montage without current-build provenance",
+    "Neighboring modules",
+    "Firmware, extracted stock spans, cards/projects and generated binaries"
+  ],
+  "notes": [
+    "Owner requested a dedicated FM SYNTH chooser entry on 6 October 2026. The prototype stores FLEX plus FM/1 in unused NEIGHBOR bytes, retaining ordinary sample slots.",
+    "The matching quantizer is bundled privately; requires is empty. Shared-hook custom-machine combinations remain unimplemented.",
+    "Historical upstream reports do not qualify this native change. Hardware, maximum-load measurements and browser packages remain pending."
+  ],
+  "localFiles": [
+    {
+      "path": "machine.s",
+      "vendoredSha256": "de9d849bf0b6e5d5ad747df32ae5806e7f9516674a14ac74b1c15d73d30d280a",
+      "origin": "Modwerk dedicated FM integration, MIT"
+    },
+    {
+      "path": "registration.c",
+      "vendoredSha256": "c7f969f6536ef3b03727c02a05ce48755662c2eae0fbb4aaba80708d02c06f76",
+      "origin": "Modwerk dedicated FM integration, MIT"
+    },
+    {
+      "path": "registration.s",
+      "vendoredSha256": "d04e47d6d21287ea969e4d39d0fea8c90b262a577081ba8376915f96cd2d9d2d",
+      "origin": "Modwerk dedicated FM integration, MIT"
+    },
+    {
+      "path": "verify.py",
+      "vendoredSha256": "685d4aa146ed206caf8c9d78acf0f635e727f8eccc359167bb46205d647f3a75",
+      "origin": "Modwerk dedicated FM integration, MIT"
+    },
+    {
+      "path": "verify-audio.py",
+      "vendoredSha256": "d02b7b916d9b198b9e10e34d21c7eb0242267ef8bdac5762b5958721c05b0283",
+      "origin": "Modwerk Octemu audio summary verifier, MIT"
+    }
+  ],
+  "localBase": {
+    "repository": "https://github.com/repeat98/modwerk",
+    "revision": "cb1f0a16a41902fe874b8f307dd3d9065daf6eff",
+    "path": "sdk/octabam/modules/analog-bassdrum/machine.s",
+    "purpose": "Adapted chooser/Part registration hooks; no Analog BD DSP engine included."
+  },
+  "registrationCompiler": {
+    "version": "GCC 16.2.0",
+    "command": "m68k-elf-gcc -mcpu=5475 -O2 -ffreestanding -fno-builtin -fno-common -fno-pic -S registration.c -o registration.s",
+    "result": "Byte-identical source assembly"
+  }
+}

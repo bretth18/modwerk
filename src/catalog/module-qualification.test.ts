@@ -85,7 +85,7 @@ describe('module qualification hard gates',()=>{
       // Generated web documents include display-only baseline resource estimates.
       // Qualify the source manifest, as publication validation does.
       const source=parseModuleDocument(JSON.parse(readFileSync(resolve(folder,'octamod.module.json'),'utf8')))
-      expect(await requireFolderQualification(folder,source,frozen)).toBe(unchanged?'retained':source.tests.retainedEvidence?'retained-evidence':module.id==='midi-scenes'?'owner-approved-standalone':'qualified')
+      expect(await requireFolderQualification(folder,source,frozen)).toBe(unchanged?'retained':source.tests.retainedEvidence?'retained-evidence':module.id==='midi-scenes'?'owner-approved-standalone':module.id==='synth'?'owner-approved-experimental':'qualified')
     }
   })
   it('binds exemptions to complete folder contents and qualification to the native source',async()=>{

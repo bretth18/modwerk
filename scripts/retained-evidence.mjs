@@ -1,5 +1,7 @@
 // Reuse reviewed evidence only when all runtime inputs remain byte-identical.
 // Git objects and submitted files are read as data; native source is never evaluated.
+import { createHash } from 'node:crypto'
+import { requireAdditiveSynthPackages } from './synth-release.mjs'
 import { execFileSync } from 'node:child_process'
 import { readFile, readdir, mkdtemp, mkdir, writeFile, rm, lstat } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -84,6 +86,7 @@ function engineAsset(bytes, path, document, previousVersion) {
   delete value.sourceCommit
   if (value.moduleVersions?.[document.id] === document.version) value.moduleVersions[document.id] = previousVersion
   if (path === 'src/engine/assets/module-build.json') {
+    delete value.approval
     delete value.sourceTreeSha256
     delete value.files // Derived file hashes; package payloads are checked below.
     // The release independently verifies and stamps owner approval. This
@@ -107,6 +110,25 @@ function sameFiles(previous, current, skip, label, compare = (a, b) => a.equals(
   }
 }
 
+export async function retainedInfrastructureSha256(root, document, previousVersion, commit) {
+  const values = {}
+  for (const prefix of infrastructure) {
+    let entries
+    if (commit) entries = tree(root, commit, prefix)
+    else {
+      const info = await lstat(resolve(root, prefix))
+      if (info.isSymbolicLink()) throw new Error('Infrastructure symlinks are prohibited')
+      entries = info.isDirectory() ? new Map([...await currentFiles(resolve(root, prefix))].map(([path, bytes]) => [prefix + '/' + path, bytes])) : new Map([[prefix, await readFile(resolve(root, prefix))]])
+    }
+    for (const [path, bytes] of entries) {
+      if (path.endsWith('.test.ts') || path.startsWith('src/engine/test-fixtures/')) continue
+      const canonical = path.startsWith('src/engine/') && path.endsWith('.json') ? JSON.stringify(engineAsset(bytes, path, document, previousVersion)) : bytes
+      values[path] = createHash('sha256').update(canonical).digest('hex')
+    }
+  }
+  return createHash('sha256').update(JSON.stringify(Object.fromEntries(Object.entries(values).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0)))).digest('hex')
+}
+
 export async function requireRetainedEvidence(root, folder, document, baseline, waivers, qualify, options = {}) {
   const record = document.tests.retainedEvidence
   const label = document.id + '.tests.retainedEvidence'
@@ -126,6 +148,7 @@ export async function requireRetainedEvidence(root, folder, document, baseline, 
   if (!isDeepStrictEqual(runtimeFields(previous), runtimeFields(document))) throw new Error(label + ': native declarations, control values, resource claims, compatibility, provenance or test evidence changed; full qualification is required')
   const relative = new Map([...files].map(([path, bytes]) => [path.slice(prefix.length), bytes]))
   sameFiles(relative, await currentFiles(folder), path => editorial(path, previous) && editorial(path, document), label)
+  let changedInfrastructure
   for (const path of infrastructure) {
     const before = tree(root, record.commit, path)
     const after = new Map()
@@ -136,10 +159,22 @@ export async function requireRetainedEvidence(root, folder, document, baseline, 
       if (info.isDirectory()) for (const [rel, bytes] of await currentFiles(resolve(root, path))) after.set(path + '/' + rel, bytes)
       else after.set(path, await readFile(resolve(root, path)))
     } catch (error) { if (error.code !== 'ENOENT') throw error }
-    sameFiles(before, after, file => path === 'src/engine' && (file.endsWith('.test.ts') || file.startsWith('src/engine/test-fixtures/')), label,
+    try { sameFiles(before, after, file => path === 'src/engine' && (file.endsWith('.test.ts') || file.startsWith('src/engine/test-fixtures/')), label,
       (a, b, file) => path === 'src/engine' && file.endsWith('.json')
         ? isDeepStrictEqual(engineAsset(a, file, document, previous.version), engineAsset(b, file, document, previous.version))
-        : a.equals(b))
+        : a.equals(b)) } catch(error) { changedInfrastructure ??= error }
+  }
+  if (changedInfrastructure) {
+    // This one reviewed additive extension keeps Euclid's original folder,
+    // controls, costs and verdicts frozen. Future shared edits fail closed.
+    if (document.id !== 'euclid' || document.version !== '0.1.3-experimental' || previous.version !== '0.1.2-experimental' || record.commit !== 'cb1f0a16a41902fe874b8f307dd3d9065daf6eff') throw changedInfrastructure
+    const approval = JSON.parse(await readFile(resolve(root, 'sdk/synth-build-approval.json'), 'utf8'))
+    const binding = approval.integration
+    if (binding?.retainedModule !== 'euclid@0.1.3-experimental' || binding.evidenceCommit !== record.commit || binding.packageBase !== '1c008deb8edef2fa6b158daab5553615d60fe72f' || binding.previousInfrastructureSha256 !== await retainedInfrastructureSha256(root, document, previous.version, record.commit) || binding.currentInfrastructureSha256 !== await retainedInfrastructureSha256(root, document, previous.version)) throw changedInfrastructure
+    try { git(root, 'merge-base', '--is-ancestor', binding.packageBase, approvedRef) } catch { throw changedInfrastructure }
+    await requireAdditiveSynthPackages(root, binding.packageBase)
+    const synthFolder = resolve(root, 'sdk/octabam/modules/synth'), synth = parseModuleDocument(JSON.parse(await readFile(resolve(synthFolder, 'octamod.module.json'), 'utf8')))
+    if (await qualify(synthFolder, synth, baseline, waivers, { root }) !== 'owner-approved-experimental') throw changedInfrastructure
   }
   // Revalidate the original qualification/baseline/owner exception on its exact
   // folder. Never turn historical or waived evidence into a new hardware pass.

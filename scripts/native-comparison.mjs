@@ -15,6 +15,7 @@ import { applyGuardedOsWrites, OS_LOAD_ADDRESS } from '../src/engine/os-patches.
 const sha = bytes => createHash('sha256').update(bytes).digest('hex')
 // A native refusal and the browser's wording for the same limit. Only the class has to agree.
 const CLASSES = [
+  ['declaration collision', /has colliding modules:/, /conflicting native declarations/],
   ['DSP region', /overruns the region/, /overruns the region/],
   ['menu space', /label formatters do not fit|wide dial hook|chooser list of|not free|past the stock zero run|fits neither the clone window|does not fit|do not fit/, /module menu cave exceeds|choosers need more space|does not fit|do not fit/],
   ['Analog BD', /stock effects only/, /stock effects only/],

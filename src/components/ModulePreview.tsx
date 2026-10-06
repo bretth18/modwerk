@@ -13,6 +13,14 @@ function sine(offset: number, amplitude = 30, frequency = 2.2) {
 
 // Hand-drawn art for the catalog modules. A module without an entry shows its presentation/thumbnail.svg.
 const ART: Readonly<Record<string, () => ReactElement>> = {
+  synth: () => <g>
+    <rect className="signal-main" x="24" y="46" width="76" height="44" rx="8" />
+    <rect className="signal-main" x="146" y="46" width="90" height="44" rx="8" />
+    <path className="signal-secondary" d="M100 68H146M236 68H295M60 90v22H16V32h44v14" />
+    <path className="signal-main" d="M32 139c10-28 18 28 28 0s18 28 28 0 18 28 28 0 18 28 28 0 18 28 28 0 18 28 28 0 18 28 28 0 18 28 28 0 18 28 28 0" />
+    <text x="41" y="73">MOD</text><text x="162" y="73">CARRIER</text>
+    <text x="25" y="177">RATIO / INDEX / FEEDBACK</text>
+  </g>,
   'sidechain-compressor': () => <g><g fill="none" stroke="#b5a0ff" strokeLinecap="round" strokeLinejoin="round">
 <path d="M27 61H42V40L48 61H85V40L91 61H128V40L134 61H157" strokeWidth="2.3"/>
 <path d="M157 61H182V91" strokeWidth="1.7" opacity=".5"/>

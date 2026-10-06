@@ -23,7 +23,7 @@ export async function composeOs(original: Uint8Array, ids: readonly string[], pr
     return composeLoggedMidiScenes(original)
   }
   if (!loader) return composeStaticOs(original, ids, profile)
-  if (ids.some(id => ['analog-bassdrum','midi-scenes','usb-audio-out-tracks-main-cue','quantizer'].includes(id))) throw new Error('These modules require the verified loader-free engine.')
+  if (ids.some(id => ['analog-bassdrum','midi-scenes','usb-audio-out-tracks-main-cue','quantizer','synth'].includes(id))) throw new Error('These modules require the verified loader-free engine.')
   const menus = await composeChoosers(original, ids, profile), cores = await recoverStockDsp(original)
   const dsp = await composeDynamicDsp(cores, ids), runtime = await createColdFireRuntime(cores, ids)
   const logging = await installCoreLogger(runtime, original, ids, menus.chooser)

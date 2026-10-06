@@ -3,6 +3,7 @@ import { readFile, readdir } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { requireSynthRelease } from './synth-release.mjs'
 import { requireRetainedEvidence } from './retained-evidence.mjs'
 import { requireModuleQualificationForPublication } from '../src/catalog/module-contract.ts'
 import { compareModuleVersions } from '../src/catalog/versions.ts'
@@ -76,6 +77,7 @@ export async function requireFolderQualification(folder, document, baseline, wai
     await requireModuleDocumentation(folder,document)
     return 'owner-approved-standalone'
   }
+  if(document.id==='synth'&&document.version==='0.1.1-experimental'&&declaration?.approvedOn==='2026-10-06') return requireSynthRelease(options.root??fileURLToPath(new URL('../',import.meta.url)),folder,document,moduleNativeSourceSha256)
   const waiver=waivers.get(document.id)
   if(waiver?.version===document.version&&declaration) {
     if(declaration.moduleVersion!==document.version||declaration.sourceSha256!==waiver.sourceSha256||await moduleNativeSourceSha256(folder,document)!==waiver.sourceSha256||await moduleFolderSha256(folder)!==waiver.folderSha256) throw new Error(document.id+': owner waiver does not cover this exact source and complete module folder')

@@ -104,3 +104,5 @@ React, React DOM and Scheduler used by the browser UI retain their MIT notice
 (Meta Platforms, Inc. and affiliates) in the shared bundle. The notice check
 compares all three installed runtime licences so dependency updates cannot
 silently change the terms being distributed.
+
+FM Synth documented draft: `sdk/octabam/modules/synth/upstream` retains Tim Hastie’s FM Synth and matching Scale Quantizer sources (MIT, full author notice retained) at `timhastie/octatrick-modules@525f4b19b04dc3ba3f3bae3b25abbf48df34a10a`. Sam Banks’ wrapper documentation/licence is pinned to `sambanks/octabam@949f3be15eae5d3d16a7682b9e3218d42f6c1284`. The import inventory records adapted hashes, removed stock byte expectations and authored dedicated-machine transport. This draft is not a released module or qualification exemption.

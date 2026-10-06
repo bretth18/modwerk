@@ -19,6 +19,13 @@ export function selectionConflicts(ids: readonly string[], keepStockFx2 = false)
       moduleIds: modules.map(module => module.id),
       fixes: [{ label: 'Keep MIDI Scenes', removeIds: companions.map(module => module.id) }, { label: 'Remove MIDI Scenes', removeIds: ['midi-scenes'] }] })
   }
+  if (selected.has('synth')) {
+    const companions = modules.filter(module => ['analog-bassdrum', 'quantizer'].includes(module.id))
+    if (companions.length) conflicts.push({ id: 'synth-machine-conflict', title: 'Choose FM Synth or overlapping machine modules',
+      description: 'FM Synth bundles Scale Quantizer and uses the machine chooser hooks. It cannot run alongside ' + companions.map(module => module.name).join(', ') + '.',
+      moduleIds: ['synth', ...companions.map(module => module.id)],
+      fixes: [{ label: 'Keep FM Synth', removeIds: companions.map(module => module.id) }, { label: 'Remove FM Synth', removeIds: ['synth'] }] })
+  }
   const keepEffectsRemoves = ['analog-bassdrum', ...(crowdedMenuIds.every(id => selected.has(id)) ? ['euclid'] : [])]
   if (selected.has('analog-bassdrum') && analogBdBlockers.length) conflicts.push({
     id: 'analog-bd-custom-dsp', title: 'Choose Analog BD or custom effects',

@@ -1246,7 +1246,7 @@
       "caveLimit": 1074625596
     }
   ],
-  "sourceCommit": null,
+  "sourceCommit": "5f3e27336c7e6bddfee88b6405e17c8f1fb8a7fd",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
@@ -1260,6 +1260,7 @@
     "midi-scenes": "0.2.4-experimental",
     "usb-audio-out-tracks-main-cue": "0.1.2-experimental",
     "quantizer": "0.1.2-experimental",
+    "synth": "0.1.1-experimental",
     "previewvol": "0.1.2-experimental",
     "cc-map": "0.1.2-experimental",
     "sidechain-compressor": "0.1.1-experimental"

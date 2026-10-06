@@ -22,7 +22,7 @@ export type ModuleQualification = {
 // requires an owner record pinned to the complete, exact module folder.
 export type ModuleReleaseWaiver = {
   moduleVersion: string; sourceSha256: string; imageSha256: string
-  approvedBy: 'repeat98'; approvedOn: '2026-10-02' | '2026-10-03'; reason: string; report: string
+  approvedBy: 'repeat98'; approvedOn: '2026-10-02' | '2026-10-03' | '2026-10-06'; reason: string; report: string
   documentation: ModuleQualification['documentation']
 }
 export const MODULE_CATEGORIES = ['effects', 'playback', 'machines', 'scenes', 'midi-usb'] as const
@@ -92,7 +92,7 @@ function qualificationDocumentation(value: unknown, path: string): ModuleQualifi
 function releaseWaiver(value: unknown): ModuleReleaseWaiver {
   const path='tests.releaseWaiver', q=object(value,path,['moduleVersion','sourceSha256','imageSha256','approvedBy','approvedOn','reason','report','documentation'])
   const moduleVersion=text(q.moduleVersion,path+'.moduleVersion',80); compareModuleVersions(moduleVersion,moduleVersion)
-  return {moduleVersion,sourceSha256:sha256(q.sourceSha256,path+'.sourceSha256'),imageSha256:sha256(q.imageSha256,path+'.imageSha256'),approvedBy:enumeration(q.approvedBy,path+'.approvedBy',['repeat98']),approvedOn:enumeration(q.approvedOn,path+'.approvedOn',['2026-10-02','2026-10-03']),reason:text(q.reason,path+'.reason'),report:qualificationReport(q.report,path+'.report'),documentation:qualificationDocumentation(q.documentation,path)}
+  return {moduleVersion,sourceSha256:sha256(q.sourceSha256,path+'.sourceSha256'),imageSha256:sha256(q.imageSha256,path+'.imageSha256'),approvedBy:enumeration(q.approvedBy,path+'.approvedBy',['repeat98']),approvedOn:enumeration(q.approvedOn,path+'.approvedOn',['2026-10-02','2026-10-03','2026-10-06']),reason:text(q.reason,path+'.reason'),report:qualificationReport(q.report,path+'.report'),documentation:qualificationDocumentation(q.documentation,path)}
 }
 function qualification(value: unknown): ModuleQualification {
   const path='tests.qualification', q=object(value,path,['moduleVersion','sourceSha256','imageSha256','cycles','memory','hardware','documentation'])
