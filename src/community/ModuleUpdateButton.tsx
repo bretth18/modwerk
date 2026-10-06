@@ -8,9 +8,10 @@ import type { ModuleUpdateSubscription } from './module-release-contract'
 
 export function ModuleUpdateButton({ id }: { id: string }) {
   const { session, loading } = useCommunity()
-  if (loading) return <button className="button button-quiet" disabled><Icon name="bell" size={16} />Get update notifications</button>
-  if (!session.user) return <a className="button button-quiet" href={accountHref('login', communityModule(id)?.href.slice(1))}><Icon name="bell" size={16} />Get update notifications</a>
-  if (!session.user.verified) return <a className="button button-quiet" href="#account"><Icon name="bell" size={16} />Verify email to follow updates</a>
+  // Every state renders the same block wrapper, so the button does not sit beside "Add to configuration" first and drop below it once the session arrives.
+  if (loading) return <div className="module-update-subscription"><button className="button button-quiet" disabled><Icon name="bell" size={16} />Get update notifications</button></div>
+  if (!session.user) return <div className="module-update-subscription"><a className="button button-quiet" href={accountHref('login', communityModule(id)?.href.slice(1))}><Icon name="bell" size={16} />Get update notifications</a></div>
+  if (!session.user.verified) return <div className="module-update-subscription"><a className="button button-quiet" href="#account"><Icon name="bell" size={16} />Verify email to follow updates</a></div>
   return <Subscription key={id + ':' + session.user.id} id={id} />
 }
 
