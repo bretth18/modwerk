@@ -2,25 +2,40 @@ name: Module PR checks
 on:
   pull_request:
     branches: [main, 'modwerk/**', 'codex/modwerk-*']
-    # Skip the module/SDK checks when a PR only touches the frontend. A PR that
-    # also touches anything outside this list still runs them.
-    paths-ignore:
-      - 'src/components/**'
-      - 'src/community/**'
-      - 'src/hooks/**'
-      - 'src/legal/**'
-      - 'src/App.tsx'
-      - 'src/main.tsx'
-      - 'src/styles.css'
-      - 'src/**/*.css'
-      - 'public/**'
-      - 'index.html'
 permissions:
   contents: read
 concurrency:
   group: module-pr-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 jobs:
+  # Every PR gets the quick check below (lint, tests, types, build). Only a PR that changes module source, the module
+  # build or the committed packages also gets the Docker compile, and only one that touches module folders or their
+  # path handling gets the Windows runner, which is the slowest and the most often queued. Skipped jobs count as passing.
+  scope:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      modules: ${{ steps.scope.outputs.modules }}
+      windows: ${{ steps.scope.outputs.windows }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - id: scope
+        env:
+          OCTAMOD_PR_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git cat-file -e "$OCTAMOD_PR_BASE^{commit}"
+          # The same module inputs the release uses to decide whether to rebuild (pages.yml), plus this workflow.
+          modules=(sdk scripts/build-module-packages.py scripts/build-utility-packages.py scripts/build-modules-isolated.sh
+            scripts/import-module-build.mjs scripts/stamp-module-build.mjs scripts/module-source.mjs scripts/license-notices.mjs
+            scripts/licenses.mjs src/engine/assets src/release .github/workflows/module-pr.yml)
+          windows=("${modules[@]}" src/catalog/module-folder.ts src/catalog/module-folder.test.ts scripts/modules.mjs scripts/module-qualification.mjs)
+          changed() { if git diff --quiet "$OCTAMOD_PR_BASE" HEAD -- "$@"; then echo false; else echo true; fi; }
+          echo "modules=$(changed "${modules[@]}")" >> "$GITHUB_OUTPUT"
+          echo "windows=$(changed "${windows[@]}")" >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
   module-contract:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -71,6 +86,8 @@ jobs:
       # The owner verifies actual measurement/hardware evidence before merge.
       # Metadata checks never execute submitted Python or run firmware gates.
   module-paths-windows:
+    needs: scope
+    if: needs.scope.outputs.windows == 'true'
     runs-on: windows-2025
     timeout-minutes: 10
     steps:
@@ -139,6 +156,8 @@ jobs:
           retention-days: 14
           if-no-files-found: error
   octatrack-source:
+    needs: scope
+    if: needs.scope.outputs.modules == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     permissions:

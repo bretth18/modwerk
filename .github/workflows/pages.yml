@@ -124,7 +124,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           OCTAMOD_APPROVER_ID: ${{ vars.MODULE_APPROVER_GITHUB_ID }}
-      - run: npm run check
+      # The pull request already ran lint and every test (module-pr.yml). A release re-verifies what must hold at release
+      # time (generated files, licences, machine and module records, source integrity), then type-checks and bundles.
+      - run: npm run licenses:check && npm run machines:check && npm run modules:check && npm run elekloader:check && npm run sdk:check
+      - run: npm run build
         env:
           VITE_COMMUNITY_API_URL: ${{ vars.COMMUNITY_API_URL }}
           VITE_REPOSITORY_URL: ${{ github.server_url }}/${{ github.repository }}

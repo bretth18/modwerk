@@ -33,6 +33,12 @@ npm run check                                 # lint, tests, types and the produ
 npm run modules:check -- --base origin/main   # version and publication rules for the folders you changed
 ```
 
+## What CI runs
+
+- **Every pull request:** `npm run check` (lint, tests, types, build), about a minute.
+- **Only a pull request that changes module source, the module build or the committed packages:** the Docker compile that must reproduce the committed packages. Changes to module folders or their path handling also run the Windows check. These are the same inputs the release uses to decide whether to rebuild the modules.
+- **After the merge:** the release verifies the merge approval, re-verifies the generated files, licences and module records, then type-checks and bundles what the pull request already tested. It rebuilds the modules only if module inputs changed.
+
 ## What a finished module contains
 
 Its folder, `sdk/<platform>/modules/<id>/`, holds:
