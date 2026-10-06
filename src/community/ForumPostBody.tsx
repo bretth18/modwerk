@@ -40,7 +40,7 @@ const mentionName = (node: unknown) => { const text = (node as { children?: { va
 // remarkVideos marks the paragraphs that hold a video as data attributes.
 function Paragraph({ children, ...props }: { children?: ReactNode }) {
   const data = props as Record<string, unknown>
-  return typeof data['data-youtube'] === 'string' ? <YouTubeEmbed video={{ id: data['data-youtube'], start: Number(data['data-start']) || 0 }} label={String(data['data-label'] ?? '')} /> : <p>{children}</p>
+  return typeof data['data-youtube'] === 'string' ? <YouTubeEmbed autoload video={{ id: data['data-youtube'], start: Number(data['data-start']) || 0 }} label={String(data['data-label'] ?? '')} /> : <p>{children}</p>
 }
 
 const allowed = ['p','br','strong','em','del','a','code','pre','blockquote','ul','ol','li','h2','h3','hr']

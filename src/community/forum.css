@@ -594,7 +594,7 @@ li[data-status="error"] .forum-media-status { color: #f0a6ad; }
   .forum-shoutbox.is-floating { right: 12px; bottom: calc(16px + env(safe-area-inset-bottom)); width: 360px; max-height: calc(100dvh - 90px); }
 }
 
-/* A YouTube link on its own line becomes a player that loads only when played. */
+/* A YouTube link on its own line becomes the player; in chat it is a card that loads the player when played. */
 .forum-video { margin: 0; max-width: 560px; }
 .forum-post-body > .forum-video:not(:first-child) { margin-top: 16px; }
 .forum-video iframe, .forum-video-play { display: block; width: 100%; aspect-ratio: 16 / 9; border-radius: 10px; }

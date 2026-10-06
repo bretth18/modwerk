@@ -35,23 +35,27 @@ describe('YouTube links', () => {
 })
 
 describe('YouTube videos in posts', () => {
-  it('turns a link on its own line into a player that loads nothing until it is played', () => {
+  it('turns a link on its own line into the normal YouTube player, framed from the privacy-enhanced host only', () => {
     for (const body of [`https://youtu.be/${ID}`, `<https://www.youtube.com/watch?v=${ID}>`, `Listen to this:\n\nhttps://www.youtube.com/watch?v=${ID}&t=30\n\nWhat do you think?`]) {
       const html = render(body)
       expect(html, body).toContain('class="forum-video"')
-      expect(html).toContain('class="forum-video-play"')
-      expect(html).toContain('Loads from YouTube when played')
+      expect(html).toContain(`src="https://www.youtube-nocookie.com/embed/${ID}?rel=0&amp;playsinline=1`)
+      expect(html).toContain('loading="lazy"')
+      expect(html).toMatch(/referrerpolicy="strict-origin-when-cross-origin"/i)
+      expect(html).toMatch(/sandbox="[^"]*allow-scripts/)
       expect(html).toContain(`href="https://www.youtube.com/watch?v=${ID}`)
-      expect(html).not.toMatch(/<iframe|youtube-nocookie|<img/)
+      // A preview, not a playback: nothing starts by itself, and there is no card or image.
+      expect(html).not.toMatch(/autoplay=1|forum-video-play|<img/)
+      expect(html.match(/<iframe/g)).toHaveLength(1)
     }
+    expect(render(`https://youtu.be/${ID}?t=1m30s`)).toContain('&amp;start=90')
     expect(render(`https://youtu.be/${ID}?t=1m30s`)).toContain(`href="https://www.youtube.com/watch?v=${ID}&amp;t=90s"`)
-    expect(render(`Listen to this:\n\nhttps://youtu.be/${ID}\n\nWhat do you think?`)).toMatch(/<p>Listen to this:<\/p>[\s\S]*forum-video[\s\S]*<p>What do you think\?<\/p>/)
+    expect(render(`Listen to this:\n\nhttps://youtu.be/${ID}\n\nWhat do you think?`)).toMatch(/<p>Listen to this:<\/p>[\s\S]*<iframe[\s\S]*<p>What do you think\?<\/p>/)
   })
 
   it('names a labelled video link after its text', () => {
     const html = render(`[Sidechain demo](https://youtu.be/${ID})`)
-    expect(html).toContain('aria-label="Play Sidechain demo from YouTube"')
-    expect(html).toContain('<strong>Sidechain demo</strong>')
+    expect(html).toContain('title="Sidechain demo"')
   })
 
   it('keeps links inside a sentence, a quote or a list as plain links', () => {
@@ -66,10 +70,12 @@ describe('YouTube videos in posts', () => {
 })
 
 describe('YouTube videos in chat', () => {
-  it('shows a player under a message that contains a YouTube link, and nothing otherwise', () => {
+  it('shows a click-to-play card under a message that contains a YouTube link, and nothing otherwise', () => {
     const html = renderToStaticMarkup(createElement(TextVideo, { text: `this one https://youtu.be/${ID}` }))
-    expect(html).toContain('class="forum-video"')
-    expect(html).not.toContain('<iframe')
+    expect(html).toContain('class="forum-video-play"')
+    expect(html).toContain('Loads from YouTube when played')
+    // The chat is read on every forum page, so it asks YouTube for nothing until the member presses play.
+    expect(html).not.toMatch(/<iframe|youtube-nocookie|<img/)
     expect(renderToStaticMarkup(createElement(TextVideo, { text: 'just text' }))).toBe('')
   })
 })
