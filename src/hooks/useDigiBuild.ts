@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { useEffect, useRef, useState } from 'react'
 import { requireBuildAccount } from '../community/member-access'
+import { trackUsage } from '../community/usage'
 import { buildStep, createDigiBuilder, prepareBuild, type Builder } from '../engine/elekloader/digi-build'
 import type { BuilderCheck, BuilderDevice, BuilderMachine, BuilderResult } from '../engine/elekloader/protocol'
 import type { BuildProgress } from '../engine/protocol'
@@ -47,9 +48,11 @@ export function useDigiBuild(machine: BuilderMachine, file: File | undefined, re
     const { enabled, device } = state, request = ++operation.current, builder = client.current!
     let step: BuildProgress = 'composing'
     setView({ phase: 'building', key, enabled, device, log: 'Starting the build…', step })
+    let started = false
     try {
       await requireBuildAccount()
       if(operation.current!==request)return
+      started = true
       const named = await builder.version(version, enabled)
       if (operation.current !== request) return
       if (!named.ok) { setView({ phase: 'failed', key, enabled, device, error: named.error ?? 'Check the OS version.' }); return }
@@ -59,8 +62,12 @@ export function useDigiBuild(machine: BuilderMachine, file: File | undefined, re
       })
       if (operation.current !== request) return
       setView(result.ok ? { phase: 'built', key, enabled, device, moduleIds: [...moduleIds], result } : { phase: 'failed', key, enabled, device, error: result.error, result })
+      trackUsage(result.ok ? 'build_succeeded' : 'build_failed', machine)
     } catch (error) {
-      if (operation.current === request) setView({ phase: 'failed', key, enabled, device, error: message(error, 'The build failed.') })
+      if (operation.current !== request) return
+      setView({ phase: 'failed', key, enabled, device, error: message(error, 'The build failed.') })
+      // A refused sign-in is not a failed build; a rejected OS version name returns above without counting.
+      if (started) trackUsage('build_failed', machine)
     }
   }
   function cancel() {

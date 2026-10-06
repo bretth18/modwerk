@@ -3,7 +3,7 @@ import { accountDayValue, accountInsights, dailyRows, rankedModules, usageCsv, u
 import type { UsageDay, UsageStatistics } from './usage-contract'
 import type { AdminAccounts, AdminModuleInsight } from './admin-insights-contract'
 
-const row = (day: string, visitors: number): UsageDay => ({day,visitors,page_views:visitors*2,configurations:0,builds:0,downloads:0,exports:0})
+const row = (day: string, visitors: number): UsageDay => ({day,visitors,page_views:visitors*2,configurations:0,builds:0,builds_failed:0,downloads:0,exports:0})
 const data: UsageStatistics = {generatedAt:'2026-10-03T12:00:00Z',collectionStarted:'2026-09-29T12:00:00Z',from:'2026-09-27',to:'2026-10-03',days:7,
   rows:[row('2026-09-29',100),row('2026-10-01',12),row('2026-10-02',6),row('2026-10-03',999)]}
 
@@ -34,18 +34,22 @@ describe('admin statistics interpretation',() => {
   })
   it('exports unavailable values as blanks and identifies partial coverage in CSV',() => {
     const csv = usageCsv(data).trimEnd().split('\n')
-    expect(csv[1]).toBe('2026-09-27,uncollected,,,,,,')
-    expect(csv[3]).toBe('2026-09-29,partial,100,200,0,0,0,0')
-    expect(csv[4]).toBe('2026-09-30,complete,0,0,0,0,0,0')
-    expect(csv.at(-1)).toBe('2026-10-03,partial,999,1998,0,0,0,0')
+    expect(csv[1]).toBe('2026-09-27,uncollected,,,,,,,')
+    expect(csv[3]).toBe('2026-09-29,partial,100,200,0,0,0,0,0')
+    expect(csv[4]).toBe('2026-09-30,complete,0,0,0,0,0,0,0')
+    expect(csv.at(-1)).toBe('2026-10-03,partial,999,1998,0,0,0,0,0')
   })
   it('ranks unrated modules last, breaks rating ties by sample size and filters IDs without mutating the source',() => {
-    const module = (title: string, ratingAverage: number|null, ratings: number): AdminModuleInsight => ({moduleId:title.toLowerCase()+'-id',title,available:true,ratingAverage,ratings,downloads:2,likes:0,comments:0,openIssues:0})
+    const module = (title: string, ratingAverage: number|null, ratings: number, downloadsWeek = 0, downloadsPreviousWeek = 0): AdminModuleInsight => ({moduleId:title.toLowerCase()+'-id',title,available:true,ratingAverage,ratings,downloads:2,downloadsWeek,downloadsPreviousWeek,likes:0,comments:0,openIssues:0})
     const modules = [module('Zero',null,0),module('Beta',5,2),module('Alpha',5,1)]
     expect(rankedModules(modules,'ratingAverage','').map(module => module.title)).toEqual(['Beta','Alpha','Zero'])
     expect(rankedModules(modules,'downloads','').map(module => module.title)).toEqual(['Alpha','Beta','Zero'])
     expect(rankedModules(modules,'likes',' BETA-ID ').map(module => module.title)).toEqual(['Beta'])
     expect(modules[0].title).toBe('Zero')
+  })
+  it('ranks this week\'s downloads, breaking ties by growth over the previous week',() => {
+    const module = (title: string, week: number, previous: number): AdminModuleInsight => ({moduleId:title.toLowerCase(),title,available:true,ratingAverage:null,ratings:0,downloads:50,downloadsWeek:week,downloadsPreviousWeek:previous,likes:0,comments:0,openIssues:0})
+    expect(rankedModules([module('Steady',4,4),module('Rising',4,0),module('Top',9,20),module('Quiet',0,3)],'downloadsWeek','').map(module => module.title)).toEqual(['Top','Rising','Steady','Quiet'])
   })
 })
 

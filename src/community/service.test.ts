@@ -30,6 +30,7 @@ async function fixture(){
  db.exec(readFileSync(new URL('../../migrations/0007_guest_only_admin.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0008_private_usage.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0009_module_downloads.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0042_usage_breakdowns.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0011_forum_accounts.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0012_better_auth.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0010_issue_reports.sql',import.meta.url),'utf8'))
@@ -602,4 +603,45 @@ it('retains the first approved addition date when a community module is updated'
  expect((await (await call('/catalog')).json())[0].added_at).toBe('2026-10-01T12:00:00Z')
  db.prepare("UPDATE module_publications SET submission_id='update' WHERE module_id='new-filter'").run()
  expect((await (await call('/catalog')).json())[0]).toMatchObject({ title: 'Version two', reviewed_at: '2026-10-02 12:00:00', added_at: '2026-10-01T12:00:00Z' })
+})
+
+describe('usage breakdowns: failed builds, machines and weekly module trends',()=>{
+ it('counts consented builds, failures and downloads per machine once per event and reports them to administrators',async()=>{
+  const {call,db,admin}=await fixture(),failed={...usageEvent('build_failed'),device:'digitakt'}
+  expect((await call('/usage/events','POST',failed)).status).toBe(200)
+  expect((await call('/usage/events','POST',failed)).status).toBe(200) // A repeated event ID adds nothing, here either.
+  for(const [event,device] of [['build_succeeded','digitakt'],['build_succeeded','octatrack'],['firmware_download_requested','digitone']])expect((await call('/usage/events','POST',{...usageEvent(event),device})).status).toBe(200)
+  expect((await call('/usage/events','POST',usageEvent('build_succeeded'))).status).toBe(200) // Older pages send no machine.
+  // A machine only on builds and downloads, and only one of the three building machines.
+  for(const body of [{...usageEvent(),device:'octatrack'},{...usageEvent('build_succeeded'),device:'syntakt'},{...usageEvent('build_succeeded'),device:1}])expect((await call('/usage/events','POST',body)).status).toBe(400)
+  const today=new Date().toISOString().slice(0,10)
+  expect(db.prepare('SELECT builds,builds_failed,downloads FROM usage_daily WHERE day=?').get(today)).toEqual({builds:3,builds_failed:1,downloads:1})
+  const result=await (await call('/admin/statistics?days=7','GET',undefined,'',undefined,admin)).json()
+  expect(result.rows[0]).toMatchObject({builds:3,builds_failed:1,downloads:1})
+  expect(result.breakdownsStarted).toMatch(/^\d{4}-\d{2}-\d{2}T/)
+  expect(result.devices).toEqual([{device:'octatrack',builds:1,builds_failed:0,downloads:0},{device:'digitakt',builds:1,builds_failed:1,downloads:0},{device:'digitone',builds:0,builds_failed:0,downloads:1}])
+  expect(JSON.stringify(db.prepare('SELECT * FROM usage_device_daily').all())).not.toContain(failed.visitor)
+ })
+ it('accepts a machine on identifier-free counts and keeps daily module counts for weekly trends',async()=>{
+  const {env,db,call,admin}=await fixture()
+  const count=(body:unknown)=>handleCommunity(new Request('https://octamod.test/api/usage/count',{method:'POST',headers:{Origin:env.APP_URL!,'Content-Type':'application/json','CF-Connecting-IP':'192.0.2.7','User-Agent':'Synthetic Browser/1.0'},body:JSON.stringify(body)}),env)
+  for(const body of [{event:'build_failed',device:'octatrack'},{event:'build_succeeded',device:'digitone'},{event:'module_download',moduleId:'miniverb'},{event:'module_download',moduleId:'miniverb'}])expect((await count(body)).status).toBe(200)
+  for(const body of [{event:'page_view',device:'octatrack'},{event:'module_download',moduleId:'miniverb',device:'octatrack'},{event:'build_failed',device:'digitakt-ii'}])expect((await count(body)).status).toBe(400)
+  const today=new Date().toISOString().slice(0,10)
+  expect(db.prepare('SELECT device,builds,builds_failed FROM usage_device_daily ORDER BY device').all()).toEqual([{device:'digitone',builds:1,builds_failed:0},{device:'octatrack',builds:0,builds_failed:1}])
+  expect(db.prepare('SELECT day,module_id,downloads FROM module_downloads_daily').all()).toEqual([{day:today,module_id:'miniverb',downloads:2}])
+  // Last week's requests and the week before read separately; older days are outside both.
+  const ago=(days:number)=>new Date(Date.now()-days*86400000).toISOString().slice(0,10)
+  const daily=db.prepare('INSERT INTO module_downloads_daily(day,module_id,downloads) VALUES(?,?,?)')
+  daily.run(ago(6),'miniverb',3);daily.run(ago(7),'miniverb',4);daily.run(ago(13),'miniverb',1);daily.run(ago(14),'miniverb',50)
+  const insights=await (await call('/admin/insights','GET',undefined,'',undefined,admin)).json()
+  expect(insights.trendsStarted).toMatch(/^\d{4}-\d{2}-\d{2}T/)
+  expect(insights.modules.find((module:{moduleId:string})=>module.moduleId==='miniverb')).toMatchObject({downloads:2,downloadsWeek:5,downloadsPreviousWeek:5})
+  expect(insights.modules.find((module:{moduleId:string})=>module.moduleId==='tapeecho')).toMatchObject({downloadsWeek:0,downloadsPreviousWeek:0})
+  await cleanupUsage(env.DB!)
+  expect(db.prepare('SELECT COUNT(*) AS n FROM module_downloads_daily WHERE day<?').get(ago(89))).toEqual({n:0})
+  db.prepare("INSERT INTO usage_device_daily(day,device,builds) VALUES('2000-01-01','octatrack',1)").run()
+  await cleanupUsage(env.DB!)
+  expect(db.prepare("SELECT COUNT(*) AS n FROM usage_device_daily WHERE day='2000-01-01'").get()).toEqual({n:0})
+ })
 })

@@ -5,6 +5,7 @@ import { usageCsv, usageInsights, usageMetrics } from './statistics-insights'
 import type { UsageMetric } from './statistics-insights'
 import type { UsageStatistics } from './usage-contract'
 import type { AdminInsights } from './admin-insights-contract'
+import { DEVICES_BY_ID } from '../devices/registry'
 
 const format = (value: number) => value.toLocaleString(undefined,{maximumFractionDigits:1})
 const dateLabel = (value: string) => new Date(value+'T00:00:00Z').toLocaleDateString(undefined,{month:'short',day:'numeric',timeZone:'UTC'})
@@ -17,10 +18,15 @@ function Comparison({value}: {value: ReturnType<ReturnType<typeof usageInsights>
     : change === 0 ? 'No change from previous period' : (change>0 ? '+' : '')+format(value.percent)+'% from previous period'}</small>
 }
 
-function UsageDashboard({data}: {data: UsageStatistics}) {
+export function UsageDashboard({data}: {data: UsageStatistics}) {
   const [metric,setMetric] = useState<UsageMetric>('visitors')
   const [selectedDay,setSelectedDay] = useState('')
   const insights = usageInsights(data), covered = !!data.collectionStarted
+  // Failed builds and Digitakt/Digitone builds are counted from the breakdowns' start, so earlier windows cannot be compared.
+  const breakdownsDay = data.breakdownsStarted?.slice(0,10) ?? null
+  const comparable = (key: UsageMetric) => key!=='builds' && key!=='builds_failed' || !!breakdownsDay && !!data.comparison && breakdownsDay < data.comparison.from
+  const devices = data.devices ?? [], attempts = devices.reduce((sum,row) => sum+row.builds+row.builds_failed,0), failed = devices.reduce((sum,row) => sum+row.builds_failed,0)
+  const failureRate = (failures: number, total: number) => total ? format(failures/total*100)+'%' : '—'
   const selected = insights.rows.find(row => row.day===selectedDay)??insights.rows.at(-1)
   const label = usageMetrics.find(([key]) => key===metric)![1]
   const max = Math.max(1,...insights.rows.map(row => row.counts?.[metric]??0))
@@ -41,7 +47,7 @@ function UsageDashboard({data}: {data: UsageStatistics}) {
   return <>
     <dl className="admin-overview statistics-cards">
       <div><dt>Visitors today</dt><dd>{covered ? format(insights.today) : '—'}</dd><small>Estimated unique visitors · today is partial</small></div>
-      {usageMetrics.slice(1).map(([key,title]) => <div key={key}><dt>{title}</dt><dd>{covered ? format(insights.totals[key]) : '—'}</dd><small>Selected period · includes today</small>{covered && <Comparison value={insights.compare(key)}/>}</div>)}
+      {usageMetrics.slice(1).map(([key,title]) => <div key={key}><dt>{title}</dt><dd>{covered ? format(insights.totals[key]) : '—'}</dd><small>Selected period · includes today</small>{covered && <Comparison value={comparable(key) ? insights.compare(key) : null}/>}</div>)}
     </dl>
     {covered ? <>
       <p className="service-note statistics-coverage">{data.from} – {data.to} UTC · Updated {new Date(data.generatedAt).toLocaleTimeString(undefined,{timeZone:'UTC'})} UTC.<br/>{comparisonNote}</p>
@@ -67,6 +73,11 @@ function UsageDashboard({data}: {data: UsageStatistics}) {
           <div><dt>Days with visitors</dt><dd>{insights.completedDays ? insights.activeDays+' / '+insights.completedDays : '—'}</dd><small>Completed days in this period</small></div>
         </dl>
       </div>
+      {breakdownsDay && <div className="statistics-table statistics-device-table" role="region" aria-label="Builds and download requests by machine" tabIndex={0}><table>
+        <caption>By machine · {breakdownsDay > data.from ? 'counted since '+dateLabel(breakdownsDay)+' · ' : ''}build failure rate {failureRate(failed,attempts)}</caption>
+        <thead><tr><th scope="col">Machine</th><th scope="col">Successful builds</th><th scope="col">Failed builds</th><th scope="col">Failure rate</th><th scope="col">Download requests</th></tr></thead>
+        <tbody>{devices.map(row => <tr key={row.device}><th scope="row">{DEVICES_BY_ID[row.device]?.name ?? row.device}</th><td>{format(row.builds)}</td><td>{format(row.builds_failed)}</td><td>{failureRate(row.builds_failed,row.builds+row.builds_failed)}</td><td>{format(row.downloads)}</td></tr>)}</tbody>
+      </table></div>}
       <details className="statistics-daily"><summary>Daily counts and CSV export</summary><button className="button button-quiet" onClick={exportDaily}>Export daily CSV</button><div className="statistics-table" role="region" aria-label="Daily usage counts" tabIndex={0}>
         <table><caption>UTC days · today and the collection start day are partial · — means not collected</caption>
           <thead><tr><th scope="col">Date</th>{usageMetrics.map(([key,title]) => <th scope="col" key={key}>{title}</th>)}</tr></thead>
@@ -77,7 +88,7 @@ function UsageDashboard({data}: {data: UsageStatistics}) {
     <details className="statistics-definitions"><summary>Coverage and metric definitions</summary>
       <p>{data.collectionStarted ? 'Collection began '+new Date(data.collectionStarted).toLocaleString(undefined,{timeZone:'UTC'})+' UTC. ' : ''}Today and the collection start day are incomplete. Missing days after collection began count as zero; earlier days are unavailable. Daily totals are kept for 90 days.</p>
       <p>Counts include every visitor who has not objected or enabled Do Not Track (since 2026-10-05). Without consent, a visitor is one IP address and browser combination per UTC day, so people sharing a network and browser count once, and one person on two devices counts twice. Opted-in browsers count by their own daily identifier. Identifiers rotate daily; adding daily visitors does not give unique people across a period. Average visitors and peak days exclude partial days.</p>
-      <p>A configuration starts when its first module is added, or when a nonempty configuration is imported or duplicated. Builds count only successful completed local builds. Downloads and exports count requests, not saved or flashed files. These are separate event totals, not a linked conversion funnel.</p>
+      <p>A configuration starts when its first module is added, or when a nonempty configuration is imported or duplicated. Successful builds count completed local builds; failed builds count local builds that started and ended in an error, not cancelled builds or sign-in prompts.{breakdownsDay ? ' Since '+dateLabel(breakdownsDay)+', Digitakt and Digitone builds count too (Successful builds covered only the Octatrack before), and failed builds and the machine split are counted from the same day; earlier periods cannot be compared for builds. Requests from browsers that have not reloaded since then may still arrive without a machine.' : ''} Downloads and exports count requests, not saved or flashed files. These are separate event totals, not a linked conversion funnel.</p>
       <p>Offline use, privacy preferences, blocked requests and automated traffic affect coverage. No firmware, configuration contents, guest identity, IP address, user agent or referrer is stored with these usage counts.</p>
     </details>
   </>

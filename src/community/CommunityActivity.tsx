@@ -11,7 +11,7 @@ const plural = (count: number, word: string) => format(count) + ' ' + word + (co
 const duration = (hours: number | null) => hours === null ? '—' : hours < 1 ? format(Math.round(hours * 60)) + ' min' : hours < 48 ? format(hours) + ' h' : format(hours / 24) + ' days'
 const age = (createdAt: string, now: string) => duration((Date.parse(now) - Date.parse(createdAt.includes('T') ? createdAt : createdAt.replace(' ', 'T') + 'Z')) / 3600000)
 
-export const activityMetrics = [['threads', 'New threads'], ['replies', 'Replies and comments'], ['shouts', 'Shoutbox messages'], ['issuesOpened', 'Issues opened'], ['issuesClosed', 'Issues closed']] as const
+const activityMetrics = [['threads', 'New threads'], ['replies', 'Replies and comments'], ['shouts', 'Shoutbox messages'], ['issuesOpened', 'Issues opened'], ['issuesClosed', 'Issues closed']] as const
 export type ActivityMetric = typeof activityMetrics[number][0]
 const sum = (rows: readonly AdminActivityDay[], key: ActivityMetric) => rows.reduce((total, row) => total + row[key], 0)
 

@@ -3,6 +3,9 @@ export type AdminModuleInsight = {
   title: string
   available: boolean
   downloads: number
+  /** Download requests in the last 7 UTC days including today, and in the 7 days before; 0 before daily counting began. */
+  downloadsWeek: number
+  downloadsPreviousWeek: number
   likes: number
   ratings: number
   ratingAverage: number | null
@@ -12,6 +15,8 @@ export type AdminModuleInsight = {
 export type AdminInsights = {
   generatedAt: string
   downloadsStarted: string | null
+  /** When per-day module download counts began, so weekly trends before then are incomplete. */
+  trendsStarted: string | null
   totals: { openIssues: number; closedIssues: number; comments: number; likes: number; ratings: number; downloads: number; published: number; mediaBytes: number }
   issueAges: { underWeek: number; weekToMonth: number; overMonth: number; oldest: string | null }
   modules: AdminModuleInsight[]

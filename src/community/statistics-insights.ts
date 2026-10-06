@@ -3,7 +3,7 @@ import type { AdminAccounts, AdminAccountsDay, AdminModuleInsight } from './admi
 
 export const usageMetrics = [
   ['visitors', 'Daily visitors'], ['page_views', 'Page views'], ['configurations', 'Configurations started'],
-  ['builds', 'Successful builds'], ['downloads', 'Firmware download requests'], ['exports', 'Configuration exports'],
+  ['builds', 'Successful builds'], ['builds_failed', 'Failed builds'], ['downloads', 'Firmware download requests'], ['exports', 'Configuration exports'],
 ] as const
 export type UsageMetric = typeof usageMetrics[number][0]
 
@@ -14,7 +14,7 @@ export function dailyRows(data: UsageStatistics): { day: string; counts: UsageDa
     date.setUTCDate(date.getUTCDate()+index)
     const day = date.toISOString().slice(0,10)
     const counts = !data.collectionStarted || day < data.collectionStarted.slice(0,10) ? null
-      : byDay.get(day)??{day,visitors:0,page_views:0,configurations:0,builds:0,downloads:0,exports:0}
+      : byDay.get(day)??{day,visitors:0,page_views:0,configurations:0,builds:0,builds_failed:0,downloads:0,exports:0}
     return {day,counts}
   })
 }
@@ -35,11 +35,11 @@ export function usageInsights(data: UsageStatistics) {
     activeDays:completed.filter(row => row.visitors>0).length,peak:peak?.visitors ? peak : null,today:collected.find(row => row.day===data.to)?.visitors??0}
 }
 
-export type ModuleInsightSort = 'downloads' | 'likes' | 'ratingAverage' | 'comments' | 'openIssues'
+export type ModuleInsightSort = 'downloads' | 'downloadsWeek' | 'likes' | 'ratingAverage' | 'comments' | 'openIssues'
 export function rankedModules(modules: readonly AdminModuleInsight[], sort: ModuleInsightSort, search: string) {
   const query = search.trim().toLowerCase()
   return modules.filter(module => (module.title+' '+module.moduleId).toLowerCase().includes(query))
-    .sort((a,b) => (b[sort]??-1)-(a[sort]??-1) || (sort==='ratingAverage' ? b.ratings-a.ratings : 0) || a.title.localeCompare(b.title))
+    .sort((a,b) => (b[sort]??-1)-(a[sort]??-1) || (sort==='ratingAverage' ? b.ratings-a.ratings : sort==='downloadsWeek' ? b.downloadsWeek-b.downloadsPreviousWeek-(a.downloadsWeek-a.downloadsPreviousWeek) : 0) || a.title.localeCompare(b.title))
 }
 
 export function usageCsv(data: UsageStatistics) {

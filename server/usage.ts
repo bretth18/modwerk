@@ -3,9 +3,19 @@ import { USAGE_CONSENT_VERSION } from '../src/legal/policy'
 import { boundedBody, HttpError, response } from './security'
 import { throttle } from './auth'
 import { canTrackModuleDownload } from '../src/community/module-downloads'
-import { USAGE_EVENTS, type UsageEvent, type UsageDay } from '../src/community/usage-contract'
+import { DEVICE_EVENTS, USAGE_DEVICES, USAGE_EVENTS, type UsageDevice, type UsageEvent, type UsageDay, type UsageDeviceTotals } from '../src/community/usage-contract'
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/
-const columns: Record<UsageEvent, string> = { page_view:'page_views', configuration_started:'configurations', build_succeeded:'builds', firmware_download_requested:'downloads', configuration_exported:'exports' }
+const columns: Record<UsageEvent, string> = { page_view:'page_views', configuration_started:'configurations', build_succeeded:'builds', build_failed:'builds_failed', firmware_download_requested:'downloads', configuration_exported:'exports' }
+/** Optional machine on builds, failed builds and download requests: one of three fixed names, never anything else. */
+function deviceOf(body: Record<string,unknown>, event: UsageEvent): UsageDevice | null | undefined {
+  if (!('device' in body)) return null
+  return DEVICE_EVENTS.includes(event) && typeof body.device === 'string' && (USAGE_DEVICES as readonly string[]).includes(body.device) ? body.device as UsageDevice : undefined
+}
+/** Adds one to the machine's daily total; `counted` repeats the event's own deduplication condition when there is one. */
+function deviceCount(db: Database, today: string, device: UsageDevice, event: UsageEvent, counted?: { sql: string; values: unknown[] }) {
+  const metric = columns[event] // builds, builds_failed or downloads, from the closed enum.
+  return db.prepare(`INSERT INTO usage_device_daily(day,device,${metric}) SELECT ?,?,1 WHERE ${counted?.sql ?? '1'} ON CONFLICT(day,device) DO UPDATE SET ${metric}=${metric}+1`).bind(today,device,...counted?.values ?? [])
+}
 const day = (date: Date) => date.toISOString().slice(0,10)
 const before = (now: Date, days: number) => day(new Date(now.getTime() - days * 86400000))
 async function privateHash(key: string, purpose: string) {
@@ -22,8 +32,9 @@ export async function recordUsage(request: Request, env: Env, db: Database) {
   let body: Record<string,unknown>
   try { const value: unknown = JSON.parse(new TextDecoder().decode(await boundedBody(request,512))); if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(); body=value as Record<string,unknown> }
   catch(error) { if(error instanceof HttpError)throw error; throw new HttpError(400,'Invalid usage event.') }
-  if (Object.keys(body).sort().join(',') !== 'event,eventId,visitor' || typeof body.event !== 'string' || !USAGE_EVENTS.includes(body.event as UsageEvent) || typeof body.eventId !== 'string' || !uuid.test(body.eventId) || typeof body.visitor !== 'string' || !uuid.test(body.visitor)) throw new HttpError(400,'Invalid usage event.')
-  const now = new Date(), today = day(now), event = body.event as UsageEvent
+  if (!['event,eventId,visitor','device,event,eventId,visitor'].includes(Object.keys(body).sort().join(',')) || typeof body.event !== 'string' || !USAGE_EVENTS.includes(body.event as UsageEvent) || typeof body.eventId !== 'string' || !uuid.test(body.eventId) || typeof body.visitor !== 'string' || !uuid.test(body.visitor)) throw new HttpError(400,'Invalid usage event.')
+  const now = new Date(), today = day(now), event = body.event as UsageEvent, device = deviceOf(body,event)
+  if (device === undefined) throw new HttpError(400,'Invalid usage event.')
   // Purpose separation: backend-only key material never becomes a browser identifier or API response.
   const visitor = await privateHash(secret,today + ':visitor:' + body.visitor), identity = await privateHash(secret,today + ':event:' + body.visitor + ':' + body.eventId)
   await throttle(db,'usage:' + visitor,200,3600)
@@ -32,9 +43,12 @@ export async function recordUsage(request: Request, env: Env, db: Database) {
     db.prepare('INSERT INTO usage_events(day,event_hash) VALUES(?,?) ON CONFLICT DO NOTHING').bind(today,identity),
     db.prepare('INSERT INTO usage_visitors(day,visitor_hash) SELECT ?,? WHERE EXISTS(SELECT 1 FROM usage_events WHERE day=? AND event_hash=? AND counted=0) ON CONFLICT DO NOTHING').bind(today,visitor,today,identity),
     db.prepare(`INSERT INTO usage_daily(day,visitors,${metric}) SELECT ?,(SELECT COUNT(*) FROM usage_visitors WHERE day=? AND visitor_hash=? AND counted=0),1 WHERE EXISTS(SELECT 1 FROM usage_events WHERE day=? AND event_hash=? AND counted=0) ON CONFLICT(day) DO UPDATE SET visitors=visitors+excluded.visitors,${metric}=${metric}+excluded.${metric}`).bind(today,today,visitor,today,identity),
+    // Before the event is marked counted, so a repeated event ID adds nothing here either.
+    ...(device ? [deviceCount(db,today,device,event,{sql:'EXISTS(SELECT 1 FROM usage_events WHERE day=? AND event_hash=? AND counted=0)',values:[today,identity]})] : []),
     db.prepare('UPDATE usage_visitors SET counted=1 WHERE day=? AND visitor_hash=?').bind(today,visitor),
     db.prepare('UPDATE usage_events SET counted=1 WHERE day=? AND event_hash=?').bind(today,identity),
     db.prepare("INSERT INTO usage_meta(key,value) VALUES('collection_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
+    db.prepare("INSERT INTO usage_meta(key,value) VALUES('breakdowns_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
   ])
   return response({ok:true})
 }
@@ -62,13 +76,17 @@ export async function recordAnonymousCount(request: Request, env: Env, db: Datab
   catch(error) { if(error instanceof HttpError)throw error; throw new HttpError(400,'Invalid usage count.') }
   const keys = Object.keys(body).sort().join(',')
   const moduleCount = keys === 'event,moduleId' && body.event === 'module_download' && typeof body.moduleId === 'string' && canTrackModuleDownload(body.moduleId)
-  if (!moduleCount && (keys !== 'event' || typeof body.event !== 'string' || !USAGE_EVENTS.includes(body.event as UsageEvent))) throw new HttpError(400,'Invalid usage count.')
+  if (!moduleCount && (!['event','device,event'].includes(keys) || typeof body.event !== 'string' || !USAGE_EVENTS.includes(body.event as UsageEvent))) throw new HttpError(400,'Invalid usage count.')
+  const device = moduleCount ? null : deviceOf(body,body.event as UsageEvent)
+  if (device === undefined) throw new HttpError(400,'Invalid usage count.')
   const now = new Date(), today = day(now)
   await throttle(db,'usage-count:' + await privateHash(secret,today + ':count-rate:' + (request.headers.get('CF-Connecting-IP') ?? 'local')),300,3600)
   if (moduleCount) {
     await db.batch([
       db.prepare('INSERT INTO module_downloads(module_id,downloads) VALUES(?,1) ON CONFLICT(module_id) DO UPDATE SET downloads=downloads+1').bind(body.moduleId),
+      db.prepare('INSERT INTO module_downloads_daily(day,module_id,downloads) VALUES(?,?,1) ON CONFLICT(day,module_id) DO UPDATE SET downloads=downloads+1').bind(today,body.moduleId),
       db.prepare("INSERT INTO module_download_meta(key,value) VALUES('collection_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
+      db.prepare("INSERT INTO module_download_meta(key,value) VALUES('daily_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
     ])
     return response({ok:true})
   }
@@ -77,8 +95,10 @@ export async function recordAnonymousCount(request: Request, env: Env, db: Datab
   await db.batch([
     db.prepare('INSERT INTO usage_visitors(day,visitor_hash) VALUES(?,?) ON CONFLICT DO NOTHING').bind(today,visitor),
     db.prepare(`INSERT INTO usage_daily(day,visitors,${metric}) VALUES(?,(SELECT COUNT(*) FROM usage_visitors WHERE day=? AND visitor_hash=? AND counted=0),1) ON CONFLICT(day) DO UPDATE SET visitors=visitors+excluded.visitors,${metric}=${metric}+1`).bind(today,today,visitor),
+    ...(device ? [deviceCount(db,today,device,body.event as UsageEvent)] : []),
     db.prepare('UPDATE usage_visitors SET counted=1 WHERE day=? AND visitor_hash=?').bind(today,visitor),
     db.prepare("INSERT INTO usage_meta(key,value) VALUES('collection_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
+    db.prepare("INSERT INTO usage_meta(key,value) VALUES('breakdowns_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
   ])
   return response({ok:true})
 }
@@ -90,6 +110,8 @@ export async function cleanupUsage(db: Database, now = new Date()) {
     db.prepare('DELETE FROM usage_visitors WHERE day<?').bind(before(now,1)),
     db.prepare("DELETE FROM usage_meta WHERE key LIKE 'visitor-salt:%' AND key<?").bind('visitor-salt:' + day(now)),
     db.prepare('DELETE FROM usage_daily WHERE day<?').bind(before(now,89)),
+    db.prepare('DELETE FROM usage_device_daily WHERE day<?').bind(before(now,89)),
+    db.prepare('DELETE FROM module_downloads_daily WHERE day<?').bind(before(now,89)),
     db.prepare('DELETE FROM rate_limits WHERE expires<?').bind(Math.floor(now.getTime()/1000)),
   ])
 }
@@ -100,15 +122,19 @@ export async function usageStatistics(db: Database, days: number, now = new Date
   // Compare equal windows of completed days; today and the first partial collection day are excluded.
   const previousFrom = before(now,2 * (days-1)), previousTo = before(now,days)
   const outsideRetention = previousFrom < before(now,89)
-  const [meta,daily] = await Promise.all([
-    db.prepare("SELECT value FROM usage_meta WHERE key='collection_started'").first<{value:string}>(),
-    db.prepare('SELECT day,visitors,page_views,configurations,builds,downloads,exports FROM usage_daily WHERE day>=? AND day<=? ORDER BY day').bind(outsideRetention?from:previousFrom,to).all<UsageDay>(),
+  const [meta,daily,devices] = await Promise.all([
+    db.prepare("SELECT key,value FROM usage_meta WHERE key IN ('collection_started','breakdowns_started')").all<{key:string;value:string}>(),
+    db.prepare('SELECT day,visitors,page_views,configurations,builds,builds_failed,downloads,exports FROM usage_daily WHERE day>=? AND day<=? ORDER BY day').bind(outsideRetention?from:previousFrom,to).all<UsageDay>(),
+    db.prepare('SELECT device,SUM(builds) AS builds,SUM(builds_failed) AS builds_failed,SUM(downloads) AS downloads FROM usage_device_daily WHERE day>=? AND day<=? GROUP BY device').bind(from,to).all<UsageDeviceTotals>(),
   ])
-  const collectionStarted = meta?.value ?? null
+  const metaValue = (key: string) => meta.results.find(row => row.key===key)?.value ?? null
+  const collectionStarted = metaValue('collection_started'), breakdownsStarted = metaValue('breakdowns_started')
+  const byDevice = new Map(devices.results.map(row => [row.device,row]))
   const rows = daily.results.filter(row=>row.day>=from)
   const unavailableReason = outsideRetention ? 'retention' : !collectionStarted || previousFrom <= collectionStarted.slice(0,10) ? 'collection' : null
   const previousRows = unavailableReason ? [] : daily.results.filter(row=>row.day>=previousFrom&&row.day<=previousTo)
-  return response({generatedAt:now.toISOString(),collectionStarted,from,to,days,rows,comparison:{from:previousFrom,to:previousTo,rows:previousRows,unavailableReason}})
+  return response({generatedAt:now.toISOString(),collectionStarted,from,to,days,rows,comparison:{from:previousFrom,to:previousTo,rows:previousRows,unavailableReason},
+    breakdownsStarted,devices:USAGE_DEVICES.map(device => byDevice.get(device) ?? {device,builds:0,builds_failed:0,downloads:0})})
 }
 
 /** Each request names one build-integrated module; no configuration grouping is stored. */
@@ -129,7 +155,9 @@ export async function recordModuleDownload(request: Request, env: Env, db: Datab
   await db.batch([
     db.prepare('INSERT INTO module_download_events(day,event_hash) VALUES(?,?) ON CONFLICT DO NOTHING').bind(today,identity),
     db.prepare('INSERT INTO module_downloads(module_id,downloads) SELECT ?,1 WHERE EXISTS(SELECT 1 FROM module_download_events WHERE day=? AND event_hash=? AND counted=0) ON CONFLICT(module_id) DO UPDATE SET downloads=downloads+1').bind(body.moduleId,today,identity),
+    db.prepare('INSERT INTO module_downloads_daily(day,module_id,downloads) SELECT ?,?,1 WHERE EXISTS(SELECT 1 FROM module_download_events WHERE day=? AND event_hash=? AND counted=0) ON CONFLICT(day,module_id) DO UPDATE SET downloads=downloads+1').bind(today,body.moduleId,today,identity),
     db.prepare('UPDATE module_download_events SET counted=1 WHERE day=? AND event_hash=?').bind(today,identity),
+    db.prepare("INSERT INTO module_download_meta(key,value) VALUES('daily_started',?) ON CONFLICT DO NOTHING").bind(new Date().toISOString()),
   ])
   return response({ok:true})
 }

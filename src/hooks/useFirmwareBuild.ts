@@ -36,12 +36,19 @@ export function useFirmwareBuild(client: RefObject<FirmwareClient | null>, activ
     if (!memberId || !firmware || !ids.length || !client.current || current.state !== 'valid') return
     const request = ++operation.current
     building.current = true; setView({ key, state: 'building', report: current.report, phase: 'composing' })
+    let started = false
     try {
       await requireBuildAccount()
       if(operation.current!==request)return
+      started = true
       const result = await client.current.build(ids, keepStock, phase => { if (operation.current === request) setView({ key, state: 'building', report: current.report, phase }) })
-      if (operation.current === request) { setView({ key, state: 'built', report: result.report, result: { buffer: result.buffer, sha256: result.sha256 } }); trackUsage('build_succeeded') }
-    } catch (error) { if (operation.current === request) setView({ key, state: 'error', error: error instanceof Error ? error.message : 'Could not prepare this firmware.' }) }
+      if (operation.current === request) { setView({ key, state: 'built', report: result.report, result: { buffer: result.buffer, sha256: result.sha256 } }); trackUsage('build_succeeded', 'octatrack') }
+    } catch (error) {
+      if (operation.current !== request) return
+      setView({ key, state: 'error', error: error instanceof Error ? error.message : 'Could not prepare this firmware.' })
+      // A refused sign-in is not a failed build, and a cancelled build never reaches this point.
+      if (started) trackUsage('build_failed', 'octatrack')
+    }
     finally { if (operation.current === request) building.current = false }
   }
   function cancel() {

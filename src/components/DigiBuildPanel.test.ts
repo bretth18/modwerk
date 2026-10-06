@@ -42,7 +42,7 @@ describe('Digi firmware download statistics', () => {
     expect(mocks.track).not.toHaveBeenCalled()
     download!()
     expect(click).toHaveBeenCalledOnce()
-    expect(mocks.track).toHaveBeenCalledExactlyOnceWith([machine + '-digihealth'])
+    expect(mocks.track).toHaveBeenCalledExactlyOnceWith([machine + '-digihealth'], machine)
   })
 
   it('does not report module downloads while the build is still running', () => {
@@ -56,6 +56,6 @@ describe('Digi firmware download statistics', () => {
     vi.stubGlobal('document', {createElement: () => ({click: vi.fn(), remove: vi.fn()}), body: {append: vi.fn()}})
     vi.stubGlobal('window', {setTimeout: (callback: () => void) => callback()})
     downloadAction('digitone')!()
-    expect(mocks.track).toHaveBeenCalledExactlyOnceWith([])
+    expect(mocks.track).toHaveBeenCalledExactlyOnceWith([], 'digitone')
   })
 })
