@@ -5,7 +5,7 @@ import { COMMUNITY_RULES_VERSION } from '../legal/policy'
 import { testDatabase, testServer } from './test-server'
 import { communityModule } from './modules'
 import { parseModuleReleases, type ModuleRelease } from './module-release-contract'
-import type { NotificationItem } from './notification-contract'
+import type { BellItem } from './notification-contract'
 import { notificationLines } from './notification-text'
 import { recordModuleReleases, syncModuleReleases } from '../../server/module-updates'
 import { sendActivityDigests } from '../../server/activity-mail'
@@ -39,7 +39,7 @@ async function fixture() {
     const login = await server.call('/auth/login', 'POST', { email, password })
     return { id: String(server.db.prepare('SELECT id FROM auth_users WHERE email=?').get(email)!.id), email, session: login.headers.get('X-Octamod-Session')! }
   }
-  const items = async (session: string) => (await (await server.call('/notifications', 'GET', undefined, session)).json()).items as NotificationItem[]
+  const items = async (session: string) => (await (await server.call('/notifications', 'GET', undefined, session)).json()).items as BellItem[]
   const admin = async () => (await (await server.call('/auth/admin', 'POST', { key: 'e'.repeat(64) })).json()).token as string
   const publish = (...releases: ModuleRelease[]) => recordModuleReleases(server.env.DB!, releases)
   const digests = async () => { sent.length = 0; return sendActivityDigests(server.env, server.env.DB!, new Date(Date.now() + 15 * 60000)) }
@@ -146,6 +146,77 @@ describe('module update subscriptions', () => {
     expect((await f.call('/auth/account', 'DELETE', { password, confirm: 'DELETE' }, owner.session)).status).toBe(200)
     expect(f.db.prepare('SELECT COUNT(*) AS count FROM module_update_subscriptions WHERE user_id=?').get(owner.id)!.count).toBe(0)
     expect(f.db.prepare('SELECT COUNT(*) AS count FROM module_update_subscriptions WHERE user_id=?').get(silent.id)!.count).toBe(1)
+  })
+})
+
+describe('new module release announcements', () => {
+  it('does not announce historical modules when the first inventory is interrupted and retried', async () => {
+    const { db, adapter } = testDatabase(); databases.push(db)
+    const batch = adapter.batch.bind(adapter); let calls = 0
+    const interrupted = { ...adapter, batch: async (statements: Parameters<typeof batch>[0]) => {
+      if (++calls === 2) throw new Error('Transient initial inventory failure')
+      return batch(statements)
+    } }
+    await expect(recordModuleReleases(interrupted, [release('miniverb'), release('tapeecho')])).rejects.toThrow('Transient initial inventory failure')
+    expect(db.prepare('SELECT COUNT(*) AS count FROM module_release_inventory').get()!.count).toBe(0)
+    await recordModuleReleases(adapter, [release('miniverb'), release('tapeecho')])
+    expect(db.prepare('SELECT COUNT(*) AS count FROM announcements').get()!.count).toBe(0)
+    await recordModuleReleases(adapter, [release('vector')])
+    expect(db.prepare('SELECT module_id FROM announcements').all()).toEqual([{ module_id: 'vector' }])
+  })
+
+  it('baselines the library, then reaches non-followers through the bell with private read state and no email or push', async () => {
+    const f = await fixture(), one = await f.member('releaseone'), two = await f.member('releasetwo')
+    await f.publish(release('miniverb'), release('tapeecho'))
+    expect(await f.items(one.session)).toEqual([])
+    await f.publish(release('vector', '0.2.3-experimental'), release('synth', '0.1.1-experimental'))
+    const items = await f.items(one.session)
+    expect(items).toHaveLength(2)
+    expect(items.map(item => item.kind)).toEqual(['announcement', 'announcement'])
+    expect(notificationLines(items)).toEqual(expect.arrayContaining([
+      expect.objectContaining({ text: 'Modwerk: VECTOR is now available', href: '#module/vector' }),
+      expect.objectContaining({ text: 'Modwerk: FM Synth is now available', href: '#module/fm-synth' }),
+    ]))
+    expect(await (await f.call('/notifications/unread', 'GET', undefined, two.session)).json()).toEqual({ unread: 2 })
+    await f.call('/notifications', 'PATCH', { ids: [items[0].id] }, one.session)
+    expect((await f.items(one.session)).filter(item => item.seen)).toHaveLength(1)
+    expect((await f.items(two.session)).every(item => !item.seen)).toBe(true)
+    expect(await f.digests()).toEqual({ sent: 0 })
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM notifications').get()!.count).toBe(0)
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM push_deliveries').get()!.count).toBe(0)
+    // New accounts do not receive release history; existing accounts retain their notices.
+    f.db.prepare("UPDATE announcements SET created_at=datetime('now','-1 minute')").run()
+    const late = await f.member('releaselate')
+    expect(await f.items(late.session)).toEqual([])
+  })
+
+  it('announces each module once despite retries, newer versions and reintroduction, including across instruments', async () => {
+    const { db, adapter } = testDatabase(); databases.push(db)
+    await recordModuleReleases(adapter, [release('miniverb')])
+    const modules = [release('vector'), release('digitakt-digihealth'), release('digitone-digihealth')]
+    await recordModuleReleases(adapter, modules); await recordModuleReleases(adapter, modules)
+    await recordModuleReleases(adapter, [release('vector', '11.0.0')])
+    await recordModuleReleases(adapter, [release('vector', '9.0.0')])
+    db.prepare('DELETE FROM module_release_state WHERE module_id=?').run('vector')
+    await recordModuleReleases(adapter, [release('vector', '11.0.0')])
+    expect(db.prepare('SELECT module_id,url FROM announcements ORDER BY module_id').all()).toEqual([
+      { module_id: 'digitakt-digihealth', url: '#digitakt/module/digihealth' },
+      { module_id: 'digitone-digihealth', url: '#digitone/module/digihealth' },
+      { module_id: 'vector', url: '#module/vector' },
+    ])
+  })
+
+  it('retries an interrupted publication without losing the new module announcement or duplicating it', async () => {
+    const { db, adapter } = testDatabase(); databases.push(db)
+    await recordModuleReleases(adapter, [release('miniverb')])
+    const batch = adapter.batch.bind(adapter)
+    const interrupted = { ...adapter, batch: async () => { throw new Error('Transient D1 failure') } }
+    await expect(recordModuleReleases(interrupted, [release('vector')])).rejects.toThrow('Transient D1 failure')
+    expect(db.prepare('SELECT COUNT(*) AS count FROM announcements').get()!.count).toBe(0)
+    await recordModuleReleases({ ...adapter, batch }, [release('vector')])
+    await recordModuleReleases(adapter, [release('vector')])
+    expect(db.prepare('SELECT COUNT(*) AS count FROM announcements').get()!.count).toBe(1)
+    expect(db.prepare('SELECT version FROM module_release_state WHERE module_id=?').get('vector')!.version).toBe('10.0.0')
   })
 })
 

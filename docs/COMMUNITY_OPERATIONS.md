@@ -112,6 +112,8 @@ An announcement is one line in the notification bell of every verified member wh
 
 Merging applies migration 0031 ahead of the Worker deploy, as for every migration; it only adds the `announcements` and `announcement_reads` tables, which the previous Worker ignores. Send from **Admin workspace → Announcements** (administrator session or administrator member account). The key must be new: sending the same key twice is refused, so a double click cannot announce twice. The link may be an app address (`#module/...`) or a `https://modwerk.app/` address; naming a module opens its page. An announcement cannot be edited. **Remove** takes it out of every bell and deletes its read markers. The list shows how many members have read each one.
 
+The hourly release inventory check also announces newly added modules automatically, using the live site’s name and module link. The first inventory only establishes a baseline, so deployment does not announce the historical library. A stable key per module prevents duplicate announcements on retries or reintroduction; ordinary version updates continue to notify followers. Automatic announcements use the same bell, private read state and admin removal controls as operator announcements, and are never mailed.
+
 `announcement_reads` holds only member IDs, announcement IDs and read times. It is included in the self-service data export and listed in the removal checklist above; the announcements themselves contain no personal data. They are retained until removed.
 
 ## New-member welcome operation

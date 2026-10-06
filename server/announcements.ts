@@ -1,8 +1,9 @@
 import type { Database } from './platform'
 import { ADMIN_ACTOR, throttle } from './auth'
-import { HttpError, jsonBody, response } from './security'
+import { digest, HttpError, jsonBody, response } from './security'
 import { communityModule } from '../src/community/modules'
 import type { BellItem } from '../src/community/notification-contract'
+import type { ModuleRelease } from '../src/community/module-release-contract'
 
 /** Bell ids of announcements carry this prefix, so one list and one read call serve both kinds. */
 export const ANNOUNCEMENT_PREFIX = 'announcement-'
@@ -50,7 +51,15 @@ export function announcementLink(value: unknown) {
   throw new HttpError(400, 'Link to a page in the app (#...) or to https://modwerk.app/ only.')
 }
 
-/** Operator-only: list, send and retract announcements. Sending is the only way one is created. */
+/** One bell-only announcement per newly published module, shared by every current member. */
+export async function moduleReleaseAnnouncement(db: Database, release: ModuleRelease) {
+  // Hash the public module id so even the longest inventory ids fit the 64-character key limit.
+  const slug = 'module-release-' + (await digest(release.id)).slice(0, 48)
+  return db.prepare(`INSERT INTO announcements(id,slug,title,body,url,module_id,created_by) VALUES(${newId},?,?,?,?,?,?) ON CONFLICT(slug) DO NOTHING`)
+    .bind(slug, release.name.slice(0, 103) + ' is now available', `${release.name} ${release.version} is now available. Open the module to explore its features and add it to your configuration.`, release.href, release.id, ADMIN_ACTOR)
+}
+
+/** Operator-only: list, send and retract announcements, including automatic module releases. */
 export async function adminAnnouncements(request: Request, db: Database, path: string): Promise<Response | null> {
   if (!path.startsWith('/api/admin/announcements')) return null
   if (path === '/api/admin/announcements' && request.method === 'GET') {

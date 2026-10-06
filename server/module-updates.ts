@@ -4,6 +4,7 @@ import { parseModuleReleases, type ModuleRelease } from '../src/community/module
 import { communityModule } from '../src/community/modules'
 import { needMember, throttle } from './auth'
 import { emailReady } from './email'
+import { moduleReleaseAnnouncement } from './announcements'
 import { HttpError, jsonBody, response } from './security'
 
 /** A new report follows module releases unless its reporter declines this in the form. */
@@ -33,6 +34,8 @@ export async function moduleUpdateRoutes(request: Request, env: Env, db: Databas
 /** Monotonic versions and per-recipient release keys keep retries/concurrent cron runs quiet. */
 export async function recordModuleReleases(db: Database, releases: ModuleRelease[]) {
   let notified = 0
+  // The first live inventory establishes a baseline; it must not announce the whole existing library.
+  const initialized = !!await db.prepare('SELECT 1 AS initialized FROM module_release_inventory WHERE singleton=1').first()
   for (const release of releases) {
     const previous = await db.prepare('SELECT version FROM module_release_state WHERE module_id=?').bind(release.id).first<{ version: string }>()
     if (previous && compareModuleVersions(release.version, previous.version) <= 0) continue
@@ -40,6 +43,7 @@ export async function recordModuleReleases(db: Database, releases: ModuleRelease
     const recipients = followers.filter(member => member.after_version !== null && compareModuleVersions(release.version, member.after_version) > 0)
     const statements = [
       db.prepare('INSERT INTO module_releases(module_id,version,name,href) VALUES(?,?,?,?) ON CONFLICT DO NOTHING').bind(release.id, release.version, release.name, release.href),
+      ...(!previous && initialized ? [await moduleReleaseAnnouncement(db, release)] : []),
       ...recipients.map(member => db.prepare(`INSERT INTO notifications(id,user_id,kind,module_id,module_version,delivery_id) SELECT lower(hex(randomblob(16))),?,'module_update',?,?,? WHERE EXISTS(SELECT 1 FROM module_update_subscriptions WHERE user_id=? AND module_id=? AND after_version=?) ON CONFLICT DO NOTHING`).bind(member.user_id, release.id, release.version, 'module-release:' + release.id + ':' + release.version, member.user_id, release.id, member.after_version)),
       // Do not move a subscriber back from a newer version if an old cached site is served.
       ...followers.filter(member => member.after_version === null || compareModuleVersions(release.version, member.after_version) > 0).map(member => db.prepare('UPDATE module_update_subscriptions SET after_version=? WHERE user_id=? AND module_id=? AND after_version IS ?').bind(release.version, member.user_id, release.id, member.after_version)),
@@ -54,6 +58,7 @@ export async function recordModuleReleases(db: Database, releases: ModuleRelease
     } else await db.batch(statements)
     notified += recipients.length
   }
+  if (releases.length) await db.prepare('INSERT INTO module_release_inventory(singleton) VALUES(1) ON CONFLICT DO NOTHING').run()
   return { checked: releases.length, notified }
 }
 
