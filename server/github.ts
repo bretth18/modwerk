@@ -53,7 +53,7 @@ export function issueMarkdown(issue: MirroredIssue, app?: string) {
   const site = appLink(app, '') ?? 'https://modwerk.app/', details = appLink(app, 'developer/report/' + issue.id), { device, version, steps, expected, actual } = issue.details
   return ['Reported on [Modwerk](' + site + ') for **`' + issue.module_id + '`** by ' + (profile ? '[' + reporter + '](' + profile + ')' : reporter) + (owners.length ? ' · ' + owners.join(' ') : ''), '',
     '| | |', '| --- | --- |', '| Device | ' + inert(device).replace(/\|/g, '\\|') + ' |', '| Module version | ' + inert(version).replace(/\|/g, '\\|') + ' |', '',
-    '### Steps to reproduce', '', quote(steps), '', '### Expected', '', quote(expected), '', '### Actual', '', quote(actual), '', '---',
+    ...([['Steps to reproduce', steps], ['Expected', expected], ['Actual', actual]] as const).filter(([, text]) => text).flatMap(([heading, text]) => ['### ' + heading, '', quote(text), '']), '---',
     '_The reporter’s configuration, build fingerprint and device log are private' + (details ? '. Verified maintainers can [open them on Modwerk](' + details + ')' : '') + '. Comments and status changes here are sent to the reporter on Modwerk._',
   ].join('\n').slice(0, BODY_LIMIT)
 }

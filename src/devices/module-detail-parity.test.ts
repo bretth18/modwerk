@@ -86,11 +86,11 @@ describe('module detail parity across machines', () => {
       for (const name of ['title', 'model', 'flash', 'os', 'moduleVersion', 'steps', 'expected', 'actual']) {
         expect(html).toContain('name="' + name + '"')
       }
-      expect(html).toContain('1. Describe the problem')
-      expect(html).toContain('2. Check your configuration')
-      expect(html).toContain('Post bug report')
+      expect(html).toContain('What happened?')
+      expect(html).toContain('Steps to reproduce <span>Optional')
+      expect(html).toContain('Post report')
       expect(html).toContain('href="#forum?category=issues"')
-      expect(html).toContain('configuration and build fingerprint stay private')
+      expect(html).toContain('configuration, build fingerprint and any attached log stay private')
       const version = digiModuleDocument(mod).version
       expect(html).toContain('name="moduleVersion" value="' + version + '"')
       const osOptions = html.match(/<select name="os"[^>]*>([\s\S]*?)<\/select>/)![1]

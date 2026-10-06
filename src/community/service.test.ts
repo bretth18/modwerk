@@ -143,11 +143,10 @@ describe('community access and review',()=>{
   expect((await call('/admin/issues/'+inbox[0].id,'PATCH',{status:'closed'},'',undefined,admin)).status).toBe(200)
   expect((await (await call('/issues/mine','GET',undefined,reporter)).json())[0].status).toBe('closed')
  })
- it('requires OCTAMOD.LOG or a reason that fits the report, and accepts only the log format',async()=>{
+ it('accepts reports without a log or reproduction steps, checks a given reason, and accepts only the log format',async()=>{
   const {call,db,tokens}=await fixture()
   const status=async(body:Record<string,unknown>)=>(await call('/modules/spectrum/issues','POST',body,'octamod_session='+tokens.other)).status
   expect(await status({title:'Old form',body:'Free text'})).toBe(400)
-  expect(await status(issue({log:undefined}))).toBe(400)
   expect(await status(issue({log:undefined,logMissing:{reason:'other',note:'no'}}))).toBe(400)
   expect(await status(issue({log:undefined,logMissing:{reason:'not-flashed'}}))).toBe(400)
   expect(await status(issue({log:'\u007fELF firmware'}))).toBe(400)
@@ -155,10 +154,13 @@ describe('community access and review',()=>{
   expect(await status(issue({log:42}))).toBe(400)
   expect(await status(issue({context:{...issueContext,build:'not-a-hash'}}))).toBe(400)
   expect(await status(issue({context:{...issueContext,model:'mk3'}}))).toBe(400)
-  expect(await status(issue({steps:''}))).toBe(400)
+  expect(await status(issue({actual:''}))).toBe(400)
+  expect(await status(issue({title:' '}))).toBe(400)
   expect(db.prepare('SELECT COUNT(*) AS count FROM issues').get()).toEqual({count:0})
   expect(await status(issue({log:undefined,logMissing:{reason:'device-does-not-boot',note:'Blank screen'}}))).toBe(201)
   expect(db.prepare('SELECT log_missing,log_missing_note FROM issues').get()).toEqual({log_missing:'device-does-not-boot',log_missing_note:'Blank screen'})
+  expect(await status(issue({log:undefined,steps:undefined,expected:''}))).toBe(201)
+  expect(db.prepare('SELECT log_missing,body FROM issues ORDER BY rowid DESC LIMIT 1').get()).toEqual({log_missing:null,body:expect.stringMatching(/^Actual:\n/)})
   expect(db.prepare('SELECT COUNT(*) AS count FROM issue_logs').get()).toEqual({count:0})
  })
  it('keeps private reports off GitHub, tracks public ones as GitHub issues and relays GitHub activity to the reporter',async()=>{

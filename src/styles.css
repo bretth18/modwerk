@@ -224,6 +224,7 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .detail-tabs { display: flex; gap: 27px; border-bottom: 1px solid var(--line); margin-bottom: 26px; }
 .detail-tabs button { background: transparent; border: 0; border-bottom: 2px solid transparent; padding: 0 0 13px; color: #9393a4; font-size: 13px; display: flex; align-items: center; gap: 7px; }
 .detail-tabs button[aria-selected="true"] { color: #d4d7ff; border-color: #9ca5ff; }
+.tab-count { min-width: 18px; padding: 0 6px; border-radius: 9px; background: #2a2a33; color: #b9b9cc; font-size: 11px; line-height: 17px; text-align: center; }
 .tab-count { background: #2b2b33; border: 1px solid #3c3c46; color: #9e9eae; border-radius: 4px; padding: 1px 5px; font-size: 12px; }
 .overview-grid { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 35px; }
 .detail-section { padding: 0 0 26px; }
@@ -695,8 +696,11 @@ h1 { font-size: 28px; }
 .issue-report button { align-self: flex-start; }
 .issue-report select { width: 100%; color: #e5e5ef; border: 1px solid #4a4a57; border-radius: 6px; background: #1e1e24; padding: 10px 12px; font-size: 14px; }
 .issue-report-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.issue-report fieldset { padding: 16px; gap: 12px; }
-.issue-report fieldset .service-note { margin: 0; }
+.issue-report-row-3 { grid-template-columns: repeat(3, 1fr); }
+.issue-report-more { border: 1px solid var(--line); border-radius: 6px; padding: 11px 14px; min-width: 0; }
+.issue-report-more > * + * { margin-top: 12px; }
+.issue-report-more > summary span { margin-left: 8px; }
+.issue-report .service-note, .issue-report .file-error { margin: 0; }
 .issue-report-steps { margin: 0; padding-left: 20px; color: #c9c9d6; font-size: 13px; line-height: 1.7; display: flex; flex-direction: column; gap: 6px; }
 .issue-report kbd { font: inherit; font-size: 11px; border: 1px solid #4a4a57; border-radius: 4px; padding: 1px 5px; color: #dddde9; }
 .issue-report .community-form label.issue-report-escape { flex-direction: row; align-items: center; gap: 9px; }
@@ -1210,10 +1214,6 @@ h1 { font-size: 28px; }
   .module-set-art .signal-art { height: 100%; }
   .contribution-start p { font-size: 14px; }
 }
-.issue-report .community-form > fieldset { display: flex; flex-direction: column; min-width: 0; }
-.issue-report .community-form legend { font-size: 14px; font-weight: 600; padding: 0 6px; }
-.issue-report-help summary { margin-bottom: 12px; }
-.issue-report-help .service-note { padding-top: 12px; }
 .issue-report-log-preview { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
 .issue-report-log-preview pre { max-height: 260px; overflow: auto; padding: 12px; background: #111115; font-size: 11px; border: 1px solid var(--line); border-radius: 6px; }
 .issue-report-success { max-width: 620px; padding: 20px 0 6px; color: #d1cede; font-size: 14px; line-height: 1.7; }

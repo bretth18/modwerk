@@ -52,9 +52,16 @@ describe('discussion drafts in issue reports', () => {
     expect(html).toContain('value="Unexpected control change"')
     expect(html).toContain('name="actual"')
     expect(html).toContain(body + '</textarea>')
-    expect(html).toContain('Your copied discussion draft')
+    expect(html).not.toContain('Your copied discussion draft')
     expect(html).toContain('Steps to reproduce')
     expect(html).toContain('Expected result')
+  })
+
+  it.each(['miniverb', 'digitakt-digihealth'])('asks %s reporters only for a title, what happened and the device', id => {
+    const html = renderReport(id)
+    expect(html.match(/<(?:input|textarea)[^>]*>/g)?.filter(tag => tag.includes(' required')).map(tag => tag.match(/name="(\w+)"/)?.[1])).toEqual(['title', 'actual'])
+    expect(html).toMatch(/<details class="issue-report-more"><summary>Steps to reproduce <span>Optional/)
+    expect(html).not.toContain('I can’t attach')
   })
 
   it('keeps long drafts intact for review instead of silently cutting them to the result limit', () => {
@@ -62,13 +69,15 @@ describe('discussion drafts in issue reports', () => {
     saveDiscussionIssueDraft('miniverb', { title: '', body })
     const html = renderReport('miniverb')
     expect(html).toContain(body + '</textarea>')
-    expect(html).toContain('under 2,000 characters')
+    expect(html).toContain('Your copied discussion draft')
+    expect(html).toContain('2,000 characters')
   })
 
   it('makes reporting the recommended modal action while allowing editing or a confirmed discussion', () => {
     const html = renderToStaticMarkup(createElement(ModuleDiscussionDialog, { onClose: () => {}, onPost: () => {}, onReportIssue: () => {} }))
-    expect(html).toContain('This discussion is not for bug reports')
+    expect(html).toContain('Is something not working right?')
     expect(html).toContain('Your written draft will be copied into the issue report.')
+    expect(html).toContain('everything else is optional')
     expect(html).toContain('class="button button-danger">Report an issue</button>')
     expect(html).toContain('Post a discussion instead')
     expect(html).toContain('Keep editing')

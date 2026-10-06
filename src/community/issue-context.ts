@@ -2,7 +2,7 @@
  * Structured issue reports, shared by the report form and the Worker so both
  * enforce the same rules. With this many modules and configurations a free-text
  * report rarely reproduces; every report therefore carries the configuration it
- * was built from and, when the device can write one, an OCTAMOD.LOG.
+ * was built from. An OCTAMOD.LOG is optional so small problems stay quick to report.
  */
 export const OT_MODELS = { mk2: 'Octatrack MKII', mk1: 'Octatrack MKI', unknown: 'Not sure' } as const
 export const FLASH_STATES = { flashed: 'Running an Octamod build', 'not-flashed': 'Not flashed yet (website/build problem)', stock: 'Back on the stock OS' } as const

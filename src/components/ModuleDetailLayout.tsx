@@ -14,6 +14,7 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
 }) {
   const [tab, setTab] = useState<DetailTab>('Overview')
   const [issueOpenRequest, setIssueOpenRequest] = useState(0)
+  const [discussionCount, setDiscussionCount] = useState<number | null>(null)
   function showDiscussion() {
     setTab('Discussion')
     document.getElementById('tab-Discussion')?.focus()
@@ -46,16 +47,16 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
         if (event.key === 'Home') next = tabs[0]
         if (event.key === 'End') next = tabs[2]
         if (next) { event.preventDefault(); setTab(next); document.getElementById('tab-' + next)?.focus() }
-      }}>{value}</button>)}
+      }}>{value}{value === 'Discussion' && discussionCount !== null && <span className="tab-count">{discussionCount}</span>}</button>)}
     </div>
     <div id="detail-content" role="tabpanel" aria-labelledby={'tab-' + tab} tabIndex={0}>
       {tab === 'Overview' && <>
-        <ModuleCommunity id={id} mode="overview" onDiscuss={showDiscussion} />
+        <ModuleCommunity id={id} mode="overview" onDiscuss={showDiscussion} onDiscussionCount={setDiscussionCount} />
         <div className="module-guide">{guide}</div>
         {issueReport(issueOpenRequest)}
       </>}
-      {tab === 'Media' && <ModuleCommunity id={id} mode="media" />}
-      {tab === 'Discussion' && <ModuleCommunity id={id} mode="discussion" onReportIssue={showIssueReport} />}
+      {tab === 'Media' && <ModuleCommunity id={id} mode="media" onDiscussionCount={setDiscussionCount} />}
+      {tab === 'Discussion' && <ModuleCommunity id={id} mode="discussion" onReportIssue={showIssueReport} onDiscussionCount={setDiscussionCount} />}
     </div>
   </div>
 }

@@ -4,6 +4,10 @@ export function required(value: unknown, label: string, max = 2000): string {
   if (typeof value !== 'string' || !value.trim() || value.trim().length > max) throw new HttpError(400, label + ' is required (maximum ' + max + ' characters).')
   return value.trim()
 }
+/** Like `required`, but an absent or blank value is allowed and becomes ''. */
+export function optional(value: unknown, label: string, max = 2000): string {
+  return value === undefined || value === null || (typeof value === 'string' && !value.trim()) ? '' : required(value, label, max)
+}
 export function httpsUrl(value: unknown, label: string, githubOnly = false) {
   const text = required(value, label, 1000)
   let url: URL

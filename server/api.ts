@@ -20,7 +20,7 @@ import type { Database, Env, Media, User } from './platform'
 import { withPrivacyDeadline } from './privacy-deadline'
 import { reviewAccountRequest } from './account-requests'
 import { ADMIN_ACTOR, adminActor, authentication, currentUser, needMember, throttle } from './auth'
-import { boundedBody, checkOrigin, HttpError, jsonBody, required, response } from './security'
+import { boundedBody, checkOrigin, HttpError, jsonBody, optional, required, response } from './security'
 import { MODULES } from '../src/catalog/modules'
 import { handleGithubWebhook, githubConfig, mirrorIssue, setGithubIssueState } from './github'
 import { IssueInputError, validateIssueContext, validateLogMissing } from '../src/community/issue-context'
@@ -94,13 +94,14 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
           (SELECT COUNT(*) FROM likes WHERE module_id=requested.module_id) AS likes,
           EXISTS(SELECT 1 FROM likes WHERE module_id=requested.module_id AND user_id=requested.user_id) AS liked,
           COALESCE((SELECT downloads FROM module_downloads WHERE module_id=requested.module_id),0) AS downloads,
-          (SELECT value FROM module_download_meta WHERE key='collection_started') AS downloadsStarted
-          FROM requested`).bind(match[1],user?.id??null).first<{average:number|null;count:number;ownRating:number;likes:number;liked:number;downloads:number;downloadsStarted:string|null}>(),
+          (SELECT value FROM module_download_meta WHERE key='collection_started') AS downloadsStarted,
+          (SELECT COUNT(*) FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id WHERE t.id='module-' || requested.module_id AND p.id<>t.id AND p.hidden=0 AND t.hidden=0) AS discussionCount
+          FROM requested`).bind(match[1],user?.id??null).first<{average:number|null;count:number;ownRating:number;likes:number;liked:number;downloads:number;downloadsStarted:string|null;discussionCount:number}>(),
         db.prepare("SELECT m.id,m.kind,m.caption,m.capture_type FROM media m JOIN module_publications p ON p.submission_id=m.submission_id WHERE p.module_id=?").bind(match[1]).all(),
       ])
       const comments = posts.results.map(({locked,...comment}) => ({...comment,user_id:undefined,canDelete:admin || !locked && comment.user_id === user?.id}))
       if(!statistics)throw new Error('Module statistics missing.')
-      return response({comments,ratings:{average:statistics.average,count:statistics.count},ownRating:statistics.ownRating,media:media.results,likes:statistics.likes,liked:!!statistics.liked,downloads:statistics.downloads,downloadsStarted:statistics.downloadsStarted})
+      return response({comments,ratings:{average:statistics.average,count:statistics.count},ownRating:statistics.ownRating,media:media.results,likes:statistics.likes,liked:!!statistics.liked,downloads:statistics.downloads,downloadsStarted:statistics.downloadsStarted,discussionCount:statistics.discussionCount})
     }
     if ((match = path.match(/^\/api\/modules\/([a-z0-9-]+)\/(comments|rating|like)$/)) && request.method === 'POST') {
       await knownModule(db,match[1])
@@ -144,7 +145,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if(body.notifyUpdates!==undefined&&typeof body.notifyUpdates!=='boolean')throw new HttpError(400,'Choose whether to follow module updates.')
       if(body.visibility!==undefined&&body.visibility!=='forum'&&body.visibility!=='private')throw new HttpError(400,'Choose a public forum report or a private report.')
       const publicReport=body.visibility==='forum'
-      const title=required(body.title,'Issue title',160),steps=required(body.steps,'Steps to reproduce',3000),expected=required(body.expected,'Expected result',1000),actual=required(body.actual,'Actual result',2000)
+      const title=required(body.title,'Issue title',160),steps=optional(body.steps,'Steps to reproduce',3000),expected=optional(body.expected,'Expected result',1000),actual=required(body.actual,'What happened',2000)
       const module=communityModule(match[1]),digi=module?.machine==='digitakt'||module?.machine==='digitone'
       const context=issueInput(()=>digi?validateDigiIssueContext(body.context,module.machine):validateIssueContext(body.context))
       if(!digi && body.context && typeof body.context==='object' && (body.context as Record<string,unknown>).machine && (body.context as Record<string,unknown>).machine!=='octatrack')throw new HttpError(400,'The report belongs to a different machine.')
@@ -153,7 +154,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if(attached&&typeof body.log!=='string')throw new HttpError(400,'Attach OCTAMOD.LOG as text.')
       if(digi && (body.log!==undefined||body.logMissing!==undefined))throw new HttpError(400,'This machine accepts structured reports only. Files and firmware are not accepted.')
       const log=attached?issueInput(()=>parseOtLog(body.log as string)):null
-      const missing=digi||log?null:issueInput(()=>validateLogMissing(body.logMissing,context as import('../src/community/issue-context').OctatrackIssueContext))
+      // The log is optional; older clients may still say why there is none.
+      const missing=digi||log||body.logMissing===undefined?null:issueInput(()=>validateLogMissing(body.logMissing,context as import('../src/community/issue-context').OctatrackIssueContext))
       await throttle(db,'issue-ip:'+(request.headers.get('CF-Connecting-IP')??'local'),10)
       // Bound stored reports across the site as well as per IP and member.
       await throttle(db,'issue-global',60)
@@ -163,7 +165,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       const author=module?.author??core?.author??recipe?.author??published?.github_login
       if(!author)throw new HttpError(400,'No author is registered for this module.')
       await throttle(db,'issue-member:'+owner.id,10)
-      const id=crypto.randomUUID(),details='Steps to reproduce:\n'+steps+'\n\nExpected:\n'+expected+'\n\nActual:\n'+actual
+      const id=crypto.randomUUID(),details=[['Steps to reproduce',steps],['Expected',expected],['Actual',actual]].filter(([,text])=>text).map(([label,text])=>label+':\n'+text).join('\n\n')
       const publicDetails=publicReport?publicBugDetails(match[1],context,log,steps,expected,actual):null
       // With GitHub configured, a public report becomes a GitHub issue and gets no forum thread of its own.
       const github=!!publicReport&&!!githubConfig(env)

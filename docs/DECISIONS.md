@@ -199,3 +199,12 @@ Taking an elekloader update was four manual steps, and every catalog change brok
 - **Backups across catalogs.** A backup naming another catalog revision now imports. Its modules are looked up again in the library by id: ones no longer there are left out, and the page lists them and each version that changed. A backup whose modules are all gone is refused. With the current revision an unknown module still means an altered backup, and is refused.
 - **The revision test** compares the catalog with the lock instead of a fixed revision, so a catalog update does not need a test edit.
 
+## 6 October 2026 — Short issue reports
+
+The owner found the report form too long: members posted problems in module discussions instead of using it. This replaces the 3 October requirement for `OCTAMOD.LOG`.
+
+- **Required:** a title, what happened, and the device fields (model, what it is running and, on Digitakt/Digitone, the base OS). Steps to reproduce, the expected result and the log are optional, in collapsed sections.
+- **The configuration** is attached as before and shown as one line.
+- **The Worker** accepts reports without steps, expected result or log. It still validates a `logMissing` reason when an older client sends one.
+- **Wording** speaks of problems that are "not working right", not only bugs, so sound and behaviour complaints are reported too.
+
