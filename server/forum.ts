@@ -10,6 +10,16 @@ import { attachMedia, postAttachments } from './forum-media'
 import { shoutbox } from './shoutbox'
 
 type Thread = {id:string;user_id:string;locked:number;hidden:number;configuration_json:string|null;issue_json:string|null}
+/** `forum_posts.hidden` for a deleted post: hidden like a moderated one, but its text is erased, it is never listed and it cannot be restored. */
+const POST_DELETED=2
+/** Deletes a reply but keeps its row, which notifications and reports refer to: the text is erased, its files are queued for the hourly bucket cleanup and its reports are closed. */
+function deletePost(db:Database,postId:string){return [
+  db.prepare(`UPDATE forum_posts SET body='',hidden=${POST_DELETED},edited_at=NULL WHERE id=? AND hidden<${POST_DELETED}`).bind(postId),
+  db.prepare('UPDATE forum_media SET removed=1 WHERE post_id=?').bind(postId),
+  db.prepare('UPDATE forum_reports SET resolved=1 WHERE post_id=?').bind(postId),
+]}
+/** The first post is the thread itself: deleting it would leave replies without their subject. */
+async function isOpeningPost(db:Database,threadId:string,postId:string){return (await db.prepare('SELECT id FROM forum_posts WHERE thread_id=? ORDER BY created_at,rowid LIMIT 1').bind(threadId).first<{id:string}>())?.id===postId}
 function page(url: URL) { const value = Number(url.searchParams.get('page') ?? 0); if (!Number.isInteger(value) || value < 0 || value > 10000) throw new HttpError(400,'Invalid page.'); return value }
 const threadFields = `t.id,t.title,COALESCE(t.section,t.category) AS category,t.machine,t.module_id,t.status,t.locked,t.pinned,t.created_at,t.updated_at,u.username,u.avatar_id AS avatar,t.user_id='${SYSTEM_AUTHOR}' AS official,(SELECT MAX(COUNT(*)-1,0) FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0) AS replies,(SELECT GROUP_CONCAT(DISTINCT m.kind) FROM forum_media m JOIN forum_posts mp ON mp.id=m.post_id WHERE mp.thread_id=t.id AND m.removed=0 AND mp.hidden=0) AS media_kinds`
 async function threadById(db: Database, id: string, admin: boolean) {
@@ -47,15 +57,25 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     }
     if ((match = path.match(/^\/api\/admin\/forum\/(posts|threads|users|reports|media|shouts|shout-reports|messages|message-reports)\/([a-zA-Z0-9-]+)$/)) && request.method === 'PATCH') {
       const body = await jsonBody(request), reason = required(body.reason,'Moderation reason',1000), target = match[2]
-      const allowed = (match[1] === 'posts' || match[1] === 'shouts' || match[1] === 'messages') ? ['hidden'] : match[1] === 'threads' ? ['locked','pinned','hidden'] : match[1] === 'users' ? ['suspended'] : match[1] === 'media' ? ['removed'] : ['resolved']
+      const allowed = match[1] === 'posts' ? ['hidden','deleted'] : (match[1] === 'shouts' || match[1] === 'messages') ? ['hidden'] : match[1] === 'threads' ? ['locked','pinned','hidden'] : match[1] === 'users' ? ['suspended'] : match[1] === 'media' ? ['removed'] : ['resolved']
       if (typeof body.action !== 'string' || !allowed.includes(body.action)) throw new HttpError(400,'Unknown moderation action.')
       const value = bool(body.value), table = {posts:'forum_posts',threads:'forum_threads',users:'users',reports:'forum_reports',media:'forum_media',shouts:'forum_shouts','shout-reports':'forum_shout_reports',messages:'messages','message-reports':'message_reports'}[match[1]]!
       // The hourly job deletes removed files from the bucket, so removal cannot be undone.
       if (match[1] === 'media' && !value) throw new HttpError(400,'Removed files cannot be restored.')
       if (target === ADMIN_ACTOR || target === SYSTEM_AUTHOR) throw new HttpError(400,'This system account cannot be suspended.')
+      const log = (guard='') => db.prepare(`INSERT INTO forum_moderation(id,actor_id,target,action,reason) SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM ${table} WHERE id=?${guard})`).bind(crypto.randomUUID(),adminId??ADMIN_ACTOR,target,`${body.action}:${value}`,reason,target)
+      if (body.action === 'deleted') {
+        const post = await db.prepare('SELECT thread_id FROM forum_posts WHERE id=? AND hidden<?').bind(target,POST_DELETED).first<{thread_id:string}>()
+        if (!post) throw new HttpError(404,'Item not found.')
+        if (await isOpeningPost(db,post.thread_id,target)) throw new HttpError(409,'The first post of a thread cannot be deleted. Hide or lock the thread instead.')
+        await db.batch([...deletePost(db,target),log()])
+        return response({ok:true})
+      }
+      // A deleted post has no text left to restore.
+      const guard = match[1] === 'posts' ? ` AND hidden<${POST_DELETED}` : ''
       const result = await db.batch([
-        db.prepare(`UPDATE ${table} SET ${body.action}=? WHERE id=?`).bind(value,target),
-        db.prepare(`INSERT INTO forum_moderation(id,actor_id,target,action,reason) SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM ${table} WHERE id=?)`).bind(crypto.randomUUID(),adminId??ADMIN_ACTOR,target,`${body.action}:${value}`,reason,target),
+        db.prepare(`UPDATE ${table} SET ${body.action}=? WHERE id=?${guard}`).bind(value,target),
+        log(guard),
         ...(body.action === 'suspended' && value ? [db.prepare('DELETE FROM sessions WHERE user_id=?').bind(target),db.prepare('DELETE FROM auth_sessions WHERE userId=?').bind(target),db.prepare('DELETE FROM developer_sessions WHERE user_id=?').bind(target),db.prepare('DELETE FROM developer_auth_codes WHERE user_id=?').bind(target)] : []),
       ])
       if (!(result[0] as {meta:{changes:number}}).meta.changes) throw new HttpError(404,'Item not found.')
@@ -153,7 +173,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
         EXISTS(SELECT 1 FROM forum_follows f WHERE f.thread_id=t.id AND f.user_id=?) AS following,
         EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?) AS bookmarked
         FROM forum_threads t JOIN users u ON u.id=t.user_id WHERE t.id=?`).bind(user?.id??null,user?.id??null,thread.id).first<Record<string,unknown>&{following:number;bookmarked:number}>(),
-      db.prepare('SELECT p.*,u.username,u.avatar_id AS avatar,u.display_name AS displayName,(SELECT COUNT(*) FROM forum_reactions r WHERE r.post_id=p.id) AS likes,EXISTS(SELECT 1 FROM forum_reactions r WHERE r.post_id=p.id AND r.user_id=?) AS liked FROM forum_posts p JOIN users u ON u.id=p.user_id WHERE p.thread_id=? ORDER BY p.created_at,p.rowid LIMIT 31 OFFSET ?').bind(user?.id??'',thread.id,page(url)*30).all<{id:string;user_id:string;hidden:number;body:string;username:string;avatar:string|null;displayName:string;created_at:string;edited_at:string|null;likes:number;liked:number}>(),
+      db.prepare('SELECT p.*,u.username,u.avatar_id AS avatar,u.display_name AS displayName,(SELECT COUNT(*) FROM forum_reactions r WHERE r.post_id=p.id) AS likes,EXISTS(SELECT 1 FROM forum_reactions r WHERE r.post_id=p.id AND r.user_id=?) AS liked FROM forum_posts p JOIN users u ON u.id=p.user_id WHERE p.thread_id=? AND p.hidden<2 ORDER BY p.created_at,p.rowid LIMIT 31 OFFSET ?').bind(user?.id??'',thread.id,page(url)*30).all<{id:string;user_id:string;hidden:number;body:string;username:string;avatar:string|null;displayName:string;created_at:string;edited_at:string|null;likes:number;liked:number}>(),
     ])
     if(!details)throw new HttpError(404,'Thread not found.')
     const {following:followed,bookmarked:saved,...summary}=details
@@ -234,6 +254,13 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     }
     if(match[2]==='report'&&request.method==='POST'){
       await db.prepare('INSERT INTO forum_reports(id,post_id,user_id,reason) VALUES(?,?,?,?) ON CONFLICT(post_id,user_id) DO NOTHING').bind(crypto.randomUUID(),post.id,member.id,required(body.reason,'Reason',1000)).run()
+      return response({ok:true})
+    }
+    if(!match[2]&&request.method==='DELETE'){
+      if(post.user_id!==member.id)throw new HttpError(403,'You can delete only your own posts.')
+      if(post.locked)throw new HttpError(409,'This thread is locked.')
+      if(await isOpeningPost(db,post.thread_id,post.id))throw new HttpError(409,'The first post of a thread cannot be deleted.')
+      await db.batch(deletePost(db,post.id))
       return response({ok:true})
     }
     if(!match[2]&&request.method==='PATCH'){

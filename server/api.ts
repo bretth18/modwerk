@@ -131,7 +131,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       const owner=admin?null:needUser(user)
       // Compatibility removal hides the canonical post, including migrated comment IDs.
       await db.batch([
-        db.prepare("UPDATE forum_posts SET hidden=1 WHERE (id=? OR id='comment-' || ?) AND EXISTS(SELECT 1 FROM forum_threads t WHERE t.id=forum_posts.thread_id AND t.id='module-' || t.module_id AND forum_posts.id<>t.id AND (?=1 OR (t.hidden=0 AND t.locked=0 AND forum_posts.user_id=?)))").bind(match[1],match[1],Number(admin),owner?.id??''),
+        db.prepare("UPDATE forum_posts SET hidden=1 WHERE hidden<2 AND (id=? OR id='comment-' || ?) AND EXISTS(SELECT 1 FROM forum_threads t WHERE t.id=forum_posts.thread_id AND t.id='module-' || t.module_id AND forum_posts.id<>t.id AND (?=1 OR (t.hidden=0 AND t.locked=0 AND forum_posts.user_id=?)))").bind(match[1],match[1],Number(admin),owner?.id??''),
         ...(admin?[db.prepare("INSERT INTO forum_moderation(id,actor_id,target,action,reason) SELECT ?,?,p.id,'hidden:1','Removed through the module comment compatibility endpoint.' FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id WHERE (p.id=? OR p.id='comment-' || ?) AND t.id='module-' || t.module_id AND p.id<>t.id").bind(crypto.randomUUID(),adminId,match[1],match[1])]:[]),
       ])
       return response({ok:true})
