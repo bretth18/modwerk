@@ -9,12 +9,29 @@ export const PACKAGE_FILES = ['dsp-packages.json','coldfire-packages.json','resi
 export const SOURCE_GROUPS = ['modules','platform','tools','dsp','licenses']
 const sha = bytes => createHash('sha256').update(bytes).digest('hex')
 async function inventory(folder,prefix) { const files=[];for(const item of await readdir(folder,{withFileTypes:true})){if(item.name==='__pycache__'||item.name.endsWith('.pyc')||item.name==='.DS_Store')continue;if(item.isSymbolicLink())throw new Error('Source symlinks are prohibited.');const path=prefix+'/'+item.name;if(item.isDirectory())files.push(...await inventory(resolve(folder,item.name),path));else if(item.isFile())files.push(path);else throw new Error('Source must be a regular file.')}return files }
-/** Relative paths of every SDK source file the compiler reads. */
-export async function moduleSourcePaths(root) { const native=resolve(root,'sdk/octabam'),files=[];for(const group of SOURCE_GROUPS)files.push(...await inventory(resolve(native,group),group));return files.sort() }
+/** Files in a module folder that no compiler reads: documentation, media, evidence reports and the qualification template.
+ *  Editing them changes neither the compiled packages nor the code a release approval is bound to. */
+export function isDocumentationPath(path) {
+  const match = path.match(/^modules\/[^/]+\/(.+)$/)
+  return !!match && (/^(media|presentation|evidence)\//.test(match[1]) || /\.md$/i.test(match[1]) || match[1] === 'qualification.example.json')
+}
+/** The only parts of a module manifest the compiler reads (scripts/build-module-packages.py, build-utility-packages.py): every other
+ *  field is documentation. The projection is a plain array so that Node and Python hash identical bytes. */
+export function manifestBuildFields(text) {
+  const document = JSON.parse(text), source = document.source
+  return JSON.stringify([document.id, document.version, document.key, document.author?.github ?? null, source ? [source.repository, source.revision, source.path] : null, document.compatibility?.effectId ?? null, document.build?.status ?? null])
+}
+/** Relative paths of every SDK file that can change a compiled package. */
+export async function moduleSourcePaths(root) { const native=resolve(root,'sdk/octabam'),files=[];for(const group of SOURCE_GROUPS)files.push(...await inventory(resolve(native,group),group));return files.filter(path=>!isDocumentationPath(path)).sort() }
+/** The SHA-256 the compiler records for one source path: the file's bytes, or for a module manifest its build fields. */
+export async function sourceEntryHash(root, path) {
+  const bytes = await readFile(resolve(root,'sdk/octabam',path))
+  return /^modules\/[^/]+\/octamod\.module\.json$/.test(path) ? sha(manifestBuildFields(bytes.toString('utf8'))) : sha(bytes)
+}
 /** The same SHA-256 tree fingerprint the compiler records as sourceTreeSha256. */
 export async function moduleSourceFingerprint(root) {
-  const native=resolve(root,'sdk/octabam'),sources={}
-  for(const path of (await moduleSourcePaths(root)).sort((a,b)=>a<b?-1:a>b?1:0))sources[path]=sha(await readFile(resolve(native,path)))
+  const sources={}
+  for(const path of (await moduleSourcePaths(root)).sort((a,b)=>a<b?-1:a>b?1:0))sources[path]=await sourceEntryHash(root,path)
   return sha(JSON.stringify(sources))
 }
 

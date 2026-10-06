@@ -70,7 +70,7 @@ npm run modules:check -- --base origin/main
 
 These validate metadata, version changes and repository code; they do not compile or qualify your native module. Native compilation needs CMake, the patched DSP assembler/disassembler and GNU `m68k-elf` tools described in the [SDK guide](sdk/README.md#native-development). Record native behavior, resource and hardware evidence separately.
 
-For updates, increase the module's semantic version for **every source, documentation or media change**, and update its pin in `sdk/catalog.json` if listed. New catalog entries need approved scope, engine integration and native parity/rejection evidence.
+For updates, increase the module's semantic version for **every code change** (documentation and media edits do not need one; see [CONTRIBUTING](CONTRIBUTING.md#required-version-increase)), and update its pin in `sdk/catalog.json` if listed. New catalog entries need approved scope, engine integration and native parity/rejection evidence.
 
 ## Contribute
 

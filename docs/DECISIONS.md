@@ -159,7 +159,7 @@ The owner decided:
   - the selections at the edge of being refused.
 
   Each runs with and without the stock FX2 effects. Results are cached by their inputs, so a fix reruns only the selections it affects.
-- **Approval bound to code.** An owner approval and the compiled packages bind to the module's code fingerprint. Editing only its documentation or media needs no re-approval or package rebuild.
+- **Approval bound to code.** An owner approval and the compiled packages bind to the module's code fingerprint. Editing only its documentation or media needs no re-approval, package rebuild or version bump. Implemented on 6 October 2026 for modules with a qualification record and for the Sidechain Compressor approval; the frozen baseline, the two utility waivers and MIDI Scenes keep their exact-folder bindings.
 - **Integration from the manifest.** Library visibility, the date a module was added, its thumbnail and its effect conflicts should come from the module's manifest instead of hand-kept lists.
 - **Automated hardware tests later.** Hardware testing is to be automated over USB, using a customised test firmware that runs the checks on the unit and reports the results. Until then, a person's functional hardware report is the evidence. The 60-minute, eight-track stress run has not been required since 2 October 2026.
 

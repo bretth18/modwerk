@@ -38,8 +38,11 @@ jobs:
         run: |
           # Compare with the last successful release, not the previous commit, so a failed module build is never skipped.
           last=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow pages.yml --branch main --status success --limit 1 --json headSha --jq '.[0].headSha // ""')
-          paths='sdk scripts/build-module-packages.py scripts/build-utility-packages.py scripts/build-modules-isolated.sh scripts/import-module-build.mjs scripts/stamp-module-build.mjs scripts/module-source.mjs scripts/license-notices.mjs scripts/licenses.mjs src/engine/assets src/release'
-          if [ -n "$last" ] && git cat-file -e "$last^{commit}" 2>/dev/null && git diff --quiet "$last" HEAD -- $paths; then
+          # Documentation and media of a module are not compiled (scripts/module-source.mjs), so they never need a rebuild.
+          paths=(sdk ':(exclude,glob)sdk/**/*.md' ':(exclude,glob)sdk/octabam/modules/*/media/**' ':(exclude,glob)sdk/octabam/modules/*/presentation/**'
+            ':(exclude,glob)sdk/octabam/modules/*/evidence/**' scripts/build-module-packages.py scripts/build-utility-packages.py scripts/build-modules-isolated.sh
+            scripts/import-module-build.mjs scripts/stamp-module-build.mjs scripts/module-source.mjs scripts/license-notices.mjs scripts/licenses.mjs src/engine/assets src/release)
+          if [ -n "$last" ] && git cat-file -e "$last^{commit}" 2>/dev/null && git diff --quiet "$last" HEAD -- "${paths[@]}"; then
             echo "modules=false" >> "$GITHUB_OUTPUT"
             echo "No module change since the last successful release ($last): publishing the verified committed packages."
           else

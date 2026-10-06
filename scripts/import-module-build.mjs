@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { fetchOwnerApproval } from '../src/release/approval.ts'
 import { parseModuleDocument } from '../src/catalog/module-contract.ts'
 import { parseColdFireObject } from '../src/engine/coldfire-elf.ts'
-import { PACKAGE_FILES as expected, moduleSourcePaths, compiledModuleVersions } from './module-source.mjs'
+import { PACKAGE_FILES as expected, moduleSourcePaths, sourceEntryHash, compiledModuleVersions } from './module-source.mjs'
 import { NOTICE_NAME, renderLicenseNotices } from './license-notices.mjs'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2), folder = args[0] && resolve(args[0]), development = args.includes('--development'), checkOnly = args.includes('--check-only'), verifyExisting = args.includes('--verify-existing')
@@ -42,7 +42,7 @@ if(JSON.stringify(actual.sort())!==JSON.stringify(Object.keys(report.sources).so
 for (const [path, fingerprint] of Object.entries(report.sources)) {
   if (!/^(modules|platform|tools|dsp|licenses)\/[A-Za-z0-9._/-]+$/.test(path) || path.split('/').some(part => part === '..' || part === '.') || !hash(fingerprint) || /\.(bin|syx|exe|dll|dylib|zip)$/i.test(path)) throw new Error('Invalid source inventory path: ' + path)
   const source = resolve(native,path); await regular(source,native)
-  if (sha(await readFile(source)) !== fingerprint) throw new Error('Compiled source is stale: ' + path)
+  if (await sourceEntryHash(root,path) !== fingerprint) throw new Error('Compiled source is stale: ' + path)
 }
 if (sha(JSON.stringify(Object.fromEntries(Object.entries(report.sources).sort(([a],[b]) => a < b ? -1 : a > b ? 1 : 0)))) !== report.sourceTreeSha256) throw new Error('Source tree fingerprint differs')
 const packages = new Map()

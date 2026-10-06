@@ -28,7 +28,11 @@ jobs:
         run: |
           git cat-file -e "$OCTAMOD_PR_BASE^{commit}"
           # The same module inputs the release uses to decide whether to rebuild (pages.yml), plus this workflow.
-          modules=(sdk scripts/build-module-packages.py scripts/build-utility-packages.py scripts/build-modules-isolated.sh
+          # Module documentation and media (README and other Markdown, media/, presentation/, evidence/) are not compiled and are
+          # excluded, as in scripts/module-source.mjs. A manifest edit still counts here: its prose is not compiled either, but
+          # its build fields are, and the fingerprint check then passes without a rebuild when only prose changed.
+          modules=(sdk ':(exclude,glob)sdk/**/*.md' ':(exclude,glob)sdk/octabam/modules/*/media/**' ':(exclude,glob)sdk/octabam/modules/*/presentation/**'
+            ':(exclude,glob)sdk/octabam/modules/*/evidence/**' scripts/build-module-packages.py scripts/build-utility-packages.py scripts/build-modules-isolated.sh
             scripts/import-module-build.mjs scripts/stamp-module-build.mjs scripts/module-source.mjs scripts/license-notices.mjs
             scripts/licenses.mjs src/engine/assets src/release .github/workflows/module-pr.yml)
           windows=("${modules[@]}" src/catalog/module-folder.ts src/catalog/module-folder.test.ts scripts/modules.mjs scripts/module-qualification.mjs)

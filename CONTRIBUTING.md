@@ -17,7 +17,7 @@ A change to a module's documentation or media alone can keep its existing test e
 
 ## Versions
 
-Every change inside a module folder needs a strictly higher semantic `version` than on `main`, including documentation and media. Update the module's entry in `sdk/catalog.json` to match when it is listed. Never reuse a released version. Explain parameter-layout or ID changes and what happens to existing projects. `npm run modules:check -- --base origin/main` checks this after you rebase onto current `main`.
+Any change to a module's code needs a strictly higher semantic `version` than on `main`. Code is what a compiler reads: source files, `manifest.py`, licences and the manifest's build fields (`version`, `key`, `author.github`, `source`, `compatibility.effectId` and `build.status`). Documentation and media do not: README and other Markdown, `media/`, `presentation/`, `evidence/` and the rest of the manifest's text can change under the same version, and need no rebuilt packages or fresh approval. (The eleven frozen baseline modules, `cc-map`, `previewvol` and MIDI Scenes keep their exact-folder exemptions, so a documentation edit to them still uses the retained-evidence path.) Update the module's entry in `sdk/catalog.json` to match when it is listed. Never reuse a released version for different code. Explain parameter-layout or ID changes and what happens to existing projects. `npm run modules:check -- --base origin/main` checks this after you rebase onto current `main`.
 
 ## Intellectual property
 

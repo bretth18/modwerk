@@ -9,6 +9,5 @@
   ],
   "reason": "Owner explicitly approved release without fresh physical hardware evidence; upstream author reports live MKI operation. Cycles, memory, composition and software checks are still required.",
   "sourceSha256": "301d7dc13d0f7f4567e9bb121e8fc50c8cebbc1fb4bf544c511c28769370edbc",
-  "imageSha256": "4fd5fcb49ed17cd4e707d407a6e42a64ec30b50aefaad3b1eeb1bb804493aef0",
-  "folderSha256": "5bb856ec8ec90ec5dc2900b7c1f0576047f64e00d07b361e4bc0caf06123ede1"
+  "imageSha256": "4fd5fcb49ed17cd4e707d407a6e42a64ec30b50aefaad3b1eeb1bb804493aef0"
 }

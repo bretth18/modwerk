@@ -38,6 +38,24 @@ def validate_source(text):
         raise ValueError('Transcluded source or binary content is not allowed in a module package')
 
 
+def is_documentation(relative):
+    """Files in a module folder that no compiler reads. Mirrors isDocumentationPath in scripts/module-source.mjs."""
+    parts = relative.split('/')
+    if parts[0] != 'modules' or len(parts) < 3: return False
+    inside = '/'.join(parts[2:])
+    return parts[2] in ('media', 'presentation', 'evidence') and len(parts) > 3 or inside.lower().endswith('.md') or inside == 'qualification.example.json'
+
+
+def manifest_build_fields(text):
+    """The only manifest fields the compilers read, as the same JSON array scripts/module-source.mjs hashes."""
+    document = json.loads(text)
+    source = document.get('source')
+    fields = [document.get('id'), document.get('version'), document.get('key'), (document.get('author') or {}).get('github'),
+              [source.get('repository'), source.get('revision'), source.get('path')] if source else None,
+              (document.get('compatibility') or {}).get('effectId'), (document.get('build') or {}).get('status')]
+    return json.dumps(fields, separators=(',', ':'), ensure_ascii=False)
+
+
 def source_hashes(root):
     files = {}
     for group in ['modules', 'platform', 'tools', 'dsp', 'licenses']:
@@ -45,9 +63,12 @@ def source_hashes(root):
             if path.is_symlink(): raise ValueError('Source symlinks are not allowed: ' + str(path))
             # Finder metadata is never source; the release checkout never contains it.
             if not path.is_file() or '__pycache__' in path.parts or path.suffix == '.pyc' or path.name == '.DS_Store': continue
+            relative = path.relative_to(root).as_posix()
+            if is_documentation(relative): continue
             if path.suffix.lower() in ('.bin', '.syx', '.exe', '.dll', '.dylib', '.zip') or path.name == 'stock_labels.json':
                 raise ValueError('Firmware/binary input is not allowed in source compilation')
-            files[path.relative_to(root).as_posix()] = HASH(path.read_bytes())
+            if re.fullmatch(r'modules/[^/]+/octamod\.module\.json', relative): files[relative] = HASH(manifest_build_fields(path.read_text(encoding='utf-8')).encode())
+            else: files[relative] = HASH(path.read_bytes())
     return files
 
 

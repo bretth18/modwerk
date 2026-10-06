@@ -23,7 +23,7 @@ it('checks real PR publication changes without executing module source', async (
   const failure=()=>{const result=run('--base','HEAD','--write');expect(result.status).not.toBe(0);return result.stderr}
   const git=(...args:string[])=>execFileSync('git',args,{cwd:root,encoding:'utf8'})
   try {
-    for(const path of ['scripts/modules.mjs','scripts/module-qualification.mjs','scripts/retained-evidence.mjs','scripts/module-documentation.mjs','src/catalog/module-contract.ts','src/catalog/module-contract-v3.ts','src/devices/machine-contract.ts','src/catalog/versions.ts','src/catalog/module-folder.ts','src/catalog/resource-impact.ts','sdk/module-release-waivers.json']){
+    for(const path of ['scripts/modules.mjs','scripts/module-source.mjs','scripts/module-qualification.mjs','scripts/retained-evidence.mjs','scripts/module-documentation.mjs','src/catalog/module-contract.ts','src/catalog/module-contract-v3.ts','src/devices/machine-contract.ts','src/catalog/versions.ts','src/catalog/module-folder.ts','src/catalog/resource-impact.ts','sdk/module-release-waivers.json']){
       mkdirSync(dirname(resolve(root,path)),{recursive:true})
       copyFileSync(resolve(path),resolve(root,path))
     }
@@ -56,6 +56,10 @@ it('checks real PR publication changes without executing module source', async (
     expect(failure()).toContain('baseline is frozen')
     put(baselinePath,baselineBytes)
     put(resolve(folder,'README.md'),'Documentation update\n')
+    // Documentation needs no version bump (owner decision, 5 October 2026); it does end the frozen baseline's exact-folder exemption.
+    expect(failure()).not.toContain('greater module version')
+    // Code does.
+    put(resolve(folder,'manifest.py'),'raise AssertionError("module source must never execute")\n# changed\n')
     expect(failure()).toContain('greater module version')
     document.version='0.1.1'
     catalog.modules[0].version=document.version

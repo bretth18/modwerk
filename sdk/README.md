@@ -47,4 +47,4 @@ Results and their coverage are recorded in [VERIFICATION.md](../docs/VERIFICATIO
 
 ## Versions and approval
 
-Every module has a semantic version. Any change in its folder needs a strictly higher one, and `sdk/catalog.json` pins the exact version the site offers. The owner merging the pull request approves it. After the merge, automation compiles the merged commit and publishes only if it reproduces the committed packages; a failed build keeps the previous release.
+Every module has a semantic version. Any change to its code needs a strictly higher one (documentation and media edits do not), and `sdk/catalog.json` pins the exact version the site offers. The owner merging the pull request approves it. After the merge, automation compiles the merged commit and publishes only if it reproduces the committed packages; a failed build keeps the previous release.
