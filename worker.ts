@@ -10,6 +10,8 @@ import { cleanupForumMedia } from './server/forum-media'
 import { handleCommunity } from './server/transport'
 import type { Env } from './server/platform'
 
+const failureDetail = (reason: unknown) => reason instanceof Error ? reason.stack ?? reason.message : String(reason)
+
 /** Runs every hourly task even when one fails, and names the failed task in Workers Logs. */
 export async function runHourly(tasks: Record<string, () => Promise<unknown>>) {
   const results = await Promise.allSettled(Object.values(tasks).map(task => task()))
@@ -17,8 +19,7 @@ export async function runHourly(tasks: Record<string, () => Promise<unknown>>) {
   results.forEach((result, index) => {
     if (result.status !== 'rejected') return
     failed.push(names[index])
-    const detail = result.reason instanceof Error ? result.reason.stack ?? result.reason.message : String(result.reason)
-    console.error(`Hourly task "${names[index]}" failed: ${detail}`)
+    console.error(`Hourly task "${names[index]}" failed: ${failureDetail(result.reason)}`)
   })
   return failed
 }
@@ -36,7 +37,7 @@ export default {
       return
     }
     const db = env.DB
-    const activity = () => syncModuleReleases(env, db).catch(() => { console.warn('Published module versions could not be checked; retrying next hour.') }).then(() => sendActivityDigests(env, db))
+    const activity = () => syncModuleReleases(env, db).catch(error => { console.error(`Published module versions could not be checked; retrying next hour: ${failureDetail(error)}`) }).then(() => sendActivityDigests(env, db))
     context.waitUntil(runHourly({
       'push cleanup': () => cleanupPush(db), 'usage cleanup': () => cleanupUsage(db), 'account cleanup': () => cleanupAccounts(db),
       'developer auth cleanup': () => cleanupDeveloperAuth(db), 'module threads': () => ensureModuleThreads(db), 'activity digests': activity, 'forum media cleanup': () => cleanupForumMedia(env),

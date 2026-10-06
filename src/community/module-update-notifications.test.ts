@@ -283,7 +283,7 @@ describe('report status notifications', () => {
       expect(url).toBe('https://api.resend.com/emails'); sent.push(JSON.parse(String(options.body)))
       return Response.json({ id: crypto.randomUUID() })
     }))
-    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {}), jobs: Promise<unknown>[] = []
+    const failure = vi.spyOn(console, 'error').mockImplementation(() => {}), jobs: Promise<unknown>[] = []
     // SQLite has one connection; serialize concurrent D1 batches for the scheduled-job fixture.
     const database=f.env.DB!, batch=database.batch.bind(database)
     let pending: Promise<unknown> = Promise.resolve()
@@ -291,8 +291,10 @@ describe('report status notifications', () => {
     try {
       worker.scheduled({ cron: '0 * * * *' }, f.env, { waitUntil: job => jobs.push(job) })
       await Promise.all(jobs)
-      expect(sent).toHaveLength(1); expect(sent[0].to).toEqual([owner.email]); expect(warning).toHaveBeenCalledOnce()
-    } finally { warning.mockRestore() }
+      expect(sent).toHaveLength(1); expect(sent[0].to).toEqual([owner.email])
+      // The log names the cause, so a sync that keeps failing is diagnosable from Workers Logs.
+      expect(failure).toHaveBeenCalledOnce(); expect(String(failure.mock.calls[0][0])).toContain('retrying next hour: Error: Published module versions could not be checked.')
+    } finally { failure.mockRestore() }
   })
 })
 
