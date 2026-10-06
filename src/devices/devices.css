@@ -139,7 +139,9 @@
   .library-machine-button:focus-visible { outline-offset: -2px; }
   .library-machine-button > svg { width: 12px; height: 12px; color: #a8afff; transition: transform .15s; }
   .library-machine-button[aria-expanded="true"] > svg { transform: rotate(180deg); }
-  .library-machine-menu { z-index: 45; right: auto; width: min(320px, calc(100vw - 32px)); border-radius: 12px; overscroll-behavior: contain; }
+  /* The phone chooser is a bottom sheet; styles.css holds the sheet frame shared with the menu. */
+  .library-machine-menu { max-height: min(80dvh, 640px); }
+  .library-machine-menu a { min-height: 50px; font-size: 14px; }
   .device-grid { grid-template-columns: 1fr; }
   .device-ladder li { grid-template-columns: 28px minmax(0, 1fr); }
   .device-step-state { grid-column: 2; }

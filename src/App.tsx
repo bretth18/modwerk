@@ -53,6 +53,7 @@ import { SupportButton, SupportDialog } from './components/SupportDialog'
 import { PAYPAL_DONATION_URL } from './config/support'
 
 import { useWorkspace } from './hooks/useWorkspace'
+import { usePhoneToolbar } from './hooks/usePhoneToolbar'
 import { ConfigurationDialog } from './components/ConfigurationDialog'
 import { ConfigurationEffects } from './components/ConfigurationEffects'
 function subscribeRoute(callback: () => void) {
@@ -158,6 +159,8 @@ export default function App() {
   const [supportOpen, setSupportOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const mainRef = useRef<HTMLElement>(null)
+  const toolbarRef = useRef<HTMLElement>(null)
+  const toolbarHidden = usePhoneToolbar(phoneLayout, toolbarRef, route)
   const libraryNavRef = useRef<HTMLElement>(null)
   // On phones the library nav is a horizontal strip; keep the current section in view.
   useEffect(() => {
@@ -165,7 +168,7 @@ export default function App() {
     if (active) active.scrollIntoView({ block: 'nearest', inline: 'nearest' })
     else libraryNavRef.current?.scrollTo({ left: 0 })
   }, [route])
-  useEffect(() => { mainRef.current?.scrollTo({ top: 0 });document.title=(detailModule?.name??digiMod?.title??(allRoute?'All mods':machineView==='configuration'?currentDevice.name+' configuration':machineView?currentDevice.name+' modules':forumRoute?'Forum':accountRoute?'Account':developerRoute?(developer?.user&&!route.startsWith('developer/complete')?'Developer workspace':'Account'):route==='faq'?'FAQ':route==='privacy'?'Privacy':route==='impressum'?'Impressum':route==='community-rules'?'Community rules':route==='report-content'?'Report content':route==='configuration'?'Configuration':route.startsWith('submit')?'Submit a module':(route==='review'||route==='admin')?'Admin workspace':route.startsWith('module-set')?'Module sets':'Module library'))+' · Modwerk' }, [route,detailModule?.name,forumRoute,accountRoute,developerRoute,developer?.user,devicesRoute,allRoute,digiMod?.title,machineView,currentDevice.name])
+  useEffect(() => { mainRef.current?.scrollTo({ top: 0 });window.scrollTo({ top: 0 });document.title=(detailModule?.name??digiMod?.title??(allRoute?'All mods':machineView==='configuration'?currentDevice.name+' configuration':machineView?currentDevice.name+' modules':forumRoute?'Forum':accountRoute?'Account':developerRoute?(developer?.user&&!route.startsWith('developer/complete')?'Developer workspace':'Account'):route==='faq'?'FAQ':route==='privacy'?'Privacy':route==='impressum'?'Impressum':route==='community-rules'?'Community rules':route==='report-content'?'Report content':route==='configuration'?'Configuration':route.startsWith('submit')?'Submit a module':(route==='review'||route==='admin')?'Admin workspace':route.startsWith('module-set')?'Module sets':'Module library'))+' · Modwerk' }, [route,detailModule?.name,forumRoute,accountRoute,developerRoute,developer?.user,devicesRoute,allRoute,digiMod?.title,machineView,currentDevice.name])
   const selection = resolveSelection(selectedIds)
   const availabilityError = moduleAvailabilityError(selectedIds)
   const conflicts = selectionConflicts(selectedIds, DSP_LOADER && (active?.keepStockFx2 ?? true))
@@ -216,11 +219,17 @@ export default function App() {
     setSaved(false); setRiskAccepted({key:'',accepted:false}); window.location.assign(deviceHref(currentDevice.id, 'configuration'))
   }
 
-  // Phones show the independence notice as a page footer; wider layouts keep it above the content.
+  // Routes that browse a library: they get the search field and, on phones, the category chips under the app bar.
+  const libraryNav = ['library', ...LIBRARY_CATEGORIES, 'module-sets'].includes(route) || allRoute || (digiDevice && machineView === 'library')
+  const firmwareVerified = !allMachines && currentDevice.id === 'octatrack' && !!firmware
+  const machineStatus = allMachines ? 'All machines' : currentDevice.id !== 'octatrack' ? currentDevice.name + (machineHasMods ? DIGI_DOWNLOADS_ENABLED ? ' · local builds' : ' · builds in preview' : ' · no mods yet') : firmware ? 'OS 1.40C verified' : 'No base firmware selected'
+  const saveStatus = workspace.saving ? "Saving…" : workspace.storageError ? "Changes not saved" : "Workspace saved on device"
+  const legalLinks = <nav className="legal-links" aria-label="Legal information"><a href="#privacy">Privacy</a><a href="#impressum">Impressum</a><a href="#report-content">Report content</a></nav>
+  // Phones show the independence notice in the page footer; wider layouts keep it above the content.
   const projectNotice = <aside className="project-notice" aria-label="Project independence"><p>{INDEPENDENCE_NOTICE}</p><a href={assetUrl('licenses/THIRD_PARTY_NOTICES.html')} target="_blank" rel="noreferrer">Copyright &amp; licence notices</a></aside>
 
   return (
-    <div className="app-shell">
+    <div className={'app-shell' + (phoneLayout ? (libraryNav ? ' has-library-nav' : '') + (toolbarHidden ? ' is-toolbar-hidden' : '') : '')}>
       <a className="skip-link" href="#main-content" onClick={(event) => { event.preventDefault(); mainRef.current?.focus() }}>Skip to content</a>
       <aside className="sidebar" aria-label="App sidebar">
         <div className="sidebar-brand">
@@ -252,13 +261,13 @@ export default function App() {
       {configDialog && <ConfigurationDialog mode={configDialog} initialName={configDialog === 'create' ? '' : configDialog === 'duplicate' ? (machineActive?.name ?? '') + ' copy' : machineActive?.name ?? ''} onSubmit={submitConfigurationDialog} onClose={() => setConfigDialog(null)} />}
       {supportOpen && <SupportDialog url={PAYPAL_DONATION_URL} onClose={() => setSupportOpen(false)} />}
       <div className="workspace">
-        <header className="app-toolbar">
+        <header className="app-toolbar" ref={toolbarRef}>
           <a className="toolbar-brand" href={'#' + ALL_MACHINES}><img src={import.meta.env.BASE_URL + 'modwerk-mark.svg'} width="30" height="30" alt="" /><span>Modwerk</span></a>
           <div className="toolbar-title"><Icon name={route === 'faq' ? 'help' : configuration || machineView === 'configuration' ? 'file' : 'grid'} size={17} /><span>{route === 'faq' ? 'FAQ & flashing guide' : configuration || machineView === 'configuration' ? 'Configuration' : route === 'privacy' ? 'Privacy' : route === 'impressum' ? 'Impressum' : route === 'community-rules' ? 'Community rules' : route === 'report-content' ? 'Report content' : communityRoute ? 'Community' : route.startsWith('module-set') ? 'Module sets' : 'Modules'}</span>{(detailModule?.name ?? digiMod?.title) && <><span className="breadcrumb-divider">/</span><strong>{detailModule?.name ?? digiMod?.title}</strong></>}<span className="preview-badge">Preview</span></div>
-          {(['library',...LIBRARY_CATEGORIES,'module-sets'].includes(route) || allRoute || (digiDevice && machineView === 'library')) && <><label className={'search' + (searchExpanded ? ' is-open' : '')}><Icon name="search" size={15} /><input ref={searchRef} type="search" aria-label={route==='module-sets'?'Search module sets':'Search modules'} placeholder={route==='module-sets'?'Search sets':'Search modules'} value={query} onChange={(event) => setQuery(event.target.value)} onBlur={() => { if (!query) setSearchOpen(false) }} onKeyDown={(event) => { if (phoneLayout && event.key === 'Escape') closeSearch() }} /></label><button ref={searchToggleRef} type="button" className="toolbar-icon search-toggle" aria-label={route==='module-sets'?'Search module sets':'Search modules'} onClick={openSearch}><Icon name="search" size={20} /></button><button type="button" className="search-cancel" onClick={closeSearch}>Cancel</button></>}
+          {libraryNav && <><label className={'search' + (searchExpanded ? ' is-open' : '')}><Icon name="search" size={15} /><input ref={searchRef} type="search" aria-label={route==='module-sets'?'Search module sets':'Search modules'} placeholder={route==='module-sets'?'Search sets':'Search modules'} value={query} onChange={(event) => setQuery(event.target.value)} onBlur={() => { if (!query) setSearchOpen(false) }} onKeyDown={(event) => { if (phoneLayout && event.key === 'Escape') closeSearch() }} /></label><button ref={searchToggleRef} type="button" className="toolbar-icon search-toggle" aria-label={route==='module-sets'?'Search module sets':'Search modules'} onClick={openSearch}><Icon name="search" size={20} /></button><button type="button" className="search-cancel" onClick={closeSearch}>Cancel</button></>}
           {phoneLayout && <NotificationBell />}
           <MobileMenu route={route} selectedCount={machineSelected.length} configurationHref={machineHasMods ? deviceHref(currentDevice.id, 'configuration') : undefined} admin={session.admin} developer={!!developer?.user} onSupport={PAYPAL_DONATION_URL ? () => setSupportOpen(true) : undefined} />
-          {machineHasMods && <a className="configuration-button" href={deviceHref(currentDevice.id, 'configuration')} aria-label={"Open configuration, " + machineSelected.length + " modules selected"}><Icon name="sliders" size={16} /><span>Configuration</span><span className="toolbar-count">{machineSelected.length}</span></a>}
+          {machineHasMods && <a className={'configuration-button' + (machineSelected.length ? '' : ' is-empty')} href={deviceHref(currentDevice.id, 'configuration')} aria-label={"Open configuration, " + machineSelected.length + " modules selected"} aria-current={configuration || machineView === 'configuration' ? 'page' : undefined}><Icon name="sliders" size={16} /><span>Configuration</span><span className="toolbar-count">{machineSelected.length}</span></a>}
         </header>
         <main className="workspace-content" id="main-content" ref={mainRef} tabIndex={-1}>
           {!phoneLayout && projectNotice}
@@ -312,10 +321,13 @@ export default function App() {
             </div>
           )}
           </>}
-          {phoneLayout && projectNotice}
         </main>
         {forumRoute&&!route.startsWith('forum/shoutbox')&&<ForumShoutbox floating/>}
-        <footer className={'status-bar'+(allMachines?' is-all-machines':'')}><nav className="legal-links" aria-label="Legal information"><a href="#privacy">Privacy</a><a href="#impressum">Impressum</a><a href="#report-content">Report content</a></nav><span><span className={'status-dot ' + (!allMachines && currentDevice.id === 'octatrack' && firmware ? 'verified' : '')} />{allMachines ? 'All machines' : currentDevice.id !== 'octatrack' ? currentDevice.name + (machineHasMods ? DIGI_DOWNLOADS_ENABLED ? ' · local builds' : ' · builds in preview' : ' · no mods yet') : firmware ? 'OS 1.40C verified' : 'No base firmware selected'}</span><span className="status-build" role="status">{workspace.saving ? "Saving…" : workspace.storageError ? "Changes not saved" : "Workspace saved on device"}</span>{machineHasMods ? <a href={deviceHref(currentDevice.id, 'configuration')} aria-live="polite">{machineSelected.length} {machineSelected.length === 1 ? 'module' : 'modules'} selected <Icon name="arrow" size={12} /></a> : <span />}</footer>
+        {phoneLayout ? <footer className="phone-footer">
+          <p className="phone-footer-status"><span className={'status-dot ' + (firmwareVerified ? 'verified' : '')} /><span>{machineStatus}</span><span role="status">{saveStatus}</span></p>
+          {legalLinks}
+          {projectNotice}
+        </footer> : <footer className={'status-bar'+(allMachines?' is-all-machines':'')}>{legalLinks}<span><span className={'status-dot ' + (firmwareVerified ? 'verified' : '')} />{machineStatus}</span><span className="status-build" role="status">{saveStatus}</span>{machineHasMods ? <a href={deviceHref(currentDevice.id, 'configuration')} aria-live="polite">{machineSelected.length} {machineSelected.length === 1 ? 'module' : 'modules'} selected <Icon name="arrow" size={12} /></a> : <span />}</footer>}
       </div>
     </div>
   )

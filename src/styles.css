@@ -1301,3 +1301,58 @@ h1 { font-size: 28px; }
 .notification-topics { display: grid; gap: 2px; margin: 4px 0 12px; padding: 0 0 0 28px; border: 0; min-width: 0; }
 .notification-topics:disabled { opacity: .55; }
 .notification-topics .notification-frequency { display: grid; gap: 6px; max-width: 260px; margin-top: 10px; color: var(--muted); font-size: 12px; }
+
+/* Phone shell, second pass. The document itself scrolls, so the browser can collapse its own bar; one app bar
+   sticks to the top and slides away while reading; the category chips appear only where a library is browsed;
+   the configuration count sits in the bar as a badge; legal links and status move into a page footer; and the
+   menus open as bottom sheets within thumb reach. */
+@media (max-width: 600px) {
+  .app-shell { position: static; display: flex; flex-direction: column; min-height: 100dvh; overflow: visible; }
+  .app-toolbar { position: sticky; top: 0; z-index: 30; height: auto; min-height: 56px; padding-top: env(safe-area-inset-top); transition: top .22s ease; }
+  .app-shell.is-toolbar-hidden .app-toolbar { top: calc(-57px - env(safe-area-inset-top)); }
+  .toolbar-brand span { font-size: 17px; }
+  .sidebar { display: none; }
+  .app-shell.has-library-nav .sidebar { display: flex; }
+  .workspace-content { flex: 1 0 auto; overflow: visible; padding: 16px 16px 36px; }
+  .status-bar { display: none; }
+
+  /* App bar actions: search, configuration badge, notifications, menu. */
+  .search-toggle { order: 0; }
+  .configuration-button { order: 1; }
+  .notification-bell { order: 2; }
+  .mobile-menu { order: 3; }
+  .configuration-button { position: relative; display: grid; place-items: center; width: 44px; height: 44px; margin-left: 0; border-radius: 10px; color: #c7c7d2; }
+  .configuration-button > svg { width: 20px; height: 20px; }
+  .configuration-button:active, .configuration-button[aria-current="page"] { background: #303036; color: #f0f0f6; }
+  .configuration-button .toolbar-count { position: absolute; top: 4px; right: 3px; min-width: 17px; height: 17px; padding: 0 4px; border: 0; border-radius: 9px; background: var(--accent); color: #15151a; font-size: 10px; font-weight: 700; line-height: 17px; text-align: center; box-shadow: 0 0 0 2px var(--sidebar); }
+  .configuration-button.is-empty .toolbar-count { display: none; }
+  .app-toolbar:has(.search.is-open) :is(.configuration-button, .notification-bell) { display: none; }
+  .notification-panel { top: calc(64px + env(safe-area-inset-top)); }
+  @media (max-width: 360px) { .app-toolbar:has(.notification-bell) .toolbar-brand span { display: none; } }
+
+  /* Category chips: compact pills that scroll away with the page. */
+  .sidebar-nav[aria-label="Module library"] { padding: 10px 16px 12px; gap: 8px; }
+  .sidebar-nav[aria-label="Module library"] a, .sidebar-nav[aria-label="Module library"] .library-machine-button { height: 38px; min-height: 38px; padding: 0 14px; border-radius: 999px; font-size: 14px; }
+  .sidebar::after { bottom: 12px; height: 38px; }
+
+  /* Page footer: machine status, legal links and the independence notice, after the content instead of over it. */
+  .phone-footer { margin-top: auto; display: grid; gap: 16px; padding: 22px 16px calc(28px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: var(--sidebar); color: #9e9cab; font-size: 12px; line-height: 1.6; }
+  .phone-footer-status { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 8px; color: #b7b5c3; font-size: 13px; }
+  .phone-footer-status .status-dot { margin-right: 2px; }
+  .phone-footer-status > span + span + span::before { content: "·"; margin-right: 8px; color: #6e6e7a; }
+  .phone-footer .legal-links { gap: 4px 20px; font-size: 13px; }
+  .phone-footer .legal-links a { display: inline-flex; align-items: center; min-height: 32px; color: #c8c3de; }
+  .phone-footer .project-notice { margin: 0; padding-top: 16px; }
+
+  /* Bottom sheets: the menu and the machine chooser. */
+  .mobile-menu-scrim, .sheet-scrim { position: fixed; inset: 0; z-index: 60; background: #0009; touch-action: none; }
+  .mobile-menu-panel, .library-machine-menu { position: fixed; z-index: 61; top: auto; left: 0; right: 0; bottom: 0; width: auto; max-height: min(80dvh, 640px); overflow-y: auto; overscroll-behavior: contain; padding: 0 10px calc(12px + env(safe-area-inset-bottom)); border: 1px solid #3c3c45; border-bottom: 0; border-radius: 18px 18px 0 0; background: #26262b; box-shadow: 0 -12px 48px #0009; animation: sheet-in .22s ease-out; }
+  .sheet-head { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 12px; margin-bottom: 4px; padding: 20px 4px 4px 14px; background: #26262b; }
+  .sheet-head strong { flex: 1; font-size: 15px; font-weight: 600; color: #e6e6ee; }
+  .sheet-handle { position: absolute; top: 8px; left: 50%; width: 36px; height: 4px; margin-left: -18px; border-radius: 2px; background: #4a4a55; }
+  .sheet-close { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 10px; background: transparent; color: #a0a0ac; }
+  .sheet-close:active { background: #34343c; color: #f0f0f6; }
+  .mobile-menu-panel a { min-height: 50px; font-size: 16px; }
+}
+@keyframes sheet-in { from { transform: translateY(24px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .mobile-menu-panel, .library-machine-menu { animation: none; } }

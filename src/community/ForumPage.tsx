@@ -28,6 +28,8 @@ function errorText(error:unknown){return error instanceof Error?error.message:'T
 function ForumList({query,profile}:{query:URLSearchParams;profile?:string}){
   const {session}=useCommunity(),[data,setData]=useState<{threads:ForumThread[];hasMore:boolean}|null>(null),[error,setError]=useState(''),[revision,setRevision]=useState(0)
   const serialized=query.toString(),category=query.get('category')??'',page=Number(query.get('page')??0)
+  // Phones fold the topic and machine filters behind a toggle next to the search field.
+  const [filtersOpen,setFiltersOpen]=useState(false)
   useEffect(()=>{let cancelled=false;void api<{threads:ForumThread[];hasMore:boolean}>('/forum/threads?'+serialized+(profile?'&author='+encodeURIComponent(profile):'')).then(value=>{if(!cancelled)setData(value)}).catch(error=>{if(!cancelled)setError(errorText(error))});return()=>{cancelled=true}},[serialized,profile,revision])
   function link(values:Record<string,string>){const next=new URLSearchParams(query);next.delete('page');for(const [key,value] of Object.entries(values)){if(value)next.set(key,value);else next.delete(key)}return (profile?'#forum/profile/'+encodeURIComponent(profile):'#forum')+(next.size?'?'+next.toString():'')}
   const saved=query.get('saved')==='1',following=query.get('following')==='1',moduleView=query.get('view')==='modules',machine=DEVICES_BY_ID[query.get('machine')??''],filtered=!!query.get('q')||!!query.get('module'),newest=query.get('sort')==='newest'
@@ -37,7 +39,7 @@ function ForumList({query,profile}:{query:URLSearchParams;profile?:string}){
   const startHref=category==='issues'||session.user?.verified?'#forum/new'+(newParams.size?'?'+newParams.toString():''):session.user?'#account':'#account/register'
   return <>
     {profile&&<BackLink href="#forum">All discussions</BackLink>}
-    <div className="page-heading forum-heading"><div><span className="forum-eyebrow">Connect · Create · Explore</span><h1>{profile?'@'+profile:'Community forum'}</h1><p>{profile?'Public threads by this member.':'A place for the people who make their machines do more.'}</p></div><a className="button button-primary" href={startHref}><Icon name="plus" size={16}/>{category==='issues'?'Report an issue':'Start a thread'}</a></div>
+    <div className="page-heading forum-heading"><div><span className="forum-eyebrow">Connect · Create · Explore</span><h1>{profile?'@'+profile:'Community forum'}</h1><p>{profile?'Public threads by this member.':'A place for the people who make their machines do more.'}</p></div><a className="button button-primary" href={startHref}><Icon name="plus" size={16}/><span className="forum-start-long">{category==='issues'?'Report an issue':'Start a thread'}</span><span className="forum-start-short">{category==='issues'?'Report':'New thread'}</span></a></div>
     {profile&&<ForumProfile key={profile} username={profile}/>}
     {!profile&&<>
       <nav className="forum-categories" aria-label="Discussion views">
@@ -48,9 +50,12 @@ function ForumList({query,profile}:{query:URLSearchParams;profile?:string}){
       </nav>
       <form role="search" aria-label="Find discussions" className="forum-filters" onSubmit={event=>{event.preventDefault();const values=new FormData(event.currentTarget),nextMachine=String(values.get('machine')??'');window.location.assign(link({q:String(values.get('q')??'').trim(),category:String(values.get('category')??''),machine:nextMachine,...(nextMachine!==(query.get('machine')??'')?{module:''}:{})}))}}>
         <label className="forum-search-field"><span>Search</span><span className="forum-search"><Icon name="search" size={17}/><input name="q" type="search" aria-label="Search discussions" defaultValue={query.get('q')??''} maxLength={120} placeholder="Search discussions…"/></span></label>
+        <button type="button" className={'forum-filter-toggle'+(category||machine?' is-active':'')} aria-label="Topic and machine filters" aria-expanded={filtersOpen} aria-controls="forum-filter-fields" onClick={()=>setFiltersOpen(value=>!value)}><Icon name="sliders" size={18}/></button>
+        <div id="forum-filter-fields" className={'forum-filter-fields'+(filtersOpen?' is-open':'')}>
         <label><span>Topic</span><select aria-label="Filter by category" name="category" defaultValue={category}><option value="">All topics</option>{Object.entries(FORUM_CATEGORIES).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
         <label><span>Machine</span><select aria-label="Filter by machine" name="machine" defaultValue={machine?.id??''}><option value="">All machines</option>{DEVICES.map(device=><option key={device.id} value={device.id}>{deviceTitle(device)}</option>)}</select></label>
         <button className="button button-quiet"><Icon name="search" size={16}/>Search</button>
+        </div>
       </form>
     </>}
     {!profile&&(query.get('q')||category||query.get('module')||machine)&&<div className="forum-active-filters" aria-label="Active filters">
