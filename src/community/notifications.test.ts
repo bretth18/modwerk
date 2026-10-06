@@ -6,6 +6,7 @@ import { sendActivityDigests } from '../../server/activity-mail'
 import { handleCommunity } from '../../server/transport'
 import { mentionedUsernames } from '../../server/notifications'
 import type { NotificationItem } from './notification-contract'
+import { notificationLines } from './notification-text'
 
 type Sent = { to: string[]; subject: string; text: string; html: string; headers?: Record<string, string> }
 const databases: DatabaseSync[] = [], sent: Sent[] = [], password = 'a long original test passphrase'
@@ -62,6 +63,16 @@ describe('activity notifications', () => {
     expect((await call('/notifications', 'PATCH', { ids: 'all' }, author.session)).status).toBe(400)
   })
 
+  it('links a reply notification to the thread page that holds the reply', async () => {
+    const { call, member, items, db } = await fixture(), author = await member('pageauthor'), other = await member('pagereplier')
+    const { id } = await (await call('/forum/threads', 'POST', thread, author.session)).json()
+    const authorId = String(db.prepare('SELECT user_id FROM forum_posts WHERE thread_id=?').get(id)!.user_id)
+    for (let i = 0; i < 30; i++) db.prepare('INSERT INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').run('filler-' + i, id, authorId, 'Filler ' + i)
+    expect((await call('/forum/threads/' + id + '/replies', 'POST', { body: 'A late reply' }, other.session)).status).toBe(201)
+    const [reply] = (await items(author.session)).items
+    expect(reply).toMatchObject({ kind: 'reply', post_page: 1 })
+    expect(notificationLines([reply])[0].href).toBe('#forum/thread/' + id + '?post=' + reply.post_id + '&page=1')
+  })
   it('caps mentions and ignores emails, paths and doubled @', () => {
     expect(mentionedUsernames('@Alice and @alice, mail bob@example.test, path /@carol, @@dave, @ab')).toEqual(['alice'])
     expect(mentionedUsernames(Array.from({ length: 15 }, (_, index) => '@member' + index).join(' '))).toHaveLength(10)

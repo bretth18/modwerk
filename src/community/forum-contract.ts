@@ -41,9 +41,11 @@ export function sharedConfiguration(value: unknown): SharedConfiguration {
   }
   return { name: item.name.trim(), ...(item.device ? {device} : {}), moduleIds: [...item.moduleIds], moduleVersions: { ...item.moduleVersions }, keepStockFx2: item.keepStockFx2 }
 }
-export type ForumThread = { id:string;title:string;category:ForumCategory;machine:string|null;module_id:string|null;username:string|null;official?:number;status:'open'|'resolved';locked:number;pinned:number;hidden?:number;created_at:string;updated_at:string;replies:number;last_post_id?:string|null;last_username?:string|null;last_excerpt?:string|null;last_post_page?:number }
+export type ForumThread = { id:string;title:string;category:ForumCategory;machine:string|null;module_id:string|null;username:string|null;official?:number;status:'open'|'resolved';locked:number;pinned:number;hidden?:number;created_at:string;updated_at:string;replies:number;last_post_id?:string|null;last_username?:string|null;last_excerpt?:string|null;last_post_page?:number;media_kinds?:string|null }
 // Images and sound clips attached to a post. Sizes are checked again on the server after the file type is read from its bytes.
 export const FORUM_MEDIA = { maxImageBytes: 5 * 1024 * 1024, maxAudioBytes: 10 * 1024 * 1024, perPost: 4, captionLength: 300, dailyFiles: 20, dailyBytes: 100 * 1024 * 1024 } as const
 export type ForumAttachment = {id:string;kind:'image'|'audio';caption:string}
+/** A recent post with images or sound clips, for the Showcase strip. `page` is the thread page that holds it. */
+export type ForumShowcaseItem = {id:string;thread_id:string;created_at:string;username:string|null;official:number;title:string;category:ForumCategory;machine:string|null;page:number;attachments:ForumAttachment[]}
 export type ForumPost = {id:string;body:string;username:string|null;displayName?:string|null;user_id?:string;created_at:string;edited_at:string|null;hidden:number;likes:number;liked:boolean;canEdit:boolean;canRemoveMedia?:boolean;official?:boolean;attachments:ForumAttachment[]}
 export type ThreadDetail = {thread:ForumThread;posts:ForumPost[];configuration:SharedConfiguration|null;issue:{device:string;version:string;steps:string;expected:string;actual:string}|null;following:boolean;bookmarked:boolean;hasMore:boolean}

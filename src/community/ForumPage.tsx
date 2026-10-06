@@ -14,6 +14,7 @@ import { ForumMachines } from './ForumMachines'
 import { ForumDirectory } from './ForumDirectory'
 import { ForumRecentPosts } from './ForumRecentPosts'
 import { ForumShoutbox } from './ForumShoutbox'
+import { ForumShowcase } from './ForumShowcase'
 import { ForumAvatar as Avatar } from './ForumIdentity'
 import { ForumThreadList } from './ForumThreadList'
 import { RichTextEditor } from './ForumEditor'
@@ -37,26 +38,30 @@ function ForumList({query,profile}:{query:URLSearchParams;profile?:string}){
   const heading=(profile?'Public discussions':saved?'Your bookmarks':following?'Following':moduleView?'Module discussions':category&&Object.hasOwn(FORUM_CATEGORIES,category)?FORUM_CATEGORIES[category as ForumCategory]:query.get('q')?'Search results':newest?'New threads':'Latest activity')+(machine&&!profile?' · '+machine.name:'')
   const newParams=new URLSearchParams();if(category)newParams.set('category',category);if(machine)newParams.set('machine',machine.id);if(query.get('module'))newParams.set('module',query.get('module')!)
   const startHref=category==='issues'||session.user?.verified?'#forum/new'+(newParams.size?'?'+newParams.toString():''):session.user?'#account':'#account/register'
+  const shareHref=session.user?.verified?'#forum/new?category=showcase'+(machine?'&machine='+machine.id:''):session.user?'#account':'#account/register'
+  const showcase=overview&&<ForumShowcase machine={machine?.id} shareHref={shareHref}/>
+  const gallery=!profile&&category==='showcase'&&!saved&&!following&&!filtered&&page===0&&<ForumShowcase layout="grid" category="showcase" machine={machine?.id} shareHref={shareHref}/>
   return <>
     {profile&&<BackLink href="#forum">All discussions</BackLink>}
     <div className="page-heading forum-heading"><div><span className="forum-eyebrow">Connect · Create · Explore</span><h1>{profile?'@'+profile:'Community forum'}</h1><p>{profile?'Public threads by this member.':'A place for the people who make their machines do more.'}</p></div><a className="button button-primary" href={startHref}><Icon name="plus" size={16}/><span className="forum-start-long">{category==='issues'?'Report an issue':'Start a thread'}</span><span className="forum-start-short">{category==='issues'?'Report':'New thread'}</span></a></div>
     {profile&&<ForumProfile key={profile} username={profile}/>}
+    {home&&showcase}
     {!profile&&<>
-      <nav className="forum-categories" aria-label="Discussion views">
+      <div className="forum-toolbar"><nav className="forum-categories" aria-label="Discussion views">
         <a aria-current={!newest&&!saved&&!following&&!moduleView?'page':undefined} href={link({sort:'',saved:'',following:'',view:''})}>Latest activity</a>
         <a aria-current={newest&&!saved&&!following&&!moduleView?'page':undefined} href={link({sort:'newest',saved:'',following:'',view:''})}>New threads</a>
         <a aria-current={moduleView?'page':undefined} href={link({view:'modules',sort:'',saved:'',following:'',category:''})}>Module discussions</a>
         {session.user?.verified&&<><a aria-current={following?'page':undefined} href={link({following:'1',saved:'',sort:'',view:''})}><Icon name="message" size={14}/>Following</a><a aria-current={saved?'page':undefined} href={link({saved:'1',following:'',sort:'',view:''})}><Icon name="bookmark" size={14}/>Bookmarks</a></>}
       </nav>
       <form role="search" aria-label="Find discussions" className="forum-filters" onSubmit={event=>{event.preventDefault();const values=new FormData(event.currentTarget),nextMachine=String(values.get('machine')??'');window.location.assign(link({q:String(values.get('q')??'').trim(),category:String(values.get('category')??''),machine:nextMachine,...(nextMachine!==(query.get('machine')??'')?{module:''}:{})}))}}>
-        <label className="forum-search-field"><span>Search</span><span className="forum-search"><Icon name="search" size={17}/><input name="q" type="search" aria-label="Search discussions" defaultValue={query.get('q')??''} maxLength={120} placeholder="Search discussions…"/></span></label>
+        <label className="forum-search-field"><span className="sr-only">Search</span><span className="forum-search"><Icon name="search" size={16}/><input name="q" type="search" aria-label="Search discussions" defaultValue={query.get('q')??''} maxLength={120} placeholder="Search discussions…"/></span></label>
         <button type="button" className={'forum-filter-toggle'+(category||machine?' is-active':'')} aria-label="Topic and machine filters" aria-expanded={filtersOpen} aria-controls="forum-filter-fields" onClick={()=>setFiltersOpen(value=>!value)}><Icon name="sliders" size={18}/></button>
         <div id="forum-filter-fields" className={'forum-filter-fields'+(filtersOpen?' is-open':'')}>
-        <label><span>Topic</span><select aria-label="Filter by category" name="category" defaultValue={category}><option value="">All topics</option>{Object.entries(FORUM_CATEGORIES).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
-        <label><span>Machine</span><select aria-label="Filter by machine" name="machine" defaultValue={machine?.id??''}><option value="">All machines</option>{DEVICES.map(device=><option key={device.id} value={device.id}>{deviceTitle(device)}</option>)}</select></label>
-        <button className="button button-quiet"><Icon name="search" size={16}/>Search</button>
+        <label><span className="sr-only">Topic</span><select aria-label="Filter by category" name="category" defaultValue={category}><option value="">All topics</option>{Object.entries(FORUM_CATEGORIES).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>
+        <label><span className="sr-only">Machine</span><select aria-label="Filter by machine" name="machine" defaultValue={machine?.id??''}><option value="">All machines</option>{DEVICES.map(device=><option key={device.id} value={device.id}>{deviceTitle(device)}</option>)}</select></label>
+        <button className="button button-quiet forum-filter-apply" aria-label="Apply filters"><Icon name="arrow" size={15}/><span className="forum-filter-apply-text">Apply</span></button>
         </div>
-      </form>
+      </form></div>
     </>}
     {!profile&&(query.get('q')||category||query.get('module')||machine)&&<div className="forum-active-filters" aria-label="Active filters">
       <span>Showing</span>
@@ -67,9 +72,11 @@ function ForumList({query,profile}:{query:URLSearchParams;profile?:string}){
       <a className="forum-clear-filters" href={link({q:'',category:'',module:'',machine:''})}>Clear all</a>
     </div>}
     {!profile&&!saved&&!following&&machine&&<div className="forum-machine-header"><span className="forum-machine-art"><DeviceImage device={machine}/></span><div><h2>{machine.name}{machine.variants&&<small> {machine.variants.join(' · ')}</small>}</h2><p>{machine.summary}</p></div><a className="text-button" href={link({machine:'',module:''})}><Icon name="back" size={13}/>All machines</a></div>}
+    {machine&&showcase}
 
     {home&&<details className="forum-machine-directory"><summary><Icon name="grid" size={16}/><span>Browse by machine</span><span>Every Elektron box</span><Icon name="back" size={16}/></summary><ForumMachines href={id=>link({machine:id,category:'',module:''})}/></details>}
     {category&&Object.hasOwn(FORUM_CATEGORIES,category)&&<p className="forum-category-description">{FORUM_CATEGORY_DESCRIPTIONS[category as ForumCategory]} <a className="text-button" href={link({category:''})}><Icon name="back" size={13}/>All topics</a></p>}
+    {gallery}
     {moduleView&&<p className="forum-category-description">The home threads for catalog modules, with settings, questions and feedback collected in one place.</p>}
     <div className={overview?'forum-activity-layout':''}><section className="forum-discussions" aria-labelledby="forum-discussions-title">
       <div className="forum-list-heading"><h2 id="forum-discussions-title">{heading}</h2>{data&&!error&&<span>{data.threads.length}{data.hasMore?'+':''} {data.threads.length===1?'discussion':'discussions'}{page>0?' on this page':''}</span>}</div>

@@ -11,7 +11,7 @@ import { shoutbox } from './shoutbox'
 
 type Thread = {id:string;user_id:string;locked:number;hidden:number;configuration_json:string|null;issue_json:string|null}
 function page(url: URL) { const value = Number(url.searchParams.get('page') ?? 0); if (!Number.isInteger(value) || value < 0 || value > 10000) throw new HttpError(400,'Invalid page.'); return value }
-const threadFields = `t.id,t.title,COALESCE(t.section,t.category) AS category,t.machine,t.module_id,t.status,t.locked,t.pinned,t.created_at,t.updated_at,u.username,t.user_id='${SYSTEM_AUTHOR}' AS official,(SELECT MAX(COUNT(*)-1,0) FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0) AS replies`
+const threadFields = `t.id,t.title,COALESCE(t.section,t.category) AS category,t.machine,t.module_id,t.status,t.locked,t.pinned,t.created_at,t.updated_at,u.username,t.user_id='${SYSTEM_AUTHOR}' AS official,(SELECT MAX(COUNT(*)-1,0) FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0) AS replies,(SELECT GROUP_CONCAT(DISTINCT m.kind) FROM forum_media m JOIN forum_posts mp ON mp.id=m.post_id WHERE mp.thread_id=t.id AND m.removed=0 AND mp.hidden=0) AS media_kinds`
 async function threadById(db: Database, id: string, admin: boolean) {
   const thread = await db.prepare('SELECT * FROM forum_threads WHERE id=? AND (hidden=0 OR ?=1)').bind(id, Number(admin)).first<Thread>()
   if (!thread) throw new HttpError(404,'Thread not found.')
@@ -99,6 +99,21 @@ export async function forum(request: Request, db: Database, user: User|null, adm
       WHERE p.hidden=0 AND t.hidden=0 AND t.user_id<>'${SYSTEM_AUTHOR}' AND (? IS NULL OR t.machine=?)
       AND p.id<>(SELECT first.id FROM forum_posts first WHERE first.thread_id=t.id ORDER BY first.created_at,first.rowid LIMIT 1)
       ORDER BY p.created_at DESC,p.rowid DESC LIMIT 6`).bind(machine,machine).all()).results)
+  }
+  // The newest visible posts with images or sound clips, module threads included; bug reports are not showcase material.
+  if (path === '/api/forum/showcase' && request.method === 'GET') {
+    let machine: string | null
+    try { machine=forumMachine(url.searchParams.get('machine')) } catch { throw new HttpError(400,'Unknown machine.') }
+    const category = url.searchParams.get('category')
+    if (category !== null && (!Object.hasOwn(FORUM_CATEGORIES,category) || category === 'issues')) throw new HttpError(400,'Unknown category.')
+    const posts = (await db.prepare(`SELECT p.id,p.thread_id,p.created_at,u.username,p.user_id='${SYSTEM_AUTHOR}' AS official,t.title,COALESCE(t.section,t.category) AS category,t.machine,
+      (SELECT CAST(COUNT(*)/30 AS INTEGER) FROM forum_posts preceding WHERE preceding.thread_id=t.id AND (preceding.created_at<p.created_at OR (preceding.created_at=p.created_at AND preceding.rowid<p.rowid))) AS page
+      FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id JOIN users u ON u.id=p.user_id
+      WHERE p.id IN (SELECT m.post_id FROM forum_media m WHERE m.removed=0 AND m.post_id IS NOT NULL)
+      AND p.hidden=0 AND t.hidden=0 AND t.category<>'issues' AND (? IS NULL OR t.machine=?) AND (? IS NULL OR COALESCE(t.section,t.category)=?)
+      ORDER BY p.created_at DESC,p.rowid DESC LIMIT 12`).bind(machine,machine,category,category).all<{id:string}>()).results
+    const attachments = await postAttachments(db,posts.map(post=>post.id))
+    return response(posts.map(post=>({...post,attachments:attachments.get(post.id)??[]})))
   }
 
   if (path === '/api/forum/machines' && request.method === 'GET') {

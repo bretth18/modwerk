@@ -21,6 +21,7 @@ export function ForumThreadList({ threads }: { threads: ForumThread[] }) {
               <h3 id={'thread-title-' + thread.id}><a className="forum-thread-title" href={'#forum/thread/' + thread.id}>{thread.title}</a></h3>
               <div className="forum-thread-tags">
                 <ForumCategoryBadge category={thread.category} />
+                {thread.media_kinds && <span className="forum-thread-media">{thread.media_kinds.includes('image') && <><Icon name="image" size={14} /><span className="sr-only">Includes images</span></>}{thread.media_kinds.includes('audio') && <><Icon name="wave" size={14} /><span className="sr-only">Includes sound clips</span></>}</span>}
                 <ForumMachineBadge machine={thread.machine} />
                 {thread.module_id && <a className="forum-module-link" href={communityModule(thread.module_id)?.href ?? '#forum'}>{communityModule(thread.module_id)?.name ?? thread.module_id}</a>}
                 <span className="forum-thread-author"><ForumAuthorName username={thread.username} official={thread.official} /></span>

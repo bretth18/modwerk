@@ -117,6 +117,43 @@ describe('forum images and sound clips',()=>{
   await cleanupForumMedia(f.env)
   expect(f.objects.size).toBe(0)
  })
+ it('shows the newest posts with files in the Showcase with their reply page, leaving out bug reports, hidden posts and removed files',async()=>{
+  const f=await fixture(),author=await f.member('author')
+  type Item={id:string;thread_id:string;attachments:unknown[]}
+  const showcase=async(query='')=>(await(await f.call('/forum/showcase'+query)).json()) as Item[]
+  const photo=(await(await f.upload(png(),author)).json()).id
+  const desk=await(await f.call('/forum/threads','POST',{...thread,machine:'digitakt',attachments:[{id:photo,caption:'Desk'}]},author)).json()
+  const {id}=await(await f.call('/forum/threads','POST',{title:'Long jam thread',body:'Opening',category:'showcase',machine:'octatrack'},author)).json()
+  const userId=String(f.db.prepare('SELECT user_id FROM forum_posts WHERE thread_id=?').get(id)!.user_id)
+  for(let index=0;index<30;index++)f.db.prepare('INSERT INTO forum_posts(id,thread_id,user_id,body) VALUES(?,?,?,?)').run('jam-'+index,id,userId,'Reply '+index)
+  const clip=(await(await f.upload(ogg(),author)).json()).id,still=(await(await f.upload(png(),author)).json()).id
+  expect((await f.call('/forum/threads/'+id+'/replies','POST',{body:'Second take',attachments:[{id:clip},{id:still}]},author)).status).toBe(201)
+  const bug=(await(await f.upload(png(),author)).json()).id
+  const report=await(await f.call('/forum/threads','POST',{...thread,title:'Crash on load',attachments:[{id:bug}]},author)).json()
+  f.db.prepare("UPDATE forum_threads SET category='issues' WHERE id=?").run(report.id)
+  const items=await showcase()
+  expect(items.map(item=>item.thread_id)).toEqual([id,desk.id])
+  expect(items[0]).toMatchObject({page:1,category:'showcase',machine:'octatrack',username:'author',attachments:[{id:clip,kind:'audio',caption:''},{id:still,kind:'image',caption:''}]})
+  expect(items[1]).toMatchObject({page:0,machine:'digitakt',attachments:[{id:photo,kind:'image',caption:'Desk'}]})
+  expect(JSON.stringify(items)).not.toMatch(/user_id|email|object_key|bytes/)
+  expect((await(await f.call('/forum/threads/'+id+'?page=1')).json()).posts.some((post:{id:string})=>post.id===items[0].id)).toBe(true)
+  expect((await showcase('?machine=digitakt')).map(item=>item.thread_id)).toEqual([desk.id])
+  expect((await showcase('?category=showcase')).map(item=>item.thread_id)).toEqual([id])
+  expect((await f.call('/forum/showcase?machine=unknown')).status).toBe(400)
+  expect((await f.call('/forum/showcase?category=issues')).status).toBe(400)
+  // Thread rows say which kinds of files a discussion carries.
+  const rows=(await(await f.call('/forum/threads')).json()).threads as {id:string;media_kinds:string|null}[]
+  expect(rows.find(row=>row.id===id)!.media_kinds!.split(',').sort()).toEqual(['audio','image'])
+  expect(rows.find(row=>row.id===desk.id)!.media_kinds).toBe('image')
+  expect((await f.call('/forum/media/'+still,'DELETE',undefined,author)).status).toBe(200)
+  expect((await showcase())[0].attachments).toEqual([{id:clip,kind:'audio',caption:''}])
+  expect((await f.call('/forum/media/'+clip,'DELETE',undefined,author)).status).toBe(200)
+  expect((await showcase()).map(item=>item.thread_id)).toEqual([desk.id])
+  expect((await(await f.call('/forum/threads')).json()).threads.find((row:{id:string})=>row.id===id).media_kinds).toBeNull()
+  const opening=(await(await f.call('/forum/threads/'+desk.id)).json()).posts[0].id
+  await f.call('/admin/forum/posts/'+opening,'PATCH',{action:'hidden',value:true,reason:'Hide the photo'},'',await f.admin())
+  expect(await showcase()).toEqual([])
+ })
  it('caps uploads per member per day',async()=>{
   const f=await fixture(),session=await f.member('busy')
   for(let index=0;index<FORUM_MEDIA.dailyFiles;index++)expect((await f.upload(png(),session)).status).toBe(201)

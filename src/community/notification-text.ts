@@ -18,7 +18,7 @@ function excerpt(value: string | null) {
 export function notificationLines(items: BellItem[], link: (hash: string) => string = hash => hash): NotificationLine[] {
   const moduleName = (id: string | null) => (id && communityModule(id)?.name) ?? id ?? 'your module'
   const moduleHref = (id: string | null) => link((id && communityModule(id)?.href) ?? '#library')
-  const threadHref = (item: BellItem) => link('#forum/thread/' + item.thread_id + (item.post_id && item.post_id !== item.thread_id ? '?post=' + item.post_id : ''))
+  const threadHref = (item: BellItem) => link('#forum/thread/' + item.thread_id + (item.post_id && item.post_id !== item.thread_id ? '?post=' + item.post_id + (item.post_page ? '&page=' + item.post_page : '') : ''))
   const lines: (NotificationLine | BellItem[])[] = [], groups = new Map<string, BellItem[]>()
   for (const item of items) {
     if (item.kind === 'post_like' || item.kind === 'module_like') {
