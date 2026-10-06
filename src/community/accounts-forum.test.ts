@@ -4,7 +4,6 @@ import { testServer } from './test-server'
 import type { DatabaseSync } from 'node:sqlite'
 import { digest } from '../../server/security'
 import { MODULES } from '../catalog/modules'
-import { COMMUNITY_MODULES } from './modules'
 import { handleCommunity } from '../../server/transport'
 const databases:DatabaseSync[]=[]
 const sent:{to:string[];text:string}[]=[]
@@ -35,8 +34,8 @@ describe('verified email accounts',()=>{
   const listed=await(await call('/forum/threads?machine=digitakt')).json();expect(listed.threads.filter((item:{official:number})=>!item.official).map((item:{title:string;machine:string})=>[item.title,item.machine])).toEqual([['Slicing ideas','digitakt']])
   expect((await(await call('/forum/threads?machine=octatrack')).json()).threads[0].machine).toBe('octatrack')
   expect((await call('/forum/threads?machine=not-a-box')).status).toBe(400)
-  const machines=await(await call('/forum/machines')).json();const moduleThreads=(machine:string)=>COMMUNITY_MODULES.filter(module=>module.machine===machine).length
-  expect(Object.fromEntries(machines.map((row:{machine:string;threads:number})=>[row.machine,row.threads]))).toEqual({digitakt:moduleThreads('digitakt')+1,digitone:moduleThreads('digitone'),octatrack:moduleThreads('octatrack')+1})
+  const machines=await(await call('/forum/machines')).json()
+  expect(Object.fromEntries(machines.map((row:{machine:string;threads:number})=>[row.machine,row.threads]))).toEqual({digitakt:1,octatrack:1})
  })
  it('requires inbox verification and a signed session, keeping secrets out of public/session responses',async()=>{
   const {call,db}=await fixture(),email='listener@example.test'

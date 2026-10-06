@@ -355,16 +355,16 @@ describe('public bug reporting and developer delivery',()=>{
 describe('module forum threads',()=>{
   it('gives every catalog module one server-created thread that its claimed maintainers follow',async()=>{
     const {call,githubLogin,member,db,env}=await fixture()
-    const listed=await(await call('/forum/threads?module=digitakt-digihealth')).json()
+    const listed=await(await call('/forum/threads?view=modules&module=digitakt-digihealth')).json()
     expect(listed.threads[0]).toMatchObject({id:'module-digitakt-digihealth',title:COMMUNITY_MODULES.find(module=>module.id==='digitakt-digihealth')!.name+' discussion',category:'modules',machine:'digitakt',module_id:'digitakt-digihealth',username:null,official:1,replies:0})
     expect(db.prepare("SELECT module_id FROM forum_threads WHERE user_id='modwerk' ORDER BY module_id").all().map(row=>row.module_id)).toEqual(COMMUNITY_MODULES.map(module=>module.id).sort())
     const detail=await(await call('/forum/threads/module-miniverb')).json()
     expect(detail.posts).toHaveLength(1);expect(detail.posts[0]).toMatchObject({official:true,canEdit:false,username:null})
     expect(detail.posts[0].body).toContain(COMMUNITY_MODULES.find(module=>module.id==='miniverb')!.summary)
-    // A user thread about the module still lists after the home thread when filtering by that module.
+    // Member threads about a module stay in the community view.
     const reader=await member('reader')
     expect((await call('/forum/threads','POST',{title:'Mini Verb on drums',body:'Short decay works.',category:'modules',moduleId:'miniverb'},reader.token)).status).toBe(201)
-    expect((await(await call('/forum/threads?module=miniverb')).json()).threads.map((item:{id:string})=>item.id)[0]).toBe('module-miniverb')
+    expect((await(await call('/forum/threads?module=miniverb')).json()).threads.map((item:{title:string})=>item.title)).toEqual(['Mini Verb on drums'])
     const developer=await githubLogin()
     expect((await call('/developer/modules/digitakt-digihealth/claim','POST',{},'',developer.token)).status).toBe(201)
     expect((await call('/forum/threads/module-digitakt-digihealth/replies','POST',{body:'Does FAST AUDIO help with SOPHIE?'},reader.token)).status).toBe(201)

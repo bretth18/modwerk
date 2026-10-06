@@ -7,16 +7,17 @@ import { DEVICES, STATUS_LABELS } from '../devices/registry'
 
 // The forum's front page groups discussions by machine, every Elektron machine included.
 export function ForumMachines({ href }: { href: (machine: string) => string }) {
-  const [summary, setSummary] = useState<Record<string, ForumMachineSummary>>({})
-  useEffect(() => { let cancelled = false; void api<ForumMachineSummary[]>('/forum/machines').then(rows => { if (!cancelled) setSummary(Object.fromEntries(rows.map(row => [row.machine, row]))) }).catch(() => {}); return () => { cancelled = true } }, [])
+  const [summary, setSummary] = useState<Record<string, ForumMachineSummary> | null>(null), [unavailable, setUnavailable] = useState(false)
+  useEffect(() => { let cancelled = false; void api<ForumMachineSummary[]>('/forum/machines').then(rows => { if (!cancelled) setSummary(Object.fromEntries(rows.map(row => [row.machine, row]))) }).catch(() => { if (!cancelled) setUnavailable(true) }); return () => { cancelled = true } }, [])
   return (
     <section className="forum-machines" aria-labelledby="forum-machines-title">
       <div className="forum-list-heading"><h2 id="forum-machines-title">Machines</h2><span>Every Elektron box, with or without mods</span></div>
       <div className="forum-machine-grid">{DEVICES.map(device => {
-        const threads = summary[device.id]?.threads ?? 0
+        const threads = summary?.[device.id]?.threads ?? 0
+        const activity = summary ? threads ? threads + (threads === 1 ? ' discussion' : ' discussions') : 'No discussions yet' : unavailable ? 'Browse discussions' : 'Loading discussions…'
         return <a key={device.id} href={href(device.id)} className={'forum-machine-card is-' + device.status} title={device.name + ' · ' + STATUS_LABELS[device.status]}>
           <span className="forum-machine-art"><DeviceImage device={device} /></span>
-          <span className="forum-machine-copy"><strong>{device.name}</strong>{device.variants && <small>{device.variants.join(' · ')}</small>}<small className={'forum-machine-count is-' + device.status}>{threads ? threads + (threads === 1 ? ' discussion' : ' discussions') : 'No discussions yet'}</small></span>
+          <span className="forum-machine-copy"><strong>{device.name}</strong>{device.variants && <small>{device.variants.join(' · ')}</small>}<small className="forum-machine-count">{activity}</small></span>
         </a>
       })}</div>
       <details className="photo-credits"><summary>Image credits</summary><p>Machine images come from elektronmods.com, used with permission, and from Wikimedia Commons under their authors’ free licences. Elektron product names identify the machines only; Modwerk is not affiliated with Elektron.</p><ul>{DEVICES.filter(device => MACHINE_PHOTOS[device.id]).map(device => { const photo = MACHINE_PHOTOS[device.id]; return <li key={device.id}>{device.name}{device.variants ? ' ' + device.variants.join(' / ') : ''}: <a href={photo.source} target="_blank" rel="noreferrer">{photo.author}</a>, {photo.licenseUrl ? <a href={photo.licenseUrl} target="_blank" rel="noreferrer">{photo.license}</a> : photo.license.toLowerCase()}</li> })}</ul></details>

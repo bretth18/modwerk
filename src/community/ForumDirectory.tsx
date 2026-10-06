@@ -7,10 +7,10 @@ const icons:Record<ForumCategory,IconName>={general:'message',introductions:'hea
 export function ForumDirectory({href,machine}:{href:(category:string)=>string;machine?:string}){
   const [data,setData]=useState<ForumCategorySummary[]|null>(null),[error,setError]=useState('')
   useEffect(()=>{let cancelled=false;void api<ForumCategorySummary[]>('/forum/categories'+(machine?'?machine='+machine:'')).then(value=>{if(!cancelled)setData(value)}).catch(()=>{if(!cancelled)setError('Category counts are unavailable. You can still browse topics.')});return()=>{cancelled=true}},[machine])
-  return <section className="forum-directory" aria-labelledby="forum-directory-title"><div className="forum-list-heading"><h2 id="forum-directory-title">Find your conversation</h2><span>Browse by topic</span></div>
+  return <section className="forum-directory" aria-labelledby="forum-directory-title"><div className="forum-list-heading"><h2 id="forum-directory-title">Explore topics</h2><span>Find your conversation</span></div>
     <div className="forum-topic-grid">{Object.entries(FORUM_CATEGORIES).map(([key,label])=>{
       const count=data?.find(item=>item.category===key)
-      return <a key={key} href={href(key)} className="forum-topic-card" data-category={key}><Icon name={icons[key as ForumCategory]} size={18}/><div><h3>{label}</h3><p>{FORUM_CATEGORY_DESCRIPTIONS[key as ForumCategory]}</p><small>{data?(count?.threads??0)+' discussions · '+(count?.replies??0)+' replies':error?'Browse discussions':'Loading counts…'}</small></div><Icon name="arrow" size={14}/></a>
+      return <a key={key} href={href(key)} className="forum-topic-card" data-category={key}><span className="forum-topic-icon"><Icon name={icons[key as ForumCategory]} size={18}/></span><div className="forum-topic-copy"><h3>{label}</h3><p>{FORUM_CATEGORY_DESCRIPTIONS[key as ForumCategory]}</p><small>{data?(count?.threads??0)+' '+(count?.threads===1?'discussion':'discussions')+' · '+(count?.replies??0)+' '+(count?.replies===1?'reply':'replies'):error?'Browse discussions':'Loading counts…'}</small></div><Icon name="arrow" size={14}/></a>
     })}</div>{error&&<p className="service-note">{error}</p>}
   </section>
 }

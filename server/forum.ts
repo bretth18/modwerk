@@ -60,11 +60,15 @@ export async function forum(request: Request, db: Database, user: User|null, adm
   if (path === '/api/forum/threads' && request.method === 'GET') {
     const category = url.searchParams.get('category') ?? '', module = await moduleId(db,url.searchParams.get('module')), query = (url.searchParams.get('q') ?? '').trim().slice(0,120), saved = url.searchParams.get('saved') === '1', following = url.searchParams.get('following') === '1', author = url.searchParams.get('author') ?? ''
     const sort = url.searchParams.get('sort') ?? 'active'
+    const view = url.searchParams.get('view') ?? 'community'
+    if (!['community','modules'].includes(view)) throw new HttpError(400,'Choose a supported discussion view.')
     if (!['active','newest'].includes(sort)) throw new HttpError(400,'Choose a supported discussion order.')
     if (category && !Object.hasOwn(FORUM_CATEGORIES,category)) throw new HttpError(400,'Unknown category.')
     let machine: string | null
     try { machine = forumMachine(url.searchParams.get('machine')) } catch { throw new HttpError(400,'Unknown machine.') }
     if (saved || following) needMember(user)
+    // Personal lists retain module homes the member has chosen to follow or save.
+    const authorScope = view === 'modules' ? `AND t.user_id='${SYSTEM_AUTHOR}'` : saved || following ? '' : `AND t.user_id<>'${SYSTEM_AUTHOR}'`
     const escaped = '%' + query.replace(/[\\%_]/g, '\\$&') + '%'
     const rows = (await db.prepare(`SELECT ${threadFields},
       lp.id AS last_post_id,lu.username AS last_username,substr(lp.body,1,160) AS last_excerpt,
@@ -72,11 +76,11 @@ export async function forum(request: Request, db: Database, user: User|null, adm
       FROM forum_threads t JOIN users u ON u.id=t.user_id
       LEFT JOIN forum_posts lp ON lp.id=(SELECT p.id FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0 ORDER BY p.created_at DESC,p.rowid DESC LIMIT 1)
       LEFT JOIN users lu ON lu.id=lp.user_id
-      WHERE t.hidden=0 AND (?='' OR COALESCE(t.section,t.category)=?) AND (? IS NULL OR t.machine=?) AND (? IS NULL OR t.module_id=?) AND (?='' OR u.username=?) AND (?=0 OR EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?))
+      WHERE t.hidden=0 ${authorScope} AND (?='' OR COALESCE(t.section,t.category)=?) AND (? IS NULL OR t.machine=?) AND (? IS NULL OR t.module_id=?) AND (?='' OR u.username=?) AND (?=0 OR EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?))
       AND (?=0 OR EXISTS(SELECT 1 FROM forum_follows f WHERE f.thread_id=t.id AND f.user_id=?))
       AND (?='' OR t.title LIKE ? ESCAPE '\\' OR EXISTS(SELECT 1 FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0 AND p.body LIKE ? ESCAPE '\\'))
-      ORDER BY t.pinned DESC,(? IS NOT NULL AND t.user_id='${SYSTEM_AUTHOR}') DESC,${sort==='newest'?'t.created_at':'t.updated_at'} DESC,t.id LIMIT 31 OFFSET ?`)
-      .bind(category,category,machine,machine,module,module,author,author,Number(saved),user?.id??'',Number(following),user?.id??'',query,escaped,escaped,module,page(url)*30).all()).results
+      ORDER BY t.pinned DESC,${sort==='newest'?'t.created_at':'t.updated_at'} DESC,t.id LIMIT 31 OFFSET ?`)
+      .bind(category,category,machine,machine,module,module,author,author,Number(saved),user?.id??'',Number(following),user?.id??'',query,escaped,escaped,page(url)*30).all()).results
     return response({threads:rows.slice(0,30),hasMore:rows.length>30})
   }
   if (path === '/api/forum/categories' && request.method === 'GET') {
@@ -84,7 +88,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     try { machine=forumMachine(url.searchParams.get('machine')) } catch { throw new HttpError(400,'Unknown machine.') }
     return response((await db.prepare(`SELECT COALESCE(t.section,t.category) AS category,COUNT(*) AS threads,
       SUM((SELECT MAX(COUNT(*)-1,0) FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0)) AS replies
-      FROM forum_threads t WHERE t.hidden=0 AND (? IS NULL OR t.machine=?) GROUP BY COALESCE(t.section,t.category)`).bind(machine,machine).all()).results)
+      FROM forum_threads t WHERE t.hidden=0 AND t.user_id<>'${SYSTEM_AUTHOR}' AND (? IS NULL OR t.machine=?) GROUP BY COALESCE(t.section,t.category)`).bind(machine,machine).all()).results)
   }
   if (path === '/api/forum/recent-posts' && request.method === 'GET') {
     let machine: string | null
@@ -92,13 +96,13 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     return response((await db.prepare(`SELECT p.id,p.thread_id,p.created_at,substr(p.body,1,220) AS excerpt,u.username,p.user_id='${SYSTEM_AUTHOR}' AS official,t.title,COALESCE(t.section,t.category) AS category,t.machine,
       (SELECT CAST(COUNT(*)/30 AS INTEGER) FROM forum_posts preceding WHERE preceding.thread_id=t.id AND (preceding.created_at<p.created_at OR (preceding.created_at=p.created_at AND preceding.rowid<p.rowid))) AS page
       FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id JOIN users u ON u.id=p.user_id
-      WHERE p.hidden=0 AND t.hidden=0 AND (? IS NULL OR t.machine=?)
+      WHERE p.hidden=0 AND t.hidden=0 AND t.user_id<>'${SYSTEM_AUTHOR}' AND (? IS NULL OR t.machine=?)
       AND p.id<>(SELECT first.id FROM forum_posts first WHERE first.thread_id=t.id ORDER BY first.created_at,first.rowid LIMIT 1)
       ORDER BY p.created_at DESC,p.rowid DESC LIMIT 6`).bind(machine,machine).all()).results)
   }
 
   if (path === '/api/forum/machines' && request.method === 'GET') {
-    return response((await db.prepare('SELECT machine,COUNT(*) AS threads,MAX(updated_at) AS updated_at FROM forum_threads WHERE hidden=0 AND machine IS NOT NULL GROUP BY machine').all()).results)
+    return response((await db.prepare('SELECT machine,COUNT(*) AS threads,MAX(updated_at) AS updated_at FROM forum_threads WHERE hidden=0 AND user_id<>? AND machine IS NOT NULL GROUP BY machine').bind(SYSTEM_AUTHOR).all()).results)
   }
   if (path === '/api/forum/notifications' && request.method === 'GET') {
     const member = needMember(user)

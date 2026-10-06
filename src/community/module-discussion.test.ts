@@ -18,6 +18,47 @@ async function fixture(){
 }
 
 describe('one module discussion',()=>{
+  it('keeps member feeds, pagination and summaries separate from automatic module homes',async()=>{
+    const {call,db,id,token}=await fixture()
+    expect((await (await call('/forum/threads')).json()).threads).toEqual([])
+    for(let index=0;index<31;index++){
+      const thread='member-'+index
+      db.prepare("INSERT INTO forum_threads(id,user_id,title,category,machine,module_id,created_at) VALUES(?,?,'Mini Verb settings','modules','octatrack','miniverb','2025-01-01')").run(thread,id)
+      db.prepare("INSERT INTO forum_posts(id,thread_id,user_id,body,created_at) VALUES(?,?,?,'My settings','2025-01-01')").run(thread,thread,id)
+    }
+    for(let index=0;index<40;index++)db.prepare("INSERT INTO forum_threads(id,user_id,title,category,machine) VALUES(?,'modwerk','Catalog home','modules','octatrack')").run('catalog-'+index)
+    await call('/forum/threads/member-0/replies','POST',{body:'A member conversation'},token)
+    await call('/forum/threads/module-miniverb/replies','POST',{body:'A module home conversation'},token)
+    for(const query of ['', '?sort=newest','?category=modules&machine=octatrack','?module=miniverb','?q=Mini%20Verb']){
+      const first=await (await call('/forum/threads'+query)).json()
+      expect(first.threads).toHaveLength(30)
+      expect(first.hasMore).toBe(true)
+      expect(first.threads.every((thread:{official:number})=>!thread.official)).toBe(true)
+      const next=await (await call('/forum/threads'+(query?query+'&':'?')+'page=1')).json()
+      expect(next.threads).toHaveLength(1)
+      expect(next.hasMore).toBe(false)
+      expect(new Set([...first.threads,...next.threads].map((thread:{id:string})=>thread.id)).size).toBe(31)
+    }
+    const homes=await (await call('/forum/threads?view=modules')).json()
+    expect(homes.hasMore).toBe(true)
+    expect(homes.threads.every((thread:{official:number})=>thread.official)).toBe(true)
+    expect((await (await call('/forum/threads?view=modules&module=miniverb')).json()).threads.map((thread:{id:string})=>thread.id)).toEqual(['module-miniverb'])
+    expect(await (await call('/forum/categories')).json()).toEqual([{category:'modules',threads:31,replies:1}])
+    expect(await (await call('/forum/machines')).json()).toEqual([expect.objectContaining({machine:'octatrack',threads:31})])
+    expect((await (await call('/forum/recent-posts')).json()).map((post:{thread_id:string})=>post.thread_id)).toEqual(['member-0'])
+    db.prepare("UPDATE forum_threads SET hidden=1 WHERE id='module-miniverb'").run()
+    expect((await (await call('/forum/threads?view=modules&module=miniverb')).json()).threads).toEqual([])
+    expect((await call('/forum/threads?view=unknown')).status).toBe(400)
+  })
+
+  it('retains module homes in personal follows and bookmarks and direct module links',async()=>{
+    const {call,token}=await fixture()
+    for(const action of ['follow','bookmark'])expect((await call('/forum/threads/module-miniverb/'+action,'POST',{enabled:true},token)).status).toBe(200)
+    for(const view of ['following','saved'])expect((await (await call('/forum/threads?'+view+'=1','GET',undefined,token)).json()).threads.map((thread:{id:string})=>thread.id)).toEqual(['module-miniverb'])
+    expect((await (await call('/forum/threads/module-miniverb')).json()).thread.id).toBe('module-miniverb')
+    expect((await call('/modules/miniverb')).status).toBe(200)
+  })
+
   it('shares replies, edits, moderation and counts between the module API and forum',async()=>{
     const {call,db,token}=await fixture()
     const legacy=await call('/modules/miniverb/comments','POST',{body:'A question from the module page.'},token)
@@ -79,7 +120,7 @@ describe('one module discussion',()=>{
       expect(posted.status).toBe(200)
       const detail=await (await call('/forum/threads/module-'+module)).json()
       expect(detail.thread).toMatchObject({module_id:module,replies:1,official:1})
-      expect((await (await call('/forum/threads?module='+module)).json()).threads[0].id).toBe('module-'+module)
+      expect((await (await call('/forum/threads?view=modules&module='+module)).json()).threads[0].id).toBe('module-'+module)
     }
     expect((await call('/forum/threads?module=does-not-exist')).status).toBe(400)
   })

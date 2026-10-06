@@ -13,7 +13,7 @@ export function RichTextEditor({id,label,value,onChange,name,placeholder='Write 
       link:{openOnClick:false,defaultProtocol:'https',isAllowedUri:href=>!!forumLink(href),HTMLAttributes:{rel:'noopener noreferrer nofollow',target:'_blank'}},
     }),Markdown],
     content:value,contentType:'markdown',editable:!disabled,
-    editorProps:{attributes:{id,role:'textbox','aria-label':label,'aria-multiline':'true','data-placeholder':placeholder}},
+    editorProps:{attributes:{id,role:'textbox','aria-label':label,'aria-multiline':'true','aria-describedby':id+'-editor-hint','data-placeholder':placeholder}},
     onUpdate:({editor:current})=>onChange(current.isEmpty?'':current.getMarkdown()),
   })
   const state=useEditorState({editor,selector:({editor:current})=>current?{
@@ -44,7 +44,7 @@ export function RichTextEditor({id,label,value,onChange,name,placeholder='Write 
     {label:'Code block',text:'{ }',active:state?.code,run:()=>editor?.chain().focus().toggleCodeBlock().run()},
   ]
   return <div className="forum-editor">
-    <div className="forum-editor-toolbar" role="group" aria-label={label+' formatting'}>
+    <div className="forum-editor-toolbar" role="group" aria-label={label+' formatting'} aria-controls={id}>
       {tools.map(tool=><button key={tool.label} type="button" title={tool.label} aria-label={tool.label} aria-pressed={!!tool.active} disabled={disabled||source||!editor} onMouseDown={event=>event.preventDefault()} onClick={tool.run}>{tool.text}</button>)}
       <button type="button" title="Add or edit a link" aria-pressed={!!state?.link} disabled={disabled||source||!editor} onMouseDown={event=>event.preventDefault()} onClick={()=>{setUrl(String(editor?.getAttributes('link').href??''));setError('');setLinkOpen(current=>!current)}}>Link</button>
       <button type="button" aria-label="Undo" disabled={disabled||source||!state?.undo} onMouseDown={event=>event.preventDefault()} onClick={()=>editor?.chain().focus().undo().run()}>↶</button>
@@ -52,8 +52,8 @@ export function RichTextEditor({id,label,value,onChange,name,placeholder='Write 
       <button type="button" className="forum-editor-source" aria-pressed={source} disabled={disabled} onClick={()=>{setSource(current=>!current);setLinkOpen(false)}}>Markdown</button>
     </div>
     {linkOpen&&<div className="forum-editor-link"><label htmlFor={id+'-link'}>Link address</label><input id={id+'-link'} type="url" value={url} placeholder="https://…" onChange={event=>setUrl(event.target.value)} onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();saveLink()}if(event.key==='Escape'){event.preventDefault();setLinkOpen(false);editor?.commands.focus()}}}/><button type="button" className="text-button" onClick={saveLink}>Apply</button>{state?.link&&<button type="button" className="text-button" onClick={()=>{editor?.chain().focus().extendMarkRange('link').unsetLink().run();setLinkOpen(false)}}>Remove link</button>}<button type="button" className="text-button" onClick={()=>setLinkOpen(false)}>Cancel</button>{error&&<p className="file-error" role="alert">{error}</p>}</div>}
-    {source?<textarea id={id+'-source'} aria-label={label+' Markdown'} value={value} disabled={disabled} maxLength={12000} rows={8} onChange={event=>onChange(event.target.value)} placeholder={placeholder}/>:<EditorContent editor={editor}/>}
+    {source?<textarea id={id} aria-label={label+' Markdown'} aria-describedby={id+'-editor-hint'} value={value} disabled={disabled} maxLength={12000} rows={8} onChange={event=>onChange(event.target.value)} placeholder={placeholder}/>:<EditorContent editor={editor}/>}
     {name&&<input type="hidden" name={name} value={value}/>}
-    <div className="forum-editor-footer"><span>{source?'Edit Markdown directly.':'Select text to format it. Ctrl/⌘ + B or I works too.'}</span><span className={value.length>12000?'file-error':''}>{value.length.toLocaleString()} / 12,000</span></div>
+    <div className="forum-editor-footer"><span id={id+'-editor-hint'}>{source?'Edit Markdown directly.':'Select text to format it. Ctrl/⌘ + B or I works too.'}</span><span className={value.length>12000?'file-error':''}>{value.length.toLocaleString()} / 12,000</span></div>
   </div>
 }
