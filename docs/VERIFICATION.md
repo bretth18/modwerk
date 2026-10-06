@@ -789,3 +789,49 @@ The clean standard source-only build and importer pass with four guarded zero re
 On Node 24, `npm run check` passes all 794 Vitest tests, generated-module/licence/machine/vendor checks, SDK checks, lint, type checking and the production bundle. Private firmware, linked runtimes, cards, LCD dumps and native executables stay outside Git.
 
 The website common worker also builds VECTOR 0.2.3: MAIN `9ecf5b58e489a0bd59bb4e6f6ab88c2487ecd874bfa0a7af3f795c2189d75e61`, update `051818edea53faefd732f46acbd50eda1dd33dea50d46405f5794885f43d947a`. Full container round-trip, stock seed/tail preservation, Analog BD/FM conflict refusals, changed-base rejection and stale-session invalidation pass. This packaging check does not replace the separately tested native emulator image or qualify hardware.
+
+## elekloader's other Digitakt and Digitone mods — 6 October 2026
+
+The import of digichain, Digi EQ, Digi Matrix, Digi Mono, Digi Poly, Digi utilities and digitables ([decision](DECISIONS.md)).
+
+**Imported files.**
+- Every file in `sdk/imports/elemod-2026-10-06.json` was copied from the pinned commit with LF line endings and matches its recorded SHA-256. The one exception is Digi utilities' `src/osc_data.s`, whose transformation is recorded.
+- `src/spec_sin.inc` was assembled with `m68k-linux-gnu-as`. It gives the author's `bin/spec_sin.bin` byte for byte (514 bytes).
+- Each `build.json` is the conversion of the author's `mod.json`. elekloader's ports replace the top level's keys, so each release carries its complete defsym, cflags and sites.
+- Each module's claims are the names in its released `.elemod`, which elekloader checks.
+- Each TESTING.md lists the combinations the builder checked, as the module guides ask.
+
+**Source builds, as CI does them.**
+- `scripts/build-elemod-packages.mjs`'s steps were run with WSL's `m68k-linux-gnu-gcc` 15.2 and binutils, not CI's container:
+  - the same flags, `-I src`, defsyms and `ld -r` linker script;
+  - `elfToElemod` and `parseElemod` on the result.
+- All 13 module and release builds compile, link and parse.
+
+**The released files** (13, each matching elekloader's catalog pin). They were checked with the vendored builder, using the owner's stock files kept locally.
+- **Each mod builds on its own,** with what it requires, linked and verified:
+  - Digitakt 1.53: digichain `5dcead8c…`, Digi EQ `c2017f90…`, Digi Matrix `41f337c2…`, Digi Mono with digichain `0398b1d7…`, Digi Poly with digichain `53b3776e…`, Digi utilities `a1641ca2…`.
+  - Digitakt 1.54: `a5e6a765…`, `b8f0663d…`, `c49d12a1…`, `30f8c005…`, `bb19da68…`, `6e202625…`, in the same order.
+  - Digitone 1.43: digitables `aea014f6…`, and digihealth with core 2.2 `508c42a2…`.
+- **Beside every other mod for its OS:**
+  - digichain, Digi Mono and Digi Poly are refused beside NEIGHBOR, DIGISLICER and SOPHIE, whose sites overlap;
+  - every other pair combines.
+- **Memory** is `.run`, `.bss` and 4 bytes per table entry, the figure SOPHIE's manifest uses (8,722 B):
+  - digichain 1,828 B; Digi EQ 9,090 B; Digi Matrix 4,293 B; Digi Mono 32,235 B;
+  - Digi Poly 4,983 B; Digi utilities 9,080 B; digitables 9,061 B.
+
+**Browser.** The development server ran with the local stand-in for the community API.
+- The Digitakt library lists ten modules, each card with its cover art.
+- digichain + Digi Mono on Digitakt 1.53 built and verified `0398b1d7…`.
+- With SOPHIE added:
+  - the library's estimate reported "digichain and SOPHIE cannot be used together";
+  - the builder refused it, naming the overlapping sites.
+- digitables on Digitone 1.43 built and verified `aea014f6…` with core 2.2.
+
+**Checks (Node 24, Windows 11).**
+- **Pass:** `licenses:check`, `machines:check`, `modules:check`, `elekloader:check`, `sdk:check`, `lint` and the production build.
+- **Vitest,** on main `f595681`: 826 pass. Four fail here and on main alike: `scaffold.test.ts` and `module-source.test.mjs` need `python3`, `module-publication.test.ts` needs a git identity, and `module-pages.test.mjs` builds a `C:\C:\` path on Windows.
+- **`service.test.ts`:** the popularity test rated each Digitakt/Digitone module `index + 1`, which passes 5 with more than five of them. It now rates `index % 5 + 1`.
+- **`module:doctor`** is green for all seven.
+- **Not run:**
+  - no hardware test, and no build in CI's container;
+  - stock files and builds stayed local and temporary.

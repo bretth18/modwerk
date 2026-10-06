@@ -15,7 +15,7 @@ describe('elekloader kit with the vendored catalog', () => {
   it('loads the catalog and each pinned core', async () => {
     const handle = site()
     const ready = await handle({ call: 'init', args: { base: BASE } }) as Ready
-    expect(ready.catalog).toEqual({ revision: CATALOG.revision, cores: 4, mods: 8 })
+    expect(ready.catalog).toEqual({ revision: CATALOG.revision, cores: CATALOG.cores.length, mods: CATALOG.mods.length })
     const mods = await handle({ call: 'mods' }) as { id: string; builtin: boolean; os: string; file: string }[]
     expect(mods.map(m => [m.file, m.id, m.builtin, m.os])).toEqual(CATALOG.cores.map(c => [c.file, 'core', true, c.os]).sort())
   })

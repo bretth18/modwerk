@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 1,
+  "recorded": "2026-10-06",
+  "decision": "Proposed for the owner's decision, as the 4 October import: import the Digitakt and Digitone mods of elekloader's mod shop that Modwerk lacks as Modwerk module folders under their licences, with attribution.",
+  "modules": [
+    {
+      "module": "digitakt/digichain",
+      "version": "1.6.0-experimental",
+      "repository": "https://github.com/gdeo607/digi1_mods",
+      "revision": "35bacb3730d108e4dc48a7bd6de4c99ae9b161e6",
+      "license": "MIT",
+      "files": [
+        {
+          "from": "mods/digichain/README.md",
+          "to": "upstream/README.md",
+          "sha256": "4cf5ca051d9a92f28d88c8dacbf63de613521eecf5664bda3c226dc0e999d3f7"
+        },
+        {
+          "from": "mods/digichain/chain.c",
+          "to": "src/chain.c",
+          "sha256": "dd89525500545393432bbee6d8b7ef511494436178e5f68c65e3f727b2f6ff79"
+        },
+        {
+          "from": "mods/digichain/chain.s",
+          "to": "src/chain.s",
+          "sha256": "5a3612231da4c679fd19a1cb5954d90e6a9380c6574b323b660abd1b125f250d"
+        },
+        {
+          "from": "LICENSE",
+          "to": "LICENSE",
+          "sha256": "92e45a9296e2b5476418f9628e55c49d9125d871a95b8e66a8da6d2b5da3b7cf"
+        },
+        {
+          "from": "README.md",
+          "to": "upstream/REPOSITORY.md",
+          "sha256": "1141135e1d10f974d8f079dfc9e1e94f46a9d6b986d78632bfcb1a5abd42af8b"
+        }
+      ],
+      "excluded": [
+        "mods/digichain/mod.json",
+        "every other file of the repository: the other mods, src/ and bin/ files this mod does not build, tools/, tests/, docs/ and the prebuilt elemods/"
+      ],
+      "transformations": [
+        "Each stock byte run in the upstream build manifest became an address, length and SHA-256 guard in build.json."
+      ]
+    },
+    {
+      "module": "digitakt/digieq",
+      "version": "1.0.0-experimental",
+      "repository": "https://github.com/gdeo607/digi1_mods",
+      "revision": "35bacb3730d108e4dc48a7bd6de4c99ae9b161e6",
+      "license": "MIT",
+      "files": [
+        {
+          "from": "mods/digieq/eq.c",
+          "to": "src/eq.c",
+          "sha256": "10846f989fc8560f317d5a9d3122bbe7f958b52bbec1a0e589f45157f78e7481"
+        },
+        {
+          "from": "mods/digieq/eq_dsp.s",
+          "to": "src/eq_dsp.s",
+          "sha256": "90cefaacc9c78655a413af394719a1db2989cc19bfcb6b6cc15cf4c6282ceda4"
+        },
+        {
+          "from": "mods/digieq/eq_glue.s",
+          "to": "src/eq_glue.s",
+          "sha256": "2010f673c22d55bc600b6ab9f848b24a05881e1d30fc22d4ddeec49a81ad9451"
+        },
+        {
+          "from": "mods/digieq/eq_tables.h",
+          "to": "src/eq_tables.h",
+          "sha256": "774601d4ea77b02e8aad6a8350d3fcc27d85d257217300e29d253483e472f15a"
+        },
+        {
+          "from": "src/kitstore.h",
+          "to": "src/kitstore.h",
+          "sha256": "cbea4245b4af8cded9ab3ad7bb656a0df7c33681fcdbbf74954ce551ac880aec"
+        },
+        {
+          "from": "LICENSE",
+          "to": "LICENSE",
+          "sha256": "92e45a9296e2b5476418f9628e55c49d9125d871a95b8e66a8da6d2b5da3b7cf"
+        },
+        {
+          "from": "README.md",
+          "to": "upstream/REPOSITORY.md",
+          "sha256": "1141135e1d10f974d8f079dfc9e1e94f46a9d6b986d78632bfcb1a5abd42af8b"
+        }
+      ],
+      "excluded": [
+        "mods/digieq/mod.json",
+        "every other file of the repository: the other mods, src/ and bin/ files this mod does not build, tools/, tests/, docs/ and the prebuilt elemods/"
+      ],
+      "transformations": [
+        "Each stock byte run in the upstream build manifest became an address, length and SHA-256 guard in build.json."
+      ]
+    },
+    {
+      "module": "digitakt/digimatrix",
+      "version": "1.0.0-experimental",
+      "repository": "https://github.com/gdeo607/digi1_mods",
+      "revision": "35bacb3730d108e4dc48a7bd6de4c99ae9b161e6",
+      "license": "MIT",
+      "files": [
+        {
+          "from": "mods/digimatrix/matrix.c",
+          "to": "src/matrix.c",
+          "sha256": "1dc30a386cd3c4a02374da608b1fc78d72b4e82ef24160ee85bd5942eb1e1f97"
+        },
+        {
+          "from": "mods/digimatrix/matrix_glue.s",
+          "to": "src/matrix_glue.s",
+          "sha256": "7655998aca22d36daf52d407afe34d73408cd6e8f09401047c6f481fe07ef361"
+        },
+        {
+          "from": "src/kitstore.h",
+          "to": "src/kitstore.h",
+          "sha256": "cbea4245b4af8cded9ab3ad7bb656a0df7c33681fcdbbf74954ce551ac880aec"
+        },
+        {
+          "from": "LICENSE",
+          "to": "LICENSE",
+          "sha256": "92e45a9296e2b5476418f9628e55c49d9125d871a95b8e66a8da6d2b5da3b7cf"
+        },
+        {
+          "from": "README.md",
+          "to": "upstream/REPOSITORY.md",
+          "sha256": "1141135e1d10f974d8f079dfc9e1e94f46a9d6b986d78632bfcb1a5abd42af8b"
+        }
+      ],
+      "excluded": [
+        "mods/digimatrix/mod.json",
+        "every other file of the repository: the other mods, src/ and bin/ files this mod does not build, tools/, tests/, docs/ and the prebuilt elemods/"
+      ],
+      "transformations": [
+        "Each stock byte run in the upstream build manifest became an address, length and SHA-256 guard in build.json."
+      ]
+    },
+    {
+      "module": "digitakt/digimono",
+      "version": "0.13.0-experimental",
+      "repository": "https://github.com/gdeo607/digi1_mods",
+      "revision": "35bacb3730d108e4dc48a7bd6de4c99ae9b161e6",
+      "license": "MIT",
+      "files": [
+        {
+          "from": "mods/digimono/DESIGN.md",
+          "to": "upstream/DESIGN.md",
+          "sha256": "9b4ebc7f6dcb9696d8181ebd878c9785894dbc3860bdc166ccc1a5f6020dab37"
+        },
+        {
+          "from": "mods/digimono/digimono.c",
+          "to": "src/digimono.c",
+          "sha256": "394ac7c276362932056d4fef523a99ee90ef65b3ad59326b52ab2ff3ef9197e5"
+        },
+        {
+          "from": "mods/digimono/glue.s",
+          "to": "src/glue.s",
+          "sha256": "d8852a9472c86694ca27c147081894ff8045367062d0af7ef9bec3c4544195a8"
+        },
+        {
+          "from": "mods/digimono/mono.c",
+          "to": "src/mono.c",
+          "sha256": "c2ba55320f17ed53edc87f1cc2d01551e13d10522e0ac839f7e78f9677c9b826"
+        },
+        {
+          "from": "mods/digimono/mono.h",
+          "to": "src/mono.h",
+          "sha256": "1ccaa197dfb73d04c933c8f16a1b4106431bf875ba260617fe620f6eb58eb2c2"
+        },
+        {
+          "from": "mods/digimono/mono_tables.h",
+          "to": "src/mono_tables.h",
+          "sha256": "e16556e8a5d56a2d119065deb54b4004926c83acc3f7bfbfb058a5ffae7e011e"
+        },
+        {
+          "from": "LICENSE",
+          "to": "LICENSE",
+          "sha256": "92e45a9296e2b5476418f9628e55c49d9125d871a95b8e66a8da6d2b5da3b7cf"
+        },
+        {
+          "from": "README.md",
+          "to": "upstream/REPOSITORY.md",
+          "sha256": "1141135e1d10f974d8f079dfc9e1e94f46a9d6b986d78632bfcb1a5abd42af8b"
+        }
+      ],
+      "excluded": [
+        "mods/digimono/mod.json",
+        "every other file of the repository: the other mods, src/ and bin/ files this mod does not build, tools/, tests/, docs/ and the prebuilt elemods/"
+      ],
+      "transformations": [
+        "Each stock byte run in the upstream build manifest became an address, length and SHA-256 guard in build.json."
+      ]
+    },
+    {
+      "module": "digitakt/digipoly",
+      "version": "2.0.0-experimental",
+      "repository": "https://github.com/gdeo607/digi1_mods",
+      "revision": "35bacb3730d108e4dc48a7bd6de4c99ae9b161e6",
+      "license": "MIT",
+      "files": [
+        {
+          "from": "mods/digipoly/poly.c",
+          "to": "src/poly.c",
+          "sha256": "333e632e56799e6aa3d1825ad8f5de8237d47ce177cc993853129e41000a8fff"
+        },
+        {
+          "from": "mods/digipoly/poly_glue.s",
+          "to": "src/poly_glue.s",
+          "sha256": "b3cabd435b1edc3b570ae2294fcfed4c4ea6b537737ddf601283e31532fb5e0d"
+        },
+        {
+          "from": "mods/digipoly/poly_ui.s",
+          "to": "src/poly_ui.s",
+          "sha256": "6482642bed6ea18b438ef4ca228bdc4e8ed7ada02f417211924350aa69e37905"
+        },
+        {
+          "from": "src/kitstore.h",
+          "to": "src/kitstore.h",
+          "sha256": "cbea4245b4af8cded9ab3ad7bb656a0df7c33681fcdbbf74954ce551ac880aec"
+        },
+        {
+          "from": "LICENSE",
+          "to": "LICENSE",
+          "sha256": "92e45a9296e2b5476418f9628e55c49d9125d871a95b8e66a8da6d2b5da3b7cf"
+        },
+        {
+          "from": "README.md",
+          "to": "upstream/REPOSITORY.md",
+          "sha256": "1141135e1d10f974d8f079dfc9e1e94f46a9d6b986d78632bfcb1a5abd42af8b"
+        }
+      ],
+      "excluded": [
+        "mods/digipoly/mod.json",
+        "every other file of the repository: the other mods, src/ and bin/ files this mod does not build, tools/, tests/, docs/ and the prebuilt elemods/"
+      ],
+      "transformations": [
+        "Each stock byte run in the upstream build manifest became an address, length and SHA-256 guard in build.json."
+      ]
+    },
+    {
+      "module": "digitakt/digiutils",
+      "version": "1.9.0-experimental",
+      "repository": "https://github.com/gdeo607/digi1_mods",
+      "revision": "35bacb3730d108e4dc48a7bd6de4c99ae9b161e6",
+      "license": "MIT",
+      "files": [
+        {
+          "from": "mods/digiutils/osc_data.s",
+          "to": "src/osc_data.s",
+          "sha256": "56f18a48f1d6c27b78a99f5b6adaedd4dd4715197a35913b0386c17b29333521"
+        },
+        {
+          "from": "mods/digiutils/osc_glue.s",
+          "to": "src/osc_glue.s",
+          "sha256": "1c38c77ecf4243533ff4cfcc1043a01e467aba7e2e042073f4df654abfb1dfad"
+        },
+        {
+          "from": "mods/digiutils/page.c",
+          "to": "src/page.c",
+          "sha256": "919bd814acabe148bc150ca7cf26f035a02a0598fc6b1ca1c3ae596f4b394ff0"
+        },
+        {
+          "from": "mods/digiutils/page.s",
+          "to": "src/page.s",
+          "sha256": "8611d0a34ea386a6d143d8b23b8ce829d79a2e883a2ddddc8addc0449e608cd7"
+        },
+        {
+          "from": "src/scope.s",
+          "to": "src/scope.s",
+          "sha256": "4e9ec8e3971de7c69d6e72040d826bd806d6bec9bb05ec30634ea0a3cc99f849"
+        },
+        {
+          "from": "src/tuner.s",
+          "to": "src/tuner.s",
+          "sha256": "aa2f197fdbbfad92ecae48fc67bbd7e9843a1bb26e2207de972b2d31b2669519"
+        },
+        {
+          "from": "src/spectrum.s",
+          "to": "src/spectrum.s",
+          "sha256": "db82d94dcd7e3d3735b023d84dbcc57ba19a065f14bcc96782cccee4758de325"
+        },
+        {
+          "from": "bin/spec_tables.inc",
+          "to": "src/spec_tables.inc",
+          "sha256": "795f595406df90f9ee26900a049c252ec620d3e397343d43cd74ab1e8c53c4a9"
+        },
+        {
+          "from": "bin/spec_sin.bin",
+          "to": "src/spec_sin.inc",
+          "sha256": "ab2f4a23849e787a94e06e4b5a3b956541c63b8cccc1ee1111dc828bf831a469"
+        },
+        {
+          "from": "LICENSE",
+          "to": "LICENSE",
+          "sha256": "92e45a9296e2b5476418f9628e55c49d9125d871a95b8e66a8da6d2b5da3b7cf"
+        },
+        {
+          "from": "README.md",
+          "to": "upstream/REPOSITORY.md",
+          "sha256": "1141135e1d10f974d8f079dfc9e1e94f46a9d6b986d78632bfcb1a5abd42af8b"
+        }
+      ],
+      "excluded": [
+        "mods/digiutils/mod.json",
+        "every other file of the repository: the other mods, src/ and bin/ files this mod does not build, tools/, tests/, docs/ and the prebuilt elemods/"
+      ],
+      "transformations": [
+        "Each stock byte run in the upstream build manifest became an address, length and SHA-256 guard in build.json.",
+        "src/osc_data.s: .incbin \"spec_sin.bin\" became .include \"spec_sin.inc\", which holds the same 257 values as .short lines, since Modwerk accepts no binary files. It assembles to the same bytes."
+      ]
+    },
+    {
+      "module": "digitone/digitables",
+      "version": "1.3.0-experimental",
+      "repository": "https://github.com/irpina/digitables",
+      "tag": "v1.3",
+      "revision": "5bbd9adffbd0f2d97fa0553613c507b43fca3bda",
+      "license": "GPL-2.0-or-later",
+      "files": [
+        {
+          "from": "digitables.c",
+          "to": "src/digitables.c",
+          "sha256": "07f24ae8962f14df7533fa7dae010cb69e7a5722807584a7b9cd435b6b58861f"
+        },
+        {
+          "from": "LICENSE",
+          "to": "LICENSE",
+          "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+        },
+        {
+          "from": "README.md",
+          "to": "upstream/README.md",
+          "sha256": "275b9d1c4ebdfa3686860939b099f4c5d6149a7be3201dbbf7975c78311d2838"
+        }
+      ],
+      "excluded": [
+        ".gitignore",
+        "mod.json"
+      ],
+      "transformations": [
+        "Its build manifest has no stock byte runs; build.json carries its sources, events and contributions."
+      ]
+    }
+  ]
+}

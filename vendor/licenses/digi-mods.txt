@@ -3,6 +3,7 @@ Digitakt/Digitone mod releases built by the vendored elekloader builder, unmodif
 - NEIGHBOR (digineighbor) 0.6 by irpina: https://github.com/irpina/digineighbor/releases/tag/v0.6
 - digihealth 1.0 (Digitakt) and 1.1 (Digitone) by irpina: https://github.com/irpina/digihealth/releases/tag/v1.1
 - elekloader cores 2.1 (Digitakt) and 2.0a (Digitone) by irpina: https://github.com/irpina/elekloader/releases/tag/v0.4.0
+- digitables 1.3 (Digitone) by irpina, with the Digitone core 2.2 it needs: https://github.com/irpina/digitables/releases/tag/v1.3
 Each is free software under the GNU General Public License, version 2 or (at your option) any later version. Corresponding source is at each release tag above; the imported sources and documentation are also in sdk/digitakt/modules and sdk/digitone/modules.
 
                     GNU GENERAL PUBLIC LICENSE

@@ -503,7 +503,7 @@ describe('public module popularity',()=>{
   for(const module of COMMUNITY_MODULES)expect(summary.find((item:{module_id:string})=>item.module_id===module.id)).toMatchObject({count:0,likes:0,downloads:0})
   const digi=COMMUNITY_MODULES.filter(module=>module.machine!=='octatrack')
   for(const [index,module] of digi.entries()){
-   const auth='octamod_session='+tokens.author,value=index+1
+   const auth='octamod_session='+tokens.author,value=index%5+1  // ratings are 1-5, whatever the number of modules
    expect((await call('/modules/'+module.id+'/like','POST',{liked:true},auth)).status).toBe(200)
    expect((await call('/modules/'+module.id+'/rating','POST',{value},auth)).status).toBe(200)
    const event=moduleDownload(module.id)
@@ -515,8 +515,8 @@ describe('public module popularity',()=>{
   const updated=await (await call('/community/summary')).json()
   const insights=await (await call('/admin/insights','GET',undefined,'',undefined,admin)).json()
   for(const [index,module] of digi.entries()){
-   expect(updated.find((item:{module_id:string})=>item.module_id===module.id)).toMatchObject({average:index+1,count:1,likes:1,downloads:2})
-   expect(insights.modules.find((item:{moduleId:string})=>item.moduleId===module.id)).toMatchObject({title:module.name,available:true,ratingAverage:index+1,ratings:1,likes:1,downloads:2})
+   expect(updated.find((item:{module_id:string})=>item.module_id===module.id)).toMatchObject({average:index%5+1,count:1,likes:1,downloads:2})
+   expect(insights.modules.find((item:{moduleId:string})=>item.moduleId===module.id)).toMatchObject({title:module.name,available:true,ratingAverage:index%5+1,ratings:1,likes:1,downloads:2})
   }
   expect(updated.find((item:{module_id:string})=>item.module_id==='miniverb')).toMatchObject({count:0,likes:0,downloads:0})
   for(const invalid of ['digihealth','digitakt-unknown','digitone-digislicer','octatrack-digihealth']){

@@ -217,3 +217,25 @@ The owner asked for private messages between members and chose:
 - **Who can read:** only the two members. The administrator can open a conversation only after one of its members reports it, and the report form says so. The privacy notice states this.
 - **Notifications:** a new message appears in the bell, in the activity email digest (its own topic, on by default) and as device push, like a reply. Further messages in a conversation stay quiet until the first unread one is read.
 - **Deletion:** account deletion removes the member's messages, conversation memberships, blocks and reports. The conversation disappears from the other member's inbox.
+
+## 6 October 2026 — Proposed: elekloader's other Digitakt and Digitone mods
+
+Proposed for the owner's decision, as the 4 October import was decided: import the Digitakt and Digitone mods in elekloader's mod shop that Modwerk does not have, as Modwerk module folders under their licences, with attribution.
+
+- **The mods:**
+  - gdeo607's digi1_mods (MIT), pinned to commit `35bacb3`, each for Digitakt OS 1.53 and 1.54: digichain 1.6, Digi EQ 1.0b, Digi Matrix 1.0b, Digi Mono 0.13b, Digi Poly 2.0 and Digi utilities 1.9a.
+  - digitables 1.3 by irpina (GPL-2.0-or-later), for Digitone OS 1.43.
+- **As on 4 October:**
+  - each folder keeps its author's source unchanged, with the author's licence and README under `upstream/`;
+  - each upstream stock byte run became an address, length and SHA-256 guard in `build.json`;
+  - a Modwerk README, an honest TESTING page and an original thumbnail are added;
+  - all are drafts (evidence tier `none`): the authors' own reports belong to their builds;
+  - `sdk/imports/elemod-2026-10-06.json` pins every file.
+- **One change to an author's file.** Digi utilities' generated quarter-sine table moved from `.incbin "spec_sin.bin"` to `.include "spec_sin.inc"`. It holds the same 257 values and assembles to the same bytes, because module folders accept no binary files.
+- **The catalog** is elekloader's kit-v0.4.0 catalog, cut to Modwerk's library with `npm run elekloader:update -- elekloader-catalog.json --library`. Its revision is now `a1be3ce`. Older configuration backups still import, with their modules checked again.
+- **The Digitone core 2.2.** digitables needs core-dn1 2.2, which the Digitone profile already names. With it in the catalog, every Digitone OS 1.43 build uses it, digihealth's included, so those builds have new identities. OS 1.44 keeps core 2.0a.
+- **What does not combine.** digichain patches the same SRC page sites as the shop's NEIGHBOR, DIGISLICER and SOPHIE, so the builder refuses them together. Digi Mono and Digi Poly require digichain, so they inherit those refusals. The author's chain builds of those three are not in the shop.
+- **Small changes this needs:**
+  - `build.json` may name up to 64 weak symbols, not 16: digichain names 33.
+  - The library draws cover art for the new families (Mixing, Modulation, Polyphony, Utility, Framework, Sequencing).
+- **One module per pull request.** This proposes the seven together, one commit each, as the 4 October import did. The owner can ask for them one by one instead.
