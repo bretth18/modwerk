@@ -1,8 +1,7 @@
 import { apiUrl } from '../hosting'
 import type { UsageEvent } from './usage-contract'
 import { USAGE_CONSENT_VERSION } from '../legal/policy'
-import { isModuleAvailable } from '../catalog/availability'
-import { moduleBuildPending } from '../catalog/build-support'
+import { canTrackModuleDownload } from './module-downloads'
 const preferenceKey = 'octamod.usage.consent', visitorKey = 'octamod.usage.daily-visitor', configurationsKey = 'octamod.usage.started-configurations'
 let withdrawnForThisPage=false
 /** Saved only when a visitor objects to identifier-free counts; nothing is stored while they are allowed. */
@@ -83,12 +82,12 @@ export function trackConfigurationStarted(id: string) {
 export function trackFirmwareDownload(moduleIds: readonly string[]) {
   trackUsage('firmware_download_requested')
   if(!usageAllowed()){
-    if(anonymousCountsAllowed())for(const moduleId of new Set(moduleIds))if(isModuleAvailable(moduleId)&&!moduleBuildPending(moduleId))countAnonymously({event:'module_download',moduleId})
+    if(anonymousCountsAllowed())for(const moduleId of new Set(moduleIds))if(canTrackModuleDownload(moduleId))countAnonymously({event:'module_download',moduleId})
     return
   }
   const dailyVisitor=visitor();if(!dailyVisitor)return
   for(const moduleId of new Set(moduleIds)) {
-    if(!isModuleAvailable(moduleId)||moduleBuildPending(moduleId))continue
+    if(!canTrackModuleDownload(moduleId))continue
     try {void fetch(apiUrl('/usage/module-downloads'),{method:'POST',credentials:'omit',redirect:'error',referrerPolicy:'no-referrer',keepalive:true,headers:{'Content-Type':'application/json','X-Octamod-Usage-Consent':USAGE_CONSENT_VERSION},body:JSON.stringify({moduleId,eventId:crypto.randomUUID(),visitor:dailyVisitor})}).catch(()=>{})} catch { /* Counts never block a firmware download. */ }
   }
 }

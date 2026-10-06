@@ -10,6 +10,7 @@ import { handleCommunity } from '../../server/transport'
 import { digest } from '../../server/security'
 import { signGithubPayload } from '../../server/github'
 import { notificationLines } from './notification-text'
+import { COMMUNITY_MODULES } from './modules'
 import type { Database, Statement, Env } from '../../server/platform'
 const databases:DatabaseSync[]=[]
 function adapter(db:DatabaseSync):Database{
@@ -478,6 +479,33 @@ describe('identifier-free usage counts',()=>{
 
 const moduleDownload=(moduleId='miniverb',eventId=crypto.randomUUID())=>({moduleId,eventId,visitor:'11111111-1111-4111-8111-111111111111'})
 describe('public module popularity',()=>{
+ it('includes every machine and keeps Digi likes, ratings and both download paths separate',async()=>{
+  const {call,tokens,admin}=await fixture()
+  const summary=await (await call('/community/summary')).json()
+  for(const module of COMMUNITY_MODULES)expect(summary.find((item:{module_id:string})=>item.module_id===module.id)).toMatchObject({count:0,likes:0,downloads:0})
+  const digi=COMMUNITY_MODULES.filter(module=>module.machine!=='octatrack')
+  for(const [index,module] of digi.entries()){
+   const auth='octamod_session='+tokens.author,value=index+1
+   expect((await call('/modules/'+module.id+'/like','POST',{liked:true},auth)).status).toBe(200)
+   expect((await call('/modules/'+module.id+'/rating','POST',{value},auth)).status).toBe(200)
+   const event=moduleDownload(module.id)
+   for(let retry=0;retry<2;retry++)expect((await call('/usage/module-downloads','POST',event)).status).toBe(200)
+   expect((await call('/usage/count','POST',{event:'module_download',moduleId:module.id})).status).toBe(200)
+   const detail=await (await call('/modules/'+module.id)).json()
+   expect(detail).toMatchObject({ratings:{average:value,count:1},likes:1,downloads:2})
+  }
+  const updated=await (await call('/community/summary')).json()
+  const insights=await (await call('/admin/insights','GET',undefined,'',undefined,admin)).json()
+  for(const [index,module] of digi.entries()){
+   expect(updated.find((item:{module_id:string})=>item.module_id===module.id)).toMatchObject({average:index+1,count:1,likes:1,downloads:2})
+   expect(insights.modules.find((item:{moduleId:string})=>item.moduleId===module.id)).toMatchObject({title:module.name,available:true,ratingAverage:index+1,ratings:1,likes:1,downloads:2})
+  }
+  expect(updated.find((item:{module_id:string})=>item.module_id==='miniverb')).toMatchObject({count:0,likes:0,downloads:0})
+  for(const invalid of ['digihealth','digitakt-unknown','digitone-digislicer','octatrack-digihealth']){
+   expect((await call('/usage/module-downloads','POST',moduleDownload(invalid))).status).toBe(400)
+   expect((await call('/usage/count','POST',{event:'module_download',moduleId:invalid})).status).toBe(400)
+  }
+ })
  it('includes unrated likes and download-only modules without disclosing private statistics',async()=>{
   const {call,db,tokens}=await fixture()
   expect((await call('/modules/miniverb/like','POST',{liked:true},'octamod_session='+tokens.author)).status).toBe(200)

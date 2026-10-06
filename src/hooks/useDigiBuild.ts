@@ -11,7 +11,7 @@ export type DigiBuildState =
   | { phase: 'ready'; key: string; enabled: string[]; check: BuilderCheck; device: BuilderDevice }
   | { phase: 'blocked'; key: string; error: string; check?: BuilderCheck }
   | { phase: 'building'; key: string; enabled: string[]; device: BuilderDevice; log: string; step: BuildProgress }
-  | { phase: 'built'; key: string; enabled: string[]; device: BuilderDevice; result: Extract<BuilderResult, { ok: true }> }
+  | { phase: 'built'; key: string; enabled: string[]; device: BuilderDevice; moduleIds: readonly string[]; result: Extract<BuilderResult, { ok: true }> }
   | { phase: 'failed'; key: string; enabled: string[]; device: BuilderDevice; error: string; result?: Extract<BuilderResult, { ok: false }> }
 
 const message = (error: unknown, fallback: string) => error instanceof Error ? error.message : fallback
@@ -58,7 +58,7 @@ export function useDigiBuild(machine: BuilderMachine, file: File | undefined, re
         if (operation.current === request) setView({ phase: 'building', key, enabled, device, log: line, step })
       })
       if (operation.current !== request) return
-      setView(result.ok ? { phase: 'built', key, enabled, device, result } : { phase: 'failed', key, enabled, device, error: result.error, result })
+      setView(result.ok ? { phase: 'built', key, enabled, device, moduleIds: [...moduleIds], result } : { phase: 'failed', key, enabled, device, error: result.error, result })
     } catch (error) {
       if (operation.current === request) setView({ phase: 'failed', key, enabled, device, error: message(error, 'The build failed.') })
     }

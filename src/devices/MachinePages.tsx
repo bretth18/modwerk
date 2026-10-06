@@ -29,7 +29,7 @@ const STEP_LABELS = { done: 'Done', started: 'Started', open: 'Open' } as const
 
 function kib(bytes: number) { return (bytes / 1024).toFixed(bytes < 10240 ? 1 : 0) + ' KiB' }
 
-function DigiModCard({ mod, selected, compared, canCompare, onToggle, onCompare }: { mod: DigiMod; selected: boolean; compared: boolean; canCompare: boolean; onToggle: () => void; onCompare: () => void }) {
+function DigiModCard({ mod, selected, statistics: stats, compared, canCompare, onToggle, onCompare }: { mod: DigiMod; selected: boolean; statistics?: ModuleStatistics; compared: boolean; canCompare: boolean; onToggle: () => void; onCompare: () => void }) {
   const href = deviceHref(mod.device, 'module/' + mod.id)
   return <article className={'module-card ' + (selected ? 'is-selected' : '')}>
     <a href={href} className="module-cover" aria-label={'View ' + mod.title}><DigiModPreview mod={mod} /><div className="hover-info"><span>{mod.summary}</span><strong>Explore module <Icon name="arrow" size={15} /></strong></div>{selected && <span className="selected-badge" aria-label="Selected"><Icon name="check" size={12} /></span>}</a>
@@ -38,7 +38,8 @@ function DigiModCard({ mod, selected, compared, canCompare, onToggle, onCompare 
       <div className="card-credit"><a href={mod.repository} target="_blank" rel="noreferrer">{mod.author}</a><span>{mod.license}</span></div>
       <div className="card-description">{mod.summary}</div>
       <div className="card-bottom"><span>{mod.category}</span><span>{kib(mod.ramBytes)} memory</span></div>
-      <ModulePopularity />
+      <div className="card-bottom"><span className="unrated"><Icon name="star" size={11} />{stats?.count && stats.average !== null ? stats.average.toFixed(1) + ' (' + stats.count + ')' : 'Unrated'}</span></div>
+      <ModulePopularity statistics={stats} />
       <div className="card-proof"><span>{mod.hardware ? 'Author-tested on hardware' : 'Author release, not yet tested in Modwerk'}</span><label><input type="checkbox" checked={compared} disabled={!canCompare} onChange={onCompare} />Compare<span className="sr-only"> {mod.title} for {DEVICES_BY_ID[mod.device].name}</span></label></div>
     </div>
   </article>
@@ -69,7 +70,7 @@ type AllMachinesLibraryProps = {
 export function AllMachinesLibrary({ query, category, octatrackModules: octatrack, octatrackSelected, onToggleOctatrack, digiSelected, onToggleDigi, family, onFamilyChange, sort, onSortChange, statistics, octatrackConflicts, comparison, onCompare, onOpenComparison, viewedModuleVersions, moduleBaseline }: AllMachinesLibraryProps) {
   const term = query.toLowerCase().trim()
   const digi = (device: DigiMod['device']) => DIGI_MODS.filter(mod => mod.device === device && (!category || mod.libraryCategory === category) && (family === 'all' || mod.category === family) && (mod.title + ' ' + mod.summary + ' ' + mod.author).toLowerCase().includes(term))
-    .sort((a,b)=>compareModules({id:a.id,name:a.title,authorName:a.author},{id:b.id,name:b.title,authorName:b.author},sort,null))
+    .sort((a,b)=>compareModules({id:a.device+'-'+a.id,name:a.title,authorName:a.author},{id:b.device+'-'+b.id,name:b.title,authorName:b.author},sort,statistics))
   const families = Array.from(new Set([...AVAILABLE_MODULES.map(module=>DETAILS[module.id].family), ...DIGI_MODS.map(mod=>mod.category)]))
   // Check the whole saved selection even when search or category filters hide its modules.
   const warnings = [
@@ -81,7 +82,7 @@ export function AllMachinesLibrary({ query, category, octatrackModules: octatrac
   ]
   const groups: { device: DeviceProfile; count: number; cards: ReactNode[] }[] = [
     { device: DEVICES_BY_ID.octatrack, count: octatrack.length, cards: octatrack.map(module => <ModuleCard key={module.id} module={module} selected={octatrackSelected.includes(module.id)} statistics={statistics?.find(item=>item.module_id===module.id)} viewedVersion={viewedModuleVersions[module.id]} baseline={moduleBaseline} compared={comparison.includes(module.id)} canCompare={comparison.length<3||comparison.includes(module.id)} onToggle={() => onToggleOctatrack(module.id)} onCompare={()=>onCompare(module.id)} />) },
-    ...(['digitakt', 'digitone'] as const).map(id => ({ device: DEVICES_BY_ID[id], count: digi(id).length, cards: digi(id).map(mod => <DigiModCard key={mod.id} mod={mod} selected={digiSelected[id].includes(mod.id)} onToggle={() => onToggleDigi(id, mod.id)} compared={comparison.includes(id+'-'+mod.id)} canCompare={comparison.length<3||comparison.includes(id+'-'+mod.id)} onCompare={()=>onCompare(id+'-'+mod.id)} />) })),
+    ...(['digitakt', 'digitone'] as const).map(id => ({ device: DEVICES_BY_ID[id], count: digi(id).length, cards: digi(id).map(mod => <DigiModCard key={mod.id} mod={mod} selected={digiSelected[id].includes(mod.id)} statistics={statistics?.find(item=>item.module_id===id+'-'+mod.id)} onToggle={() => onToggleDigi(id, mod.id)} compared={comparison.includes(id+'-'+mod.id)} canCompare={comparison.length<3||comparison.includes(id+'-'+mod.id)} onCompare={()=>onCompare(id+'-'+mod.id)} />) })),
   ]
   const total = groups.reduce((sum, group) => sum + group.count, 0)
   return (
@@ -93,7 +94,7 @@ export function AllMachinesLibrary({ query, category, octatrackModules: octatrac
         <div className="library-subheading"><span id={'machine-' + group.device.id}>{group.device.name} <span className="subtle">· {group.count} {group.count === 1 ? 'module' : 'modules'}{group.device.status === 'preview' ? ' · preview' : ''}</span></span><div className="machine-library-actions"><a className="text-button" href={deviceHref(group.device.id)}>Open {group.device.name} library <Icon name="arrow" size={13} /></a>{group.device.id !== 'octatrack' && <a className="button button-primary" href={deviceHref(group.device.id,'configuration')} aria-label={'Build firmware for ' + group.device.name}><Icon name="sliders" size={16}/>Build firmware</a>}</div></div>
         <div className="module-grid">{group.cards}</div>
       </section>)}
-      <p className="popularity-note">{statistics ? downloadCoverage(statistics[0]?.downloadsStarted) : 'Popularity counts are currently unavailable.'} Digitakt and Digitone counts are not available yet.</p>
+      <p className="popularity-note">{statistics ? downloadCoverage(statistics[0]?.downloadsStarted) : 'Popularity counts are currently unavailable.'}</p>
       {!total && (term || family !== 'all' ? <div className="no-results"><Icon name="search" size={30} /><h2>No modules found</h2><p>Try another name, type or author.</p></div> : <div className="no-results"><Icon name={category === 'standalone' ? 'lock' : 'grid'} size={30} /><h2>No {category ? LIBRARY_CATEGORY_LABELS[category].toLowerCase() : 'mods'} yet</h2><p>Be the first to publish one: every machine follows the same SDK.</p><a className="button button-quiet" href={issueRepository() + '/blob/main/docs/SDK.md'} target="_blank" rel="noreferrer">Read the SDK guide</a></div>)}
       <section className="machine-section"><div className="library-subheading"><span>No mods yet</span><span className="subtle">Help open the next machine</span></div>
         <div className="machine-chips">{DEVICES.filter(device => device.status === 'research' || device.status === 'open').map(device => <a key={device.id} href={deviceHref(device.id)} className={'machine-chip is-' + device.status}>{device.name}{device.variants && <small> {device.variants.join(' · ')}</small>}</a>)}</div>
@@ -102,14 +103,14 @@ export function AllMachinesLibrary({ query, category, octatrackModules: octatrac
   )
 }
 
-export function DigiLibrary({ device, category, query, selectedIds, onToggle, family, onFamilyChange, sort, onSortChange, comparison, onCompare, onOpenComparison }: { device: DigiDevice; category?: string; query: string; selectedIds: string[]; onToggle: (id: string) => void; family: string; onFamilyChange: (value: string) => void; sort: string; onSortChange: (value: string) => void; comparison: readonly string[]; onCompare: (id: string) => void; onOpenComparison: () => void }) {
+export function DigiLibrary({ device, category, query, selectedIds, onToggle, family, onFamilyChange, sort, onSortChange, statistics, comparison, onCompare, onOpenComparison }: { device: DigiDevice; category?: string; query: string; selectedIds: string[]; onToggle: (id: string) => void; family: string; onFamilyChange: (value: string) => void; sort: string; onSortChange: (value: string) => void; statistics: readonly ModuleStatistics[] | null; comparison: readonly string[]; onCompare: (id: string) => void; onOpenComparison: () => void }) {
   const all = DIGI_MODS.filter(mod => mod.device === device.id)
   const label = category ? LIBRARY_CATEGORY_LABELS[category as ModuleCategory] : undefined
   const term = query.toLowerCase().trim()
   const families = Array.from(new Set(all.map(mod=>mod.category)))
   const libraryFamily = families.includes(family) ? family : 'all'
   const mods = all.filter(mod => (!category || mod.libraryCategory === category) && (libraryFamily==='all'||mod.category===libraryFamily) && (mod.title + ' ' + mod.summary + ' ' + mod.author).toLowerCase().includes(term))
-    .sort((a,b)=>compareModules({id:a.id,name:a.title,authorName:a.author},{id:b.id,name:b.title,authorName:b.author},sort,null))
+    .sort((a,b)=>compareModules({id:a.device+'-'+a.id,name:a.title,authorName:a.author},{id:b.device+'-'+b.id,name:b.title,authorName:b.author},sort,statistics))
   const estimate = estimateCombination(device.id, selectedIds)
   return (
     <div className="library-page">
@@ -118,8 +119,8 @@ export function DigiLibrary({ device, category, query, selectedIds, onToggle, fa
       {(!estimate.fits || estimate.clashes.length > 0) && <SelectionWarning warnings={[{id: device.id, title: device.name + ': your selection needs a change', description: estimate.fits ? 'The selected mods cannot be used together.' : 'The selected mods need more memory than the ' + device.name + ' shares with mods.', href: deviceHref(device.id, 'configuration')}]} />}
       <LibraryTools family={libraryFamily} families={families} onFamilyChange={onFamilyChange} sort={sort} onSortChange={onSortChange} comparisonCount={comparison.length} onCompare={onOpenComparison} buildHref={deviceHref(device.id,'configuration')} buildLabel={'Build firmware for '+device.name} />
       <div className="library-subheading"><span>{term ? 'Results for “' + query.trim() + '”' : 'Explore the collection'}</span><span className="subtle">{device.name} · OS {device.firmware?.releases.join(' / ')}</span></div>
-      <div className="module-grid">{mods.map(mod => <DigiModCard key={mod.id} mod={mod} selected={selectedIds.includes(mod.id)} onToggle={() => onToggle(mod.id)} compared={comparison.includes(device.id+'-'+mod.id)} canCompare={comparison.length<3||comparison.includes(device.id+'-'+mod.id)} onCompare={()=>onCompare(device.id+'-'+mod.id)} />)}</div>
-      <p className="popularity-note">Popularity counts and addition dates are not available yet. These sorts use name order until counts are available.</p>
+      <div className="module-grid">{mods.map(mod => <DigiModCard key={mod.id} mod={mod} selected={selectedIds.includes(mod.id)} statistics={statistics?.find(item=>item.module_id===device.id+'-'+mod.id)} onToggle={() => onToggle(mod.id)} compared={comparison.includes(device.id+'-'+mod.id)} canCompare={comparison.length<3||comparison.includes(device.id+'-'+mod.id)} onCompare={()=>onCompare(device.id+'-'+mod.id)} />)}</div>
+      <p className="popularity-note">{statistics ? downloadCoverage(statistics[0]?.downloadsStarted) : 'Popularity counts are currently unavailable.'}{sort === 'recent' && ' Addition dates are not available yet; this sort uses name order.'}</p>
       {!mods.length && <div className="no-results"><Icon name="search" size={30} /><h2>{term || libraryFamily!=='all' ? 'No modules found' : 'No ' + device.name + ' modules here yet'}</h2><p>{term || libraryFamily!=='all' ? 'Try another name, type or author.' : 'Browse all ' + device.name + ' modules, or help write the first one.'}</p><a className="button button-quiet" href={deviceHref(device.id)}>All {device.name} modules</a></div>}
       <div className="library-note"><span className="status-dot" /><p>Built from each author’s pinned public release, with credit and licence.</p></div>
     </div>

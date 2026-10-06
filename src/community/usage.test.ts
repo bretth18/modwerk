@@ -85,6 +85,17 @@ describe('optional usage reporting',()=>{
   vi.stubGlobal('navigator',{globalPrivacyControl:true});usage.trackFirmwareDownload(['miniverb']);expect(values.size).toBe(0)
   vi.stubGlobal('navigator',{});values.set('modwerk.usage.anonymous-off','1');usage.setUsageAllowed(false);usage.trackFirmwareDownload(['miniverb']);expect(request).not.toHaveBeenCalled()
  })
+ it.each([false,true])('tracks each machine-specific module independently with opt-in set to %s',optedIn=>{
+  if(optedIn)usage.setUsageAllowed(true)
+  usage.trackFirmwareDownload(['digitakt-digihealth','digitakt-digihealth','digitone-digihealth','digitakt-digislicer','digihealth','digitone-digislicer','unknown'])
+  const bodies=request.mock.calls.map(([,options])=>JSON.parse(options.body))
+  expect(bodies[0].event).toBe('firmware_download_requested')
+  expect(bodies.slice(1).map(body=>body.moduleId)).toEqual(['digitakt-digihealth','digitone-digihealth','digitakt-digislicer'])
+  expect(request).toHaveBeenCalledTimes(4)
+  usage.trackFirmwareDownload(['digitakt-digihealth'])
+  expect(request).toHaveBeenCalledTimes(6)
+  if(!optedIn)expect(values.size).toBe(0)
+ })
  it('counts identifier-free totals once per configuration and per available module without storing anything',()=>{
   const configuration='33333333-3333-4333-8333-333333333333'
   usage.trackConfigurationStarted(configuration);usage.trackConfigurationStarted(configuration);usage.trackFirmwareDownload(['miniverb','miniverb','unknown'])

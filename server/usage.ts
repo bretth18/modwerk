@@ -2,8 +2,7 @@ import type { Database, Env } from './platform'
 import { USAGE_CONSENT_VERSION } from '../src/legal/policy'
 import { boundedBody, HttpError, response } from './security'
 import { throttle } from './auth'
-import { isModuleAvailable } from '../src/catalog/availability'
-import { moduleBuildPending } from '../src/catalog/build-support'
+import { canTrackModuleDownload } from '../src/community/module-downloads'
 import { USAGE_EVENTS, type UsageEvent, type UsageDay } from '../src/community/usage-contract'
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/
 const columns: Record<UsageEvent, string> = { page_view:'page_views', configuration_started:'configurations', build_succeeded:'builds', firmware_download_requested:'downloads', configuration_exported:'exports' }
@@ -62,7 +61,7 @@ export async function recordAnonymousCount(request: Request, env: Env, db: Datab
   try { const value: unknown = JSON.parse(new TextDecoder().decode(await boundedBody(request,256))); if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(); body=value as Record<string,unknown> }
   catch(error) { if(error instanceof HttpError)throw error; throw new HttpError(400,'Invalid usage count.') }
   const keys = Object.keys(body).sort().join(',')
-  const moduleCount = keys === 'event,moduleId' && body.event === 'module_download' && typeof body.moduleId === 'string' && isModuleAvailable(body.moduleId) && !moduleBuildPending(body.moduleId)
+  const moduleCount = keys === 'event,moduleId' && body.event === 'module_download' && typeof body.moduleId === 'string' && canTrackModuleDownload(body.moduleId)
   if (!moduleCount && (keys !== 'event' || typeof body.event !== 'string' || !USAGE_EVENTS.includes(body.event as UsageEvent))) throw new HttpError(400,'Invalid usage count.')
   const now = new Date(), today = day(now)
   await throttle(db,'usage-count:' + await privateHash(secret,today + ':count-rate:' + (request.headers.get('CF-Connecting-IP') ?? 'local')),300,3600)
@@ -122,7 +121,7 @@ export async function recordModuleDownload(request: Request, env: Env, db: Datab
   let body: Record<string,unknown>
   try { const value: unknown = JSON.parse(new TextDecoder().decode(await boundedBody(request,512))); if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(); body=value as Record<string,unknown> }
   catch(error) { if(error instanceof HttpError)throw error; throw new HttpError(400,'Invalid module download event.') }
-  if (Object.keys(body).sort().join(',') !== 'eventId,moduleId,visitor' || typeof body.moduleId !== 'string' || !isModuleAvailable(body.moduleId) || moduleBuildPending(body.moduleId) || typeof body.eventId !== 'string' || !uuid.test(body.eventId) || typeof body.visitor !== 'string' || !uuid.test(body.visitor)) throw new HttpError(400,'Invalid module download event.')
+  if (Object.keys(body).sort().join(',') !== 'eventId,moduleId,visitor' || typeof body.moduleId !== 'string' || !canTrackModuleDownload(body.moduleId) || typeof body.eventId !== 'string' || !uuid.test(body.eventId) || typeof body.visitor !== 'string' || !uuid.test(body.visitor)) throw new HttpError(400,'Invalid module download event.')
   const today = day(new Date())
   // Rate-limit digests are separate from deduplication. Neither table links a module to a visitor.
   const visitor = await privateHash(secret,today + ':module-rate:' + body.visitor), identity = await privateHash(secret,today + ':module-event:' + body.eventId)

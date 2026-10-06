@@ -1,6 +1,6 @@
 import type { Database } from './platform'
 import type { AdminInsights, AdminModuleInsight } from '../src/community/admin-insights-contract'
-import { MODULES } from '../src/catalog/modules'
+import { COMMUNITY_MODULES } from '../src/community/modules'
 import recipes from '../src/catalog/module-sets.json'
 
 /** Aggregate reads only; authorization is enforced by the enclosing /api/admin/ boundary. */
@@ -30,7 +30,7 @@ export async function adminInsights(db: Database, now = new Date()): Promise<Adm
   ])
   if (!totals || !ages) throw new Error('Unable to read community aggregates.')
   const titles = new Map([
-    ...MODULES.map(module => [module.id,module.name] as const),
+    ...COMMUNITY_MODULES.map(module => [module.id,module.name] as const),
     ...recipes.map(recipe => ['remix-'+recipe.id,'Module set · '+recipe.id] as const),
     ...published.results.map(module => [module.module_id,module.title] as const),
   ])

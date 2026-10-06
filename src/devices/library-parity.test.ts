@@ -63,7 +63,7 @@ describe('All machines library parity', () => {
     expect(html).toContain('— likes')
     expect(html).toContain('— downloads')
     expect(html).not.toContain('0 downloads')
-    expect(html).toContain('counts are not available yet')
+    expect(html).toContain('Popularity counts are currently unavailable.')
     expect(html.match(/aria-label="Build firmware for/g)).toHaveLength(3)
     expect(html).toContain('href="#digitakt/configuration"')
     expect(html).toContain('href="#digitone/configuration"')
@@ -83,7 +83,44 @@ describe('All machines library parity', () => {
 
 
 describe('Digi library parity', () => {
-  const digiProps = { device: {...DEVICES_BY_ID.digitakt, id: 'digitakt' as const}, category: undefined, query: '', selectedIds: [], onToggle: noop, family: 'all', onFamilyChange: noop, sort: 'collection', onSortChange: noop, comparison: [], onCompare: noop, onOpenComparison: noop }
+  const digiProps = { device: {...DEVICES_BY_ID.digitakt, id: 'digitakt' as const}, category: undefined, query: '', selectedIds: [], onToggle: noop, family: 'all', onFamilyChange: noop, sort: 'collection', onSortChange: noop, statistics: props.statistics, comparison: [], onCompare: noop, onOpenComparison: noop }
+
+  it.each(['liked', 'downloaded', 'rated'])('shows and sorts %s statistics in both libraries without sharing counts across machines', sort => {
+    const statistics = [
+      {module_id: 'digitakt-digisophie', average: 4.8, count: 5, likes: 19, downloads: 42, downloadsStarted: '2026-10-01T00:00:00Z'},
+      {module_id: 'digitakt-digihealth', average: 3.2, count: 2, likes: 8, downloads: 11, downloadsStarted: '2026-10-01T00:00:00Z'},
+      {module_id: 'digitone-digihealth', average: 2.5, count: 4, likes: 3, downloads: 7, downloadsStarted: '2026-10-01T00:00:00Z'},
+    ]
+    const all = renderToStaticMarkup(createElement(AllMachinesLibrary, {...props, sort, statistics}))
+    const digitakt = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, sort, statistics}))
+    for (const html of [all, digitakt]) {
+      expect(html.indexOf('View SOPHIE')).toBeLessThan(html.indexOf('View digihealth'))
+      for (const value of ['4.8 (5)', '19 likes', '42 downloads', '3.2 (2)', '8 likes', '11 downloads']) expect(html).toContain(value)
+      expect(html).not.toContain('counts are not available yet')
+    }
+    const digitone = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, device: {...DEVICES_BY_ID.digitone, id: 'digitone'}, statistics}))
+    for (const html of [all.slice(all.indexOf('id="machine-digitone"')), digitone]) {
+      for (const value of ['2.5 (4)', '3 likes', '7 downloads']) expect(html).toContain(value)
+      expect(html).not.toContain('8 likes')
+      expect(html).not.toContain('11 downloads')
+    }
+  })
+
+  it('displays a loaded zero total differently from an unavailable service', () => {
+    const statistics = DIGI_MODS.map(mod => ({module_id: mod.device + '-' + mod.id, average: 0, count: 0, likes: 0, downloads: 0, downloadsStarted: null}))
+    for (const device of ['digitakt', 'digitone'] as const) {
+      const machine = {...DEVICES_BY_ID[device], id: device}
+      const loaded = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, device: machine, statistics}))
+      const unavailable = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, device: machine, statistics: null}))
+      expect(loaded).toContain('0 likes')
+      expect(loaded).toContain('0 downloads')
+      expect(loaded).toContain('Unrated')
+      expect(loaded).not.toContain('— downloads')
+      expect(unavailable).toContain('— likes')
+      expect(unavailable).toContain('— downloads')
+      expect(unavailable).not.toContain('0 downloads')
+    }
+  })
 
   it('uses the OT toolbar and sends each machine to its own builder', () => {
     for (const device of ['digitakt', 'digitone'] as const) {

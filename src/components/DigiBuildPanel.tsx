@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import { useState } from 'react'
+import { trackFirmwareDownload } from '../community/usage'
 import { DIGI_MODS, type DigiMod } from '../devices/digi-mods'
 import { BUILDER_SOURCE, buildLogText, planBuild } from '../engine/elekloader/digi-build'
 import { DIGI_DOWNLOADS_ENABLED } from '../engine/elekloader/protocol'
@@ -65,7 +66,7 @@ export function DigiBuildPanel({ device, firmware, moduleIds, onExport, exported
           <small id="digi-version-help">{versionError || 'Shown instead of the stock version, so you can tell the builds apart.'}</small></label>}
       </div>
       <div className="build-actions">
-        {busy ? <button className="button button-quiet" onClick={cancel}>Cancel build</button> : result && DIGI_DOWNLOADS_ENABLED ? <button className="button button-primary" disabled={!riskAccepted} onClick={() => { save(result.files[0].data, result.files[0].name); setDownloaded(key) }}><Icon name="download" size={16}/>Download .syx</button> : null}
+        {busy ? <button className="button button-quiet" onClick={cancel}>Cancel build</button> : result && DIGI_DOWNLOADS_ENABLED ? <button className="button button-primary" disabled={!riskAccepted} onClick={() => { save(result.files[0].data, result.files[0].name); setDownloaded(key); if (state.phase === 'built') trackFirmwareDownload(state.moduleIds.map(id => device.id + '-' + id)) }}><Icon name="download" size={16}/>Download .syx</button> : null}
         {!busy && (state.phase === 'ready' || state.phase === 'failed' || state.phase === 'built'
           ? <button className={'button ' + (result ? 'button-quiet' : 'button-primary')} disabled={!!versionError || !riskAccepted} onClick={() => void build(shown)} aria-describedby="digi-build-status"><Icon name="sliders" size={16} />{result ? 'Build again' : 'Build firmware'}</button>
           : <button className="button button-primary" disabled={!ready || !!missing.length || busy} onClick={() => void check()} aria-describedby="digi-build-status"><Icon name="check" size={16} />{state.phase === 'blocked' ? 'Check again' : 'Check selection'}</button>)}
