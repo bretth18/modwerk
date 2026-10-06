@@ -6,7 +6,8 @@ import { isModuleAvailable } from '../catalog/availability'
 import type { Configuration } from '../config/workspace'
 import { deviceStore, openDeviceDatabase } from '../storage/device'
 import type { DeviceStore } from '../storage/device'
-import { createFirmwareClient } from '../engine/client'
+import { createLazyFirmwareClient } from './firmware-client'
+import type { FirmwareClient } from '../engine/client'
 import type { FirmwareInspection } from '../engine/base'
 
 export function useWorkspace() {
@@ -20,7 +21,7 @@ export function useWorkspace() {
   const [fileError, setFileError] = useState('')
   const [firmwareSaved, setFirmwareSaved] = useState(false)
   const storeRef = useRef<DeviceStore | null>(null)
-  const clientRef = useRef<ReturnType<typeof createFirmwareClient> | null>(null)
+  const clientRef = useRef<FirmwareClient | null>(null)
   const generation = useRef(0)
   const saveQueue = useRef<Promise<void>>(Promise.resolve())
   const alive = useRef(false)
@@ -35,7 +36,7 @@ export function useWorkspace() {
     let cancelled = false
     const requestGeneration = generation
     alive.current = true
-    const client = createFirmwareClient()
+    const client = createLazyFirmwareClient()
     clientRef.current = client
     let database: IDBDatabase | undefined
     void (async () => {
