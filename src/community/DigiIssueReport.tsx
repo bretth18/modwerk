@@ -7,6 +7,7 @@ import { useWorkspaceReportContext } from './report-context'
 import { communityModule } from './modules'
 import { DEVICES_BY_ID } from '../devices/registry'
 import { BugReportNotice, BugReportSuccess, ExistingIssues } from './BugReportNotice'
+import { ReportNotifications } from './ReportNotifications'
 import { useIssueTracker, type BugReportResult } from './issue-tracker'
 import { useOpenIssueReport } from './useOpenIssueReport'
 import { DiscussionIssueDraft } from './DiscussionIssueDraft'
@@ -28,8 +29,9 @@ export function DigiIssueReport({ id, openRequest = 0 }: { id: string; openReque
       const fields = Object.fromEntries(new FormData(form)) as Record<string, string>
       if (fields.actual.length > 2000) throw new Error('Keep the actual result under 2,000 characters. Your complete discussion draft is available above for reference.')
       const context: DigiIssueContext = { machine: module.machine as DigiIssueContext['machine'], model: fields.model, flash: fields.flash as FlashState, os: fields.os, moduleVersion: fields.moduleVersion, modules: workspace.modules, keepStockFx2: null, build: workspace.build }
-      setSent(await post<BugReportResult>('/modules/' + id + '/issues', { title: fields.title, steps: fields.steps, expected: fields.expected, actual: fields.actual, context, visibility: 'forum' }))
+      setSent(await post<BugReportResult>('/modules/' + id + '/issues', { title: fields.title, steps: fields.steps, expected: fields.expected, actual: fields.actual, context, visibility: 'forum', notifyUpdates: fields.notifyUpdates === 'on' }))
       clearDraft()
+      window.dispatchEvent(new Event('modwerk-module-updates'))
     } catch (error) { setError(error instanceof Error ? error.message : 'Unable to send the report.') } finally { setBusy(false) }
   }
   return <details ref={report} className="issue-report" onToggle={event => { if (event.currentTarget.open) setOpened(true) }}><summary>Report an issue <span>For @{module.author}</span></summary>
@@ -50,6 +52,7 @@ export function DigiIssueReport({ id, openRequest = 0 }: { id: string; openReque
         {!!workspace.modules.length && !inConfiguration && <p className="file-error">This module is not in your active configuration. If you have it saved here, select the configuration you flashed before reporting.</p>}
       </fieldset>
       <p className="service-note">{device.name} reports use these details without an Octatrack log. The bug description will be public. Your full configuration and build fingerprint stay private to the people helping with your report. Do not include firmware, samples, passwords or personal information.</p>
+      <ReportNotifications id={id} />
       <button className="button button-primary" disabled={busy}>{busy ? 'Posting…' : 'Post bug report'}</button>
     </form>}
     {error && <p className="file-error" role="alert">{error}</p>}

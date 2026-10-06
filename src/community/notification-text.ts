@@ -35,10 +35,11 @@ export function notificationLines(items: BellItem[], link: (hash: string) => str
     else if (item.kind === 'module_comment') lines.push({ ...base, text: `${actor} commented on ${moduleName(item.module_id)}`, excerpt: excerpt(item.excerpt), href: moduleHref(item.module_id) })
     else if (item.kind.startsWith('issue_')) {
       const report = 'your bug report ' + quote(item.title), href = item.url ?? link('#account/report/' + item.issue_id)
-      const who = item.github_actor ? '@' + item.github_actor + ' on GitHub' : 'A developer on GitHub'
+      const who = item.github_actor ? '@' + item.github_actor + ' on GitHub' : item.actor ? '@' + item.actor : 'A module developer'
       if (item.kind === 'issue_comment') lines.push({ ...base, text: `${who} replied to ${report}`, excerpt: excerpt(item.excerpt), href })
       else lines.push({ ...base, text: `${who} ${item.kind === 'issue_resolved' ? 'marked' : item.kind === 'issue_closed' ? 'closed' : 'reopened'} ${report}${item.kind === 'issue_resolved' ? ' as fixed' : ''}`, excerpt: null, href })
     }
+    else if (item.kind === 'module_update') lines.push({ ...base, text: `${item.title ?? moduleName(item.module_id)} ${item.module_version ?? ''} is now available`.replace(/\s+/g, ' '), excerpt: 'Open the module to review the update.', href: item.url?.startsWith('#') ? link(item.url) : moduleHref(item.module_id) })
     else if (item.kind === 'module_rating') lines.push({ ...base, text: `${actor} rated ${moduleName(item.module_id)}${item.rating ? ' ' + '★'.repeat(item.rating) + '☆'.repeat(5 - item.rating) : ''}`, excerpt: null, href: moduleHref(item.module_id) })
   }
   return lines.map(line => {

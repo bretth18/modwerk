@@ -5,6 +5,7 @@ import { cleanupAccounts } from './server/accounts'
 import { cleanupUsage } from './server/usage'
 import { ensureModuleThreads } from './server/module-threads'
 import { sendActivityDigests } from './server/activity-mail'
+import { syncModuleReleases } from './server/module-updates'
 import { cleanupForumMedia } from './server/forum-media'
 import { handleCommunity } from './server/transport'
 import type { Env } from './server/platform'
@@ -21,6 +22,7 @@ export default {
       context.waitUntil(sendMemberWelcomes(env, env.DB))
       return
     }
-    context.waitUntil(Promise.all([cleanupPush(env.DB), cleanupUsage(env.DB), cleanupAccounts(env.DB), cleanupDeveloperAuth(env.DB), ensureModuleThreads(env.DB), sendActivityDigests(env, env.DB), cleanupForumMedia(env)]))
+    const activity=syncModuleReleases(env,env.DB).catch(()=>{console.warn('Published module versions could not be checked; retrying next hour.')}).then(()=>sendActivityDigests(env,env.DB!))
+    context.waitUntil(Promise.all([cleanupPush(env.DB), cleanupUsage(env.DB), cleanupAccounts(env.DB), cleanupDeveloperAuth(env.DB), ensureModuleThreads(env.DB), activity, cleanupForumMedia(env)]))
   },
 }

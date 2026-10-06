@@ -1,4 +1,6 @@
 import { pushRoutes } from './push'
+import { followReportedModule, moduleUpdateRoutes } from './module-updates'
+import { issueStatusStatements } from './issue-notifications'
 import { forum } from './forum'
 import { forumMedia } from './forum-media'
 import { notificationRoutes, notifyModuleMaintainers, unsubscribe, withdrawModuleLike } from './notifications'
@@ -70,6 +72,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     const notifications = await notificationRoutes(request,env,db,user)
     if(notifications)return notifications
     let match: RegExpMatchArray | null
+    if ((match = path.match(/^\/api\/modules\/([a-z0-9-]+)\/updates$/))) return await moduleUpdateRoutes(request,env,db,match[1],user)
     if ((match = path.match(/^\/api\/media\/([^/]+)$/)) && request.method === 'GET') {
       const item = await db.prepare('SELECT m.*,s.status,s.owner_id,p.submission_id AS published FROM media m JOIN submissions s ON s.id=m.submission_id LEFT JOIN module_publications p ON p.submission_id=s.id WHERE m.id=?').bind(match[1]).first<Media & {status:string;owner_id:string;published:string|null}>()
       if (!item || (!item.published && !admin && item.owner_id !== user?.id)) throw new HttpError(404,'Media not found.')
@@ -136,7 +139,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       const owner=needMember(user)
       await knownModule(db,match[1]);const body=await jsonBody(request,OT_LOG_MAX_BYTES+32*1024)
       if(typeof body.steps!=='string'&&typeof body.body==='string')throw new HttpError(400,'Issue reports now include structured device details. Reload the page and report again.')
-      if(Object.keys(body).some(key=>!['title','steps','expected','actual','context','log','logMissing','maintainerSharing','displayName','visibility'].includes(key)))throw new HttpError(400,'Unexpected report field. Files and firmware are not accepted.')
+      if(Object.keys(body).some(key=>!['title','steps','expected','actual','context','log','logMissing','maintainerSharing','displayName','visibility','notifyUpdates'].includes(key)))throw new HttpError(400,'Unexpected report field. Files and firmware are not accepted.')
+      if(body.notifyUpdates!==undefined&&typeof body.notifyUpdates!=='boolean')throw new HttpError(400,'Choose whether to follow module updates.')
       if(body.visibility!==undefined&&body.visibility!=='forum'&&body.visibility!=='private')throw new HttpError(400,'Choose a public forum report or a private report.')
       const publicReport=body.visibility==='forum'
       const title=required(body.title,'Issue title',160),steps=required(body.steps,'Steps to reproduce',3000),expected=required(body.expected,'Expected result',1000),actual=required(body.actual,'Actual result',2000)
@@ -171,6 +175,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       ]:[]
       statements.push(db.prepare('INSERT INTO issues(id,module_id,author_login,reporter_id,title,body,context_json,log_missing,log_missing_note,github_state,maintainer_sharing,forum_thread_id,public_json) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)').bind(id,match[1],author,owner.id,title,details,JSON.stringify(context),missing?.reason??null,missing?.note??'',github?'pending':'none',Number(publicReport||body.maintainerSharing===true),threadId,publicDetails&&JSON.stringify(publicDetails)))
       if(log)statements.push(db.prepare('INSERT INTO issue_logs(issue_id,text,bytes,summary_json) VALUES(?,?,?,?)').bind(id,log.text,log.text.length,JSON.stringify(log.summary)))
+      if(module&&body.notifyUpdates!==false)statements.push(followReportedModule(db,match[1],owner.id))
       await db.batch(statements)
       // The report is stored either way; a failed mirror stays retryable from the admin inbox.
       const mirrored=github?await mirrorIssue(db,env,id):{state:'none' as const}
@@ -211,10 +216,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
         if(body.status!=='open'&&body.status!=='closed')throw new HttpError(400,'Choose open or closed.')
         const issue=await db.prepare('SELECT github_number FROM issues WHERE id=?').bind(match[1]).first<{github_number:number|null}>()
         if(!issue)throw new HttpError(404,'Issue not found.')
-        await db.batch([
-          db.prepare('UPDATE issues SET status=? WHERE id=?').bind(body.status,match[1]),
-          db.prepare('UPDATE forum_threads SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=(SELECT forum_thread_id FROM issues WHERE id=?)').bind(body.status==='closed'?'resolved':'open',match[1]),
-        ])
+        await db.batch(issueStatusStatements(db,match[1],body.status,ADMIN_ACTOR))
         // Keep the GitHub issue in step; the local status is authoritative for the reporter either way.
         const config=githubConfig(env);let github='none'
         if(config&&issue.github_number){try{await setGithubIssueState(config,issue.github_number,body.status);github='synced'}catch{github='failed'}}

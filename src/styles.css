@@ -167,6 +167,8 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .detail-hero .preview-controls { padding: 0 23px 18px; height: 29px; font-size: 12px; }
 .detail-hero .signal-art { height: calc(100% - 62px); }
 .detail-intro { min-width: 0; }
+.detail-intro > .button-quiet, .module-update-subscription { margin-top: 10px; }
+.module-update-subscription .service-note { max-width: 330px; margin: 8px 0 0; }
 .detail-hero-with-resources { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 150px; gap: 26px; }
 .module-resource-summary { position: relative; min-width: 0; padding-left: 22px; border-left: 1px solid var(--line); }
 .module-resource-summary > h2 { margin-bottom: 15px; color: var(--muted); font-size: 11px; font-weight: 500; text-align: center; }
@@ -1196,7 +1198,7 @@ h1 { font-size: 28px; }
   .detail-intro h1 { font-size: 28px; margin-bottom: 4px; }
   .detail-intro > p { margin: 12px 0 8px; }
   .detail-rating { margin-bottom: 16px; }
-  .detail-intro > .button { width: 100%; min-height: 46px; border-radius: 8px; font-size: 14px; }
+  .detail-intro > .button, .module-update-subscription > .button { width: 100%; min-height: 46px; border-radius: 8px; font-size: 14px; }
 
   .configuration-actions { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin: 0 0 20px; }
   .configuration-actions select { grid-column: 1 / -1; min-height: 44px; border-radius: 8px; }

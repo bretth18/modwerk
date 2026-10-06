@@ -1,5 +1,6 @@
 import type { Database, User } from './platform'
 import { ADMIN_ACTOR, needMember, throttle } from './auth'
+import { issueStatusStatements } from './issue-notifications'
 import { ITEM_SQL, toItem, VISIBLE } from './notifications'
 import { HttpError, jsonBody, required, response } from './security'
 import { COMMUNITY_MODULES, communityModule, developerModules, moduleThreadId } from '../src/community/modules'
@@ -117,8 +118,7 @@ export async function developerApi(request:Request,db:Database,user:User|null,ad
       if (!canManage) throw new HttpError(403,'Only an authorized maintainer or administrator can resolve this report.')
       if (body.status !== 'open' && body.status !== 'closed') throw new HttpError(400,'Choose open or closed.')
       await db.batch([
-        db.prepare('UPDATE issues SET status=? WHERE id=?').bind(body.status,issue.id),
-        db.prepare('UPDATE forum_threads SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(body.status==='closed'?'resolved':'open',issue.forum_thread_id),
+        ...issueStatusStatements(db,issue.id,body.status,member.id),
         db.prepare('INSERT INTO developer_events(id,actor_id,module_id,issue_id,action) VALUES(?,?,?,?,?)').bind(crypto.randomUUID(),member.id,issue.module_id,issue.id,'report-'+body.status),
       ])
       return response({ok:true})

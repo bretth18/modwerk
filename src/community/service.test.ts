@@ -42,6 +42,9 @@ async function fixture(){
  db.exec(readFileSync(new URL('../../migrations/0024_activity_notifications.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0025_github_issue_tracking.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0031_announcements.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0018_account_policy.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0032_web_push.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0034_module_update_notifications.sql',import.meta.url),'utf8'))
  const env:Env={DB:adapter(db),APP_URL:'https://octamod.test',ADMIN_KEY_SHA256:await digest(adminKey)}
  const objects=new Map<string,ArrayBuffer>()
  env.MEDIA={async put(key,bytes){objects.set(key,bytes)},async get(key){const bytes=objects.get(key);return bytes?{body:new ReadableStream({start(controller){controller.enqueue(new Uint8Array(bytes));controller.close()}})}:null},async delete(key){objects.delete(key)}}
@@ -209,7 +212,7 @@ describe('community access and review',()=>{
    await hook(comment,{event:'issue_comment',id:'comment-1'})
    expect(await (await hook({...comment,comment:{body:'CI passed',user:{login:'ci-bot',type:'Bot'}}},{event:'issue_comment'})).json()).toEqual({ok:true,handled:false})
    expect((await (await call('/issues/mine','GET',undefined,reporter)).json()).find((item:{id:string})=>item.id===row.id).status).toBe('open')
-   expect(await (await hook(closed)).json()).toEqual({ok:true,handled:true})
+   expect(await (await hook(closed,{id:'close-1'})).json()).toEqual({ok:true,handled:true})
    expect((await (await call('/issues/mine','GET',undefined,reporter)).json()).find((item:{id:string})=>item.id===row.id).status).toBe('closed')
    const {items}=await (await call('/notifications','GET',undefined,reporter)).json()
    expect(items).toMatchObject([{kind:'issue_resolved',github_actor:'sambanks',title:'Knob issue',url:'https://github.com/repeat98/octamod/issues/41'},{kind:'issue_comment',excerpt:'Thanks, I can reproduce this on 1.40C.'}])
@@ -220,6 +223,17 @@ describe('community access and review',()=>{
    // Reopening from the admin inbox reopens the GitHub issue too.
    expect(await (await call('/admin/issues/'+row.id,'PATCH',{status:'open'},'',undefined,admin)).json()).toEqual({ok:true,github:'synced'})
    expect(requests.at(-1)).toMatchObject({url:'https://api.github.com/repos/repeat98/octamod/issues/41',method:'PATCH',body:{state:'open'}})
+   expect(db.prepare('SELECT status FROM issues WHERE id=?').get(row.id)).toEqual({status:'open'})
+   // Replaying the old close after a reopen must neither change status nor notify again.
+   await hook(closed,{id:'close-1'})
+   expect(db.prepare('SELECT status FROM issues WHERE id=?').get(row.id)).toEqual({status:'open'})
+   expect((await (await call('/notifications','GET',undefined,reporter)).json()).items).toHaveLength(3)
+   await call('/admin/issues/'+row.id,'PATCH',{status:'closed'},'',undefined,admin)
+   const beforeEcho=(await (await call('/notifications','GET',undefined,reporter)).json()).items.length
+   await hook(closed,{id:'local-change-echo'})
+   expect((await (await call('/notifications','GET',undefined,reporter)).json()).items).toHaveLength(beforeEcho)
+   await call('/admin/issues/'+row.id,'PATCH',{status:'open'},'',undefined,admin)
+   await hook(closed,{id:'local-change-echo'})
    expect(db.prepare('SELECT status FROM issues WHERE id=?').get(row.id)).toEqual({status:'open'})
   }finally{vi.unstubAllGlobals()}
  })

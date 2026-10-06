@@ -1,3 +1,4 @@
+import { issueStatusStatements } from './issue-notifications'
 import type { Database, Env } from './platform'
 import { HttpError } from './security'
 import { communityModule } from '../src/community/modules'
@@ -125,26 +126,23 @@ export async function handleGithubWebhook(request: Request, env: Env, db: Databa
   const number = payload.issue?.number
   if (!Number.isInteger(number) || String(payload.repository?.full_name ?? '').toLowerCase() !== config.repository.toLowerCase()) return { ok: true, handled: false }
   // Most issues and comments on the repository did not start on Modwerk.
-  if (!await db.prepare('SELECT id FROM issues WHERE github_number=?').bind(number).first()) return { ok: true, handled: false }
+  const issue=await db.prepare('SELECT id FROM issues WHERE github_number=?').bind(number).first<{id:string}>()
+  if (!issue) return { ok: true, handled: false }
   const delivery = (request.headers.get('X-GitHub-Delivery') ?? '').slice(0, 100) || crypto.randomUUID()
-  const notify = (kind: string, actor: unknown, excerpt: string | null) => db.prepare(`INSERT INTO notifications(id,user_id,kind,issue_id,module_id,github_actor,excerpt,delivery_id) SELECT lower(hex(randomblob(16))),i.reporter_id,?,i.id,i.module_id,?,?,? FROM issues i JOIN users u ON u.id=i.reporter_id WHERE i.github_number=? AND u.suspended=0 ON CONFLICT DO NOTHING`)
-    .bind(kind, typeof actor === 'string' && GITHUB_LOGIN.test(actor) ? actor : null, excerpt, delivery, number)
+  if(await db.prepare('SELECT id FROM github_webhook_deliveries WHERE id=?').bind(delivery).first())return {ok:true,handled:true}
+  const notify = (kind: string, actor: unknown, excerpt: string | null) => db.prepare(`INSERT INTO notifications(id,user_id,kind,issue_id,module_id,github_actor,excerpt,delivery_id) SELECT lower(hex(randomblob(16))),i.reporter_id,?,i.id,i.module_id,?,?,? FROM issues i JOIN users u ON u.id=i.reporter_id WHERE i.github_number=? AND u.suspended=0 AND NOT EXISTS(SELECT 1 FROM github_webhook_deliveries WHERE id=?) ON CONFLICT DO NOTHING`)
+    .bind(kind, typeof actor === 'string' && GITHUB_LOGIN.test(actor) ? actor : null, excerpt, delivery, number,delivery)
   if (event === 'issue_comment') {
     const comment = payload.comment
     // Bots (CI, release tooling) talk to developers, not reporters.
     if (payload.action !== 'created' || typeof comment?.body !== 'string' || comment.user?.type === 'Bot') return { ok: true, handled: false }
-    await notify('issue_comment', comment.user?.login, comment.body.slice(0, 400)).run()
+    await db.batch([notify('issue_comment', comment.user?.login, comment.body.slice(0, 400)),db.prepare('INSERT INTO github_webhook_deliveries(id,issue_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(delivery,issue.id)])
     return { ok: true, handled: true }
   }
   const status = payload.action === 'closed' ? 'closed' : payload.action === 'reopened' ? 'open' : null
   if (!status) return { ok: true, handled: false }
   // "Completed" is how GitHub records a fix, including closing through a merged pull request.
-  const kind = status === 'open' ? 'issue_reopened' : payload.issue?.state_reason === 'completed' ? 'issue_resolved' : 'issue_closed'
-  await db.batch([
-    db.prepare('UPDATE issues SET status=? WHERE github_number=?').bind(status, number),
-    // Reports from before GitHub tracking may still have a forum thread; it follows the issue.
-    db.prepare('UPDATE forum_threads SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=(SELECT forum_thread_id FROM issues WHERE github_number=?)').bind(status === 'closed' ? 'resolved' : 'open', number),
-    notify(kind, payload.sender?.login, null),
-  ])
+  const actor=payload.sender?.login
+  await db.batch(issueStatusStatements(db,issue.id,status,null,typeof actor==='string'&&GITHUB_LOGIN.test(actor)?actor:null,delivery,payload.issue?.state_reason==='completed'))
   return { ok: true, handled: true }
 }

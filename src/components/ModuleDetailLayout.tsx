@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { ModuleCommunity } from '../community/ModuleCommunity'
+import { ModuleUpdateButton } from '../community/ModuleUpdateButton'
 import { Icon } from './Icon'
 
 type DetailTab = 'Overview' | 'Media' | 'Discussion'
@@ -33,6 +34,7 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
         {notice}
         <div className="detail-rating"><button className="text-button" onClick={showDiscussion}>Reviews & discussion</button></div>
         <button className={'button ' + (selected ? 'button-added' : 'button-primary')} onClick={onToggle} aria-pressed={selected}><Icon name={selected ? 'check' : 'plus'} size={16} />{selected ? 'Added to configuration' : 'Add to configuration'}</button>
+        <ModuleUpdateButton id={id} />
       </div>
       {resources}
     </section>

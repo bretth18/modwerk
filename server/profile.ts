@@ -42,6 +42,7 @@ export async function profileRoutes(request: Request, env: Env, db: Database, pa
   // discussion keeps a non-signing-in tombstone to preserve other replies.
   const tables = [['account_tokens','user_id'],['auth_verifications','value'],['sessions','user_id'],['configurations','user_id'],['developer_sessions','user_id'],['developer_auth_codes','user_id'],['module_maintainers','user_id'],['issue_replies','user_id'],['developer_events','actor_id'],['issues','reporter_id'],['ratings','user_id'],['likes','user_id'],['forum_reactions','user_id'],['forum_follows','user_id'],['forum_bookmarks','user_id'],['push_subscriptions','user_id'],['signup_events','user_id'],['notifications','user_id'],['notification_preferences','user_id'],['forum_reports','user_id'],['forum_shout_reports','user_id'],['forum_shouts','user_id'],['account_removal_requests','user_id'],['account_policy_acceptances','user_id']] as const
   await db.batch([
+    db.prepare('DELETE FROM module_update_subscriptions WHERE user_id=?').bind(owner.id),
     ...tables.map(([table, column]) => db.prepare(`DELETE FROM ${table} WHERE ${column}=?`).bind(owner.id)),
     db.prepare('DELETE FROM auth_users WHERE id=?').bind(owner.id),
     // Posted text stays as anonymous discussion; images and sound clips are removed (the hourly job purges the files).

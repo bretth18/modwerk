@@ -1,3 +1,4 @@
+import { issueStatusStatements } from './issue-notifications'
 import type { Database, User } from './platform'
 import { ADMIN_ACTOR, needMember, throttle } from './auth'
 import { HttpError, jsonBody, required, response } from './security'
@@ -187,10 +188,9 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     if(action==='status'&&request.method==='PATCH'){
       if(thread.user_id!==member.id&&!admin)throw new HttpError(403,'Only the thread author or administrator can change its status.')
       if(!['open','resolved'].includes(String(body.status)))throw new HttpError(400,'Choose open or resolved.')
-      await db.batch([
-        db.prepare('UPDATE forum_threads SET status=? WHERE id=? AND category=\'issues\'').bind(body.status,thread.id),
-        db.prepare('UPDATE issues SET status=? WHERE forum_thread_id=?').bind(body.status==='resolved'?'closed':'open',thread.id),
-      ])
+      const issue=await db.prepare('SELECT id FROM issues WHERE forum_thread_id=?').bind(thread.id).first<{id:string}>()
+      if(issue)await db.batch(issueStatusStatements(db,issue.id,body.status==='resolved'?'closed':'open',member.id))
+      else await db.prepare('UPDATE forum_threads SET status=? WHERE id=? AND category=\'issues\'').bind(body.status,thread.id).run()
       return response({ok:true})
     }
   }

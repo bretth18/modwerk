@@ -1,4 +1,5 @@
 import { BugReportNotice, BugReportSuccess, ExistingIssues } from './BugReportNotice'
+import { ReportNotifications } from './ReportNotifications'
 import { useIssueTracker, type BugReportResult } from './issue-tracker'
 import { useEffect, useId, useRef, useState } from 'react'
 import { post } from './api'
@@ -66,8 +67,9 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   if(fields.actual.length>2000){setError('Keep the actual result under 2,000 characters. Your complete discussion draft is available above for reference.');setBusy(false);return}
   const context:IssueContext={model,flash,os:REPORT_OS,modules:workspace.modules,keepStockFx2:workspace.keepStockFx2,build:workspace.build}
   try{
-   const result=await post<BugReportResult>('/modules/'+id+'/issues',{title:fields.title,steps:fields.steps,expected:fields.expected,actual:fields.actual,context,visibility:'forum',...(log?{log:log.text}:{logMissing:{reason,note}})})
+   const result=await post<BugReportResult>('/modules/'+id+'/issues',{title:fields.title,steps:fields.steps,expected:fields.expected,actual:fields.actual,context,visibility:'forum',notifyUpdates:fields.notifyUpdates==='on',...(log?{log:log.text}:{logMissing:{reason,note}})})
    setSent(result)
+   window.dispatchEvent(new Event('modwerk-module-updates'))
    clearDraft()
   }catch(error){setError(error instanceof Error?error.message:'Unable to send issue.')}
   finally{setBusy(false)}
@@ -126,6 +128,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
    </fieldset>
 
    <p className="service-note">The bug description will be public. Your configuration and log stay private to the people helping with your report.</p>
+   <ReportNotifications id={id}/>
    <button className="button button-primary" disabled={busy||reading}>{busy?'Posting…':'Post bug report'}</button>
   </form>}
   {error&&<p className="file-error" role="alert">{error}</p>}</details>

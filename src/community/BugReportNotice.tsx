@@ -1,7 +1,7 @@
 import type { BugReportResult, IssueTracker } from './issue-tracker'
 
 export function BugReportNotice({ tracker }: { tracker: IssueTracker | null }) {
-  if (tracker?.tracker === 'github') return <p className="service-note">Posting opens a public issue on GitHub, where the module’s developers track and fix bugs. They are notified there. Your title, reproduction steps, results, device, module version and username will be public. Your full configuration, build fingerprint and any attached log stay private to you, the administrator and verified module maintainers. You don’t need a GitHub account: replies and fixes appear in your Modwerk notifications. Leave out firmware and personal information.</p>
+  if (tracker?.tracker === 'github') return <p className="service-note">Posting opens a public issue on GitHub, where the module’s developers track and fix bugs. They are notified there. Your title, reproduction steps, results, device, module version and username will be public. Your full configuration, build fingerprint and any attached log stay private to you, the administrator and verified module maintainers. You don’t need a GitHub account: replies and status changes appear in your bell and unread activity emails. Leave out firmware and personal information.</p>
   return <p className="service-note">Posting sends this bug to the module’s verified developers and creates a public thread in <a href="#forum?category=issues">Bug reports</a>. Your title, reproduction steps, results, device and module version will be public under your username. Your full configuration, build fingerprint and any attached log are shared privately with you, the administrator and verified module maintainers. Leave out firmware and personal information.</p>
 }
 
@@ -17,8 +17,8 @@ export function ExistingIssues({ id, tracker }: { id: string; tracker: IssueTrac
 }
 
 export function BugReportSuccess({ report }: { report: BugReportResult }) {
-  const account = <>Manage the private details under <a href={'#account/report/' + report.id}>Your account</a>.</>
-  if (report.githubUrl) return <><strong>Your bug report is on GitHub</strong><p>The module developers have been notified. <a href={report.githubUrl} target="_blank" rel="noreferrer">Open the issue ↗</a> to follow it; replies and fixes also appear in your notifications. {account}</p></>
+  const account = <>Manage the private details under <a href={'#account/report/' + report.id}>Your account</a>. Status changes reach your bell and unread activity emails, following your <a href="#account/notifications">notification settings</a>.</>
+  if (report.githubUrl) return <><strong>Your bug report is on GitHub</strong><p>The module developers have been notified. <a href={report.githubUrl} target="_blank" rel="noreferrer">Open the issue ↗</a> to follow public replies. {account}</p></>
   if (report.forumThreadId) return <><strong>Your bug report is posted</strong><p>It is in the Bug Reports forum and the module developers’ inbox. <a href={'#forum/thread/' + report.forumThreadId}>Open the discussion</a> to follow public replies. {account}</p></>
   return <><strong>Your bug report is saved</strong><p>It reached the module developers’ inbox and will be posted to GitHub shortly. {account}</p></>
 }
