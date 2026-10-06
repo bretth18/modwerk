@@ -1,6 +1,8 @@
 # Euclid
 
-Version: 0.1.1-experimental · author: [Jannik Aßfalg](https://github.com/repeat98)
+Version: 0.1.3-experimental · author: [Jannik Aßfalg](https://github.com/repeat98)
+
+## Overview
 
 A stereo Euclidean modulation effect for either FX slot. It follows the
 Octatrack transport, track speed and swing grid. A 1–64-step rhythm drives
@@ -10,6 +12,8 @@ resets phase.
 
 The `euclid` remix retains the stock Plate, Spring and Dark Reverb rows in
 FX2. Their descriptors, DSP code and dispatch entries stay stock.
+
+## Controls
 
 | Page | A | B | C | D | E | F |
 |---|---|---|---|---|---|---|
@@ -34,6 +38,8 @@ STEPS, PULSE and ROT use the full dial arc without changing stored values or
 encoder increments. This uses the remixer's shared `WIDE_STEPPED` formatter
 support rather than an effect-owned panel detour.
 
+## Usage
+
 ROT shifts both the rhythm and captured random values right. RATE offers
 1/32, 1/16, 1/8, 1/4 and 1/2 relative to track speed; 1/16 is one track
 step. A RATE change joins the next point on the new grid without replaying a
@@ -54,9 +60,49 @@ The output selector names itself ENV, GATE, RAND or LOOP:
 Zero pulses and STOP return to the base cutoff or gain. Captured values
 survive transport restarts but are runtime state, not project data.
 
-Swing uses the track's swing mask and amount, including Swing All changes.
+### Track swing and SWING ALL
+
+Euclid automatically follows the swing amount and selected swing steps of
+its audio track, including changes made with SWING ALL.
 Rotation and odd Euclidean lengths do not rotate the track swing grid. The
 1/32 subdivision interpolates the surrounding track-step offsets.
+
+Select the audio track, press **REC** to enter Grid Recording, then press
+**FUNC+BANK** to open **TRACK TRIG EDIT**. Select **SWING** with UP/DOWN:
+turn **LEVEL** for that track, or hold **FUNC** while turning LEVEL for
+**SWING ALL**. Use the TRIG keys on the SWING row to choose the affected
+steps. **50%** means straight timing. The default swing mask selects the
+even-numbered steps; changing the amount keeps each track's mask.
+
+![Octatrack TRACK TRIG EDIT with SWING selected on track 1 and SWING TR1:62 displayed.](media/ot-swing-track.png)
+
+This actual stock 1.40C menu capture shows the shared track settings that
+Euclid reads. See [swing capture provenance](docs/swing-capture.md) and the
+[Octatrack MKII manual, sections 12.10 and 12.10.3](https://www.elektron.se/wp-content/uploads/2024/09/Octatrack-MKII-User-Manual_ENG_OS1.40A_210414.pdf#page=73).
+On MKI, FUNC is labelled FUNCTION; the same REC, FUNCTION+BANK and LEVEL
+workflow applies.
+
+## Quick tutorial: follow the track swing
+
+1. Select the audio track with its TRACK key, hold FUNC and press FX1 or FX2, then select Euclid with LEVEL and confirm with YES.
+2. Press the same FX key to return to the main page. Set STEPS to 16 and PULSE to 5; in SETUP, keep RATE at 1/16 and OUT at ENV.
+3. Press REC to enter Grid Recording, then hold FUNC and press BANK to open TRACK TRIG EDIT. Select SWING with UP/DOWN and turn LEVEL to set the track swing amount; 50% is straight timing.
+4. For an all-track change, hold FUNC while turning LEVEL on the SWING row. SWING ALL changes every track's amount; Euclid follows the amount and swing steps of the track it occupies.
+5. Press NO to close the menu and REC to leave Grid Recording. Start playback on a track with audible audio: Euclid's pulses follow its track swing grid. Press STOP to return to the base cutoff or gain, or set MIX to 0 for dry audio.
+
+## Compatibility and limitations
+
+Use an audio track on Octatrack MKI or MKII with base OS 1.40C. Euclid can
+occupy FX1 or FX2. No module conflicts are declared. The swing grid belongs
+to the track; rotating Euclid or using an odd cycle length does not rotate
+that grid. Captured LOOP values are runtime state and are not saved in the
+project. STOP returns to the base cutoff or gain; PLAY resets rhythm phase.
+
+Current hardware status remains untested. This documentation update retains
+0.1.2-experimental's evidence and unchanged runtime inputs; the new swing
+capture demonstrates the stock menu only. It adds no audio, hardware or
+performance qualification. Costs and remaining measurements are described
+below and in [TESTING.md](TESTING.md).
 
 ## Implementation
 
@@ -83,7 +129,7 @@ coefficient instead of paying for a 24-step divide on every sample. All DSP
 state is initialized and private to the instance; no audio buffer is
 allocated.
 
-## Verification
+## Tests and measurements
 
 `make check REMIX=euclid` runs the Euclid suite as part of the normal verify
 target. It checks the native control laws, checked-in ColdFire assembly,
@@ -96,7 +142,22 @@ writes to the source project or hardware.
 
 The current revision has not been hardware-tested by these tools.
 
-## Access on the OT and actual UI captures
+The declared native suite and instruction costs above are source records;
+this editorial update did not rerun them. No comparable whole-chip load
+percentage or final storage measurement is supplied. The original test
+record and hardware status remain in [TESTING.md](TESTING.md).
+
+## Authorship and licences
+
+Euclid is by [Jannik Aßfalg (@repeat98)](https://github.com/repeat98), using
+octabam by Sam Banks. Module source retains its [MIT licence](LICENSE);
+see [SDK attribution](../../THIRD_PARTY.md) for component credits.
+The original UI captures have their [media rights declaration](media/LICENSE.md).
+Current captures have contributor declarations in [FX capture provenance](docs/fx-capture.md)
+and [swing capture provenance](docs/swing-capture.md); underlying Elektron
+interface rights remain reserved.
+
+## Screens and audio
 
 Audio track FX1 or FX2 SETUP: Euclid in the effect chooser. These captures use FX2.
 
@@ -106,10 +167,12 @@ Audio track FX1 or FX2 SETUP: Euclid in the effect chooser. These captures use F
 4. Press the same FX key to close SETUP for FREQ, RES, DEPTH, DEC, STEPS and PULSE.
 5. Hold FUNC and press that FX key again for ROT, RATE, TYPE, ATK, output mode and MIX. Labels change with TYPE and output mode.
 
-![Euclid main controls in its default filter/envelope mode: FREQ, RES, DEPTH, DEC, STEPS and PULSE.](media/ot-controls.png)
+![Euclid main controls in its default filter/envelope mode: FREQ, RES, DEPTH, DEC, STEPS and PULSE.](media/ot-controls-monochrome.png)
 
-![Euclid selected in FX2 SETUP: ROT, RATE, TYPE, ATK, ENV output mode and MIX.](media/ot-setup.png)
+![Euclid selected in FX2 SETUP: ROT, RATE, TYPE, ATK, ENV output mode and MIX.](media/ot-setup-monochrome.png)
 
 These are actual headless-emulator LCD captures, not hardware results. See
-[TESTING.md](TESTING.md), [capture provenance](media/capture.json) and
-[media rights](media/LICENSE.md).
+[TESTING.md](TESTING.md), [current FX capture provenance](docs/fx-capture.md),
+[original capture record](media/capture.json) and [media rights](media/LICENSE.md). The track swing capture above is
+recorded separately in [swing capture provenance](docs/swing-capture.md).
+No audio preview is included.

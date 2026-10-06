@@ -62,7 +62,13 @@ function runtimeFields(document) {
 }
 function editorial(path, document) {
   // Evidence, runtime data and unknown extensions are protected even inside docs/media.
-  const reports = new Set([document.tests.report, document.resources.storage.source, document.resources.processing.source,
+  // An unmeasured metric has no measurements to freeze in the README. Its
+  // unchanged declaration remains protected by runtimeFields; measured reports
+  // and the original testing record still require byte-identical evidence.
+  const metricReports = [document.resources.storage, document.resources.processing]
+    .filter(metric => metric.source !== 'README.md' || metric.method !== 'unmeasured' || metric.value !== null)
+    .map(metric => metric.source)
+  const reports = new Set([document.tests.report, ...metricReports,
     ...Object.values(document.resources.impact ?? {}).flatMap(value => value?.source ? [value.source] : []),
     ...(document.tests.qualification ? [...document.tests.qualification.cycles.map(c => c.report), document.tests.qualification.memory.report, document.tests.qualification.hardware.report] : []),
     ...(document.tests.releaseWaiver ? [document.tests.releaseWaiver.report] : [])])

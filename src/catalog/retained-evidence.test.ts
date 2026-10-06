@@ -46,6 +46,26 @@ describe('risk-based retained module evidence',()=>{
     expect(document.media[0].otUi!.moduleVersion).toBe(example.version)
     expect(document.tests.hardwareStatus).toBe('verified')
   })
+  it.each(['unmeasured', 'static'] as const)('handles README resource references according to their evidence method: %s',async method=>{
+    git('reset','--hard','HEAD')
+    const original=JSON.parse(readFileSync(resolve(folder,'octamod.module.json'),'utf8')) as ModuleDocument
+    for(const metric of [original.resources.storage,original.resources.processing]) {
+      metric.source='README.md';metric.method=method
+      metric.value=method==='unmeasured'?null:1
+      metric.display=method==='unmeasured'?'Not measured':'1 byte'
+    }
+    writeFileSync(resolve(folder,'octamod.module.json'),JSON.stringify(original))
+    git('add','.');git('-c','user.name=Evidence test','-c','user.email=fixture@example.invalid','commit','--quiet','-m','Synthetic README resource reference')
+    commit=git('rev-parse','HEAD');git('update-ref','refs/remotes/origin/main',commit)
+    document={...original,version:'0.1.1',tests:{...original.tests,retainedEvidence:{commit,moduleVersion:original.version,documentation:structuredClone(original.tests.qualification!.documentation)}}}
+    put('sdk/octabam/modules/'+example.id+'/README.md',qualificationReadme+'\nTrack swing documentation.\n')
+    save()
+    if(method==='unmeasured') {
+      expect(await check()).toBe('retained-evidence')
+      document.resources.storage.value=1
+      await expect(check()).rejects.toThrow('full qualification')
+    } else await expect(check()).rejects.toThrow('README.md; full qualification')
+  })
   it('allows real documentation/media changes but still validates the documentation and pixels',async()=>{
     const docs=document.tests.retainedEvidence!.documentation
     docs.tutorial.title='A clearer tutorial'

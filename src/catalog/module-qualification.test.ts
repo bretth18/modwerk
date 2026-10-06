@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { parseModuleDocument, requireModuleQualificationForPublication, type ModuleQualification } from './module-contract'
@@ -82,7 +82,10 @@ describe('module qualification hard gates',()=>{
     for(const module of catalog.modules.filter(m=>!['cc-map','previewvol'].includes(m.id))) {
       const folder=resolve('sdk/octabam/modules',module.id),record=frozen.get(module.id)
       const unchanged=record?.version===module.version&&record.folderSha256===await moduleFolderSha256(folder)
-      expect(await requireFolderQualification(folder,parseModuleDocument(module),frozen)).toBe(unchanged?'retained':module.id==='midi-scenes'?'owner-approved-standalone':'qualified')
+      // Generated web documents include display-only baseline resource estimates.
+      // Qualify the source manifest, as publication validation does.
+      const source=parseModuleDocument(JSON.parse(readFileSync(resolve(folder,'octamod.module.json'),'utf8')))
+      expect(await requireFolderQualification(folder,source,frozen)).toBe(unchanged?'retained':source.tests.retainedEvidence?'retained-evidence':module.id==='midi-scenes'?'owner-approved-standalone':'qualified')
     }
   })
   it('binds exemptions to complete folder contents and qualification to the native source',async()=>{

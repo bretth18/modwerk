@@ -901,7 +901,7 @@
       "id": "euclid",
       "key": "EUCLID",
       "name": "Euclid",
-      "version": "0.1.2-experimental",
+      "version": "0.1.3-experimental",
       "category": "effects",
       "access": {
         "location": "Audio track FX1 or FX2 SETUP: Euclid in the effect chooser. These captures use FX2.",
@@ -913,8 +913,9 @@
           "Hold FUNC and press that FX key again for ROT, RATE, TYPE, ATK, output mode and MIX. Labels change with TYPE and output mode."
         ],
         "screenshots": [
-          "media/ot-controls.png",
-          "media/ot-setup.png"
+          "media/ot-controls-monochrome.png",
+          "media/ot-setup-monochrome.png",
+          "media/ot-swing-track.png"
         ]
       },
       "author": {
@@ -930,16 +931,19 @@
         "label": "RHYTHMIC FILTER",
         "family": "Sequencing",
         "summary": "Euclidean rhythms for filters and amplitude.",
-        "overview": "Euclidean rhythms drive filter cutoff or amplitude. Set the number of steps and pulses, rotate the pattern, and shape each movement with the envelope controls.",
+        "overview": "Euclidean rhythms drive filter cutoff or amplitude. Set the number of steps and pulses, rotate the pattern, and shape each movement with the envelope controls. Euclid automatically follows the swing amount and selected swing steps of its audio track, including changes made with SWING ALL.",
         "highlights": [
           "Step, pulse and rotation controls",
           "LP, BP, HP, notch and amplitude modes",
-          "Rhythmic filtering or amplitude movement"
+          "Rhythmic filtering or amplitude movement",
+          "Follows track swing, including SWING ALL"
         ],
         "usage": [
           "Set STEPS for the pattern length and PULSE for the number of evenly distributed events.",
           "ROT rotates the rhythm and RATE sets its time grid. TYPE selects low-pass, band-pass, high-pass, notch or amplitude modulation.",
-          "FREQ sets the base cutoff, DEPTH controls movement and DEC / LEN shapes each event. AMP mode relabels these controls for level and amount."
+          "FREQ sets the base cutoff, DEPTH controls movement and DEC / LEN shapes each event. AMP mode relabels these controls for level and amount.",
+          "Euclid automatically follows the swing amount and selected swing steps of its audio track, including changes made with SWING ALL.",
+          "Select the track, enter Grid Recording with REC, then open TRACK TRIG EDIT with FUNC+BANK and select SWING. Turn LEVEL for this track or hold FUNC while turning LEVEL for all tracks; 50% is straight timing."
         ]
       },
       "controls": [
@@ -1299,7 +1303,29 @@
         "evidenceRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
         "gates": [
           "tools/verify/verify_euclid.py"
-        ]
+        ],
+        "retainedEvidence": {
+          "commit": "cb1f0a16a41902fe874b8f307dd3d9065daf6eff",
+          "moduleVersion": "0.1.2-experimental",
+          "documentation": {
+            "tutorial": {
+              "title": "Quick tutorial: follow the track swing",
+              "steps": [
+                "Select the audio track with its TRACK key, hold FUNC and press FX1 or FX2, then select Euclid with LEVEL and confirm with YES.",
+                "Press the same FX key to return to the main page. Set STEPS to 16 and PULSE to 5; in SETUP, keep RATE at 1/16 and OUT at ENV.",
+                "Press REC to enter Grid Recording, then hold FUNC and press BANK to open TRACK TRIG EDIT. Select SWING with UP/DOWN and turn LEVEL to set the track swing amount; 50% is straight timing.",
+                "For an all-track change, hold FUNC while turning LEVEL on the SWING row. SWING ALL changes every track's amount; Euclid follows the amount and swing steps of the track it occupies.",
+                "Press NO to close the menu and REC to leave Grid Recording. Start playback on a track with audible audio: Euclid's pulses follow its track swing grid. Press STOP to return to the base cutoff or gain, or set MIX to 0 for dry audio."
+              ]
+            },
+            "screenshots": [
+              "media/ot-controls-monochrome.png",
+              "media/ot-setup-monochrome.png",
+              "media/ot-swing-track.png"
+            ],
+            "screenshotStyle": "black-and-white"
+          }
+        }
       },
       "license": {
         "spdx": "MIT",
@@ -1308,37 +1334,54 @@
       },
       "media": [
         {
-          "path": "media/ot-controls.png",
+          "path": "media/ot-controls-monochrome.png",
           "captureType": "emulator",
           "caption": "Euclid main controls in its default filter/envelope mode: FREQ, RES, DEPTH, DEC, STEPS and PULSE.",
           "alt": "Euclid main controls in its default filter/envelope mode: FREQ, RES, DEPTH, DEC, STEPS and PULSE.",
-          "credit": "Octamod contributors (headless capture)",
+          "credit": "Modwerk contributors (headless capture)",
           "license": "LicenseRef-OT-UI-Documentation",
           "source": "original",
           "otUi": {
             "page": "FX2 main",
             "shows": "controls",
             "firmware": "1.40C",
-            "moduleVersion": "0.1.2-experimental",
-            "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
-            "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+            "moduleVersion": "0.1.3-experimental",
+            "imageSha256": "0186288f6fa4059fec7df0d1f1b9aec0ce67a79d7ed201dcf7ad37457edced0f",
+            "setup": "Reviewed headless ot_emu; MKII panel; unchanged approved Euclid native source; dedicated Euclid-only FX2 chooser and stock FX1 rows; empty scratch card; transport stopped; actual 128x64 LCD at integer scale 6 in monochrome. See docs/fx-capture.md."
           }
         },
         {
-          "path": "media/ot-setup.png",
+          "path": "media/ot-setup-monochrome.png",
           "captureType": "emulator",
           "caption": "Euclid selected in FX2 SETUP: ROT, RATE, TYPE, ATK, ENV output mode and MIX.",
           "alt": "Euclid selected in FX2 SETUP: ROT, RATE, TYPE, ATK, ENV output mode and MIX.",
-          "credit": "Octamod contributors (headless capture)",
+          "credit": "Modwerk contributors (headless capture)",
           "license": "LicenseRef-OT-UI-Documentation",
           "source": "original",
           "otUi": {
             "page": "FX2 SETUP",
             "shows": "location-and-controls",
             "firmware": "1.40C",
-            "moduleVersion": "0.1.2-experimental",
-            "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
-            "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+            "moduleVersion": "0.1.3-experimental",
+            "imageSha256": "0186288f6fa4059fec7df0d1f1b9aec0ce67a79d7ed201dcf7ad37457edced0f",
+            "setup": "Reviewed headless ot_emu; MKII panel; unchanged approved Euclid native source; dedicated Euclid-only FX2 chooser and stock FX1 rows; empty scratch card; transport stopped; actual 128x64 LCD at integer scale 6 in monochrome. See docs/fx-capture.md."
+          }
+        },
+        {
+          "path": "media/ot-swing-track.png",
+          "captureType": "emulator",
+          "caption": "Track swing: REC enables Grid Recording; FUNC+BANK opens TRACK TRIG EDIT. Select SWING and turn LEVEL for this track. Euclid follows its track's swing amount and selected swing steps.",
+          "alt": "Octatrack TRACK TRIG EDIT with SWING selected on track 1 and SWING TR1:62 displayed.",
+          "credit": "Modwerk contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "TRACK TRIG EDIT / SWING",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.3-experimental",
+            "imageSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+            "setup": "Reviewed headless ot_emu; MKII panel; verified unmodified stock 1.40C MAIN OS; empty scratch card; transport stopped; Grid Recording enabled on T1. Actual 128x64 LCD pixels at integer scale 6. This shared stock swing menu configures the track timing followed by Euclid; no Euclid runtime was loaded for these stock-menu captures. See docs/swing-capture.md."
           }
         }
       ]

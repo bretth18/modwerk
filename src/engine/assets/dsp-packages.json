@@ -9,7 +9,7 @@
     "character": "0.1.1-experimental",
     "miniverb": "0.1.2-experimental",
     "tapeecho": "0.1.2-experimental",
-    "euclid": "0.1.2-experimental",
+    "euclid": "0.1.3-experimental",
     "repitch": "0.1.2-experimental",
     "tapehead": "0.1.2-experimental",
     "analog-bassdrum": "0.1.2-experimental",
@@ -23,7 +23,7 @@
   "packages": [
     {
       "id": "euclid",
-      "version": "0.1.2-experimental",
+      "version": "0.1.3-experimental",
       "key": "EUCLID",
       "author": "repeat98",
       "sources": {
