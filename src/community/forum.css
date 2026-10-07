@@ -849,8 +849,7 @@ li[data-status="error"] .forum-media-status { color: #f0a6ad; }
 .forum-profile-stats div { display: flex; flex-direction: column-reverse; gap: 1px; }
 .forum-profile-stats dt { color: var(--muted); font-size: 11px; }
 .forum-profile-stats dd { margin: 0; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
-.forum-profile-modules { margin: 12px 0 0; font-size: 13px; line-height: 1.7; }
-.forum-profile-modules small { color: var(--muted); font-size: 11px; }
+.forum-profile-modules { margin: 22px 0 0; }
 .forum-profile h2 .forum-role-badge { margin-left: 10px; vertical-align: middle; }
 .forum-standing { --tier-color: #9a96b8; max-width: 420px; margin: 16px 0 0; padding: 12px 14px; border: 1px solid #ffffff12; border-radius: 10px; background: color-mix(in srgb, var(--tier-color) 7%, transparent); }
 .forum-standing[data-tier="jammer"] { --tier-color: #92bccd; }
