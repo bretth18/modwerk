@@ -20,13 +20,13 @@ export function SupportDialog({ url, onClose }: { url: string; onClose: () => vo
   return <dialog ref={dialog} className="app-dialog support-dialog" aria-labelledby="support-title" aria-describedby="support-message" onCancel={event => { event.preventDefault(); onClose() }}>
     <h2 id="support-title"><span className="support-heart"><Icon name="heart" size={20} /></span>A little support for Modwerk</h2>
     <div id="support-message">
-      <p>Modwerk is a collaborative effort, built on octabam and the work of module authors and everyone who shares ideas, fixes and feedback.</p>
-      <p>I look after this site, curate the modules and help keep the community a useful, welcoming place. If you’d like to support the time I put into that, you can leave a small tip.</p>
-      <p>Thanks for being part of it.</p>
+      <p>Modwerk is a community effort, built on octabam and the work of module authors and everyone who shares ideas, fixes and feedback.</p>
+      <p>Hosting, storage and the community backend cost money every month, and so far I've covered that myself. On top of that I spend a lot of time on the site, curating modules and keeping the community useful and welcoming.</p>
+      <p>If Modwerk helps you and you'd like to chip in, you can leave a small tip. It's totally optional and everything stays free either way. Reporting bugs, sharing modules and helping each other out is already the best support there is :))</p>
     </div>
     <div className="dialog-actions">
       <button type="button" className="button button-quiet" autoFocus onClick={onClose}>Close</button>
-      <a className="button button-primary" href={url} target="_blank" rel="noopener noreferrer" aria-label="Support via PayPal (opens in a new tab)">Support via PayPal <span aria-hidden="true">↗</span></a>
+      <a className="button button-primary" href={url} target="_blank" rel="noopener noreferrer" aria-label="Support on Ko-fi (opens in a new tab)">Support on Ko-fi <span aria-hidden="true">↗</span></a>
     </div>
   </dialog>
 }

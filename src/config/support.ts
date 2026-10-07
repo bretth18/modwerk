@@ -1,1 +1,1 @@
-export const PAYPAL_DONATION_URL = 'https://paypal.me/jannikassfalg'
+export const SUPPORT_URL = 'https://ko-fi.com/jannikassfalg'
