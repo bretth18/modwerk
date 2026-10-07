@@ -8,7 +8,7 @@ import { moduleIssueHref, moduleThreadId } from './modules'
 
 const errorText = (error: unknown) => error instanceof Error ? error.message : 'The request could not be completed.'
 
-/** Shown once a build is downloaded: follow its modules, then tell each module's thread how it runs on the unit.
+/** Shown once a build is downloaded: tell each module's thread how it runs on the unit.
  * The build panels sit behind the member gate, so only verified members see it. */
 export function BuildFollowUp({ machine, os, modules }: { machine: string; os: string; modules: readonly BuiltModule[] }) {
   const { session } = useCommunity()
@@ -17,30 +17,8 @@ export function BuildFollowUp({ machine, os, modules }: { machine: string; os: s
   return <section className="configuration-section build-follow-up" aria-labelledby="build-follow-up-title">
     <div className="section-title"><h2 id="build-follow-up-title">After you flash</h2></div>
     <p className="service-note">Local checks can’t prove a build on hardware. Once you’ve played with it, tell others how {several ? 'these modules run' : 'this module runs'} on your {machine}. Every report helps the next person decide.</p>
-    <FollowModules modules={modules} />
     <ul className="build-follow-up-list">{modules.map(module => <HardwareReport key={module.id} machine={machine} os={os} module={module} build={modules} />)}</ul>
   </section>
-}
-
-/** One press follows each module's releases and its discussion, as the module page and its thread would one by one. */
-function FollowModules({ modules }: { modules: readonly BuiltModule[] }) {
-  const [state, setState] = useState<'' | 'busy' | 'done'>(''), [error, setError] = useState(''), note = useId()
-  async function follow() {
-    setState('busy'); setError('')
-    try {
-      await Promise.all(modules.flatMap(module => [
-        post('/modules/' + module.id + '/updates', { enabled: true }, 'PATCH'),
-        post('/forum/threads/' + moduleThreadId(module.id) + '/follow', { enabled: true }),
-      ]))
-      setState('done')
-    } catch (error) { setError(errorText(error)); setState('') }
-  }
-  const several = modules.length > 1
-  return <div className="build-follow-up-follow">
-    <button type="button" className={'button ' + (state === 'done' ? 'button-added' : 'button-primary')} aria-describedby={note} disabled={state !== ''} onClick={() => void follow()}><Icon name={state === 'done' ? 'check' : 'bell'} size={16} />{state === 'busy' ? 'Following…' : state === 'done' ? 'Following' : several ? 'Follow these modules' : 'Follow this module'}</button>
-    <p id={note} className="service-note" role="status">{state === 'done' ? 'New releases and replies land in your bell. Change this on each module page or in your notification settings.' : 'Get new releases and replies in your bell, and in your activity emails if you have them on.'}</p>
-    {error && <p className="file-error" role="alert">{error}</p>}
-  </div>
 }
 
 /** “Works” opens a short note that posts to the module's thread; a problem goes to the module's issue form instead. */

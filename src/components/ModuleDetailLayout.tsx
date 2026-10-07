@@ -1,11 +1,19 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { ModuleCommunity } from '../community/ModuleCommunity'
+import { ModuleChangelog } from '../community/ModuleChangelog'
+import { ModuleIssues } from '../community/ModuleIssues'
 import { ModuleUpdateButton } from '../community/ModuleUpdateButton'
 import { ShareModuleButton } from '../community/ShareModuleButton'
 import { Icon } from './Icon'
 
-type DetailTab = 'Overview' | 'Media' | 'Discussion'
-const tabs: DetailTab[] = ['Overview', 'Media', 'Discussion']
+type DetailTab = 'Overview' | 'Media' | 'Discussion' | 'Changelog' | 'Issues'
+const tabs: DetailTab[] = ['Overview', 'Media', 'Discussion', 'Changelog', 'Issues']
+function linkedTab(): DetailTab {
+  if (typeof window === 'undefined') return 'Overview'
+  const query = new URLSearchParams(window.location.hash.split('?')[1] ?? window.location.search)
+  if (query.get('report') === '1') return 'Issues'
+  return tabs.find(value => value.toLowerCase() === query.get('tab')) ?? 'Overview'
+}
 
 export function ModuleDetailLayout({ id, title, family, detail, author, authorUrl, description, selected, onToggle, backHref, backLabel, preview, resources, notice, guide, issueReport }: {
   id: string; title: string; family: string; detail: string; author: string; authorUrl: string; description: string
@@ -13,14 +21,15 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
   preview: ReactNode; resources: ReactNode; notice?: ReactNode; guide: ReactNode
   issueReport: (openRequest: number) => ReactNode
 }) {
-  const [tab, setTab] = useState<DetailTab>('Overview')
+  const [tab, setTab] = useState<DetailTab>(linkedTab)
   const [issueOpenRequest, setIssueOpenRequest] = useState(0)
   const [discussionCount, setDiscussionCount] = useState<number | null>(null)
+  useEffect(() => { const navigate = () => setTab(linkedTab()); window.addEventListener('hashchange', navigate); return () => window.removeEventListener('hashchange', navigate) }, [])
   function showDiscussion() {
     setTab('Discussion')
     document.getElementById('tab-Discussion')?.focus()
   }
-  function showIssueReport() { setTab('Overview'); setIssueOpenRequest(request => request + 1) }
+  function showIssueReport() { setTab('Issues'); setIssueOpenRequest(request => request + 1) }
   return <div className="detail-page">
     <div className="module-page-actions">
       <a className="back-link" href={backHref}><Icon name="back" size={15} />{backLabel}</a>
@@ -44,9 +53,9 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
       {tabs.map(value => <button key={value} role="tab" id={'tab-' + value} aria-selected={tab === value} aria-controls="detail-content" tabIndex={tab === value ? 0 : -1} onClick={() => setTab(value)} onKeyDown={event => {
         let next: DetailTab | undefined
         if (event.key === 'ArrowRight') next = tabs[(tabs.indexOf(value) + 1) % tabs.length]
-        if (event.key === 'ArrowLeft') next = tabs[(tabs.indexOf(value) + 2) % tabs.length]
+        if (event.key === 'ArrowLeft') next = tabs[(tabs.indexOf(value) + tabs.length - 1) % tabs.length]
         if (event.key === 'Home') next = tabs[0]
-        if (event.key === 'End') next = tabs[2]
+        if (event.key === 'End') next = tabs[tabs.length - 1]
         if (next) { event.preventDefault(); setTab(next); document.getElementById('tab-' + next)?.focus() }
       }}>{value}{value === 'Discussion' && discussionCount !== null && <span className="tab-count">{discussionCount}<span className="sr-only">{discussionCount === 1 ? ' comment' : ' comments'}</span></span>}</button>)}
     </div>
@@ -57,8 +66,10 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
       </>}
       {tab === 'Media' && <ModuleCommunity id={id} mode="media" onDiscussionCount={setDiscussionCount} />}
       {tab === 'Discussion' && <ModuleCommunity id={id} mode="discussion" onReportIssue={showIssueReport} onDiscussionCount={setDiscussionCount} />}
+      {tab === 'Changelog' && <ModuleChangelog key={id} id={id} />}
+      {tab === 'Issues' && <ModuleIssues key={id} id={id} onReportIssue={showIssueReport} />}
       {/* Stays mounted on the other tabs so a report in progress is not lost. */}
-      <div hidden={tab !== 'Overview'}>{issueReport(issueOpenRequest)}</div>
+      <div hidden={tab !== 'Issues'}>{issueReport(issueOpenRequest)}</div>
     </div>
   </div>
 }

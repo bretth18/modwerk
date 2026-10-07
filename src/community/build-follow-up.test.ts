@@ -25,10 +25,10 @@ describe('after a firmware download', () => {
     expect(hardwareReportBody('Digitakt', '', verb, [verb], '  Lovely on drums.  ')).toBe('**Works on my Digitakt** · Verb 1.0.0.\n\nLovely on drums.')
     expect(hardwareReportBody('Digitakt', '', verb, [verb], 'x'.repeat(3000)).length).toBeLessThan(2100)
   })
-  it('offers members to follow the build and report on each module', () => {
+  it('offers members a hardware report on each module after automatic update follows', () => {
     const html = render(member, ['miniverb'])
     expect(html).toContain('After you flash')
-    expect(html).toContain('Follow this module')
+    expect(html).not.toContain('Follow this module')
     expect(html).toContain('Works on my Octatrack')
     expect(html).toContain('href="#module/')
     expect(html).toContain('?report=1')

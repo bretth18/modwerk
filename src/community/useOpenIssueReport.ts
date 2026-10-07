@@ -4,7 +4,7 @@ function subscribe(callback: () => void) {
   window.addEventListener('hashchange', callback)
   return () => window.removeEventListener('hashchange', callback)
 }
-function requested() { return new URLSearchParams(window.location.hash.split('?')[1] ?? '').get('report') === '1' }
+function requested() { return new URLSearchParams(window.location.hash.split('?')[1] ?? window.location.search).get('report') === '1' }
 
 export function useOpenIssueReport(report: RefObject<HTMLDetailsElement | null>, title: RefObject<HTMLInputElement | null>, openRequest: number) {
   const fromLink = useSyncExternalStore(subscribe, requested, () => false)

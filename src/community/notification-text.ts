@@ -52,7 +52,7 @@ export function notificationLines(items: BellItem[], link: (hash: string) => str
       else lines.push({ ...base, text: `${who} ${item.kind === 'issue_resolved' ? 'marked' : item.kind === 'issue_closed' ? 'closed' : 'reopened'} ${report}${item.kind === 'issue_resolved' ? ' as fixed' : ''}`, excerpt: null, href })
     }
     else if (item.kind === 'request_status') lines.push({ ...base, text: item.excerpt === 'open' ? `${actor} reopened the feature request ${quote(item.title)}` : `${actor} marked the feature request ${quote(item.title)} as ${item.excerpt ?? 'open'}`, excerpt: null, href: threadHref(item) })
-    else if (item.kind === 'module_update') lines.push({ ...base, text: `${item.title ?? moduleName(item.module_id)} ${item.module_version ?? ''} is now available`.replace(/\s+/g, ' '), excerpt: 'Open the module to review the update.', href: item.url?.startsWith('#') ? link(item.url) : moduleHref(item.module_id) })
+    else if (item.kind === 'module_update') lines.push({ ...base, text: `${item.title ?? moduleName(item.module_id)} ${item.module_version ?? ''} is now available`.replace(/\s+/g, ' '), excerpt: 'Open the module to review the update.', href: link((item.url?.startsWith('#') ? item.url : (item.module_id && communityModule(item.module_id)?.href) || '#library') + '?tab=changelog') })
     else if (item.kind === 'module_rating') lines.push({ ...base, text: `${actor} rated ${moduleName(item.module_id)}${item.rating ? ' ' + '★'.repeat(item.rating) + '☆'.repeat(5 - item.rating) : ''}`, excerpt: null, href: moduleHref(item.module_id) })
   }
   return lines.map(line => {

@@ -47,6 +47,7 @@ export async function profileRoutes(request: Request, env: Env, db: Database, pa
   const picture = await db.prepare('SELECT avatar_id FROM users WHERE id=?').bind(owner.id).first<{avatar_id: string | null}>()
   await db.batch([
     db.prepare('DELETE FROM module_update_subscriptions WHERE user_id=?').bind(owner.id),
+    db.prepare('DELETE FROM module_update_opt_outs WHERE user_id=?').bind(owner.id),
     ...tables.map(([table, column]) => db.prepare(`DELETE FROM ${table} WHERE ${column}=?`).bind(owner.id)),
     db.prepare('DELETE FROM conversations WHERE NOT EXISTS(SELECT 1 FROM conversation_members cm WHERE cm.conversation_id=conversations.id)'),
     db.prepare('DELETE FROM auth_users WHERE id=?').bind(owner.id),

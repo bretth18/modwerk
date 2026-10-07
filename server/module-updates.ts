@@ -1,4 +1,5 @@
 import type { Database, Env } from './platform'
+import { canTrackModuleDownload } from '../src/community/module-downloads'
 import { compareModuleVersions } from '../src/catalog/versions'
 import { parseModuleReleases, type ModuleRelease } from '../src/community/module-release-contract'
 import { communityModule } from '../src/community/modules'
@@ -20,8 +21,14 @@ export async function moduleUpdateRoutes(request: Request, env: Env, db: Databas
     const body = await jsonBody(request)
     if (typeof body.enabled !== 'boolean' || Object.keys(body).some(key => key !== 'enabled')) throw new HttpError(400, 'Choose whether to follow module updates.')
     await throttle(db, 'module-updates:' + member.id, 60)
-    if (body.enabled) await followReportedModule(db, moduleId, member.id).run()
-    else await db.prepare('DELETE FROM module_update_subscriptions WHERE user_id=? AND module_id=?').bind(member.id, moduleId).run()
+    await db.batch(body.enabled ? [
+      db.prepare('DELETE FROM module_update_opt_outs WHERE user_id=? AND module_id=?').bind(member.id, moduleId),
+      followReportedModule(db, moduleId, member.id),
+    ] : [
+      db.prepare('INSERT INTO module_update_opt_outs(user_id,module_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(member.id, moduleId),
+      db.prepare('DELETE FROM module_update_subscriptions WHERE user_id=? AND module_id=?').bind(member.id, moduleId),
+      db.prepare("UPDATE notifications SET emailed=1 WHERE user_id=? AND module_id=? AND kind='module_update' AND emailed=0").bind(member.id, moduleId),
+    ])
   } else if (request.method !== 'GET') throw new HttpError(405, 'Choose a supported module update action.')
   const [subscribed, preference, release] = await Promise.all([
     db.prepare('SELECT 1 AS enabled FROM module_update_subscriptions WHERE user_id=? AND module_id=?').bind(member.id, moduleId).first(),
@@ -29,6 +36,30 @@ export async function moduleUpdateRoutes(request: Request, env: Env, db: Databas
     db.prepare('SELECT version FROM module_release_state WHERE module_id=?').bind(moduleId).first<{ version: string }>(),
   ])
   return response({ enabled: !!subscribed, emailEnabled: !preference || !!preference.email_enabled && !!preference.updates, emailAvailable: emailReady(env), version: release?.version ?? communityModule(moduleId)!.version })
+}
+
+/** Downloading follows future releases unless the member deliberately opted out. */
+export async function moduleDownloadRoute(request: Request, db: Database, moduleId: string, user: Parameters<typeof needMember>[0]) {
+  const member = needMember(user)
+  if (!communityModule(moduleId)) throw new HttpError(404, 'Unknown module.')
+  if (!canTrackModuleDownload(moduleId)) throw new HttpError(400, 'This module is not available for download.')
+  const body = await jsonBody(request)
+  if (Object.keys(body).length) throw new HttpError(400, 'Download follows accept no payload.')
+  await throttle(db, 'download-follows:' + member.id, 200)
+  await db.prepare(`INSERT INTO module_update_subscriptions(user_id,module_id,after_version)
+    SELECT ?,?,COALESCE((SELECT version FROM module_release_state WHERE module_id=?),?)
+    WHERE NOT EXISTS(SELECT 1 FROM module_update_opt_outs WHERE user_id=? AND module_id=?)
+    ON CONFLICT(user_id,module_id) DO NOTHING`).bind(member.id, moduleId, moduleId, communityModule(moduleId)!.version, member.id, moduleId).run()
+  const subscribed = await db.prepare('SELECT 1 AS enabled FROM module_update_subscriptions WHERE user_id=? AND module_id=?').bind(member.id, moduleId).first()
+  return response({ enabled: !!subscribed })
+}
+
+/** Public history uses the deployed inventory's recorded versions, never invented release dates. */
+export async function moduleChangelogRoute(db: Database, moduleId: string) {
+  if (!communityModule(moduleId)) throw new HttpError(404, 'Unknown module.')
+  const { results } = await db.prepare('SELECT version,detected_at AS recordedAt FROM module_releases WHERE module_id=? ORDER BY rowid DESC').bind(moduleId).all<{ version: string; recordedAt: string }>()
+  results.sort((a, b) => compareModuleVersions(b.version, a.version))
+  return response({ releases: results.map((release, index) => ({ ...release, previousVersion: results[index + 1]?.version ?? null })) })
 }
 
 /** Monotonic versions and per-recipient release keys keep retries/concurrent cron runs quiet. */
