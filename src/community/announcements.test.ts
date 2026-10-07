@@ -1,7 +1,7 @@
 import { COMMUNITY_RULES_VERSION } from '../legal/policy'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { readFileSync } from 'node:fs'
-import type { DatabaseSync } from 'node:sqlite'
+import { DatabaseSync } from 'node:sqlite'
 import { testServer } from './test-server'
 import { sendActivityDigests } from '../../server/activity-mail'
 import { announcementLink } from '../../server/announcements'
@@ -50,9 +50,96 @@ describe('operator announcements in the bell', () => {
     expect(await (await call('/admin/announcements', 'GET', undefined, '', admin)).json()).toMatchObject([{ id, slug: release.slug, title: release.title, reads: 0, audience: 1 }]) // The reader joined before it was sent.
   })
 
+  it('exposes only public announcements to visitors while keeping private activity protected', async () => {
+    const { call, member, announce, bell, db } = await fixture(), author = await member('publicauthor'), other = await member('publicreply')
+    await announce({ ...release, slug: 'signed-in-note', title: 'Member announcement', visibility: 'signed-in' })
+    await announce({ ...release, visibility: 'public' })
+    const { id } = await (await call('/forum/threads', 'POST', { title: 'Module settings discussion', body: 'Share your settings.', category: 'modules', moduleId: 'miniverb' }, author.session)).json()
+    await call('/forum/threads/' + id + '/replies', 'POST', { body: 'A reply for the author.' }, other.session)
+    expect((await bell(author.session)).items.map(item => item.kind).sort()).toEqual(['announcement', 'announcement', 'reply'])
+    // Public reads also work with stale credentials and never include admin/read metadata.
+    const result = await call('/announcements', 'GET', undefined, 'stale-session')
+    expect(result.status).toBe(200)
+    const publicBell = await result.json() as { items: BellItem[] }
+    expect(publicBell.items).toEqual([expect.objectContaining({ kind: 'announcement', title: release.title, excerpt: release.body, seen: true })])
+    for (const field of ['slug', 'created_by', 'reads', 'audience', 'user_id']) expect(publicBell.items[0]).not.toHaveProperty(field)
+    for (const path of ['/notifications', '/notifications/unread']) expect((await call(path)).status).toBe(401)
+    expect((await call('/notifications', 'PATCH', { ids: [publicBell.items[0].id] })).status).toBe(401)
+    expect((await call('/announcements', 'PATCH', { ids: [publicBell.items[0].id] })).status).toBe(404)
+    expect(db.prepare('SELECT COUNT(*) AS n FROM announcement_reads').get()).toEqual({ n: 0 })
+  })
+
+  it('includes public history for new members while keeping signed-in history and read state private', async () => {
+    const { call, member, announce, bell, unread, db, admin } = await fixture(), early = await member('publicearly')
+    db.prepare("UPDATE users SET created_at='1999-01-01 00:00:00' WHERE id=?").run(early.id)
+    await announce({ ...release, slug: 'private-history', visibility: 'signed-in' })
+    await announce({ ...release, slug: 'public-history', visibility: 'public' })
+    db.prepare("UPDATE announcements SET created_at='2000-01-01 00:00:00'").run()
+    const late = await member('publiclate')
+    expect(await unread(early.session)).toBe(2)
+    const laterBell = await bell(late.session)
+    expect(laterBell.items).toHaveLength(1); expect(laterBell.unread).toBe(1)
+    expect((await call('/notifications', 'PATCH', {}, late.session)).status).toBe(200)
+    expect(await unread(late.session)).toBe(0); expect(await unread(early.session)).toBe(2)
+    const listed = await (await call('/admin/announcements', 'GET', undefined, '', admin)).json() as { visibility: string; audience: number; reads: number }[]
+    expect(listed.find(item => item.visibility === 'public')).toMatchObject({ audience: 2, reads: 1 })
+    expect(listed.find(item => item.visibility === 'signed-in')).toMatchObject({ audience: 1, reads: 0 })
+    const publicItems = await (await call('/announcements')).json()
+    expect(publicItems.items).toHaveLength(1)
+    expect(publicItems.items[0].seen).toBe(true)
+  })
+
+  it('lets only admins change visibility without resending or resetting existing reads', async () => {
+    const { call, member, announce, bell, db, admin } = await fixture(), reader = await member('visibilityreader')
+    const { id } = await (await announce(release)).json()
+    await call('/notifications', 'PATCH', { ids: ['announcement-' + id] }, reader.session)
+    const before = db.prepare('SELECT * FROM announcements WHERE id=?').get(id), reads = db.prepare('SELECT * FROM announcement_reads').all()
+    expect(before).toHaveProperty('visibility', 'signed-in')
+    expect((await (await call('/announcements')).json()).items).toEqual([])
+    const path = '/admin/announcements/' + id
+    expect((await call(path, 'PATCH', { visibility: 'public' })).status).toBe(403)
+    expect((await call(path, 'PATCH', { visibility: 'public' }, reader.session)).status).toBe(403)
+    expect((await call(path, 'PATCH', { visibility: 'everyone' }, '', admin)).status).toBe(400)
+    expect((await call(path, 'PATCH', { visibility: 'public', body: 'Changed message' }, '', admin)).status).toBe(400)
+    expect((await call('/admin/announcements/' + 'f'.repeat(32), 'PATCH', { visibility: 'public' }, '', admin)).status).toBe(404)
+    expect((await call(path, 'PATCH', { visibility: 'public' }, '', admin)).status).toBe(200)
+    expect((await (await call('/announcements')).json()).items).toHaveLength(1)
+    expect(db.prepare('SELECT * FROM announcements WHERE id=?').get(id)).toEqual({ ...before, visibility: 'public' })
+    expect(db.prepare('SELECT * FROM announcement_reads').all()).toEqual(reads)
+    expect((await bell(reader.session)).items[0].seen).toBe(true)
+    expect((await call(path, 'PATCH', { visibility: 'signed-in' }, '', admin)).status).toBe(200)
+    expect((await (await call('/announcements')).json()).items).toEqual([])
+    expect(db.prepare('SELECT COUNT(*) AS n FROM announcements').get()).toEqual({ n: 1 })
+    expect((await call(path, 'DELETE', undefined, '', admin)).status).toBe(200)
+    expect((await (await call('/announcements')).json()).items).toEqual([])
+  })
+
+  it('limits the public feed to the newest ten without letting newer signed-in entries displace them', async () => {
+    const { call, db } = await fixture()
+    const insert = db.prepare('INSERT INTO announcements(id,slug,title,body,created_by,visibility,created_at) VALUES(?,?,?,?,?,?,?)')
+    for (let n = 1; n <= 12; n++) insert.run('public-' + n, 'public-' + n, 'Public ' + n, 'A public message.', 'administrator', 'public', '2000-01-' + String(n).padStart(2, '0') + ' 00:00:00')
+    insert.run('private-one', 'private-one', 'Member message', 'Private audience.', 'administrator', 'signed-in', '2099-01-01 00:00:00')
+    const { items } = await (await call('/announcements')).json() as { items: BellItem[] }
+    expect(items.map(item => item.title)).toEqual(Array.from({ length: 10 }, (_, n) => 'Public ' + (12 - n)))
+  })
+
+  it('upgrades existing manual announcements without making them public or changing read markers', () => {
+    const db = new DatabaseSync(':memory:'); databases.push(db)
+    db.exec("CREATE TABLE users(id TEXT PRIMARY KEY); INSERT INTO users(id) VALUES('reader')")
+    db.exec(readFileSync(new URL('../../migrations/0031_announcements.sql', import.meta.url), 'utf8'))
+    db.exec("INSERT INTO announcements(id,slug,title,body,created_by) VALUES('manual','manual-note','Member note','Preserve this audience.','administrator'),('release','module-release-vector','VECTOR is now available','Public catalog information.','administrator')")
+    db.exec("INSERT INTO announcement_reads(user_id,announcement_id) VALUES('reader','manual')")
+    const reads = db.prepare('SELECT * FROM announcement_reads').all()
+    db.exec(readFileSync(new URL('../../migrations/0057_announcement_visibility.sql', import.meta.url), 'utf8'))
+    expect(db.prepare('SELECT id,visibility FROM announcements ORDER BY id').all()).toEqual([{ id: 'manual', visibility: 'signed-in' }, { id: 'release', visibility: 'public' }])
+    expect(db.prepare('SELECT * FROM announcement_reads').all()).toEqual(reads)
+    expect(() => db.prepare("UPDATE announcements SET visibility='invalid'").run()).toThrow()
+  })
+
   it('refuses what a bell entry may not contain', async () => {
     const { announce } = await fixture()
     for (const bad of [
+      { ...release, visibility: 'members' }, { ...release, visibility: null }, { ...release, visibility: true },
       { ...release, slug: 'Bad Key' }, { ...release, slug: 'ab' }, { ...release, title: 'no' }, { ...release, title: 'x'.repeat(121) },
       { ...release, body: '' }, { ...release, body: 'x'.repeat(401) }, { ...release, body: 'bell\u0007' }, { ...release, moduleId: 'not-a-module' },
       { ...release, url: 'https://evil.example/phish' }, { ...release, url: 'javascript:alert(1)' }, { ...release, url: 'https://modwerk.app.evil.example/' }, { ...release, url: '//evil.example' },

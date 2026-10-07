@@ -14,10 +14,10 @@ describe('community read recovery',()=>{
   vi.stubGlobal('sessionStorage',{getItem:()=>'b'.repeat(64)})
   const fetch=vi.fn().mockImplementation(async()=>Response.json({}))
   vi.stubGlobal('fetch',fetch)
-  for(const path of ['/catalog','/community/summary?fresh=1','/notifications'])await api(path)
+  for(const path of ['/catalog','/community/summary?fresh=1','/announcements','/notifications'])await api(path)
   const headers=fetch.mock.calls.map(([,options])=>(options as RequestInit).headers as Headers)
-  expect(headers.map(value=>value.has('Authorization'))).toEqual([false,false,true])
-  expect(headers.map(value=>value.has('X-Octamod-Admin'))).toEqual([false,false,true])
+  expect(headers.map(value=>value.has('Authorization'))).toEqual([false,false,false,true])
+  expect(headers.map(value=>value.has('X-Octamod-Admin'))).toEqual([false,false,false,true])
  })
 
  it('retries a transient session failure once',async()=>{

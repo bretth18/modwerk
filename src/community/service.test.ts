@@ -47,6 +47,7 @@ async function fixture(){
  db.exec(readFileSync(new URL('../../migrations/0024_activity_notifications.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0025_github_issue_tracking.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0031_announcements.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0057_announcement_visibility.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0018_account_policy.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0032_web_push.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0034_module_update_notifications.sql',import.meta.url),'utf8'))
