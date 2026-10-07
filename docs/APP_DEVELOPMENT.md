@@ -76,6 +76,12 @@ The forum supports general discussion, module help, public bug-report follow-up 
 
 Historical guest identities retain access to their private reports on the original device until their session expires or is replaced on sign-in. Names never transfer ownership to an account. New guest participation is closed. Administration continues to use its separate server-side key and tab session.
 
+### Discord invitation
+
+On their next site visit, signed-in verified members receive one invitation to the Modwerk development Discord. `POST /api/auth/discord-invite` atomically claims it in `member_discord_invites`, so another tab, device or later visit cannot show it again. Migration 0054 adds this private account record, includes it in account exports and removes it with the account.
+
+Signed-out visitors instead see Create account, Join Discord and Dismiss. Their invitation is remembered in this browser under `modwerk.discord-invite.visitor`; clearing browser storage allows it again, and unavailable storage limits it to the current visit. Account and developer sign-in pages are left uninterrupted. Choosing Create account allows the once-per-account member invitation after email verification or social onboarding completes. Joining or dismissing the visitor prompt suppresses further popups during that visit. The signup welcome message in the forum also offers a quiet Discord link. Both dialogs wait until the page is visible and any other dialog has closed, and both close after choosing an action or pressing Escape. In local development, `?preview=discord-member` and `?preview=discord-visitor` show the actual dialogs without consuming either invitation or recording preview statistics. Invitation impressions and the Join Discord, Create account and dismiss actions use existing site statistics with separate member and visitor totals, shown in the administrator dashboard.
+
 ### Issue reports
 
 New module bugs use the module page’s red “Report an issue” action. Module discussions warn before posting and offer to copy the written draft into that form; the forum composer cannot create bug reports.

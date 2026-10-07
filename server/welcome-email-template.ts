@@ -1,5 +1,7 @@
+import { DEVELOPMENT_DISCORD_URL } from '../src/config/development-discord'
+
 /** Keep queued payloads stable for provider retries, and the current previews in docs/news in sync. */
-export const WELCOME_EMAIL_VERSION = 'modwerk-welcome-005'
+export const WELCOME_EMAIL_VERSION = 'modwerk-welcome-006'
 const firstWelcomeEmail = {
   subject: 'Hello from Modwerk',
   html: `<!doctype html>
@@ -230,11 +232,23 @@ function withSubmitPage(email: typeof firstWelcomeEmail) {
 const submitWelcomeEmail = withSubmitPage(forumWelcomeEmail)
 /** 7 October 2026 (modwerk-welcome-005): back to the Discord welcome's wording, without the forum tour, keeping the submit page. */
 const discordSubmitWelcomeEmail = withSubmitPage(discordWelcomeEmail)
-export const welcomeEmail = discordSubmitWelcomeEmail
+/** 7 October 2026 (modwerk-welcome-006): invite new members to the development Discord. */
+export const welcomeEmail = {
+  ...discordSubmitWelcomeEmail,
+  html: discordSubmitWelcomeEmail.html
+    .replace('Come say hi on Discord and share what you’re working on.', 'Join the development Discord to ask questions about modules and share what you’re building.')
+    .replace('https://discord.gg/QQxFb85m7', DEVELOPMENT_DISCORD_URL)
+    .replace('Join us on Discord', 'Join the development Discord'),
+  text: discordSubmitWelcomeEmail.text
+    .replace('Come say hi on Discord and share what you’re working on.', 'Join the development Discord to ask questions about modules and share what you’re building.')
+    .replace('https://discord.gg/QQxFb85m7', DEVELOPMENT_DISCORD_URL)
+    .replace('Join us on Discord', 'Join the development Discord'),
+}
 export const welcomeEmailVersions: Readonly<Record<string, typeof welcomeEmail>> = {
   'modwerk-welcome-001': firstWelcomeEmail,
   'modwerk-welcome-002': discordWelcomeEmail,
   'modwerk-welcome-003': forumWelcomeEmail,
   'modwerk-welcome-004': submitWelcomeEmail,
+  'modwerk-welcome-005': discordSubmitWelcomeEmail,
   [WELCOME_EMAIL_VERSION]: welcomeEmail,
 }

@@ -46,6 +46,10 @@ DETOURS = (
            "frame_isr's last instruction: the per-block producer (20 channels: tracks, MAIN, CUE; + the sum into the rings) and the packet builder"),
     Detour(0x4001e606, stock_guard(0x4001e606, 6, "2fc3d5168f6ee3ffb4b419a9cbbe48a7837d42e9e47db7bb5bced5cd13b62dc0"), "usbaudio", "audio_isr_shim",
            "usb_isr UI path: retire EP3 IN completions, then USB MIDI's receive shim and USB MIDI's shim"),
+    Detour(0x4001e91c, stock_guard(0x4001e91c, 6, "78eb060ff0d9ffb4236ffdf4b3b210c34887760745a3767f657917d9ec1d58f2"), "usbaudio", "audio_reset_shim",
+           "USB bus reset: request alternate setting 0 before the frame ISR tears EP3 down"),
+    Detour(0x4001e952, stock_guard(0x4001e952, 6, "95d6c1eb26340f4df0419ac71e537a21277443225e26589bf5094352b48e3b29"), "usbaudio", "audio_sessend_shim",
+           "USB session end: request alternate setting 0 before stock stops the controller"),
 )
 
 MODULE = Module(

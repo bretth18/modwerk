@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "moduleId": "usb-audio-out-tracks-main-cue",
+  "moduleId": "euclid",
   "moduleVersion": "0.1.4-experimental",
-  "moduleSourceSha256": "f78954ee582cb3731945f7bf31a4ae9ec2305358bcb14e319ce7e7f7ea517dfe",
+  "moduleSourceSha256": "2c9fe3297910decfc7adc3f5d2137b64995d701d388820f6b693a0537e676653",
   "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
   "originalOsSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
   "pool": [
@@ -22,16 +22,16 @@
   ],
   "summary": {
     "selections": 98,
-    "built": 46,
+    "built": 42,
     "identicalOutright": 0,
-    "identicalOutsidePlatformWrites": 46,
-    "refused": 52,
+    "identicalOutsidePlatformWrites": 42,
+    "refused": 56,
     "mismatches": 0
   },
   "selections": [
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue"
+        "euclid"
       ],
       "keepStockFx2": true,
       "menu": {
@@ -45,7 +45,82 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "EUCLID"
+        ]
+      },
+      "native": {
+        "bytes": 1114986,
+        "osSha256": "b39327052c92d526d5401a47333750c8c088f7892d4fcc8ed3c63a17412c21aa",
+        "maskedOsSha256": "13524ea309dc0cec57bf502d8244d2f97425db836eef7cd623210588d6e717b0"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "euclid"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID"
+        ]
+      },
+      "native": {
+        "bytes": 1114986,
+        "osSha256": "648c2faf296415e932237fbcffd3277dc03e6bb681ea03a43004db0b9cd2eb63",
+        "maskedOsSha256": "fe11a7d5f8b4250a6803e11d952e20843a281f91dc606fd41055dd6daf3eb27d"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
         ],
         "fx2": [
           "FILTER",
@@ -61,19 +136,21 @@
           "DELAY",
           "PLATE REV",
           "SPRING REV",
-          "DARK REV"
+          "MINIVERB",
+          "EUCLID"
         ]
       },
       "native": {
-        "bytes": 1115534,
-        "osSha256": "013330b92b2df592b9faa5d6e242ec70b3580d061bf6fb4045a45d5e591a8739",
-        "maskedOsSha256": "bd880d0069eab1ff42e6498d4bcd58af7764bd57d42ea96c96a179fc24261872"
+        "bytes": 1114986,
+        "osSha256": "e2b81ed12ad85566c979d17450faf15b1aef9a7b1eb84403acb37d412e5626e1",
+        "maskedOsSha256": "540fd2ae47c0a16c2373f1b17fe5d4569cab3ac37cf390022cef59b0f088e273"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue"
+        "miniverb",
+        "euclid"
       ],
       "keepStockFx2": false,
       "menu": {
@@ -87,21 +164,25 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
-        "fx2": []
+        "fx2": [
+          "MINIVERB",
+          "EUCLID"
+        ]
       },
       "native": {
-        "bytes": 1115534,
-        "osSha256": "559ebb7cf24a2e5723bb7acf6bab4c0e2efa3f75e25373483e48fe5d9ab99942",
-        "maskedOsSha256": "6b8571929e435b8a970d4e6f1890df94c8ac4cc9af6ed757f089fc2d952814d9"
+        "bytes": 1114986,
+        "osSha256": "6ac4c742d1b41e9d2414e42387f8cdc23cba3e916d47eb66e406b1dec307e6a6",
+        "maskedOsSha256": "8e61c40cf019a5ceb1b490040a4ba2c2df9913444cf591ec092b13a90c8527d8"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "miniverb",
-        "usb-audio-out-tracks-main-cue"
+        "tapeecho",
+        "euclid"
       ],
       "keepStockFx2": true,
       "menu": {
@@ -115,7 +196,8 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
         "fx2": [
           "FILTER",
@@ -131,20 +213,21 @@
           "DELAY",
           "PLATE REV",
           "DARK REV",
-          "MINIVERB"
+          "TAPE ECHO",
+          "EUCLID"
         ]
       },
       "native": {
-        "bytes": 1115534,
-        "osSha256": "411b19d2ad2e9bce302c5a6be37143f6561e3d24c03a9537cb9ca25424b34fe3",
-        "maskedOsSha256": "f4cb57371346492efcedf7336f333904eb9209593a1892ebf499a9159f21de91"
+        "bytes": 1217165,
+        "osSha256": "da7ff232dbfe9f2e97190572536934dda86d1ae08b71f2f9997628a3a6227fa4",
+        "maskedOsSha256": "c648586bf788685b45ea6c9b184707c72f2d8499723644f10e5e451f8242ed44"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "miniverb",
-        "usb-audio-out-tracks-main-cue"
+        "tapeecho",
+        "euclid"
       ],
       "keepStockFx2": false,
       "menu": {
@@ -158,23 +241,25 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
         "fx2": [
-          "MINIVERB"
+          "TAPE ECHO",
+          "EUCLID"
         ]
       },
       "native": {
-        "bytes": 1115534,
-        "osSha256": "dafc3abd39b306915a4f07225664647bbb116c5d96acb199ea2ff2271889fcb1",
-        "maskedOsSha256": "c6d3027e2cc14e846f48c52b0279a8dbbcff5a080fcb4c65bc2e2707fa2bd9d1"
+        "bytes": 1217165,
+        "osSha256": "3a7cc8514709d381cc53eba4a5feeed21e16d76f4957a7f9641d7deb75d2218f",
+        "maskedOsSha256": "a57f7b667622f84438513dc418627e107618dead11b44f9c0e09a281fe9febc4"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "tapeecho",
-        "usb-audio-out-tracks-main-cue"
+        "euclid",
+        "repitch"
       ],
       "keepStockFx2": true,
       "menu": {
@@ -188,7 +273,8 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
         "fx2": [
           "FILTER",
@@ -204,20 +290,20 @@
           "DELAY",
           "PLATE REV",
           "DARK REV",
-          "TAPE ECHO"
+          "EUCLID"
         ]
       },
       "native": {
-        "bytes": 1217765,
-        "osSha256": "850ba2fdeea1b4627ed819af76310ccfa7c9ec3135707138f9c717b1db3b3e3d",
-        "maskedOsSha256": "f605eb52a32cce9b821c3b7983b903b31e7bc3a93237a99cba3ac92e69bdbda4"
+        "bytes": 1114986,
+        "osSha256": "0a078a8f6eea6760437adeb0fb1f4bb3d0c5ad432bbaecd8c42e3ca7be1f7311",
+        "maskedOsSha256": "ded9295a744b74f4902b7de91f3434b03e38b837dff899ed9c5d4cc0270196fa"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "tapeecho",
-        "usb-audio-out-tracks-main-cue"
+        "euclid",
+        "repitch"
       ],
       "keepStockFx2": false,
       "menu": {
@@ -231,18 +317,169 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
         "fx2": [
-          "TAPE ECHO"
+          "EUCLID"
         ]
       },
       "native": {
-        "bytes": 1217765,
-        "osSha256": "35dcaf55928f5f94cb5bb1fe07ba1aa1d1d2cec38043fd0ccbe68c8f7cc39143",
-        "maskedOsSha256": "13b3952fe360d9dbd5d0b26b5ec8d64d8200d2b6b2c456746b404ade82030dfc"
+        "bytes": 1114986,
+        "osSha256": "25b47e622cc328adc002e557149777937359aa35fc874714bb92de4f1b0fc576",
+        "maskedOsSha256": "8599aabf984302b5eb46dc2a4acc631f5b5bff8bf3de71eb7a07359e38797833"
       },
       "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "bytes": 1114986,
+        "osSha256": "6894edd5b6a7540c42421adecb8c6381c156ff72a2e3f2f49c0f0d854007798b",
+        "maskedOsSha256": "0a6314ccd30550dfb4a302cb6ddc7170d43b10d8b38bc44692f786e06f8841dd"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "bytes": 1114986,
+        "osSha256": "d15a19b5109c6a476d78e78a61be54e6ac73c4677917e81030a03bde04531c73",
+        "maskedOsSha256": "27188461c4109d831b3a0b63c007ca071dbaf7145c623cdc2ac4ce167494b6de"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "EUCLID"
+        ]
+      },
+      "native": {
+        "refused": "ANALOG BD's DSP source currently composes with stock effects only"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID"
+        ]
+      },
+      "native": {
+        "refused": "ANALOG BD's DSP source currently composes with stock effects only"
+      },
+      "result": "refused"
     },
     {
       "moduleIds": [
@@ -321,223 +558,7 @@
     },
     {
       "moduleIds": [
-        "repitch",
-        "usb-audio-out-tracks-main-cue"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
-        ]
-      },
-      "native": {
-        "bytes": 1115534,
-        "osSha256": "f0c334f96250dcfb14963f49a50bdd20b9a69b376d177c765d177f324002fe4f",
-        "maskedOsSha256": "1bc71ad5d1d9314ce8c25bebc16fd0984f782ef1f2b783291b04a64f1f8eefb1"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "repitch",
-        "usb-audio-out-tracks-main-cue"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI"
-        ],
-        "fx2": []
-      },
-      "native": {
-        "bytes": 1115534,
-        "osSha256": "e06aa1e016d9eed863d1b1d8f58ba52b18742ca975329cb983ebb4d4373ccc68",
-        "maskedOsSha256": "76f48e5e4b1c732227d7fc3fc16f43f8a125f6814a2d395d117d76574b3907ca"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "tapehead",
-        "usb-audio-out-tracks-main-cue"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "DARK REV",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "bytes": 1115534,
-        "osSha256": "4c3c68d2fc9332b7f19344d4769e46fe78e0011dc3d7377eecb071e3d4555cbe",
-        "maskedOsSha256": "b0248aab835647139cd5f1f2d0fc2138fd8bb0f796649286e4c76ca30cfbacf0"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "tapehead",
-        "usb-audio-out-tracks-main-cue"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "bytes": 1115534,
-        "osSha256": "afbdc068631dec31ca3d1429ae0d7d1c4f5ac84c7eeb3689170092de5a990707",
-        "maskedOsSha256": "19057db285d9f0e64559762023cc87f13163e638d7e7684791708c14a9d95c81"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "analog-bassdrum",
-        "usb-audio-out-tracks-main-cue"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "DARK REV"
-        ]
-      },
-      "native": {
-        "bytes": 1268221,
-        "osSha256": "077d54d225c3d1e780dbe5a21f3fb652666649279af134e05cd331c91042dd1a",
-        "maskedOsSha256": "487450a576c7da625d29acc8cd11b6acc29248762b8068855d8639d05fa1f85e"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "analog-bassdrum",
-        "usb-audio-out-tracks-main-cue"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI"
-        ],
-        "fx2": []
-      },
-      "native": {
-        "bytes": 1268221,
-        "osSha256": "ca0cb0b98592373d679cd8ebf51a01058f0e41a2e1d15d7dddee1ebd46ebe5d8",
-        "maskedOsSha256": "a432c8b3b2b1010e6acd8220f795e67d86fb668a8f51b12ade0c7a184a8f9bc6"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
+        "euclid",
         "quantizer"
       ],
       "keepStockFx2": true,
@@ -552,7 +573,8 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
         "fx2": [
           "FILTER",
@@ -567,20 +589,20 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DARK REV",
+          "EUCLID"
         ]
       },
       "native": {
-        "bytes": 1117740,
-        "osSha256": "7ca4e2e91a31c8808814055abf42e17efc7ac684d45741cd5a431bee8d7898a6",
-        "maskedOsSha256": "4be36c64c88715eba723e9ab29ff3a057f21c0d6e2c199b2e11784b324ca01ec"
+        "bytes": 1117211,
+        "osSha256": "ee964c094a9a4510bd4ba3f3215ef89c9e94e7e0f3e5728828a1d00fc2f1c1d3",
+        "maskedOsSha256": "5114c291d470e0d65e7ac869ceea39e8d659d4341edae5f71412659509cbbe60"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
+        "euclid",
         "quantizer"
       ],
       "keepStockFx2": false,
@@ -595,20 +617,23 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
-        "fx2": []
+        "fx2": [
+          "EUCLID"
+        ]
       },
       "native": {
-        "bytes": 1117740,
-        "osSha256": "1205923eb23217a70130f70ddc7d0d53ae378c4a9c2b096a8b0db1b33a62df5d",
-        "maskedOsSha256": "0ad5229c0db450c57305a5fd4b488f7bb4752d2dc1b103c9be45d5b242b436ed"
+        "bytes": 1117211,
+        "osSha256": "d8f233e064b5d3f70bb29381a09465e539ffcc12f8f436ed0a5e4de548461fa2",
+        "maskedOsSha256": "2f8811b8fb6a474c311b16cc5616c25cd81c0b632dd6bc91c72245b8d82ed116"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
+        "euclid",
         "synth"
       ],
       "keepStockFx2": true,
@@ -623,7 +648,8 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
         "fx2": [
           "FILTER",
@@ -638,20 +664,20 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DARK REV",
+          "EUCLID"
         ]
       },
       "native": {
-        "bytes": 1127878,
-        "osSha256": "6ace0dbd82eb9156ff159a9cb3ddaa326663f0ee4d1ec1cd6d77a116e3c33b8f",
-        "maskedOsSha256": "bfb17eee3f14638c50dc00ddccdbd6bffb9095c88630322b71a24bb97f2d2c66"
+        "bytes": 1127356,
+        "osSha256": "8e9849b313943b64a74191d0ddcb246f416e2883b3b803f734279e12fea396eb",
+        "maskedOsSha256": "5f177ae889cc26c80d858c692595c1aee2e1db14cbd21e8a011418484a39b597"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
+        "euclid",
         "synth"
       ],
       "keepStockFx2": false,
@@ -666,20 +692,23 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
-        "fx2": []
+        "fx2": [
+          "EUCLID"
+        ]
       },
       "native": {
-        "bytes": 1127878,
-        "osSha256": "cc431094407ddfef53cf387a685906f025fc28111cb77f8e9bff0490853ac8ff",
-        "maskedOsSha256": "b1cd67de10c67a01c89e72dbc109145ce63af6f5660a55871a806895116fc85a"
+        "bytes": 1127356,
+        "osSha256": "33c7343062e0f1773c70ff180baac675aba9f7626518fc6cc14846b20cb81011",
+        "maskedOsSha256": "05910dfbfc703e9bd9b5a0c47afa931a5071bba09000f62ef8d054d17ea50769"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
+        "euclid",
         "previewvol"
       ],
       "keepStockFx2": true,
@@ -694,7 +723,8 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
         "fx2": [
           "FILTER",
@@ -709,20 +739,20 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DARK REV",
+          "EUCLID"
         ]
       },
       "native": {
-        "bytes": 1115534,
-        "osSha256": "53da7126f6bdda031cf9c6e2f69c63e683670213e60c4d18b3f22408e13d2563",
-        "maskedOsSha256": "90ad2baf33fadf47b54dbfd84828b032f57341170673d5de437619d45b545eb9"
+        "bytes": 1114986,
+        "osSha256": "ae3eaa4a0ee41aa207820c40ec630369e0cc9f9d6d8a80585ed737278aad4a13",
+        "maskedOsSha256": "24ed79b615d341c9f5103488ec3459fc2407711b0cf92b1dbd1a96f8f61bc3b3"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
+        "euclid",
         "previewvol"
       ],
       "keepStockFx2": false,
@@ -737,20 +767,23 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
-        "fx2": []
+        "fx2": [
+          "EUCLID"
+        ]
       },
       "native": {
-        "bytes": 1115534,
-        "osSha256": "98f2df696f24005466cc67d8bda9fd718e1d70056a00d99bee91cd79a0690782",
-        "maskedOsSha256": "5337acba66e07dc55c67f83bc7a5cdf43783650823192ec44ee405d2d5c02c3e"
+        "bytes": 1114986,
+        "osSha256": "e6e3c3ab512423ddcc5ea9eb81a4837ebd943f21047014cf6a98f06d998ef8cb",
+        "maskedOsSha256": "5c914c58473968b55560e3cfb3ae2e3ea92714c2a89aa12f4c69b30462e093bb"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
+        "euclid",
         "cc-map"
       ],
       "keepStockFx2": true,
@@ -765,7 +798,8 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
         "fx2": [
           "FILTER",
@@ -780,20 +814,20 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DARK REV",
+          "EUCLID"
         ]
       },
       "native": {
-        "bytes": 1115534,
-        "osSha256": "ee4292c5f12e457fd9a14c1d0f8e0a5682239f7d289a63f185e2116355a5873e",
-        "maskedOsSha256": "f292dbe319899fa06e135fb8b0f1c9f8a873c7c2698f2a8481c3044090129bab"
+        "bytes": 1114986,
+        "osSha256": "9c006ae4b364660dcf841b01af9f9ff604e9c44ec012789fea4921047f36b251",
+        "maskedOsSha256": "50372a3e2b4b584541df48f129755eb2b0f11e8081e101b195a43e04314776e3"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
+        "euclid",
         "cc-map"
       ],
       "keepStockFx2": false,
@@ -808,20 +842,23 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
-        "fx2": []
+        "fx2": [
+          "EUCLID"
+        ]
       },
       "native": {
-        "bytes": 1115534,
-        "osSha256": "b614686a4f725681c4d3490315a742d594daf4989ac579639882d62b4be63781",
-        "maskedOsSha256": "e2a03706b31345424e6ebeee3fc687c69d637d16b49fd76b451c34cfdcf7f11c"
+        "bytes": 1114986,
+        "osSha256": "fc09e29e1e25b01442eb82362070cea1715e3c42554fc4c8da4f00a7784d2971",
+        "maskedOsSha256": "186a8b19d25da8d30fe939d5350be207589d092194e139f6471f6f02349e4294"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
+        "euclid",
         "sidechain-compressor"
       ],
       "keepStockFx2": true,
@@ -836,7 +873,8 @@
           "SPATIALIZER",
           "COMB FILTER",
           "SIDECHAIN_COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
         "fx2": [
           "FILTER",
@@ -851,19 +889,20 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "DARK REV"
+          "DARK REV",
+          "EUCLID"
         ]
       },
       "native": {
-        "bytes": 1115534,
-        "osSha256": "92974807fa3d013a79aa3fdfec7e94f72eefe7bb4b7988fc4f93fed057ceda52",
-        "maskedOsSha256": "76d1df168f24ea663a30453375d1a2edf9af341447d3ac1fd8ab4f3cc8b0d44c"
+        "bytes": 1114986,
+        "osSha256": "0b07fb932ecfedb4d13c1303112542e9def8394308f1d026f322ea74b3d85af6",
+        "maskedOsSha256": "5a59551ef9238c75b89063d82c177de1c0807e1112a792ea4422253c87f0385e"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
+        "euclid",
         "sidechain-compressor"
       ],
       "keepStockFx2": false,
@@ -878,22 +917,24 @@
           "SPATIALIZER",
           "COMB FILTER",
           "SIDECHAIN_COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
         "fx2": [
+          "EUCLID",
           "SIDECHAIN_COMPRESSOR"
         ]
       },
       "native": {
-        "bytes": 1115534,
-        "osSha256": "bc746ea4ffa089784a74da01dbebbc74f429e19159028da3d68bfb2aa23076c5",
-        "maskedOsSha256": "2687cb38de0704d4e1f71578b4d52771fde244b124a2ae6a0eadf568d86e1fab"
+        "bytes": 1114986,
+        "osSha256": "bdf9d75cb9bc2bb9b1ce6e93b3f991f284cdf313b036f377d04da88176b61cea",
+        "maskedOsSha256": "8b5938c0f9ee2f9046ef07b56d858a0863d80b3620cdc5fb3d70e82d060e881e"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
+        "euclid",
         "vector"
       ],
       "keepStockFx2": true,
@@ -908,7 +949,8 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
         "fx2": [
           "FILTER",
@@ -923,20 +965,20 @@
           "LO-FI",
           "DELAY",
           "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DARK REV",
+          "EUCLID"
         ]
       },
       "native": {
-        "bytes": 1123513,
-        "osSha256": "4e4b3b46f7a84176a45740960dee324fcd594a54afda401b026a86cf1f476afc",
-        "maskedOsSha256": "652293eec15985d16b993e08c01ea437c816327c1ebfd2f006a5eb2c51445ef7"
+        "bytes": 1122907,
+        "osSha256": "19f0ceb10ed8e6f55ce8f60ee9f43da94b8b56f194f9e90305100fc00d334ff8",
+        "maskedOsSha256": "e8820b3f58dff2453f5a844254261a5330b0f1c9114476171d1b435b0eb8b398"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
+        "euclid",
         "vector"
       ],
       "keepStockFx2": false,
@@ -951,14 +993,17 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID"
         ],
-        "fx2": []
+        "fx2": [
+          "EUCLID"
+        ]
       },
       "native": {
-        "bytes": 1123513,
-        "osSha256": "007d8574ffa244eda0c198bee152584803b2242e50fae1f4cf0161d77296fc91",
-        "maskedOsSha256": "3458e437af3919384ff566763951aa41cd3c7310c706ce3f28f1a44a90537852"
+        "bytes": 1122907,
+        "osSha256": "e461960845e8b58af1b3a83b85b4673626ed0fb26c44302419513b97b3093e05",
+        "maskedOsSha256": "689d73cb6b895cb50668fb2e8efcff4f3c5b9990163b6510f8c4a696801e328a"
       },
       "result": "masked"
     },
@@ -1255,99 +1300,6 @@
       "moduleIds": [
         "miniverb",
         "tapeecho",
-        "repitch",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "synth",
-        "previewvol",
-        "cc-map",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "DARK REV",
-          "MINIVERB",
-          "TAPE ECHO",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "repitch",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "synth",
-        "previewvol",
-        "cc-map",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "MINIVERB",
-          "TAPE ECHO",
-          "TAPEHEAD",
-          "SIDECHAIN_COMPRESSOR"
-        ]
-      },
-      "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "tapeecho",
         "euclid",
         "tapehead",
         "usb-audio-out-tracks-main-cue",
@@ -1526,6 +1478,103 @@
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
           "SIDECHAIN_COMPRESSOR"
         ]
       },
@@ -2117,274 +2166,10 @@
     },
     {
       "moduleIds": [
-        "miniverb",
-        "euclid",
-        "repitch",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "previewvol",
-        "cc-map",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "MINIVERB",
-          "EUCLID",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "refused": "label formatters do not fit: EUCLID slot 4 needs 352 B; the clone window ends at 0x400d7bbc and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "euclid",
-        "repitch",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "previewvol",
-        "cc-map",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "MINIVERB",
-          "EUCLID",
-          "TAPEHEAD",
-          "SIDECHAIN_COMPRESSOR"
-        ]
-      },
-      "native": {
-        "refused": "label formatters do not fit: EUCLID slot 4 needs 352 B; the clone window ends at 0x400d7c3c and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
         "tapeecho",
-        "repitch",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "synth",
-        "previewvol",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "MINIVERB",
-          "TAPE ECHO"
-        ]
-      },
-      "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "repitch",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "synth",
-        "previewvol",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI"
-        ],
-        "fx2": [
-          "MINIVERB",
-          "TAPE ECHO",
-          "SIDECHAIN_COMPRESSOR"
-        ]
-      },
-      "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "repitch",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "synth",
-        "cc-map",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "DARK REV",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "repitch",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "synth",
-        "cc-map",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "TAPEHEAD",
-          "SIDECHAIN_COMPRESSOR"
-        ]
-      },
-      "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
         "euclid",
         "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "synth",
+        "quantizer",
         "cc-map"
       ],
       "keepStockFx2": true,
@@ -2415,8 +2200,94 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
+          "PLATE REV",
+          "SPRING REV",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "refused": "label formatters do not fit: EUCLID slot 8 needs 290 B; the clone window ends at 0x400d7bbc and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "refused": "label formatters do not fit: EUCLID slot 10 needs 254 B; the clone window ends at 0x400d7c3c and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
           "DARK REV",
           "MINIVERB",
+          "TAPE ECHO",
           "EUCLID",
           "TAPEHEAD"
         ]
@@ -2429,11 +2300,12 @@
     {
       "moduleIds": [
         "miniverb",
+        "tapeecho",
         "euclid",
         "tapehead",
         "usb-audio-out-tracks-main-cue",
-        "synth",
-        "cc-map"
+        "quantizer",
+        "vector"
       ],
       "keepStockFx2": false,
       "menu": {
@@ -2453,6 +2325,7 @@
         ],
         "fx2": [
           "MINIVERB",
+          "TAPE ECHO",
           "EUCLID",
           "TAPEHEAD"
         ]
@@ -2465,529 +2338,9 @@
     {
       "moduleIds": [
         "miniverb",
-        "euclid",
-        "repitch",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "previewvol",
-        "cc-map",
-        "sidechain-compressor"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "MINIVERB",
-          "EUCLID",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "bytes": 1117670,
-        "osSha256": "21a36f4375b2b62352ce2edfd98be5b1dc98ec1210246d5284802c272613efbb",
-        "maskedOsSha256": "900e9c0879f7e8505e421cd6fe326ad13a7b3f320b08f5b002fa4a8c0fc08b5d"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "euclid",
-        "repitch",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "previewvol",
-        "cc-map",
-        "sidechain-compressor"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "MINIVERB",
-          "EUCLID",
-          "TAPEHEAD",
-          "SIDECHAIN_COMPRESSOR"
-        ]
-      },
-      "native": {
-        "bytes": 1117670,
-        "osSha256": "e2aa57e08167104be1c77668c92960a0dd6487262b2ef7235aa9e6561c8e4f69",
-        "maskedOsSha256": "31d39922c6afcffdb5f19399762b19a003b211bce57835704e9b96bbe6931d2d"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "vector"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "MINIVERB",
-          "TAPE ECHO",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "bytes": 1227895,
-        "osSha256": "d417cb2f75372f2d8c4da849a707aaf43c109bd81278f9bd8cfd353e0bc0fab5",
-        "maskedOsSha256": "ffb38011bbf5944abc7d02573d5c544bc21d70b7fb9a87a365934f09a06e364c"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "vector"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "MINIVERB",
-          "TAPE ECHO",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "bytes": 1227895,
-        "osSha256": "7b7b5a9a3c856b8f3fa270ebb3271fad62f227e61b2bd6368d1973de899ed3a9",
-        "maskedOsSha256": "089099b064928d4401f7f7020a9e1f7fa96c7deacab7a820cf1cfc11d7de0bf9"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
         "tapeecho",
         "euclid",
         "repitch",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "previewvol",
-        "cc-map",
-        "sidechain-compressor"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "DARK REV",
-          "TAPE ECHO",
-          "EUCLID",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "refused": "label formatters do not fit: TAPE ECHO slot 4 needs 54 B; the clone window ends at 0x400d7bbc and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "tapeecho",
-        "euclid",
-        "repitch",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "previewvol",
-        "cc-map",
-        "sidechain-compressor"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "TAPE ECHO",
-          "EUCLID",
-          "TAPEHEAD",
-          "SIDECHAIN_COMPRESSOR"
-        ]
-      },
-      "native": {
-        "refused": "label formatters do not fit: TAPE ECHO slot 4 needs 54 B; the clone window ends at 0x400d7c3c and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "euclid",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "synth",
-        "previewvol",
-        "cc-map",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "DARK REV",
-          "MINIVERB",
-          "TAPE ECHO",
-          "EUCLID"
-        ]
-      },
-      "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "euclid",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "synth",
-        "previewvol",
-        "cc-map",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID"
-        ],
-        "fx2": [
-          "MINIVERB",
-          "TAPE ECHO",
-          "EUCLID",
-          "SIDECHAIN_COMPRESSOR"
-        ]
-      },
-      "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "DARK REV",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "bytes": 1117740,
-        "osSha256": "4ed9c087ed6a1455f2aea1c6e8e6b07cec38a687c8cc5acfdcacd139ed8a2d36",
-        "maskedOsSha256": "5932ba07a0904a9b234dc1286aef126ced8a0c7d74aa7b5af45198ef78280c9a"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "bytes": 1117740,
-        "osSha256": "61e5bcae996decda17b8d2bfefc201f88f4258e8df0d9cd973883674633e1fe8",
-        "maskedOsSha256": "ed76ff5c6178d6659cc16fe2212ae5a33d4ff8033d63a5331d39f5c83b1a5146"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "euclid",
-        "usb-audio-out-tracks-main-cue",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "DARK REV",
-          "EUCLID"
-        ]
-      },
-      "native": {
-        "bytes": 1125608,
-        "osSha256": "b72bbc4dbbae61251428c7bddfc41e0f334ce972339059b3306425564e94abe4",
-        "maskedOsSha256": "13433a0302df9c17b2f996841adf3f86350535d7056a066f9ba21c87e7c1459b"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "euclid",
-        "usb-audio-out-tracks-main-cue",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID"
-        ],
-        "fx2": [
-          "EUCLID",
-          "SIDECHAIN_COMPRESSOR"
-        ]
-      },
-      "native": {
-        "bytes": 1125608,
-        "osSha256": "417fdb726cb875dfcdbef28dedc0c4e8918d8760660ef53a429ef84446d8b92b",
-        "maskedOsSha256": "4a3a77619c4560d96da765b6e418a3f208537c7a9bc42b36ae787428790d5a86"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
         "synth",
         "previewvol",
         "cc-map"
@@ -3005,7 +2358,7 @@
           "COMB FILTER",
           "COMPRESSOR",
           "LO-FI",
-          "TAPEHEAD"
+          "EUCLID"
         ],
         "fx2": [
           "FILTER",
@@ -3023,11 +2376,11 @@
           "SPRING REV",
           "MINIVERB",
           "TAPE ECHO",
-          "TAPEHEAD"
+          "EUCLID"
         ]
       },
       "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first"
+        "refused": "label formatters do not fit: EUCLID slot 5 needs 356 B; the clone window ends at 0x400d7bbc and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
       },
       "result": "refused"
     },
@@ -3035,9 +2388,8 @@
       "moduleIds": [
         "miniverb",
         "tapeecho",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
+        "euclid",
+        "repitch",
         "synth",
         "previewvol",
         "cc-map"
@@ -3055,28 +2407,118 @@
           "COMB FILTER",
           "COMPRESSOR",
           "LO-FI",
-          "TAPEHEAD"
+          "EUCLID"
         ],
         "fx2": [
           "MINIVERB",
           "TAPE ECHO",
-          "TAPEHEAD"
+          "EUCLID"
         ]
       },
       "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first"
+        "refused": "label formatters do not fit: EUCLID slot 5 needs 356 B; the clone window ends at 0x400d7c3c and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
       },
       "result": "refused"
     },
     {
       "moduleIds": [
-        "miniverb",
+        "tapeecho",
         "euclid",
-        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "SPRING REV",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "bytes": 1229993,
+        "osSha256": "031f333d8735a1dc5d3270177cdf1dae6746e4c190521ba8402f3b9dfda8e073",
+        "maskedOsSha256": "d692114a156e817b7a5aa010838e5346682d8e6f1f14ff8d1e7b9bca16565c58"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "bytes": 1229993,
+        "osSha256": "9546418070f29ce1a30e1f63e114cf19d9447494a70abb756e609eb003ff0050",
+        "maskedOsSha256": "66ce022d21c181de840fe27a7a748cc0bbae4470a18a89af0b9bcd776b95c366"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
         "usb-audio-out-tracks-main-cue",
         "quantizer",
         "synth",
-        "previewvol",
         "cc-map",
         "sidechain-compressor"
       ],
@@ -3109,6 +2551,7 @@
           "DELAY",
           "DARK REV",
           "MINIVERB",
+          "TAPE ECHO",
           "EUCLID"
         ]
       },
@@ -3120,12 +2563,11 @@
     {
       "moduleIds": [
         "miniverb",
+        "tapeecho",
         "euclid",
-        "repitch",
         "usb-audio-out-tracks-main-cue",
         "quantizer",
         "synth",
-        "previewvol",
         "cc-map",
         "sidechain-compressor"
       ],
@@ -3146,6 +2588,7 @@
         ],
         "fx2": [
           "MINIVERB",
+          "TAPE ECHO",
           "EUCLID",
           "SIDECHAIN_COMPRESSOR"
         ]
@@ -3157,8 +2600,92 @@
     },
     {
       "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
         "usb-audio-out-tracks-main-cue",
         "quantizer",
+        "cc-map",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "SPRING REV",
+          "MINIVERB",
+          "EUCLID"
+        ]
+      },
+      "native": {
+        "refused": "label formatters do not fit: EUCLID slot 8 needs 290 B; the clone window ends at 0x400d7bbc and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "cc-map",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID"
+        ]
+      },
+      "native": {
+        "refused": "label formatters do not fit: EUCLID slot 10 needs 254 B; the clone window ends at 0x400d7c3c and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "tapehead",
         "synth"
       ],
       "keepStockFx2": true,
@@ -3173,7 +2700,9 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
         ],
         "fx2": [
           "FILTER",
@@ -3187,20 +2716,24 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
-          "SPRING REV",
-          "DARK REV"
+          "DARK REV",
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD"
         ]
       },
       "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first"
+        "bytes": 1127356,
+        "osSha256": "6acdb9e4405e15d827313964ca199e9a6e00415cba6d6038dbd338f1563466b4",
+        "maskedOsSha256": "c449def41232d2035ea80c113231c696ab1036d23a1af914e3a4682d4fa3232e"
       },
-      "result": "refused"
+      "result": "masked"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
+        "miniverb",
+        "euclid",
+        "tapehead",
         "synth"
       ],
       "keepStockFx2": false,
@@ -3215,26 +2748,28 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
         ],
-        "fx2": []
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
       },
       "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first"
+        "bytes": 1127356,
+        "osSha256": "ca309a36cfca29560d481367a1e78df91dc9f4a429677c9faedd54adb689cabe",
+        "maskedOsSha256": "f5be297e26c2183e1a50d9fa50fbf731c37abe924f835cc86208fef5a824ffdb"
       },
-      "result": "refused"
+      "result": "masked"
     },
     {
       "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "repitch",
-        "tapehead",
+        "euclid",
         "usb-audio-out-tracks-main-cue",
-        "previewvol",
-        "cc-map",
-        "sidechain-compressor",
-        "vector"
+        "sidechain-compressor"
       ],
       "keepStockFx2": true,
       "menu": {
@@ -3249,7 +2784,7 @@
           "COMB FILTER",
           "SIDECHAIN_COMPRESSOR",
           "LO-FI",
-          "TAPEHEAD"
+          "EUCLID"
         ],
         "fx2": [
           "FILTER",
@@ -3263,30 +2798,23 @@
           "SIDECHAIN_COMPRESSOR",
           "LO-FI",
           "DELAY",
+          "PLATE REV",
           "DARK REV",
-          "MINIVERB",
-          "TAPE ECHO",
-          "TAPEHEAD"
+          "EUCLID"
         ]
       },
       "native": {
-        "bytes": 1225700,
-        "osSha256": "b4421f565d7d96c4205abf83314e9d3622a97889f6f3e4c00fec01ca5b45d4b2",
-        "maskedOsSha256": "fbe5990b9dd06179a8cbccd1c0d1fe1f84c664ab1f06160e227d26249396c32a"
+        "bytes": 1117670,
+        "osSha256": "d2a0b2e69cbe944558646dec259a22175883f1c4bc5188e4944086cc3c338df6",
+        "maskedOsSha256": "f64929dfc27a6b3004f7acedc49574752f64fff566bf7a1f100dbd1a61977e30"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "repitch",
-        "tapehead",
+        "euclid",
         "usb-audio-out-tracks-main-cue",
-        "previewvol",
-        "cc-map",
-        "sidechain-compressor",
-        "vector"
+        "sidechain-compressor"
       ],
       "keepStockFx2": false,
       "menu": {
@@ -3301,183 +2829,28 @@
           "COMB FILTER",
           "SIDECHAIN_COMPRESSOR",
           "LO-FI",
-          "TAPEHEAD"
+          "EUCLID"
         ],
         "fx2": [
-          "MINIVERB",
-          "TAPE ECHO",
-          "TAPEHEAD",
+          "EUCLID",
           "SIDECHAIN_COMPRESSOR"
-        ]
-      },
-      "native": {
-        "bytes": 1225700,
-        "osSha256": "01a00bba76552d0d6c91f2ca860465bc08929a32f2a66b08373180387d3b1b99",
-        "maskedOsSha256": "8777845f28ef8edbe8c3562d444c9aab3a0a3431aaacea8e0d60ace3494b8b4d"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "euclid",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "EUCLID"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "DARK REV",
-          "EUCLID"
-        ]
-      },
-      "native": {
-        "bytes": 1119878,
-        "osSha256": "5254d901396bea3e8d9d25f1ac3fcd5e3495ef728c86a54520657d2728c1a9c4",
-        "maskedOsSha256": "04e19205ad6c6cbde580523accab20035cc0c1f19c82154a89ad0d5c1f25447f"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "euclid",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "EUCLID"
-        ],
-        "fx2": [
-          "EUCLID"
-        ]
-      },
-      "native": {
-        "bytes": 1119878,
-        "osSha256": "c0abf28ae87084de8404f3848e120db962cf8c9847c33845f2393e54ffdec612",
-        "maskedOsSha256": "4d399637dc4382e527aaafdb95954a3a8190d4775c71fdd18cb98ec918a72066"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "euclid",
-        "usb-audio-out-tracks-main-cue",
-        "cc-map"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "EUCLID"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "DARK REV",
-          "EUCLID"
         ]
       },
       "native": {
         "bytes": 1117670,
-        "osSha256": "bcf41ae281a049c244358c42ddaff24164c418880895a63be559a081b2952696",
-        "maskedOsSha256": "66db676ba793a2e159438ccd88c325b6ff0714b49adc61a9ad80f6ac549b5dcb"
+        "osSha256": "be14f61f458d48dfb67af8f29a7dcf30478acfa91aabf75b5cdb9b1e79fa31d4",
+        "maskedOsSha256": "5becc49e539dd687faba851a52409fcd145256b03c6e15b28d6bd885d78275f6"
       },
       "result": "masked"
     },
     {
       "moduleIds": [
-        "euclid",
-        "usb-audio-out-tracks-main-cue",
-        "cc-map"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "EUCLID"
-        ],
-        "fx2": [
-          "EUCLID"
-        ]
-      },
-      "native": {
-        "bytes": 1117670,
-        "osSha256": "e0471ebfc77a2e80faf0d6e91c09c72dbd4f4d1ea008b2491a6f279cb7366da9",
-        "maskedOsSha256": "ed8abf411a71f2fdafcd5af19781641afe046b02ae38d611dff7ee2b7d5e9bd1"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
+        "miniverb",
         "tapeecho",
+        "euclid",
         "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
         "synth",
+        "cc-map",
         "vector"
       ],
       "keepStockFx2": true,
@@ -3493,6 +2866,7 @@
           "COMB FILTER",
           "COMPRESSOR",
           "LO-FI",
+          "EUCLID",
           "TAPEHEAD"
         ],
         "fx2": [
@@ -3507,24 +2881,26 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
           "DARK REV",
+          "MINIVERB",
           "TAPE ECHO",
+          "EUCLID",
           "TAPEHEAD"
         ]
       },
       "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
       },
       "result": "refused"
     },
     {
       "moduleIds": [
+        "miniverb",
         "tapeecho",
+        "euclid",
         "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
         "synth",
+        "cc-map",
         "vector"
       ],
       "keepStockFx2": false,
@@ -3540,287 +2916,27 @@
           "COMB FILTER",
           "COMPRESSOR",
           "LO-FI",
+          "EUCLID",
           "TAPEHEAD"
         ],
         "fx2": [
+          "MINIVERB",
           "TAPE ECHO",
+          "EUCLID",
           "TAPEHEAD"
         ]
       },
       "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
       },
       "result": "refused"
     },
     {
       "moduleIds": [
-        "miniverb",
         "tapeecho",
         "euclid",
         "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "previewvol",
-        "vector"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "EUCLID",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "DARK REV",
-          "MINIVERB",
-          "TAPE ECHO",
-          "EUCLID",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "bytes": 1227795,
-        "osSha256": "195ac2c1df82eb2c26ed9d8017b68129d07d3847fe1d6e41b81c6672b0696493",
-        "maskedOsSha256": "7cf289c5a84e77047b8d42ff2be76daefdb0db4d8ff665ce0c20a4823e22fdb7"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "euclid",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "previewvol",
-        "vector"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "EUCLID",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "MINIVERB",
-          "TAPE ECHO",
-          "EUCLID",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "bytes": 1227795,
-        "osSha256": "af35090c995c9bdf63e793a2a5d025fe42b5704baa095f3e3f04864abf484bd0",
-        "maskedOsSha256": "1c88ec0e474df8852ebb9693ca86d79aa18a0a37ca5af2d1ae072db653252021"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "euclid",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
         "quantizer",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "MINIVERB",
-          "EUCLID",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "refused": "label formatters do not fit: EUCLID slot 10 needs 254 B; the clone window ends at 0x400d7bbc and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "euclid",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "MINIVERB",
-          "EUCLID",
-          "TAPEHEAD",
-          "SIDECHAIN_COMPRESSOR"
-        ]
-      },
-      "native": {
-        "refused": "label formatters do not fit: TAPEHEAD slot 2 needs 60 B; the clone window ends at 0x400d7c3c and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "euclid",
-        "usb-audio-out-tracks-main-cue",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "DARK REV",
-          "MINIVERB",
-          "TAPE ECHO",
-          "EUCLID"
-        ]
-      },
-      "native": {
-        "bytes": 1227795,
-        "osSha256": "93fe3aa30128cad172047dd79a9fd3d2af33087c5225568f64ba71e0f153e12a",
-        "maskedOsSha256": "52e7f610196076ba61a526b9eeadd82d1ab90038da1d82bf70916e48cfbcc35d"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "euclid",
-        "usb-audio-out-tracks-main-cue",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID"
-        ],
-        "fx2": [
-          "MINIVERB",
-          "TAPE ECHO",
-          "EUCLID",
-          "SIDECHAIN_COMPRESSOR"
-        ]
-      },
-      "native": {
-        "bytes": 1227795,
-        "osSha256": "ba3dfdc221fdfeab026b29d2ff626034880c6cced0f9b4cf74914abd4a9d3576",
-        "maskedOsSha256": "e388c41bf925d0827689c19757243999aaca3da2116f4efe0e06579585c93d84"
-      },
-      "result": "masked"
-    },
-    {
-      "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
         "synth",
         "previewvol",
         "cc-map"
@@ -3837,7 +2953,9 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
         ],
         "fx2": [
           "FILTER",
@@ -3853,19 +2971,22 @@
           "DELAY",
           "PLATE REV",
           "SPRING REV",
-          "DARK REV"
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
         ]
       },
       "native": {
-        "bytes": 1127878,
-        "osSha256": "e1deb21680ad9686d4b3d33476b439c9c040be2f1edfdaed60a3074f85bfa513",
-        "maskedOsSha256": "cc8059d0957e3d4039e342412a6832008a382de2610c20809399d8f3ccabf86b"
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first"
       },
-      "result": "masked"
+      "result": "refused"
     },
     {
       "moduleIds": [
-        "usb-audio-out-tracks-main-cue",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
         "synth",
         "previewvol",
         "cc-map"
@@ -3882,29 +3003,26 @@
           "SPATIALIZER",
           "COMB FILTER",
           "COMPRESSOR",
-          "LO-FI"
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
         ],
-        "fx2": []
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
       },
       "native": {
-        "bytes": 1127878,
-        "osSha256": "ceea2dd3096b52a20afcae22cfa134b8d451239192af110ee1b55e80df14f6a8",
-        "maskedOsSha256": "baddeaf662a38471106d13bedf05bcb1eb5e5a945a033a49f0971136d4673f85"
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first"
       },
-      "result": "masked"
+      "result": "refused"
     },
     {
       "moduleIds": [
-        "miniverb",
-        "tapeecho",
         "euclid",
         "repitch",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "previewvol",
-        "cc-map",
-        "vector"
+        "usb-audio-out-tracks-main-cue"
       ],
       "keepStockFx2": true,
       "menu": {
@@ -3919,8 +3037,7 @@
           "COMB FILTER",
           "COMPRESSOR",
           "LO-FI",
-          "EUCLID",
-          "TAPEHEAD"
+          "EUCLID"
         ],
         "fx2": [
           "FILTER",
@@ -3934,7 +3051,179 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
+          "PLATE REV",
           "DARK REV",
+          "EUCLID"
+        ]
+      },
+      "native": {
+        "bytes": 1117670,
+        "osSha256": "82f07d1a33fb056dacb0529449067414a3186c25620a92fa53a2eb23fccb5351",
+        "maskedOsSha256": "e8e809f59a26ec633dbef45860b3cd7efa1ee406b4347b757c643704260277d2"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID"
+        ]
+      },
+      "native": {
+        "bytes": 1117670,
+        "osSha256": "bd1aa33c967f53f3103665d5bbb732040ef8f69cd8aec454dd4860d623a179de",
+        "maskedOsSha256": "bc81dad896c89150e7c0baf09c7fab1db609337a7c88d98b002c86ae30012dba"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "sidechain-compressor",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
           "MINIVERB",
           "TAPE ECHO",
           "EUCLID",
@@ -3956,183 +3245,6 @@
         "usb-audio-out-tracks-main-cue",
         "quantizer",
         "previewvol",
-        "cc-map",
-        "vector"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "EUCLID",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "MINIVERB",
-          "TAPE ECHO",
-          "EUCLID",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "refused": "label formatters do not fit: EUCLID slot 4 needs 352 B; the clone window ends at 0x400d7c3c and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "tapeecho",
-        "euclid",
-        "repitch",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "synth",
-        "previewvol"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "EUCLID"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "DARK REV",
-          "TAPE ECHO",
-          "EUCLID"
-        ]
-      },
-      "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "tapeecho",
-        "euclid",
-        "repitch",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "synth",
-        "previewvol"
-      ],
-      "keepStockFx2": false,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "COMPRESSOR",
-          "LO-FI",
-          "EUCLID"
-        ],
-        "fx2": [
-          "TAPE ECHO",
-          "EUCLID"
-        ]
-      },
-      "native": {
-        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "euclid",
-        "repitch",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "cc-map",
-        "sidechain-compressor",
-        "vector"
-      ],
-      "keepStockFx2": true,
-      "menu": {
-        "fx1": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "EUCLID",
-          "TAPEHEAD"
-        ],
-        "fx2": [
-          "FILTER",
-          "EQUALIZER",
-          "DJ EQ",
-          "PHASER",
-          "FLANGER",
-          "CHORUS",
-          "SPATIALIZER",
-          "COMB FILTER",
-          "SIDECHAIN_COMPRESSOR",
-          "LO-FI",
-          "DELAY",
-          "PLATE REV",
-          "MINIVERB",
-          "TAPE ECHO",
-          "EUCLID",
-          "TAPEHEAD"
-        ]
-      },
-      "native": {
-        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7900) nor the overflow run"
-      },
-      "result": "refused"
-    },
-    {
-      "moduleIds": [
-        "miniverb",
-        "tapeecho",
-        "euclid",
-        "repitch",
-        "tapehead",
-        "usb-audio-out-tracks-main-cue",
-        "quantizer",
-        "cc-map",
         "sidechain-compressor",
         "vector"
       ],
@@ -4161,9 +3273,952 @@
         ]
       },
       "native": {
-        "refused": "SCALE QUANTIZER table SEQUENCER getters at 0x400d7c80 not free"
+        "refused": "label formatters do not fit: EUCLID slot 4 needs 352 B; the clone window ends at 0x400d7c3c and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
       },
       "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "usb-audio-out-tracks-main-cue",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID"
+        ]
+      },
+      "native": {
+        "bytes": 1227795,
+        "osSha256": "26c06399cf6a4cc7e878bdb72ef71065ba3b5be06305ae97083a4cac744f0170",
+        "maskedOsSha256": "dc78dbe1bda40143f940358dc47b22d4f9ceeebeb5476bac41fa5dc4c49c656c"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "usb-audio-out-tracks-main-cue",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "bytes": 1227795,
+        "osSha256": "fb83c9ef5c698d587b80b1259734edd6af3cf5517e5d08b1a7135890eac175ec",
+        "maskedOsSha256": "b57e661e2288f8fcba14daa79e1e2cb03fd25dbef6b960b0d7a87002ec3f7aa7"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "sidechain-compressor",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "bytes": 1225076,
+        "osSha256": "6ec7a263078aa0131badc079790dd4a437c3421124fe52a5acd2ceb3867299d3",
+        "maskedOsSha256": "438af5136f3c0f70cb7fb5254be684c4af919df8d506f84bb669e22dd93d6ae8"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "sidechain-compressor",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "bytes": 1225076,
+        "osSha256": "e79b5e9a2e4c8b3acbcaf90fcc7cb181c63e3ba808a00e21dfc26405a7805e8c",
+        "maskedOsSha256": "d9d1adfc428f9976b113dec38f5668acf4b130247aca82b50240a953f321b14b"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "quantizer",
+        "cc-map",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "EUCLID"
+        ]
+      },
+      "native": {
+        "refused": "label formatters do not fit: EUCLID slot 8 needs 290 B; the clone window ends at 0x400d7bbc and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "quantizer",
+        "cc-map",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "label formatters do not fit: EUCLID slot 8 needs 290 B; the clone window ends at 0x400d7c3c and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "quantizer",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "SPRING REV",
+          "MINIVERB",
+          "EUCLID"
+        ]
+      },
+      "native": {
+        "bytes": 1117211,
+        "osSha256": "e09f76b28dfe44b8e0945ef379b18f0447170b7a559969a0004530e9ed22059f",
+        "maskedOsSha256": "e4b474c76bfdc4a9a437430705aa09d50f8ccd78e6d91c11f6c190631aea16a4"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "quantizer",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID"
+        ]
+      },
+      "native": {
+        "bytes": 1117211,
+        "osSha256": "7655cbdb221e67f57a8376c99a20b07d29dbc87979e3432e7f67e739c6a1ae70",
+        "maskedOsSha256": "d99895af1b80512ccb54876898255c1e14e4875d7e5001c00e3a3cc29aef2023"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "EUCLID"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "previewvol",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "SPRING REV",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "previewvol",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449b8 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead",
+        "synth",
+        "cc-map",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead",
+        "synth",
+        "cc-map",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "synth",
+        "previewvol"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "SPRING REV",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "bytes": 1229564,
+        "osSha256": "eac0625d882a432bc79243edecf3c6c2ed097eec76ce34b236e014cc1d2cd368",
+        "maskedOsSha256": "411c48ed0433df9acb5ee78b7d65e7b0de085853b899c822699681c63b33bc95"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "synth",
+        "previewvol"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "bytes": 1229564,
+        "osSha256": "a8010f0e87547f2cf8e97bf14eb716a4485d2012b7aa58dbc36f8716d33c5349",
+        "maskedOsSha256": "ee7aaaa5adde9a64d15cd3f2a52bb25d155d2c492fe9c0ed29a61f1d0e8368aa"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "bytes": 1219877,
+        "osSha256": "6765742f443b7595cbff7f279486bafab38a21e1bfa89d008e0bd24dd64d63ec",
+        "maskedOsSha256": "1c47ca3ef440907fe64ffe45a78dbcb74981f46918e0eca43f7b7452681ab316"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ]
+      },
+      "native": {
+        "bytes": 1219877,
+        "osSha256": "f49e47f19380afa1613da5df8d68f019f41421a7d3e5baf57768fc2a628943e0",
+        "maskedOsSha256": "cd9512d6340c92129abf3701c8add669c8fb8f53927801ba7817a1df57390385"
+      },
+      "result": "masked"
     }
   ]
 }

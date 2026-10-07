@@ -1,0 +1,77 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { COMMUNITY_RULES_VERSION, USAGE_CONSENT_VERSION } from '../legal/policy'
+import { testServer } from './test-server'
+
+const databases: Array<{ close(): void }> = []
+const password = 'a Discord invitation test password'
+beforeEach(() => { vi.stubGlobal('fetch', vi.fn(async () => Response.json({ id: 'test-email' }))) })
+afterEach(() => { vi.unstubAllGlobals(); for (const db of databases.splice(0)) db.close() })
+async function fixture() {
+  const server = await testServer(); databases.push(server.db)
+  async function member(username: string) {
+    const email = username + '@example.test'
+    expect((await server.call('/auth/register', 'POST', { username, email, password, rulesVersion: COMMUNITY_RULES_VERSION })).status).toBe(202)
+    const id = String(server.db.prepare('SELECT id FROM auth_users WHERE email=?').get(email)!.id)
+    server.db.prepare('UPDATE auth_users SET emailVerified=1 WHERE id=?').run(id)
+    server.db.prepare('UPDATE users SET email_verified=1 WHERE id=?').run(id)
+    async function login() { return (await server.call('/auth/login', 'POST', { email, password })).headers.get('X-Octamod-Session')! }
+    return { id, token: await login(), login }
+  }
+  return { ...server, member }
+}
+
+describe('once-per-account Discord invitation', () => {
+  it('allows one of simultaneous visits, and remembers it across independent sessions and members', async () => {
+    const { call, member, db } = await fixture(), first = await member('inviteone'), other = await member('invitetwo')
+    const secondDevice = await first.login()
+    const results = await Promise.all([first.token, secondDevice].map(async token => (await call('/auth/discord-invite', 'POST', {}, token)).json()))
+    expect(results.filter(result => result.show)).toHaveLength(1)
+    expect(await (await call('/auth/discord-invite', 'POST', {}, await first.login())).json()).toEqual({ show: false })
+    expect(await (await call('/auth/discord-invite', 'POST', {}, other.token)).json()).toEqual({ show: true })
+    expect(db.prepare('SELECT COUNT(*) AS count FROM member_discord_invites').get()).toEqual({ count: 2 })
+  })
+  it('requires a verified owner and the site origin, and never claims on a GET', async () => {
+    const { call, member, db } = await fixture(), owner = await member('inviteowner')
+    expect((await call('/auth/discord-invite', 'POST', {})).status).toBe(401)
+    expect((await call('/auth/discord-invite', 'GET', undefined, owner.token)).status).toBe(405)
+    expect((await call('/auth/discord-invite', 'POST', {}, owner.token, '', 'https://evil.example')).status).toBe(403)
+    db.prepare('UPDATE users SET suspended=1 WHERE id=?').run(owner.id)
+    expect((await call('/auth/discord-invite', 'POST', {}, owner.token)).status).toBe(401)
+    expect(db.prepare('SELECT COUNT(*) AS count FROM member_discord_invites').get()).toEqual({ count: 0 })
+  })
+  it('exports the invitation marker privately and removes it with the account', async () => {
+    const { call, member, db } = await fixture(), owner = await member('inviteexport')
+    await call('/auth/discord-invite', 'POST', {}, owner.token)
+    const exported = await call('/auth/data-export', 'POST', { password }, owner.token)
+    expect(exported.status).toBe(200)
+    expect((await exported.json()).data.discordInvitation).toEqual([{ shown_at: expect.any(String) }])
+    db.prepare('DELETE FROM account_tokens WHERE user_id=?').run(owner.id)
+    db.prepare('DELETE FROM auth_users WHERE id=?').run(owner.id)
+    expect(db.prepare('SELECT COUNT(*) AS count FROM member_discord_invites').get()).toEqual({ count: 0 })
+  })
+})
+
+describe('invitation action statistics', () => {
+  it('counts every choice for the correct audience through both collectors and deduplicates opted-in events', async () => {
+    const { call, db, env } = await fixture()
+    const events = {
+      discord_member_prompt_shown: 'discord_member_shown', discord_member_join_clicked: 'discord_member_joins', discord_member_dismissed: 'discord_member_dismissals',
+      discord_visitor_prompt_shown: 'discord_visitor_shown', discord_visitor_signup_clicked: 'discord_visitor_signups', discord_visitor_join_clicked: 'discord_visitor_joins', discord_visitor_dismissed: 'discord_visitor_dismissals', discord_welcome_join_clicked: 'discord_welcome_joins',
+    }
+    const { recordUsage } = await import('../../server/usage')
+    for (const event of Object.keys(events)) {
+      expect((await call('/usage/count', 'POST', { event })).status).toBe(200)
+      const request = new Request('https://api.example.test/api/usage/events', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Octamod-Usage-Consent': USAGE_CONSENT_VERSION }, body: JSON.stringify({ event, eventId: crypto.randomUUID(), visitor: crypto.randomUUID() }) })
+      expect((await recordUsage(request.clone(), env, env.DB!)).status).toBe(200)
+      expect((await recordUsage(request.clone(), env, env.DB!)).status).toBe(200)
+    }
+    const expected = Object.fromEntries(Object.values(events).map(column => [column, 2]))
+    expect(db.prepare('SELECT * FROM usage_daily').get()).toMatchObject(expected)
+    expect(db.prepare('SELECT * FROM usage_hourly').get()).toMatchObject(expected)
+    const admin = (await (await call('/auth/admin', 'POST', { key: 'e'.repeat(64) })).json()).token
+    const statistics = await (await call('/admin/statistics?days=7', 'GET', undefined, '', admin)).json()
+    expect(statistics.discordInvitesStarted).toBeTruthy()
+    expect(statistics.rows[0]).toMatchObject(expected)
+    expect((await call('/usage/count', 'POST', { event: 'discord_member_join_clicked', userId: 'private-member' })).status).toBe(400)
+  })
+})

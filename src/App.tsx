@@ -1,4 +1,5 @@
 import { AccountPage } from './community/AccountPage'
+import { DiscordInvitePrompt } from './community/DiscordInvite'
 import { NotificationBell } from './community/NotificationBell'
 import { useMembersOnline } from './community/useMembersOnline'
 import { MembersOnlineChip } from './community/MembersOnline'
@@ -269,6 +270,7 @@ export default function App() {
       </aside>
       {compareOpen&&<ModuleComparison ids={comparison} selected={selectedIds} onToggle={toggleModule} digiSelected={{digitakt:activeFor('digitakt')?.moduleIds??[],digitone:activeFor('digitone')?.moduleIds??[]}} onToggleDigi={(device,id)=>workspace.toggleModule(id,device)} onClose={()=>setCompareOpen(false)}/>}
       {configDialog && <ConfigurationDialog mode={configDialog} initialName={configDialog === 'create' ? '' : configDialog === 'duplicate' ? (machineActive?.name ?? '') + ' copy' : machineActive?.name ?? ''} onSubmit={submitConfigurationDialog} onClose={() => setConfigDialog(null)} />}
+      <DiscordInvitePrompt enabled={!accountRoute && !developerRoute && !['admin', 'privacy', 'impressum', 'community-rules', 'report-content'].includes(route)} next={route} />
       {supportOpen && <SupportDialog url={SUPPORT_URL} onClose={() => setSupportOpen(false)} />}
       <div className="workspace">
         <header className="app-toolbar" ref={toolbarRef}>

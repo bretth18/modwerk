@@ -85,7 +85,7 @@ describe('module qualification hard gates',()=>{
       // Generated web documents include display-only baseline resource estimates.
       // Qualify the source manifest, as publication validation does.
       const source=parseModuleDocument(JSON.parse(readFileSync(resolve(folder,'octamod.module.json'),'utf8')))
-      expect(await requireFolderQualification(folder,source,frozen)).toBe(unchanged?'retained':source.tests.retainedEvidence?'retained-evidence':module.id==='midi-scenes'?'owner-approved-standalone':module.id==='synth'?'owner-approved-experimental':module.id==='usb-audio-out-tracks-main-cue'?'owner-approved-update':'qualified')
+      expect(await requireFolderQualification(folder,source,frozen)).toBe(unchanged?'retained':source.tests.retainedEvidence?'retained-evidence':module.id==='midi-scenes'?'owner-approved-standalone':module.id==='synth'?'owner-approved-experimental':['usb-audio-out-tracks-main-cue','euclid'].includes(module.id)?'owner-approved-update':'qualified')
     }
   })
   it('binds an owner-approved update to its exact version and native source, never to verified hardware',async()=>{
@@ -106,6 +106,21 @@ describe('module qualification hard gates',()=>{
       write(approval); writeFileSync(resolve(folder,'manifest.py'),'changed\n'); await expect(check()).rejects.toThrow('exact native source')
       write({...approval,kind:'other'}); await expect(check()).rejects.toThrow('worst-case cycles')
     } finally { rmSync(root,{recursive:true,force:true}) }
+  })
+  it('retains historical UI only for an exact owner-approved update with the documentation waiver',async()=>{
+    const root=mkdtempSync(resolve(tmpdir(),'octamod-retained-ui.')),folder=resolve(root,'module')
+    try {
+      mkdirSync(resolve(root,'sdk'));mkdirSync(folder)
+      writeFileSync(resolve(folder,'manifest.py'),'SOURCE = 1\n')
+      const document=parseModuleDocument(JSON.parse(readFileSync('sdk/octabam/modules/euclid/octamod.module.json','utf8')))
+      const approval={kind:'owner-approved-update',id:document.id,version:document.version,sourceSha256:await moduleNativeSourceSha256(folder,document),approvedBy:'repeat98',approvedOn:'2026-10-07',waived:['current-build-hardware','chip-worst-case-cycles','complete-memory-bounds','release-documentation'],ownerStatement:'Approved.',reason:'Test.',retainedUiVersion:'0.1.3-experimental'}
+      const write=(value:object)=>writeFileSync(resolve(root,'sdk',document.id+'-build-approval.json'),JSON.stringify(value))
+      const check=()=>requireFolderQualification(folder,document,new Map(),new Map(),{root})
+      write(approval);expect(await check()).toBe('owner-approved-update')
+      write({...approval,retainedUiVersion:document.version});await expect(check()).rejects.toThrow('earlier version')
+      write({...approval,waived:approval.waived.filter(w=>w!=='release-documentation')});await expect(check()).rejects.toThrow('explicitly waive')
+      write({...approval,retainedUiVersion:'0.1.2-experimental'});await expect(check()).rejects.toThrow()
+    } finally {rmSync(root,{recursive:true,force:true})}
   })
   it('binds exemptions to complete folder contents and qualification to the native source',async()=>{
     const folder=mkdtempSync(resolve(tmpdir(),'octamod-qualification-test.'))

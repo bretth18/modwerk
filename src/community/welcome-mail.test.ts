@@ -58,8 +58,8 @@ describe('new member welcome email', () => {
   })
 
   it('matches the readable previews and describes signup rather than news consent', () => {
-    expect(welcomeEmail.html).toBe(readFileSync(new URL('../../docs/news/004-member-welcome.html', import.meta.url), 'utf8'))
-    const plain = readFileSync(new URL('../../docs/news/004-member-welcome.txt', import.meta.url), 'utf8')
+    expect(welcomeEmail.html).toBe(readFileSync(new URL('../../docs/news/005-member-welcome.html', import.meta.url), 'utf8'))
+    const plain = readFileSync(new URL('../../docs/news/005-member-welcome.txt', import.meta.url), 'utf8')
     expect(plain).toBe('Subject: ' + welcomeEmail.subject + '\nPreheader: More modules are coming, and the repo is open for contributions.\n\n' + welcomeEmail.text)
     // The forum tour of modwerk-welcome-003 and -004 is gone again.
     expect(welcomeEmail.html).not.toContain('Introductions')
@@ -67,8 +67,8 @@ describe('new member welcome email', () => {
     expect(welcomeEmail.html).toContain('href="https://modwerk.app/#submit"')
     expect(welcomeEmail.text).toContain('Start developing:\nhttps://modwerk.app/#submit')
     expect(welcomeEmail.html).toContain('https://github.com/repeat98/modwerk')
-    expect(welcomeEmail.html).toContain('href="https://discord.gg/QQxFb85m7"')
-    expect(welcomeEmail.text).toContain('Join us on Discord:\nhttps://discord.gg/QQxFb85m7')
+    expect(welcomeEmail.html).toContain('href="https://discord.gg/ReKtHwnkEU"')
+    expect(welcomeEmail.text).toContain('Join the development Discord:\nhttps://discord.gg/ReKtHwnkEU')
     expect(welcomeEmail.html).toContain('https://modwerk.app/#account" style')
     expect(welcomeEmail.html).not.toMatch(/opted in|<script|<img|<iframe|<form|mailto:|—/i)
   })
@@ -86,7 +86,10 @@ describe('new member welcome email', () => {
     const submit = welcomeEmailVersions['modwerk-welcome-004']
     expect(submit.html).toBe(readFileSync(new URL('../../docs/news/003-member-welcome.html', import.meta.url), 'utf8'))
     expect(readFileSync(new URL('../../docs/news/003-member-welcome.txt', import.meta.url), 'utf8')).toBe('Subject: ' + submit.subject + '\nPreheader: Say hello in the forum and follow the modules for your machine.\n\n' + submit.text)
-    expect(Object.keys(welcomeEmailVersions)).toEqual(['modwerk-welcome-001', 'modwerk-welcome-002', 'modwerk-welcome-003', 'modwerk-welcome-004', WELCOME_EMAIL_VERSION])
+    const previous = welcomeEmailVersions['modwerk-welcome-005']
+    expect(previous.html).toBe(readFileSync(new URL('../../docs/news/004-member-welcome.html', import.meta.url), 'utf8'))
+    expect(readFileSync(new URL('../../docs/news/004-member-welcome.txt', import.meta.url), 'utf8')).toBe('Subject: ' + previous.subject + '\nPreheader: More modules are coming, and the repo is open for contributions.\n\n' + previous.text)
+    expect(Object.keys(welcomeEmailVersions)).toEqual(['modwerk-welcome-001', 'modwerk-welcome-002', 'modwerk-welcome-003', 'modwerk-welcome-004', 'modwerk-welcome-005', WELCOME_EMAIL_VERSION])
   })
 
   it('keeps queued messages and retry keys stable while new members receive the current welcome', async () => {
