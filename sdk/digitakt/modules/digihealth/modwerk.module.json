@@ -2,14 +2,14 @@
   "schemaVersion": 3,
   "id": "digihealth",
   "name": "digihealth",
-  "version": "1.0.1-experimental",
+  "version": "1.0.2-experimental",
   "machine": "digitakt",
   "category": "system",
   "exclusive": false,
   "author": {
     "github": "irpina",
     "credits": [
-      "irpina — digihealth design and code"
+      "irpina \u2014 digihealth design and code"
     ]
   },
   "maintainers": [
@@ -24,36 +24,41 @@
     "label": "DIGIHEALTH",
     "family": "Performance",
     "summary": "FAST AUDIO lowers the DSP load; SYSTEM INFO shows CPU, DSP and memory in the top bar.",
-    "overview": "Two SETTINGS rows. FAST AUDIO (on by default) runs the audio render’s hot code from the free on-chip SRAM: the same code, so the audio is identical and the DSP load lower; a watchdog goes back to the stock code if the copy is ever overwritten. SYSTEM INFO shows CPU, DSP, RAM and free sample memory in the top bar, and a read-only USB diagnostics channel (SysEx device 0x7D) answers its desktop tool.",
+    "overview": "digihealth adds FAST AUDIO and SYSTEM INFO to SETTINGS on the original Digitakt. FAST AUDIO runs the audio renderer\u2019s existing hot code from on-chip SRAM; it changes where the code runs, rather than the sound. It normally starts about two seconds after the screen appears. SYSTEM INFO alternates CPU/audio-render load and free RAM/sample memory in the top bar. Its DSP figure describes the audio render, not the cost of a single module. A read-only USB SysEx diagnostics channel uses device byte 0x7D.",
     "highlights": [
-      "FAST AUDIO: the render’s hot code runs from on-chip SRAM for a lower DSP load.",
-      "A watchdog falls back to the stock code if the copy is overwritten.",
-      "SYSTEM INFO: CPU, DSP, RAM and free sample memory in the top bar."
+      "FAST AUDIO uses the existing render code in SRAM, with a checksum watchdog and fallback to stock code.",
+      "SYSTEM INFO alternates load and memory pages every two seconds, including the last second\u2019s DSP peak.",
+      "The optional USB diagnostics channel reads status without changing settings or memory."
     ],
     "usage": [
-      "Turn FAST AUDIO on to make room for heavier machines such as SOPHIE.",
-      "Watch DSP peaks with SYSTEM INFO while building a pattern."
+      "Open SETTINGS, tick SYSTEM INFO, then return to a pattern with samples already loaded.",
+      "Play the pattern. Watch CPU and DSP current/peak load, then wait for the free RAM and sample-memory page; the pages alternate every two seconds.",
+      "Keep the pattern unchanged and untick FAST AUDIO in SETTINGS. Compare several readouts of the same passage; any difference depends on the workload.",
+      "Stop playback and untick SYSTEM INFO to hide the readout. FAST AUDIO stays disabled until the next power-on; its watchdog may also refuse or undo the SRAM copy."
     ]
   },
   "access": {
     "location": "SETTINGS",
     "steps": [
-      "Open SETTINGS.",
-      "Tick FAST AUDIO or SYSTEM INFO."
+      "Use a build containing digihealth for the original Digitakt on OS 1.53 or 1.54.",
+      "Open SETTINGS and tick SYSTEM INFO to show the readout in the top bar.",
+      "FAST AUDIO normally starts automatically after boot; untick its SETTINGS row to disable it for this power-on."
     ],
-    "screenshots": []
+    "screenshots": [
+      "media/settings.png"
+    ]
   },
   "controls": [
     {
       "name": "FAST AUDIO",
       "default": null,
-      "doc": "Runs the render from SRAM; untick to stop until the next power-on",
+      "doc": "Runs the existing audio-render code from SRAM. Normally starts about two seconds after boot; unticking disables it until the next power-on. It refuses a nonempty SRAM area, and its checksum watchdog returns to stock code if the copy is overwritten.",
       "labels": null
     },
     {
       "name": "SYSTEM INFO",
       "default": null,
-      "doc": "Shows CPU, DSP and memory in the top bar",
+      "doc": "Shows alternating two-second top-bar pages: CPU load and audio-render DSP current/last-second peak, then free heap RAM and sample memory. Untick to hide the display; these are whole-workload readings, not a per-module benchmark.",
       "labels": null
     }
   ],
@@ -65,7 +70,7 @@
     "requires": [],
     "conflicts": [],
     "limitations": [
-      "FAST AUDIO’s call-site stubs are derived from the owner’s stock OS file. Modwerk generates them during the local build, never in CI."
+      "FAST AUDIO\u2019s call-site stubs are derived from the owner\u2019s stock OS file. Modwerk generates them during the local build, never in CI."
     ]
   },
   "platform": {
@@ -104,12 +109,30 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Imported from the author’s v1.1 source; not yet built or tested in Modwerk."
+    "summary": "Imported from the author\u2019s v1.1 source; Modwerk linked and verified the pinned catalog release for the UI documentation run. Documentation captures verify the listed UI pages on OS 1.53; audio, timing and hardware remain unqualified.",
+    "documentation": {
+      "tutorial": {
+        "title": "Quick tutorial: compare a pattern\u2019s render load",
+        "steps": [
+          "Open SETTINGS, tick SYSTEM INFO, then return to a pattern with samples already loaded.",
+          "Play the pattern. Watch CPU and DSP current/peak load, then wait for the free RAM and sample-memory page; the pages alternate every two seconds.",
+          "Keep the pattern unchanged and untick FAST AUDIO in SETTINGS. Compare several readouts of the same passage; any difference depends on the workload.",
+          "Stop playback and untick SYSTEM INFO to hide the readout. FAST AUDIO stays disabled until the next power-on; its watchdog may also refuse or undo the SRAM copy."
+        ]
+      },
+      "screenshots": [
+        "media/settings.png",
+        "media/fast-audio.png",
+        "media/status-a.png",
+        "media/status-b.png"
+      ],
+      "captureRecord": "media/capture.json"
+    }
   },
   "license": {
     "spdx": "GPL-2.0-or-later",
     "file": "LICENSE",
-    "declaration": "The author’s source, imported unchanged from github.com/irpina/digihealth at v1.1 (commit 6d2a95605901) under its GPL-2.0-or-later licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+    "declaration": "The author\u2019s source, imported unchanged from github.com/irpina/digihealth at v1.1 (commit 6d2a95605901) under its GPL-2.0-or-later licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
   },
   "media": [
     {
@@ -120,6 +143,70 @@
       "credit": "Modwerk",
       "license": "GPL-3.0-or-later",
       "source": "Original Modwerk illustration"
+    },
+    {
+      "path": "media/settings.png",
+      "kind": "screenshot",
+      "caption": "SYS INFO in Settings",
+      "alt": "SYS INFO in Settings on the Digitakt monochrome LCD",
+      "credit": "Modwerk documentation capture; Elektron interface; irpina module",
+      "license": "LicenseRef-Digi-UI-Documentation",
+      "source": "original",
+      "capture": {
+        "type": "emulator",
+        "release": "1.53",
+        "moduleVersion": "1.0.2-experimental",
+        "imageSha256": "4709095234ef5d94cfa2cceeac07040d6356e6570a69649cf6ed72b698594968",
+        "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+      }
+    },
+    {
+      "path": "media/fast-audio.png",
+      "kind": "screenshot",
+      "caption": "FAST AUDIO setting with the memory overlay",
+      "alt": "FAST AUDIO setting with the memory overlay on the Digitakt monochrome LCD",
+      "credit": "Modwerk documentation capture; Elektron interface; irpina module",
+      "license": "LicenseRef-Digi-UI-Documentation",
+      "source": "original",
+      "capture": {
+        "type": "emulator",
+        "release": "1.53",
+        "moduleVersion": "1.0.2-experimental",
+        "imageSha256": "4709095234ef5d94cfa2cceeac07040d6356e6570a69649cf6ed72b698594968",
+        "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+      }
+    },
+    {
+      "path": "media/status-a.png",
+      "kind": "screenshot",
+      "caption": "Load overlay on AMP; timing counters unavailable",
+      "alt": "Load overlay on AMP; timing counters unavailable on the Digitakt monochrome LCD",
+      "credit": "Modwerk documentation capture; Elektron interface; irpina module",
+      "license": "LicenseRef-Digi-UI-Documentation",
+      "source": "original",
+      "capture": {
+        "type": "emulator",
+        "release": "1.53",
+        "moduleVersion": "1.0.2-experimental",
+        "imageSha256": "4709095234ef5d94cfa2cceeac07040d6356e6570a69649cf6ed72b698594968",
+        "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+      }
+    },
+    {
+      "path": "media/status-b.png",
+      "kind": "screenshot",
+      "caption": "Load overlay on SRC; timing counters unavailable",
+      "alt": "Load overlay on SRC; timing counters unavailable on the Digitakt monochrome LCD",
+      "credit": "Modwerk documentation capture; Elektron interface; irpina module",
+      "license": "LicenseRef-Digi-UI-Documentation",
+      "source": "original",
+      "capture": {
+        "type": "emulator",
+        "release": "1.53",
+        "moduleVersion": "1.0.2-experimental",
+        "imageSha256": "4709095234ef5d94cfa2cceeac07040d6356e6570a69649cf6ed72b698594968",
+        "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+      }
     }
   ]
 }
