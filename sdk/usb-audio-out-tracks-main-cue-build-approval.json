@@ -1,0 +1,16 @@
+{
+  "kind": "owner-approved-update",
+  "id": "usb-audio-out-tracks-main-cue",
+  "version": "0.1.3-experimental",
+  "sourceSha256": "57ba3f0cdacd34f5b1af7d2219af8c0d8e9a61917c92e24a4e993a6421c4dc61",
+  "approvedBy": "repeat98",
+  "approvedOn": "2026-10-07",
+  "waived": [
+    "current-build-hardware",
+    "chip-worst-case-cycles",
+    "complete-memory-bounds",
+    "release-documentation"
+  ],
+  "ownerStatement": "it's ok, no hardware report needed, I'm the owner of the website it's fine; no hardware test needed",
+  "reason": "USB MIDI clock tempo fix (issue #223): octabam's usbmidi_rx.s at 4caa1965, hardware-confirmed upstream on an MKI (octabam #633), carried unchanged into the module. Released without a hardware test of this build, fresh cycle and memory measurements, or the release documentation contract, which the frozen 0.1.2 baseline predates; hardware status stays historical."
+}

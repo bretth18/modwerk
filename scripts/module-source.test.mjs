@@ -23,7 +23,7 @@ describe('release package scope and reviewed source inventory', () => {
     expect(versions['midi-scenes']).toBe('0.2.4-experimental')
     expect(versions.miniverb).toBe('0.1.2-experimental')
     for (const id of verifiedRequested) {
-      expect(versions[id]).toBe(id === 'vector' ? '0.2.3-experimental' : id === 'synth' ? '0.1.1-experimental' : '0.1.2-experimental')
+      expect(versions[id]).toBe(id === 'vector' ? '0.2.3-experimental' : id === 'synth' ? '0.1.1-experimental' : id === 'usb-audio-out-tracks-main-cue' ? '0.1.3-experimental' : '0.1.2-experimental')
       expect(paths).toContain('modules/' + id + '/manifest.py')
     }
     expect(paths).toContain('modules/midi-scenes/recipe.json')

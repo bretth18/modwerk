@@ -10,6 +10,7 @@
 import { createHash } from 'node:crypto'
 import { composeOs } from '../src/engine/compose-os.ts'
 import { planStaticOs } from '../src/engine/static-compose.ts'
+import { composeAnalogBd } from '../src/engine/analog-bd.ts'
 import { applyGuardedOsWrites, OS_LOAD_ADDRESS } from '../src/engine/os-patches.ts'
 
 const sha = bytes => createHash('sha256').update(bytes).digest('hex')
@@ -35,7 +36,9 @@ export async function compareSelection(original, proof, menus) {
   if (error) return { failure: 'native builds it but the browser refused: ' + error.slice(0, 120) }
   const owned = [...plan.menus.writes, ...plan.dsp.writes], other = [...plan.platform, ...plan.logging.writes]
   for (const a of owned) for (const b of other) if (a.address < b.address + b.bytes.length && b.address < a.address + a.bytes.length) return { failure: b.note + ' overlaps ' + a.note }
-  const image = await applyGuardedOsWrites(original, owned)
+  let image = await applyGuardedOsWrites(original, owned)
+  // Analog BD rewrites both DSP payloads and repoints their uploads after the plan, as composeStaticOs does.
+  if (proof.moduleIds.includes('analog-bassdrum')) image = (await composeAnalogBd(original, image, proof.moduleIds, menus)).bytes
   if (proof.bytes === original.length && sha(image) !== proof.osSha256) return { failure: 'the module-owned image differs from native, which has no runtime' }
   const reset = image.slice()
   for (const write of plan.platform) { const offset = write.address - OS_LOAD_ADDRESS; reset.set(original.subarray(offset, offset + write.bytes.length), offset) }

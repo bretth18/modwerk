@@ -85,8 +85,27 @@ describe('module qualification hard gates',()=>{
       // Generated web documents include display-only baseline resource estimates.
       // Qualify the source manifest, as publication validation does.
       const source=parseModuleDocument(JSON.parse(readFileSync(resolve(folder,'octamod.module.json'),'utf8')))
-      expect(await requireFolderQualification(folder,source,frozen)).toBe(unchanged?'retained':source.tests.retainedEvidence?'retained-evidence':module.id==='midi-scenes'?'owner-approved-standalone':module.id==='synth'?'owner-approved-experimental':'qualified')
+      expect(await requireFolderQualification(folder,source,frozen)).toBe(unchanged?'retained':source.tests.retainedEvidence?'retained-evidence':module.id==='midi-scenes'?'owner-approved-standalone':module.id==='synth'?'owner-approved-experimental':module.id==='usb-audio-out-tracks-main-cue'?'owner-approved-update':'qualified')
     }
+  })
+  it('binds an owner-approved update to its exact version and native source, never to verified hardware',async()=>{
+    const root=mkdtempSync(resolve(tmpdir(),'octamod-owner-update.')),folder=resolve(root,'module')
+    try {
+      mkdirSync(resolve(root,'sdk')); mkdirSync(folder)
+      writeFileSync(resolve(folder,'manifest.py'),'raise AssertionError("never execute module source")\n')
+      const document=parseModuleDocument(JSON.parse(readFileSync('sdk/octabam/modules/usb-audio-out-tracks-main-cue/octamod.module.json','utf8')))
+      const approval={kind:'owner-approved-update',id:document.id,version:document.version,sourceSha256:await moduleNativeSourceSha256(folder,document),approvedBy:'repeat98',approvedOn:'2026-10-07',waived:['current-build-hardware','chip-worst-case-cycles','complete-memory-bounds','release-documentation'],ownerStatement:'Approved.',reason:'Test.'}
+      const write=(value:object)=>writeFileSync(resolve(root,'sdk',document.id+'-build-approval.json'),JSON.stringify(value))
+      const check=(doc=document)=>requireFolderQualification(folder,doc,new Map(),new Map(),{root})
+      write(approval)
+      expect(await check()).toBe('owner-approved-update')
+      await expect(check({...document,version:'9.9.9-experimental'})).rejects.toThrow('this module version')
+      await expect(check({...document,tests:{...document.tests,hardwareStatus:'verified'}})).rejects.toThrow('verified hardware')
+      write({...approval,waived:['everything']}); await expect(check()).rejects.toThrow('waives only')
+      write({...approval,approvedBy:'someone'}); await expect(check()).rejects.toThrow('owner')
+      write(approval); writeFileSync(resolve(folder,'manifest.py'),'changed\n'); await expect(check()).rejects.toThrow('exact native source')
+      write({...approval,kind:'other'}); await expect(check()).rejects.toThrow('worst-case cycles')
+    } finally { rmSync(root,{recursive:true,force:true}) }
   })
   it('binds exemptions to complete folder contents and qualification to the native source',async()=>{
     const folder=mkdtempSync(resolve(tmpdir(),'octamod-qualification-test.'))

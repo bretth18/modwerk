@@ -57,7 +57,8 @@ class RequestedImports(unittest.TestCase):
                 self.assertNotIn('build', doc)
             else:
                 self.assertNotIn('build', doc)
-                self.assertEqual(doc['version'], '0.1.2-experimental')
+                # USB Audio 0.1.3 carries octabam's USB MIDI clock fix (imports/usb-audio-out-tracks-main-cue-4caa196.json).
+                self.assertEqual(doc['version'], '0.1.3-experimental' if id == 'usb-audio-out-tracks-main-cue' else '0.1.2-experimental')
         for id, pin in REPORT['authorPins'].items():
             sources = [item for item in REPORT['files'] if item['path'].startswith('modules/' + id + '/upstream/')]
             self.assertTrue(sources)

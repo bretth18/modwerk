@@ -253,3 +253,12 @@ input is a stereo track sum. The website manifest records the exact access
 steps and the narrow `access.noUiReason` declaration. Owner review must verify
 that declaration against the pinned source. This documentation update does
 not change the pending build status or qualify the firmware.
+
+## USB MIDI clock — 0.1.3-experimental (7 Oct 2026)
+
+With CLOCK RECEIVE set and MIDI clock arriving over USB, 0.1.2 moved the
+sequencer but left the tempo (TEMPO page, time stretch, LFOs, FX) at its
+previous value. This version routes USB MIDI receive through octabam's
+`usbmidi_rx.s`, which timestamps each clock byte as the DIN path does, so
+the tempo follows USB clock. The high-speed receive transfer stays at 64
+bytes. TESTING.md has the details and what was and was not run.

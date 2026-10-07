@@ -31,16 +31,20 @@ export async function requireSynthRelease(root, folder, document, sourceHash) {
 }
 
 // An additive FM package import must preserve every existing executable byte,
-// address and recipe. Global provenance labels and the new module are the only omissions.
+// address and recipe. Global provenance labels, the new module and modules
+// released since (each a later version with its own qualification) are the only omissions.
 export async function requireAdditiveSynthPackages(root, commit) {
+  const base = JSON.parse(execFileSync('git', ['show', commit + ':sdk/catalog.json'], { cwd: root }).toString())
+  const current = await json(resolve(root, 'sdk/catalog.json'))
+  const omitted = ['synth', ...current.modules.filter(module => base.modules.some(old => old.id === module.id && old.version !== module.version)).map(module => module.id)]
   for (const name of [...PACKAGE_FILES, 'chooser-metadata.json']) {
     const path = 'src/engine/assets/' + name
     const before = JSON.parse(execFileSync('git', ['show', commit + ':' + path], { cwd: root, maxBuffer: 8 * 1024 * 1024 }).toString())
     const after = await json(resolve(root, path))
     for (const value of [before, after]) {
       delete value.sourceCommit
-      if (value.moduleVersions) delete value.moduleVersions.synth
-      for (const key of ['objects', 'groups', 'modules']) if (Array.isArray(value[key])) value[key] = value[key].filter(row => (row.moduleId ?? row.id) !== 'synth')
+      if (value.moduleVersions) for (const id of omitted) delete value.moduleVersions[id]
+      for (const key of ['objects', 'groups', 'modules']) if (Array.isArray(value[key])) value[key] = value[key].filter(row => !omitted.includes(row.moduleId ?? row.id))
     }
     if (!isDeepStrictEqual(before, after)) throw new Error('FM Synth integration changed an existing package payload or recipe: ' + name)
   }

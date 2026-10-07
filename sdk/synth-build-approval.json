@@ -18,8 +18,8 @@
     "retainedModule": "euclid@0.1.3-experimental",
     "evidenceCommit": "cb1f0a16a41902fe874b8f307dd3d9065daf6eff",
     "packageBase": "1c008deb8edef2fa6b158daab5553615d60fe72f",
-    "previousInfrastructureSha256": "fde92c81fb8637a47a79235ebed8dfb47b39f3ddfe774f4698caccc2e21e95d1",
-    "currentInfrastructureSha256": "4e6b8773d2f1741408e3872755a3dd3bc303cb077edfb9e22c3314559bbb013f",
+    "previousInfrastructureSha256": "9d70803fb38a2e5b3848427d111251bfcbf7172922c9c0b8915b6a1f720e05c7",
+    "currentInfrastructureSha256": "7265210161ac1b4aef5e811d842296beaa9c64bcf9e56035f111a87ba85e9c3f",
     "reason": "Reviewed additive FM support preserves every existing payload, address and recipe. Existing composition comparisons reproduced with zero mismatches. Euclid native folder, declarations, resources and original evidence remain byte-identical to its approved original; future protected changes fail closed."
   }
 }

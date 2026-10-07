@@ -1,6 +1,6 @@
 # USB Audio testing
 
-Version: `0.1.2-experimental`. Octabam evidence pin: `363861e31ee963c478fab2b190a0fabe1d7ce37b`.
+Version: `0.1.3-experimental`. Octabam evidence pin: `363861e31ee963c478fab2b190a0fabe1d7ce37b`; USB MIDI receive path from `4caa196594bb16ab0dc4710f1b8d2adf95010cdf`.
 
 Selected for the broadest recorded hardware evidence: MKI and MKII, sustained multi-track 24-bit captures and high MIDI receive traffic. The latest source includes track/MAIN alignment and a hardware-tested master-on CUE correction; startup artifacts and unmeasured host/platform cases remain.
 
@@ -35,3 +35,30 @@ by this automatic USB contribution; no unrelated stock screenshot is supplied.
 The reviewer must verify the exception against the exact upstream pin before
 publication. No source was executed and no USB or firmware tests were run for
 this documentation change.
+
+## 0.1.3-experimental: USB MIDI clock sets the tempo (7 Oct 2026)
+
+Reported for 0.1.2-experimental on an MKI (issue #223): with CLOCK RECEIVE
+on and clock arriving over USB, the sequencer followed but the TEMPO page
+kept the old value. The firmware's clock handler (`0x40005a48`) builds the
+tempo from the DTCN0 interval the UART0 ISR stores for each `0xF8`; the USB
+decoder enqueued the byte without that interval.
+
+- `usbmidi_rx.s`: octabam's file at `4caa1965`, unchanged (octabam #629,
+  #633). It timestamps each `0xF8` as the UART0 ISR does and makes room in
+  the 32-byte MIDI FIFO before each event.
+- `usbaudio.s`: `audio_isr_shim` jumps to `usbmidi_rx_isr_shim` instead of
+  `usbmidi_isr_shim` (octabam `97a781c0`). The rest of `usbaudio.s` is the
+  `363861e` source.
+- Not taken: octabam's SET_CONFIGURATION shim, which re-sizes the high-speed
+  RX transfer to 512 bytes. Installing it would change the shared USB MIDI
+  platform package; without it `usbmidi_rx_state` stays 0 and the receive
+  transfer keeps the firmware's 64 bytes, as in 0.1.2.
+
+Upstream evidence: `verify_usbmidi_clock` under the ColdFire port read 1200
+and 1498 for USB runs at 50 and 40 ms per tick (want 1200 and 1501), and
+2400 for both before the change; Kazeko's MKI reported USB clock working
+after the change (octabam #633, 6 Oct 2026). Those runs used octabam's
+`usb-midi` remix, not this module. Here nothing was run on a unit or under
+the port: the verify gates and the emulator's DTIM0 change are not part of
+this SDK.

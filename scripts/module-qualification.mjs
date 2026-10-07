@@ -5,7 +5,7 @@ import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { requireSynthRelease } from './synth-release.mjs'
 import { requireRetainedEvidence } from './retained-evidence.mjs'
-import { requireModuleQualificationForPublication } from '../src/catalog/module-contract.ts'
+import { requireModuleQualificationForPublication, requireModuleUiForPublication } from '../src/catalog/module-contract.ts'
 import { compareModuleVersions } from '../src/catalog/versions.ts'
 import { requireModuleDocumentation } from './module-documentation.mjs'
 
@@ -38,6 +38,28 @@ export async function moduleNativeSourceSha256(folder, document) {
   const reports=new Set(qualificationReports(document))
   const paths=(await inventory(folder)).filter(path=>!['octamod.module.json','qualification.example.json'].includes(path)&&!path.startsWith('media/')&&!/\.md$/i.test(path)&&!/(^|\/)(LICENSE|LICENCE|COPYING)(\.|$)/i.test(path)&&!reports.has(path))
   return fingerprint(folder,paths)
+}
+// An owner-approved update publishes a new version without fresh evidence for
+// what the owner names in `waived`. The approval lives in sdk/, outside the
+// module folder, so a folder cannot grant it to itself, and binds this exact
+// version and native source. Hardware is never claimed verified; anything not
+// waived is still required.
+const UPDATE_WAIVABLE=['current-build-hardware','chip-worst-case-cycles','complete-memory-bounds','release-documentation']
+async function requireOwnerApprovedUpdate(root, folder, document) {
+  let approval
+  try { approval=JSON.parse(await readFile(resolve(root,'sdk',document.id+'-build-approval.json'),'utf8')) } catch(error) { if(error.code==='ENOENT') return null; throw error }
+  if(approval?.kind!=='owner-approved-update') return null
+  const fail=message=>{ throw new Error(document.id+': owner-approved update '+message) }
+  if(Object.keys(approval).sort().join(',')!=='approvedBy,approvedOn,id,kind,ownerStatement,reason,sourceSha256,version,waived') fail('record has unexpected or missing fields')
+  if(approval.id!==document.id||approval.version!==document.version) fail('does not cover this module version')
+  if(approval.approvedBy!=='repeat98'||!/^\d{4}-\d{2}-\d{2}$/.test(approval.approvedOn)) fail('needs the owner and an approval date')
+  if(![approval.ownerStatement,approval.reason].every(value=>typeof value==='string'&&value.trim())) fail('needs the owner statement and a reason')
+  if(!Array.isArray(approval.waived)||!approval.waived.length||new Set(approval.waived).size!==approval.waived.length||approval.waived.some(item=>!UPDATE_WAIVABLE.includes(item))) fail('waives only '+UPDATE_WAIVABLE.join(', '))
+  if(approval.sourceSha256!==await moduleNativeSourceSha256(folder,document)) fail('does not cover this exact native source')
+  if(document.tests.hardwareStatus==='verified') fail('cannot claim verified hardware')
+  if(approval.waived.includes('release-documentation')) requireModuleUiForPublication(document)
+  else await requireModuleDocumentation(folder,document)
+  return 'owner-approved-update'
 }
 export function parseQualificationBaseline(value) {
   if(!value||value.schemaVersion!==1||value.recorded!=='2026-10-02'||!Array.isArray(value.modules)||Object.keys(value).some(key=>!['schemaVersion','recorded','modules'].includes(key))) throw new Error('Invalid frozen module qualification baseline')
@@ -86,6 +108,10 @@ export async function requireFolderQualification(folder, document, baseline, wai
     if(report.schemaVersion!==1||report.id!==document.id||report.moduleVersion!==document.version||report.sourceSha256!==waiver.sourceSha256||report.imageSha256!==declaration.imageSha256||report.hardwareStatus!=='untested'||report.chipWorstCaseCycles!==null||report.nativeBrowserParity?.status!=='passed'||report.nativeBrowserParity.selections!==1024||report.nativeBrowserParity.exactImages!==522||report.nativeBrowserParity.matchingRefusals!==502||report.nativePackaging?.status!=='passed'||report.nativePackaging.exactContainersAndUpgrades!==8||report.rejections?.status!=='passed'||!report.memory?.romBytes) throw new Error(document.id+': incomplete or stale software verification report')
     await requireModuleDocumentation(folder,document)
     return 'owner-waived'
+  }
+  if(!document.tests.qualification&&!declaration) {
+    const approved=await requireOwnerApprovedUpdate(options.root??fileURLToPath(new URL('../',import.meta.url)),folder,document)
+    if(approved) return approved
   }
   requireModuleQualificationForPublication(document)
   if(document.tests.qualification.sourceSha256!==await moduleNativeSourceSha256(folder,document)) throw new Error(document.id+': qualification source SHA-256 differs from current native source; remeasure and retest this source')

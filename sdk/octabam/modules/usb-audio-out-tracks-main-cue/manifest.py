@@ -4,8 +4,9 @@ High speed: the eight tracks' L/R (post-FX, pre-fader) on channels 1-16,
 MAIN on 17-18, CUE on 19-20. Full speed: the tracks' stereo sum.
 markandrus (octemu, MIT); MAIN/CUE Bryan T. A DRAM unit with build-time
 detours. Needs USB MIDI: the audio function joins its composite, and the
-ISR shim chains to USB MIDI's. README.md has the design and what was
-measured. USB AUDIO OUT TRACKS (modules/usb-audio-out-tracks, the sixteen track
+ISR shim chains to USB MIDI's through octabam's receive shim (usbmidi_rx.s,
+which timestamps each MIDI clock byte for the tempo). README.md has the
+design and what was measured. USB AUDIO OUT TRACKS (modules/usb-audio-out-tracks, the sixteen track
 channels) and USB AUDIO OUT MASTER (modules/usb-audio-out-master, track 8's two)
 assemble the same source with another USB_LAYOUT.
 """
@@ -44,7 +45,7 @@ DETOURS = (
     Detour(0x4000d9a0, stock_guard(0x4000d9a0, 6, "37a52c3300cbe2e0b5453bac91ed193defe49493058e8a287b2f9a1c47a325b9"), "usbaudio", "audio_frame_shim",
            "frame_isr's last instruction: the per-block producer (20 channels: tracks, MAIN, CUE; + the sum into the rings) and the packet builder"),
     Detour(0x4001e606, stock_guard(0x4001e606, 6, "2fc3d5168f6ee3ffb4b419a9cbbe48a7837d42e9e47db7bb5bced5cd13b62dc0"), "usbaudio", "audio_isr_shim",
-           "usb_isr UI path: retire EP3 IN completions, then USB MIDI's shim"),
+           "usb_isr UI path: retire EP3 IN completions, then USB MIDI's receive shim and USB MIDI's shim"),
 )
 
 MODULE = Module(
@@ -52,10 +53,17 @@ MODULE = Module(
     category=Category.MIDI_USB, author="markandrus/octemu", author_url="https://github.com/markandrus/octemu",
     proof=Proof.HARDWARE, proof_note="Sam's MKII (image 64, 25 Sep 2026); Tim's MKI (OCTATRICK9, 26 Sep 2026)",
     doc="Twenty 24-bit channels over USB (UAC2): the tracks post-FX pre-fader, MAIN, CUE; the stereo sum at full speed (markandrus/octemu).",
-    linked=(Linked("usbaudio", SOURCE, cpu="5475", dram=True, include=layout_inc(0)),),
+    linked=(Linked("usbaudio", SOURCE, cpu="5475", dram=True, include=layout_inc(0)),
+            # octabam's USB MIDI receive path (4caa1965, unchanged), reached
+            # from audio_isr_shim: room in the MIDI FIFO and the 0xF8
+            # timestamp the clock handler builds the tempo from. Its
+            # SET_CONFIGURATION shim is not installed (that hook stays USB
+            # MIDI's), so the high-speed RX dTD keeps the firmware's 64 bytes.
+            Linked("usbmidi_rx", "modules/usb-audio-out-tracks-main-cue/usbmidi_rx.s", cpu="54455", dram=True)),
     detours=DETOURS,
     # The ISR site is USB MIDI's; this shim does its EP3 work and jumps to
-    # USB MIDI's shim by symbol (the units link together).
+    # usbmidi_rx's shim by symbol, which hands on to USB MIDI's (the units
+    # link together).
     overrides=(Override(0x4001e606, "USB MIDI"),),
     pokes=(Poke(0x400e2004, stock_guard(0x400e2004, 3, "709e80c88487a2411e1ee4dfb9f22a861492d20c4765150c0c794abd70f8147c"), H("ef0201"),
                 "device descriptor: class/subclass/protocol = interface-association composite"),),

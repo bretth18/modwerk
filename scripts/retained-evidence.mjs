@@ -80,12 +80,24 @@ function editorial(path, document) {
     || /^(LICENSE|LICENCE|COPYING)(\..*)?$/i.test(path)
     || /^media\/.*\.(png|jpg|jpeg|webp|svg|wav|mp3|ogg)$/i.test(path)
 }
-function engineAsset(bytes, path, document, previousVersion, addedIds = []) {
+// Every catalog module other than the retained one, at the evidence commit or
+// now. Their package rows and version labels are their own releases, qualified
+// on their own; retained evidence freezes its module's package and shared code.
+async function otherModuleIds(root, document, commit) {
+  const ids = new Set()
+  const catalogs = [JSON.parse(await readFile(resolve(root, 'sdk/catalog.json'), 'utf8'))]
+  if (commit) catalogs.push(JSON.parse(text(root, 'show', commit + ':sdk/catalog.json')))
+  for (const catalog of catalogs) for (const module of catalog.modules) ids.add(module.id)
+  ids.delete(document.id)
+  return [...ids]
+}
+function engineAsset(bytes, path, document, previousVersion, addedIds = [], otherIds = []) {
   const value = JSON.parse(bytes.toString('utf8'))
   // Rebuilt package provenance and the version label change for editorial
   // releases. Preserve every byte, address, recipe, limit and test verdict.
   delete value.sourceCommit
-  for (const id of addedIds) if (value.moduleVersions) delete value.moduleVersions[id]
+  const omitted = [...new Set([...addedIds, ...otherIds])]
+  for (const id of omitted) if (value.moduleVersions) delete value.moduleVersions[id]
   if (value.moduleVersions?.[document.id] === document.version) value.moduleVersions[document.id] = previousVersion
   if (path === 'src/engine/assets/module-build.json') {
     delete value.approval
@@ -100,7 +112,7 @@ function engineAsset(bytes, path, document, previousVersion, addedIds = []) {
     if (!item || typeof item !== 'object') return
     if ((item.id === document.id || item.moduleId === document.id) && item.version === document.version) item.version = previousVersion
     for (const [key, child] of Object.entries(item)) {
-      if (Array.isArray(child)) item[key] = child.filter(row => !row || typeof row !== 'object' || !addedIds.includes(row.moduleId ?? row.id))
+      if (Array.isArray(child)) item[key] = child.filter(row => !row || typeof row !== 'object' || !omitted.includes(row.moduleId ?? row.id) && !(Array.isArray(row.ids) && row.ids.some(id => omitted.includes(id))))
       visit(item[key])
     }
   }
@@ -117,7 +129,7 @@ function sameFiles(previous, current, skip, label, compare = (a, b) => a.equals(
 }
 
 export async function retainedInfrastructureSha256(root, document, previousVersion, commit) {
-  const values = {}
+  const values = {}, otherIds = await otherModuleIds(root, document, commit)
   for (const prefix of infrastructure) {
     let entries
     if (commit) entries = tree(root, commit, prefix)
@@ -128,7 +140,7 @@ export async function retainedInfrastructureSha256(root, document, previousVersi
     }
     for (const [path, bytes] of entries) {
       if (path.endsWith('.test.ts') || path.startsWith('src/engine/test-fixtures/')) continue
-      const canonical = path.startsWith('src/engine/') && path.endsWith('.json') ? JSON.stringify(engineAsset(bytes, path, document, previousVersion)) : bytes
+      const canonical = path.startsWith('src/engine/') && path.endsWith('.json') ? JSON.stringify(engineAsset(bytes, path, document, previousVersion, [], otherIds)) : bytes
       values[path] = createHash('sha256').update(canonical).digest('hex')
     }
   }
@@ -155,6 +167,7 @@ export async function requireRetainedEvidence(root, folder, document, baseline, 
   const relative = new Map([...files].map(([path, bytes]) => [path.slice(prefix.length), bytes]))
   sameFiles(relative, await currentFiles(folder), path => editorial(path, previous) && editorial(path, document), label)
   const preservation = await loadBuilderPreservation(root, approvedRef, document.id)
+  const otherIds = await otherModuleIds(root, document, record.commit)
   let changedInfrastructure
   for (const path of infrastructure) {
     const before = tree(root, record.commit, path)
@@ -168,7 +181,7 @@ export async function requireRetainedEvidence(root, folder, document, baseline, 
     } catch (error) { if (error.code !== 'ENOENT') throw error }
     try { sameFiles(before, after, file => path === 'src/engine' && (file.endsWith('.test.ts') || file.startsWith('src/engine/test-fixtures/')), label,
       (a, b, file) => path === 'src/engine' && file.endsWith('.json')
-        ? isDeepStrictEqual(engineAsset(a, file, document, previous.version, preservation?.addedModuleIds), engineAsset(b, file, document, previous.version, preservation?.addedModuleIds))
+        ? isDeepStrictEqual(engineAsset(a, file, document, previous.version, preservation?.addedModuleIds, otherIds), engineAsset(b, file, document, previous.version, preservation?.addedModuleIds, otherIds))
         : a.equals(b), preservation?.matchesFile) } catch(error) { changedInfrastructure ??= error }
 
   }

@@ -340,8 +340,9 @@ audio_ep0page_shim:
     jmp     0x4001d4b8
 
 | ---- usb_isr shim (installed at 0x4001e606, USB MIDI's site) ---------------
-| Retires EP3 IN completions, then chains to USB MIDI's ISR shim, which
-| handles EP2 and runs the original displaced instruction.
+| Retires EP3 IN completions, then chains to USB MIDI's receive shim
+| (usbmidi_rx.s), which takes the EP2 OUT completion and hands on to
+| usbmidi.s's, which handles EP2 IN and runs the original displaced instruction.
     .global audio_isr_shim
 audio_isr_shim:
     lea     %sp@(-8),%sp
@@ -360,7 +361,7 @@ audio_isr_shim:
     movel   %d1,EPCOMPLETE          | W1C EP3 IN
 2:  moveml  %sp@,%d0-%d1
     lea     %sp@(8),%sp
-    jmp     usbmidi_isr_shim         | USB MIDI's shim, whose detour this one stands in for
+    jmp     usbmidi_rx_isr_shim      | USB MIDI's shim, whose detour this one stands in for
 
 | ---- the iso packet builder -------------------------------------------------
 | Each packet holds the next n frames from the ring: n = 11/12 at high speed

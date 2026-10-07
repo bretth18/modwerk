@@ -2471,7 +2471,7 @@
       "id": "usb-audio-out-tracks-main-cue",
       "key": "USB AUDIO OUT TRACKS MAIN CUE",
       "name": "USB Audio",
-      "version": "0.1.2-experimental",
+      "version": "0.1.3-experimental",
       "category": "midi-usb",
       "source": {
         "repository": "https://github.com/sambanks/octabam",
@@ -2529,6 +2529,7 @@
         "limitations": [
           "USB output only. Host-to-Octatrack USB input variants are outside this import.",
           "Requires the included internal USB MIDI dependency. Only one USB output layout can be composed.",
+          "USB MIDI clock sets the tempo since 0.1.3. The high-speed USB MIDI receive transfer stays at 64 bytes; octabam's 512-byte transfer is not included.",
           "Windows and Linux hosts have not been measured in this record.",
           "A startup sample-reordering burst remains open. Master-on MAIN remains 32 samples behind track taps; toggling master can leave up to 32 stale CUE frames."
         ]
@@ -2570,7 +2571,7 @@
           "memory": {
             "level": "moderate",
             "basis": "source-estimate",
-            "rationale": "Audio rings occupy 88 KiB and DMA descriptors/packet buffers add 3,968 bytes before code and MIDI state. This is a moderate shared feature footprint relative to scalar/control modules and multi-instance reverb rings.",
+            "rationale": "Audio rings occupy 88 KiB and DMA descriptors/packet buffers add 3,968 bytes before code and MIDI state. This is a moderate shared feature footprint relative to scalar/control modules and multi-instance reverb rings. Version 0.1.3 adds the 2,028-byte USB MIDI receive unit (usbmidi_rx).",
             "source": "README.md"
           }
         }
