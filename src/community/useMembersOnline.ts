@@ -13,8 +13,8 @@ export function useMembersOnline() {
     load()
     const timer = window.setInterval(() => { if (document.visibilityState === 'visible') load() }, POLL_MS)
     const visible = () => { if (document.visibilityState === 'visible') load() }
-    document.addEventListener('visibilitychange', visible)
-    return () => { cancelled = true; window.clearInterval(timer); document.removeEventListener('visibilitychange', visible) }
+    document.addEventListener('visibilitychange', visible); window.addEventListener('online', visible)
+    return () => { cancelled = true; window.clearInterval(timer); document.removeEventListener('visibilitychange', visible); window.removeEventListener('online', visible) }
   }, [])
   return online
 }

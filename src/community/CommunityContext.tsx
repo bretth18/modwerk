@@ -3,9 +3,11 @@ import type { ReactNode } from 'react'
 import { api } from './api'
 import type { DeveloperSession, PublishedModule, Session } from './api'
 import { CommunityContext, emptyDeveloperSession, emptySession } from './context'
+import { recheck } from './recheck'
+import type { Recheck } from './recheck'
 export function CommunityProvider({children}:{children:ReactNode}){
  const [session,setSession]=useState(emptySession),[loading,setLoading]=useState(true),[developer,setDeveloper]=useState<DeveloperSession|null>(null),[catalog,setCatalog]=useState<PublishedModule[]>([])
- const active=useRef(true),sessionRequest=useRef<Promise<void>|null>(null),catalogRequest=useRef<Promise<void>|null>(null),developerRequest=useRef<Promise<void>|null>(null),sessionVersion=useRef(0),developerVersion=useRef(0)
+ const active=useRef(true),sessionRequest=useRef<Promise<void>|null>(null),catalogRequest=useRef<Promise<void>|null>(null),developerRequest=useRef<Promise<void>|null>(null),sessionVersion=useRef(0),developerVersion=useRef(0),sessionRetry=useRef<Recheck|null>(null),developerRetry=useRef<Recheck|null>(null)
  const refreshCatalog=useCallback(()=>{
   if(catalogRequest.current)return catalogRequest.current
   const request=api<PublishedModule[]>('/catalog').then(items=>{if(active.current)setCatalog(items)}).catch(()=>{}).finally(()=>{catalogRequest.current=null})
@@ -15,7 +17,7 @@ export function CommunityProvider({children}:{children:ReactNode}){
  const refreshDeveloper=useCallback((force=true)=>{
   if(!force&&developerRequest.current)return developerRequest.current
   const version=++developerVersion.current
-  const request=api<DeveloperSession>('/developer/auth/session').then(value=>{if(active.current&&version===developerVersion.current)setDeveloper(value)}).catch(()=>{if(active.current&&version===developerVersion.current)setDeveloper(emptyDeveloperSession)}).finally(()=>{if(version===developerVersion.current)developerRequest.current=null})
+  const request=api<DeveloperSession>('/developer/auth/session').then(value=>{if(active.current&&version===developerVersion.current){setDeveloper(value);developerRetry.current?.succeeded()}}).catch(()=>{if(active.current&&version===developerVersion.current){setDeveloper(previous=>force?emptyDeveloperSession:previous??emptyDeveloperSession);developerRetry.current?.failed()}}).finally(()=>{if(version===developerVersion.current)developerRequest.current=null})
   developerRequest.current=request
   return request
  },[])
@@ -26,23 +28,26 @@ export function CommunityProvider({children}:{children:ReactNode}){
   setLoading(true)
   // Catalog availability must never invalidate an authenticated session.
   void refreshCatalog()
-  const request=api<Session>('/auth/session').then(next=>{if(active.current&&version===sessionVersion.current)setSession(next)}).catch(()=>{if(active.current&&version===sessionVersion.current)setSession(emptySession)}).finally(()=>{if(version===sessionVersion.current){sessionRequest.current=null;if(active.current)setLoading(false)}})
+  // A background check that cannot reach the service keeps the session on screen and tries again shortly;
+  // only an explicit refresh after an account change falls back to the signed-out state.
+  const request=api<Session>('/auth/session').then(next=>{if(active.current&&version===sessionVersion.current){setSession(next);sessionRetry.current?.succeeded()}}).catch(()=>{if(active.current&&version===sessionVersion.current){if(force)setSession(emptySession);sessionRetry.current?.failed()}}).finally(()=>{if(version===sessionVersion.current){sessionRequest.current=null;if(active.current)setLoading(false)}})
   sessionRequest.current=request
   return request
  },[refreshCatalog])
  useEffect(()=>{
   active.current=true
+  const retry=sessionRetry.current=recheck(()=>{void refresh(false)})
   void refresh(false)
   const resume=()=>{if(document.visibilityState==='visible')void refresh(false)}
   const changed=(event:StorageEvent)=>{if(event.key===null||event.key.startsWith('octamod.community.session:'))void refresh()}
   window.addEventListener('focus',resume);window.addEventListener('online',resume);window.addEventListener('storage',changed)
-  return()=>{active.current=false;window.removeEventListener('focus',resume);window.removeEventListener('online',resume);window.removeEventListener('storage',changed)}
+  return()=>{active.current=false;retry.cancel();window.removeEventListener('focus',resume);window.removeEventListener('online',resume);window.removeEventListener('storage',changed)}
  },[refresh])
  useEffect(()=>{
-  const load=()=>{void refreshDeveloper(false)}
+  const load=()=>{void refreshDeveloper(false)},retry=developerRetry.current=recheck(load)
   const changed=(event:StorageEvent)=>{if(event.key===null||event.key.startsWith('modwerk.developer.session:'))void refreshDeveloper()}
-  load();window.addEventListener('focus',load);window.addEventListener('storage',changed)
-  return()=>{window.removeEventListener('focus',load);window.removeEventListener('storage',changed)}
+  load();window.addEventListener('focus',load);window.addEventListener('online',load);window.addEventListener('storage',changed)
+  return()=>{retry.cancel();window.removeEventListener('focus',load);window.removeEventListener('online',load);window.removeEventListener('storage',changed)}
  },[refreshDeveloper])
  return <CommunityContext.Provider value={{session,loading,developer,catalog,refresh,refreshDeveloper}}>{children}</CommunityContext.Provider>
 }
