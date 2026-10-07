@@ -74,6 +74,15 @@ done
 
 **Verify** the loop on your first run: it uses the harness's documented options, but nothing in CI runs it. `check` reads `.raw` renders as interleaved stereo (`--mono` for one channel) and 44.1 kHz WAV renders, judges the worse channel, and exits 1 on a FAIL. Paste its table into TESTING.md with the knob values you rendered at. The analysis itself is tested without firmware (`scripts/fx-audit.test.mjs` proves that it flags a known aliasing drive and passes the same drive computed at 8x oversampling), so a surprising number is as likely to be the render as the effect: compare the `out dBFS` column with the level you sent first. What it cannot hear: voicing, which is judged by ear (see Traps), and anything the render does not exercise.
 
+## Performance
+
+How much it costs and whether it survives being worked hard: see [Performance](README.md#performance) for the three measurements and the record. For an effect:
+
+- [ ] **Cycles.** `tools/build/cycle_count.py` for the static floor, `dsp_host` at the dearest knob and mode settings with the knobs moving for the measured cost. State `instancesPerCore`, the most you support.
+- [ ] **Stock.** Name the stock effect closest in function (a delay against COMPRESSOR is not a comparison; a reverb against PLATE REV is). Read the ratio from `benchmark_stock_dsp.py`. Anything that costs more than stock explains in TESTING.md what the extra cost buys, such as the oversampling that fixed aliasing.
+- [ ] **Stress.** `stress_project.py` and `pressure.py render` with `dsp_host -guard -dirty`: your instances on both cores, three LFOs per track, locked slots on every step.
+- [ ] `npm run perf:audit -- check <module>/evidence/performance.json` passes, and its table is in TESTING.md.
+
 ## Integrate
 
 - [ ] `sdk/catalog.json` has the entry (`id`, `version`, `addedAt`), so the library, the configurator and the module page show it.

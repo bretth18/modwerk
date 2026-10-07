@@ -15,7 +15,10 @@ import { parseModuleDocument } from '../src/catalog/module-contract.ts'
 import { COMPARED_BEFORE_RECORDS, NOT_COMPOSED } from './module-coverage.mjs'
 import { moduleSourceFingerprint } from './module-source.mjs'
 import { moduleNativeSourceSha256 } from './module-qualification.mjs'
+import { judgeRecord } from './perf-audit-analysis.mjs'
 
+// Modules first listed on or after this day carry a measured performance record (docs/module-guides/README.md, "Performance"); earlier ones keep their qualification evidence.
+const PERFORMANCE_REQUIRED_FROM = '2026-10-07'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2), all = args.includes('--all'), ids = args.filter(arg => !arg.startsWith('--'))
 if ((all && ids.length) || (!all && ids.length !== 1)) throw new Error('Usage: npm run module:doctor -- <module-id>   or   npm run module:doctor -- --all')
@@ -57,6 +60,16 @@ function octatrack(id) {
     const testing = exists(folder + '/TESTING.md') ? readFileSync(resolve(root, folder + '/TESTING.md'), 'utf8') : ''
     info('sound quality', (/alias/i.test(testing) ? 'TESTING.md mentions aliasing' : 'TESTING.md does not mention aliasing') + '. If it processes audio: npm run fx:audit (aliasing, DC, clipping, idle), or write "not tested" (guide: Sound quality)')
   }
+
+  // Cycles, a benchmark against stock and a stress run. Required for a module listed from PERFORMANCE_REQUIRED_FROM; older modules are told.
+  const performanceRequired = entry && (entry.addedAt ?? '').slice(0, 10) >= PERFORMANCE_REQUIRED_FROM
+  if (exists(folder + '/evidence/performance.json')) {
+    const record = json(folder + '/evidence/performance.json'), rows = judgeRecord(record)
+    if (record.module !== id || record.version !== document.version) fail('performance', 'evidence/performance.json is for ' + record.module + '@' + record.version + ', not ' + id + '@' + document.version, 'measure again for this version, then npm run perf:audit -- check ' + folder + '/evidence/performance.json')
+    else for (const row of rows.filter(item => item.state === 'fail')) fail('performance', row.name + ': ' + row.detail, row.fix ?? 'npm run perf:audit -- check ' + folder + '/evidence/performance.json')
+    if (!lines.some(line => line.name === 'performance')) ok('performance', rows.filter(item => item.name !== 'record').map(item => item.name + ' ' + item.state).join(', ') + ' (npm run perf:audit)')
+  } else if (performanceRequired) fail('performance', 'a new module needs ' + folder + '/evidence/performance.json: worst-case cycles, a benchmark against stock and a stress run', 'npm run perf:audit -- template dsp|coldfire, measure (docs/module-guides/README.md, "Performance"), then npm run perf:audit -- check')
+  else info('performance', 'no evidence/performance.json. Not required before ' + PERFORMANCE_REQUIRED_FROM + '; npm run perf:audit measures the same three things')
 
   const art = readFileSync(resolve(root, 'src/components/ModulePreview.tsx'), 'utf8')
   if (exists(folder + '/presentation/thumbnail.svg') || new RegExp("^\\s+'?" + id + "'?: \\(\\) =>", 'm').test(art)) ok('thumbnail', 'the library card has art')

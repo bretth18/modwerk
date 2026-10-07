@@ -20,7 +20,7 @@ export function SubmissionPage({moduleId=''}:{moduleId?:string}) {
   const guide=(path:string)=>moduleRepository+'/blob/main/'+path
   return <div className="community-page contribution-page start-developing"><BackLink href={moduleId?'#developer':'#library'}>{moduleId?'Developer workspace':'Module library'}</BackLink>
     <div className="page-heading">
-      <div><p className="page-kicker">MODWERK / DEVELOPERS</p><h1>{moduleId ? 'Improve a module' : 'Start developing'}</h1><p>Build your own module for the Octatrack, Digitakt or Digitone with a coding agent. Fork the repository, paste a starter prompt, test on your unit and open a pull request.</p></div>
+      <div><p className="page-kicker">MODWERK / DEVELOPERS</p><h1>{moduleId ? 'Improve a module' : 'Start developing'}</h1><p>Build your own effect, machine, MIDI generator or MIDI effect for the Octatrack, Digitakt or Digitone with a coding agent. Fork the repository, paste a starter prompt, test on your unit and open a pull request.</p></div>
       <span className="pill">Open source</span>
     </div>
     <ol className="start-steps">
@@ -57,9 +57,20 @@ export function SubmissionPage({moduleId=''}:{moduleId?:string}) {
         <li><strong>Manifest</strong><span><code>octamod.module.json</code> or <code>modwerk.module.json</code>: version, compatibility, controls, access steps, resources, evidence, authors and licences.</span></li>
         <li><strong>README.md</strong><span>Overview, every control, compatibility and limitations, and a tutorial of at least three steps.</span></li>
         <li><strong>TESTING.md</strong><span>Commands, the exact source revision, measurements and every hardware result, with model, OS, duration and limitations.</span></li>
+        <li><strong>evidence/performance.json</strong><span>Worst-case cycles, a benchmark against the stock effects and a stress run, checked by <code>npm run perf:audit</code>. Required for every new Octatrack module.</span></li>
         <li><strong>LICENSE</strong><span>Every author’s terms and credit. Ported code keeps its source pinned to an exact commit.</span></li>
         <li><strong>media/</strong><span>An original 320×192 thumbnail and real screenshots of where to enable the module and its controls. Octatrack captures are black-and-white PNGs.</span></li>
       </ul>
+    </section>
+    <section className="configuration-section">
+      <h2>Fast enough, and tough enough</h2>
+      <p className="start-lead">An effect, a machine or a MIDI generator shares the unit with the stock instrument and with other modules. Before review, every new module proves it leaves them room. The audit is offline like the aliasing check: you measure with the harness on your computer, record the numbers and <code>npm run perf:audit -- check</code> judges them. <code>module:doctor</code> refuses a new module without a passing record.</p>
+      <ul className="start-checklist">
+        <li><strong>Cycle count</strong><span>The static floor of the dearest mode and the worst case you measured, times the instances you support, must fit what a core can spend. A MIDI module’s worst event must fit its deadline. Averages do not count.</span></li>
+        <li><strong>Benchmark against stock</strong><span>An effect is compared with the stock effect closest in function; a MIDI module with the stock image under the same message flood. Costing several times the stock effect needs a written reason.</span></li>
+        <li><strong>Stress run</strong><span>An effect: its instances on both cores, eight tracks, three LFOs per track and locked slots on every step, with guard and dirty-buffer checks. MIDI: notes, CC and clock at wire rate, stopped mid-note, with no stuck note and no hang.</span></li>
+      </ul>
+      <p className="service-note">A shared elekloader builder is coming that replaces the separate builders and is easy to extend to other machines. The record names no machine, so the same checks will carry over; until then the numbers come from the Octatrack harness, and Digitakt and Digitone modules report their measured budgets in TESTING.md.</p>
     </section>
     <div className="start-columns">
       <section className="configuration-section">
