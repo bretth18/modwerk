@@ -114,6 +114,14 @@ stress project, its duration and the checks of
 
 ## OT UI capture evidence
 
-Pending. To capture: the popup after TRACK + DOWN (`ALL REVERSED`), a
-PER TRACK popup (`T3 PINGPONG`), and the trig LEDs during REVERSED
-playback, with `scripts/capture-module-ui.py` on the headless emulator.
+7 Oct 2026, devilfish707: `scripts/capture-module-ui.py` with octabam's
+`ot_emu` (SHA-256 `f438a3c9f9f48da3468437a7ed7041b13dcc9a8a9ac4bcb1c866592d9dea530c`,
+built from this repository's pinned cores), MKII panel, empty scratch card,
+image = the author's build 19 MAIN OS (SHA-256
+`24d22dc0d10e7328fca57e8eec3930b2690ae2f55ec3bf2f5e2e9075a11d87f6`, the
+image tested on the unit). Plan (`media/capture.json`): answer the
+new-project prompt, hold T1, press DOWN, capture; DOWN twice, capture;
+release. Driver script: Octaplay `tools/modwerk/step1-captures.sh`.
+Both pictures were inspected: the popup reads `ALL REVERSED` and
+`ALL PINGPONG 2` over the main screen of pattern A01. The captures do not
+establish audio or hardware behaviour.
