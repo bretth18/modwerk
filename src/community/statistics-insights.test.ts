@@ -1,13 +1,23 @@
 import { describe, expect, it } from 'vitest'
-import { accountDayValue, accountInsights, dailyRows, rankedModules, usageCsv, usageInsights } from './statistics-insights'
+import { accountDayValue, accountInsights, dailyRows, hourlyRows, rankedModules, usageCsv, usageInsights } from './statistics-insights'
 import type { UsageDay, UsageStatistics } from './usage-contract'
 import type { AdminAccounts, AdminModuleInsight } from './admin-insights-contract'
 
-const row = (day: string, visitors: number): UsageDay => ({day,visitors,page_views:visitors*2,configurations:0,builds:0,builds_failed:0,downloads:0,exports:0})
+const row = (day: string, visitors: number): UsageDay => ({day,visitors,page_views:visitors*2,configurations:0,builds:0,builds_failed:0,downloads:0,exports:0,support_opens:0,support_clicks:0})
 const data: UsageStatistics = {generatedAt:'2026-10-03T12:00:00Z',collectionStarted:'2026-09-29T12:00:00Z',from:'2026-09-27',to:'2026-10-03',days:7,
   rows:[row('2026-09-29',100),row('2026-10-01',12),row('2026-10-02',6),row('2026-10-03',999)]}
 
 describe('admin statistics interpretation',() => {
+  it('lays out the 7-day view by UTC hour up to the current hour, with no value before hourly counting began',() => {
+    expect(hourlyRows(data)).toBeNull() // A 30- or 90-day response, or an older backend, has no hours.
+    const hour = {visitors:1,page_views:3,configurations:0,builds:0,builds_failed:0,downloads:0,exports:0,support_opens:1,support_clicks:0}
+    const rows = hourlyRows({...data,hourlyStarted:'2026-10-02T22:15:00Z',hourly:[{hour:'2026-10-03T05',...hour}]})!
+    expect(rows).toHaveLength(6*24+13) // Six full days and today's hours 00 to 12.
+    expect(rows[0].hour).toBe('2026-09-27T00'); expect(rows.at(-1)!.hour).toBe('2026-10-03T12')
+    expect(rows.find(row => row.hour==='2026-10-02T21')!.counts).toBeNull()
+    expect(rows.find(row => row.hour==='2026-10-02T22')!.counts).toMatchObject({page_views:0})
+    expect(rows.find(row => row.hour==='2026-10-03T05')!.counts).toMatchObject({page_views:3,support_opens:1})
+  })
   it('distinguishes unavailable history from zero days and excludes partial days from averages and peaks',() => {
     const insights = usageInsights(data)
     expect(dailyRows(data).map(({counts}) => counts?.visitors??null)).toEqual([null,null,100,0,12,6,999])
@@ -34,10 +44,10 @@ describe('admin statistics interpretation',() => {
   })
   it('exports unavailable values as blanks and identifies partial coverage in CSV',() => {
     const csv = usageCsv(data).trimEnd().split('\n')
-    expect(csv[1]).toBe('2026-09-27,uncollected,,,,,,,')
-    expect(csv[3]).toBe('2026-09-29,partial,100,200,0,0,0,0,0')
-    expect(csv[4]).toBe('2026-09-30,complete,0,0,0,0,0,0,0')
-    expect(csv.at(-1)).toBe('2026-10-03,partial,999,1998,0,0,0,0,0')
+    expect(csv[1]).toBe('2026-09-27,uncollected,,,,,,,,,')
+    expect(csv[3]).toBe('2026-09-29,partial,100,200,0,0,0,0,0,0,0')
+    expect(csv[4]).toBe('2026-09-30,complete,0,0,0,0,0,0,0,0,0')
+    expect(csv.at(-1)).toBe('2026-10-03,partial,999,1998,0,0,0,0,0,0,0')
   })
   it('ranks unrated modules last, breaks rating ties by sample size and filters IDs without mutating the source',() => {
     const module = (title: string, ratingAverage: number|null, ratings: number, downloadsWeek = 0, downloadsPreviousWeek = 0): AdminModuleInsight => ({moduleId:title.toLowerCase()+'-id',title,available:true,ratingAverage,ratings,downloads:2,downloadsWeek,downloadsPreviousWeek,likes:0,comments:0,openIssues:0})

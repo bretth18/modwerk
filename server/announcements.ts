@@ -63,7 +63,10 @@ export async function moduleReleaseAnnouncement(db: Database, release: ModuleRel
 export async function adminAnnouncements(request: Request, db: Database, path: string): Promise<Response | null> {
   if (!path.startsWith('/api/admin/announcements')) return null
   if (path === '/api/admin/announcements' && request.method === 'GET') {
-    return response((await db.prepare('SELECT a.id,a.slug,a.title,a.body,a.url,a.module_id,a.created_at,(SELECT COUNT(*) FROM announcement_reads r WHERE r.announcement_id=a.id) AS reads FROM announcements a ORDER BY a.created_at DESC,a.rowid DESC LIMIT 50').all()).results)
+    // Audience: verified members with a username who joined before it was sent and can see it now, the same people the bell shows it to.
+    return response((await db.prepare(`SELECT a.id,a.slug,a.title,a.body,a.url,a.module_id,a.created_at,(SELECT COUNT(*) FROM announcement_reads r WHERE r.announcement_id=a.id) AS reads,
+      (SELECT COUNT(*) FROM users u WHERE u.created_at<=a.created_at AND u.email_verified=1 AND u.suspended=0 AND u.username IS NOT NULL AND NOT EXISTS(SELECT 1 FROM social_pending_accounts s WHERE s.user_id=u.id)) AS audience
+      FROM announcements a ORDER BY a.created_at DESC,a.rowid DESC LIMIT 50`).all()).results)
   }
   if (path === '/api/admin/announcements' && request.method === 'POST') {
     const body = await jsonBody(request)

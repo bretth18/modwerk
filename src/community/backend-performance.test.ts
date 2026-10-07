@@ -116,7 +116,9 @@ describe('community request database budgets',()=>{
   for(const [path,budget] of [
    ['/catalog',1],['/forum/shouts?compact=1',4],['/forum/threads',4],
    // A member's thread view also records the last post they received, so it writes once.
-   ['/forum/threads/module-digitakt-digihealth',9],['/admin/statistics?days=7',6],['/admin/insights',8],
+   ['/forum/threads/module-digitakt-digihealth',9],
+   // The 7-day view also reads its hours; 30 and 90 days skip that read.
+   ['/admin/statistics?days=7',7],['/admin/statistics?days=30',6],['/admin/insights',8],
   ] as const){
    prepare.mockClear()
    expect((await call(path,'GET',undefined,token)).status,path).toBe(200)

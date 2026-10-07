@@ -32,7 +32,7 @@ In a second terminal, run `npm run dev` and open http://127.0.0.1:5173. Vite pro
 
 The Ko-fi page is configured in `src/config/support.ts`. Set it to an empty string to hide the support entry.
 
-A quiet “Support Octamod” entry with a small heart appears below the desktop sidebar’s privacy note and at the bottom of the mobile menu. It opens a personal note from the site maintainer, crediting the collaborative work of octabam, module authors and contributors, and explains that tips support site maintenance, module curation and community moderation. The visitor then chooses whether to open Ko-fi in a new tab. The site embeds no payment scripts and collects no donor information.
+A quiet “Support Octamod” entry with a small heart appears below the desktop sidebar’s privacy note and at the bottom of the mobile menu. It opens a personal note from the site maintainer, crediting the collaborative work of octabam, module authors and contributors, and explains that tips support site maintenance, module curation and community moderation. The visitor then chooses whether to open Ko-fi in a new tab. The site embeds no payment scripts and collects no donor information. Opening the dialog and clicking its Ko-fi button, or a bell entry that links to Ko-fi, are counted as site statistics like page views (see [STATISTICS.md](STATISTICS.md)); nothing about the tip itself reaches Modwerk.
 
 ## Local workspace
 

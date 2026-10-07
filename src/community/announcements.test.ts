@@ -42,7 +42,7 @@ describe('operator announcements in the bell', () => {
     expect(created.status).toBe(201)
     const { id } = await created.json()
     expect((await call('/admin/announcements/' + id, 'DELETE', undefined, reader.session)).status).toBe(403)
-    expect(await (await call('/admin/announcements', 'GET', undefined, '', admin)).json()).toMatchObject([{ id, slug: release.slug, title: release.title, reads: 0 }])
+    expect(await (await call('/admin/announcements', 'GET', undefined, '', admin)).json()).toMatchObject([{ id, slug: release.slug, title: release.title, reads: 0, audience: 1 }]) // The reader joined before it was sent.
   })
 
   it('refuses what a bell entry may not contain', async () => {

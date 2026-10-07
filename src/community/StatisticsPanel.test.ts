@@ -6,7 +6,7 @@ import { CommunityInsights } from './CommunityInsights'
 import type { UsageDay, UsageStatistics } from './usage-contract'
 import type { AdminInsights } from './admin-insights-contract'
 
-const row = (day: string, builds: number, failed: number): UsageDay => ({ day, visitors: 10, page_views: 20, configurations: 1, builds, builds_failed: failed, downloads: 2, exports: 0 })
+const row = (day: string, builds: number, failed: number): UsageDay => ({ day, visitors: 10, page_views: 20, configurations: 1, builds, builds_failed: failed, downloads: 2, exports: 0, support_opens: 4, support_clicks: 1 })
 const usage: UsageStatistics = { generatedAt: '2026-10-06T12:00:00Z', collectionStarted: '2026-09-01T00:00:00Z', from: '2026-09-30', to: '2026-10-06', days: 7,
   rows: [row('2026-10-04', 2, 0), row('2026-10-05', 3, 1), row('2026-10-06', 1, 1)],
   comparison: { from: '2026-09-24', to: '2026-09-29', rows: [row('2026-09-25', 4, 0)], unavailableReason: null },
@@ -15,6 +15,17 @@ const usage: UsageStatistics = { generatedAt: '2026-10-06T12:00:00Z', collection
 const dashboard = (value: UsageStatistics) => renderToStaticMarkup(createElement(UsageDashboard, { data: value }))
 
 describe('usage dashboard breakdowns', () => {
+  it('shows support dialog opens and Ko-fi clicks, compared only once both windows were counted', () => {
+    const html = dashboard({ ...usage, hourlyStarted: '2026-10-04T08:00:00Z' })
+    expect(html).toContain('<dt>Support dialog opens</dt><dd>12</dd>')
+    expect(html).toMatch(/<dt>Ko-fi clicks<\/dt><dd>3<\/dd><small>Selected period · includes today<\/small><small>Comparison unavailable<\/small>/)
+    expect(html).toContain('Both are counted from')
+    expect(dashboard({ ...usage, hourlyStarted: '2026-09-01T00:00:00Z' })).toMatch(/<dt>Ko-fi clicks<\/dt><dd>3<\/dd><small>Selected period · includes today<\/small><small class="statistics-change">/)
+  })
+  it('offers hourly bars only when the response carries hours', () => {
+    expect(dashboard(usage)).toMatch(/<button type="button" aria-pressed="false" disabled="" title="Hourly counts are kept for 14 days[^"]*">Hourly<\/button>/)
+    expect(dashboard({ ...usage, hourlyStarted: '2026-10-05T00:00:00Z', hourly: [] })).toContain('<button type="button" aria-pressed="false">Hourly</button>')
+  })
   it('shows failed builds, the machine split and its failure rates', () => {
     const html = dashboard(usage)
     expect(html).toContain('<dt>Failed builds</dt><dd>2</dd>')
@@ -27,7 +38,7 @@ describe('usage dashboard breakdowns', () => {
   it('compares builds only when both windows were counted the new way', () => {
     const before = dashboard(usage)
     expect(before.match(/<dt>(Successful|Failed) builds<\/dt><dd>\d+<\/dd><small>Selected period · includes today<\/small><small>Comparison unavailable<\/small>/g)).toHaveLength(2)
-    const after = dashboard({ ...usage, breakdownsStarted: '2026-09-01T00:00:00Z' })
+    const after = dashboard({ ...usage, breakdownsStarted: '2026-09-01T00:00:00Z', hourlyStarted: '2026-09-01T00:00:00Z' })
     expect(after).not.toContain('Comparison unavailable')
     expect(after).not.toContain('counted since')
     // Without the breakdowns (an older backend), the machine table is left out.

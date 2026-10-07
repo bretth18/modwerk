@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Icon } from './Icon'
+import { trackUsage } from '../community/usage'
 
 export function SupportButton({ onClick }: { onClick: () => void }) {
   return <button type="button" className="support-link" aria-haspopup="dialog" onClick={onClick}><span className="support-heart"><Icon name="heart" size={14} /></span>Support Modwerk</button>
@@ -8,6 +9,7 @@ export function SupportButton({ onClick }: { onClick: () => void }) {
 export function SupportDialog({ url, onClose }: { url: string; onClose: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null)
   useEffect(() => {
+    trackUsage('support_opened') // Only the event name is sent, like every other count.
     const element = dialog.current
     const previousFocus = document.activeElement
     element?.showModal()
@@ -26,7 +28,7 @@ export function SupportDialog({ url, onClose }: { url: string; onClose: () => vo
     </div>
     <div className="dialog-actions">
       <button type="button" className="button button-quiet" autoFocus onClick={onClose}>Close</button>
-      <a className="button button-primary" href={url} target="_blank" rel="noopener noreferrer" aria-label="Support on Ko-fi (opens in a new tab)">Support on Ko-fi <span aria-hidden="true">↗</span></a>
+      <a className="button button-primary" href={url} target="_blank" rel="noopener noreferrer" onClick={() => trackUsage('support_link_opened')} aria-label="Support on Ko-fi (opens in a new tab)">Support on Ko-fi <span aria-hidden="true">↗</span></a>
     </div>
   </dialog>
 }

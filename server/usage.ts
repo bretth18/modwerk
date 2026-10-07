@@ -3,9 +3,9 @@ import { USAGE_CONSENT_VERSION } from '../src/legal/policy'
 import { boundedBody, HttpError, response } from './security'
 import { throttle } from './auth'
 import { canTrackModuleDownload } from '../src/community/module-downloads'
-import { DEVICE_EVENTS, USAGE_DEVICES, USAGE_EVENTS, type UsageDevice, type UsageEvent, type UsageDay, type UsageDeviceTotals } from '../src/community/usage-contract'
+import { DEVICE_EVENTS, USAGE_DEVICES, USAGE_EVENTS, type UsageDevice, type UsageEvent, type UsageDay, type UsageDeviceTotals, type UsageHour } from '../src/community/usage-contract'
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/
-const columns: Record<UsageEvent, string> = { page_view:'page_views', configuration_started:'configurations', build_succeeded:'builds', build_failed:'builds_failed', firmware_download_requested:'downloads', configuration_exported:'exports' }
+const columns: Record<UsageEvent, string> = { page_view:'page_views', configuration_started:'configurations', build_succeeded:'builds', build_failed:'builds_failed', firmware_download_requested:'downloads', configuration_exported:'exports', support_opened:'support_opens', support_link_opened:'support_clicks' }
 /** Optional machine on builds, failed builds and download requests: one of three fixed names, never anything else. */
 function deviceOf(body: Record<string,unknown>, event: UsageEvent): UsageDevice | null | undefined {
   if (!('device' in body)) return null
@@ -17,6 +17,9 @@ function deviceCount(db: Database, today: string, device: UsageDevice, event: Us
   return db.prepare(`INSERT INTO usage_device_daily(day,device,${metric}) SELECT ?,?,1 WHERE ${counted?.sql ?? '1'} ON CONFLICT(day,device) DO UPDATE SET ${metric}=${metric}+1`).bind(today,device,...counted?.values ?? [])
 }
 const day = (date: Date) => date.toISOString().slice(0,10)
+/** UTC hour key 'YYYY-MM-DDTHH', so an hour sorts and compares like its day. */
+const hourOf = (date: Date) => date.toISOString().slice(0,13)
+const USAGE_COLUMNS = 'visitors,page_views,configurations,builds,builds_failed,downloads,exports,support_opens,support_clicks'
 const before = (now: Date, days: number) => day(new Date(now.getTime() - days * 86400000))
 async function privateHash(key: string, purpose: string) {
   const secret = await crypto.subtle.importKey('raw',new TextEncoder().encode(key),{name:'HMAC',hash:'SHA-256'},false,['sign'])
@@ -43,12 +46,14 @@ export async function recordUsage(request: Request, env: Env, db: Database) {
     db.prepare('INSERT INTO usage_events(day,event_hash) VALUES(?,?) ON CONFLICT DO NOTHING').bind(today,identity),
     db.prepare('INSERT INTO usage_visitors(day,visitor_hash) SELECT ?,? WHERE EXISTS(SELECT 1 FROM usage_events WHERE day=? AND event_hash=? AND counted=0) ON CONFLICT DO NOTHING').bind(today,visitor,today,identity),
     db.prepare(`INSERT INTO usage_daily(day,visitors,${metric}) SELECT ?,(SELECT COUNT(*) FROM usage_visitors WHERE day=? AND visitor_hash=? AND counted=0),1 WHERE EXISTS(SELECT 1 FROM usage_events WHERE day=? AND event_hash=? AND counted=0) ON CONFLICT(day) DO UPDATE SET visitors=visitors+excluded.visitors,${metric}=${metric}+excluded.${metric}`).bind(today,today,visitor,today,identity),
+    db.prepare(`INSERT INTO usage_hourly(hour,visitors,${metric}) SELECT ?,(SELECT COUNT(*) FROM usage_visitors WHERE day=? AND visitor_hash=? AND counted=0),1 WHERE EXISTS(SELECT 1 FROM usage_events WHERE day=? AND event_hash=? AND counted=0) ON CONFLICT(hour) DO UPDATE SET visitors=visitors+excluded.visitors,${metric}=${metric}+excluded.${metric}`).bind(hourOf(now),today,visitor,today,identity),
     // Before the event is marked counted, so a repeated event ID adds nothing here either.
     ...(device ? [deviceCount(db,today,device,event,{sql:'EXISTS(SELECT 1 FROM usage_events WHERE day=? AND event_hash=? AND counted=0)',values:[today,identity]})] : []),
     db.prepare('UPDATE usage_visitors SET counted=1 WHERE day=? AND visitor_hash=?').bind(today,visitor),
     db.prepare('UPDATE usage_events SET counted=1 WHERE day=? AND event_hash=?').bind(today,identity),
     db.prepare("INSERT INTO usage_meta(key,value) VALUES('collection_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
     db.prepare("INSERT INTO usage_meta(key,value) VALUES('breakdowns_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
+    db.prepare("INSERT INTO usage_meta(key,value) VALUES('hourly_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
   ])
   return response({ok:true})
 }
@@ -95,10 +100,12 @@ export async function recordAnonymousCount(request: Request, env: Env, db: Datab
   await db.batch([
     db.prepare('INSERT INTO usage_visitors(day,visitor_hash) VALUES(?,?) ON CONFLICT DO NOTHING').bind(today,visitor),
     db.prepare(`INSERT INTO usage_daily(day,visitors,${metric}) VALUES(?,(SELECT COUNT(*) FROM usage_visitors WHERE day=? AND visitor_hash=? AND counted=0),1) ON CONFLICT(day) DO UPDATE SET visitors=visitors+excluded.visitors,${metric}=${metric}+1`).bind(today,today,visitor),
+    db.prepare(`INSERT INTO usage_hourly(hour,visitors,${metric}) VALUES(?,(SELECT COUNT(*) FROM usage_visitors WHERE day=? AND visitor_hash=? AND counted=0),1) ON CONFLICT(hour) DO UPDATE SET visitors=visitors+excluded.visitors,${metric}=${metric}+1`).bind(hourOf(now),today,visitor),
     ...(device ? [deviceCount(db,today,device,body.event as UsageEvent)] : []),
     db.prepare('UPDATE usage_visitors SET counted=1 WHERE day=? AND visitor_hash=?').bind(today,visitor),
     db.prepare("INSERT INTO usage_meta(key,value) VALUES('collection_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
     db.prepare("INSERT INTO usage_meta(key,value) VALUES('breakdowns_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
+    db.prepare("INSERT INTO usage_meta(key,value) VALUES('hourly_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
   ])
   return response({ok:true})
 }
@@ -110,6 +117,7 @@ export async function cleanupUsage(db: Database, now = new Date()) {
     db.prepare('DELETE FROM usage_visitors WHERE day<?').bind(before(now,1)),
     db.prepare("DELETE FROM usage_meta WHERE key LIKE 'visitor-salt:%' AND key<?").bind('visitor-salt:' + day(now)),
     db.prepare('DELETE FROM usage_daily WHERE day<?').bind(before(now,89)),
+    db.prepare('DELETE FROM usage_hourly WHERE hour<?').bind(before(now,13) + 'T00'),
     db.prepare('DELETE FROM usage_device_daily WHERE day<?').bind(before(now,89)),
     db.prepare('DELETE FROM module_downloads_daily WHERE day<?').bind(before(now,89)),
     db.prepare('DELETE FROM rate_limits WHERE expires<?').bind(Math.floor(now.getTime()/1000)),
@@ -122,19 +130,21 @@ export async function usageStatistics(db: Database, days: number, now = new Date
   // Compare equal windows of completed days; today and the first partial collection day are excluded.
   const previousFrom = before(now,2 * (days-1)), previousTo = before(now,days)
   const outsideRetention = previousFrom < before(now,89)
-  const [meta,daily,devices] = await Promise.all([
-    db.prepare("SELECT key,value FROM usage_meta WHERE key IN ('collection_started','breakdowns_started')").all<{key:string;value:string}>(),
-    db.prepare('SELECT day,visitors,page_views,configurations,builds,builds_failed,downloads,exports FROM usage_daily WHERE day>=? AND day<=? ORDER BY day').bind(outsideRetention?from:previousFrom,to).all<UsageDay>(),
+  const [meta,daily,devices,hourly] = await Promise.all([
+    db.prepare("SELECT key,value FROM usage_meta WHERE key IN ('collection_started','breakdowns_started','hourly_started')").all<{key:string;value:string}>(),
+    db.prepare(`SELECT day,${USAGE_COLUMNS} FROM usage_daily WHERE day>=? AND day<=? ORDER BY day`).bind(outsideRetention?from:previousFrom,to).all<UsageDay>(),
     db.prepare('SELECT device,SUM(builds) AS builds,SUM(builds_failed) AS builds_failed,SUM(downloads) AS downloads FROM usage_device_daily WHERE day>=? AND day<=? GROUP BY device').bind(from,to).all<UsageDeviceTotals>(),
+    // Hours are kept for 14 days, so only the 7-day view can show them.
+    days===7 ? db.prepare(`SELECT hour,${USAGE_COLUMNS} FROM usage_hourly WHERE hour>=? AND hour<=? ORDER BY hour`).bind(from+'T00',to+'T23').all<UsageHour>() : null,
   ])
   const metaValue = (key: string) => meta.results.find(row => row.key===key)?.value ?? null
-  const collectionStarted = metaValue('collection_started'), breakdownsStarted = metaValue('breakdowns_started')
+  const collectionStarted = metaValue('collection_started'), breakdownsStarted = metaValue('breakdowns_started'), hourlyStarted = metaValue('hourly_started')
   const byDevice = new Map(devices.results.map(row => [row.device,row]))
   const rows = daily.results.filter(row=>row.day>=from)
   const unavailableReason = outsideRetention ? 'retention' : !collectionStarted || previousFrom <= collectionStarted.slice(0,10) ? 'collection' : null
   const previousRows = unavailableReason ? [] : daily.results.filter(row=>row.day>=previousFrom&&row.day<=previousTo)
   return response({generatedAt:now.toISOString(),collectionStarted,from,to,days,rows,comparison:{from:previousFrom,to:previousTo,rows:previousRows,unavailableReason},
-    breakdownsStarted,devices:USAGE_DEVICES.map(device => byDevice.get(device) ?? {device,builds:0,builds_failed:0,downloads:0})})
+    breakdownsStarted,hourlyStarted,...(hourly ? {hourly:hourly.results} : {}),devices:USAGE_DEVICES.map(device => byDevice.get(device) ?? {device,builds:0,builds_failed:0,downloads:0})})
 }
 
 /** Each request names one build-integrated module; no configuration grouping is stored. */

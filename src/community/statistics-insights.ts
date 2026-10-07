@@ -1,11 +1,15 @@
-import type { UsageDay, UsageStatistics } from './usage-contract'
+import type { UsageDay, UsageHour, UsageStatistics } from './usage-contract'
 import type { AdminAccounts, AdminAccountsDay, AdminModuleInsight } from './admin-insights-contract'
 
 export const usageMetrics = [
   ['visitors', 'Daily visitors'], ['page_views', 'Page views'], ['configurations', 'Configurations started'],
   ['builds', 'Successful builds'], ['builds_failed', 'Failed builds'], ['downloads', 'Firmware download requests'], ['exports', 'Configuration exports'],
+  ['support_opens', 'Support dialog opens'], ['support_clicks', 'Ko-fi clicks'],
 ] as const
 export type UsageMetric = typeof usageMetrics[number][0]
+/** Counted from the hourly totals' start (usage_meta 'hourly_started'); earlier days read as zero and cannot be compared. */
+export const HOURLY_ERA_METRICS: readonly UsageMetric[] = ['support_opens', 'support_clicks']
+const EMPTY = {visitors:0,page_views:0,configurations:0,builds:0,builds_failed:0,downloads:0,exports:0,support_opens:0,support_clicks:0}
 
 export function dailyRows(data: UsageStatistics): { day: string; counts: UsageDay | null }[] {
   const byDay = new Map(data.rows.map(row => [row.day,row]))
@@ -14,9 +18,19 @@ export function dailyRows(data: UsageStatistics): { day: string; counts: UsageDa
     date.setUTCDate(date.getUTCDate()+index)
     const day = date.toISOString().slice(0,10)
     const counts = !data.collectionStarted || day < data.collectionStarted.slice(0,10) ? null
-      : byDay.get(day)??{day,visitors:0,page_views:0,configurations:0,builds:0,builds_failed:0,downloads:0,exports:0}
+      : byDay.get(day)??{day,...EMPTY}
     return {day,counts}
   })
+}
+
+/** The 7-day view's UTC hours up to the current one, oldest first; null when the response has no hours (30 and 90 days).
+ * Hours before hourly counting began have no value rather than an invented zero. */
+export function hourlyRows(data: UsageStatistics): { hour: string; counts: UsageHour | null }[] | null {
+  if (!data.hourly) return null
+  const byHour = new Map(data.hourly.map(row => [row.hour,row]))
+  const started = data.hourlyStarted?.slice(0,13) ?? null, last = data.generatedAt.slice(0,13), first = Date.parse(data.from+'T00:00:00Z')
+  return Array.from({length:data.days*24},(_,index) => new Date(first+index*3600000).toISOString().slice(0,13)).filter(hour => hour<=last)
+    .map(hour => ({hour,counts:!started || hour<started ? null : byHour.get(hour)??{hour,...EMPTY}}))
 }
 
 export function usageInsights(data: UsageStatistics) {
