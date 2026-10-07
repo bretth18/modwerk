@@ -52,7 +52,7 @@ function createAccountAuth(env: Env, db: Database) {
       sendResetPassword:async({user,token})=>{await sendAccountEmail(env,db,user.email,'reset',token)},
       onPasswordReset:async({user})=>{await db.batch([db.prepare('DELETE FROM account_tokens WHERE user_id=?').bind(user.id),db.prepare('DELETE FROM auth_verifications WHERE value=?').bind(user.id),db.prepare('UPDATE auth_users SET emailVerified=1 WHERE id=?').bind(user.id),db.prepare('UPDATE users SET email_verified=1 WHERE id=?').bind(user.id)])},
     },
-    emailVerification:{sendOnSignUp:true,sendOnSignIn:false,expiresIn:86400,autoSignInAfterVerification:false,
+    emailVerification:{sendOnSignUp:true,sendOnSignIn:false,expiresIn:86400,autoSignInAfterVerification:true,
       sendVerificationEmail:async({user,token})=>{
         // Library JWTs can repeat within one second. A fresh nonce makes every
         // resend distinct, and only the hashed complete action link is accepted.
@@ -121,6 +121,13 @@ export async function accountUser(request: Request, env: Env, db: Database): Pro
   accountUsers.set(request,{db,settings,user})
   return user
 }
+/** Hands the browser the session Better Auth just created: a signed bearer on separate origins, cookies on the same origin. */
+function sessionResponse(env:Env,headers:Headers,body:unknown,failure:string){
+  const out=response(body),value=headers.get('set-auth-token')
+  if(env.SESSION_TRANSPORT==='bearer'){if(!value)throw new HttpError(500,failure);out.headers.set('X-Octamod-Session',value)}
+  else for(const cookie of headers.getSetCookie())out.headers.append('Set-Cookie',cookie)
+  return out
+}
 function emailAddress(value:unknown){if(typeof value!=='string'||value.trim().length>254||!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(value.trim()))throw new HttpError(400,'Enter a valid email address.');return value.trim().toLowerCase()}
 const genericMessage='If the address is eligible, an email will arrive shortly. Check your spam folder. You can request another message or reset your password if you already have an account.'
 export async function accountRoutes(request: Request, env: Env, db: Database, path: string): Promise<Response|null> {
@@ -164,9 +171,12 @@ export async function accountRoutes(request: Request, env: Env, db: Database, pa
         if(!record||!await verifyPassword({hash:record.password,password:body.password}))throw new HttpError(400,'The link or password was not accepted. Use your registration password, or request a reset.')
         const consumed=await db.prepare('DELETE FROM account_tokens WHERE token_hash=? AND expires>? RETURNING user_id').bind(tokenHash,now).first()
         if(!consumed)throw new HttpError(400,'This link has already been used.')
-        await auth.api.verifyEmail({query:{token:body.token.split('~')[0]},headers})
-      }else await auth.api.resetPassword({body:{token:body.token,newPassword:body.password},headers})
-      return response({ok:true,message:action==='verify'?'Email verified. You can now sign in.':'Password updated. All previous sessions have ended. Sign in with your new password.'})
+        // Verifying proves the inbox and the password together, so it also starts the member session.
+        const verified=await auth.api.verifyEmail({query:{token:body.token.split('~')[0]},headers,returnHeaders:true})
+        return sessionResponse(env,verified.headers,{ok:true,message:'Email verified. Welcome to Modwerk.'},'Verification could not be completed.')
+      }
+      await auth.api.resetPassword({body:{token:body.token,newPassword:body.password},headers})
+      return response({ok:true,message:'Password updated. All previous sessions have ended. Sign in with your new password.'})
     }
     const email=emailAddress(body.email)
     await throttle(db,(action==='login'?'auth-login:':'auth-mail:')+email,action==='login'?10:3,900)
@@ -175,10 +185,7 @@ export async function accountRoutes(request: Request, env: Env, db: Database, pa
       if(typeof body.password!=='string'||body.password.length>128)throw new HttpError(400,'Enter your password.')
       const result=await auth.api.signInEmail({body:{email,password:body.password},headers,asResponse:true})
       if(!result.ok)throw new HttpError(result.status,result.status===403?'Verify your email first, or request another verification message.':'Email or password was not accepted.')
-      const out=response({ok:true}),value=result.headers.get('set-auth-token')
-      if(env.SESSION_TRANSPORT==='bearer'){if(!value)throw new HttpError(500,'Sign-in could not be completed.');out.headers.set('X-Octamod-Session',value)}
-      else for(const value of result.headers.getSetCookie())out.headers.append('Set-Cookie',value)
-      return out
+      return sessionResponse(env,result.headers,{ok:true},'Sign-in could not be completed.')
     }
     if(action==='register'){
       if(body.rulesVersion!==COMMUNITY_RULES_VERSION)throw new HttpError(400,'Read and accept the current community rules before creating an account.')

@@ -45,7 +45,10 @@ describe('verified email accounts',()=>{
   const token=sent[0].text.match(/#account\/verify\/([^\s]+)/)![1]
   expect(JSON.stringify(db.prepare('SELECT * FROM account_tokens').all())).not.toContain(token)
   expect((await call('/auth/verify','POST',{token,password:'a completely different password'})).status).toBe(400)
-  expect((await call('/auth/verify','POST',{token,password})).status).toBe(200)
+  const verified=await call('/auth/verify','POST',{token,password});expect(verified.status).toBe(200)
+  // Verifying with the registration password starts the member session, so the welcome lands in the forum signed in.
+  const firstSession=verified.headers.get('X-Octamod-Session')!;expect(firstSession).toContain('.');expect(verified.headers.get('set-cookie')).toBeNull()
+  expect((await(await call('/auth/session','GET',undefined,firstSession)).json()).user).toMatchObject({username:'listener',verified:true})
   expect((await call('/auth/verify','POST',{token,password})).status).toBe(400)
   const login=await call('/auth/login','POST',{email,password}),session=login.headers.get('X-Octamod-Session')!
   expect(login.status).toBe(200);expect(login.headers.get('set-cookie')).toBeNull()
@@ -77,7 +80,8 @@ describe('verified email accounts',()=>{
  it('supports secure same-origin cookies, other-device revocation and private duplicate responses',async()=>{
   const {call,member,env}=await fixture(),user=await member('devices')
   const second=await call('/auth/login','POST',{email:user.email,password}),secondToken=second.headers.get('X-Octamod-Session')!
-  expect(await(await call('/auth/sessions','GET',undefined,user.session)).json()).toHaveLength(2)
+  // The verification session, the fixture's sign-in and this second sign-in.
+  expect(await(await call('/auth/sessions','GET',undefined,user.session)).json()).toHaveLength(3)
   expect((await call('/auth/sessions','DELETE',undefined,user.session)).status).toBe(200)
   expect((await(await call('/auth/session','GET',undefined,secondToken)).json()).user).toBeNull()
   const duplicate=await call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username:'anothername',email:user.email,password})
@@ -98,14 +102,14 @@ describe('verified email accounts',()=>{
   const {call,db,env,member}=await fixture()
   const earlier=await member('earlier')
   expect((await call('/auth/forgot','POST',{email:earlier.email})).status).toBe(202)
-  expect(db.prepare('SELECT COUNT(*) AS count FROM auth_sessions').get()).toEqual({count:1})
+  expect(db.prepare('SELECT COUNT(*) AS count FROM auth_sessions').get()).toEqual({count:2})
   expect(db.prepare('SELECT COUNT(*) AS count FROM auth_verifications').get()).toEqual({count:1})
   expect(db.prepare("SELECT typeof(expiresAt) AS type FROM auth_sessions").get()).toEqual({type:'text'})
   vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(Date.now()+30*24*60*60*1000)
   try{
    const current=await member('later')
    await cleanupAccounts(env.DB!)
-   expect(db.prepare('SELECT COUNT(*) AS count FROM auth_sessions').get()).toEqual({count:1})
+   expect(db.prepare('SELECT COUNT(*) AS count FROM auth_sessions').get()).toEqual({count:2})
    expect(db.prepare('SELECT COUNT(*) AS count FROM auth_verifications').get()).toEqual({count:0})
    expect((await call('/auth/build-access','POST',{},current.session)).status).toBe(200)
   }finally{vi.useRealTimers()}

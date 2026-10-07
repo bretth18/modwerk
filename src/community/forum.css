@@ -888,3 +888,32 @@ li[data-status="error"] .forum-media-status { color: #f0a6ad; }
 .members-online-more { color: var(--muted); font-size: 12px; }
 .forum-online-now { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: -8px 0 20px; }
 .forum-online-now-label { display: inline-flex; align-items: center; color: #bcd7c5; font-size: 12px; font-weight: 600; }
+
+/* Get started: a short checklist for new members on the forum home and the account page, shown until every step is done or it is dismissed.
+   Phones stack the steps and keep each one to a line or two. */
+.get-started { margin: 0 0 24px; padding: 18px 20px; border: 1px solid #4a4a6e; border-radius: 12px; background: linear-gradient(135deg, #26263a, #202024 65%); }
+.account-page .get-started { margin-bottom: 20px; }
+.get-started-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.get-started-heading h2 { font-size: 15px; }
+.get-started-heading p { margin-top: 4px; color: var(--muted); font-size: 12px; }
+.get-started-heading .text-button { flex-shrink: 0; min-height: 32px; }
+.get-started-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.get-started-steps li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 2px 10px; align-items: start; padding: 12px; border: 1px solid #393941; border-radius: 9px; background: #1d1d23; }
+.get-started-steps li.is-done { border-style: dashed; background: transparent; }
+.get-started-mark { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border: 1px solid #4c4c58; border-radius: 50%; color: #9a9aaa; font-size: 11px; font-weight: 700; }
+.get-started-steps li.is-done .get-started-mark { border-color: #456354; background: #25332c; color: #9fd9b4; }
+.get-started-steps strong { display: block; font-size: 13px; line-height: 1.55; color: #e6e6ef; }
+.get-started-steps li.is-done strong { color: var(--muted); }
+.get-started-steps small { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.get-started-action { grid-column: 2; display: inline-flex; align-items: center; gap: 5px; justify-self: start; min-height: 34px; margin-top: 4px; color: #b9c0ff; font-size: 12px; font-weight: 600; }
+.get-started-action:hover { color: #d8dcff; }
+@media (max-width: 600px) {
+  .get-started { padding: 14px; margin-bottom: 16px; }
+  .get-started-heading { margin-bottom: 10px; }
+  .get-started-steps { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .get-started-steps li { padding: 10px 12px; }
+  .get-started-steps li.is-done { padding: 6px 12px; }
+  .get-started-steps small { display: none; }
+  .get-started-action { min-height: 40px; margin-top: 0; }
+}
+.forum-welcome { margin: 0 0 20px; }

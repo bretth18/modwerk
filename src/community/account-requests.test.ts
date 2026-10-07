@@ -32,7 +32,8 @@ describe('private, reversible account-removal requests',()=>{
   const response=await call('/auth/account-removal','POST',{confirm:'REQUEST',password},token)
   expect(response.status).toBe(202);expect(await response.json()).toMatchObject({status:'requested'})
   expect(db.prepare('SELECT COUNT(*) AS count FROM auth_users').get()).toEqual({count:1})
-  expect(db.prepare('SELECT COUNT(*) AS count FROM auth_sessions').get()).toEqual({count:1})
+  // A request revokes nothing: the verification session and the sign-in both stay.
+  expect(db.prepare('SELECT COUNT(*) AS count FROM auth_sessions').get()).toEqual({count:2})
   expect((await(await call('/auth/session','GET',undefined,token)).json()).user.username).toBe('removal')
  })
  it('keeps requests private, deduplicates submission and allows only the owner to withdraw',async()=>{
