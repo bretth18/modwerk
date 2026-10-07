@@ -84,18 +84,24 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .support-heart { display: inline-flex; flex-shrink: 0; color: #c58a9c; }
 .workspace { min-width: 0; min-height: 0; overflow: hidden; display: grid; grid-template-rows: 64px minmax(0, 1fr) 36px; }
 .app-toolbar { display: flex; align-items: center; gap: 20px; background: #232326; border-bottom: 1px solid var(--line); padding: 0 27px; box-shadow: 0 1px 8px #00000010; }
-.toolbar-title { display: flex; align-items: center; gap: 9px; color: #c2c2ce; font-size: 13px; white-space: nowrap; }
+.toolbar-title { display: flex; align-items: center; gap: 9px; flex: 0 1 auto; min-width: 0; color: #c2c2ce; font-size: 13px; white-space: nowrap; }
+.toolbar-title > :is(svg, .preview-badge, .breadcrumb-divider) { flex-shrink: 0; }
+.toolbar-title > span:not([class]), .toolbar-title strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .toolbar-title > svg { color: #94949f; }
 .toolbar-title strong { font-weight: 500; color: #e1e1e9; }
 .breadcrumb-divider { color: #64646f; padding: 0 1px; }
 .preview-badge { font-size: 12px; border: 1px solid #45454d; padding: 3px 5px; border-radius: 4px; color: #a0a0ab; margin-left: 4px; }
-.search { margin-left: auto; display: flex; align-items: center; gap: 7px; border: 1px solid #3d3d45; border-radius: 6px; background: #19191d; padding: 7px 9px; color: #92929f; box-shadow: inset 0 1px 2px #00000018; }
-.search input { border: 0; background: transparent; color: #ececf1; font-size: 12px; width: 166px; padding: 0; min-width: 0; }
+.search { flex: 1 1 300px; min-width: 150px; max-width: 340px; margin-left: auto; display: flex; align-items: center; gap: 8px; height: 36px; border: 1px solid #3d3d45; border-radius: 8px; background: #19191d; padding: 0 11px; color: #92929f; box-shadow: inset 0 1px 2px #00000018; transition: border-color .15s, background .15s; }
+.search:hover { border-color: #4d4d57; }
+.search > svg { flex-shrink: 0; }
+.search input { flex: 1 1 0; border: 0; background: transparent; color: #ececf1; font-size: 13px; width: 100%; height: 100%; padding: 0; min-width: 0; }
 .search input::placeholder { color: #8c8c99; }
-.configuration-button { margin-left: auto; display: flex; align-items: center; gap: 7px; font-size: 12px; color: #c7c7d2; white-space: nowrap; }
-.search + .configuration-button { margin-left: 0; }
-.configuration-button:hover { color: white; }
-.toolbar-count { padding: 2px 6px; border: 1px solid #45454d; border-radius: 4px; font-size: 12px; }
+.configuration-button { flex-shrink: 0; margin-left: auto; display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 8px 0 12px; border: 1px solid #3d3d45; border-radius: 8px; font-size: 13px; color: #c7c7d2; white-space: nowrap; transition: border-color .15s, background .15s, color .15s; }
+.search ~ .configuration-button { margin-left: 0; }
+.configuration-button:hover { color: white; border-color: #55555f; background: #2b2b31; }
+.configuration-button[aria-current="page"] { color: #f0f0f6; background: #2b2b31; }
+.configuration-button.is-empty .toolbar-count { color: #92929f; }
+.toolbar-count { min-width: 22px; padding: 2px 6px; border: 1px solid #45454d; border-radius: 5px; font-size: 12px; text-align: center; font-variant-numeric: tabular-nums; }
 .workspace-content { padding: 29px 30px; overflow-y: auto; min-width: 0; min-height: 0; scrollbar-color: #4a4a53 transparent; scrollbar-width: thin; }
 .workspace-content:focus { outline: none; }
 .library-page, .detail-page, .configuration-page { width: 100%; max-width: 1240px; margin: 0 auto; }
@@ -476,7 +482,7 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .sidebar-footer { font-size: 12px; gap: 4px; }
   .workspace-content { padding: 25px; }
   .app-toolbar { padding: 0 22px; gap: 13px; }
-  .search input { width: 130px; }
+  .search { flex-basis: 240px; }
   .module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .overview-grid, .community-grid { grid-template-columns: minmax(0, 1fr) 230px; gap: 24px; }
   .detail-hero { gap: 25px; }
@@ -494,8 +500,9 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .workspace-content { padding: 24px 20px; }
   .app-toolbar { padding: 0 18px; gap: 10px; }
   .preview-badge { display: none; }
+  .configuration-button { padding: 0 8px; }
   .configuration-button > span:first-of-type { display: none; }
-  .search input { width: 125px; }
+  .search { flex-basis: 200px; min-width: 130px; }
   .module-grid { gap: 14px; }
   .detail-hero { grid-template-columns: 1fr; gap: 24px; }
   .detail-hero > .module-preview { height: 240px; }
@@ -1000,7 +1007,7 @@ h1 { font-size: 28px; }
   .toolbar-brand { display: flex; align-items: center; flex-shrink: 0; gap: 9px; font-size: 19px; font-weight: 650; letter-spacing: -.5px; }
   .toolbar-brand img { width: 30px; height: 30px; }
   .app-toolbar:has(.search input:focus) .toolbar-brand span { display: none; }
-  .search { flex: 1; min-width: 0; margin-left: 0; height: 44px; padding: 0 12px; gap: 8px; border-radius: 8px; }
+  .search { flex: 1; min-width: 0; max-width: none; margin-left: 0; height: 44px; padding: 0 12px; gap: 8px; border-radius: 8px; }
   .search input { flex: 1 1 0; width: auto; height: 100%; font-size: 16px; }
   .sidebar-nav[aria-label="Module library"] { flex-direction: row; gap: 6px; padding: 0 16px 10px; overflow-x: auto; overscroll-behavior-x: contain; scroll-padding: 0 16px; scrollbar-width: none; }
   .sidebar-nav[aria-label="Module library"]::-webkit-scrollbar { display: none; }
@@ -1220,7 +1227,7 @@ h1 { font-size: 28px; }
   .mobile-menu-panel { right: 2px; }
   .app-toolbar:has(.search.is-open) { gap: 6px; }
   .app-toolbar:has(.search.is-open) :is(.toolbar-brand, .search-toggle, .mobile-menu) { display: none; }
-  .search.is-open { display: flex; flex: 1; height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: #2b2b31; box-shadow: none; color: #9a9aa8; }
+  .search.is-open { display: flex; flex: 1; max-width: none; height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: #2b2b31; box-shadow: none; color: #9a9aa8; }
   .search.is-open:focus-within { outline: 1px solid #5d64a8; outline-offset: 0; }
   .search.is-open ~ .search-cancel { display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; border: 0; background: none; color: #a8b0ff; font-size: 15px; }
 
