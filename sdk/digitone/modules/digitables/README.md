@@ -1,18 +1,10 @@
 # digitables
 
+Modwerk metadata version: `1.3.1-experimental`.
+
+## Overview
+
 M8-style pitch tables for the Digitone mk1. The project holds 16 tables of up to 16 semitone steps, each with a length and a loop point. A sound with a table on plays every note through it: each note restarts the table and the sequencer’s clock steps it, from a slow walk to 1500 steps a second, so one trig plays an arpeggio, a trill, a pitch drop or a riff. A step can ADD a note instead of moving the pitch, so one trig can strum a chord. The TBL page has two knobs, TBL and SPD; hold a track key there for the table editor.
-
-By irpina (@irpina) · GPL-2.0-or-later · Digitone OS 1.43 · imported from [irpina/digitables](https://github.com/irpina/digitables/tree/5bbd9adffbd0f2d97fa0553613c507b43fca3bda) at v1.3.
-
-Modwerk metadata version: `1.3.0-experimental`.
-
-## Where to find it
-
-The TBL page: AMP’s third page, or TABLES in the Mod Menu.
-
-1. Hold a track key (T1–T4) on its own for about half a second to open the Mod Menu, and pick TABLES with YES (or trig key 1).
-2. Or press AMP until its third page, TBL, shows.
-3. On the TBL page, hold a track key to open the table editor; NO, or holding a track key again, goes back to the TBL page.
 
 ## Controls
 
@@ -43,11 +35,28 @@ A note starts at step 1, its own pitch plus step 1’s offset, and moves on one 
 
 The tables are part of the project: SAVE PROJECT and SAVE PROJECT AS save them, LOAD PROJECT loads them, and a new project starts with the defaults. They live in 480 bytes of the project file that the Digitone OS leaves alone, so a project saved with digitables loads on the stock OS, which ignores them and keeps them through a save.
 
-## Compatibility
+## Usage
+
+Use the access steps below after installing a compatible build. The tutorial gives a first practical pass through the module.
+
+### Where to find it
+
+The TBL page: AMP’s third page, or TABLES in the Mod Menu
+
+1. Hold a track key (T1–T4) on its own for about half a second to open the Mod Menu, and pick TABLES with YES (or trig key 1).
+2. Or press AMP until its third page, TBL, shows.
+3. On the TBL page, hold a track key to open the table editor; NO, or holding a track key again, goes back to the TBL page.
+
+### Quick tutorial: play a three-step pitch table
+
+1. Use a build containing digitables and Digitone core 2.2 on OS 1.43. Hold T1 for about half a second and choose TABLES, or cycle AMP to its third page.
+2. Select table 2 with TBL, then hold T1 to open its editor. Set three steps to 0, +4 and +7 semitones, length 3 and loop point 1.
+3. Press NO to return to TBL and set SPD to 1. Hold a long note on a bright sound to hear the table cycle through a major chord.
+4. Release the note and stop playback. Set TBL to OFF to restore ordinary pitch playback for that sound.
+
+## Compatibility and limitations
 
 digitables needs the Digitone core 2.2 (core-dn1 2.2) for its parameter slots, mod page, project data and Mod Menu entry; it requires no other mod. The builder refuses no mod beside it. elekloader’s check decides at build time, and in that check it combines with every other Modwerk mod for Digitone OS 1.43.
-
-## Limitations
 
 - The builder refuses no mod beside it: in elekloader’s check it combines with every other Modwerk mod for Digitone OS 1.43. The author checked that it links with digihealth 1.1, but has not run the two together.
 - It needs the Digitone core 2.2 (core-dn1 2.2) for its parameter slots, mod page, project data and Mod Menu entry; core 2.2 is then the one every Digitone OS 1.43 build uses.
@@ -58,8 +67,24 @@ digitables needs the Digitone core 2.2 (core-dn1 2.2) for its parameter slots, m
 - The author reports testing v1.3 on a Digitone mk1 (3–4 October 2026): the TBL page, the table editor, the fast speeds, the Mod Menu and ADD steps. Not yet checked: the tables restored at power-up, and the arpeggiator with tables. That report is for the author’s own build.
 - SPD MAX steps once every audio block, 1500 times a second at any tempo: the one setting that does not follow the sequencer's tempo, by design. Every other SPD value counts ticks of the 24 PPQN clock.
 
-## Credits
+## Tests and measurements
+
+See [TESTING.md](TESTING.md) for the documentation capture run and the separate pinned author evidence. UI captures do not qualify audio, timing, stress behaviour, persistence or hardware. Imported object memory estimates remain separate from measured runtime cost.
+
+## Authorship and licences
 
 - irpina — digitables design and code
 
-The author’s full documentation is kept in [upstream/README.md](upstream/README.md). Screenshots and a tutorial are still to come.
+The source is pinned to [5bbd9adffbd0f2d97fa0553613c507b43fca3bda](https://github.com/irpina/digitables/tree/5bbd9adffbd0f2d97fa0553613c507b43fca3bda). The full GPL-2.0-or-later licence is in [LICENSE](LICENSE). Capture rights are declared separately in [media/LICENSE.md](media/LICENSE.md).
+
+## Screens and audio
+
+Real firmware-rendered emulator captures on OS 1.43. The [capture record](media/capture.json) includes source/build identities, panel inputs, timestamps and PNG hashes. [Capture rights](media/LICENSE.md) preserve the underlying interface rights. The [thumbnail](media/thumbnail.svg) is an illustration. No audio demonstration is claimed.
+
+![Third AMP page: TBL and SPD](media/tbl.png)
+
+Third AMP page: TBL and SPD.
+
+![Table editor with step 1 NOTE at +04](media/editor-step.png)
+
+Table editor with step 1 NOTE at +04.

@@ -3570,7 +3570,7 @@
       "schemaVersion": 3,
       "id": "digitables",
       "name": "digitables",
-      "version": "1.3.0-experimental",
+      "version": "1.3.1-experimental",
       "machine": "digitone",
       "category": "playback",
       "exclusive": false,
@@ -3597,11 +3597,10 @@
           "A project saved with digitables loads on the stock OS, which ignores the tables and keeps them through a save."
         ],
         "usage": [
-          "A C64 chord: in table 2, steps 0, +4, +7, length 3, loop 1; TBL 2 and SPD 1 on a bright sound with a short release, and hold a long note. Minor: 0, +3, +7.",
-          "A strum: in table 3, steps 0, +4, +7, +12 with ADD on steps 2–4, length 4, loop OFF; TBL 3 and SPD 1 or 1/2 on a plucky sound. Every note becomes a major chord strummed upward.",
-          "Strum down by starting high and adding downward: +12, +7 ADD, +4 ADD, 0 ADD.",
-          "At SPD 1/16 to MAX, small offsets (0, +1, or 0, +12) turn into vibrato and FM-like buzz.",
-          "P-lock TBL or SPD on a trig to play another table, none, or another speed."
+          "Use a build containing digitables and Digitone core 2.2 on OS 1.43. Hold T1 for about half a second and choose TABLES, or cycle AMP to its third page.",
+          "Select table 2 with TBL, then hold T1 to open its editor. Set three steps to 0, +4 and +7 semitones, length 3 and loop point 1.",
+          "Press NO to return to TBL and set SPD to 1. Hold a long note on a bright sound to hear the table cycle through a major chord.",
+          "Release the note and stop playback. Set TBL to OFF to restore ordinary pitch playback for that sound."
         ]
       },
       "access": {
@@ -3611,7 +3610,9 @@
           "Or press AMP until its third page, TBL, shows.",
           "On the TBL page, hold a track key to open the table editor; NO, or holding a track key again, goes back to the TBL page."
         ],
-        "screenshots": []
+        "screenshots": [
+          "media/tbl.png"
+        ]
       },
       "controls": [
         {
@@ -3749,7 +3750,23 @@
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Modwerk’s builder linked and verified a build of the author’s v1.3 source with core 2.2 for OS 1.43; nothing was flashed or tested on hardware in Modwerk, and evidence is none."
+        "summary": "Modwerk’s builder linked and verified a build of the author’s v1.3 source with core 2.2 for OS 1.43; nothing was flashed or tested on hardware in Modwerk, and evidence is none. Documentation captures verify the listed UI pages on OS 1.43; audio, timing and hardware remain unqualified.",
+        "documentation": {
+          "tutorial": {
+            "title": "Quick tutorial: play a three-step pitch table",
+            "steps": [
+              "Use a build containing digitables and Digitone core 2.2 on OS 1.43. Hold T1 for about half a second and choose TABLES, or cycle AMP to its third page.",
+              "Select table 2 with TBL, then hold T1 to open its editor. Set three steps to 0, +4 and +7 semitones, length 3 and loop point 1.",
+              "Press NO to return to TBL and set SPD to 1. Hold a long note on a bright sound to hear the table cycle through a major chord.",
+              "Release the note and stop playback. Set TBL to OFF to restore ordinary pitch playback for that sound."
+            ]
+          },
+          "screenshots": [
+            "media/tbl.png",
+            "media/editor-step.png"
+          ],
+          "captureRecord": "media/capture.json"
+        }
       },
       "license": {
         "spdx": "GPL-2.0-or-later",
@@ -3765,6 +3782,38 @@
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
+        },
+        {
+          "path": "media/tbl.png",
+          "kind": "screenshot",
+          "caption": "Third AMP page: TBL and SPD",
+          "alt": "Third AMP page: TBL and SPD on the Digitone monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; irpina module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.43",
+            "moduleVersion": "1.3.1-experimental",
+            "imageSha256": "1d614a5c85878781cd55b3d9ee261f34345fc95ab14908863b1932f87fa44bb6",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/editor-step.png",
+          "kind": "screenshot",
+          "caption": "Table editor with step 1 NOTE at +04",
+          "alt": "Table editor with step 1 NOTE at +04 on the Digitone monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; irpina module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.43",
+            "moduleVersion": "1.3.1-experimental",
+            "imageSha256": "1d614a5c85878781cd55b3d9ee261f34345fc95ab14908863b1932f87fa44bb6",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
         }
       ],
       "source": {
