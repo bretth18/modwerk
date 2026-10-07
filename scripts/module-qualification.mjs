@@ -50,14 +50,16 @@ async function requireOwnerApprovedUpdate(root, folder, document) {
   try { approval=JSON.parse(await readFile(resolve(root,'sdk',document.id+'-build-approval.json'),'utf8')) } catch(error) { if(error.code==='ENOENT') return null; throw error }
   if(approval?.kind!=='owner-approved-update') return null
   const fail=message=>{ throw new Error(document.id+': owner-approved update '+message) }
-  if(Object.keys(approval).sort().join(',')!=='approvedBy,approvedOn,id,kind,ownerStatement,reason,sourceSha256,version,waived') fail('record has unexpected or missing fields')
+  const keys=Object.keys(approval).filter(key=>key!=='retainedUiVersion').sort().join(',')
+  if(keys!=='approvedBy,approvedOn,id,kind,ownerStatement,reason,sourceSha256,version,waived') fail('record has unexpected or missing fields')
   if(approval.id!==document.id||approval.version!==document.version) fail('does not cover this module version')
   if(approval.approvedBy!=='repeat98'||!/^\d{4}-\d{2}-\d{2}$/.test(approval.approvedOn)) fail('needs the owner and an approval date')
   if(![approval.ownerStatement,approval.reason].every(value=>typeof value==='string'&&value.trim())) fail('needs the owner statement and a reason')
   if(!Array.isArray(approval.waived)||!approval.waived.length||new Set(approval.waived).size!==approval.waived.length||approval.waived.some(item=>!UPDATE_WAIVABLE.includes(item))) fail('waives only '+UPDATE_WAIVABLE.join(', '))
   if(approval.sourceSha256!==await moduleNativeSourceSha256(folder,document)) fail('does not cover this exact native source')
   if(document.tests.hardwareStatus==='verified') fail('cannot claim verified hardware')
-  if(approval.waived.includes('release-documentation')) requireModuleUiForPublication(document)
+  if(approval.retainedUiVersion!==undefined && (!approval.waived.includes('release-documentation') || typeof approval.retainedUiVersion!=='string' || compareModuleVersions(approval.retainedUiVersion,document.version)>=0)) fail('retained UI must name an earlier version and explicitly waive release documentation')
+  if(approval.waived.includes('release-documentation')) requireModuleUiForPublication(document,approval.retainedUiVersion)
   else await requireModuleDocumentation(folder,document)
   return 'owner-approved-update'
 }

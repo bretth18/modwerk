@@ -176,3 +176,7 @@ These are actual headless-emulator LCD captures, not hardware results. See
 [original capture record](media/capture.json) and [media rights](media/LICENSE.md). The track swing capture above is
 recorded separately in [swing capture provenance](docs/swing-capture.md).
 No audio preview is included.
+
+## Clock reset safety (0.1.4)
+
+Both PLAY paths save the full status register, mask interrupts while resetting Euclid's clock, and restore the previous interrupt mask and condition flags. The C reset clears initialized before rewriting the clock and publishes it last, with compiler memory barriers. This ports [octabam #620](https://github.com/sambanks/octabam/pull/620), pinned at 6f9e5bc9. Track timing, swing, phase policy and controls are unchanged.

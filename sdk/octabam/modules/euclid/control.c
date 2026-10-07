@@ -7,15 +7,30 @@ _Static_assert(sizeof(EuState) == 164, "hooks.s instance allocation");
 
 static uint32_t min_u(uint32_t a, uint32_t b) { return a < b ? a : b; }
 
-void eu_clock_start(EuClock *c, uint32_t now) {
+/* eu_clock_start is called from the PLAY sites in task context while the
+ * frame ISR may run eu_clock_update, which reads the fields once `initialized`
+ * is set: clear it before the rewrite and set it last. */
+#define EU_ORDER() __asm__ volatile("" ::: "memory")
+
+static void clock_init(EuClock *c, uint32_t now) {
     c->now = now;
     c->quantum = c->remainder = 0;
     ++c->epoch;
     c->initialized = 1;
 }
 
+void eu_clock_start(EuClock *c, uint32_t now) {
+    c->initialized = 0;
+    EU_ORDER();
+    c->now = now;
+    c->quantum = c->remainder = 0;
+    ++c->epoch;
+    EU_ORDER();
+    c->initialized = 1;
+}
+
 void eu_clock_update(EuClock *c, uint32_t now) {
-    if (!c->initialized) { eu_clock_start(c, now); return; }
+    if (!c->initialized) { clock_init(c, now); return; }
     /* Signed subtraction tolerates the 32-bit clock wrapping (~34 s at
      * 120 BPM), and the small backwards corrections of external clock. */
     int32_t delta = (int32_t)(now - c->now);
@@ -174,8 +189,8 @@ extern EuState eu_states[16];
 #define U8(a) (*(volatile uint8_t *)(a))
 #define U32(a) (*(volatile uint32_t *)(a))
 
-/* Sequencer records and settings, named after tools/emu/emu_rtos.py and
- * docs/firmware/EXTERNAL.md section 9.3. Keep the two bases explicit: the
+/* Sequencer records and settings, named after tools/emu/emu_rtos.py (retired 26 Sep 2026, 60509404) and
+ * EXTERNAL.md section 9.3 (git show 0fa4215d:docs/firmware/EXTERNAL.md). Keep the two bases explicit: the
  * scale-mode and global values belong to the pattern record; the remaining
  * values belong to TRAC. */
 enum {
@@ -251,3 +266,4 @@ void eu_publish_frame(void) {
         eu_publish(record + track * 32, track);
 }
 #endif
+

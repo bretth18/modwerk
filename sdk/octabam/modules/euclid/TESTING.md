@@ -57,3 +57,11 @@ does not alter the existing hardware status or qualify a firmware release.
 Publication metadata was synchronized with current main without changing native code.
 The capture record preserves the original draft version and records the source-file
 comparison binding these exact pixels to this documentation/media-only update.
+
+## 0.1.4 clock reset safety
+
+The reset fix is imported from octabam #620 at 6f9e5bc9. Generated ColdFire assembly is rebuilt from control.c and hooks.s with the same toolchain that reproduces the previous source exactly. Both PLAY paths still call one reset routine, now with the full status register saved and audio interrupts masked.
+
+Hardware restart under interrupt load, chip worst-case timing, aliasing, DC, clipping and idle audio: **not tested for this version**. Historical software and UI records above do not qualify this changed runtime. Software verification passed: the 16 upstream control checks cover all step/pulse counts, seven track speeds, swing, rotation/loop state, envelope/gate edges and counter wrap. The generated assembly was compiled with the baseline-reproducing toolchain. Native/browser comparison passed all 98 selected configurations (42 matching builds and 56 matching refusals), including rejection of altered original firmware. No hardware or chip timing is inferred from these checks.
+
+The owner approved retaining the existing 0.1.3 UI documentation for this clock-only update. PNGs and their historical capture metadata remain unchanged; no new UI capture or hardware test is claimed. The exact-source approval records `retainedUiVersion`, and publication validation still checks the documented access and control views.
