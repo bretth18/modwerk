@@ -324,7 +324,7 @@
       "schemaVersion": 3,
       "id": "digieq",
       "name": "Digi EQ",
-      "version": "1.0.0-experimental",
+      "version": "1.0.1-experimental",
       "machine": "digitakt",
       "category": "effects",
       "exclusive": false,
@@ -351,11 +351,10 @@
           "Bell and shelf bands at 0 dB cost nothing."
         ],
         "usage": [
-          "Give each pattern its own master tone: the EQ is saved with the pattern’s kit, and loading a sound onto a track leaves it as it is.",
-          "Turn on MASTER EQ in SETTINGS > GLOBAL FX/MIX to carry one EQ across every pattern, and save the project to keep it in those patterns.",
-          "If you hear clicks in a busy project, set bands back to 0 dB and away from the filter types, or turn on digihealth’s FAST AUDIO for headroom.",
-          "When boosting, lower the master volume or cut elsewhere: the output is limited to full scale.",
-          "On the unit, check once after a power cycle that a pattern’s EQ came back."
+          "Use a build containing Digi EQ. Press FUNC + LFO twice to reach Master EQ (2/4). Start a pattern with audio already loaded.",
+          "Turn band 1 level with A and its frequency with E to compare a small low-frequency cut with the initial 0 dB setting.",
+          "Press A to edit the band’s Q and E to edit its type; press them again to return to level and frequency.",
+          "Return every band to 0 dB and use the original shelf/bell types for the starting response, then stop playback. A zero-level HP, LP, BP or notch still filters."
         ]
       },
       "access": {
@@ -366,7 +365,9 @@
           "Press a knob to switch it to its band’s Q (A-D) or type (E-H); press it again to go back.",
           "For one EQ on every pattern, turn on SETTINGS > GLOBAL FX/MIX > MASTER EQ."
         ],
-        "screenshots": []
+        "screenshots": [
+          "media/eq.png"
+        ]
       },
       "controls": [
         {
@@ -458,7 +459,23 @@
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Modwerk’s elekloader builder linked and verified a build of Digi EQ 1.0b with core 2.1 for OS 1.53 and 1.54; nothing was flashed or tested on hardware, and the evidence tier is none."
+        "summary": "Modwerk’s elekloader builder linked and verified a build of Digi EQ 1.0b with core 2.1 for OS 1.53 and 1.54; nothing was flashed or tested on hardware, and the evidence tier is none. Documentation captures verify the listed UI pages on OS 1.53; audio, timing and hardware remain unqualified.",
+        "documentation": {
+          "tutorial": {
+            "title": "Quick tutorial: shape the master mix",
+            "steps": [
+              "Use a build containing Digi EQ. Press FUNC + LFO twice to reach Master EQ (2/4). Start a pattern with audio already loaded.",
+              "Turn band 1 level with A and its frequency with E to compare a small low-frequency cut with the initial 0 dB setting.",
+              "Press A to edit the band’s Q and E to edit its type; press them again to return to level and frequency.",
+              "Return every band to 0 dB and use the original shelf/bell types for the starting response, then stop playback. A zero-level HP, LP, BP or notch still filters."
+            ]
+          },
+          "screenshots": [
+            "media/eq.png",
+            "media/q-type.png"
+          ],
+          "captureRecord": "media/capture.json"
+        }
       },
       "license": {
         "spdx": "MIT",
@@ -474,6 +491,38 @@
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
+        },
+        {
+          "path": "media/eq.png",
+          "kind": "screenshot",
+          "caption": "Master EQ (2/4): band levels and frequencies",
+          "alt": "Master EQ (2/4): band levels and frequencies on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "1.0.1-experimental",
+            "imageSha256": "4542b2464429b97b77205ed7c793d39c94a5b3bce2116896411369f0e2a07e80",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/q-type.png",
+          "kind": "screenshot",
+          "caption": "Master EQ: pressed knobs show Q and filter type",
+          "alt": "Master EQ: pressed knobs show Q and filter type on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "1.0.1-experimental",
+            "imageSha256": "4542b2464429b97b77205ed7c793d39c94a5b3bce2116896411369f0e2a07e80",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
         }
       ],
       "source": {

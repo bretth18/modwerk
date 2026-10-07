@@ -1,21 +1,10 @@
 # Digi EQ
 
+Modwerk metadata version: `1.0.1-experimental`.
+
+## Overview
+
 Digi EQ is a 4-band EQ on the master mix, before the render hands it to the analog outputs and to the USB stream, so main outs, headphones and USB audio all carry it, as they do the compressor. It is a master page (FUNC + LFO) between Compressor and Internal Mixer: knobs A-D set the bands’ levels and E-H their frequencies, and a press switches a knob to its band’s Q or type. The response curve is drawn above the knobs. The settings live in the pattern’s kit, so every pattern has its own EQ, saved with the project and kept over a power-off. SETTINGS > GLOBAL FX/MIX > MASTER EQ makes the EQ you can hear override every pattern’s own.
-
-By gdeo607 (@gdeo607) · MIT · Digitakt OS 1.53, 1.54 · imported from [gdeo607/digi1_mods](https://github.com/gdeo607/digi1_mods/tree/35bacb3730d108e4dc48a7bd6de4c99ae9b161e6) (`mods/digieq`) at 1.0b.
-
-Modwerk metadata version: `1.0.0-experimental`.
-
-## Where to find it
-
-Master pages (FUNC + LFO): Master EQ (2/4), between Compressor and Internal Mixer.
-
-1. Press FUNC + LFO for the master pages; FUNC + LFO steps through Compressor (1/4), Master EQ (2/4), Internal Mixer (3/4) and External Mixer (4/4).
-2. Turn knobs A-D for the bands’ levels and E-H for their frequencies; bands 1-4 are the columns A/E, B/F, C/G and D/H.
-3. Press a knob to switch it to its band’s Q (A-D) or type (E-H); press it again to go back.
-4. For one EQ on every pattern, turn on SETTINGS > GLOBAL FX/MIX > MASTER EQ.
-
-The graph shows the EQ’s response (0 dB dotted, ±12 dB at the top and bottom), the band points 1-4 with the band last touched filled, and ticks at 100 Hz, 1 kHz and 10 kHz. The knob turned last is underlined. The LEVEL knob works as on every page.
 
 ## Controls
 
@@ -29,11 +18,29 @@ The graph shows the EQ’s response (0 dB dotted, ±12 dB at the top and bottom)
 
 The controls are described in the author’s [docs/USAGE.md](https://github.com/gdeo607/digi1_mods/blob/35bacb3730d108e4dc48a7bd6de4c99ae9b161e6/docs/USAGE.md). The EQ is off until a band is changed. A pattern whose kit was made before Digi EQ starts flat. Loading a sound onto a track does not change the EQ; loading a project brings back each pattern’s own EQ at once.
 
-## Compatibility
+## Usage
+
+Use the access steps below after installing a compatible build. The tutorial gives a first practical pass through the module.
+
+### Where to find it
+
+Master pages (FUNC + LFO): Master EQ (2/4), between Compressor and Internal Mixer
+
+1. Press FUNC + LFO for the master pages; FUNC + LFO steps through Compressor (1/4), Master EQ (2/4), Internal Mixer (3/4) and External Mixer (4/4).
+2. Turn knobs A-D for the bands’ levels and E-H for their frequencies; bands 1-4 are the columns A/E, B/F, C/G and D/H.
+3. Press a knob to switch it to its band’s Q (A-D) or type (E-H); press it again to go back.
+4. For one EQ on every pattern, turn on SETTINGS > GLOBAL FX/MIX > MASTER EQ.
+
+### Quick tutorial: shape the master mix
+
+1. Use a build containing Digi EQ. Press FUNC + LFO twice to reach Master EQ (2/4). Start a pattern with audio already loaded.
+2. Turn band 1 level with A and its frequency with E to compare a small low-frequency cut with the initial 0 dB setting.
+3. Press A to edit the band’s Q and E to edit its type; press them again to return to level and frequency.
+4. Return every band to 0 dB and use the original shelf/bell types for the starting response, then stop playback. A zero-level HP, LP, BP or notch still filters.
+
+## Compatibility and limitations
 
 Digi EQ requires no other mod; it needs core 2.1, which the builder brings. The builder refuses no pairing: in elekloader’s check Digi EQ combines with every other Modwerk mod for its OS, NEIGHBOR, DIGISLICER and SOPHIE among them. elekloader’s check decides at build time.
-
-## Limitations
 
 - The builder refuses no pairing: in elekloader’s check Digi EQ combines with every other Modwerk mod for its OS, NEIGHBOR, DIGISLICER and SOPHIE among them.
 - Built for OS 1.53 and 1.54.
@@ -44,8 +51,24 @@ Digi EQ requires no other mod; it needs core 2.1, which the builder brings. The 
 - The page is an extra entry in the firmware’s master view (its unused “None” page, renamed); the author notes that an untested path of that view could treat it differently.
 - Its author reports Digi EQ 1.0b is not yet tested on a unit; it passes their emulator tests on OS 1.53 and 1.54.
 
-## Credits
+## Tests and measurements
 
-- gdeo607 (@gdeo607) — Digi EQ design and code, part of [digi1_mods](https://github.com/gdeo607/digi1_mods)
+See [TESTING.md](TESTING.md) for the documentation capture run and the separate pinned author evidence. UI captures do not qualify audio, timing, stress behaviour, persistence or hardware. Imported object memory estimates remain separate from measured runtime cost.
 
-The author’s full documentation is kept in [upstream/REPOSITORY.md](upstream/REPOSITORY.md). Screenshots and a tutorial are still to come.
+## Authorship and licences
+
+- gdeo607 — Digi EQ design and code, part of digi1_mods
+
+The source is pinned to [35bacb3730d108e4dc48a7bd6de4c99ae9b161e6](https://github.com/gdeo607/digi1_mods/tree/35bacb3730d108e4dc48a7bd6de4c99ae9b161e6). The full MIT licence is in [LICENSE](LICENSE). Capture rights are declared separately in [media/LICENSE.md](media/LICENSE.md).
+
+## Screens and audio
+
+Real firmware-rendered emulator captures on OS 1.53. The [capture record](media/capture.json) includes source/build identities, panel inputs, timestamps and PNG hashes. [Capture rights](media/LICENSE.md) preserve the underlying interface rights. The [thumbnail](media/thumbnail.svg) is an illustration. No audio demonstration is claimed.
+
+![Master EQ (2/4): band levels and frequencies](media/eq.png)
+
+Master EQ (2/4): band levels and frequencies.
+
+![Master EQ: pressed knobs show Q and filter type](media/q-type.png)
+
+Master EQ: pressed knobs show Q and filter type.
