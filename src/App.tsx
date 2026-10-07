@@ -1,6 +1,7 @@
 import { AccountPage } from './community/AccountPage'
 import { DiscordInvitePrompt } from './community/DiscordInvite'
 import { SignupWelcome } from './community/SignupWelcome'
+import { HardwareFeedbackReminder } from './community/HardwareFeedbackReminder'
 import { NotificationBell } from './community/NotificationBell'
 import { useMembersOnline } from './community/useMembersOnline'
 import { MembersOnlineChip } from './community/MembersOnline'
@@ -284,6 +285,7 @@ export default function App() {
         </header>
         <main className="workspace-content" id="main-content" ref={mainRef} tabIndex={-1}>
           {!accountRoute && <SignupWelcome key={route} />}
+          {!accountRoute && !developerRoute && !configuration && machineView !== 'configuration' && !['admin', 'privacy', 'impressum', 'community-rules', 'report-content'].includes(route) && <HardwareFeedbackReminder />}
           {!phoneLayout && projectNotice}
           {workspace.storageError && <div className="file-error" role="alert">{workspace.storageError} Export important configurations before closing this tab.</div>}
           {route === 'faq' ? <FaqPage /> : machineView && !digiDevice ? <EmptyMachine key={currentDevice.id} device={currentDevice} machinePicker={machinePicker} /> : !ready ? <div className="loading-panel" role="status">Opening your workspace…</div> : <>

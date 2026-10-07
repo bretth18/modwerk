@@ -5,24 +5,26 @@ import { post } from './api'
 import { HARDWARE_NOTE_LIMIT, hardwareReportBody, type BuiltModule } from './build-follow-up'
 import { useCommunity } from './context'
 import { moduleIssueHref, moduleThreadId } from './modules'
+import { updateHardwareFeedback } from './hardware-feedback'
 
 const errorText = (error: unknown) => error instanceof Error ? error.message : 'The request could not be completed.'
 
 /** Shown once a build is downloaded: tell each module's thread how it runs on the unit.
  * The build panels sit behind the member gate, so only verified members see it. */
-export function BuildFollowUp({ machine, os, modules }: { machine: string; os: string; modules: readonly BuiltModule[] }) {
+export function BuildFollowUp({ machine, os, modules, pendingIds, onPosted }: { machine: string; os: string; modules: readonly BuiltModule[]; pendingIds?: readonly string[]; onPosted?: (href: string) => void }) {
   const { session } = useCommunity()
+  const heading = useId()
   if (!modules.length || !session.user?.verified) return null
   const several = modules.length > 1
-  return <section className="configuration-section build-follow-up" aria-labelledby="build-follow-up-title">
-    <div className="section-title"><h2 id="build-follow-up-title">After you flash</h2></div>
+  return <section className="configuration-section build-follow-up" aria-labelledby={heading}>
+    <div className="section-title"><h2 id={heading}>After you flash</h2></div>
     <p className="service-note">Local checks can’t prove a build on hardware. Once you’ve played with it, tell others how {several ? 'these modules run' : 'this module runs'} on your {machine}. Every report helps the next person decide.</p>
-    <ul className="build-follow-up-list">{modules.map(module => <HardwareReport key={module.id} machine={machine} os={os} module={module} build={modules} />)}</ul>
+    <ul className="build-follow-up-list">{modules.filter(module => !pendingIds || pendingIds.includes(module.id)).map(module => <HardwareReport key={module.id} memberId={session.user!.id} machine={machine} os={os} module={module} build={modules} onPosted={onPosted} />)}</ul>
   </section>
 }
 
 /** “Works” opens a short note that posts to the module's thread; a problem goes to the module's issue form instead. */
-function HardwareReport({ machine, os, module, build }: { machine: string; os: string; module: BuiltModule; build: readonly BuiltModule[] }) {
+function HardwareReport({ memberId, machine, os, module, build, onPosted }: { memberId: string; machine: string; os: string; module: BuiltModule; build: readonly BuiltModule[]; onPosted?: (href: string) => void }) {
   const [open, setOpen] = useState(false), [note, setNote] = useState(''), [busy, setBusy] = useState(false), [error, setError] = useState('')
   const [posted, setPosted] = useState(''), field = useId()
   const thread = moduleThreadId(module.id)
@@ -30,7 +32,9 @@ function HardwareReport({ machine, os, module, build }: { machine: string; os: s
     setBusy(true); setError('')
     try {
       const result = await post<{ id: string; page: number }>('/forum/threads/' + thread + '/replies', { body: hardwareReportBody(machine, os, module, build, note) })
-      setPosted(threadHref(thread, module.name + ' discussion', '?page=' + result.page + '&post=' + result.id)); setOpen(false)
+      const href = threadHref(thread, module.name + ' discussion', '?page=' + result.page + '&post=' + result.id)
+      setPosted(href); setOpen(false); onPosted?.(href)
+      updateHardwareFeedback(memberId, { machine, os, modules: build }, { completed: module.id })
     } catch (error) { setError(errorText(error)) }
     finally { setBusy(false) }
   }

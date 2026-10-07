@@ -926,6 +926,9 @@ h1 { font-size: 28px; }
 .build-follow-up-row .forum-actions {margin:0}
 .build-follow-up-form {margin-top:12px}
 .build-follow-up-form textarea {width:100%}
+.hardware-feedback-reminder {margin-bottom:24px}
+.hardware-feedback-reminder > .forum-actions {flex-wrap:wrap;gap:12px}
+.hardware-feedback-reminder .build-follow-up {margin:20px 0 0;padding:0;border:0}
 .build-identity {font-size:12px;line-height:1.6}
 .build-identity dd {margin:2px 0 12px;overflow-wrap:anywhere;font-family:monospace}
 .build-log {margin:10px 0 14px;padding:0;list-style:none;font:12px/1.6 var(--mono);color:#b0b0c0;white-space:pre-wrap;overflow-wrap:anywhere}

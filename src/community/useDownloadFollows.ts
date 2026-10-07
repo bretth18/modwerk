@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { useCommunity } from './context'
 import { followDownloadedModules } from './download-follows'
+import { rememberHardwareFeedback, type DownloadedBuild } from './hardware-feedback'
 
 export function useDownloadFollows() {
   const { session } = useCommunity()
   const [followNotice, setFollowNotice] = useState('')
-  function followDownloads(ids: readonly string[]) {
+  function followDownloads(ids: readonly string[], build?: DownloadedBuild) {
     if (!session.user?.verified || !ids.length) return
+    if (build) rememberHardwareFeedback(session.user.id, build)
     setFollowNotice('Saving module update preferences…')
     void followDownloadedModules(ids).then(result => {
       window.dispatchEvent(new Event('modwerk-module-updates'))
