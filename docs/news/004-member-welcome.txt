@@ -1,0 +1,35 @@
+Subject: Hello from Modwerk
+Preheader: More modules are coming, and the repo is open for contributions.
+
+A note from Jannik · Welcome
+
+Thanks for joining Modwerk.
+
+Hi,
+
+Thanks for signing up. Modwerk is still getting started, and it’s good to have you here.
+
+Lots of modules are already on their way to being integrated. I’ll keep you posted as they’re added.
+
+If you’re a developer, start from the submit page: a prompt for your coding agent and every check a module goes through. Effects, machines and MIDI generators are all welcome.
+
+Start developing:
+https://modwerk.app/#submit
+
+When you’re ready, fork the repo on GitHub and open a pull request:
+https://github.com/repeat98/modwerk
+
+We need your help spreading the word to get the ball rolling. If you know someone who’d be into Modwerk (https://modwerk.app/), please send them the link.
+
+Come say hi on Discord and share what you’re working on.
+
+Join us on Discord:
+https://discord.gg/QQxFb85m7
+
+See you around,
+Jannik
+
+You’re receiving this welcome email because you joined Modwerk. You can manage future news emails in your account settings:
+https://modwerk.app/#account
+
+Modwerk · https://modwerk.app/

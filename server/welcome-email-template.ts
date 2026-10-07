@@ -1,5 +1,5 @@
 /** Keep queued payloads stable for provider retries, and the current previews in docs/news in sync. */
-export const WELCOME_EMAIL_VERSION = 'modwerk-welcome-004'
+export const WELCOME_EMAIL_VERSION = 'modwerk-welcome-005'
 const firstWelcomeEmail = {
   subject: 'Hello from Modwerk',
   html: `<!doctype html>
@@ -213,21 +213,28 @@ Modwerk · https://modwerk.app/
 const developerParagraph = 'fork the repo and start adding your own modules.'
 const developerCaption = 'The SDK and contribution guide are in the repo.'
 const forkLink = 'href="https://github.com/repeat98/modwerk"'
-/** 7 October 2026 (modwerk-welcome-004): the forum welcome, with developers sent to the submit page before the repo. */
-const submitWelcomeEmail = {
-  ...forumWelcomeEmail,
-  html: forumWelcomeEmail.html
-    .replace(developerParagraph + '</strong>', 'start from the submit page: a prompt for your coding agent and every check a module goes through.</strong> Effects, machines and MIDI generators are all welcome.')
-    .replace(forkLink + ' style="display:inline-block;padding:15px 22px;border:1px solid #727dde;border-radius:7px;color:#ffffff;font-size:15px;font-weight:bold;line-height:20px;text-decoration:none;">Fork the repo', 'href="https://modwerk.app/#submit" style="display:inline-block;padding:15px 22px;border:1px solid #727dde;border-radius:7px;color:#ffffff;font-size:15px;font-weight:bold;line-height:20px;text-decoration:none;">Start developing')
-    .replace(developerCaption, 'When you’re ready, fork the repo on <a ' + forkLink + ' ' + link + '>GitHub</a> and open a pull request.'),
-  text: forumWelcomeEmail.text
-    .replace(developerParagraph, 'start from the submit page: a prompt for your coding agent and every check a module goes through. Effects, machines and MIDI generators are all welcome.')
-    .replace('Fork the repo:\nhttps://github.com/repeat98/modwerk\n\n' + developerCaption, 'Start developing:\nhttps://modwerk.app/#submit\n\nWhen you’re ready, fork the repo on GitHub and open a pull request:\nhttps://github.com/repeat98/modwerk'),
+/** Sends developers to the submit page before the repo. */
+function withSubmitPage(email: typeof firstWelcomeEmail) {
+  return {
+    ...email,
+    html: email.html
+      .replace(developerParagraph + '</strong>', 'start from the submit page: a prompt for your coding agent and every check a module goes through.</strong> Effects, machines and MIDI generators are all welcome.')
+      .replace(forkLink + ' style="display:inline-block;padding:15px 22px;border:1px solid #727dde;border-radius:7px;color:#ffffff;font-size:15px;font-weight:bold;line-height:20px;text-decoration:none;">Fork the repo', 'href="https://modwerk.app/#submit" style="display:inline-block;padding:15px 22px;border:1px solid #727dde;border-radius:7px;color:#ffffff;font-size:15px;font-weight:bold;line-height:20px;text-decoration:none;">Start developing')
+      .replace(developerCaption, 'When you’re ready, fork the repo on <a ' + forkLink + ' ' + link + '>GitHub</a> and open a pull request.'),
+    text: email.text
+      .replace(developerParagraph, 'start from the submit page: a prompt for your coding agent and every check a module goes through. Effects, machines and MIDI generators are all welcome.')
+      .replace('Fork the repo:\nhttps://github.com/repeat98/modwerk\n\n' + developerCaption, 'Start developing:\nhttps://modwerk.app/#submit\n\nWhen you’re ready, fork the repo on GitHub and open a pull request:\nhttps://github.com/repeat98/modwerk'),
+  }
 }
-export const welcomeEmail = submitWelcomeEmail
+/** 7 October 2026 (modwerk-welcome-004): the forum welcome, with developers sent to the submit page before the repo. */
+const submitWelcomeEmail = withSubmitPage(forumWelcomeEmail)
+/** 7 October 2026 (modwerk-welcome-005): back to the Discord welcome's wording, without the forum tour, keeping the submit page. */
+const discordSubmitWelcomeEmail = withSubmitPage(discordWelcomeEmail)
+export const welcomeEmail = discordSubmitWelcomeEmail
 export const welcomeEmailVersions: Readonly<Record<string, typeof welcomeEmail>> = {
   'modwerk-welcome-001': firstWelcomeEmail,
   'modwerk-welcome-002': discordWelcomeEmail,
   'modwerk-welcome-003': forumWelcomeEmail,
+  'modwerk-welcome-004': submitWelcomeEmail,
   [WELCOME_EMAIL_VERSION]: welcomeEmail,
 }
