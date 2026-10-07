@@ -7,6 +7,7 @@
 	.type	eu_clock_start, @function
 eu_clock_start:
 	move.l 4(%sp),%a0
+	clr.l 16(%a0)
 	move.l 8(%sp),(%a0)
 	clr.l 8(%a0)
 	clr.l 4(%a0)
@@ -967,20 +968,22 @@ eu_resume_hook:
         bsr.s   eu_reset_clock
         jmp     0x4009c4da
 
-| Preserve the CCR produced by the displaced PLAYING store. BSR, LEA and
-| MOVEM do not alter it, so save it only after the call has pushed its return
-| address; restore it after every instruction that can change the flags.
+| The whole SR is saved after the call has pushed its return address (BSR,
+| LEA and MOVEM leave the CCR of the displaced PLAYING store alone), the
+| interrupt mask is raised to 7 around eu_clock_start, and the saved SR
+| restores both the mask and that CCR.
 eu_reset_clock:
         lea     -28(%sp),%sp
         movem.l %d0-%d1/%a0-%a1,%sp@(12)
-        move.w  %ccr,%d1
+        move.w  %sr,%d1
         move.w  %d1,%sp@(8)
+        move.w  #0x2700,%sr         | the frame ISR reads eu_clock
         move.l  #eu_clock,(%sp)
         move.l  0x4610757c,%d0
         move.l  %d0,4(%sp)
         jsr     eu_clock_start
         move.w  %sp@(8),%d1
-        move.w  %d1,%ccr
+        move.w  %d1,%sr
         movem.l %sp@(12),%d0-%d1/%a0-%a1
         lea     28(%sp),%sp
         rts
@@ -993,3 +996,4 @@ eu_clock:
         .zero   20
 eu_states:
         .zero   2624
+
