@@ -899,6 +899,14 @@ h1 { font-size: 28px; }
 .install-guide ol {padding-left:22px;line-height:1.65}
 .install-guide li {margin:10px 0}
 .install-guide details {margin-top:16px}
+.build-follow-up-follow {display:grid;gap:8px;justify-items:start;margin:16px 0 4px}
+.build-follow-up-follow .service-note {margin:0}
+.build-follow-up-list {list-style:none;margin:16px 0 0;padding:0;border-top:1px solid var(--line)}
+.build-follow-up-module {padding:12px 0;border-bottom:1px solid var(--line)}
+.build-follow-up-row {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.build-follow-up-row .forum-actions {margin:0}
+.build-follow-up-form {margin-top:12px}
+.build-follow-up-form textarea {width:100%}
 .build-identity {font-size:12px;line-height:1.6}
 .build-identity dd {margin:2px 0 12px;overflow-wrap:anywhere;font-family:monospace}
 .build-log {margin:10px 0 14px;padding:0;list-style:none;font:12px/1.6 var(--mono);color:#b0b0c0;white-space:pre-wrap;overflow-wrap:anywhere}
