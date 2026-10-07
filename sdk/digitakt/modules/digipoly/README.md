@@ -1,20 +1,10 @@
 # Digi Poly
 
+Modwerk metadata version: `2.0.1-experimental`.
+
+## Overview
+
 Digi Poly adds a POLY machine to the FUNC+SRC list. A POLY track plays like ONESHOT, but its TRIG page becomes the MIDI tracks’ page, so every trig can carry a chord: NOT1 plays on the track’s own voice and NOT2-NOT4 each borrow the voice of another track. A borrowed voice plays the POLY track’s whole sound, follows its knobs and level, and gets its own sound back at its own next trig. The track’s key plays the chord, notes on its own MIDI channel play polyphonically, and SETTINGS > POLY chooses, per pattern, which tracks lend their voice.
-
-By gdeo607 (@gdeo607) · MIT · Digitakt OS 1.53, 1.54 · imported from [gdeo607/digi1_mods](https://github.com/gdeo607/digi1_mods/tree/35bacb3730d108e4dc48a7bd6de4c99ae9b161e6) at version 2.0.
-
-Modwerk metadata version: `2.0.0-experimental`.
-
-## Where to find it
-
-SRC machine list, after SLICE.
-
-1. On any audio track press FUNC + SRC and choose POLY, after SLICE, with a three-note icon.
-2. Set the chord on the track’s TRIG page: NOT1 and NOT2-NOT4.
-3. Choose which tracks lend their voice in SETTINGS > POLY.
-
-The track keeps its sample, filter, amp and LFO settings as with any machine; its SRC page is ONESHOT’s.
 
 ## Controls
 
@@ -33,14 +23,31 @@ The extra notes take a voice from another track: the one whose last note started
 
 Several tracks can be POLY; each plays its own chords. The author’s [docs/USAGE.md](https://github.com/gdeo607/digi1_mods/blob/35bacb3730d108e4dc48a7bd6de4c99ae9b161e6/docs/USAGE.md) describes the controls in full.
 
-## Compatibility
+## Usage
+
+Use the access steps below after installing a compatible build. The tutorial gives a first practical pass through the module.
+
+### Where to find it
+
+SRC machine list, after SLICE
+
+1. On any audio track press FUNC + SRC and choose POLY, after SLICE, with a three-note icon.
+2. Set the chord on the track’s TRIG page: NOT1 and NOT2-NOT4.
+3. Choose which tracks lend their voice in SETTINGS > POLY.
+
+### Quick tutorial: play a three-note sample chord
+
+1. Use a build containing Digi Poly and digichain, and load a sample into the project. Select POLY with FUNC + SRC, then confirm with YES.
+2. On TRIG choose NOT1, set NOT2 to +4 and NOT3 to +7, and leave NOT4 off for a three-note major chord.
+3. Check SETTINGS > POLY and leave enough other audio tracks in the voice pool. Trigger the POLY track to hear its sample across the chord.
+4. Stop playback. Turn NOT2 and NOT3 off, or select ONESHOT, to return to single-note playback.
+
+## Compatibility and limitations
 
 - Requires DIGICHAIN (`digichain`) and core 2.1. elekloader ticks DIGICHAIN with Digi Poly.
 - The builder refuses it beside NEIGHBOR, DIGISLICER and SOPHIE: elekloader refuses these together because their patch sites overlap.
 - Built for OS 1.53 and 1.54.
 - elekloader’s check decides at build time whether a selection of mods combines.
-
-## Limitations
 
 - elekloader refuses it in one build with NEIGHBOR, DIGISLICER or SOPHIE, because their patch sites overlap.
 - Built for OS 1.53 and 1.54.
@@ -53,8 +60,28 @@ Several tracks can be POLY; each plays its own chords. The author’s [docs/USAG
 - The author’s mod also declares a conflict with dt8poly, their earlier POLY mod, which is not in Modwerk.
 - Not yet tested on a unit, the author reports; it passes their emulator tests on OS 1.53 and 1.54.
 
-## Credits
+## Tests and measurements
+
+See [TESTING.md](TESTING.md) for the documentation capture run and the separate pinned author evidence. UI captures do not qualify audio, timing, stress behaviour, persistence or hardware. Imported object memory estimates remain separate from measured runtime cost.
+
+## Authorship and licences
 
 - gdeo607 — Digi Poly, the POLY machine of digi1_mods
 
-The author’s full documentation is kept in [upstream/REPOSITORY.md](upstream/REPOSITORY.md). Screenshots and a tutorial are still to come.
+The source is pinned to [35bacb3730d108e4dc48a7bd6de4c99ae9b161e6](https://github.com/gdeo607/digi1_mods/tree/35bacb3730d108e4dc48a7bd6de4c99ae9b161e6). The full MIT licence is in [LICENSE](LICENSE). Capture rights are declared separately in [media/LICENSE.md](media/LICENSE.md).
+
+## Screens and audio
+
+Real firmware-rendered emulator captures on OS 1.53. The [capture record](media/capture.json) includes source/build identities, panel inputs, timestamps and PNG hashes. [Capture rights](media/LICENSE.md) preserve the underlying interface rights. The [thumbnail](media/thumbnail.svg) is an illustration. No audio demonstration is claimed.
+
+![POLY in the machine chooser](media/chooser.png)
+
+POLY in the machine chooser.
+
+![POLY chord controls on TRIG](media/chord.png)
+
+POLY chord controls on TRIG.
+
+![POLY voice pool in Settings](media/settings.png)
+
+POLY voice pool in Settings.
