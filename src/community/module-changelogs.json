@@ -642,7 +642,8 @@
         "date": "2026-10-07",
         "changes": [
           "Add OT, OTFX, OTFX-T and DT-T mute behavior through PROJECT > SYSTEM > PERSONALIZE, retaining the MKII LED BRIGHTNESS row.",
-          "Automatically select the authored SC_KEY variant beside Sidechain Compressor. Native execution covers mute/solo masks, cue preservation, settings and sidechain paths. Physical audio and current-build hardware remain untested and owner-approved where absent."
+          "Automatically select the authored SC_KEY variant beside Sidechain Compressor. Native execution covers mute/solo masks, cue preservation, settings and sidechain paths. Physical audio and current-build hardware remain untested and owner-approved where absent.",
+          "Presentation: illustrate the four mute behaviors using the library's shared signal artwork, grid, palette and typography."
         ]
       }
     ],
@@ -653,7 +654,8 @@
         "changes": [
           "Add recorder-buffer voice and counter fixes, END-1 hold behavior and fixed-RLEN spacing correction to the selectable shared builder.",
           "Correct the upstream arm/q phase drift: all 13,279 long-run cases, 555,008 early cases and 1,244,352 fractional-tempo/uint32-boundary cases pass. Fixed RLEN 1–64 at 30–300 BPM is supported; other ranges retain stock length.",
-          "Guard all eight detours and relocate eleven pool-base literals with the sample arena. Consecutive-arm arithmetic is tested; physical audio continuity, non-consecutive arm history and current-build hardware remain unmeasured. The owner approved missing hardware evidence."
+          "Guard all eight detours and relocate eleven pool-base literals with the sample arena. Consecutive-arm arithmetic is tested; physical audio continuity, non-consecutive arm history and current-build hardware remain unmeasured. The owner approved missing hardware evidence.",
+          "Presentation: show repeating recorder segments and tempo boundaries using the library's shared signal artwork, grid, palette and typography."
         ]
       }
     ]

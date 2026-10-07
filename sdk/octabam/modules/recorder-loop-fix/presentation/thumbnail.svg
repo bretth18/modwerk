@@ -1,1 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="320" height="192" viewBox="0 0 320 192"><rect width="320" height="192" fill="#181818"/><rect x="16" y="16" width="288" height="160" rx="8" fill="none" stroke="#777"/><text x="28" y="47" fill="#eee" font-family="monospace" font-size="16">RECORDER LOOP FIX</text><path d="M30 96h44v-25h20v49h20V85h20v29h20V78h20v42h20V85h20v23h20V96h60" fill="none" stroke="#ddd" stroke-width="3"/><text x="28" y="161" fill="#aaa" font-family="monospace" font-size="12">FLEX RECORDER BUFFER</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="576" viewBox="0 0 320 192" class="signal-art" fill="none" role="img" aria-labelledby="title description">
+<title id="title">Recorder Loop Fix — lengths follow recorder tempo</title>
+<desc id="description">A conceptual diagram of repeating recorder segments aligned to the instrument tempo and a returning playhead. It illustrates the feature, not measured physical audio continuity.</desc>
+<style>.signal-art{ width: 100%; height: calc(100% - 46px); overflow: visible; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+.signal-grid{ stroke: #ffffff; opacity: .035; stroke-width: .7; }
+.signal-main{ stroke: #b5a0ff; stroke-width: 2.3; }
+.signal-secondary{ stroke: #b5a0ff; opacity: .45; stroke-width: 1.7; }
+.signal-ghost{ stroke: #b5a0ff; opacity: .2; stroke-width: 1.3; }
+.signal-dot, .rhythm-on{ fill: #b5a0ff; }
+.rhythm-off{ stroke: #b5a0ff; fill: #2c2837; opacity: .4; }
+.signal-art text{ fill: #b5a0ff; opacity: .52; font: 8px monospace; letter-spacing: .7px; stroke: none; }
+.signal-art .rhythm-count{ font-size: 20px; opacity: .95; letter-spacing: -1px; }
+.reel-outline{ fill: rgba(181,160,255, .06); stroke: #b5a0ff; opacity: .8; stroke-width: 1.4; }
+.reel-spoke{ fill: #b5a0ff; opacity: .4; stroke: none; }
+.reel-head{ fill: #2d2a26; stroke: #b5a0ff; stroke-width: 1; }
+.signal-art{ height: calc(100% - 55px); }
+.signal-art text{ opacity: .8; font-size: 10px; }
+.signal-main{ stroke-width: 2.7; }
+.signal-secondary{ opacity: .65; }</style>
+<rect width="320" height="192" fill="#1c1c22"/>
+<g class="signal-grid"><path d="M20 52H300"></path><path d="M20 97H300"></path><path d="M20 142H300"></path><path d="M64 33V163"></path><path d="M128 33V163"></path><path d="M192 33V163"></path><path d="M256 33V163"></path></g><g><path class="signal-ghost" d="M28 85H292"></path><g><path class="signal-secondary" d="M28 41V129" stroke-dasharray="3 5"></path><circle class="signal-dot" cx="28" cy="85" r="3"></circle></g><g><path class="signal-secondary" d="M116 41V129" stroke-dasharray="3 5"></path><circle class="signal-dot" cx="116" cy="85" r="3"></circle></g><g><path class="signal-secondary" d="M204 41V129" stroke-dasharray="3 5"></path><circle class="signal-dot" cx="204" cy="85" r="3"></circle></g><g><path class="signal-secondary" d="M292 41V129" stroke-dasharray="3 5"></path><circle class="signal-dot" cx="292" cy="85" r="3"></circle></g><path class="signal-main" d="M28.0 85.0 L30.2 92.0 L32.4 98.7 L34.6 104.6 L36.8 109.7 L39.0 113.5 L41.2 116.1 L43.4 117.3 L45.6 117.3 L47.8 116.1 L50.0 114.0 L52.2 111.2 L54.4 107.9 L56.6 104.4 L58.8 100.9 L61.0 97.5 L63.2 94.4 L65.4 91.7 L67.6 89.3 L69.8 87.1 L72.0 85.0 L74.2 82.9 L76.4 80.7 L78.6 78.3 L80.8 75.6 L83.0 72.5 L85.2 69.1 L87.4 65.6 L89.6 62.1 L91.8 58.8 L94.0 56.0 L96.2 53.9 L98.4 52.7 L100.6 52.7 L102.8 53.9 L105.0 56.5 L107.2 60.3 L109.4 65.4 L111.6 71.3 L113.8 78.0 L116.0 85.0 L118.2 92.0 L120.4 98.7 L122.6 104.6 L124.8 109.7 L127.0 113.5 L129.2 116.1 L131.4 117.3 L133.6 117.3 L135.8 116.1 L138.0 114.0 L140.2 111.2 L142.4 107.9 L144.6 104.4 L146.8 100.9 L149.0 97.5 L151.2 94.4 L153.4 91.7 L155.6 89.3 L157.8 87.1 L160.0 85.0 L162.2 82.9 L164.4 80.7 L166.6 78.3 L168.8 75.6 L171.0 72.5 L173.2 69.1 L175.4 65.6 L177.6 62.1 L179.8 58.8 L182.0 56.0 L184.2 53.9 L186.4 52.7 L188.6 52.7 L190.8 53.9 L193.0 56.5 L195.2 60.3 L197.4 65.4 L199.6 71.3 L201.8 78.0 L204.0 85.0 L206.2 92.0 L208.4 98.7 L210.6 104.6 L212.8 109.7 L215.0 113.5 L217.2 116.1 L219.4 117.3 L221.6 117.3 L223.8 116.1 L226.0 114.0 L228.2 111.2 L230.4 107.9 L232.6 104.4 L234.8 100.9 L237.0 97.5 L239.2 94.4 L241.4 91.7 L243.6 89.3 L245.8 87.1 L248.0 85.0 L250.2 82.9 L252.4 80.7 L254.6 78.3 L256.8 75.6 L259.0 72.5 L261.2 69.1 L263.4 65.6 L265.6 62.1 L267.8 58.8 L270.0 56.0 L272.2 53.9 L274.4 52.7 L276.6 52.7 L278.8 53.9 L281.0 56.5 L283.2 60.3 L285.4 65.4 L287.6 71.3 L289.8 78.0 L292.0 85.0"></path><path class="signal-secondary" d="M292 132V145Q292 153 284 153H36Q28 153 28 145V132M23 138L28 132L33 138"></path><text x="25" y="28">RECORD</text><text x="249" y="28">REPEAT</text><text x="25" y="177">RLEN</text><text x="218" y="177">TEMPO SYNC</text></g>
+</svg>

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "moduleId": "recorder-loop-fix",
   "moduleVersion": "0.1.0-experimental",
-  "moduleSourceSha256": "dde04c8ade06eb8af6eb103109bdb77c1429d4114ed75692ade3a0a02c11437c",
+  "moduleSourceSha256": "b7af81d545a3d22002745a5ddf639cd1b2e24c09ab62cf3dea6f25ec975c2fab",
   "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
   "originalOsSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
   "pool": [
@@ -4956,5 +4956,14 @@
       },
       "result": "refused"
     }
-  ]
+  ],
+  "presentationUpdate": {
+    "previousModuleSourceSha256": "dde04c8ade06eb8af6eb103109bdb77c1429d4114ed75692ade3a0a02c11437c",
+    "changedPaths": [
+      "presentation/thumbnail.svg"
+    ],
+    "compilerSourceTreeSha256": "e251250c1a13321d33578eebf98ae1ff482c6b5fc8557c95adfe39bb8c99cd65",
+    "firmwareInputsUnchanged": true,
+    "note": "Only presentation artwork changed after the native comparison. The compiler inventory fingerprint remains identical to the tested source packages; all selection results are retained."
+  }
 }
