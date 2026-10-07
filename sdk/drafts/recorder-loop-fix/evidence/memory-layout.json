@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "moduleVersion": "0.1.0-experimental",
+  "imageSha256": "45657a36371d7f509205ec268ca8b2499a5515d3fde214ea32ec2035e0a80847",
+  "scope": "Measured local standalone layout only; not the common builder or complete stock lifetimes",
+  "regions": [
+    {
+      "name": "seekbind.s",
+      "start": 1074621312,
+      "bytes": 24,
+      "endExclusive": 1074621336
+    },
+    {
+      "name": "seekbind_ctr.s",
+      "start": 1074621440,
+      "bytes": 16,
+      "endExclusive": 1074621456
+    },
+    {
+      "name": "spacing_cave.s",
+      "start": 1074621568,
+      "bytes": 146,
+      "endExclusive": 1074621714
+    },
+    {
+      "name": "hold_copy.s",
+      "start": 1074621824,
+      "bytes": 108,
+      "endExclusive": 1074621932
+    },
+    {
+      "name": "hold_xfade_a.s",
+      "start": 1074621952,
+      "bytes": 110,
+      "endExclusive": 1074622062
+    },
+    {
+      "name": "hold_xfade_b.s",
+      "start": 1074622080,
+      "bytes": 110,
+      "endExclusive": 1074622190
+    },
+    {
+      "name": "hold_guard.s",
+      "start": 1074622208,
+      "bytes": 86,
+      "endExclusive": 1074622294
+    },
+    {
+      "name": "hold_xguard.s",
+      "start": 1074622336,
+      "bytes": 118,
+      "endExclusive": 1074622454
+    }
+  ],
+  "codeAndTablesBytes": 718,
+  "alignmentGapBytes": 424,
+  "occupiedSpanBytes": 1142,
+  "probeAdditionalStackPeakBytes": 24,
+  "reusedStockStateExamples": [
+    {
+      "name": "stock tempo24",
+      "start": 2147489812,
+      "bytes": 4
+    },
+    {
+      "name": "stock arm sample array, eight tracks",
+      "start": 1187510916,
+      "bytes": 32
+    }
+  ],
+  "addedDspProgramBytes": 0,
+  "addedAudioBufferBytes": 0,
+  "boundedOwnedHeapBytes": 0,
+  "completeStockCallbackStackBytes": null,
+  "completeLifetimePeakBytes": null,
+  "hardwareCanaries": null,
+  "qualification": false,
+  "poolBaseRelocations": 11
+}

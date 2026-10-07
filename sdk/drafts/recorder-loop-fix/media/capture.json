@@ -1,0 +1,96 @@
+{
+  "firmware": "1.40C",
+  "imageSha256": "45657a36371d7f509205ec268ca8b2499a5515d3fde214ea32ec2035e0a80847",
+  "emulatorSha256": "f521565f3866947788d7c45507576a4ed386d2e4ef57e9683ab65fa0acc6a166",
+  "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. ColdFire UI execution with DSP host stub; no audio claim. Local standalone composition, not shared-builder parity. Empty private OCTAMOD/MEASURE SET was requested; missing-project prompts dismissed with three NO presses. Native initialized UI state, no valid saved project or recorder-slot assignment claimed.",
+  "palette": {
+    "on": [
+      240,
+      240,
+      240
+    ],
+    "off": [
+      24,
+      24,
+      24
+    ]
+  },
+  "keyMs": 50,
+  "plan": [
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "press": [
+        "T1"
+      ]
+    },
+    {
+      "press": [
+        "FUNC",
+        "SRC"
+      ]
+    },
+    {
+      "press": [
+        "DOWN"
+      ]
+    },
+    {
+      "press": [
+        "YES"
+      ]
+    },
+    {
+      "capture": "ot-flex-setup.png"
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "press": [
+        "FUNC",
+        "REC1"
+      ]
+    },
+    {
+      "encoder": {
+        "name": "C",
+        "delta": -98
+      }
+    },
+    {
+      "encoder": {
+        "name": "E",
+        "delta": -26
+      }
+    },
+    {
+      "capture": "ot-recorder-setup.png"
+    }
+  ],
+  "screenshots": {
+    "ot-flex-setup.png": "6e8c0ae570211dc76abf4338e103776a8aa6c307cf97a02b0139c6211c708f35",
+    "ot-recorder-setup.png": "4b35f2770a62a99146fb21bcffdbdde37520206ee3796d0872daeab13a41db5f"
+  },
+  "cardSha256": "aa50462ae2e12aaf322e8f7aa3a06750c9a4508f38597992e6c2352c07fd25bf",
+  "moduleVersion": "0.1.0-experimental",
+  "buildKind": "manual guarded standalone composition",
+  "projectLoadStatus": "missing-project prompts dismissed; no valid project loaded",
+  "harness": "reviewed capture-module-ui.py derivative: REC1/2/3 key names, mount scratch SET, DSP disabled; listed panel actions only",
+  "sourceSha256": "a49d813ec89f829da1938eab325129c2b97b7c0d7852836e374d0bd4d5b666b5"
+}
