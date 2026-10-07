@@ -2,6 +2,7 @@ import { pushRoutes } from './push'
 import { followReportedModule, moduleUpdateRoutes } from './module-updates'
 import { issueStatusStatements } from './issue-notifications'
 import { forum } from './forum'
+import { forumPublic } from './forum-public'
 import { forumMedia } from './forum-media'
 import { avatarRoutes } from './avatars'
 import { messageRoutes } from './messages'
@@ -77,6 +78,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if(media)return media
     const messages = await messageRoutes(request,db,user)
     if(messages)return messages
+    const pages = await forumPublic(request,env,db)
+    if(pages)return pages
     const discussion = await forum(request,db,user,admin,adminId)
     if(discussion)return discussion
     const notifications = await notificationRoutes(request,env,db,user)

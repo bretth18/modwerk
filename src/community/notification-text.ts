@@ -1,5 +1,6 @@
 import { communityModule } from './modules'
 import type { BellItem } from './notification-contract'
+import { threadPath } from './forum-links'
 
 export type NotificationLine = { text: string; excerpt: string | null; href: string; ids: string[]; seen: boolean; created_at: string; actor: string | null; official: boolean; avatar: string | null }
 /** Who to show beside the line: the acting member's picture, Modwerk for official and system entries, initials otherwise. */
@@ -19,11 +20,11 @@ function excerpt(value: string | null) {
 }
 
 /** Shared by the bell and activity email. Likes on the same post or module collapse into one line; other
- * entries keep their own line in the given (newest first) order. `link` turns an app hash into an href. */
+ * entries keep their own line in the given (newest first) order. `link` turns an app hash or path into an href. */
 export function notificationLines(items: BellItem[], link: (hash: string) => string = hash => hash): NotificationLine[] {
   const moduleName = (id: string | null) => (id && communityModule(id)?.name) ?? id ?? 'your module'
   const moduleHref = (id: string | null) => link((id && communityModule(id)?.href) ?? '#library')
-  const threadHref = (item: BellItem) => link('#forum/thread/' + item.thread_id + (item.post_id && item.post_id !== item.thread_id ? '?post=' + item.post_id + (item.post_page ? '&page=' + item.post_page : '') : ''))
+  const threadHref = (item: BellItem) => link(threadPath(item.thread_id ?? '', item.title) + (item.post_id && item.post_id !== item.thread_id ? '?post=' + item.post_id + (item.post_page ? '&page=' + item.post_page : '') : ''))
   const lines: (NotificationLine | BellItem[])[] = [], groups = new Map<string, BellItem[]>()
   for (const item of items) {
     if (item.kind === 'post_like' || item.kind === 'module_like') {

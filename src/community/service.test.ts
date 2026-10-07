@@ -194,7 +194,7 @@ describe('community access and review',()=>{
    const created=requests[0];expect(created).toMatchObject({url:'https://api.github.com/repos/repeat98/octamod/issues',method:'POST',auth:'Bearer github_pat_test'})
    expect(created.body.title).toBe('[spectrum] Knob issue');expect(created.body.labels).toEqual(['issue-report','module:spectrum'])
    const markdown=String(created.body.body)
-   expect(markdown).toContain('by [other](https://octamod.test/#forum/profile/other) · @sambanks');expect(markdown).toContain('| Module version | Not recorded |') // the configuration comes from the attached log, which does not list spectrum
+   expect(markdown).toContain('by [other](https://octamod.test/forum/profile/other/) · @sambanks');expect(markdown).toContain('| Module version | Not recorded |') // the configuration comes from the attached log, which does not list spectrum
    expect(markdown).toContain('@\u200bsomeone');expect(markdown).toContain('#\u200b12');expect(markdown).not.toContain('<img')
    expect(markdown).toContain('[open them on Modwerk](https://octamod.test/#developer/report/'+result.id+')')
    // The configuration, build fingerprint and log stay private.

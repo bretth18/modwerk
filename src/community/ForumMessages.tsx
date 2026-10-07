@@ -9,6 +9,7 @@ import { ForumTime } from './ForumTime'
 import { MESSAGE_MAX_LENGTH } from './forum-contract'
 import { MentionText, useTextareaMentions } from './mentions'
 import { TextVideo } from './YouTubeEmbed'
+import { profileHref } from '../routing'
 
 type Conversation = { id: string; updated_at: string; username: string; displayName: string; avatar: string | null; excerpt: string | null; mine: number; unread: number }
 type Inbox = { conversations: Conversation[]; enabled: boolean }
@@ -68,7 +69,7 @@ function ConversationPage({ username }: { username: string }) {
   return <>
     <BackLink href="#forum/messages">Messages</BackLink>
     {!verified ? <><div className="page-heading"><div><h1>Messages</h1></div></div><MemberPrompt /></> : error && !view ? <p className="file-error" role="alert">{error}</p> : !view ? <p role="status">Loading conversation…</p> : <>
-      <div className="page-heading forum-dm-heading"><div className="forum-dm-member"><ForumAvatar username={view.member.username} avatar={view.member.avatar} /><div><h1>{view.member.displayName || '@' + view.member.username}</h1><a href={'#forum/profile/' + encodeURIComponent(view.member.username)}>@{view.member.username} · View profile</a></div></div>
+      <div className="page-heading forum-dm-heading"><div className="forum-dm-member"><ForumAvatar username={view.member.username} avatar={view.member.avatar} /><div><h1>{view.member.displayName || '@' + view.member.username}</h1><a href={profileHref(view.member.username)}>@{view.member.username} · View profile</a></div></div>
         <div className="forum-actions"><button type="button" className="button button-quiet" disabled={busy} aria-pressed={view.blocked} onClick={() => void act('/block', { blocked: !view.blocked })}>{view.blocked ? 'Unblock' : 'Block'}</button>{view.messages.length > 0 && <button type="button" className="button button-quiet" disabled={busy} aria-expanded={reporting} onClick={() => setReporting(value => !value)}>Report</button>}</div></div>
       {reporting && <form className="community-form forum-dm-report" onSubmit={event => { event.preventDefault(); const reason = new FormData(event.currentTarget).get('reason'); void act('/report', { reason }, () => { setReporting(false); setNotice('Report sent. The administrator can now read this conversation.') }) }}><p className="service-note">Reporting shares this conversation with the administrator, who can hide messages or suspend the member. Otherwise nobody but the two of you can read it.</p><label>What should the administrator review?<textarea name="reason" required maxLength={1000} rows={2} /></label><div className="forum-actions"><button className="button button-quiet" disabled={busy}>Send report</button><button type="button" className="text-button" onClick={() => setReporting(false)}>Cancel</button></div></form>}
       {notice && <p className="success-note" role="status">{notice}</p>}

@@ -34,3 +34,27 @@ export function firstYouTubeVideo(text: string) {
   }
   return undefined
 }
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+/** The title's words for a readable URL; empty when nothing usable is left. */
+export function threadSlug(title: string) {
+  return title.toLowerCase().replace(/ß/g, 'ss').normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+/, '').slice(0, 60).replace(/-+$/, '')
+}
+/** Public path of a thread: its ID, followed by the title's words when the ID is a UUID. Module home threads keep their fixed IDs. The ID alone stays valid. */
+export function threadPath(id: string, title?: string | null) {
+  const slug = title && UUID.test(id) && id.length === 36 ? threadSlug(title) : ''
+  return 'forum/thread/' + id + (slug ? '-' + slug : '') + '/'
+}
+/** The thread ID in a path segment, dropping the title words that may follow a UUID. */
+export function threadIdFromSegment(segment: string) { return UUID.test(segment) ? segment.slice(0, 36) : segment }
+export function profilePath(username: string) { return 'forum/profile/' + encodeURIComponent(username) + '/' }
+/** Plain text of a post's Markdown for previews, feeds and page descriptions. */
+export function postExcerpt(markdown: string, max = 200) {
+  const text = markdown.replace(/```[\s\S]*?(?:```|$)/g, ' ').replace(/!\[[^\]]*\]\([^)]*\)/g, ' ').replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/^[ \t]*(?:#{1,6}|>|[-*+]|\d+[.)])[ \t]+/gm, '').replace(/`([^`]*)`/g, '$1').replace(/(\*{1,3}|_{1,3}|~~)(\S(?:[^*_~]*?\S)?)\1/g, '$2').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+  return text.length > max ? text.slice(0, max - 1).trimEnd() + '…' : text
+}
+/** The hash route behind a thread or profile path, for the push service worker, which opens hash routes only. */
+export function forumHashRoute(path: string) {
+  const match = /^forum\/(thread|profile)\/([^/?]+)\/(\?.*)?$/.exec(path)
+  return match ? '#forum/' + match[1] + '/' + (match[1] === 'thread' ? threadIdFromSegment(match[2]) : match[2]) + (match[3] ?? '') : undefined
+}

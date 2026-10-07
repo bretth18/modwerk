@@ -6,7 +6,7 @@ import type { NotificationItem } from '../src/community/notification-contract'
 /** Same scriptless, image-free shell as the account emails. User content is escaped and never linked directly. */
 export function renderActivityEmail(items: NotificationItem[], urls: { app: string; notifications: string; settings: string; unsubscribe: string }, more = 0) {
   const app = new URL(urls.app)
-  const lines = notificationLines(items, hash => { const url = new URL(app); url.hash = hash.replace(/^#/, ''); return url.href })
+  const lines = notificationLines(items, target => new URL(target, app).href)
   const total = items.length + more
   const subject = (lines.length === 1 && !more ? lines[0].text : `${total} new ${total === 1 ? 'notification' : 'notifications'} on Modwerk`).replace(/[\r\n]+/g, ' ').slice(0, 150)
   const footer = `You receive activity email because it is on for your Modwerk account.`

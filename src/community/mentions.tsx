@@ -3,12 +3,13 @@ import { api } from './api'
 import { useCommunity } from './context'
 import { ForumAvatar } from './ForumIdentity'
 import { mentionQueryAt, splitMentions } from './forum-contract'
+import { profileHref } from '../routing'
 
 export type MentionCandidate = { username: string; displayName: string; avatar: string | null }
 
 /** Plain text with every @name turned into a link to that member's profile. */
 export function MentionText({ text }: { text: string }) {
-  return <>{splitMentions(text).map((part, index) => part.type === 'mention' ? <a key={index} className="forum-mention" href={'#forum/profile/' + encodeURIComponent(part.value)}>@{part.value}</a> : part.value)}</>
+  return <>{splitMentions(text).map((part, index) => part.type === 'mention' ? <a key={index} className="forum-mention" href={profileHref(part.value)}>@{part.value}</a> : part.value)}</>
 }
 
 const cache = new Map<string, MentionCandidate[]>()

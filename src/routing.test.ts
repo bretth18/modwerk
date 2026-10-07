@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { canonicalRouteUrl, moduleHref, routeFromUrl } from './routing'
+import { canonicalRouteUrl, moduleHref, profileHref, routeFromUrl, threadHref } from './routing'
 
 const moduleIds = ['analog-bassdrum', 'miniverb', 'tapeecho', 'synth']
+const threadId = '0f3a1b2c-4d5e-4f60-8a9b-0c1d2e3f4a5b'
 
 describe.each(['https://modwerk.app/', 'https://example.github.io/octamod/'])('module links at %s', root => {
   const appUrl = new URL(root)
@@ -51,8 +52,41 @@ describe.each(['https://modwerk.app/', 'https://example.github.io/octamod/'])('m
     expect(routeFromUrl(url, appUrl)).toBe('module/octakit')
   })
   it('does not intercept external links, files, API requests or paths outside the app', () => {
-    for (const href of ['https://github.com/repeat98/octamod', 'licenses/THIRD_PARTY_NOTICES.html', 'module-thumbnails/miniverb.jpg', 'api/session', '../other/']) {
+    for (const href of ['https://github.com/repeat98/octamod', 'licenses/THIRD_PARTY_NOTICES.html', 'module-thumbnails/miniverb.jpg', 'api/session', '../other/', 'forum/thread/', 'forum/thread/' + threadId, 'forum/profile/ab/', 'forum/feed.xml']) {
       expect(routeFromUrl(new URL(href, appUrl), appUrl)).toBeUndefined()
     }
+  })
+  it('opens thread paths with or without the title words, keeping the page and post in the search', () => {
+    for (const path of ['forum/thread/' + threadId + '/', 'forum/thread/' + threadId + '/index.html', 'forum/thread/' + threadId + '-granular-pad-from-tapehead/']) {
+      const url = new URL(path, appUrl)
+      expect(routeFromUrl(url, appUrl)).toBe('forum/thread/' + threadId)
+      expect(canonicalRouteUrl(url, appUrl, moduleIds).href).toBe(url.href)
+      url.search = '?page=1&post=abc'
+      expect(routeFromUrl(url, appUrl)).toBe('forum/thread/' + threadId + '?page=1&post=abc')
+    }
+    expect(routeFromUrl(new URL('forum/thread/module-miniverb/', appUrl), appUrl)).toBe('forum/thread/module-miniverb')
+    expect(routeFromUrl(new URL('forum/profile/synth_fan/?category=showcase', appUrl), appUrl)).toBe('forum/profile/synth_fan?category=showcase')
+  })
+  it('turns thread and profile hash links into paths and keeps everything else on hashes', () => {
+    expect(canonicalRouteUrl(new URL('#forum/thread/' + threadId, appUrl), appUrl, moduleIds).href).toBe(root + 'forum/thread/' + threadId + '/')
+    expect(canonicalRouteUrl(new URL('?utm_source=mail#forum/thread/' + threadId + '?post=abc&page=2', appUrl), appUrl, moduleIds).href).toBe(root + 'forum/thread/' + threadId + '/?utm_source=mail&post=abc&page=2')
+    expect(canonicalRouteUrl(new URL('#forum/thread/module-miniverb', appUrl), appUrl, moduleIds).href).toBe(root + 'forum/thread/module-miniverb/')
+    expect(canonicalRouteUrl(new URL('#forum/profile/synth_fan?sort=newest', appUrl), appUrl, moduleIds).href).toBe(root + 'forum/profile/synth_fan/?sort=newest')
+    for (const hash of ['#forum', '#forum?view=modules', '#forum/new', '#forum/messages/synth_fan', '#forum/thread/', '#account']) {
+      expect(canonicalRouteUrl(new URL(hash, appUrl), appUrl, moduleIds).href).toBe(root + hash)
+    }
+  })
+  it('leaves a thread page and its search behind when a hash link moves elsewhere', () => {
+    const current = new URL('forum/thread/' + threadId + '-granular-pad/?page=1', appUrl)
+    expect(canonicalRouteUrl(new URL('#forum', current), appUrl, moduleIds).href).toBe(root + '#forum')
+    expect(canonicalRouteUrl(new URL('#forum/thread/' + threadId + '?page=2', current), appUrl, moduleIds).href).toBe(root + 'forum/thread/' + threadId + '/?page=2')
+    expect(canonicalRouteUrl(new URL('#forum/thread/' + threadId, current), appUrl, moduleIds).href).toBe(root + 'forum/thread/' + threadId + '/')
+    expect(canonicalRouteUrl(new URL('#module/tapeecho', current), appUrl, moduleIds).href).toBe(root + 'module/tapeecho/')
+  })
+  it('builds thread and profile links as paths with the title words after a UUID', () => {
+    expect(threadHref(threadId, 'Granular pad from Tapehead!')).toMatch(/forum\/thread\/0f3a1b2c-4d5e-4f60-8a9b-0c1d2e3f4a5b-granular-pad-from-tapehead\/$/)
+    expect(threadHref(threadId, null, '?page=1')).toMatch(/forum\/thread\/0f3a1b2c-4d5e-4f60-8a9b-0c1d2e3f4a5b\/\?page=1$/)
+    expect(threadHref('module-miniverb', 'Miniverb discussion')).toMatch(/forum\/thread\/module-miniverb\/$/)
+    expect(profileHref('synth_fan')).toMatch(/forum\/profile\/synth_fan\/$/)
   })
 })

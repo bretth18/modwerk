@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { expect, it } from 'vitest'
 import sharp from 'sharp'
 import { MODULES } from '../src/catalog/modules.ts'
-import { modulePageHtml, modulePages, moduleThumbnail } from './module-pages.ts'
+import { modulePageHtml, modulePages, moduleThumbnail, notFoundPageHtml } from './module-pages.ts'
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8').replace('%BASE_URL%', './')
 const stylesheet = readFileSync(new URL('../src/styles.css', import.meta.url), 'utf8')
@@ -35,10 +35,21 @@ it('builds the FM Synth canonical page and keeps the old URL loadable', async ()
   await plugin.generateBundle.call({ emitFile(asset) { assets.push(asset) } }, {}, { 'index.html': { type: 'asset', source: html } })
   const canonical = assets.find(asset => asset.fileName === 'module/fm-synth/index.html')
   const legacy = assets.find(asset => asset.fileName === 'module/synth/index.html')
+  expect(assets.find(asset => asset.fileName === '404.html').source).toContain('<base href="https://modwerk.app/" />')
   expect(canonical.source).toContain('<title>FM Synth — Modwerk</title>')
   expect(canonical.source).toContain('<link rel="canonical" href="https://modwerk.app/module/fm-synth/" />')
   expect(canonical.source).toContain('<meta property="og:url" content="https://modwerk.app/module/fm-synth/" />')
   expect(legacy.source).toBe(canonical.source)
+})
+
+it('boots the app from an absolute base for paths without a page, and keeps crawlers off that copy', () => {
+  const page = notFoundPageHtml(html, './')
+  expect(page).toContain('<base href="https://modwerk.app/" />')
+  expect(page).toContain('<meta name="robots" content="noindex" />')
+  expect(page).toContain('<div id="root"></div>')
+  expect(page).toContain('<meta property="og:url" content="https://modwerk.app/" />')
+  expect(page).not.toContain('<link rel="canonical"')
+  expect(notFoundPageHtml(html, '/octamod/')).toContain('<base href="/octamod/" />')
 })
 
 it('escapes catalog text in metadata and titles', () => {

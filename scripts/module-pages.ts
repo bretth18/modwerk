@@ -42,13 +42,25 @@ export async function moduleThumbnail(id: string, stylesheet: string): Promise<B
   return sharp(Buffer.from(svg)).jpeg({ quality: 90 }).toBuffer()
 }
 
-export function modulePageHtml(html: string, module: FirmwareModule, imagePath: string, base: string): string {
+/** The public site URL from the built page's own Open Graph tags, under the Pages project path when there is one. */
+export function siteUrls(html: string, base: string) {
   const home = html.match(/<meta property="og:url" content="([^"]+)"/)?.[1]
   if (!home) throw new Error('Missing public site URL for module previews.')
-  const appUrl = new URL(base.startsWith('/') ? base : '.', home)
+  return { appUrl: new URL(base.startsWith('/') ? base : '.', home), siteName: html.match(/<meta property="og:site_name" content="([^"]+)"/)?.[1] ?? 'Modwerk' }
+}
+
+/** GitHub Pages serves this for every path without a file: it boots the app from an absolute base so thread and profile paths open client-side. */
+export function notFoundPageHtml(html: string, base: string): string {
+  const { appUrl } = siteUrls(html, base)
+  return html
+    .replace(/<base href="[^"]*"\s*\/>/, `<base href="${escapeHtml(base.startsWith('/') ? base : appUrl.href)}" />`)
+    .replace(/<title>/, '<meta name="robots" content="noindex" />\n    <title>')
+}
+
+export function modulePageHtml(html: string, module: FirmwareModule, imagePath: string, base: string): string {
+  const { appUrl, siteName } = siteUrls(html, base)
   const pageUrl = new URL(modulePath(module.id), appUrl).href
   const imageUrl = new URL(imagePath, appUrl).href
-  const siteName = html.match(/<meta property="og:site_name" content="([^"]+)"/)?.[1] ?? 'Modwerk'
   const title = module.name + ' — ' + siteName
   const alt = module.name + ' module thumbnail'
   const values: Record<string, string> = {
@@ -75,6 +87,7 @@ export function modulePages(): Plugin {
       const index = bundle['index.html']
       if (!index || index.type !== 'asset') throw new Error('Missing built app HTML for module previews.')
       const html = String(index.source)
+      this.emitFile({ type: 'asset', fileName: '404.html', source: notFoundPageHtml(html, config.base) })
       const stylesheet = readFileSync(resolve(config.root, 'src/styles.css'), 'utf8')
       for (const module of MODULES) {
         const thumbnail = await moduleThumbnail(module.id, stylesheet)

@@ -6,6 +6,7 @@ import { Icon } from '../components/Icon'
 import { ForumAuthorName, ForumAvatar, ForumMachineBadge } from './ForumIdentity'
 import { ForumTime } from './ForumTime'
 import type { ForumAttachment, ForumShowcaseItem } from './forum-contract'
+import { threadHref } from '../routing'
 
 // One clip plays at a time across the strip.
 let playing: HTMLAudioElement | null = null
@@ -42,7 +43,7 @@ function Sound({ item, title, cover }: { item: ForumAttachment; title: string; c
 }
 function Card({ item }: { item: ForumShowcaseItem }) {
   const image = item.attachments.find(media => media.kind === 'image'), sound = item.attachments.find(media => media.kind === 'audio')
-  const href = '#forum/thread/' + item.thread_id + '?post=' + item.id + '&page=' + item.page, more = item.attachments.length - (image ? 1 : 0) - (sound ? 1 : 0)
+  const href = threadHref(item.thread_id, item.title, '?post=' + item.id + '&page=' + item.page), more = item.attachments.length - (image ? 1 : 0) - (sound ? 1 : 0)
   const caption = (image?.caption || sound?.caption || '').trim()
   return <li className="forum-showcase-card" data-kind={image ? 'image' : 'audio'} data-category={item.category}>
     <div className="forum-showcase-cover">

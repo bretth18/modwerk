@@ -7,6 +7,7 @@ import { handleCommunity } from '../../server/transport'
 import { mentionedUsernames } from '../../server/notifications'
 import type { NotificationItem } from './notification-contract'
 import { notificationLines } from './notification-text'
+import { threadPath } from './forum-links'
 
 type Sent = { to: string[]; subject: string; text: string; html: string; headers?: Record<string, string> }
 const databases: DatabaseSync[] = [], sent: Sent[] = [], password = 'a long original test passphrase'
@@ -71,7 +72,7 @@ describe('activity notifications', () => {
     expect((await call('/forum/threads/' + id + '/replies', 'POST', { body: 'A late reply' }, other.session)).status).toBe(201)
     const [reply] = (await items(author.session)).items
     expect(reply).toMatchObject({ kind: 'reply', post_page: 1 })
-    expect(notificationLines([reply])[0].href).toBe('#forum/thread/' + id + '?post=' + reply.post_id + '&page=1')
+    expect(notificationLines([reply])[0].href).toBe(threadPath(id, reply.title) + '?post=' + reply.post_id + '&page=1')
   })
   it('caps mentions and ignores emails, paths and doubled @', () => {
     expect(mentionedUsernames('@Alice and @alice, mail bob@example.test, path /@carol, @@dave, @ab')).toEqual(['alice'])
@@ -121,7 +122,7 @@ describe('activity notifications', () => {
     const [mail] = sent
     expect(mail.to).toEqual([author.email]); expect(mail.subject).toBe('@othertwo replied in “Reverb <script>alert(1)</script>”')
     expect(mail.html).not.toContain('<script>'); expect(mail.html).toContain('&lt;script&gt;'); expect(mail.html).not.toContain('<b>short')
-    expect(mail.text).toContain('https://octamod.test/#forum/thread/' + id)
+    expect(mail.text).toContain('https://octamod.test/forum/thread/' + id + '-reverb-script-alert-1-script/')
     expect(mail.headers).toMatchObject({ 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' })
     expect(mail.headers!['List-Unsubscribe']).toMatch(/^<https:\/\/api\.example\.test\/api\/notifications\/unsubscribe\?token=/)
     expect(JSON.stringify(mail)).not.toContain(other.email)

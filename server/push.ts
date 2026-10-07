@@ -5,6 +5,7 @@ import { digest, HttpError, jsonBody, response } from './security'
 import { ITEM_SQL, RECIPIENTS, toItem, VISIBLE } from './notifications'
 import { notificationLines } from '../src/community/notification-text'
 import type { DevicePush, DeviceSubscription, PushConfig, PushDevice, PushTopic } from '../src/community/push-contract'
+import { forumHashRoute } from '../src/community/forum-links'
 
 export function pushConfig(env: Env) {
   const publicKey = env.VAPID_PUBLIC_KEY?.trim(), privateKey = env.VAPID_PRIVATE_KEY?.trim()
@@ -123,7 +124,7 @@ export async function dispatchPush(env: Env, db: Database, time = Math.floor(Dat
       if (item) {
         const line = notificationLines([toItem(item)])[0]
         // Opening device notifications returns to the authenticated site, including private issue activity.
-        const href = line.href.startsWith('#') ? line.href : '#account/report/' + item.issue_id
+        const href = line.href.startsWith('#') ? line.href : forumHashRoute(line.href) ?? '#account/report/' + item.issue_id
         message = { title: 'Modwerk community', body: line.text, href, tag: 'modwerk-activity-' + row.notification_id }
       }
     }

@@ -117,7 +117,7 @@ describe('forum activity report', () => {
     expect(html).toContain('Unanswered 48 h+</dt><dd>12</dd>')
     expect(html).toContain('Issues opened / closed</dt><dd>2 / 1</dd>')
     expect(html).toContain('Median time to close</dt><dd>3 days</dd><small>3 of 4 closed issues within 7 days')
-    expect(html).toContain('<a href="#forum/thread/t-1">Help with &lt;tags&gt;</a><small>3 days old</small>')
+    expect(html).toContain('<a href="/forum/thread/t-1/">Help with &lt;tags&gt;</a><small>3 days old</small>')
     expect(html).toContain('Showing the newest 1 of 12.')
     expect(html).toContain('2 earlier closed issues closed before closing times were recorded')
     expect(html).toContain('Replies and comments per UTC day · scale 0–5')

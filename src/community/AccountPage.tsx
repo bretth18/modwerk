@@ -17,6 +17,7 @@ import { api, post } from './api'
 import { useCommunity } from './context'
 import { SUPPORT_MAILTO } from '../support'
 import { DeveloperVerification } from './DeveloperVerification'
+import { profileHref } from '../routing'
 type DeviceSession = { id:string; current:boolean; expires:number }
 function AccountContent({route}:{route:string}) {
   const {session,refresh,loading}=useCommunity(), [busy,setBusy]=useState(false), [error,setError]=useState(route.startsWith('account/sso-error')?(new URLSearchParams(route.split('?')[1]).get('reason')==='exists'?'An account with this email address already exists. Sign in with the method you used to create it (your email and password, or the social provider you first used).':'Social sign-in was not completed. Use your original sign-in method, or create an account if you are new.'):''), [message,setMessage]=useState(''), [devices,setDevices]=useState<DeviceSession[]|null>(null)
@@ -53,7 +54,7 @@ function AccountContent({route}:{route:string}) {
     {member?<>
       <section className="configuration-section account-member" aria-labelledby="account-identity">
         <div className="account-identity"><ForumAvatar username={session.user!.username??session.user!.displayName} avatar={session.user!.avatar}/><div><h2 id="account-identity">{session.user!.displayName||session.user!.username}</h2><p>@{session.user!.username}<span>Community member</span></p></div></div>
-        <div className="account-member-actions"><a className="text-button" href={'#forum/profile/'+session.user!.username}>Your public profile</a><a className="text-button" href="#forum?saved=1">Your bookmarks</a><button className="text-button" disabled={busy} onClick={()=>void endSessions(false)}>Sign out</button></div>
+        <div className="account-member-actions"><a className="text-button" href={profileHref(session.user!.username??'')}>Your public profile</a><a className="text-button" href="#forum?saved=1">Your bookmarks</a><button className="text-button" disabled={busy} onClick={()=>void endSessions(false)}>Sign out</button></div>
       </section>
       <nav className="account-navigation" aria-label="Account settings">{accountSections.map(item=><a key={item.id} href={item.href} aria-current={section===item.id?'page':undefined}>{item.label}</a>)}</nav>
       <div className={'account-workspace account-workspace-'+section}>

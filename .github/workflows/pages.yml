@@ -3,6 +3,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # Prerender forum thread pages opened since the last release; the head commit of main is still the owner-merged one.
+    - cron: '23 4 * * *'
 permissions:
   contents: read
 concurrency:

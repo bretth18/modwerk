@@ -26,6 +26,7 @@ import { mediaBusy, readyAttachments, type PendingMedia } from './forum-media-cl
 import { ModuleIssueNotice } from './ModuleIssueNotice'
 import { ModuleDiscussionDialog } from './ModuleDiscussionDialog'
 import { moveDiscussionIssueDraft, saveDiscussionIssueDraft } from './discussion-issue-draft'
+import { profileHref } from '../routing'
 function errorText(error:unknown){return error instanceof Error?error.message:'The request could not be completed.'}
 function ForumList({query,profile}:{query:URLSearchParams;profile?:string}){
   const {session}=useCommunity(),[data,setData]=useState<{threads:ForumThread[];hasMore:boolean}|null>(null),[error,setError]=useState(''),[revision,setRevision]=useState(0)
@@ -33,7 +34,7 @@ function ForumList({query,profile}:{query:URLSearchParams;profile?:string}){
   // Phones fold the topic and machine filters behind a toggle next to the search field.
   const [filtersOpen,setFiltersOpen]=useState(false)
   useEffect(()=>{let cancelled=false;void api<{threads:ForumThread[];hasMore:boolean}>('/forum/threads?'+serialized+(profile?'&author='+encodeURIComponent(profile):'')).then(value=>{if(!cancelled)setData(value)}).catch(error=>{if(!cancelled)setError(errorText(error))});return()=>{cancelled=true}},[serialized,profile,revision])
-  function link(values:Record<string,string>){const next=new URLSearchParams(query);next.delete('page');for(const [key,value] of Object.entries(values)){if(value)next.set(key,value);else next.delete(key)}return (profile?'#forum/profile/'+encodeURIComponent(profile):'#forum')+(next.size?'?'+next.toString():'')}
+  function link(values:Record<string,string>){const next=new URLSearchParams(query);next.delete('page');for(const [key,value] of Object.entries(values)){if(value)next.set(key,value);else next.delete(key)}return (profile?profileHref(profile):'#forum')+(next.size?'?'+next.toString():'')}
   const saved=query.get('saved')==='1',following=query.get('following')==='1',moduleView=query.get('view')==='modules',machine=DEVICES_BY_ID[query.get('machine')??''],filtered=!!query.get('q')||!!query.get('module'),newest=query.get('sort')==='newest'
   const overview=!profile&&!saved&&!following&&!moduleView&&!category&&!filtered&&page===0,home=overview&&!machine
   const heading=(profile?'Public discussions':saved?'Your bookmarks':following?'Following':moduleView?'Module discussions':category&&Object.hasOwn(FORUM_CATEGORIES,category)?FORUM_CATEGORIES[category as ForumCategory]:query.get('q')?'Search results':newest?'New threads':'Latest activity')+(machine&&!profile?' · '+machine.name:'')

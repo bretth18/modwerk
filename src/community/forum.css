@@ -116,6 +116,8 @@
 .forum-thread-heading .forum-author .forum-avatar, .forum-thread-heading .forum-meta > .forum-avatar { width: 24px; height: 24px; border-radius: 7px; font-size: 8px; }
 .forum-thread-heading h1 { max-width: 740px; font-size: 30px; line-height: 1.35; margin: 16px 0; letter-spacing: -.7px; }
 .forum-thread-heading .forum-category-badge { font-size: 12px; }
+.forum-share { display: inline-flex; align-items: center; gap: 5px; margin-left: auto; padding: 4px 8px; border: 1px solid #3a3a45; border-radius: 7px; background: none; font-size: 12px; color: var(--muted); cursor: pointer; }
+.forum-share:hover { color: #c6cbff; border-color: #5b6084; }
 .forum-thread-actions { gap: 8px; margin: 22px 0 26px; }
 .forum-thread-actions .button[aria-pressed="true"] { color: #c6cbff; border-color: #5b6084; background: #303348; }
 /* Posts read as one conversation: a list with dividers, the avatar in its own column and the text beside it. */

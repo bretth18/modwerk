@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { api } from './api'
 import type { AdminActivity, AdminActivityDay } from './admin-activity-contract'
+import { threadHref } from '../routing'
 
 const format = (value: number) => value.toLocaleString(undefined, { maximumFractionDigits: 1 })
 const dateLabel = (day: string) => new Date(day + 'T00:00:00Z').toLocaleDateString(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' })
@@ -64,7 +65,7 @@ export function CommunityActivityReport({ data, loading, metric, onMetric, selec
       <p className="statistics-selected" aria-live="polite">{dateLabel(selected.day)} · {describe(selected)}</p>
     </figure>
     <div className="statistics-unanswered"><h3>Waiting for a first reply</h3>
-      {unanswered.threads.length ? <ul>{unanswered.threads.map(thread => <li key={thread.id}><a href={'#forum/thread/' + thread.id}>{thread.title}</a><small>{age(thread.createdAt, data.generatedAt)} old</small></li>)}</ul> : <p className="service-note">Every open thread older than 48 hours has a reply.</p>}
+      {unanswered.threads.length ? <ul>{unanswered.threads.map(thread => <li key={thread.id}><a href={threadHref(thread.id, thread.title)}>{thread.title}</a><small>{age(thread.createdAt, data.generatedAt)} old</small></li>)}</ul> : <p className="service-note">Every open thread older than 48 hours has a reply.</p>}
       {unanswered.total > unanswered.threads.length && <p className="service-note">Showing the newest {unanswered.threads.length} of {format(unanswered.total)}.</p>}
     </div>
     <details className="statistics-definitions"><summary>How forum and issue figures are counted</summary>

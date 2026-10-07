@@ -2,6 +2,7 @@ import { issueStatusStatements } from './issue-notifications'
 import type { Database, Env } from './platform'
 import { HttpError } from './security'
 import { communityModule } from '../src/community/modules'
+import { profilePath } from '../src/community/forum-links'
 
 const API = 'https://api.github.com'
 const BODY_LIMIT = 60000
@@ -49,7 +50,7 @@ const appLink = (app: string | undefined, hash: string) => { if (!app) return nu
 
 export function issueMarkdown(issue: MirroredIssue, app?: string) {
   const owners = [...new Set(issue.owners.filter(login => GITHUB_LOGIN.test(login)).map(login => '@' + login))]
-  const reporter = issue.reporter ? inert(issue.reporter) : 'a Modwerk member', profile = issue.reporter ? appLink(app, 'forum/profile/' + issue.reporter) : null
+  const reporter = issue.reporter ? inert(issue.reporter) : 'a Modwerk member', profile = issue.reporter && app ? new URL(profilePath(issue.reporter), app).href : null
   const site = appLink(app, '') ?? 'https://modwerk.app/', details = appLink(app, 'developer/report/' + issue.id), { device, version, steps, expected, actual } = issue.details
   return ['Reported on [Modwerk](' + site + ') for **`' + issue.module_id + '`** by ' + (profile ? '[' + reporter + '](' + profile + ')' : reporter) + (owners.length ? ' · ' + owners.join(' ') : ''), '',
     '| | |', '| --- | --- |', '| Device | ' + inert(device).replace(/\|/g, '\\|') + ' |', '| Module version | ' + inert(version).replace(/\|/g, '\\|') + ' |', '',

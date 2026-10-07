@@ -1,6 +1,7 @@
 import { FORUM_CATEGORIES, type ForumCategory } from './forum-contract'
 import { DEVICES_BY_ID } from '../devices/registry'
 import { apiUrl } from '../hosting'
+import { profileHref } from '../routing'
 
 export function ForumCategoryBadge({ category }: { category: ForumCategory }) {
   return <span className="forum-category-badge" data-category={category}><span aria-hidden="true" />{FORUM_CATEGORIES[category]}</span>
@@ -20,5 +21,5 @@ export function ForumAvatar({ username, official, avatar }: { username: string |
 
 // Official module threads have no public member profile.
 export function ForumAuthorName({ username, official, missing = 'Deleted member' }: { username: string | null; official?: unknown; missing?: string }) {
-  return official ? <strong>Modwerk</strong> : username ? <a href={'#forum/profile/' + encodeURIComponent(username)}>@{username}</a> : <span>{missing}</span>
+  return official ? <strong>Modwerk</strong> : username ? <a href={profileHref(username)}>@{username}</a> : <span>{missing}</span>
 }
