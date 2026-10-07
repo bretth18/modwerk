@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
 import { DETAILS } from '../catalog/details'
-import { moduleEvidence, type CardEvidence } from '../catalog/module-evidence'
+import { moduleBuildPending } from '../catalog/build-support'
+import { moduleHardwareEvidence } from '../catalog/module-evidence'
+import { moduleStability, type ModuleStability } from '../catalog/module-stability'
 import type { FirmwareModule } from '../catalog/modules'
 import { downloadCoverage, type ModuleStatistics } from '../community/module-statistics'
 import { moduleHref } from '../routing'
@@ -36,9 +38,10 @@ export function CardStats({ statistics: stats, children }: { statistics?: Module
   </div>
 }
 
-export function CardProof({ evidence, name, compared, canCompare, onCompare }: { evidence: CardEvidence; name: string; compared: boolean; canCompare: boolean; onCompare: () => void }) {
+// The stability grade, explained on hover and to screen readers.
+export function CardProof({ stability, name, compared, canCompare, onCompare }: { stability: ModuleStability; name: string; compared: boolean; canCompare: boolean; onCompare: () => void }) {
   return <div className="card-proof">
-    <span><span className={'evidence-dot is-' + evidence.level} aria-hidden="true" />{evidence.label}</span>
+    <span title={stability.detail}><span className={'evidence-dot is-' + stability.level} aria-hidden="true" />{stability.label}<span className="sr-only">. {stability.detail}</span></span>
     <label><input type="checkbox" checked={compared} disabled={!canCompare} onChange={onCompare} />Compare<span className="sr-only"> {name}</span></label>
   </div>
 }
@@ -58,7 +61,7 @@ export function ModuleCard({ module, selected, statistics, viewedVersion, baseli
       <div className="card-credit"><a href={module.authorUrl} target="_blank" rel="noreferrer">{module.authorName}</a><span>{module.detail}</span></div>
       <p className="card-description">{module.description}</p>
       <div className="card-bottom"><span>{DETAILS[module.id].family}</span><CardStats statistics={statistics} /></div>
-      <CardProof evidence={moduleEvidence(module.id)} name={module.name} compared={compared} canCompare={canCompare} onCompare={onCompare} />
+      <CardProof stability={moduleStability(statistics, { buildPending: moduleBuildPending(module.id), hardware: moduleHardwareEvidence(module.id) })} name={module.name} compared={compared} canCompare={canCompare} onCompare={onCompare} />
     </div>
   </article>
 }

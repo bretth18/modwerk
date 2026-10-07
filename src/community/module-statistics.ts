@@ -1,4 +1,5 @@
-export type ModuleStatistics = { module_id: string; average: number | null; count: number; likes: number; downloads: number; downloadsStarted: string | null }
+// openIssues, lastIssueAt and firstDownloadAt feed the stability grade; an older response without them grades as untried.
+export type ModuleStatistics = { module_id: string; average: number | null; count: number; likes: number; downloads: number; downloadsStarted: string | null; firstDownloadAt?: string | null; openIssues?: number; lastIssueAt?: string | null }
 type SortableModule = { id: string; name: string; authorName: string; addedAt?: string }
 export function compareModules(a: SortableModule, b: SortableModule, sort: string, statistics: readonly ModuleStatistics[] | null) {
   if (sort === 'collection') return 0

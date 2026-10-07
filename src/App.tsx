@@ -17,6 +17,7 @@ import { ModuleSets } from './components/ModuleSets'
 import { ModuleComparison } from './components/ModuleComparison'
 import { api } from './community/api'
 import { compareModules, downloadCoverage, type ModuleStatistics } from './community/module-statistics'
+import { STABILITY_NOTE } from './catalog/module-stability'
 import { ModulePopularity } from './community/ModulePopularity'
 import { selectionConflicts, type ConflictFix } from './catalog/selection-conflicts'
 import { CompatibilityPanel } from './components/CompatibilityPanel'
@@ -323,7 +324,7 @@ export default function App() {
                 const selected = selectedIds.includes(module.id)
                 return <ModuleCard key={module.id} module={module} selected={selected} statistics={statistics?.find(item=>item.module_id===module.id)} viewedVersion={viewedModuleVersions[module.id]} baseline={moduleBaseline} compared={comparison.includes(module.id)} canCompare={comparison.length<3||comparison.includes(module.id)} onToggle={()=>toggleModule(module.id)} onCompare={()=>toggleComparison(module.id)} />
               })}</div>
-              <p className="popularity-note">{statistics ? downloadCoverage(statistics[0]?.downloadsStarted) : 'Popularity counts are currently unavailable.'}</p>
+              <p className="popularity-note">{statistics ? downloadCoverage(statistics[0]?.downloadsStarted) : 'Popularity counts are currently unavailable.'}{' ' + STABILITY_NOTE}</p>
               {!visibleModules.length && <div className="no-results"><Icon name="search" size={30} /><h2>No modules found</h2><p>Try another name, effect or author.</p><button className="button button-quiet" onClick={() => {setQuery('');setFamily('all')}}>Clear search</button></div>}
               {!!catalog.filter((item,index,items)=>!MODULES.some(module=>module.id===item.module_id)&&items.findIndex(other=>other.module_id===item.module_id)===index).length && <section className="published-collection"><h2>Community modules</h2><div className="module-grid">{catalog.filter((item,index,items)=>!MODULES.some(module=>module.id===item.module_id)&&items.findIndex(other=>other.module_id===item.module_id)===index).sort((a,b)=>compareModules({id:a.module_id,name:a.title,authorName:a.author,addedAt:a.added_at??undefined},{id:b.module_id,name:b.title,authorName:b.author,addedAt:b.added_at??undefined},sort,statistics)).map(item=><article className="published-card" key={item.module_id}><span className="pill">Reviewed contribution</span><h2><a href={'#community-module/'+item.module_id}>{item.title}</a></h2><p>{item.description}</p><ModulePopularity statistics={statistics?.find(stats=>stats.module_id===item.module_id)}/><a className="text-button" href={'#community-module/'+item.module_id}>View module →</a></article>)}</div></section>}
               <div className="library-note"><span className="status-dot" /><p>This catalog follows an experimental build. Review each module before preparing a configuration.</p></div>

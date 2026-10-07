@@ -72,3 +72,17 @@ A click on an enabled firmware download button reports each unique module ID fro
 Module reporting uses the same device opt-out, Do Not Track, Global Privacy Control, omitted credentials/referrer and nonblocking failure behavior as private site statistics. Invalid modules, extra fields, firmware bodies and other website origins are rejected. A transactional batch prevents duplicate or partially failed requests from inflating totals, including retries that change the module ID. Hashed markers retain today and yesterday and expire through the existing hourly cleanup; public totals and their coverage boundary remain. Independent requests can be blocked or lost, so public module totals and private site download totals may differ.
 
 Apply additive migration `0009_module_downloads.sql` before deploying the new Worker. Keep the existing database bindings and administrator secret. The summary response remains an array and retains numeric `average` for compatibility with older clients; `count: 0` denotes an unrated module. New tests cover public unrated/zero totals, independent downloads, retry/failure atomicity, strict validation, privacy, rate limits, retention and discovery sorting. No firmware engine or module source changes are involved.
+
+### Stability grade
+
+The foot of each library card grades how far real use backs a module, so nobody mistakes untried firmware for settled firmware before a gig or a session. `moduleStability` in `src/catalog/module-stability.ts` computes it in the browser from the summary, and `STABILITY_GRADES` there holds every threshold:
+
+| Grade | Requires |
+| --- | --- |
+| Limited real-world testing | The default for every module, and whenever the summary cannot be fetched |
+| In regular use | 100 downloads, 30 days since the first download, no report for 30 days |
+| Lots of use, no recent issues | 500 downloads, 90 days since the first download, no report for 60 days |
+
+Any open issue report replaces the grade with the number of open reports, and a module whose build is still being verified says so first. Hovering the grade (or a screen reader) gives the figures behind it, the next step and the hardware record. Reports count per module, not per version, and download requests are not unique people, so the thresholds stay deliberately high.
+
+For this the summary adds `openIssues`, `lastIssueAt` (the latest report, open or closed) and `firstDownloadAt` to each module. Private reports count too, but only as a number and a date. `0052_module_first_download.sql` adds `first_download_at` to `module_downloads`; existing rows take their first retained daily count, else the start of daily or overall counting, which is never earlier than the real first download.

@@ -88,7 +88,7 @@ export async function recordAnonymousCount(request: Request, env: Env, db: Datab
   await throttle(db,'usage-count:' + await privateHash(secret,today + ':count-rate:' + (request.headers.get('CF-Connecting-IP') ?? 'local')),300,3600)
   if (moduleCount) {
     await db.batch([
-      db.prepare('INSERT INTO module_downloads(module_id,downloads) VALUES(?,1) ON CONFLICT(module_id) DO UPDATE SET downloads=downloads+1').bind(body.moduleId),
+      db.prepare('INSERT INTO module_downloads(module_id,downloads,first_download_at) VALUES(?,1,?) ON CONFLICT(module_id) DO UPDATE SET downloads=downloads+1').bind(body.moduleId,now.toISOString()),
       db.prepare('INSERT INTO module_downloads_daily(day,module_id,downloads) VALUES(?,?,1) ON CONFLICT(day,module_id) DO UPDATE SET downloads=downloads+1').bind(today,body.moduleId),
       db.prepare("INSERT INTO module_download_meta(key,value) VALUES('collection_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
       db.prepare("INSERT INTO module_download_meta(key,value) VALUES('daily_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
@@ -158,16 +158,16 @@ export async function recordModuleDownload(request: Request, env: Env, db: Datab
   try { const value: unknown = JSON.parse(new TextDecoder().decode(await boundedBody(request,512))); if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(); body=value as Record<string,unknown> }
   catch(error) { if(error instanceof HttpError)throw error; throw new HttpError(400,'Invalid module download event.') }
   if (Object.keys(body).sort().join(',') !== 'eventId,moduleId,visitor' || typeof body.moduleId !== 'string' || !canTrackModuleDownload(body.moduleId) || typeof body.eventId !== 'string' || !uuid.test(body.eventId) || typeof body.visitor !== 'string' || !uuid.test(body.visitor)) throw new HttpError(400,'Invalid module download event.')
-  const today = day(new Date())
+  const now = new Date(), today = day(now)
   // Rate-limit digests are separate from deduplication. Neither table links a module to a visitor.
   const visitor = await privateHash(secret,today + ':module-rate:' + body.visitor), identity = await privateHash(secret,today + ':module-event:' + body.eventId)
   await throttle(db,'module-download:' + visitor,200,3600)
   await db.batch([
     db.prepare('INSERT INTO module_download_events(day,event_hash) VALUES(?,?) ON CONFLICT DO NOTHING').bind(today,identity),
-    db.prepare('INSERT INTO module_downloads(module_id,downloads) SELECT ?,1 WHERE EXISTS(SELECT 1 FROM module_download_events WHERE day=? AND event_hash=? AND counted=0) ON CONFLICT(module_id) DO UPDATE SET downloads=downloads+1').bind(body.moduleId,today,identity),
+    db.prepare('INSERT INTO module_downloads(module_id,downloads,first_download_at) SELECT ?,1,? WHERE EXISTS(SELECT 1 FROM module_download_events WHERE day=? AND event_hash=? AND counted=0) ON CONFLICT(module_id) DO UPDATE SET downloads=downloads+1').bind(body.moduleId,now.toISOString(),today,identity),
     db.prepare('INSERT INTO module_downloads_daily(day,module_id,downloads) SELECT ?,?,1 WHERE EXISTS(SELECT 1 FROM module_download_events WHERE day=? AND event_hash=? AND counted=0) ON CONFLICT(day,module_id) DO UPDATE SET downloads=downloads+1').bind(today,body.moduleId,today,identity),
     db.prepare('UPDATE module_download_events SET counted=1 WHERE day=? AND event_hash=?').bind(today,identity),
-    db.prepare("INSERT INTO module_download_meta(key,value) VALUES('daily_started',?) ON CONFLICT DO NOTHING").bind(new Date().toISOString()),
+    db.prepare("INSERT INTO module_download_meta(key,value) VALUES('daily_started',?) ON CONFLICT DO NOTHING").bind(now.toISOString()),
   ])
   return response({ok:true})
 }

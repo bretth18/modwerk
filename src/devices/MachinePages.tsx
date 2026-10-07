@@ -11,7 +11,7 @@ import { LIBRARY_CATEGORY_LABELS, STANDALONE_NOTE, type FirmwareModule, type Mod
 import { DETAILS } from '../catalog/details'
 import { AVAILABLE_MODULES } from '../catalog/availability'
 import type { SelectionConflict } from '../catalog/selection-conflicts'
-import type { CardEvidence } from '../catalog/module-evidence'
+import { moduleStability, STABILITY_NOTE } from '../catalog/module-stability'
 import { AddButton, CardProof, CardStats, ModuleCard } from '../components/ModuleCard'
 import { SelectionWarning } from '../components/SelectionWarning'
 import { LibraryTools } from '../components/LibraryTools'
@@ -31,7 +31,7 @@ function kib(bytes: number) { return (bytes / 1024).toFixed(bytes < 10240 ? 1 : 
 
 function DigiModCard({ mod, selected, statistics, compared, canCompare, onToggle, onCompare }: { mod: DigiMod; selected: boolean; statistics?: ModuleStatistics; compared: boolean; canCompare: boolean; onToggle: () => void; onCompare: () => void }) {
   const href = deviceHref(mod.device, 'module/' + mod.id)
-  const evidence: CardEvidence = mod.hardware ? { level: 'reported', label: 'Author-tested on hardware' } : { level: 'emulator', label: 'Author release, not yet tested in Modwerk' }
+  const stability = moduleStability(statistics, { hardware: mod.hardware ? 'Author-tested on hardware.' : 'Author release, not yet tested in Modwerk.' })
   return <article className={'module-card ' + (selected ? 'is-selected' : '')}>
     <a href={href} className="module-cover" aria-label={'View ' + mod.title}><DigiModPreview mod={mod} /><div className="hover-info"><span>{mod.summary}</span><strong>Explore module <Icon name="arrow" size={15} /></strong></div>{selected && <span className="selected-badge" aria-label="Selected"><Icon name="check" size={12} /></span>}</a>
     <div className="module-card-body">
@@ -42,7 +42,7 @@ function DigiModCard({ mod, selected, statistics, compared, canCompare, onToggle
       <div className="card-credit"><a href={mod.repository} target="_blank" rel="noreferrer">{mod.author}</a><span>{mod.license}</span></div>
       <p className="card-description">{mod.summary}</p>
       <div className="card-bottom"><span>{mod.category}</span><CardStats statistics={statistics}><span className="card-stat">{kib(mod.ramBytes)} memory</span></CardStats></div>
-      <CardProof evidence={evidence} name={mod.title + ' for ' + DEVICES_BY_ID[mod.device].name} compared={compared} canCompare={canCompare} onCompare={onCompare} />
+      <CardProof stability={stability} name={mod.title + ' for ' + DEVICES_BY_ID[mod.device].name} compared={compared} canCompare={canCompare} onCompare={onCompare} />
     </div>
   </article>
 }
@@ -97,7 +97,7 @@ export function AllMachinesLibrary({ query, category, octatrackModules: octatrac
         <div className="library-subheading"><span id={'machine-' + group.device.id}>{group.device.name} <span className="subtle">· {group.count} {group.count === 1 ? 'module' : 'modules'}{group.device.status === 'preview' ? ' · preview' : ''}</span></span><div className="machine-library-actions"><a className="text-button" href={deviceHref(group.device.id)}>Open {group.device.name} library <Icon name="arrow" size={13} /></a>{group.device.id !== 'octatrack' && <a className="button button-primary" href={deviceHref(group.device.id,'configuration')} aria-label={'Build firmware for ' + group.device.name}><Icon name="sliders" size={16}/>Build firmware</a>}</div></div>
         <div className="module-grid">{group.cards}</div>
       </section>)}
-      <p className="popularity-note">{statistics ? downloadCoverage(statistics[0]?.downloadsStarted) : 'Popularity counts are currently unavailable.'}</p>
+      <p className="popularity-note">{statistics ? downloadCoverage(statistics[0]?.downloadsStarted) : 'Popularity counts are currently unavailable.'}{' ' + STABILITY_NOTE}</p>
       {!total && (term || family !== 'all' ? <div className="no-results"><Icon name="search" size={30} /><h2>No modules found</h2><p>Try another name, type or author.</p></div> : <div className="no-results"><Icon name={category === 'standalone' ? 'lock' : 'grid'} size={30} /><h2>No {category ? LIBRARY_CATEGORY_LABELS[category].toLowerCase() : 'mods'} yet</h2><p>Be the first to publish one: every machine follows the same SDK.</p><a className="button button-quiet" href={issueRepository() + '/blob/main/docs/SDK.md'} target="_blank" rel="noreferrer">Read the SDK guide</a></div>)}
       <section className="machine-section"><div className="library-subheading"><span>No mods yet</span><span className="subtle">Help open the next machine</span></div>
         <div className="machine-chips">{DEVICES.filter(device => device.status === 'research' || device.status === 'open').map(device => <a key={device.id} href={deviceHref(device.id)} className={'machine-chip is-' + device.status}>{device.name}{device.variants && <small> {device.variants.join(' · ')}</small>}</a>)}</div>
@@ -123,7 +123,7 @@ export function DigiLibrary({ device, machinePicker, category, query, selectedId
       <LibraryTools family={libraryFamily} families={families} onFamilyChange={onFamilyChange} sort={sort} onSortChange={onSortChange} comparisonCount={comparison.length} onCompare={onOpenComparison} buildHref={deviceHref(device.id,'configuration')} buildLabel={'Build firmware for '+device.name} machine={machinePicker} />
       <div className="library-subheading"><span>{term ? 'Results for “' + query.trim() + '”' : 'Explore the collection'}</span><span className="subtle">{device.name} · OS {device.firmware?.releases.join(' / ')}</span></div>
       <div className="module-grid">{mods.map(mod => <DigiModCard key={mod.id} mod={mod} selected={selectedIds.includes(mod.id)} statistics={statistics?.find(item=>item.module_id===device.id+'-'+mod.id)} onToggle={() => onToggle(mod.id)} compared={comparison.includes(device.id+'-'+mod.id)} canCompare={comparison.length<3||comparison.includes(device.id+'-'+mod.id)} onCompare={()=>onCompare(device.id+'-'+mod.id)} />)}</div>
-      <p className="popularity-note">{statistics ? downloadCoverage(statistics[0]?.downloadsStarted) : 'Popularity counts are currently unavailable.'}{sort === 'recent' && ' Addition dates are not available yet; this sort uses name order.'}</p>
+      <p className="popularity-note">{statistics ? downloadCoverage(statistics[0]?.downloadsStarted) : 'Popularity counts are currently unavailable.'}{' ' + STABILITY_NOTE}{sort === 'recent' && ' Addition dates are not available yet; this sort uses name order.'}</p>
       {!mods.length && <div className="no-results"><Icon name="search" size={30} /><h2>{term || libraryFamily!=='all' ? 'No modules found' : 'No ' + device.name + ' modules here yet'}</h2><p>{term || libraryFamily!=='all' ? 'Try another name, type or author.' : 'Browse all ' + device.name + ' modules, or help write the first one.'}</p><a className="button button-quiet" href={deviceHref(device.id)}>All {device.name} modules</a></div>}
       <div className="library-note"><span className="status-dot" /><p>Built from each author’s pinned public release, with credit and licence.</p></div>
     </div>
