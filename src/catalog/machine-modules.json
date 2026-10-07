@@ -1927,7 +1927,7 @@
       "schemaVersion": 3,
       "id": "digipoly",
       "name": "Digi Poly",
-      "version": "2.0.0-experimental",
+      "version": "2.0.1-experimental",
       "machine": "digitakt",
       "category": "machines",
       "exclusive": false,
@@ -1955,10 +1955,10 @@
           "Several tracks can be POLY; each plays its own chords."
         ],
         "usage": [
-          "Play chords from one audio track: set NOT2-NOT4 on its TRIG page and let the extra notes borrow other tracks’ voices.",
-          "Lock a step’s own chord: hold its trig in grid recording and turn a knob.",
-          "Play or record chords from a MIDI keyboard on the POLY track’s own channel; up to four notes land in the step’s NOT1-NOT4.",
-          "Take tracks that must never be cut out of the pool in SETTINGS > POLY. Drum tracks that trig often are borrowed last."
+          "Use a build containing Digi Poly and digichain, and load a sample into the project. Select POLY with FUNC + SRC, then confirm with YES.",
+          "On TRIG choose NOT1, set NOT2 to +4 and NOT3 to +7, and leave NOT4 off for a three-note major chord.",
+          "Check SETTINGS > POLY and leave enough other audio tracks in the voice pool. Trigger the POLY track to hear its sample across the chord.",
+          "Stop playback. Turn NOT2 and NOT3 off, or select ONESHOT, to return to single-note playback."
         ]
       },
       "access": {
@@ -1968,7 +1968,9 @@
           "Set the chord on the track’s TRIG page: NOT1 and NOT2-NOT4.",
           "Choose which tracks lend their voice in SETTINGS > POLY."
         ],
-        "screenshots": []
+        "screenshots": [
+          "media/chooser.png"
+        ]
       },
       "controls": [
         {
@@ -2079,7 +2081,24 @@
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Modwerk’s builder linked and verified a build of the author’s 2.0 source with core 2.1 and DIGICHAIN 1.6 on OS 1.53 and 1.54. Nothing was flashed; evidence is none."
+        "summary": "Modwerk’s builder linked and verified a build of the author’s 2.0 source with core 2.1 and DIGICHAIN 1.6 on OS 1.53 and 1.54. Nothing was flashed; evidence is none. Documentation captures verify the listed UI pages on OS 1.53; audio, timing and hardware remain unqualified.",
+        "documentation": {
+          "tutorial": {
+            "title": "Quick tutorial: play a three-note sample chord",
+            "steps": [
+              "Use a build containing Digi Poly and digichain, and load a sample into the project. Select POLY with FUNC + SRC, then confirm with YES.",
+              "On TRIG choose NOT1, set NOT2 to +4 and NOT3 to +7, and leave NOT4 off for a three-note major chord.",
+              "Check SETTINGS > POLY and leave enough other audio tracks in the voice pool. Trigger the POLY track to hear its sample across the chord.",
+              "Stop playback. Turn NOT2 and NOT3 off, or select ONESHOT, to return to single-note playback."
+            ]
+          },
+          "screenshots": [
+            "media/chooser.png",
+            "media/chord.png",
+            "media/settings.png"
+          ],
+          "captureRecord": "media/capture.json"
+        }
       },
       "license": {
         "spdx": "MIT",
@@ -2095,6 +2114,54 @@
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
+        },
+        {
+          "path": "media/chooser.png",
+          "kind": "screenshot",
+          "caption": "POLY in the machine chooser",
+          "alt": "POLY in the machine chooser on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "2.0.1-experimental",
+            "imageSha256": "9cd7b202f12fe141fa7451bd61d2c750d8d75395ac10d58b1cc2efd252b7a627",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/chord.png",
+          "kind": "screenshot",
+          "caption": "POLY chord controls on TRIG",
+          "alt": "POLY chord controls on TRIG on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "2.0.1-experimental",
+            "imageSha256": "9cd7b202f12fe141fa7451bd61d2c750d8d75395ac10d58b1cc2efd252b7a627",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/settings.png",
+          "kind": "screenshot",
+          "caption": "POLY voice pool in Settings",
+          "alt": "POLY voice pool in Settings on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "2.0.1-experimental",
+            "imageSha256": "9cd7b202f12fe141fa7451bd61d2c750d8d75395ac10d58b1cc2efd252b7a627",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
         }
       ],
       "source": {
