@@ -5122,7 +5122,7 @@
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "All three author SHA-256 references match. Native mask/mode/menu/sidechain probes passed with measured instruction counts, model cycles and stack peaks. Actual LCD menu/mode captures were reviewed. Full audio, shared-builder parity, complete callback timing and current-image hardware remain pending. Published with owner approval for missing hardware evidence; historical author reports are retained. Software integration is checked separately.",
+        "summary": "All three author SHA-256 references match. Native mask/mode/menu/sidechain probes passed with measured instruction counts, model cycles and stack peaks. Actual LCD menu/mode captures were reviewed. Full audio, complete callback timing and current-image hardware remain pending. Published with owner approval for missing hardware evidence; historical author reports are retained. Software integration is checked separately.",
         "hardwareStatus": "historical",
         "evidenceRevision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
         "gates": [
@@ -5151,7 +5151,7 @@
       "license": {
         "spdx": "MIT",
         "file": "LICENSE",
-        "declaration": "Original authored sources and upstream licence notices are retained with exact source pins. Only authored source, address/length/hash stock guards and sanitized evidence are included. No firmware, extracted stock routine/table, runtime image, card or RAM/LCD dump is included. Modwerk qualification probes are GPL-3.0-or-later; thumbnail and documentation are original Modwerk work. LCD captures, when present, retain underlying Elektron rights as declared in media/LICENSE.md. Owner rights review is required before publication."
+        "declaration": "Original authored sources and upstream licence notices are retained with exact source pins. Only authored source, address/length/hash stock guards and sanitized evidence are included. No firmware, extracted stock routine/table, runtime image, card or RAM/LCD dump is included. Modwerk qualification probes are GPL-3.0-or-later; thumbnail and documentation are original Modwerk work. LCD captures, when present, retain underlying Elektron rights as declared in media/LICENSE.md."
       },
       "media": [
         {
@@ -5303,7 +5303,7 @@
           "Applies to Flex playback of recorder buffers, including sound-on-sound. Ordinary sample playback fallback paths are retained.",
           "Uses the stock tempo, arm sample and recorder length. It does not run a separate clock.",
           "At fractional bar lengths, a wrap can still repeat or skip one sample; this does not guarantee a perfectly seamless loop at every tempo.",
-          "Eight hook sites and eleven pool-base literals must participate in the common builder allocation ledger; catalog publication and native/browser composition remain pending.",
+          "Eight hook sites and eleven pool-base literals are guarded and relocated by the native and browser builders; builds that exhaust ROM space are refused.",
           "The corrected fixed-RLEN spacing path covers RLEN 1–64 and 30–300 BPM; outside this range it retains stock length. Non-consecutive recording arms and physical audio continuity remain untested."
         ]
       },
@@ -5377,7 +5377,7 @@
       "license": {
         "spdx": "MIT AND GPL-3.0-or-later",
         "file": "LICENSE",
-        "declaration": "Original authored sources and upstream licence notices are retained with exact source pins. Only authored source, address/length/hash stock guards and sanitized evidence are included. No firmware, extracted stock routine/table, runtime image, card or RAM/LCD dump is included. Modwerk qualification probes are GPL-3.0-or-later; thumbnail and documentation are original Modwerk work. LCD captures, when present, retain underlying Elektron rights as declared in media/LICENSE.md. Owner rights review is required before publication."
+        "declaration": "Original authored sources and upstream licence notices are retained with exact source pins. Only authored source, address/length/hash stock guards and sanitized evidence are included. No firmware, extracted stock routine/table, runtime image, card or RAM/LCD dump is included. Modwerk qualification probes are GPL-3.0-or-later; thumbnail and documentation are original Modwerk work. LCD captures, when present, retain underlying Elektron rights as declared in media/LICENSE.md."
       },
       "media": [
         {

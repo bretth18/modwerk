@@ -20,6 +20,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { decodeFirmware } from '../src/engine/elek.ts'
 import { AVAILABLE_MODULES } from '../src/catalog/availability.ts'
+import { selectionConflicts } from '../src/catalog/selection-conflicts.ts'
 import { parseModuleDocument } from '../src/catalog/module-contract.ts'
 import { CATALOG_SOURCE } from '../src/catalog/modules.ts'
 import { comparisonPool, coverageSelections, selectionKey } from './module-coverage.mjs'
@@ -154,7 +155,9 @@ if (check) {
 
   // 3. Declaration checks: every selection of the offered modules needs one (src/catalog/compatibility.test.ts).
   const checks = json(join(root, 'src/catalog/native-metadata.json')).checks, others = pool.filter(module => module !== id)
-  const unrecorded = Array.from({ length: 2 ** others.length }, (_, mask) => [...others.filter((_, bit) => mask >> bit & 1), id].sort().join('+')).filter(key => !(key in checks))
+  // Only selections the configurator allows need a clean declaration record.
+  // Known refused selections have no clean record and must not trigger the same exhaustive scan on every rerun.
+  const unrecorded = Array.from({ length: 2 ** others.length }, (_, mask) => [...others.filter((_, bit) => mask >> bit & 1), id].sort()).filter(ids => !selectionConflicts(ids).length).map(ids => ids.join('+')).filter(key => !(key in checks))
   if (unrecorded.length) {
     console.log(`Recording native declaration checks for ${unrecorded.length} selections …`)
     await container('checks', ['python3', '-B', '/app/scripts/export-native-checks.py', '/native/octabam', '--app', '/app', '--include', id, '--scope', others.join(','), '--write', '--output', '/native/runs/' + process.pid + '/native-metadata.json'])
