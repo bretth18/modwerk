@@ -83,6 +83,13 @@ describe.each(['https://modwerk.app/', 'https://example.github.io/octamod/'])('m
     expect(canonicalRouteUrl(new URL('#forum/thread/' + threadId, current), appUrl, moduleIds).href).toBe(root + 'forum/thread/' + threadId + '/')
     expect(canonicalRouteUrl(new URL('#module/tapeecho', current), appUrl, moduleIds).href).toBe(root + 'module/tapeecho/')
   })
+  it('gives the Start developing page its own path and leaves module update links on hashes', () => {
+    expect(routeFromUrl(new URL('submit/', appUrl), appUrl)).toBe('submit')
+    expect(routeFromUrl(new URL('submit/index.html', appUrl), appUrl)).toBe('submit')
+    expect(canonicalRouteUrl(new URL('#submit', appUrl), appUrl, moduleIds).href).toBe(root + 'submit/')
+    expect(canonicalRouteUrl(new URL('submit/', appUrl), appUrl, moduleIds).href).toBe(root + 'submit/')
+    expect(canonicalRouteUrl(new URL('#submit/miniverb', appUrl), appUrl, moduleIds).href).toBe(root + '#submit/miniverb')
+  })
   it('builds thread and profile links as paths with the title words after a UUID', () => {
     expect(threadHref(threadId, 'Granular pad from Tapehead!')).toMatch(/forum\/thread\/0f3a1b2c-4d5e-4f60-8a9b-0c1d2e3f4a5b-granular-pad-from-tapehead\/$/)
     expect(threadHref(threadId, null, '?page=1')).toMatch(/forum\/thread\/0f3a1b2c-4d5e-4f60-8a9b-0c1d2e3f4a5b\/\?page=1$/)

@@ -163,3 +163,19 @@ Module links keep their own module thumbnail and inherit the Modwerk site name
 and public origin from `index.html`. The versioned homepage image URL avoids
 reusing the old sharing cache key. Local previews verify the metadata and image;
 the public card changes after these files are deployed.
+
+## Per-page cards
+
+Module pages, forum thread pages and the Start developing page carry their own
+`og:image`. Modules use their artwork (`module-thumbnails/`). A forum thread uses
+its first picture when it has one; otherwise the build draws a 1200 × 630 card
+(`forum-thumbnails/`) with the topic, the title (up to three lines), the author and
+the reply count over the Modwerk mark. The Start developing page is served at
+`submit/` with its own card (`page-thumbnails/`). Cards are rendered with Sharp at
+build time by `scripts/social-cards.ts`, so a thread's card updates on the next
+deploy.
+
+To give another page a card, add it to `SITE_PAGES` in `scripts/site-pages.ts` and
+make its path a route in `src/routing.ts`. Pages that are only hash routes (builder,
+forum index, SDK) cannot have their own card, because crawlers ignore the part of
+the URL after `#`; they show the site card.

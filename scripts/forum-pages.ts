@@ -1,7 +1,9 @@
+import { createHash } from 'node:crypto'
 import type { Plugin, ResolvedConfig } from 'vite'
 import { threadPath } from '../src/community/forum-links.ts'
 import { FORUM_CATEGORIES } from '../src/community/forum-contract.ts'
 import { siteUrls } from './module-pages.ts'
+import { socialCard } from './social-cards.ts'
 
 /** One row of the Worker's `GET /api/forum/pages.json`: public threads only. */
 export type ForumPageThread = { id: string; title: string; category: string; machine: string | null; username: string; created_at: string; updated_at: string; replies: number; excerpt: string; image: string | null }
@@ -10,8 +12,15 @@ function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!)
 }
 
-/** The built app page with the thread's title, description and preview card, loading its assets relative to its own depth like the module pages. */
-export function forumThreadPageHtml(html: string, thread: ForumPageThread, base: string): string {
+/** A 1200 × 630 card for a thread without a picture: topic, title, author and replies. */
+export async function threadCard(thread: ForumPageThread, root: string, siteName: string): Promise<Buffer> {
+  const topic = (FORUM_CATEGORIES as Record<string, string>)[thread.category] ?? thread.category
+  const replies = thread.replies === 1 ? '1 reply' : `${thread.replies} replies`
+  return socialCard(root, { kicker: siteName + ' forum · ' + topic, title: thread.title, left: '@' + thread.username, right: thread.replies > 0 ? replies : 'Join the discussion' })
+}
+
+/** The built app page with the thread's title, description and preview card, loading its assets relative to its own depth like the module pages. `cardPath` is a generated card used when the thread has no picture. */
+export function forumThreadPageHtml(html: string, thread: ForumPageThread, base: string, cardPath?: string): string {
   const { appUrl, siteName } = siteUrls(html, base)
   const path = threadPath(thread.id, thread.title), pageUrl = new URL(path, appUrl).href
   const topic = (FORUM_CATEGORIES as Record<string, string>)[thread.category] ?? thread.category
@@ -20,7 +29,8 @@ export function forumThreadPageHtml(html: string, thread: ForumPageThread, base:
   const values: Record<string, string> = {
     description, 'og:type': 'article', 'og:title': title, 'og:description': description, 'og:url': pageUrl,
     'twitter:title': title, 'twitter:description': description,
-    ...(thread.image ? { 'og:image': thread.image, 'og:image:alt': 'Image from the discussion', 'twitter:image': thread.image, 'twitter:image:alt': 'Image from the discussion' } : {}),
+    ...(thread.image ? { 'og:image': thread.image, 'og:image:alt': 'Image from the discussion', 'twitter:image': thread.image, 'twitter:image:alt': 'Image from the discussion' }
+      : cardPath ? { 'og:image': new URL(cardPath, appUrl).href, 'og:image:alt': 'Forum thread: ' + thread.title, 'twitter:image': new URL(cardPath, appUrl).href, 'twitter:image:alt': 'Forum thread: ' + thread.title } : {}),
   }
   const page = html
     .replace(/<base href="[^"]*"\s*\/>/, `<base href="${escapeHtml(base.startsWith('/') ? base : '../'.repeat(path.split('/').length - 1))}" />`)
@@ -65,8 +75,15 @@ export function forumPages(api: string | undefined): Plugin {
       const sitemap = api ? new URL('forum/sitemap.xml', api.replace(/\/?$/, '/')).href : ''
       this.emitFile({ type: 'asset', fileName: 'robots.txt', source: 'User-agent: *\nAllow: /\n' + (sitemap ? 'Sitemap: ' + sitemap + '\n' : '') })
       if (!api) return
+      const { siteName } = siteUrls(html, config.base)
       for (const thread of await fetchForumThreads(api, message => this.warn(message))) {
-        const page = forumThreadPageHtml(html, thread, config.base), canonical = threadPath(thread.id, thread.title), plain = threadPath(thread.id)
+        let cardPath: string | undefined
+        if (!thread.image) {
+          const card = await threadCard(thread, config.root, siteName)
+          cardPath = `forum-thumbnails/${thread.id}-${createHash('sha256').update(card).digest('hex').slice(0, 12)}.jpg`
+          this.emitFile({ type: 'asset', fileName: cardPath, source: card })
+        }
+        const page = forumThreadPageHtml(html, thread, config.base, cardPath), canonical = threadPath(thread.id, thread.title), plain = threadPath(thread.id)
         this.emitFile({ type: 'asset', fileName: canonical + 'index.html', source: page })
         if (plain !== canonical) this.emitFile({ type: 'asset', fileName: plain + 'index.html', source: page })
       }
