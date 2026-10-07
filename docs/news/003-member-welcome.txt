@@ -1,0 +1,44 @@
+Subject: Hello from Modwerk
+Preheader: Say hello in the forum and follow the modules for your machine.
+
+A note from Jannik · Welcome
+
+Thanks for joining Modwerk.
+
+Hi,
+
+Thanks for signing up. Modwerk is still getting started, and it’s good to have you here.
+
+The forum is where it all happens. Come and say hello in Introductions, and tell us which machines you play and what you’re making with them.
+
+Say hello:
+https://modwerk.app/#forum?category=introductions
+
+Every Elektron box has its own corner of the forum, with the modules made for it and the people using them. Browse the forum for your machine:
+https://modwerk.app/#forum
+
+Each module has a thread of its own. Follow it and you’ll hear about new releases and replies in the bell on the site, as an email digest, and optionally as push on your phone. You choose all of that in your account settings:
+https://modwerk.app/#account/notifications
+
+If you’re a developer, start from the submit page: a prompt for your coding agent and every check a module goes through. Effects, machines and MIDI generators are all welcome.
+
+Start developing:
+https://modwerk.app/#submit
+
+When you’re ready, fork the repo on GitHub and open a pull request:
+https://github.com/repeat98/modwerk
+
+We need your help spreading the word to get the ball rolling. If you know someone who’d be into Modwerk (https://modwerk.app/), please send them the link.
+
+There’s a Discord too, if chat is more your thing.
+
+Join us on Discord:
+https://discord.gg/QQxFb85m7
+
+See you around,
+Jannik
+
+You’re receiving this welcome email because you joined Modwerk. You can manage future news emails in your account settings:
+https://modwerk.app/#account
+
+Modwerk · https://modwerk.app/
