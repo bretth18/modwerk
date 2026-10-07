@@ -1,5 +1,6 @@
 import { COMMUNITY_RULES_VERSION } from '../legal/policy'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
 import type { DatabaseSync } from 'node:sqlite'
 import { testServer } from './test-server'
 import { sendActivityDigests } from '../../server/activity-mail'
@@ -75,7 +76,27 @@ describe('operator announcements in the bell', () => {
     expect(await unread(reader.session)).toBe(0)
     expect(db.prepare('SELECT COUNT(*) AS count FROM notifications').get()).toEqual({ count: 0 })
     expect(announcementLink(DEVELOPMENT_DISCORD_URL)).toBe(DEVELOPMENT_DISCORD_URL)
-    for (const url of ['https://discord.gg/another-invite', DEVELOPMENT_DISCORD_URL + '?redirect=evil', DEVELOPMENT_DISCORD_URL + '/extra', 'http://discord.gg/ReKtHwnkEU', 'https://discord.gg.evil.example/ReKtHwnkEU']) expect(() => announcementLink(url)).toThrow()
+    for (const url of ['https://discord.gg/another-invite', DEVELOPMENT_DISCORD_URL + '?redirect=evil', DEVELOPMENT_DISCORD_URL + '/extra', 'http://discord.gg/fe7Kjz5ZSd', 'https://discord.gg.evil.example/fe7Kjz5ZSd']) expect(() => announcementLink(url)).toThrow()
+  })
+
+  it('refreshes the existing Discord bell link without resetting reads or sending again', async () => {
+    const { member, bell, unread, announce, call, db } = await fixture()
+    const reader = await member('readinvite'), unreadMember = await member('unreadinvite')
+    const invitation = { slug: 'development-discord-2026-10-07', title: 'Join the development Discord', body: 'Ask questions about modules.', url: DEVELOPMENT_DISCORD_URL }
+    const { id } = await (await announce(invitation)).json()
+    db.prepare('UPDATE announcements SET url=? WHERE id=?').run('https://discord.gg/previous-invite', id)
+    await call('/notifications', 'PATCH', { ids: ['announcement-' + id] }, reader.session)
+    const before = db.prepare('SELECT * FROM announcements WHERE id=?').get(id)
+    const reads = db.prepare('SELECT * FROM announcement_reads').all()
+    const migration = readFileSync(new URL('../../migrations/0055_refresh_development_discord.sql', import.meta.url), 'utf8')
+    db.exec(migration); db.exec(migration)
+    expect(db.prepare('SELECT * FROM announcements WHERE id=?').get(id)).toEqual({ ...before, url: DEVELOPMENT_DISCORD_URL })
+    expect(db.prepare('SELECT * FROM announcement_reads').all()).toEqual(reads)
+    expect((await bell(reader.session)).items[0]).toMatchObject({ seen: true, url: DEVELOPMENT_DISCORD_URL })
+    expect(await unread(reader.session)).toBe(0)
+    expect(await unread(unreadMember.session)).toBe(1)
+    expect((await announce(invitation)).status).toBe(409)
+    expect(db.prepare('SELECT COUNT(*) AS n FROM announcements').get()).toEqual({ n: 1 })
   })
 
   it('reaches every member, with their own read state and no second send of the same key', async () => {
