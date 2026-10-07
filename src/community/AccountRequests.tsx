@@ -6,7 +6,7 @@ import { SUPPORT_EMAIL, SUPPORT_MAILTO } from '../support'
 type RemovalRequest={id:string;status:'requested'|'reviewing'|'completed'|'cancelled';created_at:string;updated_at:string;responseDueAt:string;responseOverdue:boolean}
 type ReviewRequest=RemovalRequest&{user_id:string;username:string|null;review_note:string}
 const labels={requested:'Requested',reviewing:'Under review',completed:'Completed',cancelled:'Cancelled'}
-type MailCount={day:string;purpose:'verify'|'reset'|'activity';accepted:number;failed:number;limited:number}
+type MailCount={day:string;purpose:'verify'|'reset'|'activity'|'welcome'|'news';accepted:number;failed:number;limited:number}
 function errorText(error:unknown){return error instanceof Error?error.message:'The request could not be completed.'}
 export function AccountRemovalRequest(){
  const [ready,setReady]=useState(false)
@@ -34,5 +34,5 @@ export function AccountRequestInbox(){
 export function AccountMailHealth(){
  const [rows,setRows]=useState<MailCount[]>([]),[loading,setLoading]=useState(true),[error,setError]=useState('')
  useEffect(()=>{let cancelled=false;void api<MailCount[]>('/admin/account-mail').then(value=>{if(!cancelled)setRows(value)}).catch(error=>{if(!cancelled)setError(errorText(error))}).finally(()=>{if(!cancelled)setLoading(false)});return()=>{cancelled=true}},[])
- return <section className="configuration-section"><h2>Account email</h2><p className="service-note">Private daily counts of verification, recovery and activity digest attempts. Activity digests have their own daily cap (ACTIVITY_MAIL_DAILY_LIMIT) beside the account-mail cap. Accepted means the provider accepted the message; inbox delivery must be checked in Resend. These counts contain no addresses, links or provider responses.</p>{loading?<p role="status">Loading email counts…</p>:rows.length?rows.map(row=><p key={row.day+row.purpose}><strong>{row.day} · {row.purpose==='verify'?'Verification':row.purpose==='reset'?'Recovery':'Activity digest'}</strong> — {row.accepted} accepted · {row.failed} failed · {row.limited} limited</p>):!error&&<p>No email attempts recorded.</p>}{error&&<p role="alert" className="file-error">{error}</p>}</section>
+ return <section className="configuration-section"><h2>Account email</h2><p className="service-note">Private daily counts of verification, recovery, welcome, activity digest and news attempts. Activity digests and news mail have their own daily caps (ACTIVITY_MAIL_DAILY_LIMIT, NEWS_MAIL_DAILY_LIMIT) beside the account-mail cap. Accepted means the provider accepted the message; inbox delivery must be checked in Resend. These counts contain no addresses, links or provider responses.</p>{loading?<p role="status">Loading email counts…</p>:rows.length?rows.map(row=><p key={row.day+row.purpose}><strong>{row.day} · {row.purpose==='verify'?'Verification':row.purpose==='reset'?'Recovery':row.purpose==='welcome'?'Welcome':row.purpose==='news'?'News':'Activity digest'}</strong> — {row.accepted} accepted · {row.failed} failed · {row.limited} limited</p>):!error&&<p>No email attempts recorded.</p>}{error&&<p role="alert" className="file-error">{error}</p>}</section>
 }

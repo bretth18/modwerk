@@ -20,6 +20,7 @@ import { adminInsights } from './admin-insights'
 import { adminAccounts } from './admin-accounts'
 import { adminActivity } from './admin-activity'
 import { adminAnnouncements } from './announcements'
+import { adminNews, newsUnsubscribe } from './news-mail'
 import recipes from '../src/catalog/module-sets.json'
 import type { Database, Env, Media, User } from './platform'
 import { withPrivacyDeadline } from './privacy-deadline'
@@ -49,6 +50,10 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if (path === '/api/notifications/unsubscribe' && request.method === 'POST') {
       if (!env.DB) throw new HttpError(503,'Community services are not connected yet.')
       return await unsubscribe(request,env,env.DB)
+    }
+    if (path === '/api/news/unsubscribe' && request.method === 'POST') {
+      if (!env.DB) throw new HttpError(503,'Community services are not connected yet.')
+      return await newsUnsubscribe(request,env,env.DB)
     }
     checkOrigin(request,env)
     const auth = await authentication(request,env,path)
@@ -209,6 +214,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if((match=path.match(/^\/api\/admin\/account-requests\/([a-zA-Z0-9-]+)$/))&&request.method==='PATCH')return reviewAccountRequest(request,db,match[1])
       const announcements = await adminAnnouncements(request, db, path)
       if (announcements) return announcements
+      const news = await adminNews(request, env, db, path, adminId)
+      if (news) return news
       if (path === '/api/admin/insights' && request.method === 'GET') return response(await adminInsights(db))
       if (path === '/api/admin/activity' && request.method === 'GET') return response(await adminActivity(db,new Date(),Number(url.searchParams.get('days') ?? 30)))
       if (path === '/api/admin/accounts' && request.method === 'GET') return response(await adminAccounts(db,new Date(),Number(url.searchParams.get('days') ?? 30)))

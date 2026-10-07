@@ -17,7 +17,10 @@
     "SESSION_TRANSPORT": "bearer",
     "WELCOME_MAIL_ENABLED": "true",
     // Activity digests per day. 15 leaves the free Resend tier (100/day) room for account mail; raise after upgrading.
-    "ACTIVITY_MAIL_DAILY_LIMIT": "15"
+    "ACTIVITY_MAIL_DAILY_LIMIT": "15",
+    // News campaign messages per day, beside the 80 account sends and the activity digests. 5 keeps the three within
+    // the free tier; raise after upgrading. A campaign to more members than this is sent over several days.
+    "NEWS_MAIL_DAILY_LIMIT": "5"
   },
   "d1_databases": [
     {
