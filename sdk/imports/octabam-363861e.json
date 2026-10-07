@@ -252,7 +252,7 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/usb-audio-out-tracks-main-cue/README.md",
       "sourceSha256": "29178fb2e5f4897de68981d011abb93a15d2ef2e79a39964431640c10f3b84f1",
-      "vendoredSha256": "049f7c4fc8fad138aa5f6e55b6bee22a500916d7359494856bfdd389be5236a0",
+      "vendoredSha256": "22f435d9be1fbd570cdbcc47a25428c4c1e82adcdf453b0947a6a485e9fae8a1",
       "importedVendoredSha256": "e4dbbca399a112ae15ff2faa6449570fb1208ad7b3808ffb8beb72f16d7f6bfb",
       "adaptation": " Octamod 0.1.1 version and native verification evidence appended; imported fingerprint retained.",
       "localDocumentationUpdate": {
@@ -261,10 +261,10 @@
         "reason": "Document automatic USB access and the reviewer-verified absence of dedicated OT UI."
       },
       "localUpdate": {
-        "moduleVersion": "0.1.3-experimental",
-        "previousVendoredSha256": "00fe9ad51331850a1792d262c46a2365e11270ad036bf434a533721ec3e516d0",
-        "record": "imports/usb-audio-out-tracks-main-cue-4caa196.json",
-        "reason": "USB MIDI clock tempo fix (issue #223): octabam usbmidi_rx.s at 4caa1965 linked into this module"
+        "moduleVersion": "0.1.4-experimental",
+        "previousVendoredSha256": "049f7c4fc8fad138aa5f6e55b6bee22a500916d7359494856bfdd389be5236a0",
+        "record": "imports/usb-audio-out-tracks-main-cue-6f9e5bc.json",
+        "reason": "USB Audio reset/disconnect, bounded flush and closed-stream producer fixes; USB MIDI clock fix retained."
       }
     },
     {
@@ -273,12 +273,12 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/usb-audio-out-tracks-main-cue/manifest.py",
       "sourceSha256": "0fc269981f4588a266a2743d3430eb219602d6cbb34993ba8617f78a0f20ed93",
-      "vendoredSha256": "b38f74d87aef5b9eefecb42982d994c4447c33852cd96414f26c617aa0da47b5",
+      "vendoredSha256": "088eeaa10b89bdd9516bffec4430b8ed1bb6a6e1c7bb3998ada9944702ae54c0",
       "localUpdate": {
-        "moduleVersion": "0.1.3-experimental",
-        "previousVendoredSha256": "8efa9d46375f50d173b64bdab2441597d3377350ed4b41b8381d999523d91c6a",
-        "record": "imports/usb-audio-out-tracks-main-cue-4caa196.json",
-        "reason": "USB MIDI clock tempo fix (issue #223): octabam usbmidi_rx.s at 4caa1965 linked into this module"
+        "moduleVersion": "0.1.4-experimental",
+        "previousVendoredSha256": "b38f74d87aef5b9eefecb42982d994c4447c33852cd96414f26c617aa0da47b5",
+        "record": "imports/usb-audio-out-tracks-main-cue-6f9e5bc.json",
+        "reason": "USB Audio reset/disconnect, bounded flush and closed-stream producer fixes; USB MIDI clock fix retained."
       }
     },
     {
@@ -287,12 +287,12 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/usb-audio-out-tracks-main-cue/usbaudio.s",
       "sourceSha256": "9bb4979ec3014b975aada07fd13f5eed9c92d541a285cd45c9ee931d2131a5ad",
-      "vendoredSha256": "ca39782d58420d3339e8b31f5f5dd9f15af007a679fc046fac75224dde7fefc4",
+      "vendoredSha256": "ac92cdca02ab3c66a3f931b30cf3ac8b8429bfe7463182398fe9beaac080e4e0",
       "localUpdate": {
-        "moduleVersion": "0.1.3-experimental",
-        "previousVendoredSha256": "9bb4979ec3014b975aada07fd13f5eed9c92d541a285cd45c9ee931d2131a5ad",
-        "record": "imports/usb-audio-out-tracks-main-cue-4caa196.json",
-        "reason": "USB MIDI clock tempo fix (issue #223): octabam usbmidi_rx.s at 4caa1965 linked into this module"
+        "moduleVersion": "0.1.4-experimental",
+        "previousVendoredSha256": "ca39782d58420d3339e8b31f5f5dd9f15af007a679fc046fac75224dde7fefc4",
+        "record": "imports/usb-audio-out-tracks-main-cue-6f9e5bc.json",
+        "reason": "USB Audio reset/disconnect, bounded flush and closed-stream producer fixes; USB MIDI clock fix retained."
       }
     },
     {
@@ -949,48 +949,6 @@
       "sha256": "9d6c12aea7e359d0e9e45a0331a6190ace7f782aeb9762700846c8fd5a1af54b"
     },
     {
-      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
-      "address": 1073863940,
-      "bytes": 6,
-      "sha256": "3bb0c07995b814d9b68c9fe7705b47b484a246631bc6d15296b6b51f9ce8d7e0"
-    },
-    {
-      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
-      "address": 1073862692,
-      "bytes": 6,
-      "sha256": "b7af10bdbb07e409a3549af2716077cbf1f52e8c4c26b68b57f338d447c55ab2"
-    },
-    {
-      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
-      "address": 1073864292,
-      "bytes": 6,
-      "sha256": "868378f30d4ed1251a28851782180b919dbfbd18ea839b594142244f6e06fb8a"
-    },
-    {
-      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
-      "address": 1073861810,
-      "bytes": 6,
-      "sha256": "ab0cbd2f401f4120ff21c07bb467c402a69a55bec648a66e48c7f15f4dc08926"
-    },
-    {
-      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
-      "address": 1073797536,
-      "bytes": 6,
-      "sha256": "37a52c3300cbe2e0b5453bac91ed193defe49493058e8a287b2f9a1c47a325b9"
-    },
-    {
-      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
-      "address": 1073866246,
-      "bytes": 6,
-      "sha256": "2fc3d5168f6ee3ffb4b419a9cbbe48a7837d42e9e47db7bb5bced5cd13b62dc0"
-    },
-    {
-      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
-      "address": 1074667524,
-      "bytes": 3,
-      "sha256": "709e80c88487a2411e1ee4dfb9f22a861492d20c4765150c0c794abd70f8147c"
-    },
-    {
       "path": "platform/usb-midi/manifest.py",
       "address": 1073863114,
       "bytes": 6,
@@ -1151,6 +1109,60 @@
       "address": 1074158716,
       "bytes": 4,
       "sha256": "a3e547e08c1f288e512f2e52ac9becc3502ccd0dcfcf55e5ab9863859f34e2bc"
+    },
+    {
+      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
+      "address": 1073863940,
+      "bytes": 6,
+      "sha256": "3bb0c07995b814d9b68c9fe7705b47b484a246631bc6d15296b6b51f9ce8d7e0"
+    },
+    {
+      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
+      "address": 1073862692,
+      "bytes": 6,
+      "sha256": "b7af10bdbb07e409a3549af2716077cbf1f52e8c4c26b68b57f338d447c55ab2"
+    },
+    {
+      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
+      "address": 1073864292,
+      "bytes": 6,
+      "sha256": "868378f30d4ed1251a28851782180b919dbfbd18ea839b594142244f6e06fb8a"
+    },
+    {
+      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
+      "address": 1073861810,
+      "bytes": 6,
+      "sha256": "ab0cbd2f401f4120ff21c07bb467c402a69a55bec648a66e48c7f15f4dc08926"
+    },
+    {
+      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
+      "address": 1073797536,
+      "bytes": 6,
+      "sha256": "37a52c3300cbe2e0b5453bac91ed193defe49493058e8a287b2f9a1c47a325b9"
+    },
+    {
+      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
+      "address": 1073866246,
+      "bytes": 6,
+      "sha256": "2fc3d5168f6ee3ffb4b419a9cbbe48a7837d42e9e47db7bb5bced5cd13b62dc0"
+    },
+    {
+      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
+      "address": 1073867036,
+      "bytes": 6,
+      "sha256": "78eb060ff0d9ffb4236ffdf4b3b210c34887760745a3767f657917d9ec1d58f2"
+    },
+    {
+      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
+      "address": 1073867090,
+      "bytes": 6,
+      "sha256": "95d6c1eb26340f4df0419ac71e537a21277443225e26589bf5094352b48e3b29"
+    },
+    {
+      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
+      "address": 1074667524,
+      "bytes": 3,
+      "sha256": "709e80c88487a2411e1ee4dfb9f22a861492d20c4765150c0c794abd70f8147c"
     }
   ],
   "archivedModules": {

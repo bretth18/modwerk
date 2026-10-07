@@ -16,7 +16,8 @@ Discord: Copyright Discord Inc. Official white Clyde symbol, unchanged.
 Source: https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/66e3d7f4ef6498ac018f2c55_Symbol.svg
 Usage guidance: https://discord.com/branding
 
-These marks identify the authentication providers. They remain the property of
+These marks identify the authentication providers; the Discord symbol also
+identifies the link to the Modwerk development community. They remain the property of
 their owners and do not imply endorsement of Modwerk. The application's source
 licence does not grant rights to these trademarks. All assets are served locally;
 showing these buttons does not contact a provider until the visitor chooses it.

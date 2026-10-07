@@ -23,6 +23,10 @@ Selected-period event totals include today. Percentage changes compare the compl
 
 CSV contains only daily aggregate values, UTC dates and `uncollected`, `partial` or `complete` coverage. Uncollected metric fields are blank; a recorded zero stays zero. It contains no visitor identifiers, module/configuration grouping or private report content.
 
+## Community invitation responses
+
+The administrator dashboard shows separate totals for the signed-in member and signed-out visitor invitations: shown, Join Discord, Create account (visitors only) and dismissed. The signup welcome link has a separate Join Discord total. Dismissal includes the close button, the explicit dismissal action and Escape. Migration `0054_discord_invitation.sql` adds the daily and hourly counters and their collection boundary. These are action counts; a link click does not confirm account creation or Discord membership. Local modal previews do not count. They use the same existing reporting preferences, browser privacy signals, credential-free requests and retention as other usage counts; no account ID or Discord identity is sent with the action.
+
 ## Community insights and moderation
 
 `GET /api/admin/insights` returns current counts, open issue age buckets and per-module/set aggregate engagement. It uses the same server-side administrator check and `Cache-Control: no-store` as other private reads. No report body, comment body, reporter identity, guest ID or session material enters this response. Each data source is grouped before joining to prevent multiplication of independent ratings, comments and issues. Withdrawn modules with retained activity remain visible as history.

@@ -3,7 +3,7 @@ import { api } from './api'
 import { CommunityInsights } from './CommunityInsights'
 import { HOURLY_ERA_METRICS, hourlyRows, usageCsv, usageInsights, usageMetrics } from './statistics-insights'
 import type { UsageMetric } from './statistics-insights'
-import type { UsageStatistics } from './usage-contract'
+import type { DiscordInviteCounts, UsageStatistics } from './usage-contract'
 import type { AdminInsights } from './admin-insights-contract'
 import { DEVICES_BY_ID } from '../devices/registry'
 
@@ -17,6 +17,20 @@ function Comparison({value}: {value: ReturnType<ReturnType<typeof usageInsights>
   return <small className="statistics-change">{value.percent === null
     ? change ? '+'+format(change)+' · previous period: 0' : 'No change · both periods: 0'
     : change === 0 ? 'No change from previous period' : (change>0 ? '+' : '')+format(value.percent)+'% from previous period'}</small>
+}
+
+function DiscordInviteStatistics({ data }: { data: UsageStatistics }) {
+  const count = (key: keyof DiscordInviteCounts) => data.rows.reduce((total, row) => total + (row[key] ?? 0), 0)
+  const value = (key: keyof DiscordInviteCounts) => data.discordInvitesStarted ? format(count(key)) : '—'
+  return <section className="configuration-section" aria-labelledby="discord-statistics-title">
+    <h2 id="discord-statistics-title">Community invitation responses</h2>
+    <p className="service-note">{data.discordInvitesStarted ? 'Counted from ' + data.discordInvitesStarted.slice(0, 10) + ' · selected period.' : 'Invitation counts have not begun.'} Clicks record the action chosen; account creation and joining happen afterward.</p>
+    <div className="statistics-table" tabIndex={0}><table><thead><tr><th scope="col">Invitation</th><th scope="col">Shown</th><th scope="col">Create account</th><th scope="col">Join Discord</th><th scope="col">Dismissed</th></tr></thead><tbody>
+      <tr><th scope="row">Signed-in members</th><td>{value('discord_member_shown')}</td><td>—</td><td>{value('discord_member_joins')}</td><td>{value('discord_member_dismissals')}</td></tr>
+      <tr><th scope="row">Signed-out visitors</th><td>{value('discord_visitor_shown')}</td><td>{value('discord_visitor_signups')}</td><td>{value('discord_visitor_joins')}</td><td>{value('discord_visitor_dismissals')}</td></tr>
+      <tr><th scope="row">Signup welcome link</th><td>—</td><td>—</td><td>{value('discord_welcome_joins')}</td><td>—</td></tr>
+    </tbody></table></div>
+  </section>
 }
 
 export function UsageDashboard({data}: {data: UsageStatistics}) {
@@ -55,6 +69,7 @@ export function UsageDashboard({data}: {data: UsageStatistics}) {
   }
 
   return <>
+    <DiscordInviteStatistics data={data} />
     <dl className="admin-overview statistics-cards">
       <div><dt>Visitors today</dt><dd>{covered ? format(insights.today) : '—'}</dd><small>Estimated unique visitors · today is partial</small></div>
       {usageMetrics.slice(1).map(([key,title]) => <div key={key}><dt>{title}</dt><dd>{covered ? format(insights.totals[key]) : '—'}</dd><small>Selected period · includes today</small>{covered && <Comparison value={comparable(key) ? insights.compare(key) : null}/>}</div>)}

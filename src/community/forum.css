@@ -925,3 +925,4 @@ li[data-status="error"] .forum-media-status { color: #f0a6ad; }
   .get-started-action { min-height: 40px; margin-top: 0; }
 }
 .forum-welcome { margin: 0 0 20px; }
+.forum-welcome-discord { display: flex; align-items: center; gap: 8px; width: fit-content; margin-top: 10px; }
