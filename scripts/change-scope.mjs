@@ -26,7 +26,7 @@ function catalogIdentity(value) {
   return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, catalogIdentity(item)]))
 }
 export function isDocumentationPath(path) {
-  return /\.md$/i.test(path) || !!(moduleFolder.test(path) && /^(media|presentation|evidence)\//.test(path.replace(moduleFolder, '')) && /\.(png|svg|jpe?g|webp|gif|wav|mp3|flac|ogg|mp4|webm|json|txt)$/i.test(path))
+  return path === 'src/community/module-changelogs.json' || /\.md$/i.test(path) || !!(moduleFolder.test(path) && /^(media|presentation|evidence)\//.test(path.replace(moduleFolder, '')) && /\.(png|svg|jpe?g|webp|gif|wav|mp3|flac|ogg|mp4|webm|json|txt)$/i.test(path))
     || moduleFolder.test(path) && path.endsWith('/qualification.example.json')
     || /^docs\/.*\.(png|svg|jpe?g|webp|gif)$/i.test(path)
 }
