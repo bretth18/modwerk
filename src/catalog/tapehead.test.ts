@@ -53,7 +53,7 @@ describe('published TapeHead evidence', () => {
     expect(chooser.fx2).not.toContain('SPRING REV')
     expect(chooser.fx2).toContain('DARK REV')
     expect(selectionConflicts(['tapehead'], true)).toEqual([])
-    expect(selectionConflicts(['tapehead', 'analog-bassdrum'])).toMatchObject([{ id: 'analog-bd-custom-dsp', moduleIds: ['analog-bassdrum', 'tapehead'] }])
+    expect(selectionConflicts(['tapehead', 'analog-bassdrum'])).toEqual([])
   })
   it('retains complete native identity and refusal coverage for the new combinations without firmware bytes', () => {
     for (const [proofs, scope, companions, expected] of [

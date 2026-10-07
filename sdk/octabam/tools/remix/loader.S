@@ -49,7 +49,9 @@ octabam_bootstrap:
 | only when a remix carries one, so every other loader is byte-identical.
         lea     (-48,%sp),%sp
         movem.l %d0-%d7/%a0-%a2,(%sp)
-        lea     pretable(%pc),%a2
+| The packed runtime before pretable can exceed a signed 16-bit PC offset.
+| An absolute long pointer also supports Analog BD with the Tape Echo runtime.
+        lea     pretable:l,%a2
         move.l  (%a2)+,%d7              | pre-boot payload count (> 0)
 pnext:
         move.l  (%a2)+,%a0              | src

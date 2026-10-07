@@ -26,8 +26,7 @@ const visible = ['miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', 'usb-a
 const suites = [
   { name: 'the original eight modules', file: 'sidechain-composition-proofs.json', scope: ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', 'sidechain-compressor'], member: ids => ids.includes('sidechain-compressor'), expected: 512 },
   { name: 'the nine visible modules other than Analog BD', file: 'sidechain-visible-proofs.json', scope: [...visible, 'sidechain-compressor'], member: ids => ids.includes('sidechain-compressor'), expected: 1024 },
-  // Native refuses Analog BD beside every custom DSP module, after minutes of its own DSP work, so it is covered by the module alone, with each other visible module, and with all of them.
-  { name: 'Analog BD', file: 'sidechain-analog-bd-proofs.json', scope: ['analog-bassdrum', ...visible, 'sidechain-compressor'], member: ids => ids.includes('sidechain-compressor') && ids.includes('analog-bassdrum') && [2, 3, 11].includes(ids.length), expected: 22 },
+  // Analog BD combinations are now covered by verify-analog-bd-native.mjs.
 ]
 const sha = bytes => createHash('sha256').update(bytes).digest('hex')
 const source = readFileSync(file), original = decodeFirmware(source).mainOs, before = sha(original)

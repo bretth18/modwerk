@@ -6,7 +6,7 @@ import { CATALOG_SOURCE, resolveSelection } from '../catalog/modules.ts'
 import { composeModuleMenus, MENU_CAVE_END, MENU_LONG_LIST } from './module-menus.ts'
 import { applyGuardedOsWrites, OS_LOAD_ADDRESS, type OsWrite } from './os-patches.ts'
 import { stockFx2Donors } from './static-dsp.ts'
-import { ANALOG_BD_DONOR } from './analog-bd.ts'
+import { ANALOG_BD_DONOR } from './analog-bd-layout.ts'
 import { DSP_LOADER } from './protocol.ts'
 export type ChooserProfile = { fx1: readonly string[]; fx2: readonly string[] }
 async function hash(bytes: Uint8Array) {

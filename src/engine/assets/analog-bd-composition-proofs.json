@@ -1,0 +1,5238 @@
+{
+  "schema": 1,
+  "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+  "sourceSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+  "staticStock": true,
+  "builderSources": {
+    "tools/build/build_bus.py": "e2d846a72118d6482c8e2fb014638e44b40cead04596efae6714bde93c0c97d6",
+    "tools/build/ab_image.py": "89e10b0e8db282d39d1e33bbef396658c7c74a9ab69fb8513dacde745fa6c159",
+    "tools/remix/loader.S": "32e09fd813ddc65511390faaebc3b86d963b2700f304b35cdb1ec48f90449287"
+  },
+  "moduleSourceTreeSha256": "e69cd99ba3fc7198556b05e8b8de29e23166c7f36b86c1c76fef5770317107ba",
+  "packing": null,
+  "proofs": [
+    {
+      "moduleIds": [
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265549,
+      "sha256": "beb9fa336bd06cc7f681021d0c63469838222a776e090c9ccca7bfae0c920c24",
+      "osSha256": "fbc928f4491271e7ea27247dee193ac2cc8e89a57e0e735479cea64283e049c5",
+      "maskedOsSha256": "b52f03d6402aee6ac97bcc814c3ed2e6de573434be792353e527d4c19ea00028",
+      "appendSha256": "b00e98a28f92abd225f3ed96342f57e1795516ae74bdbdca78e04ba0c34d2598"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [],
+        "hidden": []
+      },
+      "bytes": 1265549,
+      "sha256": "20f4109f522ff15d9601f712d42b1028b25c3b6743e5547ba26718d5d751fe53",
+      "osSha256": "07d3685271b47baf57ce18be4daf161ad9f0886d679723bed6423789711cce43",
+      "maskedOsSha256": "7673ee6d7d120a043b3f7e646babe515b87a61dc5aeb7c2ab07b1a665cdf79dd",
+      "appendSha256": "b00e98a28f92abd225f3ed96342f57e1795516ae74bdbdca78e04ba0c34d2598"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265272,
+      "sha256": "495c50be4bfda6beff08c5eabac9a45cbe780b16b4d5a5524fb17ab690f351ec",
+      "osSha256": "a47e80d75e3de1da9bce15e329b9c42d209b48235e8689751e96a04333373513",
+      "maskedOsSha256": "8addabf2f6aef125647495e3d11b0df7ddd132949b64c684c577230ae3f2cf00",
+      "appendSha256": "1d3d99c0b6d3af1a8517a0bdaa5eb90644c6f6470da6dd9a08762b6ca6c1c0c8"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265272,
+      "sha256": "839f865ab29ecbf2394ede6de2f6c94a5f3cde170c9a50bb2c5141f14b6b65df",
+      "osSha256": "84bfbc230c641d6b3b6c920797ebab2fa49822affdb29a878837b93e40108ac0",
+      "maskedOsSha256": "a05c1e7c0a39c37b73cabd1f9da4b77e262cd79e1469d3cf5d8e2d8518df696b",
+      "appendSha256": "1d3d99c0b6d3af1a8517a0bdaa5eb90644c6f6470da6dd9a08762b6ca6c1c0c8"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367833,
+      "sha256": "990c409a4b759bae418eeaf0f3ffbd45ddaf741046c97745abd3d35d16ac1605",
+      "osSha256": "e161dae05688201c46f6af61b8a04bc78b3243d61c0f89a711f2f013c718406f",
+      "maskedOsSha256": "efd4697190b9d79d1c88c882d3035dec2ccba31b5a6485192802c8da9d8a3a14",
+      "appendSha256": "bf4ec8eb74751f7e41e4d77d9fab2098b6b231e2fdb57925561b265dbd6104f7"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367833,
+      "sha256": "912e58042db6100215e4fca1ca4c21430cbc93d03e3d79f854e6105353b1e49c",
+      "osSha256": "8f68c0ea4d174f264c1fb23d17a2c809b5269d424a28eac2ab5b2ebdffdb0683",
+      "maskedOsSha256": "a263ea5106e611672b0a6fd05eb1cd3b0063611ceea8918d4c5867a66923fb0f",
+      "appendSha256": "bf4ec8eb74751f7e41e4d77d9fab2098b6b231e2fdb57925561b265dbd6104f7"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "MINIVERB",
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367556,
+      "sha256": "8b90b53454cb8ba5a94820e949d424339b1eb75a1e8d689801fd4a1654359ca6",
+      "osSha256": "7e606fe704b1229e1e81e76072e5d4dd7d825839ac49a532437b15377cd63170",
+      "maskedOsSha256": "b0464f9eb40a120807034955b0024a6c481c91728243d6e1a05a204e480ffbd1",
+      "appendSha256": "3e5ff6b94d08ad6d654004f52d94c43e15efa8ab2491d92f49cefd840c1c0432"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367556,
+      "sha256": "5ca09c6b66b7ee4058a8b5e6a9169fc1ce81dbd6666cb5eec252284b3d261411",
+      "osSha256": "02f426b907f239e32adae075ff938c55222362776352467fa70ebd630027cbe2",
+      "maskedOsSha256": "f3d9a401ba6d38ee7e905d307f825be07b2524fb340a65127e7433574e98260a",
+      "appendSha256": "3e5ff6b94d08ad6d654004f52d94c43e15efa8ab2491d92f49cefd840c1c0432"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267619,
+      "sha256": "177485106d2001615d1adee4eec687883d415624f3dbb616cb8c427ab3226816",
+      "osSha256": "ecacdadf25a600ae5734e511bd6dcf2634eac21d720e2c25272060d63bb293b5",
+      "maskedOsSha256": "74e144c6aee723cf3f6610e08e54f608af3f03a7d6c45d6ca4ae90cbd46ac1e5",
+      "appendSha256": "1b5d6429e99c1d5157e033d662471f1a38e22d31772922289fe1f285ab7f690c"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267619,
+      "sha256": "9e2860264c65ef3ef55786f09331b51da5977e49846854388d698985493029fe",
+      "osSha256": "688772e473c99f5cc68bd1e019b291e3dca6ea76e14c4c341b1ae9a2d3176f12",
+      "maskedOsSha256": "b2a218a9dafa6d31ef226322353e8ce92451bc1c30149a52a293c2779d4c7aed",
+      "appendSha256": "1b5d6429e99c1d5157e033d662471f1a38e22d31772922289fe1f285ab7f690c"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "MINIVERB",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267300,
+      "sha256": "6ba63d4a03c3653553f0b21f7555628640ed8afdf15ea84731243739de24b331",
+      "osSha256": "dfcc966eeebed3922b2e1bc3fc65a323f138401caebf0e73d2bd39d596754ca4",
+      "maskedOsSha256": "ef5846b4f69cc15286dcc9240d2e67fa43ed6457c9c453d5d6567ebfe03d477b",
+      "appendSha256": "af1f9913911ebf5a0b05654cb47c90e571f160765a4015013769a28d08bc5a64"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267190,
+      "sha256": "96063849cca86d44411f25a92421a44fe2a93bb5a144be71c65f7ec7e25ca2cb",
+      "osSha256": "ea7cd4ca28f6ed339e6ad1fa7b98b08d47ae9ad65d68189c4e17c25f56967f83",
+      "maskedOsSha256": "a34d7c7591d48abcbda7b4827b3a84230dc83c02be9802445c8e9d739f9407ea",
+      "appendSha256": "56e1414bdd919fd65fd404da04efe3b2b0660c20eaa85597e0ee907405eb42c0"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "TAPE ECHO",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369851,
+      "sha256": "22de95261bc45b2530e04a5fb504af5d58bb3892080dc0fe0346bfedde71b107",
+      "osSha256": "ed3b211d397a95148eb52c0353f49a61e01212879a01f336c0cbd6b3de3239e6",
+      "maskedOsSha256": "347b1f460474049e8b0d1a2d7614a1c50df5c0483c9ccf882ff0afbd6a332dce",
+      "appendSha256": "2f5b968c19c1ddfd7c0f9b879bad0ab2862ca171ab989c6edf65d6aca4ee658f"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369851,
+      "sha256": "906a2ab3a0f45da29ab6a586cff83a024e4849b87cf560001e914b2002a0d8f1",
+      "osSha256": "05cf28c9b288a6719ba1fdc858f84042f0e09dfcfea1a1250fffa25d273d1543",
+      "maskedOsSha256": "12a034798d8604d4d69b83f40a1bf3d91473bdc4cf6f8edc2af24ab4664a02a7",
+      "appendSha256": "2f5b968c19c1ddfd7c0f9b879bad0ab2862ca171ab989c6edf65d6aca4ee658f"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369527,
+      "sha256": "200622efc7e9d3bfe04f506eaa095bf963c2d9e35e09482ae7f879465e10bd2f",
+      "osSha256": "a93439f574c936a4bd4a3bf0e9aa116016ede93fecbbf20568f8de94c234cddb",
+      "maskedOsSha256": "cf17776dedcb198663e1ff8fe8afe3d59c2572858cc7ce39551247d8bfb1ad4d",
+      "appendSha256": "d80b77a42fd47e6dae984568fe36c095be1e31e080fcc48a5076c34a62620152"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369422,
+      "sha256": "0e811338a58ca38acf9f054f60317910d06e4d15b1c22793e3a6591c0ae1357f",
+      "osSha256": "a6fd436dd8d7c3580666b2d6fb3fa846f4ccf6908209f2364d05cc12c9e01eaf",
+      "maskedOsSha256": "321e501c8d29aeac7455d4cdd793e1bd7f8c05b339af1559c62895983993b3a2",
+      "appendSha256": "eb4ea8aa394810e1691cce985ca7547a6d53d763ce4e95208668f67600ef4bef"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265549,
+      "sha256": "2d70c834551618e0428657f7517c263f189bd70db5bbbd1e73f66a4ede26b635",
+      "osSha256": "d21deae2e92157acf4338983abdb20a494d108d68de03ef589405480b99d90c4",
+      "maskedOsSha256": "4dd860f82412ff4c82075d063ad1951d4508cd1d592651f2d9679d3a61308a08",
+      "appendSha256": "b00e98a28f92abd225f3ed96342f57e1795516ae74bdbdca78e04ba0c34d2598"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [],
+        "hidden": []
+      },
+      "bytes": 1265549,
+      "sha256": "093ef966dd0ec1af770cf4fe7ed045d2838661f4a2a3a94d7a8bb42748d4efc5",
+      "osSha256": "453c928fe1e03f7abaf80ca027fbf802d3b5ea2a1157f34892383934e7127a00",
+      "maskedOsSha256": "5a4994e542fd93e7188b9a45952bbdcb29f6d7214f60ffffda35364f24444099",
+      "appendSha256": "b00e98a28f92abd225f3ed96342f57e1795516ae74bdbdca78e04ba0c34d2598"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "repitch",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265272,
+      "sha256": "00e8ca953e3ad6d626ae2a2943b862f98a6f0a17067bf25e630ba177bc4e5bdc",
+      "osSha256": "f4f9321ce8ce08c1c53e86eb05adb6c5248f9a528875402af5544177f1f3b987",
+      "maskedOsSha256": "2d29693e378107ad9b696e981db75568afe7418918508dbc5c8329de6ec7062f",
+      "appendSha256": "1d3d99c0b6d3af1a8517a0bdaa5eb90644c6f6470da6dd9a08762b6ca6c1c0c8"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "repitch",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265272,
+      "sha256": "d1104868c70811a3332210a61061cb51522ac9323e617bb80e38c15b82983eb8",
+      "osSha256": "45ddfb374de3ac8a7b2f6f45f00bc6d435906c79b019ea77b039c0af402f7d87",
+      "maskedOsSha256": "4dffbb89f48f078e27479528f28a369d235afe85883b236029a61961156a04f1",
+      "appendSha256": "1d3d99c0b6d3af1a8517a0bdaa5eb90644c6f6470da6dd9a08762b6ca6c1c0c8"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "repitch",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367833,
+      "sha256": "2f2a9ed4df46174f40230b53fd003ae3d9c7f2e59c41d11af4fbc9c8494564aa",
+      "osSha256": "8e5f4842473d6ecfd998f04982e093fdd4771c10ba6b14145b807e719c801d9f",
+      "maskedOsSha256": "e8aa44f4c850b4b248476cf7315186aa2fee7f27f778dfe9d6f79a88e3bad9cb",
+      "appendSha256": "bf4ec8eb74751f7e41e4d77d9fab2098b6b231e2fdb57925561b265dbd6104f7"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "repitch",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367833,
+      "sha256": "554af55d917829d5dbc8f3d51d6b8f7f329323cf003934be52d4695bd7ac3b9a",
+      "osSha256": "95e80e43af38d9f4add63f424a34cf8f952427d65b9053d01746f36d9f48699f",
+      "maskedOsSha256": "b83390d57036dc6acb147e4cf6d691c9215615b9baa2c3bf1659d9e6f215b1bb",
+      "appendSha256": "bf4ec8eb74751f7e41e4d77d9fab2098b6b231e2fdb57925561b265dbd6104f7"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267619,
+      "sha256": "b53e6c8565b0b31d1c3c249c6f50aaa26ad3ccc46e1a03aa2013cd3f69dd99bd",
+      "osSha256": "3556e3fe12df9cc156f0a63dc4947f308431ef5d42e3578da98254f5086c3b8c",
+      "maskedOsSha256": "00211204c547f79b6d4155df63f41755bc9eceb171b701e03cf938ffbd2ce4ce",
+      "appendSha256": "1b5d6429e99c1d5157e033d662471f1a38e22d31772922289fe1f285ab7f690c"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267619,
+      "sha256": "3ffdd94f42120f7f40af94dd46d3dd85151cfd52d60b5703012f18e26acb20aa",
+      "osSha256": "16b85152ba3b323abfd279a3bbf0b11c5a6c9c242a558001d85a62c16ef4510a",
+      "maskedOsSha256": "3c87399dcd9ad8992e6ecb62fbc8c54d5436863e2de3b88e29f6ad6557d7cd38",
+      "appendSha256": "1b5d6429e99c1d5157e033d662471f1a38e22d31772922289fe1f285ab7f690c"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265141,
+      "sha256": "5605c06322aa31ffaf680c11517298f39eed5973cbd1109d310646f63e7a3f84",
+      "osSha256": "c48071557974da7a14547554aa3be82c0a6c6c3d1313bc6deef63bb33321b3d6",
+      "maskedOsSha256": "865f7266d44a2891a0cf7f8f4c741e02462d31d999a78ec9bcb73ef1b39107d1",
+      "appendSha256": "a10ed88a86e48b91998e639b9de1a0588bad205ca0a1461a73b1e7aef9bd003c"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265141,
+      "sha256": "d410d72e6eb7b623ef6d22fbc1c0201583ab87b4e3e13121f65dc90e9fda0752",
+      "osSha256": "3b22d29fdd3b43c138e792e5a4f428417809f5cbb2c3132216cf336c6f700664",
+      "maskedOsSha256": "b27d1da505440715b1f71d4f8f1f10f8a9c352cafc1fb2f115b1f331c35932a1",
+      "appendSha256": "a10ed88a86e48b91998e639b9de1a0588bad205ca0a1461a73b1e7aef9bd003c"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "MINIVERB",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1264851,
+      "sha256": "fd2ec0673495a078c01dfe23a86bf929635cb2e1656824c3f841d19e3d7fadd2",
+      "osSha256": "e158c78c39d326316be2b3053bbb206bb6b7d8210bc224567c287ce43e58ef38",
+      "maskedOsSha256": "d968321dd02ef7f41cf42fb4d6a68a304b72a42738bbec72278b295c8ff244dc",
+      "appendSha256": "6b4870edb4fedd1d320230be1763f85a419e053741fd39db861ec9cdd608d0cd"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1264841,
+      "sha256": "ea39b7ae9ff7cfcb73c08ac6ea5b856070d992b848022a292cb2b60801a8f817",
+      "osSha256": "d7925d062fcf20acfccc3711365dcc1cb008a74b83bdf879480b0eb3f02525d5",
+      "maskedOsSha256": "3eba16ecfcfb4b676b416ec222f64648936723d717bc9645edfc929d5bff227d",
+      "appendSha256": "8bcd4a7619ed19f5ae73320d3bea73734c665eeac87aaa1202c53de7e9155ac9"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "TAPE ECHO",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367425,
+      "sha256": "98ec302ed528fe38677f268dbe9a0ebaa6be6bd0ebd631a85aeb09bc66294d0a",
+      "osSha256": "907dc69f4c75e21e4b5679d0f078aea00842a32b6ac598da1f21385393be1657",
+      "maskedOsSha256": "15d20e9c3eb9b30c3de86ca7de35faf04824e29c4bb8338dbdd2b24cfe6dabc0",
+      "appendSha256": "37d85d718b4e74a3bfcfd74a7b6c525f7a0a1e2cb00a4ec9e6f1f574fd258459"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367425,
+      "sha256": "03eabf5bd80bbbd3b8b8615940343ef90d48a1bd9c13cfab61013223dcd7281e",
+      "osSha256": "71b464968a3da454c9ee20bc44d193ff4982af66ed3d712972f1e91e6e053738",
+      "maskedOsSha256": "88a7d8951b1b56734d3778a0fbbf983d6c2186852bcb9bd133a1d9c13098997b",
+      "appendSha256": "37d85d718b4e74a3bfcfd74a7b6c525f7a0a1e2cb00a4ec9e6f1f574fd258459"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367130,
+      "sha256": "5ee17fe0fd3083497c6cca68f91f41344b826daa530a6f3e04c4c5f07340228f",
+      "osSha256": "d8daf1bf41f32714a531b85f6706a6afacd8b1447f530c4980c03dc36c985255",
+      "maskedOsSha256": "a629bcc30c0849cbb518ae480a87a7f8b4418b3fed6c3403e7b93361748b92c3",
+      "appendSha256": "cc7b9b959d8c8e49934366f122d40d3b4cdd598dffbd97c358c828804f3129d7"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367121,
+      "sha256": "0296b5959114c26316524781cb9781ecbd913c96c238f75357492c2601fd2e7b",
+      "osSha256": "6bd0dea366b2cddefe75bf71414c2a1855d2c639b117d995d420e8045113812a",
+      "maskedOsSha256": "18d74686037153c7b0cd75c5c76219e7f5f6f402bb8cdabfda3341244db0f287",
+      "appendSha256": "3917d855723264d13c474d1153dfe294365502abe998b285d889b15a7260bb2a"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267147,
+      "sha256": "101e27be99ac5ecdcc60d436e2e4d4988f3d2e377d426521ed1e55a40da76e89",
+      "osSha256": "19083607413bbdc192a1bb1957042349c2c520de6b12153cfd660c5812343bd9",
+      "maskedOsSha256": "7c5a11566cb7939bf062c60622fd6416e311072820e62f3963b7075130bbc857",
+      "appendSha256": "56c4cb9b643bec80cc5ef5719f6ce02d69752620aa5cb2a74de79c3e2a5587b0"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267158,
+      "sha256": "e49d51e8a36fa26e8c7c7accc80c3133e670a4a25da257f23ccb34d3b5e08e53",
+      "osSha256": "586168418268f3f3a6167e06ded1c224d9ba9d273318265e78de3acdca5cd4e9",
+      "maskedOsSha256": "240ab2302c355feab1bf67bf61ccb107b03bc7b2b8ee91ecd45e1a3552a70567",
+      "appendSha256": "1548d35c8da02f6f41b1d1ea172cd15b2c294494584150556fdca82d7c82a608"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266624,
+      "sha256": "6d3f034e8257f34d73774edd0d35ae5a637bffd2b7a43695bc71099676687357",
+      "osSha256": "531e7f246d4f53b0566aa3ea36b2c2b24417bdf21c1cb825552ce8b82cefd3d8",
+      "maskedOsSha256": "5be9ab8a2a44bea4448e48b99ecf9494116aea04f9e70baa17ef5b42ec3f5f0f",
+      "appendSha256": "d131e0da686a42e3444b15f275e1b99a1c00c5a0344298f0ee9e47cc9282b86e"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266624,
+      "sha256": "2552ced93da157fa7105c45136fb617ec8f9a753f6ef7a1ee5a5100601598ca5",
+      "osSha256": "0074d69da7e20d67ca667712ffd6017fb5e8ec3c2c713c7cbc8b268649aef45f",
+      "maskedOsSha256": "5652bca273a5697c931566ae1c5645833bf3c05957e6c3275278683888bbd0e9",
+      "appendSha256": "d131e0da686a42e3444b15f275e1b99a1c00c5a0344298f0ee9e47cc9282b86e"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369380,
+      "sha256": "ef6db8e3f6a987a756ecb385af3b1263ee0dbdeb7f6818665b6f69cfddcf68c2",
+      "osSha256": "83c04f6d2741cce2042f79bdd51f7eb4aeccda0d04aae6fc6fec7c648ff12ef9",
+      "maskedOsSha256": "5d2ac5a0bc5eb25e4b469b3b99829bddaab4bae4f51b52d9793b1782dcf097a1",
+      "appendSha256": "9505f83b2b50c85b011b33ac7475d11ae7603f630d6de58bec65032595378dac"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369385,
+      "sha256": "80dfaab3a4b889793bd946aefeadd8e10d70e36243a5886a1e081dc339ab3a29",
+      "osSha256": "ea64cfe79c465075e2b958c5b7f040f2b40f79de264131ddb435e9e3eda70b2f",
+      "maskedOsSha256": "7f9aa2e3d2240248be5031e0b9c876c40c7fa633c88d48291e3c0b3ba7a2e9b0",
+      "appendSha256": "a412a337427d3bcdd3acc6eb6e3102deca7c9ad451f4064ea53fee94b754e85d"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1368857,
+      "sha256": "a6d18d58cf80a4e1d779e239becaaba8e1019e30d055c2954e1dae75321f5e30",
+      "osSha256": "079cdc5019117ba4d27921bc362b0c1f973a7762d20ef17a1d61e104059f5a5d",
+      "maskedOsSha256": "d2899bc7debfb9273acb56bbe83dbda7c065d1d557035a9eb7fdfa4ddd1ee2ab",
+      "appendSha256": "c90e63e612e8e8e8d505c14cbc9bf0920de573601d2fd66fee92e5558c16ed3f"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1368857,
+      "sha256": "e724988996581f6d0bfa4ac92b350ab13c24760e333af463c45f336b456c6d04",
+      "osSha256": "5695df5f4f9214b3f1e9c7bdb5c2f8c2cce179bfecba7a00b8f0a6ff3818531e",
+      "maskedOsSha256": "3755afeeb89d0a35259fdbf939c24a73b8f6702ef2928d81d14107c3b089b216",
+      "appendSha256": "c90e63e612e8e8e8d505c14cbc9bf0920de573601d2fd66fee92e5558c16ed3f"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265141,
+      "sha256": "36d997e309dae52660f942908a7fdf85c75b858ed47940394e94cf0a40a46f99",
+      "osSha256": "02ade58e7e6a3738483cf9db5cdbb6d43c275818c8f57349f311400550337589",
+      "maskedOsSha256": "1d37de3ce970f6d0f3333dae37ec658ce643b54b8530b21e192515a43b76e42e",
+      "appendSha256": "a10ed88a86e48b91998e639b9de1a0588bad205ca0a1461a73b1e7aef9bd003c"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "tapehead",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265141,
+      "sha256": "155f4012e447348c8eb4b761f34b65d43fa51927de67ea6d10052ffec00d7902",
+      "osSha256": "278fffaf2cf16bfefb80ce5dfcfd62f543645ac47819828f0edf679e09a77aaa",
+      "maskedOsSha256": "cf07ec146ea48c74bbc155a571e07cdeedea523671121b29d7bfcae79c7509b4",
+      "appendSha256": "a10ed88a86e48b91998e639b9de1a0588bad205ca0a1461a73b1e7aef9bd003c"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1268221,
+      "sha256": "803e9a5698e69c4b5e7e10a988301ff9a036bfc83ed8b657394e87cbd5b77564",
+      "osSha256": "077d54d225c3d1e780dbe5a21f3fb652666649279af134e05cd331c91042dd1a",
+      "maskedOsSha256": "487450a576c7da625d29acc8cd11b6acc29248762b8068855d8639d05fa1f85e",
+      "appendSha256": "2fa13c9251d75a253ce367a84b5a8db4473fec4175991c56f1920258275d6182"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [],
+        "hidden": []
+      },
+      "bytes": 1268221,
+      "sha256": "ebcd1bac630065d43739b3e36ab3877607ad56d80039ee031c54bb45da6f9ffe",
+      "osSha256": "ca0cb0b98592373d679cd8ebf51a01058f0e41a2e1d15d7dddee1ebd46ebe5d8",
+      "maskedOsSha256": "a432c8b3b2b1010e6acd8220f795e67d86fb668a8f51b12ade0c7a184a8f9bc6",
+      "appendSha256": "2fa13c9251d75a253ce367a84b5a8db4473fec4175991c56f1920258275d6182"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267944,
+      "sha256": "b65525853f6b03bef9a34dd283d0e5bb56afb050940a154909767f0809d4e568",
+      "osSha256": "051847c6fa27f2042c674aa7b792dad3b03b24aa2da28d0066727db00098f8ff",
+      "maskedOsSha256": "a54d76ca6750d8c94b685fe5f3ca5698b258d25148618fded2872fc51c2da722",
+      "appendSha256": "92b56585f4a24fcd1e7b9cabe595dd9951cdc77b46b88f3d772f1f6bcec441b4"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267944,
+      "sha256": "e83e94e195f09b0a2b5a6c3ba74e63dcf1652d520f5135b9faba9729936de3f3",
+      "osSha256": "d47eaaf2e783bb2a7b48eebfaa09629055e25aec28811b9b03e03952fc340bf1",
+      "maskedOsSha256": "332f59de3f984b5827ac8292a26aa255a58ec26f4c2bf5e46bb0a7af0eef9fcc",
+      "appendSha256": "92b56585f4a24fcd1e7b9cabe595dd9951cdc77b46b88f3d772f1f6bcec441b4"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1370521,
+      "sha256": "de238205c531679a158c5ca126b86ec3b27f2439a6e6c12e2ba90a16f5725b92",
+      "osSha256": "78fbd68739074d392595badfd6cd1e27d1a09e4b9fb00080334fa10866df9fa5",
+      "maskedOsSha256": "3b5a3c1e3c698dce53fc94c5d549ec4141703fc4742c0de2ca8124173e0c8156",
+      "appendSha256": "1c8e0b51b7060ef249abe14c21627155cf4e5586fb241a8edb23a6cb374070b6"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1370521,
+      "sha256": "0eb090f827ad4d5dbca117b72f094cf070c153c15698c795d67bbaf646252bd7",
+      "osSha256": "5c016317ac534f84f2dc6b9db1885656a3f345384a17456163c6e8389926a547",
+      "maskedOsSha256": "73db49b4c522848890f7d37df0d9736d10d829e987f4e5e8476fcc391bfef1fa",
+      "appendSha256": "1c8e0b51b7060ef249abe14c21627155cf4e5586fb241a8edb23a6cb374070b6"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1270279,
+      "sha256": "2ade548a0356af2076aab5262761dc38c1540a0258d3f719636924d6dfeb91d6",
+      "osSha256": "4923afb98e1d9d0d2a1ad4f9806a6bbea5cf1c44e0afef4de9c4eb3cc0f854b9",
+      "maskedOsSha256": "d4134aad996050a7549e36dc25f0d50d50e57a97956325e91586afdd9c212dc1",
+      "appendSha256": "4ecb8b558a813b96ab84f5dc5fbc88d814cc022f509dbeb6f944ea185e6ab502"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1270279,
+      "sha256": "877588b4a87889ccb5091ec7d9ef787604ac8ff47b950d584f4f763c3941e76a",
+      "osSha256": "f2d5ea90a572cd1bbdb14ff8f0b863c2cec20b810bae21fe19a589ab6e35d4ca",
+      "maskedOsSha256": "eb8ebd76165c4f6e2b9565ac0cc3f52be2f458a76ac5a7aaed6f974ad4930e4d",
+      "appendSha256": "4ecb8b558a813b96ab84f5dc5fbc88d814cc022f509dbeb6f944ea185e6ab502"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267813,
+      "sha256": "7203f730947f079c878bb36c025e741a353c576a1433dda160ea8e7a094d1235",
+      "osSha256": "289f48a3dba4df90bc560d817e8a5d2352b8fd225cdafd6c01d757938a559e4f",
+      "maskedOsSha256": "a0a7198e2fd5806a19c8106cdb7afff689472e6fec13e7f59c5dd110fce98f16",
+      "appendSha256": "9bf985bb7c09dae18bd8f528e2fbbadda305738c0db03ada36ddab7322b526e2"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267813,
+      "sha256": "db6662b50d7131de0d870a960b617f8d7d064242cbd1ceae3f95cdc2fe66da1f",
+      "osSha256": "3ce00788869bf2738e669b3ee7abf27bae9ed87c8c9b077a92489f80784c16b4",
+      "maskedOsSha256": "f7a50bded7fc40f37f55b12dd720c4d657c7938aa8d7a760e49f47fb12d4ca2b",
+      "appendSha256": "9bf985bb7c09dae18bd8f528e2fbbadda305738c0db03ada36ddab7322b526e2"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "quantizer"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267729,
+      "sha256": "6e30d61993a40bdf8bd077d8b7e5f9b279c7a85696b02b5faf811fd3eed79e31",
+      "osSha256": "febc33f830ee66c013a7e2db8242fefce42ec71991f8db5d19b7ed570eb5e65b",
+      "maskedOsSha256": "279cbf59ae9850e3294d9e82c6829263d51c3bdfa28ae006e8c72a732031ff62",
+      "appendSha256": "b727b3a31e020c5be739a40077e4db22c8a6bb12241d94bc8a4fac454a57e49e"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "quantizer"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [],
+        "hidden": []
+      },
+      "bytes": 1267729,
+      "sha256": "92e29b3d62726ce192bf32628181604651a3834c5405217133b3f9248292cadf",
+      "osSha256": "f46cd758e628f21e2f365b88e38e3d7ca7d70f119968ea135098b1df3f424cf3",
+      "maskedOsSha256": "c664b463c635c3617d87992c596cb9d505c8dd1779dc5a4f626273a38205490a",
+      "appendSha256": "b727b3a31e020c5be739a40077e4db22c8a6bb12241d94bc8a4fac454a57e49e"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "analog-bassdrum",
+        "quantizer"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267452,
+      "sha256": "275c891c06714af2d5dedaadd48a3338fe0f240c9221f695a0d82275e5ccfc42",
+      "osSha256": "f792ec367d05438651afc211b7eb5bc6bb63bcc0482a19d50e3bfc8857454980",
+      "maskedOsSha256": "d3e4093d41362ddc4c844596fec0e4d5f0607b54f420b4b11bbe2a44096c06d9",
+      "appendSha256": "e39aa0e2fe32c38668cc8e3c24b242c86608d2254425d06e8f3a781ec45c63ff"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "analog-bassdrum",
+        "quantizer"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267452,
+      "sha256": "9693662a2835f696649d9fd2702b133f3c5a5f8b59435fcd1a7774f52f1281d2",
+      "osSha256": "39ea128190068897e85e1af3ac0dba80cc836f03a6c95c1f20b9651f742b5255",
+      "maskedOsSha256": "a7caa029cdc18b7ddd5468695d01b69f9e6e94e9331de9190fe8247b60069937",
+      "appendSha256": "e39aa0e2fe32c38668cc8e3c24b242c86608d2254425d06e8f3a781ec45c63ff"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "analog-bassdrum",
+        "quantizer"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1370017,
+      "sha256": "79fa151de3f518bc7351fcb4c2c1ecce3fbcd64ddc98970ab97cc4a8c4ceb6a1",
+      "osSha256": "4b55a6504b952ae7ade2379b4490e9dc366d0662ae6eb3747d31cd75a4b0bd0a",
+      "maskedOsSha256": "49fede22e6467c57b8628c7e4227f9edf5b58223e28598b26298e94767165a4a",
+      "appendSha256": "47a7a2f9c47b7c00b11c1c39f54bfd129f3c1be6ad5e3490be660d8b5c2d983c"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "analog-bassdrum",
+        "quantizer"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1370017,
+      "sha256": "9ea22161fff85f1a3de85163420c9a997b1b5fb31b23f8a37147a7540f3c0e24",
+      "osSha256": "9dd200f70cf82dad6a9b57e2b461d0d34a2b85076423f0916824884c40e59732",
+      "maskedOsSha256": "1925ae534dc9651c8ec110f4759d41f5daf59d0669253989916a403ecced4787",
+      "appendSha256": "47a7a2f9c47b7c00b11c1c39f54bfd129f3c1be6ad5e3490be660d8b5c2d983c"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum",
+        "quantizer"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1269787,
+      "sha256": "0af88e9fce37886ecbd9f844f8b4439b3e0c69f7183ea317a1b4924a5a37cbfe",
+      "osSha256": "816771666dc29185270aa801a88804ecce401d5c38f307bc517c60a10a4a2f07",
+      "maskedOsSha256": "4ab67514cfd1ef62b59702cb8109d9543955bf41721815fa49b3eb7fa96f6871",
+      "appendSha256": "2f35a9599a15f1788af460df19ab5c45744ca54a6bcb80eeacbf6841ca1db28b"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum",
+        "quantizer"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1269787,
+      "sha256": "3c0e87ee2c6f6ff234fdddcb9623b8ff6b0af97f54ee8ad918408d6909c46e89",
+      "osSha256": "d343a016cf5c27e05f2ad9c3ba9d47ba6a02e0769f344c4f69c76629a694c58e",
+      "maskedOsSha256": "2f550d88f95371932bdf9028b55a108385da86058e20f7c3d587b22434f0d72a",
+      "appendSha256": "2f35a9599a15f1788af460df19ab5c45744ca54a6bcb80eeacbf6841ca1db28b"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "analog-bassdrum",
+        "quantizer"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267321,
+      "sha256": "396252d99ed9b6b4fb4d8ec6f5d4224886b2473f0cdfdf99943cd6038b555129",
+      "osSha256": "d588cd27d308b1906e1af6c1ba4d49c8164fb2c7166436ee5a0089b099bb599e",
+      "maskedOsSha256": "0556427ce8aba5a6e8239fddb34710739e93f6683f0a980b5c6c95188d4cd32a",
+      "appendSha256": "5edf4c5336bd263a868d8bf68d67c64765e4a7ee26752a7483a2abb19f2e8b5d"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "analog-bassdrum",
+        "quantizer"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267321,
+      "sha256": "59c68d7aed05ad0312e96c6c215f2306e53e06849ed2d42400492bfea1256c1c",
+      "osSha256": "31ea9c224f482fc5d6dda3378da03d7450dafd0451f632ce63b2ee8fb96ac6af",
+      "maskedOsSha256": "62a6f10545d5f13cb25fa5aaab96a65b5190d83b2c8369350dbc723daf6446fc",
+      "appendSha256": "5edf4c5336bd263a868d8bf68d67c64765e4a7ee26752a7483a2abb19f2e8b5d"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "previewvol"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265549,
+      "sha256": "c7d7d62558c29d4bc522e9c77f9eadb386d8d6951b95c737c7ee9d2ef810ae81",
+      "osSha256": "8b86605058f977b8587973491a5b43294225df3d109b14bde4e15bdf8f10dd18",
+      "maskedOsSha256": "d46041f7ecbb73b4f98cfad8f94bc266eb5526550d377f3205c9295946ee6408",
+      "appendSha256": "b00e98a28f92abd225f3ed96342f57e1795516ae74bdbdca78e04ba0c34d2598"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "previewvol"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [],
+        "hidden": []
+      },
+      "bytes": 1265549,
+      "sha256": "a9aa268583578b6b2a3818ee6b233ea7d0812b06e4ba96fd1734f02a7d574aae",
+      "osSha256": "cea40892a84698d40b616f7166c471707f8becc34d8b617e6bb4587214aa928d",
+      "maskedOsSha256": "e557bcaa5cc7c1f7b433878253c2d8a2adb513d546ce0d5d16f2a2e489cdb93a",
+      "appendSha256": "b00e98a28f92abd225f3ed96342f57e1795516ae74bdbdca78e04ba0c34d2598"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "analog-bassdrum",
+        "previewvol"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265272,
+      "sha256": "ca8c9cd519a22b4aafb27210952e2bab7ec39bbf7eb54c05f60bb063aded03a1",
+      "osSha256": "2119e0453df9ff7945d95e76bf094fa934e66d3a256467a2a0d1e2f9937fc91f",
+      "maskedOsSha256": "c5f98b8e25ca69c1b7620d0a404c8ecadcfb90990d32fd20f4f01e871db77385",
+      "appendSha256": "1d3d99c0b6d3af1a8517a0bdaa5eb90644c6f6470da6dd9a08762b6ca6c1c0c8"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "analog-bassdrum",
+        "previewvol"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265272,
+      "sha256": "511f3cdd22d3996acdd678d94c4aef89753f6fe4c53c801c578fa3d68d9a69ca",
+      "osSha256": "ec109f92821c97c4e109650ce1fbea1b1ca8f4867d744d7cc29b1897ee6ad316",
+      "maskedOsSha256": "671028a3b774eea1095cec4b3bbeaddca031aeedf68c735ac79c15e68fc87859",
+      "appendSha256": "1d3d99c0b6d3af1a8517a0bdaa5eb90644c6f6470da6dd9a08762b6ca6c1c0c8"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "analog-bassdrum",
+        "previewvol"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367833,
+      "sha256": "8c591b29fc014e99c5ceb8bf1cb311b22ab8ac8c080c1806e3263f0d8faa0c86",
+      "osSha256": "a8b1b2cbc40baf28f1c237fe7f8bc35e1b937f1149ab5e77a333a5fa46d9f5cd",
+      "maskedOsSha256": "fb6eb3feed75faaba5356b303aa2db4330b4fa00a8e1aac19e0b96086aeb8be5",
+      "appendSha256": "bf4ec8eb74751f7e41e4d77d9fab2098b6b231e2fdb57925561b265dbd6104f7"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "analog-bassdrum",
+        "previewvol"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367833,
+      "sha256": "1a41b9bff13bb8b500931c98af780ff77df81fffe9bc1dfcd2d92c9ed6a0ef05",
+      "osSha256": "bc804cf41bc4e525dea4d69fd78f79c806f224cab1c4c0780e6d87c396166bab",
+      "maskedOsSha256": "a75b6ef167b7cf732160d3658fb2e5ad36b4c2c3987347d4d3d96d2404b28fe2",
+      "appendSha256": "bf4ec8eb74751f7e41e4d77d9fab2098b6b231e2fdb57925561b265dbd6104f7"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum",
+        "previewvol"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267619,
+      "sha256": "25e1f266e536ffee6dbec1bf42b95e0d1143a4c087cef5348b9f128fab53be7d",
+      "osSha256": "770408bdc7957b5b1e938d2bb9b6af7043fd44bcdccce27a13e4ca089cf7dabb",
+      "maskedOsSha256": "331ab96ed07d11a2c69c140232956f93accf865116fcacee94a4a5bc7eb8c850",
+      "appendSha256": "1b5d6429e99c1d5157e033d662471f1a38e22d31772922289fe1f285ab7f690c"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum",
+        "previewvol"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267619,
+      "sha256": "534ff71b0a1d7deac2d61b46813e8e6d4ee1fb49a86e554ff8205f30e76c8a81",
+      "osSha256": "cc945fbf1144e8a58457728a1df48eba93e598de5a5e7f8cad6469f363375f6b",
+      "maskedOsSha256": "651c47ac96ef6d06c1bf178c81ebea3133112a720f3e45ffe47b49f0c2d11919",
+      "appendSha256": "1b5d6429e99c1d5157e033d662471f1a38e22d31772922289fe1f285ab7f690c"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "analog-bassdrum",
+        "previewvol"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265141,
+      "sha256": "480b542c0427d68d375bd8fbaaeb03ef4942323cfa0177244b91488a9d0ca617",
+      "osSha256": "72ed8d53cc9a6ec67fb20f81382c688e5406daeef7e0c069427800ebc8185126",
+      "maskedOsSha256": "d6c79df5ae26fc5c45d16464e92f4c872f1083c26c968429492e5cb1b804acad",
+      "appendSha256": "a10ed88a86e48b91998e639b9de1a0588bad205ca0a1461a73b1e7aef9bd003c"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "analog-bassdrum",
+        "previewvol"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265141,
+      "sha256": "e17bcb8eba2cddd447c4b99c3eacd37b78220f85f7ad43520d09862dc0b6f63d",
+      "osSha256": "02184141041c82eac5fad3793e54ff13b529acec7f39fc40762256c746a2f7d7",
+      "maskedOsSha256": "0032cb8f3524a9d861993c4b36d50166b559cc24c47e22818cc0b67e682eb52e",
+      "appendSha256": "a10ed88a86e48b91998e639b9de1a0588bad205ca0a1461a73b1e7aef9bd003c"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265549,
+      "sha256": "761b5c5d849214b90c9c9834eb4e30fec306ad58fe3c38e0eb40c78a5345beaf",
+      "osSha256": "4088f32ad7c6e4de26ac89889dffa1e0024c7f45b021f1e6dbf62f3548559348",
+      "maskedOsSha256": "c042f630ec249775b7d86adf5ba33d7a8a0527802d56b98fe062d7bdebbd2298",
+      "appendSha256": "b00e98a28f92abd225f3ed96342f57e1795516ae74bdbdca78e04ba0c34d2598"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [],
+        "hidden": []
+      },
+      "bytes": 1265549,
+      "sha256": "5874fd7b078c8336462506c0cfd440d30a6c694e69e10e80ab624ea01ea77e38",
+      "osSha256": "616cdd2e613615d3e03c3f4249d0d946f0f58bc39fce728d5687a06881ab5e04",
+      "maskedOsSha256": "606766a3d88867db6a262f0d912b3074cb16ba42549273ede9842b3930d0ac67",
+      "appendSha256": "b00e98a28f92abd225f3ed96342f57e1795516ae74bdbdca78e04ba0c34d2598"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "analog-bassdrum",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265272,
+      "sha256": "07d94498b2e3e577c86f5e179f134ea5df67a3375898c0ef1a26cb5b89ebf0ad",
+      "osSha256": "db77231858d57be1ab7be720ab66f6d4970a22096777c46a831fdf3090cfc81d",
+      "maskedOsSha256": "1f75be80977239d8af8a48003f4e8c3fe26f17fb43ef22fcb5c41178faf7541f",
+      "appendSha256": "1d3d99c0b6d3af1a8517a0bdaa5eb90644c6f6470da6dd9a08762b6ca6c1c0c8"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "analog-bassdrum",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265272,
+      "sha256": "4907a8cfa6fde3192ac58f40a6e5ebcfc786c9456d2b4e9c3893cbd4320c987d",
+      "osSha256": "57396dcaef943158296ed584f8476a33a78aed4cf0904b1addf4320e2f5c7cce",
+      "maskedOsSha256": "9186efbd517c09547cfe96dbaf5ccfa35282aefee4e5d86841a588da7267481a",
+      "appendSha256": "1d3d99c0b6d3af1a8517a0bdaa5eb90644c6f6470da6dd9a08762b6ca6c1c0c8"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "analog-bassdrum",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367833,
+      "sha256": "b245171cf63322b60f85de3e4b5fcf3cca0307dbbdaf45f92e5781574e39525b",
+      "osSha256": "4cf35d08f2cfa486a1613a48b36c0227ac3d2597f0481a3b41b5a927195d9ddb",
+      "maskedOsSha256": "f49d2f46dc0d769a22c1d4833a32d02be92aacfb350fcde5c2b6a28c4ba70d78",
+      "appendSha256": "bf4ec8eb74751f7e41e4d77d9fab2098b6b231e2fdb57925561b265dbd6104f7"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "analog-bassdrum",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367833,
+      "sha256": "4f10d419a87e7796a869d2d3674320e3dd4ecd263486991b8815ec2b9e84f372",
+      "osSha256": "82d48548ea00959c5aa4faa0034541870591ccfe8ae5b39fa8c6cc1d8fed3d94",
+      "maskedOsSha256": "41d5131537038a567b47b4bf76dc58352f254a1686c8d0fd19aa8a98d6b80192",
+      "appendSha256": "bf4ec8eb74751f7e41e4d77d9fab2098b6b231e2fdb57925561b265dbd6104f7"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267619,
+      "sha256": "b882bad960db06b1b5d86f6b6f8022dd8023073e2fabe79cceff75492133f299",
+      "osSha256": "97133adcd8d90c1c5e5fca4ec10442bedfb6b8db305507420ebec49e1b2038be",
+      "maskedOsSha256": "6cb675cb93a0723e718b4944c1de0c9fc95e6fd133d34d3ca01bfbf7425928d9",
+      "appendSha256": "1b5d6429e99c1d5157e033d662471f1a38e22d31772922289fe1f285ab7f690c"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267619,
+      "sha256": "ff0d85a589d2df8be872bdbacb7d12a91cdc0114439e6553a480274331f7320e",
+      "osSha256": "cc1dce9879a7436e28a70ceb9aa8c3b7f09a79543c19308ec881851b199ebcb5",
+      "maskedOsSha256": "3c88001ff2243021f70125cf2ca40a8c352c247ab53b83dffea1de7b0fe0a332",
+      "appendSha256": "1b5d6429e99c1d5157e033d662471f1a38e22d31772922289fe1f285ab7f690c"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "analog-bassdrum",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265141,
+      "sha256": "8f91d0ed1231b426f0a7827a6088c67888162851936709a9eadcc617f7d80dc2",
+      "osSha256": "3560969393b527d0c48c2d7c02c99bf291108d426865aace8c8e58e11adb057d",
+      "maskedOsSha256": "40c86e5ad05f9fdfcc0a757abd405ef30c2d1f8cc60b097f7dc349ef3965a311",
+      "appendSha256": "a10ed88a86e48b91998e639b9de1a0588bad205ca0a1461a73b1e7aef9bd003c"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "analog-bassdrum",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265141,
+      "sha256": "6ce021e5159479001733f3d4652fbd9b84c9eed81190968a2e03a728ac1a350d",
+      "osSha256": "e39df3e1149938d4350cba1a7c6ef1ffa8cecd813c8cdc3e3ad25c3e5293f387",
+      "maskedOsSha256": "2e53f3b0dafdd96125c2a81690099d1ab8156ec664153d8f283465e83f1cb83b",
+      "appendSha256": "a10ed88a86e48b91998e639b9de1a0588bad205ca0a1461a73b1e7aef9bd003c"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1270409,
+      "sha256": "bd5deecf3c96ca749286686d9d1bc0d23fa7cc45ad98b919ce7deef74922d627",
+      "osSha256": "711c74656a42556f358501c8372e304e4e74a85f93175ab609e24c8ade6db797",
+      "maskedOsSha256": "b31bbddf5833b677bd9d468837b0fb347ea3f6ff950fa2393bafc662413889d3",
+      "appendSha256": "5ca3b8b551413502b7474d80b8d739db93f7d5b81be009d2849f2b159bd9fbc4"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [],
+        "hidden": []
+      },
+      "bytes": 1270409,
+      "sha256": "dbf69e1cb56e0a7781b8f1d2e4a47688deb863694cdb8cfe674e45c5bcd9266c",
+      "osSha256": "5288519f2d6b9f196dfcbd948bbcab81b16e47fa1c7f0497ca7dc2e44140a873",
+      "maskedOsSha256": "9f4ef0d93a1c9197cdd4c4f3a32372db2e22bda5631fb6fead4fd996f9563b72",
+      "appendSha256": "5ca3b8b551413502b7474d80b8d739db93f7d5b81be009d2849f2b159bd9fbc4"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "repitch",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1270132,
+      "sha256": "8cc43416d4f09f30d7193530ba7c33dd77c2af379f2194fa731d4cc2607e8eed",
+      "osSha256": "896330eeffc7227d578fd61d77a26321e11bb755a6b2e4e00d1bdc6288f13c62",
+      "maskedOsSha256": "1a38a259f383e200bdb9c607c559544c5ea8da6f5cd9e779dbe375c92a57321a",
+      "appendSha256": "8ec3d7eb3636c1b0d6864c37c32f36c1445777d93b427103f2e7677fc742ce1c"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "repitch",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1270132,
+      "sha256": "479633709d31a206311bb0be87791b63149f78e81c4dc2555462be2ab80c1695",
+      "osSha256": "e1867e6f94ed65fdf87281f79880f855ad591facb786b316c5bd3f2b6e90a751",
+      "maskedOsSha256": "fa282a91726fc6f28b13f7303f63fdb477713161d3e73f60a4f408ce852a9feb",
+      "appendSha256": "8ec3d7eb3636c1b0d6864c37c32f36c1445777d93b427103f2e7677fc742ce1c"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "repitch",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "DARK REV",
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1372717,
+      "sha256": "a90074fb9ca961a23914334a68505c6f6ebd7e9bac86f4291f9c544aa0a65021",
+      "osSha256": "6626ea3e472aa61410a07a07670866ecd2dc0110f9e0c7be8a34bdc623dce792",
+      "maskedOsSha256": "6f9992e8a72390335198923216ff2bbd4598785488c48e68c902aae2d2a75a02",
+      "appendSha256": "f89bda2c28f2dd7ab56c5e09bf842775c6541744e19710d14787dc252dccd0f7"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "repitch",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1372717,
+      "sha256": "11e208e6de49f437b077c211203cd1317a1d61ca408cecf18b4430e8eb82707c",
+      "osSha256": "303d5d4a61b9e35237b991ec31ba85c6c1b14feec6f08c278c6efc0650f25a85",
+      "maskedOsSha256": "cd28c38c78f94dd0f4659a9d26818c24fb4b0a30ae08b690b383605f34f7d2bd",
+      "appendSha256": "f89bda2c28f2dd7ab56c5e09bf842775c6541744e19710d14787dc252dccd0f7"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "error": "wide dial hook (116 B) does not fit"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "error": "FX1 chooser list of 12 rows needs 52 B; the clone window ends at 0x400d7c3c and the overflow run at 0x400d2ce0"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "tapehead",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1270001,
+      "sha256": "668c5a8d0923aa24b57567227d9ec498bd82ff4dfe84d24b7eb04a1862767646",
+      "osSha256": "8df7dab547372d421a5fc800939f0bffce1af5d833569280d2cef0f244f0f6b6",
+      "maskedOsSha256": "252f729959beedf742323add2f28ac5b3516c850ddc078a8327256d16fbcc566",
+      "appendSha256": "1f6b466a77577d5d55259999055d3be1b3792856748c3dba9137404323bc410d"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "tapehead",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1270001,
+      "sha256": "31d44cafff1bb752e2126b5a86e74f2ca43ed35ea6080c723a370bd770c62633",
+      "osSha256": "4c420d432c75619bc0d1835a809a6e1388a072a3c6b2bd9742c32630f6ae63eb",
+      "maskedOsSha256": "e1802a54cf9a45736eb21b02d93c37d7df3824426670ce577e889ce5df5dca48",
+      "appendSha256": "1f6b466a77577d5d55259999055d3be1b3792856748c3dba9137404323bc410d"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265676,
+      "sha256": "dc25e859a517a08d92e0709879bfc87221279da6ae8ee9bc3b7e135c48c91e49",
+      "osSha256": "2a2ee330494987d3df07529f75287c4bbde5ab237822f6ac209cc21a79787adf",
+      "maskedOsSha256": "1003a6ceee72b9be13dbd752bc1f2370105063cf2c6c1e1b94d12bdce2d46d51",
+      "appendSha256": "26e6091b12c5e0a1122733e00e120880e64ef02c661776905785b8a91fc2046a"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265676,
+      "sha256": "699a57082b495a79cf29929641874b0d1433521670f4b5ce9465e2cd83e2e3ba",
+      "osSha256": "b1c237c5d3e2e8106dd5b06fe2fdd4f558054b9a56e88d30e93a16d0dd5a9e79",
+      "maskedOsSha256": "7152ccad85a67319cd90ccd1ef5be08a5d56edbe5fa900e0e0fe862ddfe80116",
+      "appendSha256": "26e6091b12c5e0a1122733e00e120880e64ef02c661776905785b8a91fc2046a"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "MINIVERB"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265433,
+      "sha256": "4c69b1e928a9c76f3300d6a2b3513f9f3bc4168d29cee03c24ffc343f0db44a8",
+      "osSha256": "b554fbd6d6a75f1345ac8b691faec2e099881efdb0712118f5f503b5c1503b94",
+      "maskedOsSha256": "b6af2a72f674a9d67f32741aa12f50ad2654bb242ee6f99ac085dcc1d1141757",
+      "appendSha256": "be3ca881f6aa8e2b60f5e01f6dbf0ff4c1484dbb61b441a4a82aa0fed3419ca7"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265287,
+      "sha256": "bff2c7fe3978088698e5d57241d805990ebe0fb718d86b8e99e2d6c7ba22c6a4",
+      "osSha256": "d56b418b78a9d007e9c94c0257053dbdfdb1727f10d19336655c78405df49a7a",
+      "maskedOsSha256": "9a05d49123d577b570c222586df267c94af5a5de1bf2c2f2a3d53ef35cc0fcf2",
+      "appendSha256": "033ceab103d15220bffef3201660cd6b551cb546419dfb771045ac64fc0054b3"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV",
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367960,
+      "sha256": "894c9a2ddcbc87f70935d60cc51700cc8b50277e4218ebaab78dac68d35398dc",
+      "osSha256": "61e02fbde23bce58879cdbf272de6fb58ddc811de4f29d3d9d90f3183a31ae92",
+      "maskedOsSha256": "f92ca35ad6b89e65c5ea680878180835ee7f2f7b1a447570680ee54185d2fc80",
+      "appendSha256": "8229777f70f0dad7103a62e7e5f87fb5309364bea63cc00fec1c7cc92437d4fa"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367960,
+      "sha256": "17a23b786062aad3b5f3aa399958b7c0e889c693776989e656428edf6e9d91b9",
+      "osSha256": "03a2fb70ded0f3e3bc6f18fb7e2407201747e5373f5f401bb6371e0cb6ce5460",
+      "maskedOsSha256": "61e0830401f9db92127f4171f6c82b8483b0c05609ecd6ed99b7278044520ab0",
+      "appendSha256": "8229777f70f0dad7103a62e7e5f87fb5309364bea63cc00fec1c7cc92437d4fa"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "MINIVERB",
+          "TAPE ECHO"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367711,
+      "sha256": "f4108ca7ae6b07cd971383af62ba57570ef4fb56d1bab5d587580f4e3d2b7683",
+      "osSha256": "7afcdcb127e04c0115bade87311edd48f4b797769cc125a9ca79e3ba76be8705",
+      "maskedOsSha256": "dbea64c6d6e956cfa70905f562737ed0008a2a6a17604c996325582c1f5a208f",
+      "appendSha256": "c8d3fb26f2d0cf875ebfdecd3cd0d45a3ea35707a7b9bbf483ee43a7c9c6b278"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367566,
+      "sha256": "f95491a97f43e46c75645a7e717f69a3aba1746ca5dea940f079504d3fe285b2",
+      "osSha256": "32380b91f3e30a7d71b7b436d2d7ee51b87a742e132e8b2362901b806dfa7bb6",
+      "maskedOsSha256": "6e8e08e7ed02fa91a72cec857e063f8a6d08ca86540f8158a4f9c14ffc356add",
+      "appendSha256": "0c587023dfacea6b709ded711b4d6aec0dc21bf4b75bb2edbe808e6984490e2d"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267696,
+      "sha256": "e855471db67fbfa9af659d6c07f8e635367bb48457df4d706e5204868192d793",
+      "osSha256": "0b70456a9b2ea67c7f40c93ea102ae0a09d478ee563ef48a4a09724e547d36b0",
+      "maskedOsSha256": "adec1a5f66626e10e00bdff299cec97345633b2cbf38a179ce846126eddbee1d",
+      "appendSha256": "8c571a09f4ec1bdb09145c9ebbeb2c073c3718416a297db01d72994c273fbbbd"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267634,
+      "sha256": "687ba3dd728b5cf64a3fd43bb0141f30e1891cb7c69521568e17f3bdbff38e10",
+      "osSha256": "847f82dc179531be3ea601d3b88ffafeeddf5848babff67b0f1c69db63bc5ed1",
+      "maskedOsSha256": "e09220e8b9603b2184d5283aab5ba85d30cc2bdef960af34c88d008c197f9671",
+      "appendSha256": "1b461f6d4c6af18e4f55cbaf034bc466592c4eada660344c259cbfa4629c3d09"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267170,
+      "sha256": "a16bab95a5bf75b12ee69873d487baa9ab396d1ee9b78b178829571346180695",
+      "osSha256": "ca5d9b1693ecfaf6b8d45e73bfa6986295df3b6de19c954f950252b39fa58a3d",
+      "maskedOsSha256": "ace2fc0183cadd6101104bd8b8f4985794adfe47bc866eeec566249dc289ef63",
+      "appendSha256": "a08efbcf6eda1293cb86f1f5e17d25f92fdd59d20825907cba7c956340a50fb7"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267170,
+      "sha256": "a96b920e04427a3634c070d22d706858ad8e5aa6fe3bc8b413e98b51e0ba37d5",
+      "osSha256": "26e12913d5627c21c49dab9fffee91280b2da279a046c4f677410681282b6a86",
+      "maskedOsSha256": "31e383be457aefd53f9ca9388df648606d9d93c16d7a3be921d0d454b0db6ca4",
+      "appendSha256": "a08efbcf6eda1293cb86f1f5e17d25f92fdd59d20825907cba7c956340a50fb7"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "TAPE ECHO",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369927,
+      "sha256": "c119e16aff44e3841dffebc203d28a5bd5cdd636a4a169879b2d4eded3d4895c",
+      "osSha256": "51b29fefc7f2140c729ef05bc069794d5c3bd065cb80758c95bc24c5f2f0a83f",
+      "maskedOsSha256": "affbcd3b6bf32d22d3cbe2b2b9dfc339fc68547a06a4914b9646f06dff52851a",
+      "appendSha256": "557c19aaae31fe49d3c965eecd07695c5b0ec46075243590d0ff7cd2854ad1aa"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369861,
+      "sha256": "5069afb1719a07ad228f4037f48fd0565693c372e05ed83380438c563e75c071",
+      "osSha256": "ee518a48216fe9b5df4b66bbd16669144c341d6015e9feeca0cf3805a28f70fa",
+      "maskedOsSha256": "ea4d5410e0bdba1d55390f4da72e2a7a7e43ece587d8a37a9b5421f2301b98e4",
+      "appendSha256": "7d7d7c314ba56dd65ce20ae57109ebdacb253dbddb843d31835550112143a33e"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369398,
+      "sha256": "4716be8e14ee7f1be90165831200a616645b28d71b5c4654262c85ed0930d1cc",
+      "osSha256": "2c2e7bdffd94dec6708b51b0d5bbec35bf9fdf87e6af0e6808c1d6093d8b523a",
+      "maskedOsSha256": "72be8c231154b0a83a7539e8994dce6630ea066a4e1bab9b01705b34e42bd847",
+      "appendSha256": "41a2b6e3cf60a2f29227589cae79aa882169a99c4baf85786bf097219eae5d4d"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369398,
+      "sha256": "d836c526bb3d69e0c13dfe41804175ce6e00cd8cd57dd1509e7cf59e886f9d6c",
+      "osSha256": "a112c893e91d27ef5a5165190b5e3d5086748d3e90f486eb6dd5f527016fa7bf",
+      "maskedOsSha256": "40029548cfcf22f2361af6845870ef2afd969b3000371999a3858a23176c616b",
+      "appendSha256": "41a2b6e3cf60a2f29227589cae79aa882169a99c4baf85786bf097219eae5d4d"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265676,
+      "sha256": "49d43178a9f3752fa4ee0c834a19af39f6d7a3c69040373832039878acbc6ff6",
+      "osSha256": "a9729fa698200c80d74d636b3873d96d8daee2cba0092a49cf671ca4496a031e",
+      "maskedOsSha256": "9fb6fec4aadac75c46b31286a1585b3237131834cfbcebcc437b7ad1115de418",
+      "appendSha256": "26e6091b12c5e0a1122733e00e120880e64ef02c661776905785b8a91fc2046a"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265676,
+      "sha256": "a1335724cddce15c06f94754cf5808f44b0ef9ad1037c385eda16927b12789ac",
+      "osSha256": "9e4e9c05de9bf4da014e434d034af5bcaedb425572e92b051d4a930ccc2ea64a",
+      "maskedOsSha256": "3107871f5338fa9b33043ffe420610246e498d181de4aaa29df0bad92c5da9e4",
+      "appendSha256": "26e6091b12c5e0a1122733e00e120880e64ef02c661776905785b8a91fc2046a"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265281,
+      "sha256": "13acdbdb2b811429e408804dae2baa519a14eafc6caa2810026677ae06456b77",
+      "osSha256": "a8b30d5616603e30b017f966abdd9151c27c5550f8f3d9afe9a60e8cc19f29fd",
+      "maskedOsSha256": "b274f0c38320b442e1a929440b01b5315e0399c2f50d12660ee395170bc88646",
+      "appendSha256": "32e0d2773a83ccf890f88c4160b2e4fc69734f509bd511d6fd0cf6bc10ec4b21"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265154,
+      "sha256": "616e3b87b8a19df4357d7bb7bf736986c01f4268a251299a6e7f19938421a267",
+      "osSha256": "10c658817f303ff08c5a639327f4083771da82edd07e5b9ee848af3b3bb58424",
+      "maskedOsSha256": "20502c8469274cc56e9ba279b715ed5d3294046593614d841336dec910efcb97",
+      "appendSha256": "68d673d0e60cb353961146d8a74bdf4a1fe237329b513f4369699892da1bfa73"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1264767,
+      "sha256": "ee8fdeeacea4d1b0de6c3d5d0f05241883186e14f7da4aaa0177a301d32193dd",
+      "osSha256": "beae20601127fd20eea3e23efb96138edeea9fa3a70814f2acd5191dd7134eef",
+      "maskedOsSha256": "26ef7580d07ece8224aa6d109b58a306b522ce3a5dc4bdebada6b7fcf3d19541",
+      "appendSha256": "2b2b80a4cc035b013e916afe978b27f52a22b1377812386a8e482a5aa25d10a7"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPEHEAD",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1264767,
+      "sha256": "4be469db4670899ae5210c6f3ffe67dccab364344f78c7ef53c7d8d672513c1b",
+      "osSha256": "e4dcd1e54276e17ad098a1f788957b31bdb0e64c5a5821bbc9f291aeb6bfaf62",
+      "maskedOsSha256": "37294cd9a2bc1da7e5a7f08d5ee5661cde3637b662e6ba9bb64e6ebab05b6e98",
+      "appendSha256": "2b2b80a4cc035b013e916afe978b27f52a22b1377812386a8e482a5aa25d10a7"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "TAPE ECHO",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367561,
+      "sha256": "e4fc8974918334d51f03f52b8218a71b84e9e32a085d4a12504da8dd389a4487",
+      "osSha256": "983554dd5ca97be4bdf862fc9a710329581b5b3ed7b310d2b9545e3584084372",
+      "maskedOsSha256": "87b00b79b7935e428555e0debc9a2794ffe347d34cedda8f176149d61d5e818b",
+      "appendSha256": "652840ccb41ba5277dd4b84b92aa9ea70b632d6b118327edc2ebf4a66b4c824b"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367433,
+      "sha256": "431293ccab155d9fc783b7fb22535b813d1ea08989fc541063c50a6aaa9cd8c1",
+      "osSha256": "8c64547de1a5e9c7e60a4316105ce11d5e5b8187940c01c5f950d178a098e233",
+      "maskedOsSha256": "762adb39bede0033e5ec88de968f9bb6d97a45948ffa76f0a8f315d829f04b0d",
+      "appendSha256": "cbff2a54bec830c9de01d41d30f71a0ef8357da980b6dda5818bd6e0ecb552da"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367048,
+      "sha256": "09abcbd8560e1b83775c3c19d83ecb781fbb6c6dc22a45e643a00d65d9860cf1",
+      "osSha256": "f65125207a94d3b719765312ed6954dfc28472a7795109d716a418ede0ec0cd9",
+      "maskedOsSha256": "58583cb6e4e921ca3dfa040ce01d3973005fd479f942ed01fa6e2aab910d0570",
+      "appendSha256": "bb610c743f1f63a3cf89510b20e22dd09b73dfa4f3726d362d43c3ea9444c24c"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1367048,
+      "sha256": "8e5c678d7c9c5102f60903f4d7bd48ccd8fce862eee339b96fedee3b60d23eeb",
+      "osSha256": "9aa3da99936dc8899a716c4b85c8fd8892c3443a47c404af5eca1b3ab4a7bd4e",
+      "maskedOsSha256": "b057a2653322264f620db0d5e773b54b7f620d1faafe131737834971887b42e7",
+      "appendSha256": "bb610c743f1f63a3cf89510b20e22dd09b73dfa4f3726d362d43c3ea9444c24c"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267089,
+      "sha256": "fcd1fca953dc7fff68b04ddb46a84709f46aaece1638e95a26f08a8c6c331477",
+      "osSha256": "518b36c81991742d8460d5c86399cf5e68ae1b67f1b921c5102603efa814d8d1",
+      "maskedOsSha256": "f11ef6b6a292dbfae6cd39113499dbdcad0867679eb40514b458d1cb389d0646",
+      "appendSha256": "8f8faba43fbef74659e1df19029896ff28cd5a389aa556059c1aa13fc4f0ce99"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "EUCLID",
+          "TAPEHEAD",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267089,
+      "sha256": "3fa9db7de47405bf3c533ce1db9fa3d756f25942983d17f662d4c8e04c0fef07",
+      "osSha256": "686deb99950726df5b7118785b388baf213537036f02ebed9265bf27785f4594",
+      "maskedOsSha256": "5ceeb109683c93a9145bcce05407611d77104d0d5fb34595fdaf599c46ea93f4",
+      "appendSha256": "8f8faba43fbef74659e1df19029896ff28cd5a389aa556059c1aa13fc4f0ce99"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 415 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 415 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369318,
+      "sha256": "c45d2efa411e97ec2710541ca9799568d4a2a1c8279d759652fd007d3a0b5d92",
+      "osSha256": "2c9ef6eacd52d8d0fb770ac7384d5c81b506789ae4fd8829e6d11c1cb724a85c",
+      "maskedOsSha256": "72d42c21400498350cccbb7bd5acbb7db43973b3922102d388187adf1f7b77a0",
+      "appendSha256": "ed65bc44c9673c932981aab61402016ec207ba7186c3be006cba78edf2ffc8d3"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369318,
+      "sha256": "e03efc3fe60402d7a5d7bceb6f70aff3e7a61359886e828c53d82cb9e573b8c3",
+      "osSha256": "f4e84eefb695490030e9b853a15aec5c12e3b3a8a61e7f6b94486d4a1a294f90",
+      "maskedOsSha256": "e295041b1502405a2a37e2048f162ddfd30c2b0e2d9c94e8568913b96c864247",
+      "appendSha256": "ed65bc44c9673c932981aab61402016ec207ba7186c3be006cba78edf2ffc8d3"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 410 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 410 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1268348,
+      "sha256": "58b3cd50779645fe4b5f3445dea9a8dfbfb07d107511e5c1c6d48246f8b6b078",
+      "osSha256": "309cc5ad8af400956101f124f766ca0566e92b16651504dc3001092b5645a0e5",
+      "maskedOsSha256": "eb7a32b296313d1b536d1cce6da8d046e352cf59770a8c862b1bffe172d8376a",
+      "appendSha256": "127acdbe186795b712d59e96299e9446f0b632fe51aeeb7be1f7c984d845eb1f"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1268348,
+      "sha256": "12bd79f3f395bc4bcf57c06b46a6081bb9405da3db8c929ddee6af6dbe8f78a1",
+      "osSha256": "c28817680fa1e0d5e5625ef498344eb9514cd3044dd0ce053ca199430605b2c0",
+      "maskedOsSha256": "8943ab43919fe9e53b491638ac4c3f024568f2a17645040d3be8aede64db7098",
+      "appendSha256": "127acdbe186795b712d59e96299e9446f0b632fe51aeeb7be1f7c984d845eb1f"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "quantizer",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267856,
+      "sha256": "bd7057a476b9ea3aa1a375ea47d28903c9398288d564ab85f14bb687a5f869d2",
+      "osSha256": "cb922c0ac52396680403ededcf9eb6f08d7b5951cc3e2ba34478edfecc961972",
+      "maskedOsSha256": "cef4c556b0e54ee399d7e23e3e0632de6ac11861f4ea3a67f1c61d7f48ed5414",
+      "appendSha256": "b08d085a49ecf79bff644e109ad45448bb075796546cbac8bd34d2eb9ef35818"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "quantizer",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1267856,
+      "sha256": "5e62f75e14be466d593f186c52a060ce6b92fd2302c5cea06c977fffed7f7550",
+      "osSha256": "b8c77f298bfee3d3c76700e7e1e0558e21a1790e8388d38e33a8d3289e0bfcba",
+      "maskedOsSha256": "c5f964d640f3c605601c415fa16a84d3ac78fec09cf2c56828e7b08a9b14ada2",
+      "appendSha256": "b08d085a49ecf79bff644e109ad45448bb075796546cbac8bd34d2eb9ef35818"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "previewvol",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265676,
+      "sha256": "a03dcd0966d29f98daa8a22adc54f3c51941aacbbae44e2a5d426157ab8301e6",
+      "osSha256": "2138806567464560fd85ee772d08fabb2f55b4841accb25ad014ce063b78e56d",
+      "maskedOsSha256": "de534d262c7893fcee7ad8ba902e818cbf53506efcc14889fa011ce4e149c993",
+      "appendSha256": "26e6091b12c5e0a1122733e00e120880e64ef02c661776905785b8a91fc2046a"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "previewvol",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265676,
+      "sha256": "96a472379afd6e50f14d65e45c3536b16d1fc95bc34c463462f03b0e9f6d4439",
+      "osSha256": "99e250e4fe5d59c599d9dbac97e845f31a858129e7feb5fce58a78865e334c9c",
+      "maskedOsSha256": "86aaa4331075891559ba0889e9edaae35aaffdb37cadae6d5190cbb706eb0ab8",
+      "appendSha256": "26e6091b12c5e0a1122733e00e120880e64ef02c661776905785b8a91fc2046a"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "cc-map",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265676,
+      "sha256": "9cd69d8a01c91dda834d62732a30923e482fc305871011ae82d7fd121b4994bb",
+      "osSha256": "de409a27378daaa8d0e222644adfeb24447ed2242e0e9c3e8c6ddb8fdbd1656e",
+      "maskedOsSha256": "cd02e43531109147c229ce2ec7b3673834a744e2036e96d34d82d3e32fd4ec69",
+      "appendSha256": "26e6091b12c5e0a1122733e00e120880e64ef02c661776905785b8a91fc2046a"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "cc-map",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1265676,
+      "sha256": "fadc7d6cc62a1aa9ca89176a2d51ba8a2221a016cba5ceacd343c6f6849a295a",
+      "osSha256": "92ab2da990799aeeabd609b6b42a14ae82cb6bd61a12e93e46ab2faa89406ef9",
+      "maskedOsSha256": "6858d61aeeeeb7446564e4c3bdee0644a64a2f72c2b56caac1bf0929f9840d08",
+      "appendSha256": "26e6091b12c5e0a1122733e00e120880e64ef02c661776905785b8a91fc2046a"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "DARK REV"
+        ],
+        "hidden": []
+      },
+      "bytes": 1270536,
+      "sha256": "8041397e1ff8feebcb73136804b972b62e310196329f95fca8ff90205dc03ca0",
+      "osSha256": "925637d58d2e06b28ee7093af31d5f9c93c9044709682d93256e6ff8bbb3ad77",
+      "maskedOsSha256": "8eff46db0e0ba9df4b094f91355ee1088ed451c053cb18352ef048b992c5d0d0",
+      "appendSha256": "f547729287498ad6de8ea978dd953920cca6f442f414589ac252946b9a763bcb"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1270536,
+      "sha256": "b6716100358f9c8bdab8eb50b895cdab7f05dba216a482c148869a4fe50984ef",
+      "osSha256": "35651d6f9eefe9b36690732bc3b6c8ff5b8732256ffb5eca8f37f47b69349003",
+      "maskedOsSha256": "67cf74cf31552c6a79f79343ceb231f74c9017f0a005ef8e12e4cc7a108c3170",
+      "appendSha256": "f547729287498ad6de8ea978dd953920cca6f442f414589ac252946b9a763bcb"
+    }
+  ]
+}

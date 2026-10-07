@@ -8,9 +8,10 @@ import { rollingHash, runtimeStageLayout, BOOTSTRAP_ADDRESS } from './bootstrap.
 import { packGka3, unpackGka3 } from './runtime-pack.ts'
 import { DSP_EFFECT_IDS } from '../catalog/modules.ts'
 import { parseColdFireObject, relocateColdFireObject } from './coldfire-elf.ts'
+import { ANALOG_BD_DONOR, ANALOG_BD_DSP_COMPANIONS } from './analog-bd-layout.ts'
+import { staticModulePlan, type StaticDspLayout } from './static-dsp.ts'
+export { ANALOG_BD_DONOR } from './analog-bd-layout.ts'
 const UNCACHED = 0x08000000
-// The stock effect whose code holds the engine. Its routine that DARK REV calls is moved, not lost.
-export const ANALOG_BD_DONOR = 'SPRING REV'
 const align4 = (n: number) => Math.ceil(n / 4) * 4
 function payload(raw: Uint8Array, destination: number, stage: number) {
   const packed = packGka3(raw)
@@ -19,19 +20,29 @@ function payload(raw: Uint8Array, destination: number, stage: number) {
   const blob = new Uint8Array(packed.length + 4); blob.set([0x4f, 0x43, 0x54, 0x41]); blob.set(packed, 4)
   return { raw, blob, destination, stage, rawHash: rollingHash(raw), packedHash: rollingHash(packed) }
 }
-export async function composeAnalogBd(original: Uint8Array, patched: Uint8Array, ids: readonly string[], profile: { fx1: readonly string[]; fx2: readonly string[] }) {
-  if (ids.some(id => DSP_EFFECT_IDS.includes(id))) throw new Error('Analog BD currently composes with stock effects only.')
+export async function composeAnalogBd(original: Uint8Array, patched: Uint8Array, ids: readonly string[], profile: { fx1: readonly string[]; fx2: readonly string[] }, layouts: readonly StaticDspLayout[] = []) {
+  const plan = staticModulePlan(ids)
+  if (ids.some(id => DSP_EFFECT_IDS.includes(id) && !ANALOG_BD_DSP_COMPANIONS.includes(id))) throw new Error('Analog BD cannot share DSP memory with these effects.')
+  if (plan.length && (layouts.length !== 2 || !facts.analog.variants.every(variant => layouts.some(layout => layout.tag === variant.tag)))) throw new Error('Analog BD needs both DSP placement ledgers.')
   if ([...profile.fx1, ...profile.fx2].includes(ANALOG_BD_DONOR)) throw new Error('Analog BD needs the space used by ' + ANALOG_BD_DONOR + '.')
   const uploads = [], writes: OsWrite[] = [], recipe = facts.analog
   for (const variant of recipe.variants) {
     const offset = variant.payloadAddress - OS_LOAD_ADDRESS
     const memory = parseDspMemory(patched.slice(offset, offset + variant.payloadBytes)), stock = parseDspMemory(original.slice(offset, offset + variant.payloadBytes))
+    const placed = layouts.find(layout => layout.tag === variant.tag)?.placed ?? []
+    const overlaps = (address: number, words: number) => placed.some(span => span.address < address + words && address < span.address + span.words)
     const old = variant.spring + recipe.sharedOffset, destination = variant.spring + recipe.springWords - recipe.sharedWords
     const helper = readDspWords(stock, 0, old, recipe.sharedWords), normalized = helper.slice(); normalized[6] -= old
     if (await dspWordsHash(normalized) !== recipe.sharedSha256) throw new Error('Analog BD shared-helper fingerprint differs.')
+    if (overlaps(variant.spring, variant.words.length) || overlaps(destination, recipe.sharedWords)) throw new Error('Analog BD DSP reservation is already occupied.')
+    const helperTarget = readDspWords(memory, 0, destination, recipe.sharedWords), stockTarget = readDspWords(stock, 0, destination, recipe.sharedWords)
+    if (helperTarget.some((word, i) => word !== stockTarget[i])) throw new Error('Analog BD shared-helper destination is already occupied.')
     helper[6] += destination - old
     writeDspWords(memory, 0, destination, helper)
     for (const call of variant.calls) {
+      // DARK may itself be a donor. Never retarget an overwritten call site
+      // inside a custom effect; remaining stock calls still need the helper.
+      if (overlaps(call, 2)) continue
       const words = readDspWords(memory, 0, call, 2)
       if (words[0] !== 0x0bf080 || words[1] !== old) throw new Error('Analog BD shared-helper call differs.')
       writeDspWords(memory, 0, call, new Uint32Array([0x0bf080, destination]))
