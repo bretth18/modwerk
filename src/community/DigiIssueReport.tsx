@@ -13,6 +13,7 @@ import { useOpenIssueReport } from './useOpenIssueReport'
 import { DiscussionIssueDraft } from './DiscussionIssueDraft'
 import { useDiscussionIssueDraft } from './discussion-issue-draft'
 import { ReportConfiguration } from './ReportConfiguration'
+import { defaultConfigurationChoice, resolveReportConfiguration, type ConfigurationChoice } from './report-configuration'
 
 export function DigiIssueReport({ id, openRequest = 0 }: { id: string; openRequest?: number }) {
   const module = communityModule(id)!, device = DEVICES_BY_ID[module.machine], workspace = useWorkspaceReportContext(module.machine), { session } = useCommunity()
@@ -24,7 +25,8 @@ export function DigiIssueReport({ id, openRequest = 0 }: { id: string; openReque
   const [formKey, setFormKey] = useState(0), [kept, setKept] = useState({ model: '', os: '', flash: 'flashed', moduleVersion: module.version, follow: true })
   useEffect(() => { if (sent) { success.current?.focus(); report.current?.scrollIntoView({ block: 'start' }) } }, [sent])
   useEffect(() => { if (formKey) title.current?.focus() }, [formKey])
-  const inConfiguration = workspace.modules.some(item => item.id === module.moduleId)
+  const [configuration, setConfiguration] = useState<ConfigurationChoice>(() => defaultConfigurationChoice([module.moduleId]))
+  const resolved = resolveReportConfiguration(configuration, workspace, module.machine, null)
   /** A fresh form for the next bug; the device answers and follow choice stay as answered. */
   function reportAnother() { setSent(null); setError(''); setFormKey(key => key + 1) }
   async function send(form: HTMLFormElement) {
@@ -33,7 +35,8 @@ export function DigiIssueReport({ id, openRequest = 0 }: { id: string; openReque
     try {
       const fields = Object.fromEntries(new FormData(form)) as Record<string, string>
       if (fields.actual.length > 2000) throw new Error('Keep the description under 2,000 characters. Your complete discussion draft is available above for reference.')
-      const context: DigiIssueContext = { machine: module.machine as DigiIssueContext['machine'], model: fields.model, flash: fields.flash as FlashState, os: fields.os, moduleVersion: fields.moduleVersion.trim() || module.version, modules: workspace.modules, keepStockFx2: null, build: workspace.build }
+      if (resolved.source === 'none') throw new Error('Choose the configuration the ' + device.name + ' runs: a saved one, or tick its modules.')
+      const context: DigiIssueContext = { machine: module.machine as DigiIssueContext['machine'], model: fields.model, flash: fields.flash as FlashState, os: fields.os, moduleVersion: fields.moduleVersion.trim() || module.version, modules: resolved.modules, keepStockFx2: null, build: resolved.build }
       setSent(await post<BugReportResult>('/modules/' + id + '/issues', { title: fields.title, steps: fields.steps, expected: fields.expected, actual: fields.actual, context, visibility: 'forum', notifyUpdates: fields.notifyUpdates === 'on' }))
       setKept({ model: fields.model, os: fields.os, flash: fields.flash, moduleVersion: context.moduleVersion, follow: fields.notifyUpdates === 'on' })
       clearDraft()
@@ -56,7 +59,7 @@ export function DigiIssueReport({ id, openRequest = 0 }: { id: string; openReque
         <label>Expected result<textarea name="expected" maxLength={1000} rows={2} /></label>
         <label>Module version<input name="moduleVersion" maxLength={80} defaultValue={kept.moduleVersion} /></label>
       </details>
-      <ReportConfiguration workspace={workspace} inConfiguration={inConfiguration} />
+      <ReportConfiguration machine={module.machine} moduleId={module.moduleId} workspace={workspace} log={null} value={configuration} onChange={setConfiguration} disabled={busy} />
       <BugReportNotice tracker={tracker} />
       <ReportNotifications id={id} defaultChecked={kept.follow} />
       <button className="button button-primary" disabled={busy}>{busy ? 'Posting…' : 'Post report'}</button>

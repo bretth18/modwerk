@@ -24,6 +24,8 @@ export function validateDigiIssueContext(value: unknown, machine: string): DigiI
     seen.add(entry.id)
     return {id:entry.id,version:version(entry.version)}
   })
+  // These machines have no device log, so the reporter always names the configuration.
+  if (!modules.length) return fail('Choose the configuration the machine runs: a saved one, or its modules.')
   if (item.keepStockFx2 !== null) return fail('Octatrack settings do not apply to this machine.')
   if (typeof item.build !== 'string' || !/^(?:[0-9a-f]{64})?$/.test(item.build)) return fail('The build fingerprint is unreadable.')
   return {machine:machine as DigiIssueContext['machine'],model:item.model,flash:item.flash as DigiIssueContext['flash'],os:item.os,moduleVersion,modules,keepStockFx2:null,build:item.build}

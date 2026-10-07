@@ -38,7 +38,7 @@ export function IssueInbox({moduleId = '',onClearModule}: {moduleId?: string;onC
       <p className="preserve-lines">{item.body}</p>
       <dl>
         {item.context && <><dt>Device</dt><dd>{isDigiIssue(item.context)?item.context.model:OT_MODELS[item.context.model]} · {FLASH_STATES[item.context.flash]} · OS {item.context.os}</dd>
-          <dt>Modules</dt><dd>{item.context.modules.length ? item.context.modules.map(module => module.id + ' ' + module.version).join(', ') : 'none selected'}</dd>
+          <dt>Modules</dt><dd>{item.context.modules.length ? item.context.modules.map(module => module.id + ' ' + module.version).join(', ') : 'none selected'}{item.log && ' (read from the log)'}</dd>
           <dt>Build</dt><dd>{item.context.build ? <code>{item.context.build}</code> : 'not built in the reporter’s browser'}</dd></>}
         <dt>Log</dt><dd>{item.log ? describeOtLog(item.log) : item.log_missing ? 'Not attached: ' + LOG_MISSING_REASONS[item.log_missing] + (item.log_missing_note ? ' — ' + item.log_missing_note : '') : 'Not attached'}</dd>
         <dt>GitHub</dt><dd>{item.github_url ? <a href={item.github_url} target="_blank" rel="noreferrer">{item.github_url.replace('https://github.com/', '')} ↗</a> : item.github_state === 'none' ? 'Not mirrored' : item.github_state === 'failed' ? 'Failed: ' + item.github_error : 'Mirroring…'}</dd>

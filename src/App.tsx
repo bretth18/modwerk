@@ -132,15 +132,17 @@ export default function App() {
   const firmwareBuild = useFirmwareBuild(workspace.firmwareClient, active, firmware)
   const builtSha = firmwareBuild.state === 'built' ? firmwareBuild.result?.sha256 ?? '' : ''
   useEffect(() => {
-    // Issue reports attach the active configuration and, once built here, the image hash (never the image).
-    setWorkspaceReportContext({ configurationName: active?.name ?? '', modules: (active?.moduleIds ?? []).map(id => ({ id, version: active?.moduleVersions[id] ?? '' })).filter(item => item.version), keepStockFx2: DSP_LOADER ? active?.keepStockFx2 ?? true : null, build: builtSha })
-  }, [active, builtSha])
-  useEffect(() => {
+    // Issue reports name the active configuration or another one saved here and, once built here, the image hash (never the image).
+    const configurationsFor = (device: string) => workspace.configurations.filter(item => configurationDevice(item) === device)
+    const activeFor = (device: string) => storedActive && configurationDevice(storedActive) === device ? storedActive : configurationsFor(device).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0]
+    const modulesOf = (item?: Configuration) => (item?.moduleIds ?? []).map(id => ({ id, version: item?.moduleVersions[id] ?? '' })).filter(value => value.version)
+    const keepStockFx2 = (item?: Configuration) => DSP_LOADER ? item?.keepStockFx2 ?? true : null
+    setWorkspaceReportContext({ configurationName: active?.name ?? '', modules: modulesOf(active), keepStockFx2: keepStockFx2(active), build: builtSha, activeId: active?.id ?? '', configurations: configurationsFor('octatrack').map(item => ({ id: item.id, name: item.name, modules: modulesOf(item), keepStockFx2: keepStockFx2(item) })) })
     for (const device of ['digitakt','digitone']) {
-      const item = storedActive && configurationDevice(storedActive)===device ? storedActive : workspace.configurations.filter(value=>configurationDevice(value)===device).sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt))[0]
-      setWorkspaceReportContext({configurationName:item?.name??'',modules:(item?.moduleIds??[]).map(id=>({id,version:item?.moduleVersions[id]??''})).filter(value=>value.version),keepStockFx2:null,build:''},device)
+      const item = activeFor(device)
+      setWorkspaceReportContext({ configurationName: item?.name ?? '', modules: modulesOf(item), keepStockFx2: null, build: '', activeId: item?.id ?? '', configurations: configurationsFor(device).map(value => ({ id: value.id, name: value.name, modules: modulesOf(value), keepStockFx2: null })) }, device)
     }
-  }, [storedActive,workspace.configurations])
+  }, [active, builtSha, storedActive, workspace.configurations])
   const [query, setQuery] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
   const searchRef = useRef<HTMLInputElement>(null)

@@ -239,3 +239,12 @@ Proposed for the owner's decision, as the 4 October import was decided: import t
   - `build.json` may name up to 64 weak symbols, not 16: digichain names 33.
   - The library draws cover art for the new families (Mixing, Modulation, Polyphony, Utility, Framework, Sequencing).
 - **One module per pull request.** This proposes the seven together, one commit each, as the 4 October import did. The owner can ask for them one by one instead.
+
+## 7 October 2026 — The configuration comes from the log, or the reporter names it
+
+Since the log became optional, a report could leave with no configuration at all: the form attached whatever configuration was active in the browser, and said only "no active configuration" when there was none. Authors cannot reproduce such a report. The on-device logger already writes the exact configuration (modules and versions, base OS, FX2 chooser setting, configuration and source hashes) into every v2 checkpoint, so a log makes the browser's guess unnecessary.
+
+- **With a log,** the Worker reads the modules, base OS and FX2 setting from the validated log and stores those; the form shows them as "read from OCTAMOD.LOG" and asks nothing more. A v1 log has no FX2 setting, so the reporter's answer stands there. The browser's image fingerprint is only kept when the active configuration is the one the log records.
+- **Without a log,** the configuration is required and named in the form: a dropdown of the configurations saved in this browser with the active one preselected, or "tick the modules" at current catalog versions with the reported module ticked. Nothing leaves the form, and the workspace's active configuration is not changed by the choice.
+- **The Worker refuses** a report with neither a log nor at least one module. Digitakt and Digitone have no device log, so their reports always name a configuration.
+- **Not done:** asking for exact module versions by hand. The log is the precise source; a hand-picked list says which modules, at the versions the catalog offers today.

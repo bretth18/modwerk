@@ -156,13 +156,14 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       const publicReport=body.visibility==='forum'
       const title=required(body.title,'Issue title',160),steps=optional(body.steps,'Steps to reproduce',3000),expected=optional(body.expected,'Expected result',1000),actual=required(body.actual,'What happened',2000)
       const module=communityModule(match[1]),digi=module?.machine==='digitakt'||module?.machine==='digitone'
-      const context=issueInput(()=>digi?validateDigiIssueContext(body.context,module.machine):validateIssueContext(body.context))
       if(!digi && body.context && typeof body.context==='object' && (body.context as Record<string,unknown>).machine && (body.context as Record<string,unknown>).machine!=='octatrack')throw new HttpError(400,'The report belongs to a different machine.')
       if(body.maintainerSharing!==undefined&&typeof body.maintainerSharing!=='boolean')throw new HttpError(400,'Choose whether to share with verified maintainers.')
       const attached=body.log!==undefined&&body.log!==null&&body.log!==''
       if(attached&&typeof body.log!=='string')throw new HttpError(400,'Attach OCTAMOD.LOG as text.')
       if(digi && (body.log!==undefined||body.logMissing!==undefined))throw new HttpError(400,'This machine accepts structured reports only. Files and firmware are not accepted.')
       const log=attached?issueInput(()=>parseOtLog(body.log as string)):null
+      // An attached log records the configuration the device ran, so the report takes it from there; otherwise the reporter must name one.
+      const context=issueInput(()=>digi?validateDigiIssueContext(body.context,module.machine):validateIssueContext(body.context,log?.summary??null))
       // The log is optional; older clients may still say why there is none.
       const missing=digi||log||body.logMissing===undefined?null:issueInput(()=>validateLogMissing(body.logMissing,context as import('../src/community/issue-context').OctatrackIssueContext))
       await throttle(db,'issue-ip:'+(request.headers.get('CF-Connecting-IP')??'local'),10)

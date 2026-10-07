@@ -87,7 +87,7 @@ describe('machine-aware community',()=>{
       const report={...details,context:{...context,machine,model,os},maintainerSharing:true}
       const result=await call('/modules/'+machine+'-digihealth/issues','POST',report,reporter.token)
       expect(await result.clone().json()).not.toHaveProperty('error');expect(result.status).toBe(201)
-      for(const extra of [{log:'untrusted bytes'},{firmware:'bytes'},{logMissing:{reason:'other'}},{context:{...report.context,machine:'octatrack'}},{context:{...report.context,modules:[{id:'miniverb',version:'0.1.0'}]}},{context:{...report.context,os:'99.99'}},{context:{...report.context,keepStockFx2:true}}])expect((await call('/modules/'+machine+'-digihealth/issues','POST',{...report,...extra},reporter.token)).status).toBe(400)
+      for(const extra of [{log:'untrusted bytes'},{firmware:'bytes'},{logMissing:{reason:'other'}},{context:{...report.context,machine:'octatrack'}},{context:{...report.context,modules:[{id:'miniverb',version:'0.1.0'}]}},{context:{...report.context,modules:[]}},{context:{...report.context,os:'99.99'}},{context:{...report.context,keepStockFx2:true}}])expect((await call('/modules/'+machine+'-digihealth/issues','POST',{...report,...extra},reporter.token)).status).toBe(400)
     }
     expect((await call('/modules/miniverb/issues','POST',{...details,context},reporter.token)).status).toBe(400)
     const mine=await(await call('/issues/mine','GET',undefined,reporter.token)).json();expect(mine).toHaveLength(2)
@@ -342,6 +342,15 @@ describe('public bug reporting and developer delivery',()=>{
     const result=await call('/modules/miniverb/issues','POST',{...details,context:{model:'mk2',flash:'flashed',os:'1.40C',modules:[],keepStockFx2:true,build:''},log,visibility:'forum'},reporter.token)
     expect(result.status).toBe(500)
     for(const table of ['issues','issue_logs','forum_threads','forum_posts','forum_follows','notifications'])expect(db.prepare('SELECT COUNT(*) AS count FROM '+table).get()!.count).toBe(0)
+  })
+  it('requires a named configuration without a log and reads the configuration from an attached log',async()=>{
+    const {call,member,db}=await fixture(),reporter=await member()
+    const context={model:'mk2',flash:'flashed',os:'1.40C',modules:[],keepStockFx2:true,build:''}
+    const refused=await call('/modules/miniverb/issues','POST',{...details,context,visibility:'forum'},reporter.token)
+    expect(refused.status).toBe(400);expect((await refused.json()).error).toContain('Choose the configuration')
+    const log=readFileSync(new URL('../../sdk/runtime/logging/tests/expected.log',import.meta.url),'utf8')
+    expect((await call('/modules/miniverb/issues','POST',{...details,context:{...context,keepStockFx2:false,os:'1.40B'},log,visibility:'forum'},reporter.token)).status).toBe(201)
+    expect(JSON.parse(String(db.prepare('SELECT context_json FROM issues').get()!.context_json))).toMatchObject({os:'1.40C',keepStockFx2:true,modules:[{id:'repitch',version:'0.1.0'},{id:'miniverb',version:'0.1.2'}]})
   })
   it('does not publish old private clients or rejected and unverified submissions',async()=>{
     const {call,member,db}=await fixture(),reporter=await member()

@@ -706,6 +706,13 @@ h1 { font-size: 28px; }
 .issue-report-steps { margin: 0; padding-left: 20px; color: #c9c9d6; font-size: 13px; line-height: 1.7; display: flex; flex-direction: column; gap: 6px; }
 .issue-report kbd { font: inherit; font-size: 11px; border: 1px solid #4a4a57; border-radius: 4px; padding: 1px 5px; color: #dddde9; }
 .issue-report .community-form label.issue-report-escape { flex-direction: row; align-items: center; gap: 9px; }
+.issue-report-configuration { display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--line); border-radius: 6px; padding: 11px 14px; min-width: 0; }
+.issue-report-heading { margin: 0; color: #d1cede; font-size: 13px; }
+.issue-report-heading span { color: #9997ad; font-size: 12px; margin-left: 8px; }
+.issue-report-modules { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 6px 14px; }
+.issue-report .community-form .issue-report-modules label { flex-direction: row; align-items: center; gap: 8px; }
+.issue-report-modules label span, .issue-report-module-list { color: #9997ad; font-size: 12px; }
+.issue-report-module-list { margin: 0; line-height: 1.6; overflow-wrap: anywhere; }
 .issue-report-existing { display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
 .issue-report-existing .service-note { margin: 0; }
 .issue-report-existing ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; overflow-wrap: anywhere; }

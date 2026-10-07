@@ -5,7 +5,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { post } from './api'
 import { useCommunity } from './context'
 import { MemberPrompt } from './MemberPrompt'
-import { FLASH_STATES, OT_MODELS } from './issue-context'
+import { CONFIGURATION_REQUIRED, FLASH_STATES, OT_MODELS } from './issue-context'
 import type { FlashState, IssueContext, OtModel } from './issue-context'
 import { describeOtLog, OT_LOG_MAX_BYTES, OT_LOG_NAME, OtLogError, parseOtLog } from './ot-log'
 import type { OtLog } from './ot-log'
@@ -14,6 +14,8 @@ import { useOpenIssueReport } from './useOpenIssueReport'
 import { DiscussionIssueDraft } from './DiscussionIssueDraft'
 import { useDiscussionIssueDraft } from './discussion-issue-draft'
 import { ReportConfiguration } from './ReportConfiguration'
+import { defaultConfigurationChoice, resolveReportConfiguration, type ConfigurationChoice } from './report-configuration'
+import recipes from '../catalog/module-sets.json'
 
 export function IssueReport({id,author,openRequest=0}:{id:string;author:string;openRequest?:number}){
  const {session}=useCommunity()
@@ -28,9 +30,12 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
  const [reading,setReading]=useState(false),[logName,setLogName]=useState(''),[logNote,setLogNote]=useState('')
  const [sent,setSent]=useState<BugReportResult|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState('')
  const [formKey,setFormKey]=useState(0),[follow,setFollow]=useState(true)
+ // A module set has no module of its own to check for; its modules are ticked when the reporter names the configuration by hand.
+ const reportedModule=id.startsWith('remix-')?'':id
+ const [configuration,setConfiguration]=useState<ConfigurationChoice>(()=>defaultConfigurationChoice(reportedModule?[id]:recipes.find(recipe=>'remix-'+recipe.id===id)?.moduleIds??[]))
+ const resolved=resolveReportConfiguration(configuration,workspace,'octatrack',log?.summary??null)
  useEffect(()=>{if(sent){success.current?.focus();report.current?.scrollIntoView({block:'start'})}},[sent])
  useEffect(()=>{if(formKey)title.current?.focus()},[formKey])
- const inConfiguration=workspace.modules.some(item=>item.id===id)||id.startsWith('remix-')
 
  async function readLogs(files:File[]){
   const request=++readRequest.current
@@ -66,7 +71,9 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   setBusy(true);setError('')
   const fields=Object.fromEntries(new FormData(form)) as Record<string,string>
   if(fields.actual.length>2000){setError('Keep the description under 2,000 characters. Your complete discussion draft is available above for reference.');setBusy(false);return}
-  const context:IssueContext={model,flash,os:REPORT_OS,modules:workspace.modules,keepStockFx2:workspace.keepStockFx2,build:workspace.build}
+  if(resolved.source==='none'){setError(CONFIGURATION_REQUIRED);setBusy(false);return}
+  // With a log the Worker reads the configuration from the log itself; this mirrors what the form showed.
+  const context:IssueContext={model,flash,os:log?.summary.os??REPORT_OS,modules:resolved.modules,keepStockFx2:resolved.keepStockFx2,build:resolved.build}
   try{
    const result=await post<BugReportResult>('/modules/'+id+'/issues',{title:fields.title,steps:fields.steps,expected:fields.expected,actual:fields.actual,context,visibility:'forum',notifyUpdates:fields.notifyUpdates==='on',...(log?{log:log.text}:{})})
    setSent(result)
@@ -94,7 +101,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
     <label>Steps to reproduce<textarea name="steps" maxLength={3000} rows={3} placeholder={'1. Load a project with …\n2. Set FX1 to …\n3. Turn …'}/></label>
     <label>Expected result<textarea name="expected" maxLength={1000} rows={2}/></label>
    </details>
-   <details className="issue-report-more issue-report-log"><summary>{log?logName+' attached':'Attach '+OT_LOG_NAME}<span>{log?'Ready':'Optional, helps most after a crash or freeze'}</span></summary>
+   <details className="issue-report-more issue-report-log"><summary>{log?logName+' attached':'Attach '+OT_LOG_NAME}<span>{log?'Ready, with the exact configuration':'Optional. Records the exact configuration; helps most after a crash or freeze'}</span></summary>
     <ol className="issue-report-steps" id={helpId}>
      <li>Stop playback, wait 30 seconds, save the project, then open <kbd>PROJECT</kbd> › SYSTEM › USB DISK MODE. A card reader works too.</li>
      <li>Choose <strong>OCTAMOD.LOG</strong> and <strong>OCTAMOD1.LOG</strong> from the top folder of the card. They are checked on this device and only sent when you post.</li>
@@ -110,7 +117,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
     </div>}
     {logError&&<p className="file-error" role="alert">{logError} Try the other log, or post without one.</p>}
    </details>
-   <ReportConfiguration workspace={workspace} inConfiguration={inConfiguration} os={REPORT_OS}/>
+   <ReportConfiguration machine="octatrack" moduleId={reportedModule} workspace={workspace} log={log?.summary??null} value={configuration} onChange={setConfiguration} disabled={busy} os={REPORT_OS}/>
    <BugReportNotice tracker={tracker}/>
    <ReportNotifications id={id} defaultChecked={follow}/>
    <button className="button button-primary" disabled={busy||reading}>{busy?'Posting…':'Post report'}</button>

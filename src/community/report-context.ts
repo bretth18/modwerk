@@ -2,9 +2,12 @@ import { useSyncExternalStore } from 'react'
 import { BASE_FIRMWARE } from '../engine/base'
 import { sourceRepository } from '../hosting'
 
-/** What the workspace knows about the configuration a report is most likely about. Firmware bytes never enter it. */
-export type WorkspaceReportContext = { configurationName: string; modules: { id: string; version: string }[]; keepStockFx2: boolean | null; build: string }
-const empty: WorkspaceReportContext = { configurationName: '', modules: [], keepStockFx2: null, build: '' }
+export type ReportModule = { id: string; version: string }
+/** A configuration saved in this browser, as a report can name it. Firmware bytes never enter it. */
+export type SavedReportConfiguration = { id: string; name: string; modules: ReportModule[]; keepStockFx2: boolean | null }
+/** What the workspace knows about the configuration a report is most likely about: the active one, and every other one saved here. */
+export type WorkspaceReportContext = { configurationName: string; modules: ReportModule[]; keepStockFx2: boolean | null; build: string; activeId: string; configurations: SavedReportConfiguration[] }
+const empty: WorkspaceReportContext = { configurationName: '', modules: [], keepStockFx2: null, build: '', activeId: '', configurations: [] }
 let current = empty
 const machines: Record<string, WorkspaceReportContext> = {}
 const listeners = new Set<() => void>()

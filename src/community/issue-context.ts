@@ -2,8 +2,12 @@
  * Structured issue reports, shared by the report form and the Worker so both
  * enforce the same rules. With this many modules and configurations a free-text
  * report rarely reproduces; every report therefore carries the configuration it
- * was built from. An OCTAMOD.LOG is optional so small problems stay quick to report.
+ * was built from. An attached OCTAMOD.LOG records that configuration itself, so
+ * the report takes it from the log. Without a log the reporter names the
+ * configuration: a saved one from this browser, or the modules by hand.
  */
+import type { OtLogSummary } from './ot-log'
+
 export const OT_MODELS = { mk2: 'Octatrack MKII', mk1: 'Octatrack MKI', unknown: 'Not sure' } as const
 export const FLASH_STATES = { flashed: 'Running an Octamod build', 'not-flashed': 'Not flashed yet (website/build problem)', stock: 'Back on the stock OS' } as const
 export const LOG_MISSING_REASONS = {
@@ -39,7 +43,15 @@ export class IssueInputError extends Error {}
 function fail(message: string): never { throw new IssueInputError(message) }
 const isRecord = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value)
 
-export function validateIssueContext(value: unknown): OctatrackIssueContext {
+/** The modules, base OS and FX2 setting the device wrote into its log; a v1 log has no FX2 setting. */
+export function configurationFromLog(summary: Pick<OtLogSummary, 'version' | 'modules' | 'os' | 'stockFx2'>) {
+  return { modules: summary.modules.map(item => ({ id: item.id, version: item.version })), os: summary.os, keepStockFx2: summary.version === 2 ? summary.stockFx2 : null }
+}
+
+export const CONFIGURATION_REQUIRED = 'Choose the configuration the Octatrack runs, or attach OCTAMOD.LOG.'
+
+/** With a log, the configuration comes from the log; without one the report must name at least one module. */
+export function validateIssueContext(value: unknown, log: Pick<OtLogSummary, 'version' | 'modules' | 'os' | 'stockFx2'> | null = null): OctatrackIssueContext {
   if (!isRecord(value)) fail('Report context is missing.')
   const { model, flash, os, modules, keepStockFx2, build } = value
   if (typeof model !== 'string' || !(model in OT_MODELS)) fail('Choose your Octatrack model.')
@@ -54,6 +66,11 @@ export function validateIssueContext(value: unknown): OctatrackIssueContext {
   })
   if (keepStockFx2 !== null && typeof keepStockFx2 !== 'boolean') fail('The FX2 chooser setting is unreadable.')
   if (typeof build !== 'string' || !/^(?:[0-9a-f]{64})?$/.test(build)) fail('The build fingerprint is unreadable.')
+  if (log) {
+    const recorded = configurationFromLog(log)
+    return { model: model as OtModel, flash: flash as FlashState, os: recorded.os, modules: recorded.modules, keepStockFx2: recorded.keepStockFx2 ?? keepStockFx2, build }
+  }
+  if (!list.length) fail(CONFIGURATION_REQUIRED)
   return { model: model as OtModel, flash: flash as FlashState, os, modules: list, keepStockFx2, build }
 }
 

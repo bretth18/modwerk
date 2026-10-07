@@ -140,7 +140,7 @@ describe('community access and review',()=>{
   expect(await (await call('/issues/mine','GET',undefined,other)).json()).toEqual([])
   const mine=await (await call('/issues/mine','GET',undefined,reporter)).json();expect(mine).toHaveLength(1);expect(mine[0]).toMatchObject({author_login:'sambanks',status:'open'})
   const inbox=await (await call('/admin/issues','GET',undefined,'',undefined,admin)).json();expect(inbox).toHaveLength(1);expect(inbox[0].reporter).toBe('Another guest')
-  expect(inbox[0]).toMatchObject({context:issueContext,github_state:'none',log:{records:259,dropped:44}});expect(inbox[0].body).toContain('Load spectrum, turn knob A')
+  expect(inbox[0]).toMatchObject({context:{...issueContext,modules:[{id:'repitch',version:'0.1.0'},{id:'miniverb',version:'0.1.2'}]},github_state:'none',log:{records:259,dropped:44}});expect(inbox[0].body).toContain('Load spectrum, turn knob A')
   for(const session of ['',reporter])expect((await call('/admin/issues/'+inbox[0].id+'/log','GET',undefined,session)).status).toBe(403)
   const log=await call('/admin/issues/'+inbox[0].id+'/log','GET',undefined,'',undefined,admin);expect(log.status).toBe(200);expect(await log.text()).toBe(otLog)
   expect((await call('/admin/issues/'+inbox[0].id,'PATCH',{status:'closed'},reporter)).status).toBe(403)
@@ -194,7 +194,7 @@ describe('community access and review',()=>{
    const created=requests[0];expect(created).toMatchObject({url:'https://api.github.com/repos/repeat98/octamod/issues',method:'POST',auth:'Bearer github_pat_test'})
    expect(created.body.title).toBe('[spectrum] Knob issue');expect(created.body.labels).toEqual(['issue-report','module:spectrum'])
    const markdown=String(created.body.body)
-   expect(markdown).toContain('by [other](https://octamod.test/#forum/profile/other) · @sambanks');expect(markdown).toContain('| Module version | 0.1.0 |')
+   expect(markdown).toContain('by [other](https://octamod.test/#forum/profile/other) · @sambanks');expect(markdown).toContain('| Module version | Not recorded |') // the configuration comes from the attached log, which does not list spectrum
    expect(markdown).toContain('@\u200bsomeone');expect(markdown).toContain('#\u200b12');expect(markdown).not.toContain('<img')
    expect(markdown).toContain('[open them on Modwerk](https://octamod.test/#developer/report/'+result.id+')')
    // The configuration, build fingerprint and log stay private.
