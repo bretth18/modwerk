@@ -5,7 +5,8 @@ export type GithubIssueKind = 'issue_comment' | 'issue_resolved' | 'issue_closed
  * Content fields come from public posts, comments and GitHub issues; the entry itself is private to its recipient.
  * `github_actor` and `url` are the GitHub login and issue link for GitHub activity. `post_page` is the thread page that holds `post_id`. */
 export type NotificationItem = { id: string; kind: NotificationKind; seen: boolean; created_at: string; thread_id: string | null; post_id: string | null; post_page?: number | null; module_id: string | null; module_version?: string | null; actor: string | null; actorOfficial: boolean; actorAvatar?: string | null; title: string | null; excerpt: string | null; rating: number | null; issue_id: string | null; github_actor: string | null; url: string | null }
-/** What the bell lists: activity entries plus operator announcements. An announcement lives in its own table, goes to every member and is never mailed, so email code keeps using `NotificationItem`. */
+export type AnnouncementVisibility = 'public' | 'signed-in'
+/** What the bell lists: private activity plus operator announcements. Announcements have a public or signed-in audience and are never mailed, so email code keeps using `NotificationItem`. */
 export type BellItem = Omit<NotificationItem, 'kind'> & { kind: NotificationKind | 'announcement' }
 export type NotificationPreferences = { emailEnabled: boolean; frequency: 'hours' | 'daily'; replies: boolean; likes: boolean; modules: boolean; bugs: boolean; updates: boolean; messages: boolean; emailAvailable: boolean }
 /** Which email setting covers each kind. Module likes count as module activity; likes on posts have their own switch. */

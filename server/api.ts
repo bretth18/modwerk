@@ -19,7 +19,7 @@ import { membersOnline } from './presence'
 import { adminInsights } from './admin-insights'
 import { adminAccounts } from './admin-accounts'
 import { adminActivity } from './admin-activity'
-import { adminAnnouncements } from './announcements'
+import { adminAnnouncements, publicAnnouncementItems } from './announcements'
 import { adminNews, newsUnsubscribe } from './news-mail'
 import recipes from '../src/catalog/module-sets.json'
 import type { Database, Env, Media, User } from './platform'
@@ -68,6 +68,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if (path === '/api/catalog' && request.method === 'GET') return response((await db.prepare("SELECT s.module_id,s.title,s.repository_url,s.description,s.usage,s.resource_notes,s.test_report_url,s.reviewed_at,(SELECT strftime('%Y-%m-%dT%H:%M:%SZ', MIN(first.reviewed_at)) FROM submissions first WHERE first.module_id=s.module_id AND first.status='approved') AS added_at,u.github_login AS author FROM module_publications p JOIN submissions s ON s.id=p.submission_id JOIN users u ON u.id=s.owner_id ORDER BY s.reviewed_at DESC").all()).results)
     if(path==='/api/community/summary'&&request.method==='GET')return response(await moduleStatistics(db))
     if(path==='/api/community/online'&&request.method==='GET')return response(await membersOnline(db))
+    if (path === '/api/announcements' && request.method === 'GET') return response({ items: await publicAnnouncementItems(db) })
     const developerAuth = await developerAuthentication(request,env,db)
     if(developerAuth)return developerAuth
     const user = await currentUser(request,db,env)

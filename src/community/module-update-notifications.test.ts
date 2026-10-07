@@ -187,10 +187,13 @@ describe('new module release announcements', () => {
     expect(await f.digests()).toEqual({ sent: 0 })
     expect(f.db.prepare('SELECT COUNT(*) AS count FROM notifications').get()!.count).toBe(0)
     expect(f.db.prepare('SELECT COUNT(*) AS count FROM push_deliveries').get()!.count).toBe(0)
-    // New accounts do not receive release history; existing accounts retain their notices.
+    // Public release history remains readable by visitors and members who join later.
     f.db.prepare("UPDATE announcements SET created_at=datetime('now','-1 minute')").run()
     const late = await f.member('releaselate')
-    expect(await f.items(late.session)).toEqual([])
+    expect(await f.items(late.session)).toHaveLength(2)
+    const publicBell = await f.call('/announcements')
+    expect(publicBell.status).toBe(200)
+    expect((await publicBell.json()).items).toHaveLength(2)
   })
 
   it('announces each module once despite retries, newer versions and reintroduction, including across instruments', async () => {
