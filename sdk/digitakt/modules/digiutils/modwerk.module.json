@@ -2,14 +2,14 @@
   "schemaVersion": 3,
   "id": "digiutils",
   "name": "Digi utilities",
-  "version": "1.9.0-experimental",
+  "version": "1.9.1-experimental",
   "machine": "digitakt",
   "category": "system",
   "exclusive": false,
   "author": {
     "github": "gdeo607",
     "credits": [
-      "gdeo607 — Digi utilities design and code: scope, spectrum, X-Y view, tuner and track activity"
+      "gdeo607 \u2014 Digi utilities design and code: scope, spectrum, X-Y view, tuner and track activity"
     ]
   },
   "maintainers": [
@@ -34,9 +34,10 @@
       "Song mode works as stock: a short press of \"...\" is the SONG MODE popup."
     ],
     "usage": [
-      "Solo a track and hold \"...\" to tune it: the tuner hears the main output, and a chord shows its common root.",
-      "Turn a track’s knobs with the page open and watch the waveform or the spectrum change.",
-      "Check stereo width and phase on the X-Y view: mono is a vertical line, left only \"\\\", right only \"/\", out of phase horizontal and wide a cloud."
+      "Use a build containing digiutils and start a pattern with audio already loaded. Hold the three-dots SONG key for about half a second to open the waveform.",
+      "Press the three-dots key again to view the spectrum, then again for the X-Y view. Compare the plots while the same passage plays.",
+      "Press YES for fullscreen. Change an audio track\u2019s level on its usual page to compare the resulting signal.",
+      "Press NO to close the utility page and stop playback. A short three-dots press outside the page keeps the stock SONG popup."
     ]
   },
   "access": {
@@ -46,13 +47,15 @@
       "Press \"...\" again to go from the waveform to the spectrum and to X-Y; the next press closes the page.",
       "Press YES for fullscreen; NO closes the page."
     ],
-    "screenshots": []
+    "screenshots": [
+      "media/waveform.png"
+    ]
   },
   "controls": [
     {
       "name": "Hold \"...\"",
       "default": null,
-      "doc": "Holding the “...” (three dots) key, without FUNC, for about half a second opens the utility page on the waveform view. A short press is the stock SONG MODE popup, so Song mode works as on the official OS (popup, EDIT, double press).",
+      "doc": "Holding the \u201c...\u201d (three dots) key, without FUNC, for about half a second opens the utility page on the waveform view. A short press is the stock SONG MODE popup, so Song mode works as on the official OS (popup, EDIT, double press).",
       "labels": null
     },
     {
@@ -100,12 +103,12 @@
     "requires": [],
     "conflicts": [],
     "limitations": [
-      "Modwerk’s builder refuses no mod beside it: in elekloader’s check it combines with every other Modwerk mod for its OS, NEIGHBOR, DIGISLICER and SOPHIE included (SOPHIE is built for OS 1.53 only).",
+      "Modwerk\u2019s builder refuses no mod beside it: in elekloader\u2019s check it combines with every other Modwerk mod for its OS, NEIGHBOR, DIGISLICER and SOPHIE included (SOPHIE is built for OS 1.53 only).",
       "Built for OS 1.53 and 1.54.",
       "The tuner hears the main output, so solo a track to tune it; it shows -- when there is no clear pitch or the sound is too quiet.",
       "With the page open, the knobs edit the page hidden behind it; close the page to read the values.",
-      "The spectrum (6 KB) and the tuner (1 KB) each take a buffer from the firmware’s memory once; if that fails, the spectrum stays blank or the tuner is disabled. Both run in the UI task, so the screen may feel slightly slower with the page open.",
-      "The page is built from the firmware’s Song edit screen. The author notes that a firmware path treating it as the real Song edit screen could act on it; the Song edit screen opened from the popup stays stock (checked in emulation).",
+      "The spectrum (6 KB) and the tuner (1 KB) each take a buffer from the firmware\u2019s memory once; if that fails, the spectrum stays blank or the tuner is disabled. Both run in the UI task, so the screen may feel slightly slower with the page open.",
+      "The page is built from the firmware\u2019s Song edit screen. The author notes that a firmware path treating it as the real Song edit screen could act on it; the Song edit screen opened from the popup stays stock (checked in emulation).",
       "Its author reports the stand-alone 1.5d tested on a Digitakt mk1, and 1.9a not yet; it passes their emulator tests on OS 1.53 and 1.54."
     ]
   },
@@ -137,12 +140,30 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Modwerk’s builder linked and verified a build with core 2.1 for OS 1.53 and 1.54; nothing was flashed and the evidence tier is none."
+    "summary": "Modwerk\u2019s builder linked and verified a build with core 2.1 for OS 1.53 and 1.54; nothing was flashed and the evidence tier is none. Documentation captures verify the listed UI pages on OS 1.53; audio, timing and hardware remain unqualified.",
+    "documentation": {
+      "tutorial": {
+        "title": "Quick tutorial: inspect the master signal",
+        "steps": [
+          "Use a build containing digiutils and start a pattern with audio already loaded. Hold the three-dots SONG key for about half a second to open the waveform.",
+          "Press the three-dots key again to view the spectrum, then again for the X-Y view. Compare the plots while the same passage plays.",
+          "Press YES for fullscreen. Change an audio track\u2019s level on its usual page to compare the resulting signal.",
+          "Press NO to close the utility page and stop playback. A short three-dots press outside the page keeps the stock SONG popup."
+        ]
+      },
+      "screenshots": [
+        "media/waveform.png",
+        "media/spectrum.png",
+        "media/xy.png",
+        "media/fullscreen.png"
+      ],
+      "captureRecord": "media/capture.json"
+    }
   },
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "The author’s source, imported unchanged from github.com/gdeo607/digi1_mods at commit 35bacb3730d1 under its MIT licence, but for one change: its generated quarter-sine table moved from .incbin \"spec_sin.bin\" to .include \"spec_sin.inc\" (src/osc_data.s now includes src/spec_sin.inc, the same 257 values as the author’s bin/spec_sin.bin, the same bytes), since Modwerk accepts no binary files. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+    "declaration": "The author\u2019s source, imported unchanged from github.com/gdeo607/digi1_mods at commit 35bacb3730d1 under its MIT licence, but for one change: its generated quarter-sine table moved from .incbin \"spec_sin.bin\" to .include \"spec_sin.inc\" (src/osc_data.s now includes src/spec_sin.inc, the same 257 values as the author\u2019s bin/spec_sin.bin, the same bytes), since Modwerk accepts no binary files. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
   },
   "media": [
     {
@@ -153,6 +174,70 @@
       "credit": "Modwerk",
       "license": "GPL-3.0-or-later",
       "source": "Original Modwerk illustration"
+    },
+    {
+      "path": "media/waveform.png",
+      "kind": "screenshot",
+      "caption": "Waveform view with silent input",
+      "alt": "Waveform view with silent input on the Digitakt monochrome LCD",
+      "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+      "license": "LicenseRef-Digi-UI-Documentation",
+      "source": "original",
+      "capture": {
+        "type": "emulator",
+        "release": "1.53",
+        "moduleVersion": "1.9.1-experimental",
+        "imageSha256": "1dfbe7befb73574fc26c68d43d3de107b2732e85b0c686551d2a51ebdefc84f1",
+        "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+      }
+    },
+    {
+      "path": "media/spectrum.png",
+      "kind": "screenshot",
+      "caption": "Spectrum view with silent input",
+      "alt": "Spectrum view with silent input on the Digitakt monochrome LCD",
+      "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+      "license": "LicenseRef-Digi-UI-Documentation",
+      "source": "original",
+      "capture": {
+        "type": "emulator",
+        "release": "1.53",
+        "moduleVersion": "1.9.1-experimental",
+        "imageSha256": "1dfbe7befb73574fc26c68d43d3de107b2732e85b0c686551d2a51ebdefc84f1",
+        "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+      }
+    },
+    {
+      "path": "media/xy.png",
+      "kind": "screenshot",
+      "caption": "Stereo X-Y view with silent input",
+      "alt": "Stereo X-Y view with silent input on the Digitakt monochrome LCD",
+      "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+      "license": "LicenseRef-Digi-UI-Documentation",
+      "source": "original",
+      "capture": {
+        "type": "emulator",
+        "release": "1.53",
+        "moduleVersion": "1.9.1-experimental",
+        "imageSha256": "1dfbe7befb73574fc26c68d43d3de107b2732e85b0c686551d2a51ebdefc84f1",
+        "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+      }
+    },
+    {
+      "path": "media/fullscreen.png",
+      "kind": "screenshot",
+      "caption": "Fullscreen X-Y view",
+      "alt": "Fullscreen X-Y view on the Digitakt monochrome LCD",
+      "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+      "license": "LicenseRef-Digi-UI-Documentation",
+      "source": "original",
+      "capture": {
+        "type": "emulator",
+        "release": "1.53",
+        "moduleVersion": "1.9.1-experimental",
+        "imageSha256": "1dfbe7befb73574fc26c68d43d3de107b2732e85b0c686551d2a51ebdefc84f1",
+        "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+      }
     }
   ]
 }
