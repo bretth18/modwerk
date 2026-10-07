@@ -835,3 +835,11 @@ The import of digichain, Digi EQ, Digi Matrix, Digi Mono, Digi Poly, Digi utilit
 - **Not run:**
   - no hardware test, and no build in CI's container;
   - stock files and builds stayed local and temporary.
+
+## Digi module documentation — 7 October 2026
+
+Prepared documentation updates for all 12 Digitakt/Digitone modules, following the seven-section module layout, with matching practical tutorials and 41 visually reviewed monochrome LCD captures. The unchanged vendored elekloader kit linked and verified the pinned author releases on private stock Digitakt 1.53 and Digitone 1.43 firmware. Pinned digiemu ran native UI drawing in a sandbox with network and user files denied. Every module keeps its source revision, build identity, exact panel plan, capture timestamps, PNG hashes and limitations in `media/capture.json` and TESTING.md. Firmware, cards, snapshots and built images remain outside the repository.
+
+The frontend support shows committed Digi captures on Overview and Media, identifies the emulator provenance, and links the complete guide beside the matching tutorial. DIGISLICER’s selection, SRC and sample-backed waveform editor assets loaded at 768×384 in the local browser; its tutorial and guide link rendered correctly. Digichain’s screenshots show the dependent POLY machine and explicitly credit its controls. Silent plots and unavailable load counters are labelled; audio, hardware, persistence, timing and stress qualification remain unchanged.
+
+Passed on Node 24: `npm run check` (996 tests), `module:doctor -- --all`, and `modules:check -- --base origin/main`. Native module code, build declarations, source pins, upstream files and author licences are unchanged.

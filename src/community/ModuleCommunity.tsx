@@ -2,7 +2,7 @@ import { MemberPrompt } from './MemberPrompt'
 import { useEffect, useState } from 'react'
 import { api, apiFetch, post } from './api'
 import { apiUrl, assetUrl } from '../hosting'
-import { MODULE_DOCUMENTS_BY_ID } from '../catalog/documents'
+import { moduleMediaDocument } from './module-media'
 import type { PublicMedia } from './api'
 import { useCommunity } from './context'
 import { Icon } from '../components/Icon'
@@ -34,7 +34,7 @@ export function ModuleCommunity({id,mode='all',onDiscuss,onReportIssue,onDiscuss
   const {session,refresh} = useCommunity()
   // Visitors see live buttons; pressing one opens the sign-in prompt and brings them back to this page.
   const {dialog,gate}=useLoginPrompt(modulePageHref(id).slice(1))
-  const document=MODULE_DOCUMENTS_BY_ID[id],sourceMedia=document?.media??[]
+  const document=moduleMediaDocument(id),sourceMedia=document?.media??[]
   const [data,setData] = useState<Data | null>(null), [rating,setRating] = useState(0), [error,setError] = useState(''), [busy,setBusy] = useState(false), [notice,setNotice] = useState('')
   useEffect(() => {
     let cancelled=false
@@ -52,7 +52,7 @@ export function ModuleCommunity({id,mode='all',onDiscuss,onReportIssue,onDiscuss
       setNotice(kind==='like'?(data?.liked?'Like removed.':'Liked.'):'Rating saved.')
     } catch(error){setError(error instanceof Error?error.message:'Unable to save.')} finally{setBusy(false)}
   }
-  const mediaSection = <section className="detail-section"><div className="section-title"><h2>Screenshots & audio</h2><a className="text-button" href={'#submit/' + id}>Add media <Icon name="plus" size={15}/></a></div>{sourceMedia.length ? <div className="media-gallery">{sourceMedia.map(item=>{const url=assetUrl('module-media/'+id+'/'+document.version+'/'+item.path);return <figure key={item.path}>{item.captureType==='audio'?<audio controls preload="none" src={url}>Audio preview</audio>:<a href={url} target="_blank" rel="noreferrer"><img className={item.otUi ? 'ot-ui-capture' : undefined} src={url} alt={item.alt} loading="lazy"/></a>}<figcaption>{item.caption}<span>{item.captureType==='hardware'?'Hardware capture':item.captureType==='emulator'?'Emulator capture':'Audio preview'} · {item.credit} · {item.license}</span>{item.source!=='original'&&<a href={item.source} target="_blank" rel="noreferrer">Original source ↗</a>}</figcaption></figure>})}</div> : null}{!!data?.media.length && <MediaGallery media={data.media}/>} {!sourceMedia.length && !data?.media.length && <div className="media-empty"><Icon name="file" size={24}/><div><strong>No media yet</strong><p>Share a screenshot or audio preview via PR.</p></div></div>}</section>
+  const mediaSection = <section className="detail-section"><div className="section-title"><h2>Screenshots & audio</h2><a className="text-button" href={'#submit/' + id}>Add media <Icon name="plus" size={15}/></a></div>{sourceMedia.length ? <div className="media-gallery">{sourceMedia.map(item=>{const url=assetUrl('module-media/'+id+'/'+document!.version+'/'+item.path);return <figure key={item.path}>{item.captureType==='audio'?<audio controls preload="none" src={url}>Audio preview</audio>:<a href={url} target="_blank" rel="noreferrer"><img className={item.lcd ? 'ot-ui-capture' : undefined} src={url} alt={item.alt} loading="lazy"/></a>}<figcaption>{item.caption}<span>{item.captureType==='hardware'?'Hardware capture':item.captureType==='emulator'?'Emulator capture':item.captureType==='audio'?'Audio preview':'LCD capture'} · {item.credit} · {item.license}</span>{item.source!=='original'&&<a href={item.source} target="_blank" rel="noreferrer">Original source ↗</a>}</figcaption></figure>})}</div> : null}{!!data?.media.length && <MediaGallery media={data.media}/>} {!sourceMedia.length && !data?.media.length && <div className="media-empty"><Icon name="file" size={24}/><div><strong>No media yet</strong><p>Share a screenshot or audio preview via PR.</p></div></div>}</section>
   if(mode==='overview')return <>
     <div className="module-showcase">
       {mediaSection}

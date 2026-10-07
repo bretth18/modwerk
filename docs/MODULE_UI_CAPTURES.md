@@ -171,3 +171,43 @@ hardware qualification, and never authorizes uploading firmware.
 New modules and updates must include complete documentation and a short practical tutorial, with real screenshots in the same black-and-white/gray style as the online modules. Yellow or colored captures do not qualify. Declare PNG screenshot paths and `screenshotStyle: "black-and-white"` under `tests.qualification.documentation`; release validation inspects actual pixels, requires the tutorial and complete README sections, and checks the OT location/control evidence even without `--base`. Preserve actual captured labels and controls; never replace them with a reconstruction. The owner verifies page coverage, exact access steps, tutorial usefulness and provenance. Automatic no-OT-UI modules still need real host setup/routing screenshots and a tutorial. See [the full qualification and documentation gates](MODULE_QUALIFICATION.md).
 
 An owner-approved experimental update may retain an earlier version's UI captures when its exact-source approval explicitly names `retainedUiVersion` and waives release documentation. The screenshots retain their original capture version, date and image hashes; this grants no current hardware evidence. Other updates still require current-version UI evidence.
+
+## Digitakt and Digitone
+
+The Digi modules use the same seven README sections, a matching short tutorial,
+real monochrome selection/control captures, and `media/capture.json`. Declare
+`tests.documentation` in `modwerk.module.json`: `tutorial` has `title` and at
+least three `steps` matching `presentation.usage`, `screenshots` lists the
+module-relative PNGs, and `captureRecord` points to the provenance JSON. Each
+screenshot's `media.capture.type` identifies `emulator` or `hardware`.
+`modules:check -- --base origin/main` requires this record for new or updated Digi modules; existing unchanged imports remain readable during migration.
+`modules:check` checks those links, current module version, firmware/build
+identity, PNG hashes and monochrome pixels. UI documentation does not upgrade
+the module's hardware/audio/timing qualification.
+
+For local emulator captures, use digiemu revision
+`c1b5735835923e328f8b4950d6ba927875e5b669` with its six pinned Unicorn patches.
+Build the author's pinned catalog release with the unchanged vendored elekloader
+kit and your own supported stock OS file, then run the capture script in an
+isolated sandbox with network and user credentials denied:
+
+```sh
+python3 scripts/capture-digi-module-ui.py \
+  --emulator /path/to/reviewed/digiemu \
+  --firmware /private/capture/custom.syx \
+  --plan sdk/digitakt/modules/digislicer/media/capture-plan.txt \
+  --out /private/capture/new-session --fixture-loop
+```
+
+Use a new private output directory. `--fixture-loop` seeds an original synthetic
+`DOC_LOOP` on the disposable +Drive before boot; the plan still has to load it
+through the instrument's sample browser. It does not write RAM, menu selection
+or parameter state. The script runs firmware-native drawing (`hle=False`),
+collects the firmware-rendered LCD buffer at flushes and selects one complete
+unmodified frame from the final 250 ms after the last panel action at each `snap`. It scales the 128×64
+pixels by six without interpolation. Open every PNG and keep only complete,
+correct pages. Retain the panel-input plan, capture timestamps and PNG hashes,
+built-image/stock/catalog/kit/emulator identities, module source pin and
+conditions in `media/capture.json`. Keep firmware, cards, extracted sections,
+raw frames and snapshots in private storage. Credit the capture contribution
+separately from Elektron's underlying interface rights, as for the OT captures.
