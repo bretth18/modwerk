@@ -1203,7 +1203,7 @@
       "schemaVersion": 3,
       "id": "digimono",
       "name": "Digi Mono",
-      "version": "0.13.0-experimental",
+      "version": "0.13.1-experimental",
       "machine": "digitakt",
       "category": "machines",
       "exclusive": false,
@@ -1232,12 +1232,10 @@
           "A clean-room engine: no Monomachine code or data."
         ],
         "usage": [
-          "Pick a machine with FUNC+SRC on an audio track, scrolling past SLICE and any other mod’s machines; YES confirms.",
-          "Play it from trigs, the track key, the keyboard (FUNC+TRK) or MIDI, like a sample track; the note and TUNE set the pitch.",
-          "Set the volume with the track’s LEVEL, the AMP page and VOL.",
-          "Keep to a few playing Digi Mono tracks; VO, ENS and PULSE cost the most. Check the load with digihealth’s SYSTEM INFO.",
-          "MONO ENS starts with its chorus off (CHRL 0) and MONO VO without a consonant; turning them on costs more.",
-          "The author’s load test in docs/USAGE.md adds one playing track at a time while watching DSP and its peak."
+          "Use a build containing Digi Mono and its digichain dependency. On an audio track select MONO SIN with FUNC + SRC, then confirm with YES.",
+          "Set pitch with SRC knob A, then shape MONO SIN with its labelled SRC controls. Use AMP to give the note a short decay.",
+          "Enable the keyboard with FUNC + TRK and play the voice from trig keys; change TUNE to hear its pitch move.",
+          "Stop playback and leave keyboard mode. Select ONESHOT to return the track to sample playback."
         ]
       },
       "access": {
@@ -1248,7 +1246,9 @@
           "On the SRC page, knob A is TUNE and B to H are the machine’s own parameters; a knob the machine does not have is blank.",
           "Play it from trigs, the track key, the keyboard (FUNC + TRK) or MIDI."
         ],
-        "screenshots": []
+        "screenshots": [
+          "media/chooser.png"
+        ]
       },
       "controls": [
         {
@@ -1361,7 +1361,28 @@
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Modwerk’s builder linked and verified a build with core 2.1 and DIGICHAIN 1.6 on OS 1.53 and 1.54; nothing was flashed or tested on hardware, and the evidence tier is none."
+        "summary": "Modwerk’s builder linked and verified a build with core 2.1 and DIGICHAIN 1.6 on OS 1.53 and 1.54; nothing was flashed or tested on hardware, and the evidence tier is none. Documentation captures verify the listed UI pages on OS 1.53; audio, timing and hardware remain unqualified.",
+        "documentation": {
+          "tutorial": {
+            "title": "Quick tutorial: play a MONO SIN voice",
+            "steps": [
+              "Use a build containing Digi Mono and its digichain dependency. On an audio track select MONO SIN with FUNC + SRC, then confirm with YES.",
+              "Set pitch with SRC knob A, then shape MONO SIN with its labelled SRC controls. Use AMP to give the note a short decay.",
+              "Enable the keyboard with FUNC + TRK and play the voice from trig keys; change TUNE to hear its pitch move.",
+              "Stop playback and leave keyboard mode. Select ONESHOT to return the track to sample playback."
+            ]
+          },
+          "screenshots": [
+            "media/chooser.png",
+            "media/sin.png",
+            "media/noise.png",
+            "media/saw.png",
+            "media/pulse.png",
+            "media/ens.png",
+            "media/vo.png"
+          ],
+          "captureRecord": "media/capture.json"
+        }
       },
       "license": {
         "spdx": "MIT",
@@ -1377,6 +1398,118 @@
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
+        },
+        {
+          "path": "media/chooser.png",
+          "kind": "screenshot",
+          "caption": "MONO SIN in the machine chooser",
+          "alt": "MONO SIN in the machine chooser on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "0.13.1-experimental",
+            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/sin.png",
+          "kind": "screenshot",
+          "caption": "MONO SIN controls",
+          "alt": "MONO SIN controls on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "0.13.1-experimental",
+            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/noise.png",
+          "kind": "screenshot",
+          "caption": "MONO NOISE controls",
+          "alt": "MONO NOISE controls on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "0.13.1-experimental",
+            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/saw.png",
+          "kind": "screenshot",
+          "caption": "MONO SAW controls",
+          "alt": "MONO SAW controls on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "0.13.1-experimental",
+            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/pulse.png",
+          "kind": "screenshot",
+          "caption": "MONO PULSE controls",
+          "alt": "MONO PULSE controls on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "0.13.1-experimental",
+            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/ens.png",
+          "kind": "screenshot",
+          "caption": "MONO ENS controls",
+          "alt": "MONO ENS controls on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "0.13.1-experimental",
+            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/vo.png",
+          "kind": "screenshot",
+          "caption": "MONO VO controls",
+          "alt": "MONO VO controls on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "0.13.1-experimental",
+            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
         }
       ],
       "source": {
