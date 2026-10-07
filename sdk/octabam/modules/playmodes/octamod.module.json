@@ -64,24 +64,24 @@
     ]
   },
   "resources": {
-    "recorded": "7 October 2026: source accounting; chip timing unmeasured",
+    "recorded": "7 October 2026: emulator instruction counts and build-report memory; chip timing unmeasured",
     "storage": {
       "label": "DRAM data + battery RAM",
-      "display": "4,684 B DRAM data + 2,310 B battery RAM, plus code",
-      "value": 6994,
+      "display": "13,724 B: 11,414 B unit in DRAM + 2,310 B battery RAM",
+      "value": 13724,
       "unit": "bytes",
       "method": "static",
-      "conditions": "Data allocations of hooks.s and the battery-RAM table; the code size of playmodes.s comes from the build report and is not yet recorded. See TESTING.md Resources.",
-      "source": "TESTING.md"
+      "conditions": "Code 6,628, read-only data 102, state and pattern table 4,684 (SDRAM platform reserve), battery table 2,310 (CS1). All shared; stack at most 104 bytes. See evidence/memory.md.",
+      "source": "evidence/memory.md"
     },
     "processing": {
       "label": "ColdFire processing",
-      "display": "Worst-case cycles unmeasured",
-      "value": null,
-      "unit": "cycles/event",
-      "method": "unmeasured",
-      "conditions": "One engine call per track per sequencer step, plus the UI step query and the rebuild after edits; not measured on the chip.",
-      "source": "TESTING.md"
+      "display": "≤ 4,206 instructions per track step (1,726 measured)",
+      "value": 4206,
+      "unit": "instructions/event",
+      "method": "emulator",
+      "conditions": "Instruction counts of the module's own code in octabam's ColdFire core, no firmware, synthetic sequencer state; SHUFFLE's walk bounded analytically. Chip cycles: 32-cycle-per-instruction allowance, not measured.",
+      "source": "evidence/cycles.md"
     },
     "impact": {
       "conditions": "16 tracks (8 audio, 8 MIDI) in SHUFFLE, the most expensive mode, at the highest tempo and finest track scale; a project load rewriting the battery table.",
@@ -107,7 +107,7 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Host suites for the engine and firmware glue pass. Instruction counts of the unit in octabam's ColdFire core: one track step at most 4,206 instructions, 16 tracks 67,296 (2,153,472 cycles at 32 per instruction, budget 6,600,000). Memory 13,724 bytes from the build. Functional hardware report: the author's MKII, build 19, about 15 minutes. Emulator captures of the popup.",
+    "summary": "Host suites for the engine and firmware glue pass; instruction counts in octabam's ColdFire core bound one track step at 4,206 instructions (1,726 measured); the author ran build 19 on an MKII for about 15 minutes (functional report). No stress run, no chip timing.",
     "hardwareStatus": "reported",
     "evidenceRevision": "1d2e9dc2bada2fea79d1ba07a8a56e1812a20ad8",
     "gates": [
@@ -127,11 +127,11 @@
           "unit": "cycles/event",
           "method": "emulator",
           "conditions": {
-            "parameterExtremes": "Every mode, track lengths 1-64, both scale modes, MASTER LENGTH INF and 0, all six track scales; SHUFFLE's walk bounded analytically at 32 evaluations (length 33) with pm_map measured at exactly 101 + 98 per evaluation.",
-            "parameterModulation": "The module has no knobs, LFO targets, p-locks, CC or scene parameters; its only control is TRACK + UP / DOWN, measured separately (543 instructions) in the key handler, not the tick.",
-            "modeSwitching": "Mode changes and pattern switches re-read the pattern row inside the measured step; PLAY restarts all 16 tracks in the same call (counted on every track, an over-estimate).",
-            "maxLoad": "16 tracks (8 audio, 8 MIDI) in one sequencer step, all in SHUFFLE at the worst length; budget is one step at 300 BPM and 2X scale (25 ms at 264 MHz). Instruction counts in octabam's ColdFire core with 32 cycles allowed per instruction; stock tick work and audio load not measured.",
-            "inputConditions": "No audio path: the input is the sequencer state (step, length, scale, pass, seed). Synthetic pattern records; 60 seeds per length for SHUFFLE plus seeds found for long walks."
+            "parameterExtremes": "Every mode, track lengths 1–64, MASTER LENGTH INF and 0, all seven track scales across the 16 tracks.",
+            "parameterModulation": "No knob, LFO or p-lock reaches the module; mode changes by TRACK + UP / DOWN measured separately (543 instructions). Scenes, LFOs and locks are stock and unchanged.",
+            "modeSwitching": "Every mode and both scale modes, with a PLAY restart on every run; pattern-row reloads on pattern switches included.",
+            "maxLoad": "All 16 tracks (8 audio, 8 MIDI) in one step, SHUFFLE at the longest walk (length 33), every track restarting: bounded at 67,296 instructions; budget one step at 300 BPM, 2X scale, 264 MHz.",
+            "inputConditions": "No audio path. 60 SHUFFLE seeds per length; the walk length bound (32) from the permutation's construction, its cost measured as 101 + 98 × walk."
           },
           "report": "evidence/cycles.md"
         }
@@ -139,7 +139,7 @@
       "memory": {
         "regions": [
           {
-            "name": "Code: C engine, glue, 35 detour stubs and entries",
+            "name": "Code: C engine and glue, 35 detour stubs and entries",
             "space": "sdram",
             "words": 6628,
             "wordBits": 8,
@@ -147,7 +147,7 @@
             "scope": "shared"
           },
           {
-            "name": "Read-only data: mode names, keys, tables",
+            "name": "Read-only data: mode names, project key, tables",
             "space": "sdram",
             "words": 102,
             "wordBits": 8,
@@ -155,7 +155,7 @@
             "scope": "shared"
           },
           {
-            "name": "State and the 256-pattern mode table",
+            "name": "State, flags, popup text, project line and the 256-pattern mode table",
             "space": "sdram",
             "words": 4684,
             "wordBits": 8,
@@ -163,7 +163,7 @@
             "scope": "shared"
           },
           {
-            "name": "Battery table 0x100f8600..0x100f8f06",
+            "name": "Battery-RAM mode table 0x100f8600..0x100f8f06",
             "space": "cpu-ram",
             "words": 2310,
             "wordBits": 8,
@@ -175,7 +175,7 @@
         "sharedBytes": 13724,
         "maxInstances": 16,
         "totalBytes": 13724,
-        "conditions": "From the build's linked unit (runtime.elf); one shared table for every track and pattern, no per-track copies. Stack at most 104 bytes below the caller's arguments; no heap, DSP memory, cave space or effect ID. The DRAM platform reserve (about 10 MB of sample memory) is shared by every DRAM module.",
+        "conditions": "From the build-19 runtime ELF and the battery layout; one table for all tracks and patterns, no per-track copies; stack at most 104 bytes below the caller (measured); no heap, DSP memory or cave space. The platform reserve's 10 MB is shared by every DRAM module.",
         "report": "evidence/memory.md"
       },
       "hardware": {
@@ -186,12 +186,12 @@
         "tester": "devilfish707",
         "sourceRevision": "1d2e9dc2bada2fea79d1ba07a8a56e1812a20ad8",
         "imageSha256": "24d22dc0d10e7328fca57e8eec3930b2690ae2f55ec3bf2f5e2e9075a11d87f6",
-        "summary": "On an Octatrack MKII the author used build 19 (this source) for about 15 minutes: PINGPONG 2, per-pattern modes, project save and reload, a power cycle, pattern copy / paste (also into other banks) and clear pattern all worked; earlier builds 12-18 covered the modes, popup, LEDs, restarts, PER TRACK lengths and pattern changes.",
+        "summary": "On an Octatrack MKII the author ran build 19 (this source) for about 15 minutes after builds 12–18: PINGPONG 2, per-pattern modes, save and reload, a power cycle, pattern copy and paste (also to other banks) and clear pattern all worked as described.",
         "limitations": [
-          "A short interactive report, not a timed stress run; no audio, timing or memory-canary measurement on the unit.",
-          "One MKII; MKI untested.",
+          "A short interactive report, not a timed stress run; no audio or timing measurement.",
+          "One MKII; no MKI.",
           "Micro-timing, trig conditions, slides, live recording, scenes and Parts during non-NORMAL playback, and MIDI tracks beyond a first check were not tested.",
-          "Not combined with other modules on the unit."
+          "No combination with other modules on the unit."
         ],
         "report": "evidence/hardware.md"
       },
@@ -200,8 +200,8 @@
           "title": "Quick tutorial",
           "steps": [
             "Include Play Modes in your build and load a pattern with a trig on step 1 only; SCALE MODE NORMAL.",
-            "Hold TRACK 1, press DOWN once: ALL REVERSED. Press PLAY: the trig sounds on the last step of every bar, and the trig LEDs walk 16 to 1.",
-            "Hold TRACK 1, press DOWN twice more: ALL PINGPONG 2, the trig sounds twice in a row at every turn back to step 1. Hold TRACK 1 and press UP until ALL NORMAL to return to stock playback."
+            "Hold TRACK 1, press DOWN once: ALL REVERSED. Press PLAY: the trig sounds on the last step of every bar, and the trig LEDs walk 16 → 1.",
+            "Hold TRACK 1, press DOWN twice more: ALL PINGPONG 2: the trig sounds twice in a row at every turn back to step 1. Hold TRACK 1 and press UP until ALL NORMAL to return to stock playback."
           ]
         },
         "screenshots": [
@@ -221,35 +221,35 @@
     {
       "path": "media/ot-mode-all-reversed.png",
       "captureType": "emulator",
-      "caption": "Hold TRACK 1 and press DOWN on the main screen: the popup names the new mode, here ALL REVERSED (pattern SCALE MODE NORMAL: one mode for every track).",
+      "caption": "Hold TRACK 1 and press DOWN on the main screen: the popup names the new mode, here ALL REVERSED (SCALE MODE NORMAL: one mode for every track).",
       "alt": "Main screen of pattern A01 with a popup reading ALL REVERSED.",
-      "credit": "@devilfish707: original capture; Elektron Music Machines: underlying OT interface.",
-      "license": "Documentary capture for Modwerk; underlying Elektron rights retained. See media/LICENSE.md.",
+      "credit": "devilfish707 (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
       "source": "original",
       "otUi": {
-        "page": "Main screen: TRACK held + DOWN",
+        "page": "Main screen, TRACK + DOWN popup",
         "shows": "location-and-controls",
         "firmware": "1.40C",
         "moduleVersion": "0.1.0-experimental",
         "imageSha256": "24d22dc0d10e7328fca57e8eec3930b2690ae2f55ec3bf2f5e2e9075a11d87f6",
-        "setup": "Headless ot_emu (SHA-256 f438a3c9…), MKII panel, empty scratch card and the new-project prompt answered, stopped transport; 128×64 LCD at integer scale 6, actual pixels. Plan in media/capture.json: hold T1, press DOWN (and twice more). Image: the author's build 19, the image tested on the unit."
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card (new project, pattern A01); TRACK 1 held, DOWN pressed. Image: the author's build 19, the one tested on the unit."
       }
     },
     {
       "path": "media/ot-mode-all-pingpong2.png",
       "captureType": "emulator",
-      "caption": "Two more DOWN presses with TRACK 1 still held: ALL PINGPONG 2, the bounce that plays the end steps twice.",
+      "caption": "Still holding TRACK 1, two more DOWN presses: ALL PINGPONG 2, the bounce that plays the end steps twice.",
       "alt": "Main screen of pattern A01 with a popup reading ALL PINGPONG 2.",
-      "credit": "@devilfish707: original capture; Elektron Music Machines: underlying OT interface.",
-      "license": "Documentary capture for Modwerk; underlying Elektron rights retained. See media/LICENSE.md.",
+      "credit": "devilfish707 (headless capture)",
+      "license": "LicenseRef-OT-UI-Documentation",
       "source": "original",
       "otUi": {
-        "page": "Main screen: TRACK held + DOWN, twice more",
+        "page": "Main screen, TRACK + DOWN popup",
         "shows": "location-and-controls",
         "firmware": "1.40C",
         "moduleVersion": "0.1.0-experimental",
         "imageSha256": "24d22dc0d10e7328fca57e8eec3930b2690ae2f55ec3bf2f5e2e9075a11d87f6",
-        "setup": "Headless ot_emu (SHA-256 f438a3c9…), MKII panel, empty scratch card and the new-project prompt answered, stopped transport; 128×64 LCD at integer scale 6, actual pixels. Plan in media/capture.json: hold T1, press DOWN (and twice more). Image: the author's build 19, the image tested on the unit."
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card (new project, pattern A01); TRACK 1 held, DOWN pressed. Image: the author's build 19, the one tested on the unit."
       }
     }
   ]

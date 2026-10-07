@@ -95,8 +95,8 @@ for CHAIN AFTER; a pattern on USE PAT SET. with PAT.LEN never changes
 ## Quick tutorial
 
 1. Include Play Modes in your build and load a pattern with a trig on step 1 only; SCALE MODE NORMAL.
-2. Hold TRACK 1, press DOWN once: ALL REVERSED. Press PLAY: the trig sounds on the last step of every bar, and the trig LEDs walk 16 to 1.
-3. Hold TRACK 1, press DOWN twice more: ALL PINGPONG 2, the trig sounds twice in a row at every turn back to step 1. Hold TRACK 1 and press UP until ALL NORMAL to return to stock playback.
+2. Hold TRACK 1, press DOWN once: ALL REVERSED. Press PLAY: the trig sounds on the last step of every bar, and the trig LEDs walk 16 → 1.
+3. Hold TRACK 1, press DOWN twice more: ALL PINGPONG 2: the trig sounds twice in a row at every turn back to step 1. Hold TRACK 1 and press UP until ALL NORMAL to return to stock playback.
 
 ## Compatibility and limitations
 
@@ -147,12 +147,11 @@ is never committed). No Elektron code, tables or images are included.
 
 ## Screens and audio
 
-Emulator captures (octabam's headless `ot_emu`, MKII panel) of the author's
-build 19, the image tested on the unit:
+Captured in the headless emulator from the author's tested build 19
+(`media/capture.json`), black-and-white LCD pixels:
 
 ![Hold TRACK 1 and press DOWN: the popup reads ALL REVERSED](media/ot-mode-all-reversed.png)
 
 ![Two more DOWN presses: ALL PINGPONG 2](media/ot-mode-all-pingpong2.png)
 
-The trig LEDs are not part of the LCD and are not captured. The thumbnail
-is an illustration, not an Octatrack screen. No audio.
+The thumbnail is an illustration, not an Octatrack screen. No audio.
