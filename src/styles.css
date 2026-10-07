@@ -1540,11 +1540,13 @@ h1 { font-size: 28px; }
 .configuration-launcher { display: flex; flex-direction: column; gap: 2px; }
 .configuration-launcher button { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; border-radius: 6px; background: transparent; color: #b2b2bd; text-align: left; padding: 7px 11px; }
 .configuration-launcher button:hover { background: #2a2a2f; }
-.configuration-browse { min-height: 36px; font-size: 13px; }
-.configuration-browse svg { color: #92929f; }
+.configuration-launcher .configuration-browse { min-height: 36px; font-size: 13px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.configuration-browse svg { color: #afb3d5; }
 .configuration-browse span { flex: 1; }
 .configuration-browse small { color: var(--muted); font-variant-numeric: tabular-nums; }
 .configuration-launcher .configuration-recent { display: block; min-height: 48px; padding-left: 38px; font-size: 12px; }
+.configuration-launcher .configuration-recent:not(:disabled) { background: #929bff14; color: #c7c9de; box-shadow: inset 2px 0 #929bff70, inset 0 0 0 1px #929bff26; }
+.configuration-launcher .configuration-recent:not(:disabled):hover { background: #929bff20; }
 .configuration-recent span, .configuration-recent small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .configuration-recent small { margin-top: 3px; color: var(--muted); font-size: 11px; }
 .configuration-browser { width: min(640px, calc(100% - 32px)); max-height: min(720px, calc(100dvh - 32px)); padding: 20px; overflow: hidden; }
@@ -1564,6 +1566,9 @@ h1 { font-size: 28px; }
 .configuration-browser-list li + li { border-top: 1px solid var(--line); }
 .configuration-browser-list button { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 10px 8px; border: 0; border-radius: 6px; background: transparent; text-align: left; }
 .configuration-browser-list button:hover { background: #303036; }
+.configuration-browser-list button[aria-current="true"] { background: #929bff14; box-shadow: inset 2px 0 #929bff70, inset 0 0 0 1px #929bff26; }
+.configuration-browser-list button[aria-current="true"]:hover { background: #929bff20; }
+.configuration-browser-list button[aria-current="true"] > svg:first-child, .configuration-browser-list button[aria-current="true"] .configuration-current { color: #b5badc; }
 .configuration-browser-list button > svg { color: #92929f; }
 .configuration-browser-list button > span:first-of-type { flex: 1; min-width: 0; }
 .configuration-browser-list strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 500; }
