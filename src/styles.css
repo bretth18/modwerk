@@ -482,6 +482,12 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .support-dialog h2 { display: flex; align-items: center; gap: 10px; }
 .support-dialog .dialog-actions { flex-wrap: wrap; }
 .button-danger { background: #6a3734; border-color: #96514a; color: #ffe1dc; }
+.app-dialog.firmware-download-dialog { background: #2b2023; border-color: #a95757; max-height: calc(100dvh - 32px); overflow-y: auto; }
+.firmware-download-dialog h2 { color: #ffaaaa; margin-bottom: 14px; }
+.app-dialog.firmware-download-dialog p { color: #efb5b5; }
+.firmware-download-dialog p + p { margin-top: 12px; }
+.firmware-download-dialog .dialog-actions { flex-wrap: wrap; }
+.firmware-download-dialog .button-danger:hover { background: #82413d; }
 .resource-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .resource-card { border: 1px solid #3b3b45; padding: 20px; border-radius: 8px; background: #242429; }
 .resource-card > span { font-size: 12px; color: #a4a4b5; }
