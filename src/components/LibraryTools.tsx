@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Icon } from './Icon'
 
 export type LibraryToolsProps = {
@@ -10,10 +11,12 @@ export type LibraryToolsProps = {
   onCompare: () => void
   buildHref?: string | null
   buildLabel?: string
+  machine?: ReactNode
 }
 
-export function LibraryTools({ family, families, onFamilyChange, sort, onSortChange, comparisonCount, onCompare, buildHref = '#configuration', buildLabel }: LibraryToolsProps) {
+export function LibraryTools({ family, families, onFamilyChange, sort, onSortChange, comparisonCount, onCompare, buildHref = '#configuration', buildLabel, machine }: LibraryToolsProps) {
   return <div className="discovery-tools">
+    {machine}
     <label>Type<select value={family} onChange={event=>onFamilyChange(event.target.value)}><option value="all">All types</option>{families.map(value=><option key={value}>{value}</option>)}</select></label>
     <label>Sort<select value={sort} onChange={event=>onSortChange(event.target.value)}><option value="collection">Collection order</option><option value="recent">Recently added</option><option value="name">Name A–Z</option><option value="author">Author</option><option value="rated">Highest rated</option><option value="liked">Most liked</option><option value="downloaded">Most downloaded</option></select></label>
     <div className="discovery-actions">

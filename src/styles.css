@@ -60,6 +60,25 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .sidebar-build:hover strong, .sidebar-build:hover > svg { color: var(--accent); }
 .sidebar-footer { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; padding: 10px 3px 12px; color: #9696a1; font-size: 12px; white-space: nowrap; }
 .sidebar-privacy { display: flex; align-items: center; gap: 6px; }
+.sidebar-account { position: relative; margin: 0 0 4px; }
+.sidebar-account-row { display: flex; align-items: center; gap: 11px; width: 100%; min-height: 58px; padding: 10px 11px; border: 1px solid #40404b; border-radius: 10px; background: #2a2a31; box-shadow: inset 0 1px #ffffff08, 0 1px 3px #00000030; color: #f0f0f6; font: inherit; text-align: left; transition: background .15s, border-color .15s; }
+.sidebar-account-row:hover { border-color: #575765; background: #303038; }
+.sidebar-account-row.active { border-color: #5a63a0; background: #353b52; }
+.sidebar-account-row .forum-avatar { width: 34px; height: 34px; border-radius: 10px; font-size: 11px; }
+.sidebar-account-icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: #929bff; color: #15151d; flex-shrink: 0; }
+.sidebar-account-name { flex: 1; min-width: 0; }
+.sidebar-account-name strong, .sidebar-account-name small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-account-name strong { font-size: 13.5px; font-weight: 600; }
+.sidebar-account-name small { margin-top: 2px; color: #b4b4c4; font-size: 11.5px; }
+.sidebar-account-row > svg { color: #c4caff; flex-shrink: 0; }
+.sidebar-account + .sidebar-build { border-top: 0; padding-top: 10px; }
+.sidebar-account-menu { position: absolute; z-index: 25; left: 0; right: 0; bottom: calc(100% + 6px); padding: 6px; border: 1px solid #44444e; border-radius: 10px; background: #26262b; box-shadow: 0 14px 40px #00000066; }
+.sidebar-account-menu a, .sidebar-account-menu button { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 40px; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; color: #c8c8d4; font: inherit; font-size: 13px; text-align: left; }
+.sidebar-account-menu a:hover, .sidebar-account-menu a:focus-visible, .sidebar-account-menu button:hover, .sidebar-account-menu button:focus-visible { background: #33333b; color: #f0f0f6; outline-offset: -2px; }
+.sidebar-account-menu a[aria-current="page"] { background: #363640; color: #f0f0f6; }
+.sidebar-account-menu svg { color: #92929f; flex-shrink: 0; }
+.sidebar-account-menu hr { margin: 4px 0; border: 0; border-top: 1px solid #34343b; }
+.sidebar-account-error { margin: 6px 10px 4px; color: #ff9d9d; font-size: 12px; }
 .support-link { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0; border: 0; background: none; color: var(--muted); font-size: 12px; }
 .support-link:hover { color: #d5d5df; text-decoration: underline; text-underline-offset: 3px; }
 .support-heart { display: inline-flex; flex-shrink: 0; color: #c58a9c; }
@@ -396,7 +415,11 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .signal-secondary { opacity: .65; }
 .configuration-label { display: flex; align-items: center; justify-content: space-between; padding: 12px 7px 6px 12px; }
 .configuration-label .icon-button { min-width: 36px; min-height: 36px; padding: 7px; }
-.configuration-nav { max-height: 225px; overflow-y: auto; scrollbar-width: thin; }
+.configuration-nav { max-height: 260px; overflow-y: auto; scrollbar-width: thin; }
+.configuration-group { display: flex; flex-direction: column; gap: 2px; }
+.configuration-group + .configuration-group { margin-top: 6px; }
+.configuration-group-label { padding: 4px 11px 2px; color: var(--faint); font-size: 11px; font-weight: 550; }
+.configuration-group-label.is-current { color: #c4caff; }
 .configuration-nav button { display: flex; align-items: center; gap: 10px; border: 1px solid transparent; border-radius: 6px; background: transparent; padding: 7px 10px; min-height: 36px; flex-shrink: 0; text-align: left; font-size: 13px; color: #bfbfca; }
 .configuration-nav button > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .configuration-nav button small { margin-left: auto; }
@@ -489,7 +512,7 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 @media (max-width: 600px) {
   .app-shell { display: flex; flex-direction: column; min-height: 0; }
   .sidebar { padding: 0; border-right: 0; border-bottom: 1px solid var(--line); flex-shrink: 0; }
-  .app-brand, .sidebar-section-label, .sidebar-spacer, .sidebar-build, .sidebar-footer, .configuration-nav { display: none; }
+  .app-brand, .sidebar-section-label, .sidebar-spacer, .sidebar-build, .sidebar-account, .sidebar-footer, .configuration-nav { display: none; }
   .workspace-content { padding: 25px 18px; }
   h1 { font-size: 29px; }
   .page-heading { margin-bottom: 26px; gap: 10px; }
@@ -758,6 +781,10 @@ h1 { font-size: 28px; }
 .discovery-tools label { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #a3a3b3; }
 .discovery-tools select { font-size: 12px; padding: 7px 28px 7px 9px; border: 1px solid #42424b; border-radius: 5px; color: #cecedb; background-color: #26262c; }
 .discovery-tools button { margin-left: auto; min-height: 32px; padding: 5px 10px; font-size: 12px; }
+/* The machine menu from the old sidebar, as it was, at the start of the library's filter row. */
+.discovery-tools .machine-switcher { margin: 0; }
+.discovery-tools .sidebar-device { width: auto; min-width: 210px; margin-left: 0; padding: 5px 10px 5px 6px; font-size: 13px; }
+.discovery-tools .machine-menu { right: auto; width: 320px; }
 .comparison-dialog { width: min(950px,calc(100vw - 32px)); max-height: calc(100dvh - 40px); color: #d5d5e2; background: #222227; border: 1px solid #4c4c58; border-radius: 12px; padding: 23px; }
 .comparison-dialog::backdrop { background: #0009; backdrop-filter: blur(4px); }
 .comparison-scroll { overflow-x: auto; margin-top: 18px; }
@@ -993,6 +1020,8 @@ h1 { font-size: 28px; }
   .discovery-tools label { gap: 0; min-width: 0; font-size: 0; }
   .discovery-tools select { flex: 1; width: 100%; min-width: 0; min-height: 44px; padding: 0 28px 0 12px; border-radius: 8px; font-size: 16px; text-overflow: ellipsis; }
   .discovery-tools button { grid-column: 1 / -1; margin-left: 0; min-height: 44px; font-size: 13px; }
+  .discovery-tools .library-machine-switcher { grid-column: 1 / -1; }
+  .discovery-tools .library-machine-button { justify-content: space-between; width: 100%; min-height: 44px; padding: 0 14px; border: 1px solid #3a3a42; border-radius: 8px; color: #d4d7ff; font-size: 16px; }
   .discovery-tools button:disabled { display: none; }
   .module-grid { gap: 14px; }
 
@@ -1190,8 +1219,8 @@ h1 { font-size: 28px; }
   .search.is-open ~ .search-cancel { display: inline-flex; align-items: center; min-height: 44px; padding: 0 10px; border: 0; background: none; color: #a8b0ff; font-size: 15px; }
 
   .sidebar-nav[aria-label="Module library"] { align-items: center; gap: 8px; padding: 2px 16px 12px; }
-  .sidebar-nav[aria-label="Module library"] a, .sidebar-nav[aria-label="Module library"] .library-machine-button { height: 44px; min-height: 44px; padding: 0 14px; border: 1px solid #3a3a42; border-radius: 8px; color: #b8b8c4; font-size: 14px; line-height: 20px; }
-  .sidebar-nav[aria-label="Module library"] a.active, .sidebar-nav[aria-label="Module library"] .library-machine-button.active, .sidebar-nav[aria-label="Module library"] .library-machine-button[aria-expanded="true"] { border-color: #505879; background: #353b52; color: #d4d7ff; box-shadow: none; }
+  .sidebar-nav[aria-label="Module library"] a { height: 44px; min-height: 44px; padding: 0 14px; border: 1px solid #3a3a42; border-radius: 8px; color: #b8b8c4; font-size: 14px; line-height: 20px; }
+  .sidebar-nav[aria-label="Module library"] a.active { border-color: #505879; background: #353b52; color: #d4d7ff; box-shadow: none; }
   .sidebar-nav[aria-label="Module library"] a.sidebar-standalone { margin-top: 0; }
   .sidebar-nav[aria-label="Module library"] a.sidebar-standalone::before { display: none; }
   .sidebar::after { bottom: 12px; width: 32px; height: 44px; }
@@ -1361,7 +1390,7 @@ h1 { font-size: 28px; }
 
   /* Category chips: compact pills that scroll away with the page. */
   .sidebar-nav[aria-label="Module library"] { padding: 10px 16px 12px; gap: 8px; }
-  .sidebar-nav[aria-label="Module library"] a, .sidebar-nav[aria-label="Module library"] .library-machine-button { height: 38px; min-height: 38px; padding: 0 14px; border-radius: 999px; font-size: 14px; }
+  .sidebar-nav[aria-label="Module library"] a { height: 38px; min-height: 38px; padding: 0 14px; border-radius: 999px; font-size: 14px; }
   .sidebar::after { bottom: 12px; height: 38px; }
 
   /* Page footer: machine status, legal links and the independence notice, after the content instead of over it. */

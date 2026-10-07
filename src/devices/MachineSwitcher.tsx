@@ -12,7 +12,7 @@ const GROUPS = [
 
 type MachineSwitcherProps = { current: DeviceProfile; all: boolean; counts: Record<string, number>; compact?: boolean; active?: boolean }
 
-// The sidebar's machine menu: switching keeps the layout and swaps the library, configurations and build panel.
+// The library's machine menu, at the start of its filter row: switching swaps the library, its counts and the build panel.
 export function MachineSwitcher({ current, all, counts, compact = false, active = false }: MachineSwitcherProps) {
   const total = Object.values(counts).reduce((sum, count) => sum + count, 0)
   const [open, setOpen] = useState(false)
