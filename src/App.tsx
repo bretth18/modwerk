@@ -19,12 +19,10 @@ import { getRoute, moduleHref } from './routing'
 import { ModuleSets } from './components/ModuleSets'
 import { ModuleComparison } from './components/ModuleComparison'
 import { api } from './community/api'
-import { compareModules, downloadCoverage, type ModuleStatistics } from './community/module-statistics'
-import { STABILITY_NOTE } from './catalog/module-stability'
+import { compareModules, type ModuleStatistics } from './community/module-statistics'
 import { ModulePopularity } from './community/ModulePopularity'
 import { selectionConflicts, type ConflictFix } from './catalog/selection-conflicts'
 import { CompatibilityPanel } from './components/CompatibilityPanel'
-import { SelectionWarning } from './components/SelectionWarning'
 import { useCommunity } from './community/context'
 import { SubmissionPage } from './community/SubmissionPage'
 import { AdminPage } from './community/AdminPage'
@@ -32,7 +30,7 @@ import { PublishedModulePage } from './community/PublishedModulePage'
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import type { ChangeEvent, DragEvent } from 'react'
 import { flushSync } from 'react-dom'
-import { LIBRARY_CATEGORIES, LIBRARY_CATEGORY_LABELS, MODULES, STANDALONE_NOTE, resolveSelection, type ModuleCategory } from './catalog/modules'
+import { LIBRARY_CATEGORIES, LIBRARY_CATEGORY_LABELS, MODULES, resolveSelection, type ModuleCategory } from './catalog/modules'
 import { AVAILABLE_MODULES, isModulePaused, moduleAvailabilityError } from './catalog/availability'
 import { DETAILS } from './catalog/details'
 import { ENGINE_AVAILABLE, DOWNLOADS_ENABLED, DSP_LOADER } from './engine/protocol'
@@ -43,16 +41,14 @@ import { DIGI_DOWNLOADS_ENABLED } from './engine/elekloader/protocol'
 import { downloadSelection, parseSelection } from './config/selection'
 import { Icon } from './components/Icon'
 import { ModulePreview } from './components/ModulePreview'
-import { ModuleCard } from './components/ModuleCard'
-import { LibraryTools } from './components/LibraryTools'
 import { ModuleDetail } from './components/ModuleDetail'
 import { useModuleUpdates } from './hooks/useModuleUpdates'
 import { FaqPage } from './components/FaqPage'
 import { MobileMenu } from './components/MobileMenu'
 import { MachineSwitcher } from './devices/MachineSwitcher'
 import { AccountMenu } from './community/AccountMenu'
-import { AllMachinesLibrary, DigiConfiguration, DigiLibrary, DigiModDetail, EmptyMachine } from './devices/MachinePages'
-import { ALL_MACHINES, DEVICES, DEVICES_BY_ID, deviceHref, parseDeviceRoute, rememberDevice, rememberedDevice, type DeviceProfile } from './devices/registry'
+import { MachineLibrary, DigiConfiguration, DigiModDetail } from './devices/MachinePages'
+import { ALL_MACHINES, DEVICES_BY_ID, deviceHref, parseDeviceRoute, rememberDevice, rememberedDevice, type DeviceProfile } from './devices/registry'
 import { DIGI_MODS, isDigiDevice, type DigiMod } from './devices/digi-mods'
 import { configurationDevice, type Configuration } from './config/workspace'
 import './devices/devices.css'
@@ -61,6 +57,7 @@ import { SUPPORT_URL } from './config/support'
 
 import { useWorkspace } from './hooks/useWorkspace'
 import { usePhoneToolbar } from './hooks/usePhoneToolbar'
+import { ConfigurationBrowser } from './components/ConfigurationBrowser'
 import { ConfigurationDialog } from './components/ConfigurationDialog'
 import { ConfigurationEffects } from './components/ConfigurationEffects'
 function subscribeRoute(callback: () => void) {
@@ -121,7 +118,6 @@ export default function App() {
   const libraryCategory = allMachines ? allCategory : currentDevice.id === 'octatrack' ? (detailModule || filter === 'all' ? undefined : filter) : machineRoute?.category
   const onLibrary = allMachines ? allRoute : currentDevice.id === 'octatrack' ? route === 'library' || LIBRARY_CATEGORIES.includes(route as ModuleCategory) : machineView === 'library'
   const machineCounts: Record<string, number> = { octatrack: AVAILABLE_MODULES.length, ...Object.fromEntries(['digitakt', 'digitone'].map(id => [id, DIGI_MODS.filter(mod => mod.device === id).length])) }
-  const categoryLabels = { effects:'Effects', playback:'Playback', machines:'Machines & sequencer', scenes:'Scenes', 'midi-usb':'MIDI & USB', system:'System', standalone:'Standalone firmware' }
   const workspace = useWorkspace()
   const { active: storedActive, ready, firmware, fileState, fileError, firmwareSaved, readFile, clearFile } = workspace
   // Each machine shows its own configurations; the Octatrack code below always works on an Octatrack configuration.
@@ -130,8 +126,8 @@ export default function App() {
   const active = activeFor('octatrack')
   const machineActive = activeFor(currentDevice.id)
   const machineConfigurations = configurationsFor(currentDevice.id)
-  // Every machine's configurations stay listed whichever machine the library shows, grouped by machine.
-  const configurationGroups = DEVICES.map(device => ({ device, items: configurationsFor(device.id) })).filter(group => group.items.length)
+  const sidebarConfiguration = allMachines ? storedActive : machineActive
+  // Saved configurations live in a searchable browser; the sidebar stays the same size.
   const machineSelected = machineActive?.moduleIds ?? []
   function ensureActive(item?: Configuration) { if (item && storedActive?.id !== item.id) workspace.selectConfiguration(item.id) }
   function setKeepStockFx2(value: boolean) { ensureActive(active); workspace.setKeepStockFx2(value) }
@@ -161,13 +157,16 @@ export default function App() {
   function closeSearch() { setQuery(''); flushSync(() => setSearchOpen(false)); searchToggleRef.current?.focus() }
   const [family,setFamily]=useState('all'),[sort,setSort]=useState('collection'),[comparison,setComparison]=useState<string[]>([]),[compareOpen,setCompareOpen]=useState(false)
   const [statistics,setStatistics]=useState<ModuleStatistics[]|null>(null)
-  useEffect(()=>{let cancelled=false;if(session.available)void api<ModuleStatistics[]>('/community/summary').then(value=>{if(!cancelled)setStatistics(value)}).catch(()=>{if(!cancelled)setStatistics(null)});return()=>{cancelled=true}},[session.available,route])
+  useEffect(()=>{let cancelled=false;if(session.available)void api<ModuleStatistics[]>('/community/summary').then(value=>{if(!cancelled)setStatistics(value)}).catch(()=>{if(!cancelled)setStatistics(null)});return()=>{cancelled=true}},[session.available,onLibrary])
   const [dragging, setDragging] = useState(false)
   const [saved, setSaved] = useState(false)
   const [riskAccepted, setRiskAccepted] = useState<{key:string;accepted:boolean}>({key:'',accepted:false})
   const [importError,setImportError]=useState('')
   const importRef=useRef<HTMLInputElement>(null)
   const [configDialog, setConfigDialog] = useState<'create' | 'rename' | 'duplicate' | 'delete' | null>(null)
+  const [configurationsOpen, setConfigurationsOpen] = useState(false)
+  const [createDevice, setCreateDevice] = useState<string | null>(null)
+  function newConfiguration(device = currentDevice.id) { setCreateDevice(device); setConfigDialog('create') }
   const [supportOpen, setSupportOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const mainRef = useRef<HTMLElement>(null)
@@ -224,15 +223,16 @@ export default function App() {
   }
   function changeConfiguration(id: string) { const item = workspace.configurations.find(value => value.id === id); workspace.selectConfiguration(id); setSaved(false); setRiskAccepted({key:'',accepted:false}); window.location.assign(deviceHref(item ? configurationDevice(item) : currentDevice.id, 'configuration')) }
   function submitConfigurationDialog(name: string) {
-    ensureActive(machineActive)
+    const targetDevice = configDialog === 'create' ? createDevice ?? currentDevice.id : currentDevice.id
+    ensureActive(activeFor(targetDevice))
     if (configDialog === 'delete') workspace.deleteConfiguration()
     else if (configDialog === 'rename') workspace.renameConfiguration(name)
-    else workspace.createConfiguration(name, configDialog === 'duplicate', currentDevice.id)
-    setSaved(false); setRiskAccepted({key:'',accepted:false}); window.location.assign(deviceHref(currentDevice.id, 'configuration'))
+    else workspace.createConfiguration(name, configDialog === 'duplicate', targetDevice)
+    setSaved(false); setRiskAccepted({key:'',accepted:false}); window.location.assign(deviceHref(targetDevice, 'configuration'))
   }
 
   // Routes that browse a library: they get the search field and, on phones, the category chips under the app bar.
-  const libraryNav = ['library', ...LIBRARY_CATEGORIES, 'module-sets'].includes(route) || allRoute || (digiDevice && machineView === 'library')
+  const libraryNav = onLibrary || route === 'module-sets'
   const firmwareVerified = !allMachines && currentDevice.id === 'octatrack' && !!firmware
   const machineStatus = allMachines ? 'All machines' : currentDevice.id !== 'octatrack' ? currentDevice.name + (machineHasMods ? DIGI_DOWNLOADS_ENABLED ? ' · local builds' : ' · builds in preview' : ' · no mods yet') : firmware ? 'OS 1.40C verified' : 'No base firmware selected'
   const saveStatus = workspace.saving ? "Saving…" : workspace.storageError ? "Changes not saved" : "Workspace saved on device"
@@ -258,8 +258,8 @@ export default function App() {
           })}
           <a href="#module-sets" className={route.startsWith('module-set')?'active':''}><Icon name="file"/><span>Module sets</span></a>
         </nav>
-        <div className="sidebar-section-label configuration-label"><span>Configurations</span><button className="icon-button" aria-label={machineHasMods ? 'New ' + currentDevice.name + ' configuration' : 'New configuration'} title={machineHasMods ? undefined : allMachines ? 'Choose a machine to create a configuration' : 'This machine has no mods yet'} disabled={!ready || !machineHasMods} onClick={() => setConfigDialog("create")}><Icon name="plus" size={18} /></button></div>
-        <nav className="sidebar-nav configuration-nav" aria-label="Saved configurations">{configurationGroups.map(group => <div key={group.device.id} className="configuration-group" role="group" aria-label={group.device.name}><div className={'configuration-group-label' + (!allMachines && group.device.id === currentDevice.id ? ' is-current' : '')} aria-hidden="true">{group.device.name}</div>{group.items.map(item => { const selected = item.id === (allMachines ? storedActive?.id : machineActive?.id); return <button key={item.id} className={selected ? 'active' : ''} aria-pressed={selected} onClick={() => changeConfiguration(item.id)}><Icon name="file" /><span>{item.name}</span><small>{item.moduleIds.length}</small></button> })}</div>)}{!allMachines && !machineHasMods && <p className="sidebar-empty-note">No mods to configure yet.</p>}</nav>
+        <div className="sidebar-section-label configuration-label"><span>Configurations</span><button className="icon-button" aria-label={'New ' + (machineHasMods ? currentDevice.name : 'Octatrack') + ' configuration'} disabled={!ready} onClick={() => newConfiguration(machineHasMods ? currentDevice.id : 'octatrack')}><Icon name="plus" size={18} /></button></div>
+        <div className="configuration-launcher"><button type="button" className="configuration-browse" onClick={event => { event.currentTarget.focus(); setConfigurationsOpen(true) }}><Icon name="file" size={17} /><span>Browse configurations</span><small>{workspace.configurations.length}</small></button><button type="button" className="configuration-recent" disabled={!sidebarConfiguration} onClick={() => { const item = allMachines ? storedActive : machineActive; if (item) changeConfiguration(item.id) }}>{sidebarConfiguration ? <><span>{sidebarConfiguration.name}</span><small>{DEVICES_BY_ID[configurationDevice(sidebarConfiguration)].name} · current</small></> : <><span>No configuration yet</span><small>Saved on this device</small></>}</button></div>
         <div className="sidebar-section-label community-label">Community & help</div><nav className="sidebar-nav community-nav" aria-label="Community and help"><div className="sidebar-nav-row"><a href="#forum" className={forumRoute?'active':''}><Icon name="message"/><span>Forum</span>{!online && <span className="sidebar-feature-new">New</span>}</a>{presence?.online ? <MembersOnlineChip presence={presence}/> : null}</div><a href="#submit" className={route.startsWith('submit') ? 'active' : ''}><Icon name="plus"/><span>Start developing</span></a><a href="#faq" className={route === 'faq' ? 'active' : ''} aria-current={route === 'faq' ? 'page' : undefined}><Icon name="help" /><span>FAQ<span className="help-guide-label"> & flashing guide</span></span></a></nav>
         <div className="sidebar-spacer" />
         <AccountMenu route={route} />
@@ -271,7 +271,8 @@ export default function App() {
         <div className="sidebar-footer"><div className="sidebar-privacy"><Icon name="shield" size={14} /><span>Firmware stays on your device</span></div>{SUPPORT_URL && <SupportButton onClick={() => setSupportOpen(true)} />}</div>
       </aside>
       {compareOpen&&<ModuleComparison ids={comparison} selected={selectedIds} onToggle={toggleModule} digiSelected={{digitakt:activeFor('digitakt')?.moduleIds??[],digitone:activeFor('digitone')?.moduleIds??[]}} onToggleDigi={(device,id)=>workspace.toggleModule(id,device)} onClose={()=>setCompareOpen(false)}/>}
-      {configDialog && <ConfigurationDialog mode={configDialog} initialName={configDialog === 'create' ? '' : configDialog === 'duplicate' ? (machineActive?.name ?? '') + ' copy' : machineActive?.name ?? ''} onSubmit={submitConfigurationDialog} onClose={() => setConfigDialog(null)} />}
+      {configurationsOpen && <ConfigurationBrowser configurations={workspace.configurations} activeId={sidebarConfiguration?.id} currentDevice={machineHasMods ? currentDevice.id : 'octatrack'} onSelect={changeConfiguration} onCreate={newConfiguration} onClose={() => setConfigurationsOpen(false)} />}
+      {configDialog && <ConfigurationDialog mode={configDialog} initialName={configDialog === 'create' ? '' : configDialog === 'duplicate' ? (machineActive?.name ?? '') + ' copy' : machineActive?.name ?? ''} onSubmit={submitConfigurationDialog} onClose={() => { setConfigDialog(null); setCreateDevice(null) }} />}
       <DiscordInvitePrompt enabled={!accountRoute && !developerRoute && !['admin', 'privacy', 'impressum', 'community-rules', 'report-content'].includes(route)} next={route} />
       {supportOpen && <SupportDialog url={SUPPORT_URL} onClose={() => setSupportOpen(false)} />}
       <div className="workspace">
@@ -280,16 +281,18 @@ export default function App() {
           <div className="toolbar-title"><Icon name={route === 'faq' ? 'help' : configuration || machineView === 'configuration' ? 'file' : 'grid'} size={17} /><span>{route === 'faq' ? 'FAQ & flashing guide' : configuration || machineView === 'configuration' ? 'Configuration' : route === 'privacy' ? 'Privacy' : route === 'impressum' ? 'Impressum' : route === 'community-rules' ? 'Community rules' : route === 'report-content' ? 'Report content' : communityRoute ? 'Community' : route.startsWith('module-set') ? 'Module sets' : 'Modules'}</span>{(detailModule?.name ?? digiMod?.title) && <><span className="breadcrumb-divider">/</span><strong>{detailModule?.name ?? digiMod?.title}</strong></>}<span className="preview-badge">Preview</span></div>
           {libraryNav && <><label className={'search' + (searchExpanded ? ' is-open' : '')}><Icon name="search" size={15} /><input ref={searchRef} type="search" aria-label={route==='module-sets'?'Search module sets':'Search modules'} placeholder={route==='module-sets'?'Search sets':'Search modules'} value={query} onChange={(event) => setQuery(event.target.value)} onBlur={() => { if (!query) setSearchOpen(false) }} onKeyDown={(event) => { if (phoneLayout && event.key === 'Escape') closeSearch() }} /></label><button ref={searchToggleRef} type="button" className="toolbar-icon search-toggle" aria-label={route==='module-sets'?'Search module sets':'Search modules'} onClick={openSearch}><Icon name="search" size={20} /></button><button type="button" className="search-cancel" onClick={closeSearch}>Cancel</button></>}
           {phoneLayout && <NotificationBell />}
-          <MobileMenu route={route} online={online} selectedCount={machineSelected.length} configurationHref={machineHasMods ? deviceHref(currentDevice.id, 'configuration') : undefined} admin={session.admin} developer={!!developer?.user} onSupport={SUPPORT_URL ? () => setSupportOpen(true) : undefined} />
-          {machineHasMods && <a className={'configuration-button' + (machineSelected.length ? '' : ' is-empty')} href={deviceHref(currentDevice.id, 'configuration')} aria-label={"Open configuration, " + machineSelected.length + " modules selected"} aria-current={configuration || machineView === 'configuration' ? 'page' : undefined}><Icon name="sliders" size={16} /><span>Configuration</span><span className="toolbar-count">{machineSelected.length}</span></a>}
+          <MobileMenu onConfigurations={() => setConfigurationsOpen(true)} route={route} online={online} selectedCount={machineSelected.length} configurationHref={machineHasMods ? deviceHref(currentDevice.id, 'configuration') : undefined} admin={session.admin} developer={!!developer?.user} onSupport={SUPPORT_URL ? () => setSupportOpen(true) : undefined} />
+          {(machineHasMods || onLibrary) && <a aria-disabled={!machineHasMods || undefined} tabIndex={machineHasMods ? undefined : -1} className={'configuration-button' + (machineSelected.length ? '' : ' is-empty')} href={machineHasMods ? deviceHref(currentDevice.id, 'configuration') : undefined} aria-label={"Open configuration, " + machineSelected.length + " modules selected"} aria-current={configuration || machineView === 'configuration' ? 'page' : undefined}><Icon name="sliders" size={16} /><span>Configuration</span><span className="toolbar-count">{machineSelected.length}</span></a>}
         </header>
         <main className="workspace-content" id="main-content" ref={mainRef} tabIndex={-1}>
           {!accountRoute && <SignupWelcome key={route} />}
           {!accountRoute && !developerRoute && !configuration && machineView !== 'configuration' && !['admin', 'privacy', 'impressum', 'community-rules', 'report-content'].includes(route) && <HardwareFeedbackReminder />}
           {!phoneLayout && projectNotice}
           {workspace.storageError && <div className="file-error" role="alert">{workspace.storageError} Export important configurations before closing this tab.</div>}
-          {route === 'faq' ? <FaqPage /> : machineView && !digiDevice ? <EmptyMachine key={currentDevice.id} device={currentDevice} machinePicker={machinePicker} /> : !ready ? <div className="loading-panel" role="status">Opening your workspace…</div> : <>
-          {allRoute ? <AllMachinesLibrary machinePicker={machinePicker} query={query} category={allCategory} octatrackModules={visibleModules} family={family} onFamilyChange={setFamily} sort={sort} onSortChange={setSort} statistics={statistics} octatrackConflicts={conflicts} comparison={comparison} onCompare={toggleComparison} onOpenComparison={()=>setCompareOpen(true)} viewedModuleVersions={viewedModuleVersions} moduleBaseline={moduleBaseline} octatrackSelected={selectedIds} onToggleOctatrack={toggleModule} digiSelected={{ digitakt: activeFor('digitakt')?.moduleIds ?? [], digitone: activeFor('digitone')?.moduleIds ?? [] }} onToggleDigi={(device, id) => workspace.toggleModule(id, device)} /> : digiDevice && machineView === 'library' ? <DigiLibrary device={digiDevice} machinePicker={machinePicker} category={machineRoute?.category} statistics={statistics} query={query} selectedIds={machineSelected} onToggle={toggleMachineModule} family={family} onFamilyChange={setFamily} sort={sort} onSortChange={setSort} comparison={comparison} onCompare={toggleComparison} onOpenComparison={()=>setCompareOpen(true)} /> : digiDevice && digiMod ? <DigiModDetail key={digiMod.device+'-'+digiMod.id} device={digiDevice} mod={digiMod} selected={machineSelected.includes(digiMod.id)} onToggle={() => toggleMachineModule(digiMod.id)} /> : digiDevice && machineView === 'configuration' ? <DigiConfiguration key={digiDevice.id} device={digiDevice} configuration={machineActive} configurations={machineConfigurations} onSelect={id => { workspace.selectConfiguration(id) }} onDialog={setConfigDialog} onToggle={toggleMachineModule} onImport={item => workspace.importConfiguration(item.name,item.moduleIds,false,item.moduleVersions,digiDevice.id)} /> : missingRoute?<div className="no-results"><h1>{pausedModule ? 'Module temporarily unavailable' : 'Page not found'}</h1><p>{pausedModule ? pausedModule.name + ' has been temporarily removed due to reported audio crackling.' : 'This module or page is not in the current catalog.'}</p><a className="button button-quiet" href="#library">Open module library</a></div>:route==='module-sets'||route.startsWith('module-set/')?<ModuleSets query={query} id={moduleRoute.startsWith('module-set/')?moduleRoute.slice(11):undefined} onUse={(name,ids)=>{workspace.importConfiguration(name,ids);window.location.assign('#configuration')}}/>:forumRoute ? <ForumPage key={route} route={route} configuration={storedActive} configurations={workspace.configurations} onCopy={config=>{const device=config.device??'octatrack';workspace.importConfiguration(config.name,config.moduleIds,config.keepStockFx2,config.moduleVersions,device);window.location.assign(deviceHref(device,'configuration'))}}/> : developerRoute ? <DeveloperPage key={route.startsWith('developer/report/')?route:route.split('/')[0]} route={route}/> : accountRoute ? <AccountPage key={route.split('/').slice(0,2).join('/')} route={route}/> : route === 'privacy' ? <PrivacyPage /> : ['impressum','community-rules','report-content'].includes(route) ? <LegalPage route={route}/> : route.startsWith('submit') ? <SubmissionPage key={route} moduleId={route.split('/')[1] ?? ''} /> : route === 'review'||route === 'admin' ? <AdminPage /> : communityModule ? <PublishedModulePage key={communityModule.module_id} module={communityModule} /> : detailModule ? <ModuleDetail key={detailModule.id} module={detailModule} selected={selectedIds.includes(detailModule.id)} onToggle={() => toggleModule(detailModule.id)} /> : configuration ? (
+          {route === 'faq' ? <FaqPage /> : !ready ? <div className="loading-panel" role="status">Opening your workspace…</div> : <>
+          {onLibrary ? <MachineLibrary device={allMachines ? undefined : currentDevice} machinePicker={machinePicker} query={query} category={libraryCategory as ModuleCategory | undefined} octatrackModules={visibleModules} family={family} onFamilyChange={setFamily} sort={sort} onSortChange={setSort} statistics={statistics} octatrackConflicts={conflicts} comparison={comparison} onCompare={toggleComparison} onOpenComparison={() => setCompareOpen(true)} viewedModuleVersions={viewedModuleVersions} moduleBaseline={moduleBaseline} octatrackSelected={selectedIds} onToggleOctatrack={toggleModule} digiSelected={{digitakt: activeFor('digitakt')?.moduleIds ?? [], digitone: activeFor('digitone')?.moduleIds ?? []}} onToggleDigi={(device, id) => workspace.toggleModule(id, device)} onClearSearch={() => { setQuery(''); setFamily('all') }}>
+            {!allMachines && currentDevice.id === 'octatrack' && !!catalog.filter((item,index,items)=>!MODULES.some(module=>module.id===item.module_id)&&items.findIndex(other=>other.module_id===item.module_id)===index).length && <section className="published-collection"><h2>Community modules</h2><div className="module-grid">{catalog.filter((item,index,items)=>!MODULES.some(module=>module.id===item.module_id)&&items.findIndex(other=>other.module_id===item.module_id)===index).sort((a,b)=>compareModules({id:a.module_id,name:a.title,authorName:a.author,addedAt:a.added_at??undefined},{id:b.module_id,name:b.title,authorName:b.author,addedAt:b.added_at??undefined},sort,statistics)).map(item=><article className="published-card" key={item.module_id}><span className="pill">Reviewed contribution</span><h2><a href={'#community-module/'+item.module_id}>{item.title}</a></h2><p>{item.description}</p><ModulePopularity statistics={statistics?.find(stats=>stats.module_id===item.module_id)}/><a className="text-button" href={'#community-module/'+item.module_id}>View module →</a></article>)}</div></section>}
+          </MachineLibrary> : digiDevice && digiMod ? <DigiModDetail key={digiMod.device+'-'+digiMod.id} device={digiDevice} mod={digiMod} selected={machineSelected.includes(digiMod.id)} onToggle={() => toggleMachineModule(digiMod.id)} /> : digiDevice && machineView === 'configuration' ? <DigiConfiguration key={digiDevice.id} device={digiDevice} configuration={machineActive} configurations={machineConfigurations} onSelect={id => { workspace.selectConfiguration(id) }} onDialog={setConfigDialog} onToggle={toggleMachineModule} onImport={item => workspace.importConfiguration(item.name,item.moduleIds,false,item.moduleVersions,digiDevice.id)} /> : missingRoute?<div className="no-results"><h1>{pausedModule ? 'Module temporarily unavailable' : 'Page not found'}</h1><p>{pausedModule ? pausedModule.name + ' has been temporarily removed due to reported audio crackling.' : 'This module or page is not in the current catalog.'}</p><a className="button button-quiet" href="#library">Open module library</a></div>:route==='module-sets'||route.startsWith('module-set/')?<ModuleSets query={query} id={moduleRoute.startsWith('module-set/')?moduleRoute.slice(11):undefined} onUse={(name,ids)=>{workspace.importConfiguration(name,ids);window.location.assign('#configuration')}}/>:forumRoute ? <ForumPage key={route} route={route} configuration={storedActive} configurations={workspace.configurations} onCopy={config=>{const device=config.device??'octatrack';workspace.importConfiguration(config.name,config.moduleIds,config.keepStockFx2,config.moduleVersions,device);window.location.assign(deviceHref(device,'configuration'))}}/> : developerRoute ? <DeveloperPage key={route.startsWith('developer/report/')?route:route.split('/')[0]} route={route}/> : accountRoute ? <AccountPage key={route.split('/').slice(0,2).join('/')} route={route}/> : route === 'privacy' ? <PrivacyPage /> : ['impressum','community-rules','report-content'].includes(route) ? <LegalPage route={route}/> : route.startsWith('submit') ? <SubmissionPage key={route} moduleId={route.split('/')[1] ?? ''} /> : route === 'review'||route === 'admin' ? <AdminPage /> : communityModule ? <PublishedModulePage key={communityModule.module_id} module={communityModule} /> : detailModule ? <ModuleDetail key={detailModule.id} module={detailModule} selected={selectedIds.includes(detailModule.id)} onToggle={() => toggleModule(detailModule.id)} /> : configuration ? (
             <div className="configuration-page">
               <div className="page-heading"><div><p className="page-kicker">YOUR WORKSPACE</p><h1>{active?.name}</h1><p>Changes save automatically on this device. Configurations use current module versions.</p></div><span className="pill">OS 1.40C</span></div>
               <div className="configuration-actions"><select aria-label="Choose configuration" value={active?.id ?? ''} onChange={event => changeConfiguration(event.target.value)}>{workspace.configurations.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select><button className="button button-primary" onClick={() => setConfigDialog('create')}><Icon name="plus" size={16} />New</button><button className="button button-quiet" onClick={() => setConfigDialog('rename')}>Rename</button><button className="button button-quiet" onClick={() => setConfigDialog('duplicate')}>Duplicate</button><button className="button button-quiet" onClick={() => setConfigDialog('delete')}>Delete</button><button className="button button-quiet" onClick={()=>importRef.current?.click()}>Import JSON</button><a className="button button-quiet" href="#forum/new?category=configs">Share in forum</a></div><input ref={importRef} type="file" accept="application/json,.json" hidden onChange={event=>void importSelection(event)} aria-label="Import configuration backup"/>{importError&&<p className="file-error" role="alert">{importError}</p>}
@@ -320,22 +323,8 @@ export default function App() {
               <MemberGate action="build firmware" next={route}><FirmwareBuildPanel build={firmwareBuild} available={ENGINE_AVAILABLE} downloadsEnabled={DOWNLOADS_ENABLED} firmwareReady={!!firmware} moduleCount={selection.length} riskAccepted={riskAccepted.key===firmwareBuild.key&&riskAccepted.accepted} configurationName={active?.name??'Octamod configuration'} onExport={saveSelection} exported={saved}/></MemberGate>
 
             </div>
-          ) : (
-            <div className="library-page">
-              <div className="page-heading"><div><p className="page-kicker">MODWERK / OCTATRACK</p><h1>{filter === 'all' ? 'Module library' : categoryLabels[filter]}</h1><p>{filter === 'standalone' ? STANDALONE_NOTE : 'A different way to play your Octatrack.'}</p></div><span className="library-total">{visibleModules.length} modules</span></div>
-              {!!conflicts.length && <SelectionWarning warnings={[{id: 'octatrack', title: 'Octatrack: your selection needs a change', description: 'Some modules cannot run together. Choose a compatible set in your configuration.', href: '#configuration'}]} />}
-              <div className="library-subheading"><span>{query.trim() ? 'Results for “' + query.trim() + '”' : filter === 'all' ? 'Explore the collection' : filter === 'effects' ? 'Filters, texture & space' : 'New ways to play'}</span><span className="subtle">Octatrack · OS 1.40C</span></div>
-              <LibraryTools family={libraryFamily} families={Array.from(new Set(AVAILABLE_MODULES.map(module=>DETAILS[module.id].family)))} onFamilyChange={setFamily} sort={sort} onSortChange={setSort} comparisonCount={comparison.length} onCompare={()=>setCompareOpen(true)} machine={machinePicker} />
-              <div className="module-grid">{visibleModules.map((module) => {
-                const selected = selectedIds.includes(module.id)
-                return <ModuleCard key={module.id} module={module} selected={selected} statistics={statistics?.find(item=>item.module_id===module.id)} viewedVersion={viewedModuleVersions[module.id]} baseline={moduleBaseline} compared={comparison.includes(module.id)} canCompare={comparison.length<3||comparison.includes(module.id)} onToggle={()=>toggleModule(module.id)} onCompare={()=>toggleComparison(module.id)} />
-              })}</div>
-              <p className="popularity-note">{statistics ? downloadCoverage(statistics[0]?.downloadsStarted) : 'Popularity counts are currently unavailable.'}{' ' + STABILITY_NOTE}</p>
-              {!visibleModules.length && <div className="no-results"><Icon name="search" size={30} /><h2>No modules found</h2><p>Try another name, effect or author.</p><button className="button button-quiet" onClick={() => {setQuery('');setFamily('all')}}>Clear search</button></div>}
-              {!!catalog.filter((item,index,items)=>!MODULES.some(module=>module.id===item.module_id)&&items.findIndex(other=>other.module_id===item.module_id)===index).length && <section className="published-collection"><h2>Community modules</h2><div className="module-grid">{catalog.filter((item,index,items)=>!MODULES.some(module=>module.id===item.module_id)&&items.findIndex(other=>other.module_id===item.module_id)===index).sort((a,b)=>compareModules({id:a.module_id,name:a.title,authorName:a.author,addedAt:a.added_at??undefined},{id:b.module_id,name:b.title,authorName:b.author,addedAt:b.added_at??undefined},sort,statistics)).map(item=><article className="published-card" key={item.module_id}><span className="pill">Reviewed contribution</span><h2><a href={'#community-module/'+item.module_id}>{item.title}</a></h2><p>{item.description}</p><ModulePopularity statistics={statistics?.find(stats=>stats.module_id===item.module_id)}/><a className="text-button" href={'#community-module/'+item.module_id}>View module →</a></article>)}</div></section>}
-              <div className="library-note"><span className="status-dot" /><p>This catalog follows an experimental build. Review each module before preparing a configuration.</p></div>
-            </div>
-          )}
+          ) : null}
+
           </>}
         </main>
         {forumRoute&&!route.startsWith('forum/shoutbox')&&<ForumShoutbox floating/>}
