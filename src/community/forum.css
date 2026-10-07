@@ -924,7 +924,7 @@ li[data-status="error"] .forum-media-status { color: #f0a6ad; }
   .get-started-steps small { display: none; }
   .get-started-action { min-height: 40px; margin-top: 0; }
 }
-.signup-welcome { position: relative; max-width: 720px; margin: 0 0 24px; padding: 24px; border: 1px solid #4c4b6d; border-radius: 12px; background: #262630; }
+.signup-welcome { position: relative; max-width: 720px; margin: 0 auto 24px; padding: 24px; border: 1px solid #4c4b6d; border-radius: 12px; background: #262630; }
 .signup-welcome-close { position: absolute; top: 14px; right: 14px; }
 .signup-welcome h2 { margin: 0 32px 8px 0; font-size: 22px; line-height: 1.35; overflow-wrap: anywhere; }
 .signup-welcome > p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
