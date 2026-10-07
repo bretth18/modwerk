@@ -4,6 +4,7 @@ import { digest, HttpError, jsonBody, response } from './security'
 import { communityModule } from '../src/community/modules'
 import type { BellItem } from '../src/community/notification-contract'
 import type { ModuleRelease } from '../src/community/module-release-contract'
+import { DEVELOPMENT_DISCORD_URL } from '../src/config/development-discord'
 
 /** Bell ids of announcements carry this prefix, so one list and one read call serve both kinds. */
 export const ANNOUNCEMENT_PREFIX = 'announcement-'
@@ -42,13 +43,14 @@ export const adminText = (value: unknown, label: string, minimum: number, maximu
   if ([...trimmed].some(character => { const code = character.charCodeAt(0); return (code < 32 && code !== 9 && code !== 10 && code !== 13) || code === 127 })) throw new HttpError(400, `${label} contains characters that cannot be shown.`)
   return trimmed
 }
-/** A bell link opens inside the app or on modwerk.app, nowhere else. */
+/** Bell links use the app, modwerk.app or the exact development Discord invite. */
 export function announcementLink(value: unknown) {
   if (value === undefined || value === null || value === '') return null
   if (typeof value !== 'string' || value.length > 200) throw new HttpError(400, 'The link is too long.')
+  if (value === DEVELOPMENT_DISCORD_URL) return value
   if (/^#[A-Za-z0-9][A-Za-z0-9/_.=&?-]*$/.test(value)) return value
   if (/^https:\/\/modwerk\.app\/[A-Za-z0-9/_.=&?#%-]*$/.test(value)) return value
-  throw new HttpError(400, 'Link to a page in the app (#...) or to https://modwerk.app/ only.')
+  throw new HttpError(400, 'Link to a page in the app (#...), https://modwerk.app/ or the development Discord invite.')
 }
 
 /** One bell-only announcement per newly published module, shared by every current member. */

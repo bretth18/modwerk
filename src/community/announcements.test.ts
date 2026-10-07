@@ -6,6 +6,10 @@ import { sendActivityDigests } from '../../server/activity-mail'
 import { announcementLink } from '../../server/announcements'
 import { notificationLines } from './notification-text'
 import type { BellItem } from './notification-contract'
+import { DEVELOPMENT_DISCORD_URL } from '../config/development-discord'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { NotificationList } from './NotificationList'
 
 type Sent = { to: string[]; subject: string; text: string }
 const databases: DatabaseSync[] = [], sent: Sent[] = [], password = 'a long original test passphrase'
@@ -55,6 +59,23 @@ describe('operator announcements in the bell', () => {
     expect((await announce({ ...release, url: '#module/miniverb' })).status).toBe(201)
     expect((await announce({ ...release, slug: 'second-one', url: 'https://modwerk.app/#library' })).status).toBe(201)
     expect(announcementLink(undefined)).toBeNull(); expect(announcementLink('')).toBeNull()
+  })
+
+  it('sends a development Discord invite once and opens it as an external bell link', async () => {
+    const { member, bell, unread, announce, call, db } = await fixture(), reader = await member('discordreader')
+    const invitation = { slug: 'development-discord-2026-10-07', title: 'Join the development Discord', body: 'Ask questions about modules and share what you are building.', url: DEVELOPMENT_DISCORD_URL }
+    expect((await announce(invitation)).status).toBe(201)
+    expect((await announce(invitation)).status).toBe(409)
+    const items = await bell(reader.session)
+    expect(items.unread).toBe(1)
+    const lines = notificationLines(items.items)
+    expect(lines[0].href).toBe(DEVELOPMENT_DISCORD_URL)
+    expect(renderToStaticMarkup(createElement(NotificationList, { lines, onOpen() {} }))).toContain('href="' + DEVELOPMENT_DISCORD_URL + '" target="_blank" rel="noreferrer"')
+    expect((await call('/notifications', 'PATCH', { ids: lines[0].ids }, reader.session)).status).toBe(200)
+    expect(await unread(reader.session)).toBe(0)
+    expect(db.prepare('SELECT COUNT(*) AS count FROM notifications').get()).toEqual({ count: 0 })
+    expect(announcementLink(DEVELOPMENT_DISCORD_URL)).toBe(DEVELOPMENT_DISCORD_URL)
+    for (const url of ['https://discord.gg/another-invite', DEVELOPMENT_DISCORD_URL + '?redirect=evil', DEVELOPMENT_DISCORD_URL + '/extra', 'http://discord.gg/ReKtHwnkEU', 'https://discord.gg.evil.example/ReKtHwnkEU']) expect(() => announcementLink(url)).toThrow()
   })
 
   it('reaches every member, with their own read state and no second send of the same key', async () => {

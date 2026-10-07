@@ -5,6 +5,7 @@ import { cloneCommands } from './starter-prompts'
 import { sourceRepository } from '../hosting'
 import { communityModule } from './modules'
 import { DEVICES_BY_ID } from '../devices/registry'
+import { DEVELOPMENT_DISCORD_URL } from '../config/development-discord'
 export function SubmissionPage({moduleId=''}:{moduleId?:string}) {
   const repository=sourceRepository()
   const module=communityModule(moduleId)
@@ -14,7 +15,7 @@ export function SubmissionPage({moduleId=''}:{moduleId?:string}) {
   if(module&&module.machine!=='octatrack')return <div className="community-page contribution-page"><BackLink href={moduleId?'#developer':'#library'}>{moduleId?'Developer workspace':'Module library'}</BackLink>
     <div className="page-heading"><div><p className="page-kicker">MODWERK / DEVELOPERS</p><h1>Update {module.name}</h1><p>{DEVICES_BY_ID[module.machine].name} · Current version {module.version}. Prepare source, documentation and media together in a GitHub pull request.</p></div><span className="pill">Owner review required</span></div>
     <section className="configuration-section"><h2>Start from the reviewed module</h2><p>Keep its licence, attribution and pinned source provenance. Increase the module’s semantic version for every code change (documentation and media edits need none), and keep the manifest, README, tutorial and test evidence synchronized.</p><div className="forum-actions"><a className="button button-primary" href={moduleRepository+'/tree/main/'+module.sourcePath} target="_blank" rel="noreferrer">Open module source ↗</a><a className="button button-quiet" href={moduleRepository+'/compare'} target="_blank" rel="noreferrer">Open a pull request ↗</a><a href={moduleRepository+'/blob/main/docs/SDK.md'} target="_blank" rel="noreferrer">Machine SDK & evidence rules ↗</a></div></section>
-    <section className="configuration-section"><h2>Include the update evidence</h2><p>Use the machine’s v3 <code>modwerk.module.json</code> contract: source/build identity, compatibility, memory and load measurements, hardware coverage and actual UI captures where applicable. State the evidence tier and remaining limitations honestly. Documentation, tutorial, screenshots and credits must match this version.</p><p>Submit only original or properly licensed sources and reviewed media. Keep firmware, stock bytes, dumps and generated firmware builds local. Passing checks does not publish an update; owner merge approves that exact version. Pending or rejected updates keep the existing approved release available.</p></section>
+    <section className="configuration-section"><h2>Include the update evidence</h2><p>Use the machine’s v3 <code>modwerk.module.json</code> contract: source/build identity, compatibility, memory and load measurements, hardware coverage and actual UI captures where applicable. State the evidence tier and remaining limitations honestly. Documentation, tutorial, screenshots and credits must match this version.</p><p>Submit only original or properly licensed sources and reviewed media. Keep firmware, stock bytes, dumps and generated firmware builds local. Passing checks does not publish an update; owner merge approves that exact version. Pending or rejected updates keep the existing approved release available.</p><p>Questions about developing or submitting a module? <a href={DEVELOPMENT_DISCORD_URL} target="_blank" rel="noreferrer">Join the development Discord ↗</a></p></section>
 
   </div>
   const guide=(path:string)=>moduleRepository+'/blob/main/'+path
@@ -95,7 +96,7 @@ export function SubmissionPage({moduleId=''}:{moduleId?:string}) {
         <a href={guide('sdk/machines/digitakt/README.md')} target="_blank" rel="noreferrer"><strong>Digitakt guide ↗</strong><span>Core events and budgets</span></a>
         <a href={guide('sdk/machines/digitone/README.md')} target="_blank" rel="noreferrer"><strong>Digitone guide ↗</strong><span>Core events and budgets</span></a>
         <a href={guide('CONTRIBUTING.md')} target="_blank" rel="noreferrer"><strong>Contribution rules ↗</strong><span>What every pull request agrees to</span></a>
-        <a href="https://discord.gg/mb7B2N7A7" target="_blank" rel="noreferrer"><strong>Discord ↗</strong><span>Ask other developers</span></a>
+        <a href={DEVELOPMENT_DISCORD_URL} target="_blank" rel="noreferrer"><strong>Development Discord ↗</strong><span>Ask other developers</span></a>
       </div>
       <p className="service-note">Octatrack development builds on <a href="https://github.com/sambanks/octabam" target="_blank" rel="noreferrer">octabam ↗</a>; Digitakt and Digitone on the public research of <a href="https://github.com/irpina/elekloader" target="_blank" rel="noreferrer">elekloader ↗</a> and <a href="https://github.com/m-dwyer/digikit" target="_blank" rel="noreferrer">digikit ↗</a>. You need no Modwerk account to contribute, only GitHub.</p>
     </section>
