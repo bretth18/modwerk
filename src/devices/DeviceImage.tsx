@@ -3,10 +3,10 @@ import { MACHINE_PHOTOS } from './photos'
 import type { DeviceProfile } from './registry'
 
 // A machine's freely licensed photo, or the line drawing when no photo is available yet.
-export function DeviceImage({ device }: { device: DeviceProfile }) {
+export function DeviceImage({ device, eager = false }: { device: DeviceProfile; eager?: boolean }) {
   const photo = MACHINE_PHOTOS[device.id]
   if (!photo) return <DeviceArt art={device.art} />
-  return <img className={'device-photo' + (photo.cutout ? ' is-cutout' : '')} src={import.meta.env.BASE_URL + photo.src} alt="" loading="lazy" decoding="async" title={'Photo: ' + photo.author + ' · ' + photo.license} />
+  return <img className={'device-photo' + (photo.cutout ? ' is-cutout' : '')} src={import.meta.env.BASE_URL + photo.src} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" title={'Photo: ' + photo.author + ' · ' + photo.license} />
 }
 
 export function PhotoCredit({ device }: { device: DeviceProfile }) {

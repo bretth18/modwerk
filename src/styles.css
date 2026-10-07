@@ -1511,3 +1511,98 @@ h1 { font-size: 28px; }
 }
 @keyframes sheet-in { from { transform: translateY(24px); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .mobile-menu-panel, .library-machine-menu { animation: none; } }
+
+/* Library controls keep their position and size across machine changes. */
+.workspace-content { scrollbar-gutter: stable; }
+.library-page > .page-heading { margin-bottom: 14px; }
+.library-page > .page-heading p { margin-top: 4px; }
+.library-total { min-width: 82px; text-align: center; font-variant-numeric: tabular-nums; }
+.discovery-tools { gap: 12px; margin: 0 0 10px; }
+.discovery-tools .sidebar-device { width: 210px; min-width: 0; }
+.discovery-tools label:nth-of-type(1) select { width: 128px; }
+.discovery-tools label:nth-of-type(2) select { width: 158px; }
+.discovery-actions { flex-wrap: nowrap; }
+.discovery-actions .button { min-height: 40px; }
+.discovery-actions > button { width: 98px; }
+.button[aria-disabled="true"], .configuration-button[aria-disabled="true"] { opacity: .45; cursor: default; }
+.library-page .library-subheading { min-height: 32px; margin-bottom: 8px; }
+.library-page .library-subheading > span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.library-page .library-subheading > .subtle { flex-shrink: 0; white-space: nowrap; }
+.sidebar-build { min-height: 68px; }
+.sidebar-build-copy small { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+@media (min-width: 1101px) {
+  .status-bar > span:first-of-type { min-width: 170px; }
+  .status-bar .status-build { min-width: 160px; }
+  .status-bar > :last-child { min-width: 112px; }
+}
+
+/* Configurations occupy two quiet rows, regardless of how many are saved. */
+.configuration-launcher { display: flex; flex-direction: column; gap: 2px; }
+.configuration-launcher button { display: flex; align-items: center; gap: 10px; width: 100%; border: 0; border-radius: 6px; background: transparent; color: #b2b2bd; text-align: left; padding: 7px 11px; }
+.configuration-launcher button:hover { background: #2a2a2f; }
+.configuration-launcher .configuration-browse { min-height: 36px; font-size: 13px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+.configuration-browse svg { color: #afb3d5; }
+.configuration-browse span { flex: 1; }
+.configuration-browse small { color: var(--muted); font-variant-numeric: tabular-nums; }
+.configuration-launcher .configuration-recent { display: block; min-height: 48px; padding-left: 38px; font-size: 12px; }
+.configuration-launcher .configuration-recent:not(:disabled) { background: #929bff14; color: #c7c9de; box-shadow: inset 2px 0 #929bff70, inset 0 0 0 1px #929bff26; }
+.configuration-launcher .configuration-recent:not(:disabled):hover { background: #929bff20; }
+.configuration-recent span, .configuration-recent small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.configuration-recent small { margin-top: 3px; color: var(--muted); font-size: 11px; }
+.configuration-browser { width: min(640px, calc(100% - 32px)); max-height: min(720px, calc(100dvh - 32px)); padding: 20px; overflow: hidden; }
+.configuration-browser[open] { display: flex; flex-direction: column; }
+.configuration-browser.is-scrollable { height: min(640px, calc(100dvh - 32px)); }
+.configuration-browser h2 .subtle { margin-left: 6px; }
+.configuration-browser-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-shrink: 0; }
+.configuration-browser h2 { margin: 0; font-size: 20px; }
+.configuration-browser-heading .icon-button { width: 36px; height: 36px; }
+.configuration-browser-tools { flex-shrink: 0; display: flex; gap: 8px; margin-bottom: 12px; }
+.configuration-browser-tools .configuration-search { flex: 1; min-width: 0; display: flex; flex-direction: row; align-items: center; gap: 8px; padding: 0 10px; border: 1px solid #42424b; border-radius: 6px; background: #1e1e23; }
+.configuration-search svg { color: var(--muted); }
+.configuration-browser .configuration-search input { border: 0; background: transparent; padding: 10px 0; min-width: 0; font-size: 13px; }
+.configuration-browser-tools select { width: 140px; height: 40px; border: 1px solid #42424b; border-radius: 6px; padding: 0 8px; background: #26262b; color: #cecedb; font-size: 13px; }
+.configuration-browser-list { flex: 1; min-height: 64px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.configuration-browser-list ul { list-style: none; margin: 0; padding: 0; }
+.configuration-browser-list li + li { border-top: 1px solid var(--line); }
+.configuration-browser-list button { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 10px 8px; border: 0; border-radius: 6px; background: transparent; text-align: left; }
+.configuration-browser-list button:hover { background: #303036; }
+.configuration-browser-list button[aria-current="true"] { background: #929bff14; box-shadow: inset 2px 0 #929bff70, inset 0 0 0 1px #929bff26; }
+.configuration-browser-list button[aria-current="true"]:hover { background: #929bff20; }
+.configuration-browser-list button[aria-current="true"] > svg:first-child, .configuration-browser-list button[aria-current="true"] .configuration-current { color: #b5badc; }
+.configuration-browser-list button > svg { color: #92929f; }
+.configuration-browser-list button > span:first-of-type { flex: 1; min-width: 0; }
+.configuration-browser-list strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 500; }
+.configuration-browser-list small { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+.configuration-current { display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 11px; white-space: nowrap; }
+.configuration-browser-empty { padding: 24px 8px; text-align: center; }
+.configuration-browser-empty strong { font-size: 14px; }
+.configuration-browser-empty p { margin-top: 8px; }
+.configuration-browser-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid var(--line); padding-top: 16px; margin-top: 12px; flex-shrink: 0; }
+.configuration-browser-footer > span { color: var(--muted); font-size: 12px; }
+.mobile-menu-group > button { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 50px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: #d5d5df; text-align: left; font-size: 16px; }
+.mobile-menu-group > button svg { color: #9a9aa8; }
+.mobile-menu-group > button:active { background: #34343c; }
+@media (min-width: 601px) and (max-width: 1100px) {
+  .discovery-tools { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(0, 1fr) minmax(0, 1.3fr); }
+  .discovery-tools .sidebar-device { width: 100%; }
+  .discovery-tools label { min-width: 0; font-size: 0; gap: 0; }
+  .discovery-tools label:nth-of-type(n) select { width: 100%; min-width: 0; }
+  .discovery-actions { grid-column: 1 / -1; margin-left: 0; justify-content: flex-end; }
+}
+@media (max-width: 600px) { .configuration-launcher { display: none; } }
+@media (max-width: 600px) {
+  .discovery-tools { gap: 8px 6px; margin-bottom: 10px; }
+  .discovery-tools label:nth-of-type(n) select { width: 100%; }
+  .discovery-actions > button { width: auto; }
+  .app-shell:has(.search input:placeholder-shown) .library-page > .library-subheading { display: flex; }
+  .library-page .library-subheading { min-height: 28px; }
+  .library-page > .machine-section:first-of-type .machine-library-actions { display: none; }
+  .configuration-button.is-empty .toolbar-count { display: block; background: #34343c; color: #b2b2bd; }
+  .configuration-browser { padding: 16px; }
+  .configuration-browser-heading { margin-bottom: 12px; }
+  .configuration-browser-tools { flex-direction: column; }
+  .configuration-browser-tools select { width: 100%; }
+  .configuration-browser-footer { flex-wrap: wrap; gap: 8px; padding-top: 12px; }
+  .configuration-browser-footer .button { width: 100%; min-height: 44px; }
+  .configuration-current { font-size: 0; gap: 0; }
+}

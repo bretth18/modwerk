@@ -12,16 +12,17 @@ export type LibraryToolsProps = {
   buildHref?: string | null
   buildLabel?: string
   machine?: ReactNode
+  disabled?: boolean
 }
 
-export function LibraryTools({ family, families, onFamilyChange, sort, onSortChange, comparisonCount, onCompare, buildHref = '#configuration', buildLabel, machine }: LibraryToolsProps) {
+export function LibraryTools({ family, families, onFamilyChange, sort, onSortChange, comparisonCount, onCompare, buildHref = '#configuration', buildLabel, machine, disabled = false }: LibraryToolsProps) {
   return <div className="discovery-tools">
     {machine}
-    <label>Type<select value={family} onChange={event=>onFamilyChange(event.target.value)}><option value="all">All types</option>{families.map(value=><option key={value}>{value}</option>)}</select></label>
-    <label>Sort<select value={sort} onChange={event=>onSortChange(event.target.value)}><option value="collection">Collection order</option><option value="recent">Recently added</option><option value="name">Name A–Z</option><option value="author">Author</option><option value="rated">Highest rated</option><option value="liked">Most liked</option><option value="downloaded">Most downloaded</option></select></label>
+    <label>Type<select value={family} disabled={disabled} onChange={event=>onFamilyChange(event.target.value)}><option value="all">All types</option>{families.map(value=><option key={value}>{value}</option>)}</select></label>
+    <label>Sort<select value={sort} disabled={disabled} onChange={event=>onSortChange(event.target.value)}><option value="collection">Collection order</option><option value="recent">Recently added</option><option value="name">Name A–Z</option><option value="author">Author</option><option value="rated">Highest rated</option><option value="liked">Most liked</option><option value="downloaded">Most downloaded</option></select></label>
     <div className="discovery-actions">
       <button className="button button-quiet" disabled={comparisonCount<2} onClick={onCompare}>Compare{comparisonCount?' ('+comparisonCount+')':''}</button>
-      {buildHref && <a className="button button-primary" href={buildHref} aria-label={buildLabel} title={buildLabel}><Icon name="sliders" size={16}/>Build firmware</a>}
+      <a className="button button-primary" href={buildHref ?? undefined} aria-disabled={!buildHref || undefined} tabIndex={buildHref ? undefined : -1} aria-label={buildLabel} title={buildLabel}><Icon name="sliders" size={16}/>Build firmware</a>
     </div>
   </div>
 }
