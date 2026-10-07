@@ -68,7 +68,7 @@ interactive sessions per build, not timed; no stress project.
 | 15 | Restart from the four transport-start sites: PINGPONG bounces and restarts on PLAY. Found: NORMAL → STOP → REVERSED → PLAY fired step 1's trig once at step 16's place. |
 | 16 | Mode changes rebuild the prepared step; stopped preparation uses the next run. The phantom is gone. Longer patterns (32/48/64), PER TRACK with MASTER LENGTH INF and various lengths and modes, pattern changes across banks 1–2 and tempo changes all behaved. |
 | 17 | Modes saved with the project (one set for all patterns then). Found: the set was shared by every pattern. |
-| 18–19 | Per-pattern modes, battery RAM table, pattern copy / paste / undo, clear, PINGPONG 2. PINGPONG 2 confirmed on the unit; the rest of the build 18 checklist is being run. |
+| 18–19 | Per-pattern modes, battery RAM table, pattern copy / paste / undo, clear, PINGPONG 2. About 15 minutes on build 19: PINGPONG 2, save / reload, power cycle, copy / paste (also to other banks) and clear all work ([evidence/hardware.md](evidence/hardware.md)). |
 
 No audio artefacts were heard; audio was not measured (the module adds no
 DSP and changes only which step's trig fires).
@@ -89,27 +89,21 @@ DSP and changes only which step's trig fires).
 
 ## Performance
 
-Not measured on the chip. Per track per step the tick calls the engine
-once: a few byte reads of the pattern record, one pass test and one mapping
-(NORMAL / REVERSED / PINGPONG: a few integer operations; RANDOM: two
-32-bit mixes; SHUFFLE: a keyed permutation with cycle-walking, two
-evaluations on average, three multiplies each). The UI's step query and the
-rebuild after an edit call the same mapping. A key press, a project-line
-load or a pattern copy updates one 9-byte battery row; a project load
-rewrites the 2,310-byte battery table once. No `evidence/performance.json`
+Instruction counts of the module's own code in octabam's ColdFire emulator
+core (no firmware), with a 32-cycles-per-instruction allowance:
+[evidence/cycles.md](evidence/cycles.md). One track step: 1,726
+instructions measured (SHUFFLE), bounded at 4,206; sixteen tracks: 67,296
+instructions, 2,153,472 cycles, against 6,600,000 for one step at 300 BPM
+and 2X scale. No chip timing, no `evidence/performance.json` (perf:audit)
 yet.
 
 ## Resources
 
-- DRAM (platform reserve): state 224 B, flags 4 B, popup text 16 B, held key
-  4 B, restart flag 4 B, project line 40 B, current row 2 B (+2 align),
-  per-pattern table 4,352 B (256 × 17), clipboard and undo rows 34 B
-  (+2 align): 4,684 B of data, plus the code of `playmodes.s` (size from the
-  build report; not yet recorded).
-- Battery RAM (CS1): `0x100f8600..0x100f8f06`, 2,310 B (4 magic + 256 × 9
-  + 2 sum). Stock references nothing in `0x100f859c..0x100fff00`.
-- No DSP memory, no OS-image cave space, no effect ID.
-- 35 detours, each guarded by the SHA-256 of the stock bytes it replaces.
+13,724 bytes, all shared: code 6,628, read-only data 102, state and the
+pattern table 4,684 (SDRAM platform reserve), battery table 2,310 (CS1
+`0x100f8600..0x100f8f06`); stack at most 104 bytes; no heap, DSP memory,
+cave space or effect ID. 35 detours, each guarded by the SHA-256 of the
+stock bytes it replaces. [evidence/memory.md](evidence/memory.md).
 
 ## Hardware
 
