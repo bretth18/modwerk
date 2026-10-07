@@ -807,3 +807,17 @@ li[data-status="error"] .forum-media-status { color: #f0a6ad; }
 .forum-mention-list small { display: block; color: var(--muted); font-size: 11px; }
 .forum-editor .forum-mention-list { margin: 0; border: 0; border-top: 1px solid #383540; border-radius: 0; box-shadow: none; }
 .forum-dm-composer .forum-mention-list, .shoutbox-composer .forum-mention-list { grid-column: 1 / -1; flex-basis: 100%; }
+/* Unread state for signed-in members: a dot and a brighter, heavier title, and how many replies are new. */
+.forum-thread-row[data-unread="true"] h3 a { color: #ffffff; font-weight: 700; }
+.forum-thread-row[data-unread="true"] h3 a::before { content: ""; display: inline-block; width: 7px; height: 7px; margin: 0 8px 2px 0; border-radius: 50%; background: var(--accent); vertical-align: middle; }
+.forum-state[data-new="true"] { color: #c8cdff; font-weight: 600; }
+.forum-unread-jump { margin: 0 0 14px; font-size: 12px; }
+.forum-since-visit { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; margin: 0 0 22px; padding: 14px 18px; border: 1px solid #3b3a52; border-radius: 10px; background: #24243a; }
+.forum-since-copy h2 { margin: 0; font-size: 14px; }
+.forum-since-copy p { margin: 2px 0 0; color: var(--muted); font-size: 11px; }
+.forum-since-visit ul { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0; padding: 0; list-style: none; font-size: 13px; }
+.forum-since-visit li a { display: inline-flex; align-items: baseline; gap: 6px; min-height: 32px; color: #d5d8ff; }
+.forum-since-visit li a:hover { color: #ffffff; }
+.forum-since-visit li strong { font-size: 16px; font-variant-numeric: tabular-nums; }
+.forum-since-visit > .button { margin-left: auto; }
+.forum-since-quiet { margin: 0; color: var(--muted); font-size: 13px; }

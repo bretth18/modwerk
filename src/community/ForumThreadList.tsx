@@ -10,16 +10,17 @@ export function ForumThreadList({ threads }: { threads: ForumThread[] }) {
     <div className="forum-list-columns" aria-hidden="true"><span>Discussion</span><span>Replies</span><span>Last active</span></div>
     <ul className="forum-thread-items" aria-label="Discussions">
       {threads.map(thread => <li key={thread.id}>
-        <article className="forum-thread-row" data-pinned={!!thread.pinned} aria-labelledby={'thread-title-' + thread.id}>
+        <article className="forum-thread-row" data-pinned={!!thread.pinned} data-unread={!!thread.unread} aria-labelledby={'thread-title-' + thread.id}>
           <div className="forum-thread-summary">
             <ForumAvatar username={thread.username} official={thread.official} avatar={thread.avatar} />
             <div className="forum-thread-copy">
               <div className="forum-thread-states">
+                {!!thread.new_replies && <span className="forum-state" data-new="true">{thread.new_replies} new</span>}
                 {!!thread.pinned && <span className="forum-state"><Icon name="pin" size={13} />Pinned</span>}
                 {!!thread.locked && <span className="forum-state"><Icon name="lock" size={13} />Locked</span>}
                 {thread.category === 'issues' && <span className="forum-state" data-resolved={thread.status === 'resolved'}>{thread.status === 'resolved' && <Icon name="check" size={13} />}{thread.status === 'resolved' ? 'Resolved' : 'Open issue'}</span>}
               </div>
-              <h3 id={'thread-title-' + thread.id}><a className="forum-thread-title" href={threadHref(thread.id, thread.title)}>{thread.title}</a></h3>
+              <h3 id={'thread-title-' + thread.id}><a className="forum-thread-title" href={threadHref(thread.id, thread.title)}>{!!thread.unread && <span className="sr-only">Unread: </span>}{thread.title}</a></h3>
               <div className="forum-thread-tags">
                 <ForumCategoryBadge category={thread.category} />
                 {thread.media_kinds && <span className="forum-thread-media">{thread.media_kinds.includes('image') && <><Icon name="image" size={14} /><span className="sr-only">Includes images</span></>}{thread.media_kinds.includes('audio') && <><Icon name="wave" size={14} /><span className="sr-only">Includes sound clips</span></>}</span>}

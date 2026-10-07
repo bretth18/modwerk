@@ -1,6 +1,6 @@
 import { BackLink } from '../components/BackLink'
 import { RichTextEditor } from './ForumEditor'
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { api, apiFetch, post } from './api'
 import { useCommunity } from './context'
 import { type ForumPost, type SharedConfiguration, type ThreadDetail } from './forum-contract'
@@ -51,16 +51,27 @@ export function ForumThreadView({id,query=new URLSearchParams(),onCopy,embedded=
   const {session}=useCommunity(),[loaded,setLoaded]=useState<{key:string;data:ThreadDetail}|null>(null),[error,setError]=useState(''),[reply,setReply]=useState(''),[busy,setBusy]=useState(false),[notice,setNotice]=useState(''),[media,setMedia]=useState<PendingMedia[]>([])
   const [localPage,setLocalPage]=useState(0),[revision,setRevision]=useState(0)
   const [confirming,setConfirming]=useState(false)
+  // Where the member's reading left off, kept from the first load of this visit: later loads have already moved the marker.
+  const [unreadStart,setUnreadStart]=useState<{id:string;page:number}|null>(null),pendingJump=useRef('')
   const page=embedded?localPage:Number(query.get('page')??0),replyId='forum-reply-'+id
   const identity=id+':'+(session.user?.id??'')+':'+session.admin,key=identity+':'+page
   const data=loaded?.key===key?loaded.data:null
   async function load(nextPage=page){setLoaded({key:identity+':'+nextPage,data:await api<ThreadDetail>('/forum/threads/'+id+'?page='+nextPage)})}
-  useEffect(()=>{let cancelled=false;void api<ThreadDetail>('/forum/threads/'+id+'?page='+page).then(value=>{if(!cancelled){setLoaded({key,data:value});setError('')}}).catch(error=>{if(!cancelled)setError(errorText(error))});return()=>{cancelled=true}},[id,page,key,revision])
+  useEffect(()=>{let cancelled=false;void api<ThreadDetail>('/forum/threads/'+id+'?page='+page).then(value=>{if(!cancelled){setLoaded({key,data:value});setError('');if(value.firstUnread)setUnreadStart(current=>current??value.firstUnread??null)}}).catch(error=>{if(!cancelled)setError(errorText(error))});return()=>{cancelled=true}},[id,page,key,revision])
   async function act(action:string,payload:unknown,method='POST'){setBusy(true);setError('');try{const result=await post<{id?:string;page?:number}>('/forum/threads/'+id+'/'+action,payload,method);const nextPage=action==='replies'?result.page??page:page;await load(nextPage);if(action==='replies'){setReply('');setMedia([]);setNotice('Reply posted.');if(embedded)setLocalPage(nextPage);else if(nextPage!==page)window.location.assign('#forum/thread/'+id+'?page='+nextPage+'&post='+result.id)}}catch(error){setError(errorText(error))}finally{setBusy(false)}}
   // Links from the bell, the Showcase and Recent replies name a post; scroll to it once it is on this page.
   // The opening post is already in view under the title, so the page stays at the top for it.
   const target=query.get('post')
   useEffect(()=>{if(!data||!target||(page===0&&data.posts[0]?.id===target))return;document.getElementById('post-'+target)?.scrollIntoView({block:'start'})},[data,target,page])
+  // An embedded view turns its own pages, so the jump waits for the page that holds the reply.
+  useEffect(()=>{if(!data||!pendingJump.current)return;const target=document.getElementById('post-'+pendingJump.current);if(target){pendingJump.current='';target.scrollIntoView({block:'start'})}},[data])
+  function jumpToUnread(){
+    if(!unreadStart)return
+    setUnreadStart(null)
+    if(unreadStart.page===page){document.getElementById('post-'+unreadStart.id)?.scrollIntoView({block:'start'});return}
+    if(!embedded){window.location.assign('#forum/thread/'+id+'?page='+unreadStart.page+'&post='+unreadStart.id);return}
+    pendingJump.current=unreadStart.id;setLocalPage(unreadStart.page)
+  }
   const replies=data?.thread.replies
   useEffect(()=>{if(replies!==undefined)onReplyCount?.(replies)},[replies,onReplyCount])
   const discussionModule=data?data.thread.category==='issues'?null:data.thread.module_id:embedded&&id.startsWith('module-')?id.slice(7):null
@@ -81,6 +92,7 @@ export function ForumThreadView({id,query=new URLSearchParams(),onCopy,embedded=
     {data.configuration&&<aside className="forum-config"><h2>{data.configuration.name}</h2><ul>{data.configuration.moduleIds.map(module=><li key={module}>{nativeModule(data.configuration!.device??'octatrack',module)?.name??module} <span className="subtle">{data.configuration!.moduleVersions[module]}</span></li>)}</ul><p>{(data.configuration.device??'octatrack')==='octatrack'?<>Stock FX2 {data.configuration.keepStockFx2?'preserved':'compact'}. </>:<>{DEVICES_BY_ID[data.configuration.device!]?.name}. </>}Copy this snapshot to review compatibility and module availability before building.</p><button className="button button-primary" onClick={()=>{try{onCopy?.(data.configuration!)}catch(error){setError(errorText(error))}}}>Copy to my configurations</button></aside>}
     {data.issue&&<section className="forum-config"><h2>Reproduction details</h2><p>{data.issue.device} · {thread.module_id} · {data.issue.version}</p>{(['steps','expected','actual'] as const).filter(key=>data.issue![key]).map(key=><div key={key}><h3>{key==='steps'?'Steps to reproduce':key==='expected'?'Expected result':'What happened'}</h3><PostContent body={data.issue![key]}/></div>)}</section>}
     {session.admin&&<details className="forum-config"><summary>Moderate thread</summary><form className="community-form" onSubmit={event=>{event.preventDefault();const fields=Object.fromEntries(new FormData(event.currentTarget));setError('');void post('/admin/forum/threads/'+id,{action:fields.action,value:fields.value==='true',reason:fields.reason},'PATCH').then(()=>load()).catch(error=>setError(errorText(error)))}}><label>Action<select name="action"><option value="locked">Lock</option><option value="pinned">Pin</option><option value="hidden">Hide</option></select></label><label>Set to<select name="value"><option value="true">On</option><option value="false">Off</option></select></label><label>Reason<input name="reason" required maxLength={1000}/></label><button className="button button-quiet">Apply</button></form></details>}
+    {unreadStart&&<p className="forum-unread-jump"><button type="button" className="text-button" onClick={jumpToUnread}><Icon name="arrow" size={13}/>Jump to first unread reply</button></p>}
     <div className="forum-posts">{data.posts.map((item,index)=>{const card=<PostCard key={item.id} item={item} author={thread.username} locked={!!thread.locked} opening={page===0&&index===0} refresh={()=>load()} onQuote={value=>{setReply(current=>current+value);document.getElementById(replyId)?.focus()}}/>;return moduleDiscussion&&page===0&&index===0&&item.official?<ModuleIntro key={item.id} initiallyOpen={target===item.id}>{card}</ModuleIntro>:card})}</div>{(page>0||data.hasMore)&&<nav className="forum-pagination" aria-label="Reply pages">{page>0?embedded?<button className="button button-quiet" onClick={()=>setLocalPage(page-1)}><Icon name="back" size={14}/>Previous replies</button>:<a className="button button-quiet" href={threadHref(id,thread.title,'?page='+(page-1))}><Icon name="back" size={14}/>Previous replies</a>:<span/>}<span>Page {page+1}</span>{data.hasMore&&(embedded?<button className="button button-quiet" onClick={()=>setLocalPage(page+1)}>More replies<Icon name="arrow" size={14}/></button>:<a className="button button-quiet" href={threadHref(id,thread.title,'?page='+(page+1))}>More replies<Icon name="arrow" size={14}/></a>)}</nav>}
     {reportNotice}
     <MemberPrompt/>{thread.locked?<p className="forum-locked-note"><Icon name="lock" size={16}/>This thread is locked. You can still read and bookmark it.</p>:session.user?.verified&&<form className="community-form forum-composer forum-reply-composer" onSubmit={event=>{event.preventDefault();requestReply()}}><div className="forum-composer-heading"><Avatar username={session.user.username} avatar={session.user.avatar}/><div><label htmlFor={replyId}>Your reply</label><p>Replying as @{session.user.username}</p></div></div><RichTextEditor id={replyId} label="Your reply" value={reply} onChange={setReply} disabled={busy} placeholder="Add your experience, an idea, or a question…"/>{session.forumMedia&&<MediaPicker items={media} setItems={setMedia}/>}<div className="forum-composer-footer"><span id="forum-reply-hint">Use the toolbar to format your reply. Shift + Enter adds a line break.</span><button className="button button-primary" disabled={busy||mediaBusy(media)||!reply.trim()||reply.length>12000}>{busy?'Posting…':'Post reply'}<Icon name="arrow" size={15}/></button></div></form>}{confirming&&<ModuleDiscussionDialog onClose={()=>setConfirming(false)} onPost={()=>{setConfirming(false);publishReply()}} onReportIssue={reportIssue}/>} {notice&&<p className="success-note" role="status">{notice}</p>}{error&&<p className="file-error" role="alert">{error}</p>}</>

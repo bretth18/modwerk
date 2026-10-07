@@ -115,7 +115,8 @@ describe('community request database budgets',()=>{
   const prepare=vi.spyOn(env.DB!,'prepare')
   for(const [path,budget] of [
    ['/catalog',1],['/forum/shouts?compact=1',4],['/forum/threads',4],
-   ['/forum/threads/module-digitakt-digihealth',8],['/admin/statistics?days=7',6],['/admin/insights',8],
+   // A member's thread view also records the last post they received, so it writes once.
+   ['/forum/threads/module-digitakt-digihealth',9],['/admin/statistics?days=7',6],['/admin/insights',8],
   ] as const){
    prepare.mockClear()
    expect((await call(path,'GET',undefined,token)).status,path).toBe(200)

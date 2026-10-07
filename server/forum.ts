@@ -8,6 +8,7 @@ import { ensureDiscussionThread, ensureModuleThreadsOnce, SYSTEM_AUTHOR } from '
 import { notifyMentions, notifyPostLike, notifyReplies, RECIPIENTS } from './notifications'
 import { attachMedia, postAttachments } from './forum-media'
 import { shoutbox } from './shoutbox'
+import { FIRST_UNREAD_FIELDS, FIRST_UNREAD_JOIN, markForumRead, noteForumVisit, recordThreadRead, UNREAD, UNREAD_FIELDS, UNREAD_JOINS } from './forum-unread'
 
 type Thread = {id:string;user_id:string;locked:number;hidden:number;configuration_json:string|null;issue_json:string|null}
 /** `forum_posts.hidden` for a deleted post: hidden like a moderated one, but its text is erased, it is never listed and it cannot be restored. */
@@ -84,7 +85,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     throw new HttpError(404,'Moderation route not found.')
   }
   if (path === '/api/forum/threads' && request.method === 'GET') {
-    const category = url.searchParams.get('category') ?? '', module = await moduleId(db,url.searchParams.get('module')), query = (url.searchParams.get('q') ?? '').trim().slice(0,120), saved = url.searchParams.get('saved') === '1', following = url.searchParams.get('following') === '1', author = url.searchParams.get('author') ?? ''
+    const category = url.searchParams.get('category') ?? '', module = await moduleId(db,url.searchParams.get('module')), query = (url.searchParams.get('q') ?? '').trim().slice(0,120), saved = url.searchParams.get('saved') === '1', following = url.searchParams.get('following') === '1', unread = url.searchParams.get('unread') === '1', author = url.searchParams.get('author') ?? ''
     const sort = url.searchParams.get('sort') ?? 'active'
     const view = url.searchParams.get('view') ?? 'community'
     if (!['community','modules'].includes(view)) throw new HttpError(400,'Choose a supported discussion view.')
@@ -92,21 +93,23 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     if (category && !Object.hasOwn(FORUM_CATEGORIES,category)) throw new HttpError(400,'Unknown category.')
     let machine: string | null
     try { machine = forumMachine(url.searchParams.get('machine')) } catch { throw new HttpError(400,'Unknown machine.') }
-    if (saved || following) needMember(user)
+    if (saved || following || unread) needMember(user)
+    // Signed-in members see which threads hold replies they have not read; anonymous readers run the plain query.
+    const reader = user?.email_verified && !user.suspended ? user.id : null
     // Personal lists retain module homes the member has chosen to follow or save.
     const authorScope = view === 'modules' ? `AND t.user_id='${SYSTEM_AUTHOR}'` : saved || following ? '' : `AND t.user_id<>'${SYSTEM_AUTHOR}'`
     const escaped = '%' + query.replace(/[\\%_]/g, '\\$&') + '%'
-    const rows = (await db.prepare(`SELECT ${threadFields},
+    const rows = (await db.prepare(`SELECT ${threadFields},${reader?UNREAD_FIELDS+',':''}
       lp.id AS last_post_id,lu.username AS last_username,substr(lp.body,1,160) AS last_excerpt,
       (SELECT CAST(COUNT(*)/30 AS INTEGER) FROM forum_posts preceding WHERE preceding.thread_id=t.id AND (preceding.created_at<lp.created_at OR (preceding.created_at=lp.created_at AND preceding.rowid<lp.rowid))) AS last_post_page
       FROM forum_threads t JOIN users u ON u.id=t.user_id
       LEFT JOIN forum_posts lp ON lp.id=(SELECT p.id FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0 ORDER BY p.created_at DESC,p.rowid DESC LIMIT 1)
-      LEFT JOIN users lu ON lu.id=lp.user_id
+      LEFT JOIN users lu ON lu.id=lp.user_id ${reader?UNREAD_JOINS:''}
       WHERE t.hidden=0 ${authorScope} AND (?='' OR COALESCE(t.section,t.category)=?) AND (? IS NULL OR t.machine=?) AND (? IS NULL OR t.module_id=?) AND (?='' OR u.username=?) AND (?=0 OR EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?))
-      AND (?=0 OR EXISTS(SELECT 1 FROM forum_follows f WHERE f.thread_id=t.id AND f.user_id=?))
+      AND (?=0 OR EXISTS(SELECT 1 FROM forum_follows f WHERE f.thread_id=t.id AND f.user_id=?)) ${reader&&unread?'AND '+UNREAD:''}
       AND (?='' OR t.title LIKE ? ESCAPE '\\' OR EXISTS(SELECT 1 FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0 AND p.body LIKE ? ESCAPE '\\'))
       ORDER BY t.pinned DESC,${sort==='newest'?'t.created_at':'t.updated_at'} DESC,t.id LIMIT 31 OFFSET ?`)
-      .bind(category,category,machine,machine,module,module,author,author,Number(saved),user?.id??'',Number(following),user?.id??'',query,escaped,escaped,page(url)*30).all()).results
+      .bind(...(reader?[reader,reader]:[]),category,category,machine,machine,module,module,author,author,Number(saved),user?.id??'',Number(following),user?.id??'',query,escaped,escaped,page(url)*30).all()).results
     return response({threads:rows.slice(0,30),hasMore:rows.length>30})
   }
   if (path === '/api/forum/categories' && request.method === 'GET') {
@@ -142,6 +145,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     return response(posts.map(post=>({...post,attachments:attachments.get(post.id)??[]})))
   }
 
+  if (path === '/api/forum/visit' && request.method === 'GET') return response(await noteForumVisit(db,needMember(user).id))
   if (path === '/api/forum/machines' && request.method === 'GET') {
     return response((await db.prepare('SELECT machine,COUNT(*) AS threads,MAX(updated_at) AS updated_at FROM forum_threads WHERE hidden=0 AND user_id<>? AND machine IS NOT NULL GROUP BY machine').bind(SYSTEM_AUTHOR).all()).results)
   }
@@ -167,24 +171,27 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     return response(profile)
   }
   if ((match=path.match(/^\/api\/forum\/threads\/([a-zA-Z0-9-]+)$/)) && request.method === 'GET') {
-    const thread = await threadById(db,match[1],admin)
+    const thread = await threadById(db,match[1],admin), reader=user?.email_verified&&!user.suspended?user.id:null
+    // A member's view also asks where their reading left off, before this page moves the marker to its last post.
     const [details,pagePosts] = await Promise.all([
       db.prepare(`SELECT ${threadFields},t.hidden,
         EXISTS(SELECT 1 FROM forum_follows f WHERE f.thread_id=t.id AND f.user_id=?) AS following,
-        EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?) AS bookmarked
-        FROM forum_threads t JOIN users u ON u.id=t.user_id WHERE t.id=?`).bind(user?.id??null,user?.id??null,thread.id).first<Record<string,unknown>&{following:number;bookmarked:number}>(),
+        EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?) AS bookmarked${reader?','+FIRST_UNREAD_FIELDS:''}
+        FROM forum_threads t JOIN users u ON u.id=t.user_id ${reader?UNREAD_JOINS+' '+FIRST_UNREAD_JOIN:''} WHERE t.id=?`).bind(user?.id??null,user?.id??null,...(reader?[reader,reader]:[]),thread.id).first<Record<string,unknown>&{following:number;bookmarked:number;first_unread_id?:string|null;first_unread_page?:number|null}>(),
       db.prepare('SELECT p.*,u.username,u.avatar_id AS avatar,u.display_name AS displayName,(SELECT COUNT(*) FROM forum_reactions r WHERE r.post_id=p.id) AS likes,EXISTS(SELECT 1 FROM forum_reactions r WHERE r.post_id=p.id AND r.user_id=?) AS liked FROM forum_posts p JOIN users u ON u.id=p.user_id WHERE p.thread_id=? AND p.hidden<2 ORDER BY p.created_at,p.rowid LIMIT 31 OFFSET ?').bind(user?.id??'',thread.id,page(url)*30).all<{id:string;user_id:string;hidden:number;body:string;username:string;avatar:string|null;displayName:string;created_at:string;edited_at:string|null;likes:number;liked:number}>(),
     ])
     if(!details)throw new HttpError(404,'Thread not found.')
-    const {following:followed,bookmarked:saved,...summary}=details
-    const posts=pagePosts.results,following=!!followed,bookmarked=!!saved
+    const {following:followed,bookmarked:saved,first_unread_id:unreadId,first_unread_page:unreadPage,...summary}=details
+    const posts=pagePosts.results,following=!!followed,bookmarked=!!saved,last=posts.slice(0,30).at(-1)
+    if(reader&&last)await recordThreadRead(db,reader,thread.id,last.id).run()
     const attachments = await postAttachments(db,posts.slice(0,30).filter(post=>admin||!post.hidden).map(post=>post.id))
-    return response({thread:summary,posts:posts.slice(0,30).map(post=>({attachments:attachments.get(post.id)??[],canRemoveMedia:!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,id:post.id,body:post.hidden&&!admin?'':post.body,username:post.hidden&&!admin?null:post.username,avatar:post.hidden&&!admin?null:post.avatar,displayName:post.hidden&&!admin?null:post.displayName,created_at:post.created_at,edited_at:post.edited_at,hidden:post.hidden,likes:post.hidden?0:post.likes,liked:!post.hidden&&!!post.liked,canEdit:!thread.locked&&!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,official:post.user_id===SYSTEM_AUTHOR,...(admin?{user_id:post.user_id}:{})})),configuration:thread.configuration_json?JSON.parse(thread.configuration_json):null,issue:thread.issue_json?JSON.parse(thread.issue_json):null,following,bookmarked,hasMore:posts.length>30})
+    return response({thread:summary,posts:posts.slice(0,30).map(post=>({attachments:attachments.get(post.id)??[],canRemoveMedia:!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,id:post.id,body:post.hidden&&!admin?'':post.body,username:post.hidden&&!admin?null:post.username,avatar:post.hidden&&!admin?null:post.avatar,displayName:post.hidden&&!admin?null:post.displayName,created_at:post.created_at,edited_at:post.edited_at,hidden:post.hidden,likes:post.hidden?0:post.likes,liked:!post.hidden&&!!post.liked,canEdit:!thread.locked&&!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,official:post.user_id===SYSTEM_AUTHOR,...(admin?{user_id:post.user_id}:{})})),configuration:thread.configuration_json?JSON.parse(thread.configuration_json):null,issue:thread.issue_json?JSON.parse(thread.issue_json):null,following,bookmarked,hasMore:posts.length>30,...(reader?{firstUnread:unreadId?{id:unreadId,page:unreadPage??0}:null}:{})})
   }
   const member = needMember(user)
   await throttle(db,'forum:'+member.id,60)
   await throttle(db,'forum-ip:'+(request.headers.get('CF-Connecting-IP')??'local'),120)
   const body = await jsonBody(request)
+  if (path === '/api/forum/read-all' && request.method === 'POST') { await markForumRead(db,member.id); return response({ok:true}) }
   if (path === '/api/forum/threads' && request.method === 'POST') {
     await throttle(db,'new-thread:'+member.id,10)
     if (body.category === 'issues' || body.issue !== undefined) throw new HttpError(400,'Use “Report an issue” on the affected module’s page to report a bug. Discussions are for questions, tips and feedback.')
