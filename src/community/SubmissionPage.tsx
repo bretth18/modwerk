@@ -76,6 +76,7 @@ export function SubmissionPage({moduleId=''}:{moduleId?:string}) {
       <section className="configuration-section">
         <h2>How review works</h2>
         <p>Every pull request runs the same checks as CI. Passing them does not publish a module: the owner reads the reports, rights and screenshots, and merging approves that exact version. Increase the version for every code change; documentation and media edits need none.</p>
+        <p>A module must fit the unit’s own UI flows, with stock gestures and style, and by default leaves every stock firmware flow as it is. Minor, well thought out changes to a stock flow are allowed when the README documents each one: what changes, why, what a musician sees differently, how to turn it off and which neighbouring flows you checked. The owner approves each at review. TESTING.md lists the stock flows you compared with and without the module.</p>
         <p>State honestly what you tested. Octatrack modules need a hardware report from a real unit; Digitakt and Digitone record their evidence tier. Digitakt and Digitone are in preview, so agree the scope with the owner first.</p>
       </section>
       <section className="configuration-section start-rights">

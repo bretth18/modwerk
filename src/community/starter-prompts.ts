@@ -88,7 +88,7 @@ export function starterPrompt(machine: StarterMachine, starter: Starter, idea = 
     '5. Run `npm run module:doctor -- <id>` until every line is green' + (machine === 'octatrack' ? ' (a new module needs evidence/performance.json: `npm run perf:audit`)' : '') + ', then `npm run check`.',
     '6. Tell me exactly what to test on my ' + name + ' and which screenshots to capture. Record only results I report back to you.',
     '',
-    'Rules: never commit firmware, extracted stock code or tables, dumps or built images; my OS file stays outside the repository. Keep every author\'s credit and licence. Do not claim a test nobody ran.',
+    'Rules: the module must fit the unit\'s own UI flows (stock gestures, stock style, its controls where a musician would look for them) and by default leave every stock flow as it is. A minor change to a stock flow is allowed only if it is well thought out and documented in the README: what changes, why it is needed and what else I considered, what a musician sees differently, how to turn it off, and which neighbouring flows you checked. Propose any such change to me first, and list the stock flows you compared in TESTING.md. Never commit firmware, extracted stock code or tables, dumps or built images; my OS file stays outside the repository. Keep every author\'s credit and licence. Do not claim a test nobody ran.',
   ].join('\n')
 }
 
