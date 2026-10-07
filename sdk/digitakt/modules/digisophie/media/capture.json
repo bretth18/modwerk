@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "machine": "digitakt",
+  "moduleId": "digisophie",
+  "moduleVersion": "1.1.13-experimental.2",
+  "capturedAt": "2026-10-07",
+  "firmware": "1.53",
+  "imageSha256": "54799123bedb06852bc925340e4edbb0dd8496070b188df4c0d3cc900e5040a1",
+  "stockSha256": "9bdd44bb6102fb25c143cfab97bc92b7a89c463f795d3112dce89771e29bcc92",
+  "source": {
+    "repository": "https://github.com/soejrd/digisophie",
+    "revision": "961c39cec699e8f8940391634aaba9fad7120792",
+    "path": "."
+  },
+  "kit": {
+    "version": "0.4.0",
+    "lockSha256": "b9bc224eee31d1fda75841ce78fe5a28d5cbfee79071385329ca2517a247c04c"
+  },
+  "catalog": {
+    "revision": "a1be3ce0c006ea0c46fa82c6f254c11a05d42beb",
+    "sha256": "e207c3ff58fc7f5608d1fced67115406408a4b6202076824cf82cb043dc2d2c1",
+    "cores": 5,
+    "mods": 21
+  },
+  "build": {
+    "modules": [
+      {
+        "id": "core",
+        "version": "2.1",
+        "sha256": "f38b0c193677a060b3fdb28fe71b9332be8a5e7d36ecaf91a3c86a61bab558eb"
+      },
+      {
+        "id": "digisophie",
+        "version": "1.1.13",
+        "sha256": "6eadc29d581b24ff84fe3fe32399b998a91375ee06182631ab499109b4a003a5"
+      }
+    ],
+    "outputVersion": "D001",
+    "verified": true
+  },
+  "emulator": {
+    "repository": "https://github.com/irpina/digiemu",
+    "revision": "c1b5735835923e328f8b4950d6ba927875e5b669",
+    "unicorn": {
+      "version": "2.1.4",
+      "sourceRevision": "8028ec436f2d9376525352dd38ed9ed6b9f6be10",
+      "patches": {
+        "unicorn-2.1.4-m68k-digikit-accel.patch": "7048704a068cb074b93b751df4b1a73fd8972c1c0cc27e30774c4c2771ec2b5c",
+        "unicorn-2.1.4-m68k-digikit-speed.patch": "9560613223502656e82adc1ecc36d5d8486995bed13ea8ddad168f8c4558a799",
+        "unicorn-2.1.4-m68k-emac-mac-load.patch": "ac128dd6836997de55e0d2ad70d7a2978639168090f552c5634da50fddc70bfe",
+        "unicorn-2.1.4-m68k-emac-modes.patch": "5fc44429ea913c5256c34a6e9c93ab90f727f120b4f12922a8f35a952fd1dace",
+        "unicorn-2.1.4-m68k-fast-mem.patch": "7f79332f318352cbd8055386dbf5149efc801d0663ae2450e33f9f39fed53374",
+        "unicorn-2.1.4-m68k-hook-ccr-sync.patch": "56de71acf2adbd5ca2f448095478e65e49fd79d378aeb5b5e4217d2c90f52f4e"
+      },
+      "librarySha256": "a83b0d8a588cba2087c08712183df5106b3d2f1670af6024991eb85005e0f184"
+    },
+    "python": "3.12.13",
+    "platform": "macOS arm64",
+    "hle": false,
+    "audioRecording": false,
+    "cycleTiming": false,
+    "framebuffer": "firmware front LCD buffer at panel_diff flush",
+    "scale": 6,
+    "frameSelection": "Most populated unmodified frame since the latest panel action."
+  },
+  "setup": {
+    "project": "Disposable first-boot A01, stock initial track state; no owner projects or samples.",
+    "fixture": "No sample fixture required for the documented UI pages.",
+    "sandbox": "No network; user files denied; private temporary output only."
+  },
+  "inputs": [
+    [
+      1000.642,
+      "press 1"
+    ],
+    [
+      1100.643,
+      "press 20"
+    ],
+    [
+      1208.493,
+      "release 20"
+    ],
+    [
+      1508.502,
+      "release 1"
+    ],
+    [
+      1608.505,
+      "press 15"
+    ],
+    [
+      1708.508,
+      "release 15"
+    ],
+    [
+      2008.517,
+      "press 15"
+    ],
+    [
+      2108.519,
+      "release 15"
+    ],
+    [
+      2408.528,
+      "press 15"
+    ],
+    [
+      2508.531,
+      "release 15"
+    ],
+    [
+      2808.54,
+      "press 15"
+    ],
+    [
+      2908.543,
+      "release 15"
+    ],
+    [
+      3208.551,
+      "press 12"
+    ],
+    [
+      3308.555,
+      "release 12"
+    ],
+    [
+      3608.563,
+      "press 12"
+    ],
+    [
+      3708.566,
+      "release 12"
+    ],
+    [
+      5008.604,
+      "turn 2 -127"
+    ],
+    [
+      5008.604,
+      "turn 2 -127"
+    ],
+    [
+      5008.604,
+      "turn 2 -127"
+    ],
+    [
+      5008.604,
+      "turn 2 -127"
+    ],
+    [
+      5608.621,
+      "turn 2 +127"
+    ],
+    [
+      5608.621,
+      "turn 2 +1"
+    ],
+    [
+      6208.639,
+      "turn 2 +127"
+    ],
+    [
+      6208.639,
+      "turn 2 +1"
+    ],
+    [
+      6808.656,
+      "turn 2 +127"
+    ],
+    [
+      6808.656,
+      "turn 2 +1"
+    ],
+    [
+      7408.674,
+      "press 22"
+    ],
+    [
+      7508.677,
+      "release 22"
+    ]
+  ],
+  "captures": [
+    {
+      "path": "media/chooser.png",
+      "sha256": "91a6092cd61218e596a7669f900317ec2dc5945b137ae88e47b563f26871d572",
+      "plan": "wait 1000\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap DOWN\ntap DOWN\ntap DOWN\nsnap chooser\ntap YES\ntap YES\nwait 1000\nturn B -127 600\nsnap fuse\nturn B 32 600\nsnap boom\nturn B 32 600\nsnap pipe\nturn B 32 600\nsnap shard\ntap AMP\nsnap amp\n",
+      "atMs": 2841.8741452991453,
+      "requestedAtMs": 3208.551282051282
+    },
+    {
+      "path": "media/fuse.png",
+      "sha256": "d97e8afb6452c23cda9dd79443224bce7aac5a8f7736c416d5e4b7b6f308840e",
+      "plan": "wait 1000\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap DOWN\ntap DOWN\ntap DOWN\nsnap chooser\ntap YES\ntap YES\nwait 1000\nturn B -127 600\nsnap fuse\nturn B 32 600\nsnap boom\nturn B 32 600\nsnap pipe\nturn B 32 600\nsnap shard\ntap AMP\nsnap amp\n",
+      "atMs": 5241.944444444444,
+      "requestedAtMs": 5608.62094017094
+    },
+    {
+      "path": "media/boom.png",
+      "sha256": "cec8979b6d50badce874cc8efcb44a1aa3759b9de1f85bb48a02ae23655699d4",
+      "plan": "wait 1000\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap DOWN\ntap DOWN\ntap DOWN\nsnap chooser\ntap YES\ntap YES\nwait 1000\nturn B -127 600\nsnap fuse\nturn B 32 600\nsnap boom\nturn B 32 600\nsnap pipe\nturn B 32 600\nsnap shard\ntap AMP\nsnap amp\n",
+      "atMs": 5641.955341880342,
+      "requestedAtMs": 6208.638675213675
+    },
+    {
+      "path": "media/amp.png",
+      "sha256": "5b46758d7f4afe900fb625ef8afe7a08905e06cbc66f02c167a76bb167370e72",
+      "plan": "wait 1000\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap DOWN\ntap DOWN\ntap DOWN\nsnap chooser\ntap YES\ntap YES\nwait 1000\nturn B -127 600\nsnap fuse\nturn B 32 600\nsnap boom\nturn B 32 600\nsnap pipe\nturn B 32 600\nsnap shard\ntap AMP\nsnap amp\n",
+      "atMs": 7642.013675213675,
+      "requestedAtMs": 7808.68547008547
+    }
+  ],
+  "limitations": [
+    "UI-only documentation; no hardware, audio, timing, persistence or stress qualification."
+  ]
+}
