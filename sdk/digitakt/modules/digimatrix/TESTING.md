@@ -32,3 +32,31 @@ The author’s 1.0b release objects, from the repository’s `elemods/` folder a
 - OS 1.54: `digimatrix-1.0b-os1.54.elemod` (SHA-256 `f12fd6c0f154f1358c5b16916630865263cb81c1b72a13e2795f6eba171c95aa`) contains 4,145 B in `.run`, 128 B in `.bss` and 20 B of table contributions: **4,293 B** in total.
 
 This counts code, initialized data, zero-filled state and contributions, not the JSON file size. It excludes the shared Modwerk core and linker alignment; the browser estimate reserves those separately. These are upstream object measurements, not measurements of a Modwerk build or a hardware load report.
+
+## Documentation capture — 7 October 2026
+
+Documentation version: `1.0.1-experimental`. Source revision: `35bacb3730d108e4dc48a7bd6de4c99ae9b161e6` (`mods/digimatrix`). Native source, build declaration and pinned release objects were not changed.
+
+The unchanged vendored elekloader kit 0.4.0 linked and verified the pinned release modules listed in [capture.json](media/capture.json) with the owner’s private stock OS 1.53 file. Built-image SHA-256: `d4294009b411885a2c02262859daa3b53e3cb3f2c6ed5fe6507b889b645e6069`. Module metadata version is separate from the native release versions listed in that record. Firmware and derived images remain private.
+
+Pinned digiemu `c1b5735835923e328f8b4950d6ba927875e5b669` ran firmware-native drawing with `hle=False`, a reviewed patched Unicorn 2.1.4, Python 3.12.13 and a disposable first-boot project in a network-denied macOS sandbox. The record pins the Unicorn source, six patch hashes and local library hash. Only complete, unmodified LCD frames were retained at 6× integer scale and every retained image was opened for review.
+
+- MOD MATRIX in Settings.
+- Eight matrix slots, initially disabled.
+- Enabled T1 LFO1 route and its depth.
+
+UI-only documentation; no hardware, audio, timing, persistence or stress qualification.
+
+Reproduce after building the same module selection using the browser’s vendored elekloader builder and your own OS file, keeping all firmware and emulator outputs outside the checkout:
+
+```sh
+python3 scripts/capture-digi-module-ui.py \
+  --emulator /path/to/pinned/digiemu \
+  --firmware /private/capture/custom.syx \
+  --plan sdk/digitakt/modules/digimatrix/media/capture-plan.txt \
+  --out /private/capture/new-session
+```
+
+Run that command inside the isolated sandbox described in [MODULE_UI_CAPTURES.md](../../../../docs/MODULE_UI_CAPTURES.md). `capture-plan.txt` is the exact panel plan used; `capture.json` retains its actual input events and selected timestamps. The capture CLI was smoke-tested from a fresh Digitakt digihealth first boot; these module captures use the same pinned emulator panel APIs. No menu state or LCD labels were injected.
+
+Passed repository validation on 7 October 2026: `npm run modules:generate`, `npm run check`, `npm run module:doctor -- digimatrix`, and `npm run modules:check -- --base origin/main`. UI documentation keeps the existing evidence tier and imported resource estimates; hardware, sound quality, persistence, stress behaviour and cycle-accurate performance remain untested in this update.
