@@ -7,7 +7,7 @@ import { LibraryTools } from '../components/LibraryTools'
 import { ModuleComparison } from '../components/ModuleComparison'
 import { DEVICES_BY_ID } from './registry'
 import { DIGI_MODS } from './digi-mods'
-import { AllMachinesLibrary, DigiLibrary } from './MachinePages'
+import { AllMachinesLibrary, DigiLibrary, MachineLibrary } from './MachinePages'
 
 const noop = () => {}
 // Likes and downloads show the number beside an icon; the word is there for screen readers only.
@@ -20,6 +20,23 @@ const props = {
   octatrackConflicts: [], comparison: ['miniverb'], onCompare: noop, onOpenComparison: noop,
   viewedModuleVersions: {}, moduleBaseline: AVAILABLE_MODULES.map(module=>module.id),
 }
+
+describe('machine switching layout', () => {
+  it.each(['octatrack', 'digitakt', 'digitone', 'syntakt'])('keeps the search tools and build action in the %s library without the local-build banner', id => {
+    const html = renderToStaticMarkup(createElement(MachineLibrary, {...props, device: DEVICES_BY_ID[id]}))
+    expect(html.indexOf('class="discovery-tools"')).toBeLessThan(html.indexOf('class="library-subheading"'))
+    expect(html).toContain('<h1>Module library</h1>')
+    expect(html).toContain('Collection order')
+    expect(html).toContain('Build firmware</a>')
+    expect(html).not.toContain('device-preview-note')
+    expect(html).not.toContain('firmware locally with your original OS file')
+    if (id === 'syntakt') {
+      expect(html).toContain('aria-disabled="true"')
+      expect(html).not.toContain('href="#syntakt/configuration"')
+      expect(html).toContain('Be the first to mod the')
+    } else expect(html).toContain('href="' + (id === 'octatrack' ? '#configuration' : '#' + id + '/configuration') + '"')
+  })
+})
 
 describe('All machines library parity', () => {
   it('keeps the Octatrack build, sort, rating, popularity and comparison controls', () => {
