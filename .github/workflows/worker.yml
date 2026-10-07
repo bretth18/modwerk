@@ -25,7 +25,31 @@ concurrency:
   group: octamod-worker
   cancel-in-progress: false
 jobs:
+  scope:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      worker: ${{ steps.scope.outputs.worker }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - id: scope
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "${{ github.event_name }}" = workflow_dispatch ] || [ -z "$BEFORE" ] || [ "$BEFORE" = 0000000000000000000000000000000000000000 ]; then
+            echo 'worker=true' >> "$GITHUB_OUTPUT"
+          else
+            node scripts/change-scope.mjs --base "$BEFORE" --head HEAD >> "$GITHUB_OUTPUT"
+          fi
   deploy:
+    needs: scope
+    if: needs.scope.outputs.worker == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:

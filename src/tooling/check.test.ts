@@ -1,5 +1,5 @@
-import { spawnSync } from 'node:child_process'
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { spawnSync, execFileSync } from 'node:child_process'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -69,4 +69,26 @@ it('rejects stale licence notices before generation can overwrite them', () => {
   const failure = check('licenses:generate', true)
   expect(failure.status).toBe(1)
   expect(failure.scripts).toEqual(['licenses:generate'])
+})
+
+
+it('checks documentation without starting the application suite, build or generators', () => {
+  const folder = mkdtempSync(join(tmpdir(), 'modwerk-doc-check.'))
+  const scripts = join(folder, 'scripts'), log = join(folder, 'scripts.log'), npm = join(folder, 'npm.mjs')
+  mkdirSync(scripts)
+  const scope = new URL('../../scripts/change-scope.mjs', import.meta.url).href
+  writeFileSync(join(scripts, 'check.mjs'), readFileSync(runner, 'utf8').replace("'./change-scope.mjs'", JSON.stringify(scope)))
+  writeFileSync(npm, `import { appendFileSync } from 'node:fs'; appendFileSync(process.env.CHECK_TEST_LOG, process.argv[3] + '\\n')`)
+  const git = (...args: string[]) => execFileSync('git', args, { cwd: folder, stdio: 'pipe' })
+  try {
+    git('init'); git('config', 'user.name', 'Test'); git('config', 'user.email', 'test@example.com')
+    writeFileSync(join(folder, 'README.md'), 'Old'); git('add', '.'); git('commit', '-m', 'base')
+    writeFileSync(join(folder, 'README.md'), 'Better')
+    const result = spawnSync(process.execPath, [join(scripts, 'check.mjs'), '--base', 'HEAD'], {
+      encoding: 'utf8', env: { ...process.env, npm_execpath: npm, CHECK_TEST_LOG: log },
+    })
+    expect(result.status, result.stderr).toBe(0)
+    expect(result.stdout).toContain('Documentation check passed')
+    expect(readFileSync(log, 'utf8').trim().split('\n')).toEqual(['licenses:check', 'machines:check', 'modules:check'])
+  } finally { rmSync(folder, { recursive: true, force: true }) }
 })

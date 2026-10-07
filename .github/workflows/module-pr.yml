@@ -2,80 +2,48 @@ name: Module PR checks
 on:
   pull_request:
     branches: [main, 'modwerk/**', 'codex/modwerk-*']
+    types: [opened, synchronize, reopened, edited]
 permissions:
   contents: read
 concurrency:
   group: module-pr-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 jobs:
-  # Every PR gets the quick check below (lint, tests, types, build). Only a PR that changes module source, the module
-  # build or the committed packages also gets the Docker compile, and only one that touches module folders or their
-  # path handling gets the Windows runner, which is the slowest and the most often queued. Skipped jobs count as passing.
+  # Documentation uses metadata/provenance checks. Firmware compilation follows actual
+  # source/build inputs; app changes retain lint, tests, types and the bundle.
   scope:
+    if: ${{ github.event.action != 'edited' || github.event.changes.base != null }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       modules: ${{ steps.scope.outputs.modules }}
       windows: ${{ steps.scope.outputs.windows }}
+      elemod: ${{ steps.scope.outputs.elemod }}
+      documentation: ${{ steps.scope.outputs.documentation }}
+      logger: ${{ steps.scope.outputs.logger }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
       - id: scope
         env:
           OCTAMOD_PR_BASE: ${{ github.event.pull_request.base.sha }}
-        run: |
-          git cat-file -e "$OCTAMOD_PR_BASE^{commit}"
-          # The same module inputs the release uses to decide whether to rebuild (pages.yml), plus this workflow.
-          # Module documentation and media (README and other Markdown, media/, presentation/, evidence/) are not compiled and are
-          # excluded, as in scripts/module-source.mjs. A manifest edit still counts here: its prose is not compiled either, but
-          # its build fields are, and the fingerprint check then passes without a rebuild when only prose changed.
-          modules=(sdk ':(exclude,glob)sdk/**/*.md' ':(exclude,glob)sdk/octabam/modules/*/media/**' ':(exclude,glob)sdk/octabam/modules/*/presentation/**'
-            ':(exclude,glob)sdk/octabam/modules/*/evidence/**' scripts/build-module-packages.py scripts/build-utility-packages.py scripts/build-modules-isolated.sh
-            scripts/import-module-build.mjs scripts/stamp-module-build.mjs scripts/module-source.mjs scripts/license-notices.mjs
-            scripts/licenses.mjs src/engine/assets src/release .github/workflows/module-pr.yml)
-          windows=("${modules[@]}" src/catalog/module-folder.ts src/catalog/module-folder.test.ts scripts/modules.mjs scripts/module-qualification.mjs)
-          changed() { if git diff --quiet "$OCTAMOD_PR_BASE" HEAD -- "$@"; then echo false; else echo true; fi; }
-          echo "modules=$(changed "${modules[@]}")" >> "$GITHUB_OUTPUT"
-          echo "windows=$(changed "${windows[@]}")" >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
+        run: node scripts/change-scope.mjs --base "$OCTAMOD_PR_BASE" --head HEAD >> "$GITHUB_OUTPUT"
   module-contract:
+    needs: scope
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     outputs:
-      elemod: ${{ steps.source-inputs.outputs.elemod }}
+      elemod: ${{ needs.scope.outputs.elemod }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
-      - name: Detect changes to Elemod source and compiler inputs
-        id: source-inputs
-        env:
-          OCTAMOD_PR_BASE: ${{ github.event.pull_request.base.sha }}
-        run: |
-          # Compare the actual checked-out PR merge with its exact base, including removals.
-          git cat-file -e "$OCTAMOD_PR_BASE^{commit}"
-          inputs=(sdk/elemod sdk/digitakt sdk/digitone sdk/machines sdk/build
-            sdk/octabam/scripts/vendor.sh sdk/octabam/tools/patches sdk/octabam/tools/harness/dsp_host
-            'scripts/build-elemod*' scripts/elemod-elf.mjs
-            src/catalog/module-contract-v3.ts src/catalog/module-folder.ts src/catalog/versions.ts
-            src/devices/machine-contract.ts src/engine/elektron src/engine/assets/elemod
-            package.json package-lock.json)
-          # Scheduling-only workflow edits do not change the compilation. Changes to
-          # the compiler job itself still require its isolated reproducibility check.
-          compiler_job() {
-            git show "$1:.github/workflows/module-pr.yml" |
-              sed -n '/^  elemod-source:/,/^  octatrack-source:/{ /^  octatrack-source:/d; p; }' | sed '/^    needs:/d; /^    if:/d'
-          }
-          if git diff --quiet "$OCTAMOD_PR_BASE" HEAD -- "${inputs[@]}" &&
-             cmp -s <(compiler_job "$OCTAMOD_PR_BASE") <(compiler_job HEAD); then
-            echo 'elemod=false' >> "$GITHUB_OUTPUT"
-            echo 'Elemod source and compiler inputs are unchanged; skipping compilation.'
-          else
-            echo 'elemod=true' >> "$GITHUB_OUTPUT"
-          fi
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
@@ -84,8 +52,7 @@ jobs:
       - name: Require versions, qualification evidence and complete release documentation
         env:
           OCTAMOD_PR_BASE: ${{ github.event.pull_request.base.sha }}
-        run: npm run modules:check -- --base "$OCTAMOD_PR_BASE"
-      - run: npm run check
+        run: npm run check -- --base "$OCTAMOD_PR_BASE"
       # Qualification records, complete docs/tutorials and monochrome screenshots are mandatory.
       # The owner verifies actual measurement/hardware evidence before merge.
       # Metadata checks never execute submitted Python or run firmware gates.
@@ -113,6 +80,8 @@ jobs:
       - name: Exercise paths and directory junctions on Windows
         run: npm run test -- src/catalog/module-folder.test.ts
   core-logger-host:
+    needs: scope
+    if: needs.scope.outputs.logger == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
