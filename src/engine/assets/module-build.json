@@ -3,8 +3,8 @@
   "kind": "source-packages",
   "sourceCommit": null,
   "nativeRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
-  "sourceTreeSha256": "e251250c1a13321d33578eebf98ae1ff482c6b5fc8557c95adfe39bb8c99cd65",
-  "compilerSha256": "384ef557793fedcd91ff416464800555de24facc57818a9ad8c0a4176b916384",
+  "sourceTreeSha256": "e69cd99ba3fc7198556b05e8b8de29e23166c7f36b86c1c76fef5770317107ba",
+  "compilerSha256": "fc11ab9e93bdbe1e12393007edd6eeb2f09e5566e0ecd26c40a0b6d88053faf3",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
@@ -46,7 +46,7 @@
     },
     "bootstrap-package.json": {
       "bytes": 3468,
-      "sha256": "52cee10f459b87680935b7c6f11520ecd61acb8b40fbf563c67ea3888070533b"
+      "sha256": "a889b2dd6512cc8183be4d49ba243fbf985dd7c22f7e82efe3e7725cfe87433d"
     },
     "menu-recipes.json": {
       "bytes": 33097,
@@ -62,7 +62,7 @@
     },
     "requested-packages.json": {
       "bytes": 700515,
-      "sha256": "eaaab0ca0ead706f968c8f1f64ad2701a1c0892ad202439f305a7098ef230995"
+      "sha256": "e7899d0f52411adab2af458735a54c7b8bf51fbeb3d5150e795f1ddbdd671289"
     },
     "utility-packages.json": {
       "bytes": 12596,

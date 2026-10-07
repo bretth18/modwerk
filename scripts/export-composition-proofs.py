@@ -5,7 +5,7 @@ def sha(data):return hashlib.sha256(data).hexdigest()
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('worktree',type=pathlib.Path);p.add_argument('destination',type=pathlib.Path);p.add_argument('--app',type=pathlib.Path,required=True);p.add_argument('--stock-bin',type=pathlib.Path);p.add_argument('--static-stock',action='store_true',help='Loader-free builds: stock DSP code stays built in; every module subset with and without stock FX2')
     p.add_argument('--vendored-sdk',action='store_true',help='Verify reviewed SDK sources against the app checkout instead of the legacy upstream worktree')
-    p.add_argument('--suite',choices=['original','tapehead','tapehead-utilities','sidechain','sidechain-visible','sidechain-analog-bd','visible'],default='original')
+    p.add_argument('--suite',choices=['original','tapehead','tapehead-utilities','sidechain','sidechain-visible','sidechain-analog-bd','analog-bd','visible'],default='original')
     p.add_argument('--modules',help='Generic mode (scripts/module-verify.mjs): the comparison pool, comma-separated in catalog order. Builds only the --select profiles, with chooser menus from --menus keyed by selection.')
     p.add_argument('--metadata-only',action='store_true',help='Write chooser-metadata.json for the --modules pool and build nothing.')
     p.add_argument('--cache',action='store_true',help="Reuse octabam's content-addressed compiler memo (source, options and tool bytes are in its key; placement and validation still run). Evidence is made without it unless this is given.")
@@ -48,10 +48,10 @@ def main():
     if a.suite=='tapehead':order=['miniverb','tapeecho','euclid','repitch','tapehead','analog-bassdrum','usb-audio-out-tracks-main-cue','quantizer']
     if a.suite=='tapehead-utilities':order=['repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map']
     if a.suite=='sidechain':order=['spectrum','modulation','character','miniverb','tapeecho','euclid','repitch','tapehead','sidechain-compressor']
-    # Analog BD is refused beside any custom DSP module, after native has done all of its heavy DSP work (minutes per selection), so it is covered by representative selections.
+    # Retain historical suites; the Analog BD suite below covers its current shared layout.
     if a.suite=='sidechain-visible':order=['miniverb','tapeecho','euclid','repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map','sidechain-compressor']
     if a.suite=='visible':order=['miniverb','tapeecho','euclid','repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map']
-    if a.suite=='sidechain-analog-bd':order=['analog-bassdrum','miniverb','tapeecho','euclid','repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map','sidechain-compressor']
+    if a.suite in ('sidechain-analog-bd','analog-bd'):order=['analog-bassdrum','miniverb','tapeecho','euclid','repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map','sidechain-compressor']
     if a.modules:order=a.modules.split(',')
     if a.vendored_sdk:order=[row['id'] for row in json.loads((app/'sdk/catalog.json').read_text())['modules'] if row['id'] in order]
     byid={m.name:m for m in known.values()}
@@ -77,8 +77,8 @@ def main():
         # modules; stock FX2 minus the effects whose code the modules take when kept, none when not. Every subset,
         # both ways, so each selection a visitor can make has an oracle.
         cases=[([id for bit,id in enumerate(order) if mask>>bit&1],keep) for mask in range(1<<len(order)) for keep in (True,False)]
-        site="const {defaultChoosers}=await import(process.argv[1]);console.log(JSON.stringify(JSON.parse(process.argv[2]).map(([ids,keep])=>defaultChoosers(ids,keep,false))))"
-        menus=json.loads(a.menus.read_text()) if a.menus else json.loads(subprocess.check_output(['node','--input-type=module','-e',site,str(app/'src/engine/choosers.ts'),json.dumps(cases)],text=True))
+        site="import {readFileSync} from 'node:fs';const {defaultChoosers}=await import(process.argv[1]);console.log(JSON.stringify(JSON.parse(readFileSync(0,'utf8')).map(([ids,keep])=>defaultChoosers(ids,keep,false))))"
+        menus=json.loads(a.menus.read_text()) if a.menus else json.loads(subprocess.run(['node','--input-type=module','-e',site,str(app/'src/engine/choosers.ts')],input=json.dumps(cases),text=True,capture_output=True,check=True).stdout)
         if len(menus)!=len(cases):p.error('Incomplete precomputed menu matrix.')
         siteMenus={(tuple(ids),keep):menu for (ids,keep),menu in zip(cases,menus)}
         def profile(ids,keep):
@@ -102,6 +102,14 @@ def main():
     if a.suite=='tapehead-utilities':cases=[(ids,keep) for ids,keep in cases if 'tapehead' in ids and any(id in ids for id in ['previewvol','cc-map'])]
     if a.suite=='sidechain':cases=[(ids,keep) for ids,keep in cases if 'sidechain-compressor' in ids]
     if a.suite=='sidechain-visible':cases=[(ids,keep) for ids,keep in cases if 'sidechain-compressor' in ids]
+    if a.suite=='analog-bd':
+        dsp={'miniverb','tapeecho','euclid','tapehead','sidechain-compressor'}
+        utilities={'repitch','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map'}
+        # Every DSP subset plus every single-DSP/single-utility pairing and
+        # each DSP companion with all utilities. Both chooser profiles.
+        cases=[(ids,keep) for ids,keep in cases if 'analog-bassdrum' in ids and (
+            not utilities.intersection(ids) or
+            len(dsp.intersection(ids)) <= 1 and len(utilities.intersection(ids)) in (1,5))]
     if a.suite=='sidechain-analog-bd':cases=[(ids,keep) for ids,keep in cases if 'sidechain-compressor' in ids and 'analog-bassdrum' in ids and len(ids) in (2,3,len(order))]
     if a.metadata_only:cases=[]
     if a.select and not a.modules:
@@ -170,7 +178,7 @@ def main():
                     proofs.append(proof)
                     print(f"{ids or ['stock']} default={default}: {len(image)} bytes, full native identity captured.")
                 except (SystemExit,AssertionError) as error:
-                    if a.static_stock and any(word in str(error) for word in ('has colliding modules:','overruns the region','nowhere to place','does not fit','do not fit','chooser list of','currently composes with stock effects only',' not free','past the stock zero run','fits neither the clone window')):
+                    if a.static_stock and any(word in str(error) for word in ('has colliding modules:','overruns the region','nowhere to place','does not fit','do not fit','chooser list of','currently composes with stock effects only',' not free','past the stock zero run','fits neither the clone window','cannot share DSP memory')):
                         proofs.append({'moduleIds':ids,'keepStockFx2':default,'menu':menu,'error':str(error)});print(f"{ids or ['stock']} keep={default}: refused: {str(error)[:90]}")
                     elif ids==order and default and ('does not fit' in str(error) or 'do not fit' in str(error)):
                         proofs.append({'moduleIds':ids,'default':default,'menu':menu,'error':str(error)});print('Crowded all-module / stock-chooser selection rejects placement, as expected.')
@@ -185,6 +193,10 @@ def main():
     # Address, id and membership facts; no descriptor, list or instruction bytes.
     metadata={'schema':1,'revision':revision,'sourceSha256':sourceHash,'curveReaders':sorted({key for keys in stock.curve_bank_readers().values() for key in keys}),'stockFx1':stockFx1,'stockFx2':stockFx2,'stockEffects':[{'key':m.key,'fxId':m.menu.fx2_id} for m in known.values() if m.is_stock and m.menu is not None],'modules':modules,'customIds':sorted({m.menu.fx2_id for m in known.values() if m.menu and not m.is_stock and not m.menu.replaces}),'layout':{k:getattr(build,k) for k in ['FX1_IDS','FX1_LIST','FX1_NONE','FX1_ID2POS','FX1_ROWCOUNT_INSN','FX1_ROWCOUNT_AT','FX2_IDS','FX2_LIST','ID2POS','ROWCOUNT_INSN','ROWCOUNT_AT','NEW_LIST','LONG_LIST','ZERO_RUN_END','OVERFLOW_RUN','OVERFLOW_RUN_END']},'fx1References':build.FX1_LIST_REFS,'fx2References':build.LIST_REFS}
     (dest/'chooser-metadata.json').write_text(json.dumps(metadata,indent=2)+'\n')
-    (dest/('static-composition-proofs.json' if a.static_stock else 'composition-proofs.json')).write_text(json.dumps({'schema':1,'revision':revision,'sourceSha256':sourceHash,'staticStock':bool(a.static_stock),'packing':packing,'proofs':proofs},indent=2)+'\n')
+    provenance={}
+    if a.suite=='analog-bd':
+        provenance={'builderSources':{name:sha((root/name).read_bytes()) for name in ['tools/build/build_bus.py','tools/build/ab_image.py','tools/remix/loader.S']},
+                    'moduleSourceTreeSha256':json.loads((app/'src/engine/assets/module-build.json').read_text())['sourceTreeSha256']}
+    (dest/('static-composition-proofs.json' if a.static_stock else 'composition-proofs.json')).write_text(json.dumps({'schema':1,'revision':revision,'sourceSha256':sourceHash,'staticStock':bool(a.static_stock),**provenance,'packing':packing,'proofs':proofs},indent=2)+'\n')
     print('Only fingerprints and chooser format facts retained; temporary native files removed. No stress, render or emulator gates run.')
 if __name__=='__main__':main()

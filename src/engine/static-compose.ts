@@ -23,7 +23,7 @@ export async function planStaticOs(original: Uint8Array, ids: readonly string[],
 export async function composeStaticOs(original: Uint8Array, ids: readonly string[], profile = defaultChoosers(ids)) {
   const { runtime, menus, dsp, logging, platform } = await planStaticOs(original, ids, profile)
   let patched = await applyGuardedOsWrites(original, [...menus.writes, ...dsp.writes, ...platform, ...logging.writes])
-  const analog = ids.includes('analog-bassdrum') ? await composeAnalogBd(original, patched, ids, profile) : null
+  const analog = ids.includes('analog-bassdrum') ? await composeAnalogBd(original, patched, ids, profile, dsp.layouts) : null
   if (analog) patched = analog.bytes
   await verifyNativeContracts(patched, ids)
   const bootstrap = analog ? await createAnalogBootstrap(runtime.bytes, analog.uploads, runtime.reserveBytes - LOGGER_RETAINED_BYTES, runtime) : await createRuntimeBootstrap(runtime.bytes, runtime.reserveBytes - LOGGER_RETAINED_BYTES, undefined, runtime)

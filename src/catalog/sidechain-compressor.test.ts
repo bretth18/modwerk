@@ -42,7 +42,7 @@ describe('Sidechain Compressor native evidence on the shared builder', () => {
     }
   })
   it('builds the same menus as the native profiles for every selection', () => {
-    for (const { data } of suites) for (const proof of data.proofs) {
+    for (const { data } of suites.filter(suite => suite.data !== analogProofs)) for (const proof of data.proofs) {
       expect(defaultChoosers(proof.moduleIds, proof.keepStockFx2), key(proof.moduleIds, proof.keepStockFx2)).toEqual({ fx1: proof.menu.fx1, fx2: proof.menu.fx2 })
     }
   })
@@ -72,16 +72,9 @@ describe('Sidechain Compressor native evidence on the shared builder', () => {
     expect(alone(true)).toMatchObject({ bytes: 1112560, sha256: '4fd5fcb49ed17cd4e707d407a6e42a64ec30b50aefaad3b1eeb1bb804493aef0' })
     expect(alone(false)).toMatchObject({ bytes: 1112560, sha256: 'a50b99cf373cca589f97e94d1ac8e6c9c777c5aa9a17777edbbba722d9dbcf4c' })
   })
-  it('refuses Analog BD beside it, in the site and in native alike', () => {
-    for (const proof of analogProofs.proofs) {
-      expect(proof).toHaveProperty('error')
-      // Native refuses it for the stock-effects rule, except where a crowded menu runs out of cave space first.
-      expect((proof as { error: string }).error).toMatch(/stock effects only|fits neither the clone window/)
-      expect(selectionConflicts(proof.moduleIds, proof.keepStockFx2).map(conflict => conflict.id)).toContain('analog-bd-custom-dsp')
-    }
-    expect(analogProofs.proofs.filter(proof => 'error' in proof && /stock effects only/.test(proof.error)).length).toBeGreaterThanOrEqual(20)
-    expect(selectionConflicts(['sidechain-compressor', 'analog-bassdrum']).find(conflict => conflict.id === 'analog-bd-custom-dsp')?.moduleIds).toEqual(['analog-bassdrum', 'sidechain-compressor'])
-    // It keeps stock COMPRESSOR and needs no stock FX2 space, so keeping stock FX2 is not a conflict for it alone.
+  it('retains the historical Analog BD refusals without treating them as current limits', () => {
+    expect(analogProofs.proofs.every(proof => 'error' in proof)).toBe(true)
+    expect(selectionConflicts(['sidechain-compressor', 'analog-bassdrum'])).toEqual([])
     expect(selectionConflicts(['sidechain-compressor'], true)).toEqual([])
   })
   it('keeps MIDI Scenes standalone and records a declaration check for every other selection', () => {

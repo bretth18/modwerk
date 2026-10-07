@@ -171,6 +171,7 @@ STOCK_ROWS = [m.key for m in _SEL if m.is_stock]
 # schema.Module.dynamic_stock: a selected loader serves every stock DSP effect
 # on demand, so the whole effect block is harvested while the rows stay.
 DYNAMIC = [k for k in REMIX.modules if _MODS[k].dynamic_stock]
+AB_PLACED = {}                   # payload -> custom DSP spans (Analog BD excludes these)
 AB_TOP = {}                      # payload -> P address Analog BD is placed at
 
 DESC_DONORS = {m.key: m.menu.donor_desc for m in _CLONED}
@@ -2352,6 +2353,24 @@ mkgo:""",
                 runs[-1]["words"] += _rec[2]
             else:
                 runs.append({"base": _rec[1], "words": _rec[2]})
+        if "ANALOG BD" in REMIX.modules and not DYNAMIC:
+            import ab_image
+            unsupported = [m.key for m in _MODS.values() if m.key in REMIX.modules
+                           and m.dsp is not None and m.key not in ab_image.DSP_COMPANIONS]
+            if unsupported:
+                sys.exit("ANALOG BD cannot share DSP memory with " + ", ".join(unsupported))
+            for _a, _n in ab_image.reservations(tag):
+                _free = []
+                for _r in runs:
+                    _lo, _hi = _r["base"], _r["base"] + _r["words"]
+                    if _a >= _hi or _a + _n <= _lo:
+                        _free.append(_r)
+                    else:
+                        if _lo < _a:
+                            _free.append(dict(base=_lo, words=_a - _lo))
+                        if _a + _n < _hi:
+                            _free.append(dict(base=_a + _n, words=_hi - _a - _n))
+                runs = _free
         for _r in runs:
             _r["cursor"] = _r["base"]
         # With nothing harvested there is no region at all -- legal, and
@@ -2359,7 +2378,7 @@ mkgo:""",
         # if anything wanted placing, so the rest of this runs over an empty
         # stream and writes nothing.
         base_a = region[0][1] if region else 0
-        budget = sum(m[2] for m in region)
+        budget = sum(r["words"] for r in runs)
 
         def _end_of_run(a):
             """End address of the run containing `a` (its own value if none)."""
@@ -2368,11 +2387,11 @@ mkgo:""",
                     return r["base"] + r["words"]
             return a
 
-        def _written(a):
+        def _written(a, words=1):
             """Did the placed code actually reach address `a`?"""
             for r in runs:
-                if r["base"] <= a < r["base"] + r["words"]:
-                    return a < r["cursor"]
+                if r["cursor"] > r["base"] and r["base"] < a + words and a < r["cursor"]:
+                    return True
             return False
 
         def place(words, start):
@@ -2954,7 +2973,9 @@ hostquit:
             # has been burned by.
             _fit, _last = None, None
             _xa = _xt_layout.get(name)          # (X address, words) or None
-            for _r in runs:
+            _candidates = sorted(runs, key=lambda r: (r["base"] + r["words"] - r["cursor"], r["base"])) \
+                if "ANALOG BD" in REMIX.modules and not DYNAMIC else runs
+            for _r in _candidates:
                 _c, _end = _r["cursor"], _r["base"] + _r["words"]
                 _tab, _s2, _lfo = None, src, "$facade" in src
                 # LFOTAB, the module's ptable, or BOTH in one slot (LFOTAB
@@ -3146,6 +3167,10 @@ hostquit:
                       f"{_r['cursor'] - _r['base']:5d}  spare "
                       f"{_e - _r['cursor']:5d}  {_in}")
 
+        if "ANALOG BD" in REMIX.modules:
+            AB_PLACED[tag] = [(r["base"], r["cursor"] - r["base"])
+                              for r in runs if r["cursor"] > r["base"]]
+
         # ---- donor ids -> the null stub, BUT ONLY WHERE OUR CODE LANDED --
         _hv = {k: _sp[k] for k in _harvest}
         # ⚠️ THE REPORT NAMES ARE ONE WORD, and that is load-bearing rather
@@ -3165,7 +3190,7 @@ hostquit:
         # code may be untouched but its dispatch is ours, so it is not
         # stock any more and must not be reported as kept.)
         kept = [d for d, (a, _n) in _hv.items()
-                if not _written(a) and d not in _replaced]
+                if not _written(a, _n) and d not in _replaced]
         if DYNAMIC:
             # Every stock effect's code is gone from its native address, placed
             # there or not: the loader binds it into its arena on demand.
@@ -3272,14 +3297,13 @@ hostquit:
         if ("SPRING REV" in REMIX.modules and not DYNAMIC) or "MACHINEDRUM" in REMIX.modules:
             sys.exit("ANALOG BD owns SPRING REV's code and both DSP uploads; "
                      "remove SPRING REV / MACHINEDRUM from this remix")
-        # Private X and source-stage placement are qualified with stock FX,
-        # which is also what the dynamic stock loader serves: it is the one
-        # other DSP section admitted (its X mailbox is checked in ab_image).
-        if any(_m.dsp is not None for _m in remix_modules().values()
+        if any(_m.dsp is not None and _m.key not in ab_image.DSP_COMPANIONS
+               for _m in remix_modules().values()
                if _m.key in REMIX.modules and not _m.dynamic_stock):
-            sys.exit("ANALOG BD's DSP source currently composes with stock effects only")
+            sys.exit("ANALOG BD cannot share DSP memory with these effects")
         _pres, _apokes, _alog = ab_image.integrate(img, IMG.read_bytes(),
-                                                   org=AB_TOP if DYNAMIC else None)
+                                                   org=AB_TOP if DYNAMIC else None,
+                                                   placed=AB_PLACED, listed=_listed)
         print("\n=== Analog BD: DSP 808/909, both payloads, pre-boot loader ===")
         for _l in _alog:
             print(_l)

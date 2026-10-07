@@ -4,17 +4,17 @@ import { selectionConflicts, selectionConflictError } from './selection-conflict
 
 const seven = ['miniverb', 'tapeecho', 'euclid', 'repitch', 'usb-audio-out-tracks-main-cue', 'quantizer']
 describe('native selection conflicts', () => {
-  it('shows verified Analog BD conflicts and offers both explicit choices', () => {
-    const ids = [...seven, 'analog-bassdrum']
-    const result = checkSelection(ids)
-    expect(result.checked).toBe(false)
-    expect(result.conflicts[0].moduleIds).toEqual(['analog-bassdrum', 'miniverb', 'tapeecho', 'euclid'])
-    expect(result.conflicts[0].fixes[0]).toEqual({label:'Remove Analog BD & Euclid',removeIds:['analog-bassdrum','euclid']})
-    expect(result.conflicts[0].fixes[1].removeIds).toEqual(['miniverb', 'tapeecho', 'euclid'])
-    expect(result.notes).toEqual([])
-    const analogChoice = ids.filter(id => !result.conflicts[0].fixes[1].removeIds?.includes(id))
-    expect(selectionConflicts(analogChoice)).toEqual([])
-    expect(checkSelection(analogChoice).checked).toBe(true)
+  it('allows reviewed DSP companions beside Analog BD and keeps real limits actionable', () => {
+    for (const id of ['miniverb', 'tapeecho', 'euclid', 'tapehead', 'sidechain-compressor']) {
+      expect(selectionConflicts(['analog-bassdrum', id])).toEqual([])
+      expect(checkSelection(['analog-bassdrum', id]).checked).toBe(true)
+    }
+    const result = checkSelection([...seven, 'analog-bassdrum'])
+    expect(result.conflicts.map(conflict => conflict.id)).toEqual(['module-menu-space'])
+    expect(result.conflicts[0].fixes[0].removeIds).toEqual(['euclid'])
+    expect(checkSelection([...seven.filter(id => id !== 'euclid'), 'analog-bassdrum']).checked).toBe(true)
+    const incompatible = selectionConflicts(['analog-bassdrum', 'character'])[0]
+    expect(incompatible.fixes[1].removeIds).toEqual(['character'])
   })
   it('reports the verified minimal menu collision regardless of additional runtime modules', () => {
     expect(selectionConflicts(seven)[0].id).toBe('module-menu-space')

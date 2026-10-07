@@ -24,6 +24,8 @@ To add, port or update a module, follow [Add or port a module](../docs/ADD_A_MOD
 | `build/Dockerfile` | the pinned, firmware-free toolchain that compiles module packages |
 | `module-qualification-baseline.json`, `module-release-waivers.json`, `*-build-approval.json` | owner-approved exceptions, each bound to exact versions and hashes ([qualification](../docs/MODULE_QUALIFICATION.md)) |
 
+The shared builder now admits Analog BD with Mini Verb, Tape Echo, Euclid, TapeHead and Sidechain Compressor, subject to actual DSP and menu capacity. The engine and shared reverb helper have explicit reservations on both cores; Tape Echo fits in the remaining Spring Reverb gap, while larger inserts use the fewest additional reverb regions that fit. This supersedes the stock-effects-only restriction in the historical module releases and composition proofs. Module algorithms and versioned hardware evidence are unchanged; these new combinations have composition verification, not new hardware qualification. See [the current verification record](../docs/VERIFICATION.md#analog-bd-with-custom-effects--7-october-2026).
+
 ## Octatrack native development
 
 Native work needs Python 3.10+, CMake, the patched DSP56300 assembler and disassembler, GNU `m68k-elf` tools and your own original OS 1.40C, kept outside the repository. Read `octabam/docs/remixer/MODULES.md` and `PLACEMENT.md` before changing memory claims. Do not run unreviewed manifests on a trusted computer: compile them in isolation, without credentials.

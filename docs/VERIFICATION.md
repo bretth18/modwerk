@@ -843,3 +843,27 @@ Prepared documentation updates for all 12 Digitakt/Digitone modules, following t
 The frontend support shows committed Digi captures on Overview and Media, identifies the emulator provenance, and links the complete guide beside the matching tutorial. DIGISLICER’s selection, SRC and sample-backed waveform editor assets loaded at 768×384 in the local browser; its tutorial and guide link rendered correctly. Digichain’s screenshots show the dependent POLY machine and explicitly credit its controls. Silent plots and unavailable load counters are labelled; audio, hardware, persistence, timing and stress qualification remain unchanged.
 
 Passed on Node 24: `npm run check` (996 tests), `module:doctor -- --all`, and `modules:check -- --base origin/main`. Native module code, build declarations, source pins, upstream files and author licences are unchanged.
+
+## Analog BD with custom effects — 7 October 2026
+
+The native and browser builders now reserve Analog BD's 1,000-word engine and its relocated 35-word stock reverb helper on each DSP core. A smallest-fit allocation uses the remaining 28-word gap for Tape Echo's five-word DSP stub. Larger inserts use separate Plate/Dark Reverb regions. Donor selection still minimizes the number of lost stock effects, and all stock FX1 effects remain available. When Dark Reverb is a donor, the builder retargets only surviving stock helper calls, leaving custom code untouched. The shared helper called by a retained Plate Reverb remains protected.
+
+Analog BD now composes with Mini Verb, Tape Echo, Euclid, TapeHead and Sidechain Compressor. Each larger companion needs one additional reverb region; Mini Verb and Euclid together share Dark's region while retaining Plate. Tape Echo needs no additional donor beyond Analog BD's Spring region. Four larger companions together still exceed the available separate runs. Crowded-menu checks, MIDI Scenes' standalone restriction, paused modules, original-firmware fingerprints and boot staging limits remain enforced.
+
+Analog BD plus Tape Echo also exposed a bootloader limitation: the packed ColdFire runtime can move the DSP upload table beyond a signed 16-bit PC-relative address. The preboot loader now uses an explicitly absolute 32-bit address. Source packages were rebuilt in the network-disabled toolchain; module algorithm packages are unchanged. Only the preboot template and source provenance changed. The non-preboot loader's instruction bytes are unchanged.
+
+`scripts/export-composition-proofs.py --suite analog-bd --static-stock --vendored-sdk` covers 136 profiles: every subset of the five DSP companions with Analog BD, each individual DSP companion with each utility, and each individual DSP companion with the five utilities together, all with retained and compact FX2 menus. Native accepts 130 and rejects six for real DSP or menu limits. The current native fingerprints are in `src/engine/assets/analog-bd-composition-proofs.json`; older Analog BD refusals remain historical evidence.
+
+Reproduce the browser/native comparison locally with Node 24, GNU m68k tools, and the owner's original firmware:
+
+```sh
+node scripts/verify-analog-bd-native.mjs /local/original-1.40C.bin src/engine/assets/analog-bd-composition-proofs.json
+```
+
+The verifier compares module-owned OS bytes with native outside runtime-dependent platform fields, checks the logger/platform do not overlap module writes, independently assembles and links each actual logger-bearing bootloader, round-trips the DSP uploads, and tests full upgrade packaging for the five individual DSP companions. It also rejects modified original firmware. Temporary bootloader inputs are removed; only hashes and placement facts belong in the repository. These are composition and packaging checks; no new physical-device, audio, cycle or stress qualification is asserted for the combinations.
+
+The compatibility change was moved onto current `main` in an isolated worktree before opening its PR. Source packages were compiled again against that tree in a network-disabled container, preserving every module algorithm and version. The native comparison matrix and application checks are recorded on that same tree. The library collision fixture uses MIDI Scenes with Analog BD, since Mini Verb with Analog BD is supported.
+
+On the PR branch, `npm run check -- --base origin/main` passed 1,082 application tests in 168 files, 48 SDK checks, lint, TypeScript, catalogue/licence validation and the production build. `node scripts/import-module-build.mjs <packages> --development --check-only --verify-existing` verified the complete rebuilt source inventory and every committed package. Only the requested preboot template and source fingerprints differ from current main; all other compiled package payloads are identical.
+
+The refreshed native matrix accepted 130 configurations and rejected six. `scripts/verify-analog-bd-native.mjs` passed all 130 native module-owned OS and GNU bootloader comparisons, six matching refusals and five complete firmware round trips. The shared `scripts/native-comparison.mjs` path also passed for those five individual companions and six refusals. Original firmware was unchanged, and temporary bootloader inputs were removed. No new hardware, audio, cycle or stress qualification was performed.

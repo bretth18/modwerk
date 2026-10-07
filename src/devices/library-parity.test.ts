@@ -66,7 +66,7 @@ describe('All machines library parity', () => {
   it('shows saved Octatrack and Digitakt collisions even when filters hide their modules', () => {
     const html = renderToStaticMarkup(createElement(AllMachinesLibrary, {...props,
       query: 'no matching modules', octatrackModules: [],
-      octatrackConflicts: selectionConflicts(['miniverb', 'analog-bassdrum']),
+      octatrackConflicts: selectionConflicts(['midi-scenes', 'analog-bassdrum']),
       digiSelected: {digitakt: ['digislicer', 'digisophie'], digitone: []},
     }))
     expect(html).toContain('Octatrack: your selection needs a change')
