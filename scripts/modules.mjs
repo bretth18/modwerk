@@ -1,3 +1,4 @@
+import { isDocumentationChange } from './change-scope.mjs'
 import { requireModwerkDocumentation } from './module-documentation.mjs'
 import { readFileSync } from 'node:fs'
 import { readFile, readdir, mkdir, writeFile, copyFile, rm } from 'node:fs/promises'
@@ -74,9 +75,9 @@ for(const machine of machineProfiles.filter(profile=>profile.sdk?.platform==='el
   if(document.id!==entry.name||document.machine!==machine.id)throw new Error(label+': module id and machine must match its folder')
   if(baseCommit){
    const prefix=machine.sdk.modules+'/'+entry.name+'/',oldPath=prefix+'modwerk.module.json'
-   const changed=(git('diff','--name-only',baseCommit,'--',prefix)+git('ls-files','--others','--exclude-standard','--',prefix)).trim()
+   const changedPaths=(git('diff','--name-only',baseCommit,'--',prefix)+git('ls-files','--others','--exclude-standard','--',prefix)).trim().split('\n').filter(Boolean),changed=changedPaths.length>0
    if(changed&&!document.tests.documentation)throw new Error(label+': new and updated modules require complete documentation, tutorial and capture provenance')
-   if(git('ls-tree','--name-only',baseCommit,'--',oldPath).trim()===oldPath){const old=JSON.parse(git('show',baseCommit+':'+oldPath));if(changed&&compareModuleVersions(document.version,old.version)<=0)throw new Error(label+': every source, documentation or media update requires a greater module version than '+old.version)}
+   if(git('ls-tree','--name-only',baseCommit,'--',oldPath).trim()===oldPath){const old=JSON.parse(git('show',baseCommit+':'+oldPath));const codeChanged=changedPaths.some(path=>!isDocumentationChange({path,before:path===oldPath?JSON.stringify(old):'',after:path===oldPath?readFileSync(resolve(folder,'modwerk.module.json'),'utf8'):''}));if(codeChanged&&compareModuleVersions(document.version,old.version)<=0)throw new Error(label+': every code or behaviour update requires a greater module version than '+old.version+'; documentation and media edits do not')}
   }
   const build=parseElemodBuild(await json(await file(folder,document.platform.build)),document)
   // Modules may use only what their machine's core interface provides.

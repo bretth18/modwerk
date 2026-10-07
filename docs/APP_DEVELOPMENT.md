@@ -274,3 +274,10 @@ sdk/              pinned native source, eleven module folders, internal dependen
 Checks first validate licence-notice and catalog freshness, then finish notice/catalog/media generation before readers start. SDK checks, lint, tests and the production build run concurrently, and every stage must pass; type errors prevent bundling. Test files retain isolation and use up to four workers, including the release tests under `scripts/`. ESLint caches results by file contents and configuration under `node_modules/.cache/eslint/`; TypeScript keeps incremental app, tooling and server state under `node_modules/.tmp/`. Licence and catalog/qualification validation, SDK checks, all tests and production bundling still run every time. `npm run typecheck` checks all three TypeScript projects, and `npm run lint -- --no-cache` performs an uncached lint run.
 
 Successful reports open the returned GitHub issue in a new tab and retain a fallback link. The server mentions the catalog author. If GitHub forwarding fails, the saved-report confirmation asks users not to submit duplicates.
+
+
+## Documentation validation and deployment scope
+
+Run `npm run check -- --base origin/main` before committing. The shared `scripts/change-scope.mjs` compares actual changes, including manifest prose and generated catalogues. Documentation-only edits validate licences, catalogue freshness, module contracts, tutorials and capture provenance without the application suite, lint, typecheck, bundle or native compilation. Unknown paths and source/behaviour changes retain the full app checks.
+
+PR and Pages firmware builds follow firmware source and build identities rather than broad SDK directory changes. Digi documentation/version labels do not rebuild Octatrack packages. Source pins, build recipes, toolchains, code, linking metadata and package changes retain their native gates. Pages still bundles the site to publish updated documentation. Generated catalogue edits only redeploy the Worker when its consumed module fields change; a manual Worker dispatch still deploys. Retargeting a PR reruns checks against its new exact base.

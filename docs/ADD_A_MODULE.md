@@ -19,7 +19,7 @@ Every module follows [the guide for its category](module-guides/README.md): effe
 
 - Never commit firmware, extracted stock code or tables, memory dumps, emulator cards or built images. Firmware stays on your computer. Stock code is referenced by address, length and SHA-256 and copied from each user's own OS file when they build.
 - Keep every author's credit and full licence text. Pin ported source to an exact commit.
-- Any change inside a module folder needs a higher semantic `version` in its manifest, and the same version in `sdk/catalog.json` once the module is listed there.
+- Code or behaviour changes inside a module folder need a higher semantic `version` in its manifest, and the same version in `sdk/catalog.json` once listed. Documentation/media/prose-only edits do not need a version bump.
 - One module per pull request. The owner merging it approves that version.
 
 ## Setup
@@ -33,20 +33,21 @@ Run this after every edit. It takes about 15 seconds, never reads firmware and n
 
 ```sh
 npm run modules:generate                      # regenerate the catalog from the module folders
-npm run check                                 # lint, tests, types and the production build, as in CI
+npm run check -- --base origin/main            # scopes docs to metadata/provenance; code runs the full app suite
 npm run module:doctor -- <id>                 # does the module fit every workflow? lists each gap and the command that fixes it
 npm run modules:check -- --base origin/main   # version and publication rules for the folders you changed
 ```
 
 ## What CI runs
 
-- **Every pull request:** `npm run check` (lint, tests, types, build), about a minute.
+- **Documentation-only pull requests:** licence, generated catalogue, module contract, tutorial and screenshot-provenance validation. No application test suite, bundle, Windows runner or native compiler.
+- **Application or behaviour changes:** the full `npm run check` (lint, tests, types, build).
 - **Only a pull request that changes module source, the module build or the committed packages:** the Docker compile that must reproduce the committed packages. Changes to module folders or their path handling also run the Windows check. These are the same inputs the release uses to decide whether to rebuild the modules.
 - **After the merge:** the release verifies the merge approval, re-verifies the generated files, licences and module records, then type-checks and bundles what the pull request already tested. It rebuilds the modules only if module inputs changed.
 
 ## Documentation-only updates
 
-Fixing a README, a tutorial, a caption or a screenshot of a module that already has its qualification record needs none of the heavy steps: no version bump, no rebuilt packages, no fresh approval, and no Docker compile in CI when only README, Markdown, `media/`, `presentation/` or `evidence/` files change. The packages and the owner's approval bind to the module's code fingerprint (`moduleSourceFingerprint` in `scripts/module-source.mjs`), which ignores those files and the manifest's prose. Open a normal pull request; `npm run check` is the only gate. The frozen baseline modules, `cc-map`, `previewvol` and MIDI Scenes keep their older exact-folder rules (see [retained evidence](MODULE_QUALIFICATION.md#risk-based-update-checks--3-october-2026)).
+Fixing a README, a tutorial, a caption or a screenshot of a module that already has its qualification record needs none of the heavy steps: no version bump, no rebuilt packages, no fresh approval, and no Docker compile in CI when only README, Markdown, `media/`, `presentation/` or `evidence/` files change. The packages and the owner's approval bind to the module's code fingerprint (`moduleSourceFingerprint` in `scripts/module-source.mjs`), which ignores those files and the manifest's prose. Open a normal pull request and run `npm run check -- --base origin/main`. The same classifier drives PR checks and deployment: prose and media on all three machines skip native compilation, while firmware source, linking/build inputs and compiler changes retain it. The site still bundles and publishes the documentation; unchanged Worker inputs skip its deploy. The frozen baseline modules, `cc-map`, `previewvol` and MIDI Scenes keep their older exact-folder rules (see [retained evidence](MODULE_QUALIFICATION.md#risk-based-update-checks--3-october-2026)).
 
 ## What a finished module contains
 
