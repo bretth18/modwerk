@@ -123,11 +123,30 @@ describe('module update subscriptions', () => {
     expect(await syncModuleReleases(env, adapter)).toEqual({ checked: 0, notified: 0 })
     expect(await syncModuleReleases(env, adapter)).toEqual({ checked: 1, notified: 0 })
     expect(fetch.mock.calls[0][0].href).toBe('https://example.test/modwerk/module-releases.json')
-    expect(fetch.mock.calls[0][1].redirect).toBe('error')
+    expect(fetch.mock.calls[0][1].redirect).toBe('manual')
     await expect(syncModuleReleases(env, adapter)).rejects.toThrow('Invalid module semantic version')
     expect(db.prepare('SELECT version FROM module_release_state').get()!.version).toBe('10.0.0')
     expect(() => parseModuleReleases(manifest([release(), release()]))).toThrow()
     expect(() => parseModuleReleases(manifest([{ ...release(), href: 'https://evil.example/' }]))).toThrow()
+  })
+
+  it('uses a Workers-supported fetch mode and rejects redirected inventories before recording releases', async () => {
+    const { db, adapter } = testDatabase(); databases.push(db)
+    const env = { APP_URL: 'https://example.test/' }
+    const fetch = vi.fn(async (_url: URL, options: RequestInit) => {
+      if (options.redirect === 'error') throw new TypeError('Invalid redirect value: Workers supports only follow/manual')
+      if (options.redirect === 'follow') return Response.json(manifest([release()]))
+      return new Response(null, { status: 302, headers: { Location: 'https://other.example/module-releases.json' } })
+    })
+    vi.stubGlobal('fetch', fetch)
+    await expect(syncModuleReleases(env, adapter)).rejects.toThrow('Published module versions could not be checked.')
+    expect(db.prepare('SELECT COUNT(*) AS count FROM module_releases').get()!.count).toBe(0)
+    expect(db.prepare('SELECT COUNT(*) AS count FROM module_release_inventory').get()!.count).toBe(0)
+    fetch.mockImplementation(async (_url: URL, options: RequestInit) => {
+      if (options.redirect === 'error') throw new TypeError('Invalid redirect value: Workers supports only follow/manual')
+      return Response.json(manifest([release()]))
+    })
+    expect(await syncModuleReleases(env, adapter)).toEqual({ checked: 1, notified: 0 })
   })
 
   it('includes the published version in bell and email, respects the update topic, and exports/deletes follows', async () => {

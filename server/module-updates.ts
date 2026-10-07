@@ -99,7 +99,8 @@ export async function syncModuleReleases(env: Env, db: Database) {
   const app = new URL(env.APP_URL)
   app.pathname = app.pathname.replace(/\/?$/, '/'); app.search = ''; app.hash = ''
   const url = new URL('module-releases.json', app)
-  const result = await fetch(url, { redirect: 'error', signal: AbortSignal.timeout(10000), headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' } })
+  // Workers supports only follow/manual; a redirect remains a failed check through result.ok below.
+  const result = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(10000), headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' } })
   if (result.status === 404) return { checked: 0, notified: 0 } // The previous site can still be live during rollout.
   if (!result.ok) throw new Error('Published module versions could not be checked.')
   const body = await result.text()
