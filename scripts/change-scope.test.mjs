@@ -18,6 +18,12 @@ describe('documentation and firmware scheduling', () => {
     const actual = scope(...['README.md', 'media/control.png', 'media/capture.json', 'presentation/thumbnail.svg', 'evidence/report.json'].map(path => change(`sdk/${machine}/modules/demo/${path}`)))
     expect(actual).toEqual({ documentation: true, modules: false, elemod: false, windows: false, worker: false, logger: false })
   })
+  it('treats authored changelog data as documentation while retaining app checks for its renderer and validator', () => {
+    expect(scope(change('src/community/module-changelogs.json'))).toEqual({ documentation: true, modules: false, elemod: false, windows: false, worker: false, logger: false })
+    for (const path of ['src/community/ModuleChangelog.tsx', 'src/community/module-changelogs.ts', 'scripts/module-changelogs.mjs']) {
+      expect(scope(change(path))).toEqual({ documentation: false, modules: false, elemod: false, windows: false, worker: false, logger: false })
+    }
+  })
   it('recognizes manifest/gallery/tutorial edits plus their generated catalog as documentation', () => {
     const updated = { ...digi, presentation: { ...digi.presentation, usage: ['Better tutorial'] }, controls: [{ description: 'Clear label' }], media: [{ path: 'media/control.png' }], tests: { documentation: { tutorial: {} } } }
     const actual = scope(change(modulePath, digi, updated), change('src/catalog/machine-modules.json', { modules: [digi] }, { modules: [updated] }))

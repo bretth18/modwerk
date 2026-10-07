@@ -40,10 +40,28 @@ npm run modules:check -- --base origin/main   # version and publication rules fo
 
 ## What CI runs
 
-- **Documentation-only pull requests:** licence, generated catalogue, module contract, tutorial and screenshot-provenance validation. No application test suite, bundle, Windows runner or native compiler.
+- **Documentation-only pull requests:** licence, generated catalogue, release-note coverage, module contract, tutorial and screenshot-provenance validation. No application test suite, bundle, Windows runner or native compiler.
 - **Application or behaviour changes:** the full `npm run check` (lint, tests, types, build).
 - **Only a pull request that changes module source, the module build or the committed packages:** the Docker compile that must reproduce the committed packages. Changes to module folders or their path handling also run the Windows check. These are the same inputs the release uses to decide whether to rebuild the modules.
 - **After the merge:** the release verifies the merge approval, re-verifies the generated files, licences and module records, then type-checks and bundles what the pull request already tested. It rebuilds the modules only if module inputs changed.
+
+## Release notes (required for every module version)
+
+Before publishing a new module or updating its version, add an entry under its community ID in `src/community/module-changelogs.json`. Octatrack IDs are the module ID (`euclid`); Digitakt and Digitone IDs include the machine (`digitakt-digihealth`, `digitone-digihealth`). Keep earlier entries. The module page’s Changelog tab shows these notes, including when live version history is unavailable.
+
+```json
+{
+  "version": "0.1.5-experimental",
+  "date": "2026-10-08",
+  "changes": ["Describe the user-visible fix or feature and any compatibility or saved-project limits."]
+}
+```
+
+Use the exact catalog/manifest version and the source-update date (`YYYY-MM-DD`). An optional `sourceCommit` is a full 40-character repository commit SHA; omit it until the referenced commit exists. Explain what changed, not just “updated module”. Mention changed controls, migration requirements and remaining limitations when relevant. Never imply hardware or audio testing that did not happen. Imported releases must distinguish upstream implementation changes from Modwerk packaging or documentation changes.
+
+`npm run check -- --base origin/main` and `npm run build` reject missing current-version notes, duplicate/invalid versions, malformed dates and unknown module IDs. `node scripts/module-changelogs.mjs` runs just this inexpensive metadata check. Regenerate catalogs after a manifest version changes, then validate before committing. Notes live outside module source folders so adding them does not invalidate retained qualification records or trigger native compilation.
+
+Documentation-only changes do not need a version bump: update the current entry with a clearly marked documentation-only note if the change belongs in its release history. A new version, including a metadata-only version when deliberately published, must always have its own entry.
 
 ## Documentation-only updates
 
