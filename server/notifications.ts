@@ -33,6 +33,14 @@ export function notifyMentions(db: Database, body: string, threadId: string, pos
   return [db.prepare(`INSERT INTO notifications(id,user_id,kind,actor_id,thread_id,post_id,module_id) SELECT ${newId},u.id,'mention',?,t.id,?,t.module_id FROM users u JOIN forum_threads t ON t.id=? WHERE lower(u.username) IN (${names.map(() => '?').join(',')}) AND u.email_verified=1 AND u.suspended=0 AND u.id<>? AND NOT EXISTS(SELECT 1 FROM social_pending_accounts s WHERE s.user_id=u.id) AND EXISTS(SELECT 1 FROM forum_posts WHERE id=?)`).bind(authorId, postId, threadId, ...names, authorId, postId)]
 }
 
+/** A Shoutbox mention is the same bell entry as a forum mention, linked to the archive. The shout ID rides in
+ * comment_id, a free column without a foreign key, so hiding or deleting the shout hides the entry. */
+export function notifyShoutMentions(db: Database, body: string, shoutId: string, authorId: string): Statement[] {
+  const names = mentionedUsernames(body)
+  if (!names.length) return []
+  return [db.prepare(`INSERT INTO notifications(id,user_id,kind,actor_id,comment_id) SELECT ${newId},u.id,'mention',?,? FROM users u WHERE lower(u.username) IN (${names.map(() => '?').join(',')}) AND u.email_verified=1 AND u.suspended=0 AND u.id<>? AND NOT EXISTS(SELECT 1 FROM social_pending_accounts s WHERE s.user_id=u.id) AND EXISTS(SELECT 1 FROM forum_shouts WHERE id=?)`).bind(authorId, shoutId, ...names, authorId, shoutId)]
+}
+
 export function notifyReplies(db: Database, threadId: string, postId: string, authorId: string) {
   return db.prepare(`INSERT INTO notifications(id,user_id,kind,actor_id,thread_id,post_id,module_id) SELECT ${newId},f.user_id,'reply',?,t.id,?,t.module_id FROM forum_follows f JOIN users u ON u.id=f.user_id JOIN forum_threads t ON t.id=f.thread_id WHERE f.thread_id=? AND f.user_id<>? AND u.suspended=0 AND NOT EXISTS(SELECT 1 FROM auth_accounts g WHERE g.userId=? AND g.providerId='github' AND g.accountId=u.github_id) AND EXISTS(SELECT 1 FROM forum_posts WHERE id=?) AND NOT EXISTS(SELECT 1 FROM notifications n WHERE n.post_id=? AND n.user_id=f.user_id)`).bind(authorId, postId, threadId, authorId, authorId, postId, postId)
 }
@@ -64,14 +72,15 @@ export function withdrawModuleLike(db: Database, moduleId: string, actorId: stri
 }
 
 /** Notifications whose content was hidden or removed, or whose actor was suspended, are not shown or mailed. */
-export const VISIBLE = "(n.thread_id IS NULL OR t.hidden=0) AND (n.post_id IS NULL OR p.hidden=0) AND (n.kind<>'module_comment' OR c.id IS NOT NULL) AND (a.id IS NULL OR a.suspended=0 OR a.username IS NULL) AND (n.kind<>'message' OR (dm.id IS NOT NULL AND dm.hidden=0))"
+export const VISIBLE = "(n.thread_id IS NULL OR t.hidden=0) AND (n.post_id IS NULL OR p.hidden=0) AND (n.kind<>'module_comment' OR c.id IS NOT NULL) AND (a.id IS NULL OR a.suspended=0 OR a.username IS NULL) AND (n.kind<>'message' OR (dm.id IS NOT NULL AND dm.hidden=0)) AND (n.kind<>'mention' OR n.thread_id IS NOT NULL OR (sh.id IS NOT NULL AND sh.hidden=0))"
 export const ITEM_SQL = `SELECT n.id,n.kind,n.seen,n.created_at,n.thread_id,n.post_id,n.module_id,n.module_version,a.username AS actor,a.avatar_id AS actor_avatar,a.id='${SYSTEM_AUTHOR}' AS actor_official,COALESCE(t.title,i.title,m.name) AS title,
- CASE WHEN n.kind IN ('reply','mention','bug_report') THEN substr(p.body,1,200) WHEN n.kind='module_comment' THEN substr(c.body,1,200) WHEN n.kind='issue_comment' THEN substr(n.excerpt,1,200) WHEN n.kind='message' THEN substr(dm.body,1,200) WHEN n.kind='request_status' THEN n.excerpt END AS excerpt,
+ CASE WHEN n.kind IN ('reply','bug_report') THEN substr(p.body,1,200) WHEN n.kind='mention' THEN substr(COALESCE(p.body,sh.body),1,200) WHEN n.kind='module_comment' THEN substr(c.body,1,200) WHEN n.kind='issue_comment' THEN substr(n.excerpt,1,200) WHEN n.kind='message' THEN substr(dm.body,1,200) WHEN n.kind='request_status' THEN n.excerpt END AS excerpt,
  CASE WHEN n.kind='module_rating' THEN r.value END AS rating,n.issue_id,n.github_actor,COALESCE(i.github_url,m.href) AS url,
  (SELECT CAST(COUNT(*)/30 AS INTEGER) FROM forum_posts preceding WHERE preceding.thread_id=p.thread_id AND (preceding.created_at<p.created_at OR (preceding.created_at=p.created_at AND preceding.rowid<p.rowid))) AS post_page
  FROM notifications n LEFT JOIN users a ON a.id=n.actor_id LEFT JOIN forum_threads t ON t.id=n.thread_id LEFT JOIN forum_posts p ON p.id=n.post_id
  LEFT JOIN comments c ON c.id=n.comment_id LEFT JOIN ratings r ON n.kind='module_rating' AND r.module_id=n.module_id AND r.user_id=n.actor_id
- LEFT JOIN issues i ON i.id=n.issue_id LEFT JOIN module_releases m ON n.kind='module_update' AND m.module_id=n.module_id AND m.version=n.module_version LEFT JOIN messages dm ON dm.id=n.message_id`
+ LEFT JOIN issues i ON i.id=n.issue_id LEFT JOIN module_releases m ON n.kind='module_update' AND m.module_id=n.module_id AND m.version=n.module_version LEFT JOIN messages dm ON dm.id=n.message_id
+ LEFT JOIN forum_shouts sh ON n.kind='mention' AND n.thread_id IS NULL AND sh.id=n.comment_id`
 type Row = Omit<NotificationItem, 'seen' | 'actorOfficial' | 'actorAvatar'> & { seen: number; actor_official: number | null; actor_avatar?: string | null }
 export const toItem = ({ actor_official, actor_avatar, seen, ...row }: Row): NotificationItem => ({ ...row, seen: !!seen, actorOfficial: !!actor_official, actorAvatar: actor_avatar ?? null })
 

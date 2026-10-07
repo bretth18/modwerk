@@ -7,9 +7,10 @@ import type { PublicMedia } from './api'
 import { useCommunity } from './context'
 import { Icon } from '../components/Icon'
 import { ModulePopularity } from './ModulePopularity'
-import { moduleThreadId } from './modules'
+import { modulePageHref, moduleThreadId } from './modules'
+import { useLoginPrompt } from './LoginPromptDialog'
 import { ForumThreadView } from './ForumThreadView'
-type Data = {ratings:{average:number|null;count:number};ownRating:number;likes:number;liked:boolean;downloads?:number;downloadsStarted?:string|null;discussionCount?:number;media:PublicMedia[]}
+type Data = {ratings:{average:number|null;count:number};ownRating:number;likes:number;liked:boolean;downloads?:number;downloadsStarted?:string|null;discussionCount?:number;sharedConfigurations?:number;media:PublicMedia[]}
 function MediaPreview({item,privatePreview}:{item:PublicMedia;privatePreview:boolean}) {
   const [preview,setPreview]=useState<{id:string;url:string}|null>(null),[error,setError]=useState('')
   useEffect(()=>{
@@ -31,6 +32,8 @@ export function MediaGallery({media,privatePreview=false}:{media:PublicMedia[];p
 }
 export function ModuleCommunity({id,mode='all',onDiscuss,onReportIssue,onDiscussionCount}:{id:string;mode?:'all'|'media'|'discussion'|'overview'|'ratings';onDiscuss?:()=>void;onReportIssue?:()=>void;onDiscussionCount?:(count:number)=>void}) {
   const {session,refresh} = useCommunity()
+  // Visitors see live buttons; pressing one opens the sign-in prompt and brings them back to this page.
+  const {dialog,gate}=useLoginPrompt(modulePageHref(id).slice(1))
   const document=MODULE_DOCUMENTS_BY_ID[id],sourceMedia=document?.media??[]
   const [data,setData] = useState<Data | null>(null), [rating,setRating] = useState(0), [error,setError] = useState(''), [busy,setBusy] = useState(false), [notice,setNotice] = useState('')
   useEffect(() => {
@@ -54,22 +57,22 @@ export function ModuleCommunity({id,mode='all',onDiscuss,onReportIssue,onDiscuss
     <div className="module-showcase">
       {mediaSection}
       <section className="ratings-overview" aria-label="Module ratings">
-        <div className="section-title"><h2>Ratings</h2><button className="button button-quiet like-button" aria-label={(data?.liked?'Unlike ':'Like ')+id} aria-pressed={data?.liked??false} disabled={!session.user?.verified||!session.available||!data||busy} onClick={()=>void send('like')}>{data?.liked?'♥':'♡'} {data?.likes??'—'}</button></div>
-        <ModulePopularity statistics={data??undefined}/>
+        <div className="section-title"><h2>Ratings</h2><button className="button button-quiet like-button" aria-label={(data?.liked?'Unlike ':'Like ')+id} aria-pressed={data?.liked??false} disabled={!session.available||!data||busy} onClick={gate('Sign in to like this module',()=>void send('like'))}>{data?.liked?'♥':'♡'} {data?.likes??'—'}</button></div>
+        <ModulePopularity statistics={data??undefined} id={id}/>
         <div className="rating-empty"><strong>{data?.ratings.average?.toFixed(1)??'—'}</strong><div><span className="star-line" aria-hidden="true">{[1,2,3,4,5].map(i=><span key={i} className={data?.ratings.average && i<=Math.round(data.ratings.average)?'is-filled':''}><Icon name="star" size={16}/></span>)}</span><span role="status">{!session.available||(!data&&error)?'Ratings unavailable':!data?'Loading ratings…':data.ratings.count?data.ratings.count+(data.ratings.count===1?' rating':' ratings'):'No ratings yet'}</span></div></div>
         <button className="button button-quiet" onClick={onDiscuss}>Rate & discuss <Icon name="arrow" size={14}/></button>
         <p className="service-note">Ratings from registered members.</p>
         {!data&&error&&<button className="text-button" onClick={()=>{setError('');void api<Data>('/modules/'+id).then(value=>{setData(value);setRating(value.ownRating)}).catch(error=>setError(error.message))}}>Try again</button>}
       </section>
     </div>
-    {error&&<p className="file-error" role="alert">{error}</p>}{notice&&<p className="success-note" role="status">{notice}</p>}
+    {error&&<p className="file-error" role="alert">{error}</p>}{notice&&<p className="success-note" role="status">{notice}</p>}{dialog}
   </>
   return <>
     {mode !== 'discussion' && mode !== 'ratings' && mediaSection}
     {mode !== 'media' && <div className="community-grid">{mode !== 'ratings' && <section className="detail-section module-discussion forum-page"><ForumThreadView key={id} id={moduleThreadId(id)} embedded onReportIssue={onReportIssue} onReplyCount={onDiscussionCount}/></section>}
-    <section className="detail-section ratings-section"><div className="section-title"><h2>Ratings</h2><button className="button button-quiet like-button" aria-label={(data?.liked?'Unlike ':'Like ')+id} aria-pressed={data?.liked??false} disabled={!session.user?.verified||!session.available||busy} onClick={()=>void send('like')}>{data?.liked?'♥':'♡'} {data?.likes??0}</button></div><ModulePopularity statistics={data??undefined}/><div className="rating-empty"><strong>{data?.ratings.average?.toFixed(1) ?? '—'}</strong><div><span className="star-line">{[1,2,3,4,5].map(i=><span key={i} className={data?.ratings.average && i<=Math.round(data.ratings.average)?'is-filled':''}><Icon name="star" size={16}/></span>)}</span><span>{data?.ratings.count ? data.ratings.count+(data.ratings.count===1?' rating':' ratings'):'No ratings yet'}</span></div></div><fieldset className="rating-picker" disabled={!session.user?.verified}><legend>Your rating</legend><div>{[1,2,3,4,5].map(i=><button key={i} className={rating>=i?'is-filled':''} aria-label={i+(i===1?' star':' stars')} aria-pressed={rating===i} onClick={()=>setRating(i)}><Icon name="star" size={23}/></button>)}</div></fieldset><button className="button button-quiet rating-save" disabled={!session.user?.verified||!session.available||busy||!rating} onClick={()=>void send('rating')}>Save rating</button><MemberPrompt/></section></div>}
+    <section className="detail-section ratings-section"><div className="section-title"><h2>Ratings</h2><button className="button button-quiet like-button" aria-label={(data?.liked?'Unlike ':'Like ')+id} aria-pressed={data?.liked??false} disabled={!session.available||busy} onClick={gate('Sign in to like this module',()=>void send('like'))}>{data?.liked?'♥':'♡'} {data?.likes??0}</button></div><ModulePopularity statistics={data??undefined} id={id}/><div className="rating-empty"><strong>{data?.ratings.average?.toFixed(1) ?? '—'}</strong><div><span className="star-line">{[1,2,3,4,5].map(i=><span key={i} className={data?.ratings.average && i<=Math.round(data.ratings.average)?'is-filled':''}><Icon name="star" size={16}/></span>)}</span><span>{data?.ratings.count ? data.ratings.count+(data.ratings.count===1?' rating':' ratings'):'No ratings yet'}</span></div></div><fieldset className="rating-picker" disabled={!session.available}><legend>Your rating</legend><div>{[1,2,3,4,5].map(i=><button key={i} className={rating>=i?'is-filled':''} aria-label={i+(i===1?' star':' stars')} aria-pressed={rating===i} onClick={gate('Sign in to rate this module',()=>setRating(i))}><Icon name="star" size={23}/></button>)}</div></fieldset><button className="button button-quiet rating-save" disabled={!session.available||busy||!rating} onClick={gate('Sign in to rate this module',()=>void send('rating'))}>Save rating</button><MemberPrompt/></section></div>}
     {mode !== 'media' && <p className="community-privacy">{mode === 'ratings' ? 'Ratings and likes are public.' : 'Usernames, posts, ratings and likes are public.'} Sign in to manage your activity across devices. Email addresses stay private. Older guest names remain unverified. Posts are moderated.</p>}
     {mode !== 'media' && !session.available && <p className="service-note">Community is unavailable. {mode === 'ratings' ? 'Ratings are paused.' : 'Discussions and ratings are paused.'}</p>}
-    {error&&<p className="file-error" role="alert">{error}</p>}{notice&&<p className="success-note" role="status">{notice}</p>}
+    {error&&<p className="file-error" role="alert">{error}</p>}{notice&&<p className="success-note" role="status">{notice}</p>}{dialog}
   </>
 }

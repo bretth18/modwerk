@@ -215,3 +215,25 @@ describe('one module discussion',()=>{
     expect(db.prepare("SELECT hidden FROM forum_posts WHERE id='comment-legacy-one'").get()!.hidden).toBe(1)
   })
 })
+
+describe('shared configurations on module pages',()=>{
+  it('counts public configuration threads whose snapshot includes the module and lists them under the module filter',async()=>{
+    const {call,db,token}=await fixture()
+    const octatrack=(moduleIds:string[])=>({name:'Set',moduleIds,moduleVersions:Object.fromEntries(moduleIds.map(id=>[id,communityModule(id)!.version])),keepStockFx2:true})
+    const share=async(configuration:unknown,title='Shared set')=>{const result=await call('/forum/threads','POST',{title,body:'Try this set.',category:'configs',configuration},token);expect(result.status).toBe(201);return (await result.json()).id as string}
+    const first=await share(octatrack(['miniverb','spectrum']),'Ambient set'),second=await share(octatrack(['miniverb']),'Verb only'),hidden=await share(octatrack(['miniverb']),'Hidden later')
+    await share(octatrack(['spectrum']),'No verb')
+    const digi=await share({name:'Digi',device:'digitakt',moduleIds:['digihealth'],moduleVersions:{digihealth:communityModule('digitakt-digihealth')!.version},keepStockFx2:false},'Digitakt set')
+    await call('/forum/threads','POST',{title:'A question',body:'Not a configuration.',category:'general',moduleId:'miniverb'},token)
+    db.prepare('UPDATE forum_threads SET hidden=1 WHERE id=?').run(hidden)
+    expect((await (await call('/modules/miniverb')).json()).sharedConfigurations).toBe(2)
+    expect((await (await call('/modules/spectrum')).json()).sharedConfigurations).toBe(2)
+    expect((await (await call('/modules/digitakt-digihealth')).json()).sharedConfigurations).toBe(1)
+    expect((await (await call('/modules/remix-tapeecho')).json()).sharedConfigurations).toBe(0)
+    const listed=async(query:string)=>((await (await call('/forum/threads?'+query)).json()).threads as {id:string}[]).map(thread=>thread.id).sort()
+    expect(await listed('category=configs&module=miniverb')).toEqual([first,second].sort())
+    expect(await listed('category=configs&module=digitakt-digihealth')).toEqual([digi])
+    expect((await listed('module=miniverb')).length).toBe(3)
+    expect(await listed('category=general&module=miniverb')).toHaveLength(1)
+  })
+})

@@ -219,6 +219,10 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .module-page-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 23px; }
 .module-page-actions .back-link { margin-bottom: 0; }
 .module-issue-action { min-height: 44px; font-size: 12px; }
+.module-page-buttons { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.module-page-buttons .share-control .button { min-height: 44px; font-size: 12px; }
+.share-control { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.share-notice { color: #bcd7c5; font-size: 12px; }
 .detail-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 34px; align-items: center; margin-bottom: 29px; }
 .detail-hero > .module-preview { height: 268px; border-radius: 12px; border: 1px solid #363640; }
 .detail-hero .preview-label { padding: 21px 23px 0; height: 33px; font-size: 12px; }
@@ -1132,7 +1136,9 @@ h1 { font-size: 28px; }
 @media(max-width:650px) { .statistics-cards { grid-template-columns:repeat(2,minmax(0,1fr)); } .admin-statistics .section-title { flex-wrap:wrap; gap:12px; } .statistics-highlights { grid-template-columns:minmax(0,1fr); } .statistics-highlights > div { padding:16px; } .statistics-module-controls label { width:100%; } .statistics-controls { align-items:center; } .admin-page > .page-heading { flex-wrap:wrap; } }
 
 .module-popularity { display: flex; flex-wrap: wrap; gap: 7px 16px; margin-top: 11px; padding-top: 10px; border-top: 1px solid #ffffff0b; color: #b7b7c4; font-size: 12px; font-variant-numeric: tabular-nums; }
-.module-popularity > span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.module-popularity > span, .module-popularity > a { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.module-popularity > a { color: #a8b0ff; }
+.module-popularity > a:hover { color: #d0d5ff; }
 .module-popularity svg { flex-shrink: 0; }
 .popularity-note { color: #aaaab7; font-size: 12px; line-height: 1.6; margin: 16px 0; }
 .published-card .module-popularity { margin-bottom: 14px; }
@@ -1250,7 +1256,7 @@ h1 { font-size: 28px; }
   .status-bar a[href="#configuration"] { font-size: 12px; }
 
   .module-page-actions { margin-bottom: 16px; }
-  .module-issue-action { min-height: 38px; padding: 0 12px; border-radius: 8px; }
+  .module-issue-action, .module-page-buttons .share-control .button { min-height: 38px; padding: 0 12px; border-radius: 8px; }
   .detail-hero { gap: 18px; margin-bottom: 22px; }
   .detail-hero > .module-preview { height: 180px; }
   .detail-intro h1 { font-size: 28px; margin-bottom: 4px; }

@@ -1,7 +1,7 @@
 import { pushRoutes } from './push'
 import { followReportedModule, moduleUpdateRoutes } from './module-updates'
 import { issueStatusStatements } from './issue-notifications'
-import { forum } from './forum'
+import { forum, SHARED_CONFIGURATIONS, sharedConfigurationBinds } from './forum'
 import { forumPublic } from './forum-public'
 import { forumMedia } from './forum-media'
 import { avatarRoutes } from './avatars'
@@ -107,13 +107,14 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
           EXISTS(SELECT 1 FROM likes WHERE module_id=requested.module_id AND user_id=requested.user_id) AS liked,
           COALESCE((SELECT downloads FROM module_downloads WHERE module_id=requested.module_id),0) AS downloads,
           (SELECT value FROM module_download_meta WHERE key='collection_started') AS downloadsStarted,
-          (SELECT COUNT(*) FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id WHERE t.id='module-' || requested.module_id AND p.id<>t.id AND p.hidden=0 AND t.hidden=0) AS discussionCount
-          FROM requested`).bind(match[1],user?.id??null).first<{average:number|null;count:number;ownRating:number;likes:number;liked:number;downloads:number;downloadsStarted:string|null;discussionCount:number}>(),
+          (SELECT COUNT(*) FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id WHERE t.id='module-' || requested.module_id AND p.id<>t.id AND p.hidden=0 AND t.hidden=0) AS discussionCount,
+          (SELECT COUNT(*) FROM forum_threads t WHERE ${SHARED_CONFIGURATIONS}) AS sharedConfigurations
+          FROM requested`).bind(match[1],user?.id??null,...sharedConfigurationBinds(match[1])).first<{average:number|null;count:number;ownRating:number;likes:number;liked:number;downloads:number;downloadsStarted:string|null;discussionCount:number;sharedConfigurations:number}>(),
         db.prepare("SELECT m.id,m.kind,m.caption,m.capture_type FROM media m JOIN module_publications p ON p.submission_id=m.submission_id WHERE p.module_id=?").bind(match[1]).all(),
       ])
       const comments = posts.results.map(({locked,...comment}) => ({...comment,user_id:undefined,canDelete:admin || !locked && comment.user_id === user?.id}))
       if(!statistics)throw new Error('Module statistics missing.')
-      return response({comments,ratings:{average:statistics.average,count:statistics.count},ownRating:statistics.ownRating,media:media.results,likes:statistics.likes,liked:!!statistics.liked,downloads:statistics.downloads,downloadsStarted:statistics.downloadsStarted,discussionCount:statistics.discussionCount})
+      return response({comments,ratings:{average:statistics.average,count:statistics.count},ownRating:statistics.ownRating,media:media.results,likes:statistics.likes,liked:!!statistics.liked,downloads:statistics.downloads,downloadsStarted:statistics.downloadsStarted,discussionCount:statistics.discussionCount,sharedConfigurations:statistics.sharedConfigurations})
     }
     if ((match = path.match(/^\/api\/modules\/([a-z0-9-]+)\/(comments|rating|like)$/)) && request.method === 'POST') {
       await knownModule(db,match[1])

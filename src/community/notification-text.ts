@@ -42,7 +42,7 @@ export function notificationLines(items: BellItem[], link: (hash: string) => str
     const actor = people([item]), base = { ids: [item.id], seen: item.seen, created_at: item.created_at, ...who(item) }
     if (item.kind === 'announcement') { lines.push({ ...base, text: `Modwerk: ${item.title ?? 'News'}`, excerpt: excerpt(item.excerpt), href: item.url ?? (item.module_id ? moduleHref(item.module_id) : link('#library')) }); continue }
     if (item.kind === 'reply') lines.push({ ...base, text: `${actor} replied in ${quote(item.title)}`, excerpt: excerpt(item.excerpt), href: threadHref(item) })
-    else if (item.kind === 'mention') lines.push({ ...base, text: `${actor} mentioned you in ${quote(item.title)}`, excerpt: excerpt(item.excerpt), href: threadHref(item) })
+    else if (item.kind === 'mention') lines.push(item.thread_id ? { ...base, text: `${actor} mentioned you in ${quote(item.title)}`, excerpt: excerpt(item.excerpt), href: threadHref(item) } : { ...base, text: `${actor} mentioned you in Shoutbox 8`, excerpt: excerpt(item.excerpt), href: link('#forum/shoutbox') })
     else if (item.kind === 'bug_report') lines.push({ ...base, text: `New bug report for ${moduleName(item.module_id)} from ${actor}: ${quote(item.title)}`, excerpt: excerpt(item.excerpt), href: threadHref(item) })
     else if (item.kind === 'module_comment') lines.push({ ...base, text: `${actor} commented on ${moduleName(item.module_id)}`, excerpt: excerpt(item.excerpt), href: moduleHref(item.module_id) })
     else if (item.kind.startsWith('issue_')) {

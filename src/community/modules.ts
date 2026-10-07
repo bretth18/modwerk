@@ -33,7 +33,6 @@ export function nativeModule(machine: string, id: string) { return machineModule
 /** Each module has one server-created forum thread with this fixed ID. */
 export const moduleThreadId = (id: string) => 'module-' + id
 /** Open the dedicated report form for catalog modules, sets and reviewed contributions. */
-export function moduleIssueHref(id: string) {
-  const href = communityModule(id)?.href ?? (id.startsWith('remix-') ? '#module-set/' + id.slice(6) : '#community-module/' + id)
-  return href + '?report=1'
-}
+/** The page of a catalog module, set or reviewed contribution. */
+export const modulePageHref = (id: string) => communityModule(id)?.href ?? (id.startsWith('remix-') ? '#module-set/' + id.slice(6) : '#community-module/' + id)
+export function moduleIssueHref(id: string) { return modulePageHref(id) + '?report=1' }

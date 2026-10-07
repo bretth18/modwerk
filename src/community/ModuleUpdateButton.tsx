@@ -2,17 +2,23 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { Icon } from '../components/Icon'
 import { api, post } from './api'
 import { useCommunity } from './context'
-import { accountHref } from './member-access'
-import { communityModule } from './modules'
+import { LoginPromptDialog } from './LoginPromptDialog'
+import { modulePageHref } from './modules'
 import type { ModuleUpdateSubscription } from './module-release-contract'
 
 export function ModuleUpdateButton({ id }: { id: string }) {
   const { session, loading } = useCommunity()
   // Every state renders the same block wrapper, so the button does not sit beside "Add to configuration" first and drop below it once the session arrives.
   if (loading) return <div className="module-update-subscription"><button className="button button-quiet" disabled><Icon name="bell" size={16} />Get update notifications</button></div>
-  if (!session.user) return <div className="module-update-subscription"><a className="button button-quiet" href={accountHref('login', communityModule(id)?.href.slice(1))}><Icon name="bell" size={16} />Get update notifications</a></div>
+  if (!session.user) return <VisitorInvitation id={id} />
   if (!session.user.verified) return <div className="module-update-subscription"><a className="button button-quiet" href="#account"><Icon name="bell" size={16} />Verify email to follow updates</a></div>
   return <Subscription key={id + ':' + session.user.id} id={id} />
+}
+
+/** The same button for visitors; pressing it opens the sign-in prompt and brings them back to this module. */
+function VisitorInvitation({ id }: { id: string }) {
+  const [open, setOpen] = useState(false)
+  return <div className="module-update-subscription"><button type="button" className="button button-quiet" aria-haspopup="dialog" onClick={() => setOpen(true)}><Icon name="bell" size={16} />Get update notifications</button>{open && <LoginPromptDialog action="Sign in to get update notifications" next={modulePageHref(id).slice(1)} onClose={() => setOpen(false)} />}</div>
 }
 
 function Subscription({ id }: { id: string }) {

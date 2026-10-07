@@ -11,6 +11,10 @@ import { shoutbox } from './shoutbox'
 import { FIRST_UNREAD_FIELDS, FIRST_UNREAD_JOIN, markForumRead, noteForumVisit, recordThreadRead, UNREAD, UNREAD_FIELDS, UNREAD_JOINS } from './forum-unread'
 
 type Thread = {id:string;user_id:string;category:string;section:string|null;module_id:string|null;request_status:string;locked:number;hidden:number;configuration_json:string|null;issue_json:string|null}
+/** Public configuration threads (alias t) whose snapshot includes a module: binds the snapshot machine, then the native module ID.
+ * Snapshots without a machine are Octatrack. */
+export const SHARED_CONFIGURATIONS = "t.category='configs' AND t.hidden=0 AND t.configuration_json IS NOT NULL AND COALESCE(json_extract(t.configuration_json,'$.device'),'octatrack')=? AND EXISTS(SELECT 1 FROM json_each(t.configuration_json,'$.moduleIds') WHERE json_each.value=?)"
+export function sharedConfigurationBinds(moduleId: string | null) { const module = moduleId ? communityModule(moduleId) : undefined; return [module?.machine ?? '', module?.moduleId ?? ''] }
 /** `forum_posts.hidden` for a deleted post: hidden like a moderated one, but its text is erased, it is never listed and it cannot be restored. */
 const POST_DELETED=2
 /** Deletes a reply but keeps its row, which notifications and reports refer to: the text is erased, its files are queued for the hourly bucket cleanup and its reports are closed. */
@@ -115,11 +119,11 @@ export async function forum(request: Request, db: Database, user: User|null, adm
       FROM forum_threads t JOIN users u ON u.id=t.user_id
       LEFT JOIN forum_posts lp ON lp.id=(SELECT p.id FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0 ORDER BY p.created_at DESC,p.rowid DESC LIMIT 1)
       LEFT JOIN users lu ON lu.id=lp.user_id ${reader?UNREAD_JOINS:''}
-      WHERE t.hidden=0 ${authorScope} AND (?='' OR COALESCE(t.section,t.category)=?) AND (?='' OR t.request_status=?) AND (? IS NULL OR t.machine=?) AND (? IS NULL OR t.module_id=?) AND (?='' OR u.username=?) AND (?=0 OR EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?))
+      WHERE t.hidden=0 ${authorScope} AND (?='' OR COALESCE(t.section,t.category)=?) AND (?='' OR t.request_status=?) AND (? IS NULL OR t.machine=?) AND (? IS NULL OR t.module_id=? OR (${SHARED_CONFIGURATIONS})) AND (?='' OR u.username=?) AND (?=0 OR EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?))
       AND (?=0 OR EXISTS(SELECT 1 FROM forum_follows f WHERE f.thread_id=t.id AND f.user_id=?)) ${reader&&unread?'AND '+UNREAD:''}
       AND (?='' OR t.title LIKE ? ESCAPE '\\' OR EXISTS(SELECT 1 FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0 AND p.body LIKE ? ESCAPE '\\'))
       ORDER BY t.pinned DESC,${sort==='top'?'votes DESC,t.updated_at':sort==='newest'?'t.created_at':'t.updated_at'} DESC,t.id LIMIT 31 OFFSET ?`)
-      .bind(...(reader?[reader,reader]:[]),category,category,status,status,machine,machine,module,module,author,author,Number(saved),user?.id??'',Number(following),user?.id??'',query,escaped,escaped,page(url)*30).all()).results
+      .bind(...(reader?[reader,reader]:[]),category,category,status,status,machine,machine,module,module,...sharedConfigurationBinds(module),author,author,Number(saved),user?.id??'',Number(following),user?.id??'',query,escaped,escaped,page(url)*30).all()).results
     return response({threads:rows.slice(0,30),hasMore:rows.length>30})
   }
   if (path === '/api/forum/categories' && request.method === 'GET') {

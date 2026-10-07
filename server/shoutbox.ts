@@ -2,6 +2,7 @@ import type { Database, User } from './platform'
 import { needMember, throttle } from './auth'
 import { HttpError, jsonBody, required, response } from './security'
 import { SHOUT_MAX_LENGTH } from '../src/community/forum-contract'
+import { notifyShoutMentions } from './notifications'
 
 export async function shoutbox(request: Request, db: Database, user: User | null, admin: boolean): Promise<Response | null> {
   const url = new URL(request.url), path = url.pathname
@@ -24,7 +25,7 @@ export async function shoutbox(request: Request, db: Database, user: User | null
     await throttle(db,'shout-send:'+member.id,6,60)
     await throttle(db,'shout-send-hour:'+member.id,30)
     const id = crypto.randomUUID()
-    await db.prepare('INSERT INTO forum_shouts(id,user_id,body) VALUES(?,?,?)').bind(id,member.id,text).run()
+    await db.batch([db.prepare('INSERT INTO forum_shouts(id,user_id,body) VALUES(?,?,?)').bind(id,member.id,text),...notifyShoutMentions(db,text,id,member.id)])
     return response({id},201)
   }
   const match = path.match(/^\/api\/forum\/shouts\/([a-zA-Z0-9-]+)(?:\/(report))?$/)

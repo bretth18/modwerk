@@ -4,6 +4,9 @@ import type { DatabaseSync } from 'node:sqlite'
 import { testServer } from './test-server'
 import { mentionedUsernames } from '../../server/notifications'
 import { mentionQueryAt, splitMentions } from './forum-contract'
+import { notificationLines } from './notification-text'
+import { threadPath } from './forum-links'
+import type { NotificationItem } from './notification-contract'
 
 const databases: DatabaseSync[] = [], sent: { to: string[]; text: string }[] = [], password = 'a long original test passphrase'
 beforeEach(() => { sent.length = 0; vi.stubGlobal('fetch', vi.fn(async (_url: string, options: RequestInit) => { sent.push(JSON.parse(String(options.body))); return Response.json({ id: crypto.randomUUID() }) })) })
@@ -18,6 +21,11 @@ describe('mentions', () => {
     expect(splitMentions('no names here')).toEqual([{ type: 'text', value: 'no names here' }])
     expect(splitMentions('')).toEqual([{ type: 'text', value: '' }])
     expect(splitMentions('@start middle @end')).toEqual([{ type: 'mention', value: 'start' }, { type: 'text', value: ' middle ' }, { type: 'mention', value: 'end' }])
+  })
+  it('links a Shoutbox mention to the archive and a thread mention to its post', () => {
+    const base: NotificationItem = { id: 'n1', kind: 'mention', seen: false, created_at: '2026-10-07T10:00:00Z', thread_id: null, post_id: null, module_id: null, actor: 'alice', actorOfficial: false, title: null, excerpt: 'Hey @bob, try the new verb', rating: null, issue_id: null, github_actor: null, url: null }
+    expect(notificationLines([base])[0]).toMatchObject({ text: '@alice mentioned you in Shoutbox 8', excerpt: 'Hey @bob, try the new verb', href: '#forum/shoutbox' })
+    expect(notificationLines([{ ...base, thread_id: 't1', post_id: 'p2', title: 'Verb settings' }])[0]).toMatchObject({ text: '@alice mentioned you in “Verb settings”', href: threadPath('t1', 'Verb settings') + '?post=p2' })
   })
   it('finds the @name being typed before the caret', () => {
     expect(mentionQueryAt('hello @al', 9)).toEqual({ start: 6, query: 'al' })

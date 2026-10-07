@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import { ModuleCommunity } from '../community/ModuleCommunity'
 import { ModuleUpdateButton } from '../community/ModuleUpdateButton'
+import { ShareModuleButton } from '../community/ShareModuleButton'
 import { Icon } from './Icon'
 
 type DetailTab = 'Overview' | 'Media' | 'Discussion'
@@ -23,7 +24,7 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
   return <div className="detail-page">
     <div className="module-page-actions">
       <a className="back-link" href={backHref}><Icon name="back" size={15} />{backLabel}</a>
-      <button type="button" className="button button-danger module-issue-action" onClick={showIssueReport}><Icon name="message" size={15} />Report an issue</button>
+      <div className="module-page-buttons"><ShareModuleButton id={id} title={title} /><button type="button" className="button button-danger module-issue-action" onClick={showIssueReport}><Icon name="message" size={15} />Report an issue</button></div>
     </div>
     <section className="detail-hero detail-hero-with-resources" aria-labelledby="module-title">
       {preview}
