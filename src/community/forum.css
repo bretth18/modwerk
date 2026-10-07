@@ -197,6 +197,15 @@
 .forum-composer-heading { display: flex; align-items: center; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid #3a3846; }
 .forum-composer-heading h2, .forum-composer-heading label { color: #e1e1ec; font-size: 15px; font-weight: 600; }
 .forum-composer-heading p { margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.reply-starters { display: grid; gap: 8px; }
+.reply-starter-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.reply-starter { display: inline-flex; align-items: center; gap: 5px; min-height: 32px; padding: 0 12px; border: 1px solid #4a4a57; border-radius: 999px; background: #1e1e24; color: #d6d6e2; font-size: 13px; }
+.reply-starter:hover { border-color: #5d5d6c; color: #fff; }
+.reply-starter[aria-pressed="true"] { border-color: #505879; background: #353b52; color: #c1c7ff; }
+.reply-starter-hint { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.reply-starter-links { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0; font-size: 12px; }
+.reply-starter-links a { display: inline-flex; align-items: center; gap: 4px; color: #bdc3f3; }
+.reply-starter-links a:hover { color: #fff; }
 .forum-composer-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .forum-composer-footer > span { color: var(--muted); font-size: 11px; line-height: 1.7; }
 .forum-composer-footer code { font-family: var(--mono); }
