@@ -2,7 +2,7 @@ import { BackLink } from '../components/BackLink'
 import { useState } from 'react'
 import { CopyButton, StarterPrompts } from './StarterPrompts'
 import { cloneCommands } from './starter-prompts'
-import { sourceRepository } from '../hosting'
+import { assetUrl, sourceRepository } from '../hosting'
 import { communityModule } from './modules'
 import { DEVICES_BY_ID } from '../devices/registry'
 import { DEVELOPMENT_DISCORD_URL } from '../config/development-discord'
@@ -28,7 +28,13 @@ export function SubmissionPage({moduleId=''}:{moduleId?:string}) {
       <li>
         <h2>Fork the repository</h2>
         <p>Your own copy of Modwerk on GitHub, with every SDK, guide and check.</p>
-        <a className="button button-primary" href={moduleRepository+'/fork'} target="_blank" rel="noreferrer">Fork on GitHub ↗</a>
+        <div className="start-step-actions">
+          <a className="button button-primary" href={moduleRepository+'/fork'} target="_blank" rel="noreferrer">Fork on GitHub ↗</a>
+          <a className="button development-discord-button" href={DEVELOPMENT_DISCORD_URL} target="_blank" rel="noreferrer" aria-label="Join Discord for module development (opens in a new tab)">
+            <img src={assetUrl('auth/discord.svg')} width={20} height={15} alt="" aria-hidden="true" />
+            <span>Join Discord</span><span aria-hidden="true">↗</span>
+          </a>
+        </div>
       </li>
       <li>
         <h2>Clone and install</h2>
@@ -96,7 +102,6 @@ export function SubmissionPage({moduleId=''}:{moduleId?:string}) {
         <a href={guide('sdk/machines/digitakt/README.md')} target="_blank" rel="noreferrer"><strong>Digitakt guide ↗</strong><span>Core events and budgets</span></a>
         <a href={guide('sdk/machines/digitone/README.md')} target="_blank" rel="noreferrer"><strong>Digitone guide ↗</strong><span>Core events and budgets</span></a>
         <a href={guide('CONTRIBUTING.md')} target="_blank" rel="noreferrer"><strong>Contribution rules ↗</strong><span>What every pull request agrees to</span></a>
-        <a href={DEVELOPMENT_DISCORD_URL} target="_blank" rel="noreferrer"><strong>Development Discord ↗</strong><span>Ask other developers</span></a>
       </div>
       <p className="service-note">Octatrack development builds on <a href="https://github.com/sambanks/octabam" target="_blank" rel="noreferrer">octabam ↗</a>; Digitakt and Digitone on the public research of <a href="https://github.com/irpina/elekloader" target="_blank" rel="noreferrer">elekloader ↗</a> and <a href="https://github.com/m-dwyer/digikit" target="_blank" rel="noreferrer">digikit ↗</a>. You need no Modwerk account to contribute, only GitHub.</p>
     </section>

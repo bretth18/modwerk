@@ -931,7 +931,9 @@ h1 { font-size: 28px; }
 .start-steps li::before { content: counter(start-step); position: absolute; left: 20px; top: 18px; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font: 600 13px var(--mono); color: #15151b; background: var(--accent); }
 .start-steps h2 { font-size: 15px; margin: 3px 0 0; }
 .start-steps p { color: var(--muted); font-size: 13px; line-height: 1.65; margin: 0; }
-.start-steps .button { margin-top: auto; }
+.start-steps > li > .button, .start-step-actions { margin-top: auto; }
+.start-step-actions { display: flex; flex-direction: column; gap: 8px; max-width: 100%; }
+.development-discord-button img { flex-shrink: 0; }
 .start-code { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%; margin-top: auto; }
 .start-code pre, .starter-prompt pre { margin: 0; font: 12px/1.65 var(--mono); color: #d8d6e8; background: #111115; }
 .start-code pre { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; overflow-x: auto; }
@@ -1353,8 +1355,8 @@ h1 { font-size: 28px; }
 .social-provider-github { background: #24292f; border-color: #656d76; color: #fff; }
 .social-provider-github:hover:not(:disabled) { background: #32383f; }
 .social-provider-github .social-provider-logo { filter: brightness(0) invert(1); }
-.social-provider-discord { background: #5865f2; border-color: #7984f5; color: #fff; }
-.social-provider-discord:hover:not(:disabled) { background: #4752c4; }
+.social-provider-discord, .development-discord-button { background: #5865f2; border-color: #7984f5; color: #fff; }
+.social-provider-discord:hover:not(:disabled), .development-discord-button:hover { background: #4752c4; }
 .social-provider:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .account-divider { color: #a7a3ad; text-align: center; margin: 6px 0; }
 .account-deletion .button-danger { border-color: #b76c6c; color: #ffc5c5; }
