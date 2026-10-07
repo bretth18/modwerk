@@ -458,6 +458,15 @@ select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .app-dialog input { width: 100%; border: 1px solid #676057; border-radius: 6px; background: #1e1e21; padding: 12px; color: #efebe4; }
 .app-dialog p { color: #bcb6ae; font-size: 13px; line-height: 1.7; }
 .dialog-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
+.discord-invite-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.discord-invite-logo { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 12px; background: #5865f2; }
+.discord-invite-label { font-size: 13px; font-weight: 600; color: #c7c7dc; }
+.discord-invite-header .icon-button { margin-left: auto; width: 44px; height: 44px; }
+.discord-invite-dialog h2 { margin: 0 0 12px; }
+.discord-invite-dialog .button { min-height: 44px; }
+.discord-invite-visitor-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.discord-invite-dismiss { display: block; margin: 16px auto 0; min-height: 44px; }
+@media (max-width: 600px) { .discord-invite-visitor-actions { grid-template-columns: 1fr; } }
 .support-dialog p + p { margin-top: 14px; }
 .support-dialog h2 { display: flex; align-items: center; gap: 10px; }
 .support-dialog .dialog-actions { flex-wrap: wrap; }

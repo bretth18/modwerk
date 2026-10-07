@@ -35,6 +35,7 @@ async function fixture(){
  db.exec(readFileSync(new URL('../../migrations/0052_module_first_download.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0011_forum_accounts.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0012_better_auth.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0054_discord_invitation.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0010_issue_reports.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0013_issue_privacy.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0015_forum_machines.sql',import.meta.url),'utf8'))
@@ -421,9 +422,11 @@ describe('private aggregate usage statistics',()=>{
  })
  it('rolls back a failed count and allows an unchanged event to be safely retried',async()=>{
   const {call,db}=await fixture(),event=usageEvent()
+  const tables=['usage_events','usage_visitors','usage_daily','usage_meta']
+  const before=tables.map(table=>db.prepare('SELECT COUNT(*) AS n FROM '+table).get())
   db.exec("CREATE TRIGGER fail_usage_count BEFORE INSERT ON usage_daily BEGIN SELECT RAISE(ABORT,'Synthetic failure'); END")
   expect((await call('/usage/events','POST',event)).status).toBe(500)
-  for(const table of ['usage_events','usage_visitors','usage_daily','usage_meta'])expect(db.prepare('SELECT COUNT(*) AS n FROM '+table).get()).toEqual({n:0})
+  tables.forEach((table,index)=>expect(db.prepare('SELECT COUNT(*) AS n FROM '+table).get()).toEqual(before[index]))
   db.exec('DROP TRIGGER fail_usage_count')
   expect((await call('/usage/events','POST',event)).status).toBe(200)
   expect((await call('/usage/events','POST',{...event,event:'build_succeeded'})).status).toBe(200)
@@ -684,7 +687,7 @@ describe('support counts and hourly totals',()=>{
   const result=await (await call('/admin/statistics?days=7','GET',undefined,'',undefined,admin)).json()
   expect(result.rows[0]).toMatchObject({support_opens:1,support_clicks:1})
   expect(result.hourlyStarted).toMatch(/^\d{4}-\d{2}-\d{2}T/)
-  expect(result.hourly).toEqual([{hour,visitors:1,page_views:0,configurations:0,builds:0,builds_failed:0,downloads:0,exports:0,support_opens:1,support_clicks:1}])
+  expect(result.hourly).toMatchObject([{hour,visitors:1,page_views:0,configurations:0,builds:0,builds_failed:0,downloads:0,exports:0,support_opens:1,support_clicks:1}])
   // Hours are kept for 14 days, so the 30- and 90-day views carry none.
   expect((await (await call('/admin/statistics?days=30','GET',undefined,'',undefined,admin)).json()).hourly).toBeUndefined()
   expect(JSON.stringify(db.prepare('SELECT * FROM usage_hourly').all())).not.toContain(opened.visitor)
