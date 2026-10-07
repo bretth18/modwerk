@@ -783,11 +783,11 @@ h1 { font-size: 28px; }
 @media(max-width:480px) { .submission-page > .page-heading { flex-wrap: wrap; } .submission-page > .page-heading h1 { font-size: 25px; } .submission-page > .page-heading .pill { margin-top: 3px; } }
 .discovery-tools { display: flex; gap: 14px; align-items: center; margin: -3px 0 20px; flex-wrap: wrap; }
 .discovery-tools label { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #a3a3b3; }
-.discovery-tools select { font-size: 12px; padding: 7px 28px 7px 9px; border: 1px solid #42424b; border-radius: 5px; color: #cecedb; background-color: #26262c; }
+.discovery-tools select { box-sizing: border-box; height: 40px; font-size: 12px; padding: 0 28px 0 9px; border: 1px solid #42424b; border-radius: 5px; color: #cecedb; background-color: #26262c; }
 .discovery-tools button { margin-left: auto; min-height: 32px; padding: 5px 10px; font-size: 12px; }
 /* The machine menu from the old sidebar, as it was, at the start of the library's filter row. */
 .discovery-tools .machine-switcher { margin: 0; }
-.discovery-tools .sidebar-device { width: auto; min-width: 210px; margin-left: 0; padding: 5px 10px 5px 6px; font-size: 13px; }
+.discovery-tools .sidebar-device { box-sizing: border-box; width: auto; min-width: 210px; height: 40px; margin-left: 0; padding: 0 10px 0 6px; font-size: 13px; }
 .discovery-tools .machine-menu { right: auto; width: 320px; }
 .comparison-dialog { width: min(950px,calc(100vw - 32px)); max-height: calc(100dvh - 40px); color: #d5d5e2; background: #222227; border: 1px solid #4c4c58; border-radius: 12px; padding: 23px; }
 .comparison-dialog::backdrop { background: #0009; backdrop-filter: blur(4px); }
