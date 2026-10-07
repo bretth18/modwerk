@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 2,
+  "id": "playmodes",
+  "key": "PLAY MODES",
+  "name": "Play Modes",
+  "version": "0.1.0-experimental",
+  "category": "machines",
+  "source": {
+    "repository": "https://github.com/devilfish707/Octaplay",
+    "revision": "1d2e9dc2bada2fea79d1ba07a8a56e1812a20ad8",
+    "path": "playmodes"
+  },
+  "author": {
+    "github": "devilfish707",
+    "credits": [
+      "devilfish707: engine, firmware glue, investigation and documentation.",
+      "Firmware addresses cited from octabam (Sam Banks), SCALE QUANTIZER and DIRECT JUMP (Tim Hastie), the KYOTI notes (Zac-Kyoti) and OctaKit (June Kiff)."
+    ]
+  },
+  "nativeManifest": "manifest.py",
+  "presentation": {
+    "label": "PLAYHEAD DIRECTION",
+    "family": "Sequencer",
+    "summary": "Play patterns reversed, pingpong, random or shuffled: per pattern, shared by every track or set per track.",
+    "overview": "Play Modes changes which step the sequencer plays at each position: NORMAL, REVERSED, PINGPONG (end steps once), PINGPONG 2 (end steps twice), RANDOM or SHUFFLE. Each pattern keeps its own modes: one shared mode under SCALE MODE NORMAL, one per audio and MIDI track under PER TRACK. Trigs, conditions, micro-timing, swing and locks move with their step; tempo, lengths, chains and the trig LEDs stay in step. The modes are saved with the project, survive a power cycle and follow pattern copy, paste and clear.",
+    "highlights": [
+      "Six playhead modes, including two pingpongs and a shuffle that plays every step once per pass",
+      "Per pattern; per track under PER TRACK scale mode, audio and MIDI tracks",
+      "Hold a TRACK key and press UP or DOWN; a popup names the mode",
+      "Saved in the project, kept over a power cycle, carried by pattern copy and paste"
+    ],
+    "usage": [
+      "Hold a TRACK key and press DOWN to step through NORMAL, REVERSED, PINGPONG, PINGPONG 2, RANDOM and SHUFFLE; UP walks back. The popup shows ALL <mode> under SCALE MODE NORMAL, or T1..T8 / M1..M8 <mode> under PER TRACK.",
+      "Each pattern keeps its own modes; PLAY and every pattern change start the tracks from their first step again.",
+      "Under PER TRACK, MASTER LENGTH limits how far a track gets; set it to INF to let every track run its full length in every mode."
+    ]
+  },
+  "access": {
+    "location": "Automatic when included in a build: hold a TRACK key on the main screen and press UP or DOWN.",
+    "steps": [
+      "Include Play Modes in your build. It uses no effect slot and no knob.",
+      "Load a pattern and choose its SCALE MODE in PATTERN SETTINGS: NORMAL for one shared mode, PER TRACK for one mode per track.",
+      "Hold TRACK 1 (or the track to change) and press DOWN or UP; the popup shows the new mode. Press PLAY.",
+      "Hold the TRACK key and press UP until the popup shows NORMAL to return to stock playback."
+    ],
+    "screenshots": []
+  },
+  "controls": [],
+  "compatibility": {
+    "firmware": "1.40C",
+    "effectId": null,
+    "location": "Project sequencer",
+    "conflicts": [],
+    "limitations": [
+      "Does not combine with octabam's PLOCKS P2 (not in this catalog): both use battery RAM 0x100f8600.. and the 20 pattern-copy memcpy sites.",
+      "Deliberate stock-flow change: TRACK held + UP / DOWN changes the mode and does not reach the stock arrow handler; project.work gains #PLAY_MODES= comment lines.",
+      "Copying a single track does not copy its mode; PROJECT > NEW may keep the previous project's modes (untested).",
+      "Played interactively on one MKII (builds 12-19); MKI, micro-timing, trig conditions, slides, live recording and MIDI tracks beyond a first check are untested.",
+      "Chip worst-case cycles are unmeasured; no stress project has been run.",
+      "Like every DRAM module, the build gives up about 10 MB of sample memory to the platform reserve."
+    ]
+  },
+  "resources": {
+    "recorded": "7 October 2026: source accounting; chip timing unmeasured",
+    "storage": {
+      "label": "DRAM data + battery RAM",
+      "display": "4,684 B DRAM data + 2,310 B battery RAM, plus code",
+      "value": 6994,
+      "unit": "bytes",
+      "method": "static",
+      "conditions": "Data allocations of hooks.s and the battery-RAM table; the code size of playmodes.s comes from the build report and is not yet recorded. See TESTING.md Resources.",
+      "source": "TESTING.md"
+    },
+    "processing": {
+      "label": "ColdFire processing",
+      "display": "Worst-case cycles unmeasured",
+      "value": null,
+      "unit": "cycles/event",
+      "method": "unmeasured",
+      "conditions": "One engine call per track per sequencer step, plus the UI step query and the rebuild after edits; not measured on the chip.",
+      "source": "TESTING.md"
+    },
+    "impact": {
+      "conditions": "16 tracks (8 audio, 8 MIDI) in SHUFFLE, the most expensive mode, at the highest tempo and finest track scale; a project load rewriting the battery table.",
+      "cpu": {
+        "level": "low",
+        "basis": "source-estimate",
+        "rationale": "Per track per step a few byte reads, one pass test and one mapping; SHUFFLE adds a keyed permutation (about two evaluations, three multiplies each). Battery-RAM writes only on key presses, pattern copies and project loads.",
+        "source": "TESTING.md"
+      },
+      "dsp": {
+        "level": "minimal",
+        "basis": "source-estimate",
+        "rationale": "No DSP code, tables or buffers; stock DSP processing is unchanged.",
+        "source": "TESTING.md"
+      },
+      "memory": {
+        "level": "low",
+        "basis": "source-estimate",
+        "rationale": "About 4.7 KB of DRAM data in the platform reserve plus the unit's code, and a 2,310-byte battery-RAM table; no per-instance copies.",
+        "source": "TESTING.md"
+      }
+    }
+  },
+  "tests": {
+    "report": "TESTING.md",
+    "summary": "Host suites for the engine and firmware glue pass (every mode for lengths 1-64, look-ahead, restarts, per-pattern rows, project lines, battery RAM, copy / paste / clear). Played interactively on the author's MKII over test builds 12-19; no stress project, no chip timing, no UI captures yet.",
+    "hardwareStatus": "reported",
+    "evidenceRevision": "1d2e9dc2bada2fea79d1ba07a8a56e1812a20ad8",
+    "gates": [
+      "modules/playmodes/verify.py"
+    ]
+  },
+  "license": {
+    "spdx": "MIT",
+    "file": "LICENSE",
+    "declaration": "Original code and thumbnail by devilfish707, MIT. Firmware addresses are cited from public module sources and read from the author's own OS; no Elektron firmware, extracted routines, tables or images are included."
+  },
+  "media": []
+}
