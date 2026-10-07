@@ -155,7 +155,7 @@ export default function App() {
   // Phones show search as an icon; open it within the tap so the keyboard appears.
   function openSearch() { flushSync(() => setSearchOpen(true)); searchRef.current?.focus() }
   function closeSearch() { setQuery(''); flushSync(() => setSearchOpen(false)); searchToggleRef.current?.focus() }
-  const [family,setFamily]=useState('all'),[sort,setSort]=useState('collection'),[comparison,setComparison]=useState<string[]>([]),[compareOpen,setCompareOpen]=useState(false)
+  const [family,setFamily]=useState('all'),[sort,setSort]=useState('recent'),[comparison,setComparison]=useState<string[]>([]),[compareOpen,setCompareOpen]=useState(false)
   const [statistics,setStatistics]=useState<ModuleStatistics[]|null>(null)
   useEffect(()=>{let cancelled=false;if(session.available)void api<ModuleStatistics[]>('/community/summary').then(value=>{if(!cancelled)setStatistics(value)}).catch(()=>{if(!cancelled)setStatistics(null)});return()=>{cancelled=true}},[session.available,onLibrary])
   const [dragging, setDragging] = useState(false)
