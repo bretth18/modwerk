@@ -5,7 +5,7 @@
       "schemaVersion": 3,
       "id": "digichain",
       "name": "digichain",
-      "version": "1.6.0-experimental",
+      "version": "1.6.1-experimental",
       "machine": "digitakt",
       "category": "system",
       "exclusive": false,
@@ -31,8 +31,10 @@
           "Adds no sound, page or control, and changes nothing on its own."
         ],
         "usage": [
-          "Build it with Digi Mono or Digi Poly: both require it.",
-          "Press FUNC + SRC on an audio track to see each added machine with its own icon."
+          "Build digichain together with Digi Poly, which requires it, for a supported original Digitakt OS.",
+          "On an audio track press FUNC + SRC, select POLY, confirm with YES.",
+          "On TRIG set NOT1, then add NOT2 at +4 and NOT3 at +7. Trigger the track to hear the chord using the available voice pool.",
+          "Stop playback. Return the track to ONESHOT to stop using POLY; digichain has no independent page or bypass control."
         ]
       },
       "access": {
@@ -42,7 +44,9 @@
           "On an audio track, press FUNC + SRC: every added machine shows its own icon in the list.",
           "Choose a Digi Mono machine or POLY: its SRC page, and for Digi Mono its LFO page’s DEST names, come through digichain."
         ],
-        "screenshots": []
+        "screenshots": [
+          "media/chooser.png"
+        ]
       },
       "controls": [],
       "compatibility": {
@@ -94,7 +98,23 @@
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Modwerk’s vendored elekloader builder linked and verified a build of digichain 1.6 with core 2.1 for OS 1.53 and 1.54; nothing was flashed, and the evidence tier is none."
+        "summary": "Modwerk’s vendored elekloader builder linked and verified a build of digichain 1.6 with core 2.1 for OS 1.53 and 1.54; nothing was flashed, and the evidence tier is none. Documentation captures verify the listed UI pages on OS 1.53; audio, timing and hardware remain unqualified.",
+        "documentation": {
+          "tutorial": {
+            "title": "Quick tutorial: use a dependent machine",
+            "steps": [
+              "Build digichain together with Digi Poly, which requires it, for a supported original Digitakt OS.",
+              "On an audio track press FUNC + SRC, select POLY, confirm with YES.",
+              "On TRIG set NOT1, then add NOT2 at +4 and NOT3 at +7. Trigger the track to hear the chord using the available voice pool.",
+              "Stop playback. Return the track to ONESHOT to stop using POLY; digichain has no independent page or bypass control."
+            ]
+          },
+          "screenshots": [
+            "media/chooser.png",
+            "media/chord.png"
+          ],
+          "captureRecord": "media/capture.json"
+        }
       },
       "license": {
         "spdx": "MIT",
@@ -110,6 +130,38 @@
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
+        },
+        {
+          "path": "media/chooser.png",
+          "kind": "screenshot",
+          "caption": "Dependent POLY machine supplied through digichain",
+          "alt": "Dependent POLY machine supplied through digichain on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "1.6.1-experimental",
+            "imageSha256": "9cd7b202f12fe141fa7451bd61d2c750d8d75395ac10d58b1cc2efd252b7a627",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/chord.png",
+          "kind": "screenshot",
+          "caption": "POLY consumer controls; digichain has no page of its own",
+          "alt": "POLY consumer controls; digichain has no page of its own on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "1.6.1-experimental",
+            "imageSha256": "9cd7b202f12fe141fa7451bd61d2c750d8d75395ac10d58b1cc2efd252b7a627",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
         }
       ],
       "source": {
