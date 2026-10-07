@@ -1,3 +1,4 @@
+import type { RuntimeMemory } from './runtime-memory.ts'
 // Native Analog BD recipe: derive both extended DSP uploads locally, including the shared stock helper.
 import { requestedFacts as facts, bytesHash, word32 } from './requested-modules.ts'
 import { parseDspMemory, readDspWords, writeDspWords } from './dsp-memory.ts'
@@ -60,10 +61,10 @@ export async function composeAnalogBd(original: Uint8Array, patched: Uint8Array,
   }
   return { bytes: await applyGuardedOsWrites(patched, writes), uploads }
 }
-export async function createAnalogBootstrap(runtime: Uint8Array, uploads: Awaited<ReturnType<typeof composeAnalogBd>>['uploads'], reserveBytes?: number) {
+export async function createAnalogBootstrap(runtime: Uint8Array, uploads: Awaited<ReturnType<typeof composeAnalogBd>>['uploads'], reserveBytes?: number, memory: RuntimeMemory = {}) {
   const template = facts.bootstrap, encoded = Uint8Array.from({ length: template.bytes }, (_, i) => parseInt(template.code.slice(i * 2, i * 2 + 2), 16))
   if (uploads.length !== 2 || await bytesHash(encoded) !== template.sha256) throw new Error('Invalid Analog BD bootstrap template.')
-  const runtimePayload = payload(runtime, 0, 0), layout = runtimeStageLayout(runtime.length, runtimePayload.blob.length, reserveBytes)
+  const runtimePayload = payload(runtime, 0, 0), layout = runtimeStageLayout(runtime.length, runtimePayload.blob.length, reserveBytes, undefined, memory)
   runtimePayload.destination = layout.base; runtimePayload.stage = layout.stage
   const object = parseColdFireObject(encoded), text = object.sections.find(s => s.name === '.text')!
   const find = (name: string) => { const s = object.symbols.find(s => s.name === name); if (!s || s.section !== text.index) throw new Error('Invalid Analog BD bootstrap symbol.'); return s }
@@ -92,6 +93,8 @@ export async function createAnalogBootstrap(runtime: Uint8Array, uploads: Awaite
   const placements = new Map(object.sections.filter(s => s.flags & 2).map(s => [s.index, { address: s.index === text.index ? BOOTSTRAP_ADDRESS : Math.ceil((BOOTSTRAP_ADDRESS + text.size) / s.alignment) * s.alignment }]))
   const linked = relocateColdFireObject(object, placements, new Map([['octamod_pre_table', BOOTSTRAP_ADDRESS + newPre]]))
   const occupied = [{ start: layout.base, end: layout.runtimeEnd }, { start: layout.stage, end: layout.stageEnd }]
+  if (layout.bssEnd) occupied.push({ start: layout.runtimeEnd, end: layout.bssEnd })
+  for (const region of memory.regions ?? []) occupied.push({ start: region.address, end: region.address + region.size })
   for (const u of uploads) for (const [start, size] of [[u.destination, u.raw.length], [u.stage, u.blob.length]]) {
     const end = start + size
     if (start < layout.base || end > layout.ceiling || occupied.some(r => start < r.end && r.start < end)) throw new Error('Analog BD boot payloads overlap or exceed reserved memory.')

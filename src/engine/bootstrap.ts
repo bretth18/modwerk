@@ -1,3 +1,4 @@
+import { validateRuntimeMemory, type RuntimeMemory } from './runtime-memory.ts'
 // Authored octabam loader template, derived from June Kiff's Octakit loader.
 // See /licenses/octabam.txt and /licenses/ems-octakit.txt.
 import template from './assets/bootstrap-package.json' with { type: 'json' }
@@ -13,16 +14,16 @@ export function rollingHash(bytes: Uint8Array): number {
   for (const byte of bytes) result = (Math.imul(result, 33) + byte) >>> 0
   return result
 }
-export function runtimeStageLayout(rawBytes: number, packedBlobBytes: number, reserveBytes = PLATFORM_RESERVE_BYTES, base = PLATFORM_RUNTIME_BASE) {
+export function runtimeStageLayout(rawBytes: number, packedBlobBytes: number, reserveBytes = PLATFORM_RESERVE_BYTES, base = PLATFORM_RUNTIME_BASE, memory: RuntimeMemory = {}) {
   if (!Number.isInteger(rawBytes) || rawBytes < 1 || !Number.isInteger(packedBlobBytes) || packedBlobBytes < 13) throw new Error('The runtime stage has invalid sizes.')
   if (!Number.isInteger(reserveBytes) || reserveBytes < 1 || reserveBytes > 16 * 1024 * 1024) throw new Error('Invalid runtime reserve.')
   if (!Number.isInteger(base) || base < PLATFORM_RUNTIME_BASE || (base - PLATFORM_RUNTIME_BASE) % 6144 || base + reserveBytes > 0x46025de0) throw new Error('Invalid runtime base.')
   const ceiling = base + reserveBytes, runtimeEnd = base + rawBytes
   const stage = Math.ceil(runtimeEnd / STAGE_ALIGNMENT) * STAGE_ALIGNMENT, stageEnd = stage + packedBlobBytes
   if (stageEnd > ceiling) throw new Error('The runtime and its packed stage exceed the reserved sample memory.')
-  return { base, runtimeEnd, stage, stageEnd, ceiling, size: reserveBytes }
+  return { base, runtimeEnd, stage, stageEnd, ceiling, size: reserveBytes, ...validateRuntimeMemory(base, runtimeEnd, stageEnd, ceiling, memory) }
 }
-export async function createRuntimeBootstrap(raw: Uint8Array, reserveBytes = PLATFORM_RESERVE_BYTES, base = PLATFORM_RUNTIME_BASE) {
+export async function createRuntimeBootstrap(raw: Uint8Array, reserveBytes = PLATFORM_RESERVE_BYTES, base = PLATFORM_RUNTIME_BASE, memory: RuntimeMemory = {}) {
   if (raw.length < 1 || raw.length > reserveBytes) throw new Error('The runtime exceeds its reserved sample memory.')
   if (template.schema !== 1 || template.revision !== CATALOG_SOURCE.revision || template.cpu !== '5475' || template.loaderAddress !== BOOTSTRAP_ADDRESS || template.runtimeBase !== PLATFORM_RUNTIME_BASE || template.reserveBytes !== PLATFORM_RESERVE_BYTES || template.uncachedAlias !== UNCACHED || template.stageAlignment !== STAGE_ALIGNMENT) throw new Error('The boot loader template does not match the pinned runtime layout.')
   if (template.bytes < 52 || template.bytes > 65536 || template.code.length !== template.bytes * 2 || !/^[0-9a-f]+$/.test(template.code)) throw new Error('The boot loader template has invalid bytes.')
@@ -36,7 +37,7 @@ export async function createRuntimeBootstrap(raw: Uint8Array, reserveBytes = PLA
   if (decoded.length !== raw.length || decoded.some((byte, i) => byte !== raw[i])) throw new Error('The runtime failed its packing round-trip.')
   const blob = new Uint8Array(packed.length + 4)
   new DataView(blob.buffer).setUint32(0, 0x4f435441); blob.set(packed, 4)
-  const layout = runtimeStageLayout(raw.length, blob.length, reserveBytes, base), rawHash = rollingHash(raw), packedHash = rollingHash(packed)
+  const layout = runtimeStageLayout(raw.length, blob.length, reserveBytes, base, memory), rawHash = rollingHash(raw), packedHash = rollingHash(packed)
   const content = new Uint8Array(text.size + blob.length); content.set(text.data); content.set(blob, blobSymbol.value)
   const view = new DataView(content.buffer), row = table.value + 4
   if (view.getUint32(table.value) !== 1) throw new Error('The boot loader template has an invalid payload count.')

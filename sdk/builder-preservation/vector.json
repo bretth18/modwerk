@@ -26,11 +26,11 @@
   "changes": {
     "sdk/octabam/tools/remix/platform_build.py": {
       "before": "a085216db418417be68051454164f55e2c953e6b067aae9c977a04754cbbd46c",
-      "after": "41f479aed772982e5465a64ca7f7313a04ad41412b83d83066e405b1b0157377"
+      "after": "55df16a99b9771c72297a3a171c6d588f542ddcc230bc0b67156e6f0c4a378ac"
     },
     "sdk/octabam/tools/remix/schema.py": {
       "before": "1b57c28315dc0363f5324d25145b8ef0f79bb6fe1aea6aefe458ee9499cdab37",
-      "after": "be09b3a49d51fb2cca3f23cf8e24b559400c83a406f1fceb7389e3de80bba53b"
+      "after": "ca337b6aec2cc891988f88fb6910785b1136e19aa4f584b1ec2bc370ca9c8434"
     },
     "sdk/octabam/tools/remix/stock_copies.py": {
       "before": null,
@@ -38,7 +38,7 @@
     },
     "src/engine/requested-modules.ts": {
       "before": "b841beca351e98ef235e8a2755a083c564c141a628a1edea986ba30473a04f60",
-      "after": "2f69ac7b39c2b0c79258edd9ca6d128018bfa2d3132c3f2aabf70d5feba0ce23"
+      "after": "3065411f71ceb246e0d33b9f2fefa25f283fe90a5d194b7166543fb48a20cef5"
     },
     "src/engine/stock-copy.ts": {
       "before": null,
@@ -46,15 +46,59 @@
     },
     "src/engine/compose-os.ts": {
       "before": "a60c25c722bdb97d8048d457841e11d7835f5559e8e488de1f46f528fcd728db",
-      "after": "5850688639252fa275a537f831c54a68ae48acbb1c35e5d7a275100be147b935"
+      "after": "1e7a1d1c66b9fc5f6327d7e3c3b0e618c63d1a801bb5c15c82978092d9fc1782"
     },
     "scripts/build-module-packages.py": {
       "before": "6bbe7fab1346b7db750e3ab70cbb8deb036e9e9c17585c5aea59ac5c1d2aa89d",
-      "after": "b6168665aeece6619eae2db6f9da3ffa17a020137bbe1cafc31d7a4368a52cd3"
+      "after": "f61060ab6ca5c56a8f288ab5c7979bac71972698ec3b0f41ba2b840aa6707ed5"
     },
     "src/engine/coldfire-link.ts": {
       "before": "8af9148d7fb274c691fd0a4b4e280489af665aaed224b32e4cbec484bb4cad1a",
-      "after": "4f1230afbb23a68b3a01271f33e3e55e7b858b2665ba7181d9faa0a577e5e79a"
+      "after": "b42048ab7690bfb146b069837ae78a9b66166938e8c3e339526f3ccb420b3068"
+    },
+    "sdk/octabam/tools/build/build_bus.py": {
+      "before": "f923fbb0d3e5d42722c794864f066bc1a053aa0f2a91d4c7bd37c040bdc13fe8",
+      "after": "a80be06abfbe1e56768ed53289754e4592662496816d3e954c55b4e317d06b20"
+    },
+    "sdk/octabam/tools/remix/detour_guard.py": {
+      "before": null,
+      "after": "0235a68c70127e72815be0ef65e3dbba7655b46fb027b77cf3b82a6f7111145c"
+    },
+    "sdk/octabam/tools/remix/keep.py": {
+      "before": null,
+      "after": "18e1f485900768bd896507da4f6669199bc52466e7af7a1102d7d9a2bc03d305"
+    },
+    "sdk/octabam/tools/remix/ledger.py": {
+      "before": "abb03e7cdf0f5fb8bee11e87641daa6a5f027667365f0abe44db22104b859604",
+      "after": "cc727c1fea5fd31611c58cec0ca58c02944ebaf9b77df925ed57cc3e4e19f5fe"
+    },
+    "src/engine/analog-bd.ts": {
+      "before": "9012d827c781b5575da164bfc78ab1648df3a5cf0b3e754e613cd2c0a388ce6f",
+      "after": "53b657ba10a63d1c0d738f6138c4619db7c522d430961793a314a555034181a4"
+    },
+    "src/engine/bootstrap.ts": {
+      "before": "9f2ca5995777614f5c5c94eadb9710df7b6d78b8dbe855a70ed8252f9e276a77",
+      "after": "2356d20637f53e45b7e68595ee3042adf17080f5e6e41b1a0d4e904ec06aadb9"
+    },
+    "src/engine/coldfire-runtime.ts": {
+      "before": "37d5e8137aec775346dd56e8cb20d14057cf819af2f5c3b28fa66b7f490f58f9",
+      "after": "19c6e2a568d625495a1afe8cb65fed0e5dec7025b2c7079f87b2c0ba32566b90"
+    },
+    "src/engine/midi-scenes-logged.ts": {
+      "before": "82fa21cdf5c390f9b352183125591c96b01f49fe9295d453ad3bbfbe07534706",
+      "after": "d7052bdb91d690b34ef633736a290abd27e3713f1c14e19a9b44b354e311cfaf"
+    },
+    "src/engine/native-contracts.ts": {
+      "before": null,
+      "after": "ff09b1e7bcf000d6e9bf1684aae73f0f006bd6e16849ada12c768a99591c52f8"
+    },
+    "src/engine/runtime-memory.ts": {
+      "before": null,
+      "after": "ac91ed08e49e79b08d21171f53e8f1670492ec1862a913d0e67ce89b9ba273aa"
+    },
+    "src/engine/static-compose.ts": {
+      "before": "2b03c6b09725a499584cf0d6124bcc9f5f43ae596355bbfebaf2f6c21a3e1fec",
+      "after": "de55f9bb816f904b108494674dd22718de0323aa049ddfb1483f3216a4a60604"
     }
   },
   "selections": [
@@ -649,5 +693,5 @@
       }
     }
   ],
-  "limitations": "38 native profiles, all fourteen old composable modules alone in both stock-FX2 modes and representative mixed/full selections. Every successful complete image is identical and refusals match. Old module folders and old package payloads are separately preserved; no hardware qualification is changed."
+  "limitations": "38 native profiles rerun for the patch-span, DRAM-region and BSS extension: all fourteen old composable modules alone in both stock-FX2 modes and representative mixed/full selections. Every successful complete image is identical and refusals match. Old module folders and package payloads are separately preserved; no hardware qualification is changed."
 }

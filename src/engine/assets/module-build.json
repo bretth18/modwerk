@@ -3,8 +3,8 @@
   "kind": "source-packages",
   "sourceCommit": null,
   "nativeRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
-  "sourceTreeSha256": "32cce1ab87d3ba03ded0d4bbda296291a5820b1430f7fc3e5d921a88df9cbda5",
-  "compilerSha256": "b6168665aeece6619eae2db6f9da3ffa17a020137bbe1cafc31d7a4368a52cd3",
+  "sourceTreeSha256": "0e7405a47698882dd1c382d0e21db9c2b514f99ebacc124aefdfb43b1637993d",
+  "compilerSha256": "f61060ab6ca5c56a8f288ab5c7979bac71972698ec3b0f41ba2b840aa6707ed5",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
