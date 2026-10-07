@@ -76,7 +76,7 @@ describe('operator announcements in the bell', () => {
     expect(await unread(reader.session)).toBe(0)
     expect(db.prepare('SELECT COUNT(*) AS count FROM notifications').get()).toEqual({ count: 0 })
     expect(announcementLink(DEVELOPMENT_DISCORD_URL)).toBe(DEVELOPMENT_DISCORD_URL)
-    for (const url of ['https://discord.gg/another-invite', DEVELOPMENT_DISCORD_URL + '?redirect=evil', DEVELOPMENT_DISCORD_URL + '/extra', 'http://discord.gg/fe7Kjz5ZSd', 'https://discord.gg.evil.example/fe7Kjz5ZSd']) expect(() => announcementLink(url)).toThrow()
+    for (const url of ['https://discord.gg/another-invite', DEVELOPMENT_DISCORD_URL + '?redirect=evil', DEVELOPMENT_DISCORD_URL + '/extra', 'http://discord.gg/vzfAdMBtn5', 'https://discord.gg.evil.example/vzfAdMBtn5']) expect(() => announcementLink(url)).toThrow()
   })
 
   it('refreshes the existing Discord bell link without resetting reads or sending again', async () => {
@@ -88,7 +88,7 @@ describe('operator announcements in the bell', () => {
     await call('/notifications', 'PATCH', { ids: ['announcement-' + id] }, reader.session)
     const before = db.prepare('SELECT * FROM announcements WHERE id=?').get(id)
     const reads = db.prepare('SELECT * FROM announcement_reads').all()
-    const migration = readFileSync(new URL('../../migrations/0055_refresh_development_discord.sql', import.meta.url), 'utf8')
+    const migration = readFileSync(new URL('../../migrations/0056_refresh_development_discord.sql', import.meta.url), 'utf8')
     db.exec(migration); db.exec(migration)
     expect(db.prepare('SELECT * FROM announcements WHERE id=?').get(id)).toEqual({ ...before, url: DEVELOPMENT_DISCORD_URL })
     expect(db.prepare('SELECT * FROM announcement_reads').all()).toEqual(reads)
