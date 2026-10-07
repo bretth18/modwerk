@@ -71,7 +71,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   setBusy(true);setError('')
   const fields=Object.fromEntries(new FormData(form)) as Record<string,string>
   if(fields.actual.length>2000){setError('Keep the description under 2,000 characters. Your complete discussion draft is available above for reference.');setBusy(false);return}
-  if(resolved.source==='none'){setError(CONFIGURATION_REQUIRED);setBusy(false);return}
+  if(!log&&!resolved.modules.length){setError(CONFIGURATION_REQUIRED);setBusy(false);return}
   // With a log the Worker reads the configuration from the log itself; this mirrors what the form showed.
   const context:IssueContext={model,flash,os:log?.summary.os??REPORT_OS,modules:resolved.modules,keepStockFx2:resolved.keepStockFx2,build:resolved.build}
   try{

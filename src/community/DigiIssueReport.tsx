@@ -35,7 +35,7 @@ export function DigiIssueReport({ id, openRequest = 0 }: { id: string; openReque
     try {
       const fields = Object.fromEntries(new FormData(form)) as Record<string, string>
       if (fields.actual.length > 2000) throw new Error('Keep the description under 2,000 characters. Your complete discussion draft is available above for reference.')
-      if (resolved.source === 'none') throw new Error('Choose the configuration the ' + device.name + ' runs: a saved one, or tick its modules.')
+      if (!resolved.modules.length) throw new Error('Choose the configuration the ' + device.name + ' runs: a saved one, or tick its modules.')
       const context: DigiIssueContext = { machine: module.machine as DigiIssueContext['machine'], model: fields.model, flash: fields.flash as FlashState, os: fields.os, moduleVersion: fields.moduleVersion.trim() || module.version, modules: resolved.modules, keepStockFx2: null, build: resolved.build }
       setSent(await post<BugReportResult>('/modules/' + id + '/issues', { title: fields.title, steps: fields.steps, expected: fields.expected, actual: fields.actual, context, visibility: 'forum', notifyUpdates: fields.notifyUpdates === 'on' }))
       setKept({ model: fields.model, os: fields.os, flash: fields.flash, moduleVersion: context.moduleVersion, follow: fields.notifyUpdates === 'on' })

@@ -709,9 +709,16 @@ h1 { font-size: 28px; }
 .issue-report-configuration { display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--line); border-radius: 6px; padding: 11px 14px; min-width: 0; }
 .issue-report-heading { margin: 0; color: #d1cede; font-size: 13px; }
 .issue-report-heading span { color: #9997ad; font-size: 12px; margin-left: 8px; }
-.issue-report-modules { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 6px 14px; }
-.issue-report .community-form .issue-report-modules label { flex-direction: row; align-items: center; gap: 8px; }
-.issue-report-modules label span, .issue-report-module-list { color: #9997ad; font-size: 12px; }
+.issue-report-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.issue-report-chips li { display: inline-flex; align-items: center; gap: 6px; padding: 4px 4px 4px 10px; border: 1px solid #4a4a57; border-radius: 999px; background: #1e1e24; color: #e5e5ef; font-size: 13px; }
+.issue-report-chips li span, .issue-report-matches button span, .issue-report-module-list { color: #9997ad; font-size: 12px; }
+.issue-report .issue-report-chips button { align-self: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 50%; background: #2e2e36; color: #d1cede; font-size: 14px; line-height: 1; cursor: pointer; }
+.issue-report .issue-report-chips button:hover, .issue-report .issue-report-chips button:focus-visible { background: #4a4a57; color: #fff; }
+.issue-report-add { display: flex; flex-direction: column; gap: 8px; }
+.issue-report-matches { display: flex; flex-wrap: wrap; gap: 6px; }
+.issue-report .issue-report-matches button { padding: 5px 10px; border: 1px solid #4a4a57; border-radius: 999px; background: #28282f; color: #eeeef7; font-size: 13px; cursor: pointer; }
+.issue-report .issue-report-matches button:hover, .issue-report .issue-report-matches button:focus-visible { border-color: #8a8aa0; }
+.issue-report-matches .service-note { width: 100%; font-size: 12px; }
 .issue-report-module-list { margin: 0; line-height: 1.6; overflow-wrap: anywhere; }
 .issue-report-existing { display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
 .issue-report-existing .service-note { margin: 0; }

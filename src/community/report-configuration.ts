@@ -22,11 +22,15 @@ export function defaultConfigurationChoice(moduleIds: string[]): ConfigurationCh
 
 const sameModules = (a: ReportModule[], b: ReportModule[]) => a.length === b.length && a.every(item => b.some(other => other.id === item.id && other.version === item.version))
 
+/** The saved configurations a report can name. The workspace creates an empty one on first visit; it says nothing about a build. */
+export const namableConfigurations = (workspace: WorkspaceReportContext) => workspace.configurations.filter(item => item.modules.length > 0)
+
 /** Which saved configuration the choice names: the active one until the reporter picks another, '' for "by hand". */
 export function chosenSavedId(choice: ConfigurationChoice, workspace: WorkspaceReportContext) {
   if (choice.saved === '') return ''
-  if (choice.saved && workspace.configurations.some(item => item.id === choice.saved)) return choice.saved
-  return workspace.activeId || workspace.configurations[0]?.id || ''
+  const saved = namableConfigurations(workspace)
+  if (choice.saved && saved.some(item => item.id === choice.saved)) return choice.saved
+  return saved.find(item => item.id === workspace.activeId)?.id ?? saved[0]?.id ?? ''
 }
 
 export function resolveReportConfiguration(choice: ConfigurationChoice, workspace: WorkspaceReportContext, machine: string, log: LogConfiguration | null): ResolvedConfiguration {
@@ -35,7 +39,7 @@ export function resolveReportConfiguration(choice: ConfigurationChoice, workspac
     // The browser's image hash belongs to the active configuration; it only describes the log's build when they are the same.
     return { source: 'log', name: '', modules: recorded.modules, keepStockFx2: recorded.keepStockFx2 ?? workspace.keepStockFx2, build: sameModules(recorded.modules, workspace.modules) ? workspace.build : '' }
   }
-  const saved = workspace.configurations.find(item => item.id === chosenSavedId(choice, workspace))
+  const saved = namableConfigurations(workspace).find(item => item.id === chosenSavedId(choice, workspace))
   if (saved) return { source: 'saved', name: saved.name, modules: saved.modules, keepStockFx2: saved.keepStockFx2, build: saved.id === workspace.activeId ? workspace.build : '' }
   const catalog = machineModules(machine)
   const modules = choice.manualIds.flatMap(id => { const module = catalog.find(item => item.moduleId === id); return module ? [{ id, version: module.version }] : [] })

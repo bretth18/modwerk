@@ -44,6 +44,10 @@ describe('the configuration a report carries', () => {
     expect(resolveReportConfiguration({ ...choice, saved: 'deleted' }, saved, 'octatrack', null).name).toBe('Live set')
     expect(resolveReportConfiguration({ ...choice, saved: '' }, saved, 'octatrack', null)).toMatchObject({ source: 'manual', modules: [{ id: 'miniverb', version: miniverb.version }], keepStockFx2: null, build: '' })
     expect(resolveReportConfiguration({ ...choice, manualIds: ['no-such-module'] }, empty, 'octatrack', null).source).toBe('none')
+    // The workspace creates an empty "My first configuration" on the first visit; it cannot be the one a report names.
+    const firstVisit: WorkspaceReportContext = { ...empty, activeId: 'first', configurations: [{ id: 'first', name: 'My first configuration', modules: [], keepStockFx2: null }] }
+    expect(resolveReportConfiguration(choice, firstVisit, 'octatrack', null)).toMatchObject({ source: 'manual', modules: [{ id: 'miniverb', version: miniverb.version }] })
+    expect(render({ machine: 'octatrack', moduleId: 'miniverb', workspace: firstVisit, log: null, value: choice, onChange: () => {} })).not.toContain('<select')
     expect(resolveReportConfiguration(defaultConfigurationChoice(['digihealth']), empty, 'digitakt', null)).toMatchObject({ source: 'manual', modules: [{ id: 'digihealth', version: digihealth.version }] })
   })
 
@@ -62,20 +66,22 @@ describe('the configuration a report carries', () => {
     expect(html).toContain('Required, unless OCTAMOD.LOG is attached')
     expect(html).toContain('<option value="live" selected="">Live set (active) · 1 module</option>')
     expect(html).toContain('<option value="studio">Studio · 1 module</option>')
-    expect(html).toContain('<option value="">Not saved here: tick the modules</option>')
+    expect(html).toContain('<option value="">Not saved here: pick the modules</option>')
     expect(html).toContain('configuration <strong>Live set</strong>, base OS 1.40C, 1 module, build fingerprint.')
     expect(html).not.toContain('type="checkbox"')
     expect(render({ machine: 'octatrack', moduleId: 'miniverb', workspace: saved, log: null, value: { ...defaultConfigurationChoice(['miniverb']), saved: 'studio' }, onChange: () => {} })).toContain('This module is not in that configuration')
   })
 
-  it('asks for the modules by hand when nothing is saved, with the reported module ticked', () => {
+  it('asks for the modules by hand when nothing is saved, as chips plus a search box that scales with the catalog', () => {
     const html = render({ machine: 'digitakt', moduleId: 'digihealth', workspace: empty, log: null, value: defaultConfigurationChoice(['digihealth']), onChange: () => {} })
     expect(html).toContain('>Configuration <span>Required</span>')
-    expect(html).toContain('No configuration is saved in this browser. Tick the modules your Digitakt runs.')
+    expect(html).toContain('No configuration with modules is saved in this browser. Add the modules your Digitakt runs.')
     expect(html).not.toContain('<select')
-    expect(html).toContain('type="checkbox" checked=""/>' + digihealth.name)
-    expect(html.match(/type="checkbox"/g)).toHaveLength(machineModules('digitakt').length)
-    expect(html).not.toContain('Tick at least one module')
-    expect(render({ machine: 'digitakt', moduleId: 'digihealth', workspace: empty, log: null, value: defaultConfigurationChoice([]), onChange: () => {} })).toContain('Tick at least one module')
+    expect(html).toContain('<li>' + digihealth.name + ' <span>' + digihealth.version + '</span><button type="button" aria-label="Remove ' + digihealth.name + '">×</button></li>')
+    expect(html.match(/<li>/g)).toHaveLength(1)
+    expect(html).toContain('placeholder="Add a module… (' + (machineModules('digitakt').length - 1) + ' more)"')
+    expect(html).not.toContain('type="checkbox"')
+    expect(html).not.toContain('Add at least one module')
+    expect(render({ machine: 'digitakt', moduleId: 'digihealth', workspace: empty, log: null, value: defaultConfigurationChoice([]), onChange: () => {} })).toContain('Add at least one module')
   })
 })
