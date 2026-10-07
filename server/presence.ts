@@ -18,10 +18,18 @@ export async function notePresence(db: Database, userId: string, now = Date.now(
   ])
 }
 
-/** Public: a single number, never names. Suspended members drop out at once. */
+/** At most this many names are listed; the rest stay in the count. */
+export const ONLINE_LIST = 12
+/** Public: the number of members online, and the names of those who show themselves in the online list (an account
+ * setting, on by default). Members who opted out stay in the count. Suspended members drop out at once. */
 export async function membersOnline(db: Database, now = Date.now()) {
-  const row = await db.prepare('SELECT COUNT(*) AS online FROM member_presence p JOIN users u ON u.id=p.user_id WHERE p.seen_at>=? AND u.suspended=0').bind(Math.floor(now / 1000) - ONLINE_SECONDS).first<{ online: number }>()
-  return { online: row?.online ?? 0 }
+  const since = Math.floor(now / 1000) - ONLINE_SECONDS
+  const [row, listed] = await Promise.all([
+    db.prepare('SELECT COUNT(*) AS online FROM member_presence p JOIN users u ON u.id=p.user_id WHERE p.seen_at>=? AND u.suspended=0').bind(since).first<{ online: number }>(),
+    db.prepare('SELECT u.username,u.avatar_id AS avatar FROM member_presence p JOIN users u ON u.id=p.user_id WHERE p.seen_at>=? AND u.suspended=0 AND u.show_online=1 AND u.username IS NOT NULL ORDER BY p.seen_at DESC,u.username LIMIT ?').bind(since, ONLINE_LIST).all<{ username: string; avatar: string | null }>(),
+  ])
+  const online = row?.online ?? 0
+  return { online, members: listed.results, more: Math.max(0, online - listed.results.length) }
 }
 
 /** Hourly: a last-seen time goes 31 days after the visit. Daily counts name no one and stay, so the first

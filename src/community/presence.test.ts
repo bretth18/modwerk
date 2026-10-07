@@ -18,28 +18,56 @@ async function fixture() {
     const login = await server.call('/auth/login', 'POST', { email, password })
     return { id: String(server.db.prepare('SELECT id FROM users WHERE username=?').get(username)!.id), session: login.headers.get('X-Octamod-Session')! }
   }
-  const online = async () => (await (await server.call('/community/online')).json()) as { online: number }
+  const online = async () => (await (await server.call('/community/online')).json()) as { online: number; members: { username: string; avatar: string | null }[]; more: number }
   const presence = (id: string) => server.db.prepare('SELECT seen_at FROM member_presence WHERE user_id=?').get(id) as { seen_at: number } | undefined
   const daily = () => server.db.prepare('SELECT day,members FROM member_activity_daily WHERE members>0 ORDER BY day').all()
   return { ...server, member, online, presence, daily }
 }
 
 describe('members online', () => {
-  it('counts members whose bell polls, publicly as a number only', async () => {
+  it('counts members whose bell polls and names those who show themselves, publicly and without account details', async () => {
     const f = await fixture(), a = await f.member('alpha'), b = await f.member('bravo')
     // Signing in alone is not presence; only the visible tab's bell poll is.
-    expect(await f.online()).toEqual({ online: 0 })
+    expect(await f.online()).toEqual({ online: 0, members: [], more: 0 })
     expect((await f.call('/notifications/unread', 'GET', undefined, a.session)).status).toBe(200)
     expect((await f.call('/notifications/unread', 'GET', undefined, b.session)).status).toBe(200)
     const result = await f.call('/community/online')
     expect(result.status).toBe(200)
     const body = await result.json()
-    expect(body).toEqual({ online: 2 })
-    expect(JSON.stringify(body)).not.toMatch(/alpha|bravo|@/)
-    // Guests cannot create presence, and suspension removes a member from the count at once.
+    // Seen in the same second, names are listed alphabetically.
+    expect(body).toEqual({ online: 2, members: [{ username: 'alpha', avatar: null }, { username: 'bravo', avatar: null }], more: 0 })
+    expect(JSON.stringify(body)).not.toMatch(/@|email|user_id|seen_at|password|token/)
+    // Guests cannot create presence, and suspension removes a member from the count and the list at once.
     expect((await f.call('/notifications/unread')).status).toBe(401)
     f.db.prepare('UPDATE users SET suspended=1 WHERE id=?').run(b.id)
-    expect(await f.online()).toEqual({ online: 1 })
+    expect(await f.online()).toEqual({ online: 1, members: [{ username: 'alpha', avatar: null }], more: 0 })
+  })
+
+  it('lets a member leave the online list through their profile settings while staying in the count', async () => {
+    const f = await fixture(), a = await f.member('alpha'), b = await f.member('bravo'), now = Date.now()
+    await notePresence(f.env.DB!, a.id, now); await notePresence(f.env.DB!, b.id, now)
+    const profile = await (await f.call('/auth/profile', 'GET', undefined, b.session)).json()
+    expect(profile.showOnline).toBe(true)
+    expect((await f.call('/auth/profile', 'PATCH', { username: 'bravo', displayName: 'Bravo', bio: '', showOnline: 'no' }, b.session)).status).toBe(400)
+    expect((await f.call('/auth/profile', 'PATCH', { username: 'bravo', displayName: 'Bravo', bio: '', showOnline: false }, b.session)).status).toBe(200)
+    expect((await (await f.call('/auth/profile', 'GET', undefined, b.session)).json()).showOnline).toBe(false)
+    expect(await f.online()).toEqual({ online: 2, members: [{ username: 'alpha', avatar: null }], more: 1 })
+    // Saving the profile without the field keeps the choice, and the data export lists it.
+    expect((await f.call('/auth/profile', 'PATCH', { username: 'bravo', displayName: 'Bravo again', bio: '' }, b.session)).status).toBe(200)
+    expect((await (await f.call('/auth/profile', 'GET', undefined, b.session)).json()).showOnline).toBe(false)
+    expect((await (await f.call('/auth/data-export', 'POST', { password }, b.session)).json()).data.onlineList).toEqual([{ shown: 0 }])
+    expect((await f.call('/auth/profile', 'PATCH', { username: 'bravo', displayName: 'Bravo', bio: '', showOnline: true }, b.session)).status).toBe(200)
+    expect((await f.online()).members.map(member => member.username)).toEqual(['alpha', 'bravo'])
+  })
+
+  it('lists at most twelve names, most recently seen first, and counts the rest as more', async () => {
+    const f = await fixture(), now = Math.floor(Date.now() / 1000), seen = f.db.prepare('INSERT INTO member_presence(user_id,seen_at) VALUES(?,?)')
+    const add = f.db.prepare('INSERT INTO users(id,display_name,username,email_verified) VALUES(?,?,?,1)')
+    for (let index = 0; index < 14; index++) { const name = 'member' + String(index).padStart(2, '0'); add.run(name, name, name); seen.run(name, now - index) }
+    const body = await f.online()
+    expect(body.online).toBe(14)
+    expect(body.more).toBe(2)
+    expect(body.members.map(member => member.username)).toEqual(Array.from({ length: 12 }, (_, index) => 'member' + String(index).padStart(2, '0')))
   })
 
   it('keeps one overwritten time per member, written at most every two minutes, and counts each member once a day', async () => {
@@ -58,9 +86,9 @@ describe('members online', () => {
     // Online means seen within five minutes of the last write, which was the midnight poll.
     expect(f.presence(a.id)!.seen_at).toBe(start / 1000 + 180)
     vi.useFakeTimers({ now: start + 180000 + 299000, toFake: ['Date'] })
-    expect(await f.online()).toEqual({ online: 1 })
+    expect((await f.online()).online).toBe(1)
     vi.setSystemTime(start + 180000 + 301000)
-    expect(await f.online()).toEqual({ online: 0 })
+    expect(await f.online()).toEqual({ online: 0, members: [], more: 0 })
   })
 
   it('removes last-seen times after 31 days and with the account, and includes them in the data export', async () => {

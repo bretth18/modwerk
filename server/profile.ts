@@ -14,9 +14,9 @@ export async function profileRoutes(request: Request, env: Env, db: Database, pa
   const credential = await db.prepare("SELECT password FROM auth_accounts WHERE userId=? AND providerId='credential'").bind(owner.id).first<{password: string | null}>()
   const freshLogin = Date.now() - new Date(session.session.createdAt).getTime() < 10 * 60 * 1000
   if (path === '/api/auth/profile' && request.method === 'GET') {
-    const profile = await db.prepare('SELECT display_name AS displayName,username,profile_bio AS bio FROM users WHERE id=?').bind(owner.id).first()
+    const profile = await db.prepare('SELECT display_name AS displayName,username,profile_bio AS bio,show_online AS showOnline FROM users WHERE id=?').bind(owner.id).first<{displayName: string; username: string; bio: string; showOnline: number}>()
     const methods = (await db.prepare('SELECT providerId FROM auth_accounts WHERE userId=?').bind(owner.id).all()).results
-    return response({ ...profile, email: session.user.email, passwordRequired: !!credential?.password, freshLogin, methods: methods.map(method => method.providerId) })
+    return response({ ...profile, showOnline: !!profile?.showOnline, email: session.user.email, passwordRequired: !!credential?.password, freshLogin, methods: methods.map(method => method.providerId) })
   }
   await throttle(db, 'account-settings:' + owner.id, 10, 900)
   const body = await jsonBody(request)
@@ -24,11 +24,13 @@ export async function profileRoutes(request: Request, env: Env, db: Database, pa
     const username = typeof body.username === 'string' ? body.username.trim().toLowerCase() : ''
     if (!validUsername(username)) throw new HttpError(400, 'Use 3–24 letters, numbers or underscores, excluding reserved usernames.')
     if (typeof body.displayName !== 'string' || !body.displayName.trim() || body.displayName.trim().length > 60 || typeof body.bio !== 'string' || body.bio.length > 500) throw new HttpError(400, 'Choose a display name up to 60 characters and a bio up to 500 characters.')
+    if (body.showOnline !== undefined && typeof body.showOnline !== 'boolean') throw new HttpError(400, 'Choose whether to appear in the online list.')
+    const showOnline = typeof body.showOnline === 'boolean' ? Number(body.showOnline) : null
     const duplicate = await db.prepare('SELECT id FROM users WHERE username=? COLLATE NOCASE AND id<>?').bind(username, owner.id).first()
     if (duplicate) throw new HttpError(409, 'This username is already in use.')
     try {
       await db.batch([
-        db.prepare('UPDATE users SET username=?,display_name=?,profile_bio=? WHERE id=? AND suspended=0').bind(username, body.displayName.trim(), body.bio.trim(), owner.id),
+        db.prepare('UPDATE users SET username=?,display_name=?,profile_bio=?,show_online=COALESCE(?,show_online) WHERE id=? AND suspended=0').bind(username, body.displayName.trim(), body.bio.trim(), showOnline, owner.id),
         db.prepare('UPDATE auth_users SET username=?,displayUsername=?,name=?,updatedAt=? WHERE id=? AND EXISTS(SELECT 1 FROM users WHERE id=? AND suspended=0)').bind(username, username, body.displayName.trim(), Date.now(), owner.id, owner.id),
       ])
     } catch { throw new HttpError(409, 'Your profile could not be saved. Check whether the username is available and try again.') }

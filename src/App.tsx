@@ -1,6 +1,7 @@
 import { AccountPage } from './community/AccountPage'
 import { NotificationBell } from './community/NotificationBell'
 import { useMembersOnline } from './community/useMembersOnline'
+import { MembersOnlineChip } from './community/MembersOnline'
 import { DeveloperPage } from './community/DeveloperPage'
 import { MemberGate } from './community/MemberGate'
 import { ForumPage } from './community/ForumPage'
@@ -79,7 +80,7 @@ export default function App() {
   const route = useSyncExternalStore(subscribeRoute, getAppRoute, () => 'library')
   const moduleRoute = route.split('?')[0]
   const phoneLayout = useSyncExternalStore(subscribePhoneLayout, getPhoneLayout, () => false)
-  const online = useMembersOnline(), onlineLabel = online === 1 ? '1 member online' : online + ' members online'
+  const presence = useMembersOnline(), online = presence?.online ?? null
   useEffect(()=>trackPageView(route),[route])
   const detailModule = moduleRoute.startsWith('module/') ? AVAILABLE_MODULES.find((module) => module.id === moduleRoute.slice(7)) : undefined
   const pausedModule = MODULES.find(module => isModulePaused(module.id) && (moduleRoute === 'module/' + module.id || moduleRoute === 'community-module/' + module.id))
@@ -255,7 +256,7 @@ export default function App() {
         </nav>
         <div className="sidebar-section-label configuration-label"><span>Configurations</span><button className="icon-button" aria-label={machineHasMods ? 'New ' + currentDevice.name + ' configuration' : 'New configuration'} title={machineHasMods ? undefined : allMachines ? 'Choose a machine to create a configuration' : 'This machine has no mods yet'} disabled={!ready || !machineHasMods} onClick={() => setConfigDialog("create")}><Icon name="plus" size={18} /></button></div>
         <nav className="sidebar-nav configuration-nav" aria-label="Saved configurations">{configurationGroups.map(group => <div key={group.device.id} className="configuration-group" role="group" aria-label={group.device.name}><div className={'configuration-group-label' + (!allMachines && group.device.id === currentDevice.id ? ' is-current' : '')} aria-hidden="true">{group.device.name}</div>{group.items.map(item => { const selected = item.id === (allMachines ? storedActive?.id : machineActive?.id); return <button key={item.id} className={selected ? 'active' : ''} aria-pressed={selected} onClick={() => changeConfiguration(item.id)}><Icon name="file" /><span>{item.name}</span><small>{item.moduleIds.length}</small></button> })}</div>)}{!allMachines && !machineHasMods && <p className="sidebar-empty-note">No mods to configure yet.</p>}</nav>
-        <div className="sidebar-section-label community-label">Community & help</div><nav className="sidebar-nav community-nav" aria-label="Community and help"><a href="#forum" className={forumRoute?'active':''}><Icon name="message"/><span>Forum</span>{online ? <span className="sidebar-online" title={onlineLabel}><span className="online-dot" aria-hidden="true"/>{online} online</span> : <span className="sidebar-feature-new">New</span>}</a><a href="#submit" className={route.startsWith('submit') ? 'active' : ''}><Icon name="plus"/><span>Start developing</span></a><a href="#faq" className={route === 'faq' ? 'active' : ''} aria-current={route === 'faq' ? 'page' : undefined}><Icon name="help" /><span>FAQ<span className="help-guide-label"> & flashing guide</span></span></a></nav>
+        <div className="sidebar-section-label community-label">Community & help</div><nav className="sidebar-nav community-nav" aria-label="Community and help"><div className="sidebar-nav-row"><a href="#forum" className={forumRoute?'active':''}><Icon name="message"/><span>Forum</span>{!online && <span className="sidebar-feature-new">New</span>}</a>{presence?.online ? <MembersOnlineChip presence={presence}/> : null}</div><a href="#submit" className={route.startsWith('submit') ? 'active' : ''}><Icon name="plus"/><span>Start developing</span></a><a href="#faq" className={route === 'faq' ? 'active' : ''} aria-current={route === 'faq' ? 'page' : undefined}><Icon name="help" /><span>FAQ<span className="help-guide-label"> & flashing guide</span></span></a></nav>
         <div className="sidebar-spacer" />
         <AccountMenu route={route} />
         {allMachines ? <div className="sidebar-build"><span className="status-dot" /><span className="sidebar-build-copy"><strong>Builds are per machine</strong><small>Choose a machine in the library to build its firmware.</small></span></div> : currentDevice.id === 'octatrack' ? <a className="sidebar-build" href="#configuration" aria-label={firmware ? 'Base firmware ready — View configuration' : undefined} aria-describedby={firmware ? 'sidebar-firmware-status' : undefined}>

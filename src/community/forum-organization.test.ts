@@ -83,6 +83,38 @@ describe('forum organization',()=>{
     expect(await(await call('/forum/recent-posts?machine=octatrack')).json()).toEqual([])
     expect((await call('/forum/recent-posts?machine=unknown')).status).toBe(400)
   })
+  it('highlights the most liked posts and reply authors of the last 30 days and the newest members, publicly and cached',async()=>{
+    const {call,member,db,admin}=await fixture(),starter=await member('starter'),helper=await member('helper'),quiet=await member('quietone'),fan=await member('fanone'),second=await member('fantwo')
+    const {id}=await(await call('/forum/threads','POST',{title:'Highlight thread',body:'Opening post',category:'general'},starter.token)).json()
+    const opening=db.prepare('SELECT id FROM forum_posts WHERE thread_id=? ORDER BY created_at,rowid LIMIT 1').get(id)!.id as string
+    const reply=(await(await call('/forum/threads/'+id+'/replies','POST',{body:'A helpful reply'},helper.token)).json()).id as string
+    const hidden=(await(await call('/forum/threads/'+id+'/replies','POST',{body:'A reply the administrator hides'},helper.token)).json()).id as string
+    const earlier=await(await call('/forum/threads','POST',{title:'An old favourite',body:'Opening post from last season',category:'general'},quiet.token)).json()
+    const old=(await(await call('/forum/threads/'+earlier.id+'/replies','POST',{body:'An old reply'},quiet.token)).json()).id as string
+    db.prepare("UPDATE forum_posts SET created_at=datetime('now','-40 days') WHERE thread_id=?").run(earlier.id)
+    db.prepare("UPDATE forum_threads SET created_at=datetime('now','-40 days'),updated_at=datetime('now','-40 days') WHERE id=?").run(earlier.id)
+    for(const token of [fan.token,second.token])for(const post of [opening,reply,hidden,old])expect((await call('/forum/posts/'+post+'/react','POST',{liked:true},token)).status).toBe(200)
+    expect((await call('/forum/posts/'+opening+'/react','POST',{liked:true},helper.token)).status).toBe(200)
+    await call('/admin/forum/posts/'+hidden,'PATCH',{action:'hidden',value:true,reason:'Hidden for the test'},'',await admin())
+    const result=await call('/forum/highlights')
+    expect(result.status).toBe(200)
+    expect(result.headers.get('Cache-Control')).toBe('public, max-age=300')
+    const body=await result.json()
+    // The hidden reply and the post older than 30 days are left out; the opening post leads with three likes.
+    expect(body.topPosts.map((item:{id:string;likes:number})=>[item.id,item.likes])).toEqual([[opening,3],[reply,2]])
+    expect(body.topPosts[0]).toMatchObject({thread_id:id,title:'Highlight thread',username:'starter',category:'general',page:0})
+    // Likes on opening posts do not count towards the most liked replies.
+    expect(body.topMembers).toEqual([{username:'helper',avatar:null,likes:2}])
+    expect(body.newMembers.map((item:{username:string})=>item.username)).toEqual(['fantwo','fanone','quietone','helper','starter'])
+    expect(JSON.stringify(body)).not.toMatch(/user_id|email|password|token|@/)
+    // Suspended members disappear from every list, and an unverified sign-up is not a new member yet.
+    db.prepare('UPDATE users SET suspended=1 WHERE id=?').run(helper.id)
+    db.prepare('UPDATE users SET email_verified=0 WHERE id=?').run(second.id)
+    const after=await(await call('/forum/highlights')).json()
+    expect(after.topPosts.map((item:{id:string})=>item.id)).toEqual([opening])
+    expect(after.topMembers).toEqual([])
+    expect(after.newMembers.map((item:{username:string})=>item.username)).toEqual(['fanone','quietone','starter'])
+  })
 })
 describe('Shoutbox 8',()=>{
   it('allows public reading, requires verified membership and trusted origin, and bounds messages',async()=>{

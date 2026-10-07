@@ -10,7 +10,7 @@ function savedAdmin() { try { return sessionStorage.getItem(adminKey()) ?? '' } 
 export function setAdminSession(value: string) { try { if (value) sessionStorage.setItem(adminKey(), value); else sessionStorage.removeItem(adminKey()) } catch { throw new Error('Your browser could not keep the administrator session for this tab.') } }
 export async function apiFetch(path: string, options: RequestInit = {}): Promise<Response> {
   const method=(options.method??'GET').toUpperCase()
-  const publicRead=method==='GET'&&['/catalog','/community/summary','/community/online'].includes(path.split('?')[0])
+  const publicRead=method==='GET'&&['/catalog','/community/summary','/community/online','/forum/highlights'].includes(path.split('?')[0])
   const headers = new Headers(options.headers), session = savedSession()
   if (!publicRead&&validSession(session)) headers.set('Authorization', 'Bearer ' + session)
   const admin = savedAdmin()
