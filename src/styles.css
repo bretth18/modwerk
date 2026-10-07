@@ -1302,13 +1302,6 @@ h1 { font-size: 28px; }
 .sidebar-nav-row:hover { background: #2a2a2f; }
 .sidebar-nav-row:has(> a.active) { background: #363640; box-shadow: inset 0 1px #ffffff06, 0 1px 2px #00000012; }
 .sidebar-nav .sidebar-nav-row > a, .sidebar-nav .sidebar-nav-row > a:hover, .sidebar-nav .sidebar-nav-row > a.active { background: transparent; box-shadow: none; }
-.sidebar-nav .members-online { position: relative; flex: 0 0 auto; }
-.sidebar-nav button.sidebar-online { margin: 0; background: transparent; font-family: inherit; cursor: pointer; }
-.sidebar-nav button.sidebar-online:hover, .sidebar-nav button.sidebar-online[aria-expanded="true"] { background: #2a2a2f; }
-.members-online-popover { position: absolute; top: calc(100% + 6px); right: 0; z-index: 30; width: 214px; padding: 12px 14px; border: 1px solid #3c3b47; border-radius: 10px; background: #24242b; box-shadow: 0 10px 30px #00000055; }
-.members-online-popover strong { display: block; margin-bottom: 8px; color: #ececf2; font-size: 12px; }
-.members-online-popover .members-online-list { flex-direction: column; align-items: stretch; gap: 6px; }
-.members-online-popover .members-online-list a { color: #d7d5e9; }
 .sidebar-nav .sidebar-online { margin-left: auto; flex: 0 0 auto; display: inline-flex; align-items: center; padding: 2px 6px; border-radius: 4px; border: 1px solid #456354; color: #bcd7c5; font-size: 11px; line-height: 1.4; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .mobile-menu-panel small.menu-online { display: inline-flex; align-items: center; border-color: #456354; color: #bcd7c5; }
 .sidebar-nav .sidebar-feature-new { margin-left: auto; flex: 0 0 auto; padding: 2px 6px; border-radius: 4px; border: 1px solid #9788de; color: #d5c9ff; font-size: 10px; line-height: 1.4; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
