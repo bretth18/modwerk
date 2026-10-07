@@ -1,29 +1,10 @@
 # Digi Mono
 
+Modwerk metadata version: `0.13.1-experimental`.
+
+## Overview
+
 Digi Mono adds seven synth machines to the FUNC+SRC list, after the Monomachine’s GND and SWAVE machines: MONO SIN, MONO NOISE, MONO SAW, MONO PULSE, MONO ENS, MONO VO and POLY SIN. They need no sample: the engine’s output takes the sample’s place in the voice, so the track’s filter, amp, LFOs, sends, p-locks and level work on it as on a sample. Knob A stays TUNE; B to H are the machine’s own parameters, named and shown in their units. The engine is a clean-room rewrite from the Monomachine manual, with no Monomachine code or data.
-
-By gdeo607 (@gdeo607) · MIT · Digitakt OS 1.53, 1.54 · imported from [gdeo607/digi1_mods](https://github.com/gdeo607/digi1_mods/tree/35bacb3730d108e4dc48a7bd6de4c99ae9b161e6) at 0.13b.
-
-Modwerk metadata version: `0.13.0-experimental`.
-
-## Where to find it
-
-SRC machine list, after SLICE and any other mod’s machines.
-
-1. Select an audio track, press FUNC + SRC and scroll past SLICE (and any other mod’s machines).
-2. Choose MONO SIN, MONO NOISE, MONO SAW, MONO PULSE, MONO ENS, MONO VO or POLY SIN and press YES.
-3. On the SRC page, knob A is TUNE and B to H are the machine’s own parameters; a knob the machine does not have is blank.
-4. Play it from trigs, the track key, the keyboard (FUNC + TRK) or MIDI.
-
-The machines:
-
-- **MONO SIN**: a sine.
-- **MONO NOISE**: noise, with sample and hold, darker (red) noise and pitched noise.
-- **MONO SAW**: a band-limited saw, one to three detuned unison saws and two sub-oscillators.
-- **MONO PULSE**: a band-limited pulse with PWM, detuned unison pulses and subs.
-- **MONO ENS**: four oscillators at set intervals, saw to pulse, with a chorus.
-- **MONO VO**: a formant voice, one vowel gliding to another, with consonants at the note’s start.
-- **POLY SIN**: three sines at set notes, a chord on one track, with a pitch envelope. It has one filter and amp envelope for all three.
 
 ## Controls
 
@@ -54,13 +35,31 @@ The same knobs by machine, as the author lays them out (a dash is a blank knob):
 
 The FLTR, AMP and LFO pages, p-locks on these knobs, the sends and the track level work as usual. On the LFO page, DEST names the machine’s own knobs, for example MSAW:Unison Level.
 
-## Compatibility
+## Usage
+
+Use the access steps below after installing a compatible build. The tutorial gives a first practical pass through the module.
+
+### Where to find it
+
+SRC machine list, after SLICE and any other mod’s machines
+
+1. Select an audio track, press FUNC + SRC and scroll past SLICE (and any other mod’s machines).
+2. Choose MONO SIN, MONO NOISE, MONO SAW, MONO PULSE, MONO ENS, MONO VO or POLY SIN and press YES.
+3. On the SRC page, knob A is TUNE and B to H are the machine’s own parameters; a knob the machine does not have is blank.
+4. Play it from trigs, the track key, the keyboard (FUNC + TRK) or MIDI.
+
+### Quick tutorial: play a MONO SIN voice
+
+1. Use a build containing Digi Mono and its digichain dependency. On an audio track select MONO SIN with FUNC + SRC, then confirm with YES.
+2. Set pitch with SRC knob A, then shape MONO SIN with its labelled SRC controls. Use AMP to give the note a short decay.
+3. Enable the keyboard with FUNC + TRK and play the voice from trig keys; change TUNE to hear its pitch move.
+4. Stop playback and leave keyboard mode. Select ONESHOT to return the track to sample playback.
+
+## Compatibility and limitations
 
 - Digi Mono requires DIGICHAIN (1.6 in the author’s build), which elekloader ticks with it, and core 2.1.
 - Modwerk’s builder refuses it beside NEIGHBOR, DIGISLICER and SOPHIE: their patch sites overlap DIGICHAIN’s.
 - elekloader’s check decides at build time which mods combine.
-
-## Limitations
 
 - Modwerk’s builder refuses Digi Mono beside NEIGHBOR, DIGISLICER and SOPHIE: elekloader finds that their patch sites overlap those of DIGICHAIN, which Digi Mono needs. The author pairs them through -chain builds of those mods, which are not the releases Modwerk carries.
 - Built for Digitakt OS 1.53 and 1.54.
@@ -70,9 +69,45 @@ The FLTR, AMP and LFO pages, p-locks on these knobs, the sends and the track lev
 - The engine follows the Monomachine manual’s descriptions; it is not sample-exact to a Monomachine.
 - Not yet tested on a unit, its author reports; it passes their emulator tests on OS 1.53 and 1.54.
 
-## Credits
+## Tests and measurements
+
+See [TESTING.md](TESTING.md) for the documentation capture run and the separate pinned author evidence. UI captures do not qualify audio, timing, stress behaviour, persistence or hardware. Imported object memory estimates remain separate from measured runtime cost.
+
+## Authorship and licences
 
 - gdeo607 (the digi1_mods authors) — Digi Mono’s clean-room synth engine and elekloader mod
 - Machine and parameter names after the Monomachine manual; vowel formants from Peterson and Barney (1952)
 
-The author’s full documentation is kept in [upstream/DESIGN.md](upstream/DESIGN.md) and [upstream/REPOSITORY.md](upstream/REPOSITORY.md). Screenshots and a tutorial are still to come.
+The source is pinned to [35bacb3730d108e4dc48a7bd6de4c99ae9b161e6](https://github.com/gdeo607/digi1_mods/tree/35bacb3730d108e4dc48a7bd6de4c99ae9b161e6). The full MIT licence is in [LICENSE](LICENSE). Capture rights are declared separately in [media/LICENSE.md](media/LICENSE.md).
+
+## Screens and audio
+
+Real firmware-rendered emulator captures on OS 1.53. The [capture record](media/capture.json) includes source/build identities, panel inputs, timestamps and PNG hashes. [Capture rights](media/LICENSE.md) preserve the underlying interface rights. The [thumbnail](media/thumbnail.svg) is an illustration. No audio demonstration is claimed.
+
+![MONO SIN in the machine chooser](media/chooser.png)
+
+MONO SIN in the machine chooser.
+
+![MONO SIN controls](media/sin.png)
+
+MONO SIN controls.
+
+![MONO NOISE controls](media/noise.png)
+
+MONO NOISE controls.
+
+![MONO SAW controls](media/saw.png)
+
+MONO SAW controls.
+
+![MONO PULSE controls](media/pulse.png)
+
+MONO PULSE controls.
+
+![MONO ENS controls](media/ens.png)
+
+MONO ENS controls.
+
+![MONO VO controls](media/vo.png)
+
+MONO VO controls.

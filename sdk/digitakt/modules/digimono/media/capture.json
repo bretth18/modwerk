@@ -1,0 +1,500 @@
+{
+  "schemaVersion": 1,
+  "machine": "digitakt",
+  "moduleId": "digimono",
+  "moduleVersion": "0.13.1-experimental",
+  "capturedAt": "2026-10-07",
+  "firmware": "1.53",
+  "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+  "stockSha256": "9bdd44bb6102fb25c143cfab97bc92b7a89c463f795d3112dce89771e29bcc92",
+  "source": {
+    "repository": "https://github.com/gdeo607/digi1_mods",
+    "revision": "35bacb3730d108e4dc48a7bd6de4c99ae9b161e6",
+    "path": "mods/digimono"
+  },
+  "kit": {
+    "version": "0.4.0",
+    "lockSha256": "b9bc224eee31d1fda75841ce78fe5a28d5cbfee79071385329ca2517a247c04c"
+  },
+  "catalog": {
+    "revision": "a1be3ce0c006ea0c46fa82c6f254c11a05d42beb",
+    "sha256": "e207c3ff58fc7f5608d1fced67115406408a4b6202076824cf82cb043dc2d2c1",
+    "cores": 5,
+    "mods": 21
+  },
+  "build": {
+    "modules": [
+      {
+        "id": "core",
+        "version": "2.1",
+        "sha256": "f38b0c193677a060b3fdb28fe71b9332be8a5e7d36ecaf91a3c86a61bab558eb"
+      },
+      {
+        "id": "digichain",
+        "version": "1.6",
+        "sha256": "819f6045b5ad4deaa720c74f0126d078cc15c019dfcb07710112ac453b65d47d"
+      },
+      {
+        "id": "digimono",
+        "version": "0.13b",
+        "sha256": "79b51a364b1b7fd8ca13ac6aacba15bd1439bb46569b11d1ad5b3a35b1cec3ec"
+      }
+    ],
+    "outputVersion": "D001",
+    "verified": true
+  },
+  "emulator": {
+    "repository": "https://github.com/irpina/digiemu",
+    "revision": "c1b5735835923e328f8b4950d6ba927875e5b669",
+    "unicorn": {
+      "version": "2.1.4",
+      "sourceRevision": "8028ec436f2d9376525352dd38ed9ed6b9f6be10",
+      "patches": {
+        "unicorn-2.1.4-m68k-digikit-accel.patch": "7048704a068cb074b93b751df4b1a73fd8972c1c0cc27e30774c4c2771ec2b5c",
+        "unicorn-2.1.4-m68k-digikit-speed.patch": "9560613223502656e82adc1ecc36d5d8486995bed13ea8ddad168f8c4558a799",
+        "unicorn-2.1.4-m68k-emac-mac-load.patch": "ac128dd6836997de55e0d2ad70d7a2978639168090f552c5634da50fddc70bfe",
+        "unicorn-2.1.4-m68k-emac-modes.patch": "5fc44429ea913c5256c34a6e9c93ab90f727f120b4f12922a8f35a952fd1dace",
+        "unicorn-2.1.4-m68k-fast-mem.patch": "7f79332f318352cbd8055386dbf5149efc801d0663ae2450e33f9f39fed53374",
+        "unicorn-2.1.4-m68k-hook-ccr-sync.patch": "56de71acf2adbd5ca2f448095478e65e49fd79d378aeb5b5e4217d2c90f52f4e"
+      },
+      "librarySha256": "a83b0d8a588cba2087c08712183df5106b3d2f1670af6024991eb85005e0f184"
+    },
+    "python": "3.12.13",
+    "platform": "macOS arm64",
+    "hle": false,
+    "audioRecording": false,
+    "cycleTiming": false,
+    "framebuffer": "firmware front LCD buffer at panel_diff flush",
+    "scale": 6,
+    "frameSelection": "Most populated unmodified frame since the latest panel action."
+  },
+  "setup": {
+    "project": "Disposable first-boot A01, stock initial track state; no owner projects or samples.",
+    "fixture": "No sample fixture required for the documented UI pages.",
+    "sandbox": "No network; user files denied; private temporary output only."
+  },
+  "inputs": [
+    [
+      1000.028,
+      "press 1"
+    ],
+    [
+      1100.032,
+      "press 20"
+    ],
+    [
+      1200.035,
+      "release 20"
+    ],
+    [
+      1500.044,
+      "release 1"
+    ],
+    [
+      1600.047,
+      "press 15"
+    ],
+    [
+      1700.049,
+      "release 15"
+    ],
+    [
+      2000.058,
+      "press 15"
+    ],
+    [
+      2100.061,
+      "release 15"
+    ],
+    [
+      2400.069,
+      "press 15"
+    ],
+    [
+      2500.072,
+      "release 15"
+    ],
+    [
+      2800.081,
+      "press 15"
+    ],
+    [
+      2900.084,
+      "release 15"
+    ],
+    [
+      3200.093,
+      "press 12"
+    ],
+    [
+      3300.095,
+      "release 12"
+    ],
+    [
+      3600.104,
+      "press 22"
+    ],
+    [
+      3700.107,
+      "release 22"
+    ],
+    [
+      4000.116,
+      "press 20"
+    ],
+    [
+      4100.119,
+      "release 20"
+    ],
+    [
+      4400.128,
+      "press 1"
+    ],
+    [
+      4500.131,
+      "press 20"
+    ],
+    [
+      4600.134,
+      "release 20"
+    ],
+    [
+      4900.142,
+      "release 1"
+    ],
+    [
+      5000.145,
+      "press 15"
+    ],
+    [
+      5100.148,
+      "release 15"
+    ],
+    [
+      5400.156,
+      "press 12"
+    ],
+    [
+      5500.16,
+      "release 12"
+    ],
+    [
+      5800.169,
+      "press 22"
+    ],
+    [
+      5900.171,
+      "release 22"
+    ],
+    [
+      6200.18,
+      "press 20"
+    ],
+    [
+      6300.183,
+      "release 20"
+    ],
+    [
+      6600.192,
+      "press 1"
+    ],
+    [
+      6700.194,
+      "press 20"
+    ],
+    [
+      6800.197,
+      "release 20"
+    ],
+    [
+      7100.206,
+      "release 1"
+    ],
+    [
+      7200.209,
+      "press 15"
+    ],
+    [
+      7300.212,
+      "release 15"
+    ],
+    [
+      7600.221,
+      "press 12"
+    ],
+    [
+      7700.224,
+      "release 12"
+    ],
+    [
+      8000.232,
+      "press 22"
+    ],
+    [
+      8100.235,
+      "release 22"
+    ],
+    [
+      8400.244,
+      "press 20"
+    ],
+    [
+      8500.247,
+      "release 20"
+    ],
+    [
+      8800.255,
+      "press 1"
+    ],
+    [
+      8900.259,
+      "press 20"
+    ],
+    [
+      9000.262,
+      "release 20"
+    ],
+    [
+      9300.27,
+      "release 1"
+    ],
+    [
+      9400.273,
+      "press 15"
+    ],
+    [
+      9500.276,
+      "release 15"
+    ],
+    [
+      9800.285,
+      "press 12"
+    ],
+    [
+      9900.287,
+      "release 12"
+    ],
+    [
+      10200.297,
+      "press 22"
+    ],
+    [
+      10300.3,
+      "release 22"
+    ],
+    [
+      10600.308,
+      "press 20"
+    ],
+    [
+      10700.311,
+      "release 20"
+    ],
+    [
+      11000.32,
+      "press 1"
+    ],
+    [
+      11100.322,
+      "press 20"
+    ],
+    [
+      11200.325,
+      "release 20"
+    ],
+    [
+      11500.334,
+      "release 1"
+    ],
+    [
+      11600.337,
+      "press 15"
+    ],
+    [
+      11700.34,
+      "release 15"
+    ],
+    [
+      12000.349,
+      "press 12"
+    ],
+    [
+      12100.352,
+      "release 12"
+    ],
+    [
+      12400.361,
+      "press 22"
+    ],
+    [
+      12500.363,
+      "release 22"
+    ],
+    [
+      12800.372,
+      "press 20"
+    ],
+    [
+      12900.375,
+      "release 20"
+    ],
+    [
+      13200.383,
+      "press 1"
+    ],
+    [
+      13300.387,
+      "press 20"
+    ],
+    [
+      13400.389,
+      "release 20"
+    ],
+    [
+      13700.398,
+      "release 1"
+    ],
+    [
+      13800.401,
+      "press 15"
+    ],
+    [
+      13900.404,
+      "release 15"
+    ],
+    [
+      14200.413,
+      "press 12"
+    ],
+    [
+      14300.416,
+      "release 12"
+    ],
+    [
+      14600.424,
+      "press 22"
+    ],
+    [
+      14700.427,
+      "release 22"
+    ],
+    [
+      15000.436,
+      "press 20"
+    ],
+    [
+      15100.439,
+      "release 20"
+    ],
+    [
+      15400.447,
+      "press 1"
+    ],
+    [
+      15500.451,
+      "press 20"
+    ],
+    [
+      15600.454,
+      "release 20"
+    ],
+    [
+      15900.463,
+      "release 1"
+    ],
+    [
+      16000.465,
+      "press 15"
+    ],
+    [
+      16100.468,
+      "release 15"
+    ],
+    [
+      16400.477,
+      "press 12"
+    ],
+    [
+      16500.48,
+      "release 12"
+    ],
+    [
+      16800.489,
+      "press 22"
+    ],
+    [
+      16900.491,
+      "release 22"
+    ],
+    [
+      17200.5,
+      "press 20"
+    ],
+    [
+      17300.503,
+      "release 20"
+    ],
+    [
+      17600.512,
+      "press 23"
+    ],
+    [
+      17700.515,
+      "release 23"
+    ]
+  ],
+  "captures": [
+    {
+      "path": "media/chooser.png",
+      "sha256": "39d6ec946e20f721c728d45ae54d47910a0f2ac582a37f1dc85807b380673760",
+      "plan": "wait 1000\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap DOWN\ntap DOWN\ntap DOWN\nsnap chooser\ntap YES\ntap AMP\ntap SRC\nsnap sin\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap noise\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap saw\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap pulse\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap ens\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap vo\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap poly-sin\ntap LFO\nsnap lfo\n",
+      "atMs": 2821.539316239316,
+      "requestedAtMs": 3200.0929487179487
+    },
+    {
+      "path": "media/sin.png",
+      "sha256": "2dee8bfebcd4aafc8d900606b27d9e1931dc30247c20396c78aedebed2424cb0",
+      "plan": "wait 1000\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap DOWN\ntap DOWN\ntap DOWN\nsnap chooser\ntap YES\ntap AMP\ntap SRC\nsnap sin\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap noise\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap saw\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap pulse\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap ens\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap vo\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap poly-sin\ntap LFO\nsnap lfo\n",
+      "atMs": 4183.454487179487,
+      "requestedAtMs": 4400.127564102564
+    },
+    {
+      "path": "media/noise.png",
+      "sha256": "184f12bf5c6c8c1c2dcbbddc956d257efaad9b7609f0f00bced8825996449d8c",
+      "plan": "wait 1000\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap DOWN\ntap DOWN\ntap DOWN\nsnap chooser\ntap YES\ntap AMP\ntap SRC\nsnap sin\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap noise\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap saw\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap pulse\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap ens\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap vo\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap poly-sin\ntap LFO\nsnap lfo\n",
+      "atMs": 6383.519017094017,
+      "requestedAtMs": 6600.191666666667
+    },
+    {
+      "path": "media/saw.png",
+      "sha256": "2367ca5632e25a2943d7e18a771b04074d2e8c551b76c108ba0fca320aad24fb",
+      "plan": "wait 1000\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap DOWN\ntap DOWN\ntap DOWN\nsnap chooser\ntap YES\ntap AMP\ntap SRC\nsnap sin\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap noise\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap saw\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap pulse\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap ens\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap vo\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap poly-sin\ntap LFO\nsnap lfo\n",
+      "atMs": 8583.58247863248,
+      "requestedAtMs": 8800.255341880342
+    },
+    {
+      "path": "media/pulse.png",
+      "sha256": "0dc09721b890a65006fb891edd15701b1d1794010cce31793df37079648cf5eb",
+      "plan": "wait 1000\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap DOWN\ntap DOWN\ntap DOWN\nsnap chooser\ntap YES\ntap AMP\ntap SRC\nsnap sin\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap noise\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap saw\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap pulse\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap ens\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap vo\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap poly-sin\ntap LFO\nsnap lfo\n",
+      "atMs": 10783.647008547008,
+      "requestedAtMs": 11000.319658119659
+    },
+    {
+      "path": "media/ens.png",
+      "sha256": "3ba83767c8d529fe8c7c5c04696d019d0ef06fc29277f6c8c19f9de4671d081f",
+      "plan": "wait 1000\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap DOWN\ntap DOWN\ntap DOWN\nsnap chooser\ntap YES\ntap AMP\ntap SRC\nsnap sin\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap noise\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap saw\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap pulse\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap ens\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap vo\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap poly-sin\ntap LFO\nsnap lfo\n",
+      "atMs": 12983.71047008547,
+      "requestedAtMs": 13200.383333333333
+    },
+    {
+      "path": "media/vo.png",
+      "sha256": "4f93581a2688d219f601198f51b9dd109569120d50de8eac60cf4fd539db9d81",
+      "plan": "wait 1000\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap DOWN\ntap DOWN\ntap DOWN\nsnap chooser\ntap YES\ntap AMP\ntap SRC\nsnap sin\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap noise\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap saw\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap pulse\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap ens\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap vo\npress FUNC\ntap SRC\nrelease FUNC\ntap DOWN\ntap YES\ntap AMP\ntap SRC\nsnap poly-sin\ntap LFO\nsnap lfo\n",
+      "atMs": 15184.212820512821,
+      "requestedAtMs": 15400.447435897437
+    }
+  ],
+  "limitations": [
+    "UI-only documentation; no hardware, audio, timing, persistence or stress qualification."
+  ]
+}
