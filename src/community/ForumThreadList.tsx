@@ -1,6 +1,6 @@
 import { Icon } from '../components/Icon'
 import { communityModule } from './modules'
-import type { ForumThread } from './forum-contract'
+import { REQUEST_STATUSES, type ForumThread } from './forum-contract'
 import { ForumAuthorName, ForumAvatar, ForumCategoryBadge, ForumMachineBadge } from './ForumIdentity'
 import { ForumTime } from './ForumTime'
 import { threadHref } from '../routing'
@@ -19,11 +19,13 @@ export function ForumThreadList({ threads }: { threads: ForumThread[] }) {
                 {!!thread.pinned && <span className="forum-state"><Icon name="pin" size={13} />Pinned</span>}
                 {!!thread.locked && <span className="forum-state"><Icon name="lock" size={13} />Locked</span>}
                 {thread.category === 'issues' && <span className="forum-state" data-resolved={thread.status === 'resolved'}>{thread.status === 'resolved' && <Icon name="check" size={13} />}{thread.status === 'resolved' ? 'Resolved' : 'Open issue'}</span>}
+                {thread.category === 'requests' && <span className="forum-state" data-request-status={thread.request_status}>{thread.request_status === 'shipped' && <Icon name="check" size={13} />}{REQUEST_STATUSES[thread.request_status]}</span>}
               </div>
               <h3 id={'thread-title-' + thread.id}><a className="forum-thread-title" href={threadHref(thread.id, thread.title)}>{!!thread.unread && <span className="sr-only">Unread: </span>}{thread.title}</a></h3>
               <div className="forum-thread-tags">
                 <ForumCategoryBadge category={thread.category} />
                 {thread.media_kinds && <span className="forum-thread-media">{thread.media_kinds.includes('image') && <><Icon name="image" size={14} /><span className="sr-only">Includes images</span></>}{thread.media_kinds.includes('audio') && <><Icon name="wave" size={14} /><span className="sr-only">Includes sound clips</span></>}</span>}
+                {(thread.category === 'requests' || thread.votes > 0) && <span className="forum-votes" data-request={thread.category === 'requests'}><Icon name="heart" size={13} />{thread.votes} {thread.category === 'requests' ? (thread.votes === 1 ? 'vote' : 'votes') : <span className="sr-only">{thread.votes === 1 ? 'like' : 'likes'}</span>}</span>}
                 <ForumMachineBadge machine={thread.machine} />
                 {thread.module_id && <a className="forum-module-link" href={communityModule(thread.module_id)?.href ?? '#forum'}>{communityModule(thread.module_id)?.name ?? thread.module_id}</a>}
                 <span className="forum-thread-author"><ForumAuthorName username={thread.username} official={thread.official} /></span>

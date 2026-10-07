@@ -54,6 +54,11 @@ export function notifyModuleMaintainers(db: Database, moduleId: string, kind: 'm
 export function notifyMessage(db: Database, messageId: string, conversationId: string, senderId: string, recipientId: string) {
   return db.prepare(`INSERT INTO notifications(id,user_id,kind,actor_id,message_id) SELECT ${newId},?,'message',?,? WHERE NOT EXISTS(SELECT 1 FROM notifications n JOIN messages m ON m.id=n.message_id WHERE n.user_id=? AND n.kind='message' AND n.seen=0 AND m.conversation_id=?)`).bind(recipientId, senderId, messageId, recipientId, conversationId)
 }
+/** The author and followers of a feature request learn its new status. Inserted before the status changes in the same
+ * transaction, so a repeated write of the current status stays quiet; the status travels in `excerpt`. */
+export function notifyRequestStatus(db: Database, threadId: string, status: string, actorId: string) {
+  return db.prepare(`INSERT INTO notifications(id,user_id,kind,actor_id,thread_id,module_id,excerpt) SELECT ${newId},r.user_id,'request_status',?,t.id,t.module_id,? FROM (SELECT user_id FROM forum_follows WHERE thread_id=? UNION SELECT user_id FROM forum_threads WHERE id=?) r JOIN users u ON u.id=r.user_id JOIN forum_threads t ON t.id=? WHERE t.request_status<>? AND r.user_id<>? AND u.suspended=0 AND NOT EXISTS(SELECT 1 FROM auth_accounts g WHERE g.userId=? AND g.providerId='github' AND g.accountId=u.github_id)`).bind(actorId, status, threadId, threadId, threadId, status, actorId, actorId)
+}
 export function withdrawModuleLike(db: Database, moduleId: string, actorId: string) {
   return db.prepare("DELETE FROM notifications WHERE kind='module_like' AND module_id=? AND actor_id=? AND seen=0 AND emailed=0").bind(moduleId, actorId)
 }
@@ -61,7 +66,7 @@ export function withdrawModuleLike(db: Database, moduleId: string, actorId: stri
 /** Notifications whose content was hidden or removed, or whose actor was suspended, are not shown or mailed. */
 export const VISIBLE = "(n.thread_id IS NULL OR t.hidden=0) AND (n.post_id IS NULL OR p.hidden=0) AND (n.kind<>'module_comment' OR c.id IS NOT NULL) AND (a.id IS NULL OR a.suspended=0 OR a.username IS NULL) AND (n.kind<>'message' OR (dm.id IS NOT NULL AND dm.hidden=0))"
 export const ITEM_SQL = `SELECT n.id,n.kind,n.seen,n.created_at,n.thread_id,n.post_id,n.module_id,n.module_version,a.username AS actor,a.avatar_id AS actor_avatar,a.id='${SYSTEM_AUTHOR}' AS actor_official,COALESCE(t.title,i.title,m.name) AS title,
- CASE WHEN n.kind IN ('reply','mention','bug_report') THEN substr(p.body,1,200) WHEN n.kind='module_comment' THEN substr(c.body,1,200) WHEN n.kind='issue_comment' THEN substr(n.excerpt,1,200) WHEN n.kind='message' THEN substr(dm.body,1,200) END AS excerpt,
+ CASE WHEN n.kind IN ('reply','mention','bug_report') THEN substr(p.body,1,200) WHEN n.kind='module_comment' THEN substr(c.body,1,200) WHEN n.kind='issue_comment' THEN substr(n.excerpt,1,200) WHEN n.kind='message' THEN substr(dm.body,1,200) WHEN n.kind='request_status' THEN n.excerpt END AS excerpt,
  CASE WHEN n.kind='module_rating' THEN r.value END AS rating,n.issue_id,n.github_actor,COALESCE(i.github_url,m.href) AS url,
  (SELECT CAST(COUNT(*)/30 AS INTEGER) FROM forum_posts preceding WHERE preceding.thread_id=p.thread_id AND (preceding.created_at<p.created_at OR (preceding.created_at=p.created_at AND preceding.rowid<p.rowid))) AS post_page
  FROM notifications n LEFT JOIN users a ON a.id=n.actor_id LEFT JOIN forum_threads t ON t.id=n.thread_id LEFT JOIN forum_posts p ON p.id=n.post_id

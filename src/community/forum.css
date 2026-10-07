@@ -75,6 +75,24 @@
 .forum-thread-media { display: inline-flex; align-items: center; gap: 6px; color: #d1c48d; }
 .forum-state { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-size: 11px; }
 .forum-state[data-resolved="true"] { color: #9cc6b1; }
+.forum-state[data-request-status="planned"] { color: #a9c4f2; }
+.forum-state[data-request-status="shipped"] { color: #9cc6b1; }
+.forum-state[data-request-status="declined"] { color: #cfa3a3; }
+.forum-votes { display: inline-flex; align-items: center; gap: 4px; color: #b5b3c4; font-size: 11px; font-variant-numeric: tabular-nums; }
+.forum-votes[data-request="true"] { color: #e0b6c4; }
+/* Vote on a feature request: the heart on its opening post, big enough to find at the top of the thread. */
+.forum-vote { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; flex-shrink: 0; }
+.forum-vote .button { gap: 8px; min-height: 44px; padding-inline: 18px; font-size: 14px; }
+.forum-vote .button strong { padding-left: 10px; border-left: 1px solid #ffffff33; font-variant-numeric: tabular-nums; }
+.forum-vote .button[aria-pressed="true"] { color: #ffd9e6; background: #6a3650; border-color: #8a4a68; }
+.forum-vote small { color: var(--muted); font-size: 11px; }
+.forum-status-filter { display: flex; flex-wrap: wrap; gap: 6px; margin: -8px 0 20px; }
+.forum-status-filter a { display: inline-flex; align-items: center; min-height: 32px; padding: 5px 12px; border: 1px solid #41414b; border-radius: 6px; color: #b8b7c5; font-size: 12px; }
+.forum-status-filter a:hover { color: #ececf1; border-color: #64688c; }
+.forum-status-filter a[aria-current="page"] { color: #d8dcff; border-color: #5b6084; background: #383a53; }
+.forum-request-status { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-left: auto; }
+.forum-request-status label { display: contents; }
+.forum-request-status select, .forum-request-status input { min-height: 36px; }
 .forum-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; color: var(--muted); }
 .forum-meta a { color: inherit; }
 .forum-meta a:hover { color: #c6cbff; }

@@ -5,7 +5,7 @@ import { api, post } from './api'
 import type { NotificationPreferences as Preferences } from './notification-contract'
 
 const TOPICS: [keyof Pick<Preferences, 'replies' | 'likes' | 'modules' | 'bugs' | 'updates' | 'messages'>, string][] = [
-  ['replies', 'Replies in threads you follow and @mentions'],
+  ['replies', 'Replies in threads you follow, @mentions and status changes on feature requests you follow'],
   ['likes', 'Likes on your posts'],
   ['modules', 'Comments, ratings and likes on modules you maintain'],
   ['bugs', 'Bug reports for modules you maintain, and replies and status changes for your own reports'],

@@ -2,15 +2,15 @@ import { issueStatusStatements } from './issue-notifications'
 import type { Database, User } from './platform'
 import { ADMIN_ACTOR, needMember, throttle } from './auth'
 import { HttpError, jsonBody, required, response } from './security'
-import { FORUM_CATEGORIES, forumMachine, sharedConfiguration } from '../src/community/forum-contract'
+import { FORUM_CATEGORIES, forumMachine, REQUEST_STATUSES, sharedConfiguration } from '../src/community/forum-contract'
 import { communityModule } from '../src/community/modules'
 import { ensureDiscussionThread, ensureModuleThreadsOnce, SYSTEM_AUTHOR } from './module-threads'
-import { notifyMentions, notifyPostLike, notifyReplies, RECIPIENTS } from './notifications'
+import { notifyMentions, notifyPostLike, notifyReplies, notifyRequestStatus, RECIPIENTS } from './notifications'
 import { attachMedia, postAttachments } from './forum-media'
 import { shoutbox } from './shoutbox'
 import { FIRST_UNREAD_FIELDS, FIRST_UNREAD_JOIN, markForumRead, noteForumVisit, recordThreadRead, UNREAD, UNREAD_FIELDS, UNREAD_JOINS } from './forum-unread'
 
-type Thread = {id:string;user_id:string;locked:number;hidden:number;configuration_json:string|null;issue_json:string|null}
+type Thread = {id:string;user_id:string;category:string;section:string|null;module_id:string|null;request_status:string;locked:number;hidden:number;configuration_json:string|null;issue_json:string|null}
 /** `forum_posts.hidden` for a deleted post: hidden like a moderated one, but its text is erased, it is never listed and it cannot be restored. */
 const POST_DELETED=2
 /** Deletes a reply but keeps its row, which notifications and reports refer to: the text is erased, its files are queued for the hourly bucket cleanup and its reports are closed. */
@@ -22,11 +22,19 @@ function deletePost(db:Database,postId:string){return [
 /** The first post is the thread itself: deleting it would leave replies without their subject. */
 async function isOpeningPost(db:Database,threadId:string,postId:string){return (await db.prepare('SELECT id FROM forum_posts WHERE thread_id=? ORDER BY created_at,rowid LIMIT 1').bind(threadId).first<{id:string}>())?.id===postId}
 function page(url: URL) { const value = Number(url.searchParams.get('page') ?? 0); if (!Number.isInteger(value) || value < 0 || value > 10000) throw new HttpError(400,'Invalid page.'); return value }
-const threadFields = `t.id,t.title,COALESCE(t.section,t.category) AS category,t.machine,t.module_id,t.status,t.locked,t.pinned,t.created_at,t.updated_at,u.username,u.avatar_id AS avatar,t.user_id='${SYSTEM_AUTHOR}' AS official,(SELECT MAX(COUNT(*)-1,0) FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0) AS replies,(SELECT GROUP_CONCAT(DISTINCT m.kind) FROM forum_media m JOIN forum_posts mp ON mp.id=m.post_id WHERE mp.thread_id=t.id AND m.removed=0 AND mp.hidden=0) AS media_kinds`
+/** The thread's first post: its hearts are the votes on a feature request. */
+const OPENING_POST='(SELECT p.id FROM forum_posts p WHERE p.thread_id=t.id ORDER BY p.created_at,p.rowid LIMIT 1)'
+const threadFields = `t.id,t.title,COALESCE(t.section,t.category) AS category,t.machine,t.module_id,t.status,t.request_status,(SELECT COUNT(*) FROM forum_reactions r WHERE r.post_id=${OPENING_POST}) AS votes,t.locked,t.pinned,t.created_at,t.updated_at,u.username,u.avatar_id AS avatar,t.user_id='${SYSTEM_AUTHOR}' AS official,(SELECT MAX(COUNT(*)-1,0) FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0) AS replies,(SELECT GROUP_CONCAT(DISTINCT m.kind) FROM forum_media m JOIN forum_posts mp ON mp.id=m.post_id WHERE mp.thread_id=t.id AND m.removed=0 AND mp.hidden=0) AS media_kinds`
 async function threadById(db: Database, id: string, admin: boolean) {
   const thread = await db.prepare('SELECT * FROM forum_threads WHERE id=? AND (hidden=0 OR ?=1)').bind(id, Number(admin)).first<Thread>()
   if (!thread) throw new HttpError(404,'Thread not found.')
   return thread
+}
+/** A member who claimed the module as its maintainer, or whose GitHub sign-in is the developer identity that did; the catalog must still list the handle. */
+async function maintainsModule(db: Database, moduleId: string|null, userId: string) {
+  const module = moduleId ? communityModule(moduleId) : undefined, handles = module?.maintainers.map(login => login.toLowerCase()) ?? []
+  if (!module || !handles.length) return false
+  return !!await db.prepare(`SELECT 1 FROM module_maintainers m JOIN users d ON d.id=m.user_id WHERE m.module_id=? AND m.revoked=0 AND d.suspended=0 AND lower(d.github_login)=lower(m.github_login) AND lower(m.github_login) IN (${handles.map(() => '?').join(',')}) AND (m.user_id=? OR EXISTS(SELECT 1 FROM auth_accounts g WHERE g.userId=? AND g.providerId='github' AND g.accountId=d.github_id))`).bind(module.id, ...handles, userId, userId).first()
 }
 function bool(value: unknown) { if (typeof value !== 'boolean') throw new HttpError(400,'Choose on or off.'); return Number(value) }
 function cleanBody(value: unknown) { return required(value,'Post',12000) }
@@ -86,11 +94,13 @@ export async function forum(request: Request, db: Database, user: User|null, adm
   }
   if (path === '/api/forum/threads' && request.method === 'GET') {
     const category = url.searchParams.get('category') ?? '', module = await moduleId(db,url.searchParams.get('module')), query = (url.searchParams.get('q') ?? '').trim().slice(0,120), saved = url.searchParams.get('saved') === '1', following = url.searchParams.get('following') === '1', unread = url.searchParams.get('unread') === '1', author = url.searchParams.get('author') ?? ''
-    const sort = url.searchParams.get('sort') ?? 'active'
+    // Feature requests list the most voted first unless an order is chosen; the other topics stay on recent activity.
+    const sort = url.searchParams.get('sort') ?? (category === 'requests' ? 'top' : 'active'), status = url.searchParams.get('status') ?? ''
     const view = url.searchParams.get('view') ?? 'community'
     if (!['community','modules'].includes(view)) throw new HttpError(400,'Choose a supported discussion view.')
-    if (!['active','newest'].includes(sort)) throw new HttpError(400,'Choose a supported discussion order.')
+    if (!['active','newest','top'].includes(sort)) throw new HttpError(400,'Choose a supported discussion order.')
     if (category && !Object.hasOwn(FORUM_CATEGORIES,category)) throw new HttpError(400,'Unknown category.')
+    if (status && !Object.hasOwn(REQUEST_STATUSES,status)) throw new HttpError(400,'Choose a request status.')
     let machine: string | null
     try { machine = forumMachine(url.searchParams.get('machine')) } catch { throw new HttpError(400,'Unknown machine.') }
     if (saved || following || unread) needMember(user)
@@ -105,11 +115,11 @@ export async function forum(request: Request, db: Database, user: User|null, adm
       FROM forum_threads t JOIN users u ON u.id=t.user_id
       LEFT JOIN forum_posts lp ON lp.id=(SELECT p.id FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0 ORDER BY p.created_at DESC,p.rowid DESC LIMIT 1)
       LEFT JOIN users lu ON lu.id=lp.user_id ${reader?UNREAD_JOINS:''}
-      WHERE t.hidden=0 ${authorScope} AND (?='' OR COALESCE(t.section,t.category)=?) AND (? IS NULL OR t.machine=?) AND (? IS NULL OR t.module_id=?) AND (?='' OR u.username=?) AND (?=0 OR EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?))
+      WHERE t.hidden=0 ${authorScope} AND (?='' OR COALESCE(t.section,t.category)=?) AND (?='' OR t.request_status=?) AND (? IS NULL OR t.machine=?) AND (? IS NULL OR t.module_id=?) AND (?='' OR u.username=?) AND (?=0 OR EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?))
       AND (?=0 OR EXISTS(SELECT 1 FROM forum_follows f WHERE f.thread_id=t.id AND f.user_id=?)) ${reader&&unread?'AND '+UNREAD:''}
       AND (?='' OR t.title LIKE ? ESCAPE '\\' OR EXISTS(SELECT 1 FROM forum_posts p WHERE p.thread_id=t.id AND p.hidden=0 AND p.body LIKE ? ESCAPE '\\'))
-      ORDER BY t.pinned DESC,${sort==='newest'?'t.created_at':'t.updated_at'} DESC,t.id LIMIT 31 OFFSET ?`)
-      .bind(...(reader?[reader,reader]:[]),category,category,machine,machine,module,module,author,author,Number(saved),user?.id??'',Number(following),user?.id??'',query,escaped,escaped,page(url)*30).all()).results
+      ORDER BY t.pinned DESC,${sort==='top'?'votes DESC,t.updated_at':sort==='newest'?'t.created_at':'t.updated_at'} DESC,t.id LIMIT 31 OFFSET ?`)
+      .bind(...(reader?[reader,reader]:[]),category,category,status,status,machine,machine,module,module,author,author,Number(saved),user?.id??'',Number(following),user?.id??'',query,escaped,escaped,page(url)*30).all()).results
     return response({threads:rows.slice(0,30),hasMore:rows.length>30})
   }
   if (path === '/api/forum/categories' && request.method === 'GET') {
@@ -176,16 +186,19 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     const [details,pagePosts] = await Promise.all([
       db.prepare(`SELECT ${threadFields},t.hidden,
         EXISTS(SELECT 1 FROM forum_follows f WHERE f.thread_id=t.id AND f.user_id=?) AS following,
-        EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?) AS bookmarked${reader?','+FIRST_UNREAD_FIELDS:''}
-        FROM forum_threads t JOIN users u ON u.id=t.user_id ${reader?UNREAD_JOINS+' '+FIRST_UNREAD_JOIN:''} WHERE t.id=?`).bind(user?.id??null,user?.id??null,...(reader?[reader,reader]:[]),thread.id).first<Record<string,unknown>&{following:number;bookmarked:number;first_unread_id?:string|null;first_unread_page?:number|null}>(),
+        EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?) AS bookmarked,
+        EXISTS(SELECT 1 FROM forum_reactions r WHERE r.user_id=? AND r.post_id=${OPENING_POST}) AS voted${reader?','+FIRST_UNREAD_FIELDS:''}
+        FROM forum_threads t JOIN users u ON u.id=t.user_id ${reader?UNREAD_JOINS+' '+FIRST_UNREAD_JOIN:''} WHERE t.id=?`).bind(user?.id??null,user?.id??null,user?.id??null,...(reader?[reader,reader]:[]),thread.id).first<Record<string,unknown>&{following:number;bookmarked:number;voted:number;first_unread_id?:string|null;first_unread_page?:number|null}>(),
       db.prepare('SELECT p.*,u.username,u.avatar_id AS avatar,u.display_name AS displayName,(SELECT COUNT(*) FROM forum_reactions r WHERE r.post_id=p.id) AS likes,EXISTS(SELECT 1 FROM forum_reactions r WHERE r.post_id=p.id AND r.user_id=?) AS liked FROM forum_posts p JOIN users u ON u.id=p.user_id WHERE p.thread_id=? AND p.hidden<2 ORDER BY p.created_at,p.rowid LIMIT 31 OFFSET ?').bind(user?.id??'',thread.id,page(url)*30).all<{id:string;user_id:string;hidden:number;body:string;username:string;avatar:string|null;displayName:string;created_at:string;edited_at:string|null;likes:number;liked:number}>(),
     ])
     if(!details)throw new HttpError(404,'Thread not found.')
-    const {following:followed,bookmarked:saved,first_unread_id:unreadId,first_unread_page:unreadPage,...summary}=details
+    const {following:followed,bookmarked:saved,voted,first_unread_id:unreadId,first_unread_page:unreadPage,...summary}=details
     const posts=pagePosts.results,following=!!followed,bookmarked=!!saved,last=posts.slice(0,30).at(-1)
     if(reader&&last)await recordThreadRead(db,reader,thread.id,last.id).run()
+    const request=(thread.section??thread.category)==='requests'
+    const canSetRequestStatus=request&&!!user?.email_verified&&!user.suspended&&(admin||await maintainsModule(db,thread.module_id,user.id))
     const attachments = await postAttachments(db,posts.slice(0,30).filter(post=>admin||!post.hidden).map(post=>post.id))
-    return response({thread:summary,posts:posts.slice(0,30).map(post=>({attachments:attachments.get(post.id)??[],canRemoveMedia:!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,id:post.id,body:post.hidden&&!admin?'':post.body,username:post.hidden&&!admin?null:post.username,avatar:post.hidden&&!admin?null:post.avatar,displayName:post.hidden&&!admin?null:post.displayName,created_at:post.created_at,edited_at:post.edited_at,hidden:post.hidden,likes:post.hidden?0:post.likes,liked:!post.hidden&&!!post.liked,canEdit:!thread.locked&&!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,official:post.user_id===SYSTEM_AUTHOR,...(admin?{user_id:post.user_id}:{})})),configuration:thread.configuration_json?JSON.parse(thread.configuration_json):null,issue:thread.issue_json?JSON.parse(thread.issue_json):null,following,bookmarked,hasMore:posts.length>30,...(reader?{firstUnread:unreadId?{id:unreadId,page:unreadPage??0}:null}:{})})
+    return response({thread:summary,posts:posts.slice(0,30).map(post=>({attachments:attachments.get(post.id)??[],canRemoveMedia:!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,id:post.id,body:post.hidden&&!admin?'':post.body,username:post.hidden&&!admin?null:post.username,avatar:post.hidden&&!admin?null:post.avatar,displayName:post.hidden&&!admin?null:post.displayName,created_at:post.created_at,edited_at:post.edited_at,hidden:post.hidden,likes:post.hidden?0:post.likes,liked:!post.hidden&&!!post.liked,canEdit:!thread.locked&&!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,official:post.user_id===SYSTEM_AUTHOR,...(admin?{user_id:post.user_id}:{})})),configuration:thread.configuration_json?JSON.parse(thread.configuration_json):null,issue:thread.issue_json?JSON.parse(thread.issue_json):null,following,bookmarked,voted:!!voted,canSetRequestStatus,hasMore:posts.length>30,...(reader?{firstUnread:unreadId?{id:unreadId,page:unreadPage??0}:null}:{})})
   }
   const member = needMember(user)
   await throttle(db,'forum:'+member.id,60)
@@ -216,7 +229,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     ])
     return response({id},201)
   }
-  if ((match=path.match(/^\/api\/forum\/threads\/([a-zA-Z0-9-]+)\/(replies|follow|bookmark|status)$/))) {
+  if ((match=path.match(/^\/api\/forum\/threads\/([a-zA-Z0-9-]+)\/(replies|follow|bookmark|status|vote|request-status)$/))) {
     const thread = await threadById(db,match[1],false), action=match[2]
     if(action==='replies'&&request.method==='POST'){
       if(thread.locked)throw new HttpError(409,'This thread is locked.')
@@ -237,6 +250,31 @@ export async function forum(request: Request, db: Database, user: User|null, adm
       const table=action==='follow'?'forum_follows':'forum_bookmarks'
       if(bool(body.enabled))await db.prepare(`INSERT INTO ${table}(thread_id,user_id) VALUES(?,?) ON CONFLICT DO NOTHING`).bind(thread.id,member.id).run()
       else await db.prepare(`DELETE FROM ${table} WHERE thread_id=? AND user_id=?`).bind(thread.id,member.id).run()
+      return response({ok:true})
+    }
+    // A vote is the heart on the opening post, so it counts, notifies and withdraws like any other like.
+    if(action==='vote'&&request.method==='POST'){
+      const opening=await db.prepare('SELECT id,hidden FROM forum_posts WHERE thread_id=? ORDER BY created_at,rowid LIMIT 1').bind(thread.id).first<{id:string;hidden:number}>()
+      if(!opening||opening.hidden)throw new HttpError(409,'This discussion is unavailable.')
+      const liked=!!bool(body.enabled)
+      await db.batch([
+        liked?db.prepare('INSERT INTO forum_reactions(post_id,user_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(opening.id,member.id):db.prepare('DELETE FROM forum_reactions WHERE post_id=? AND user_id=?').bind(opening.id,member.id),
+        notifyPostLike(db,opening.id,member.id,liked),
+      ])
+      return response({ok:true})
+    }
+    if(action==='request-status'&&request.method==='PATCH'){
+      if((thread.section??thread.category)!=='requests')throw new HttpError(400,'Only feature requests have a status.')
+      if(!admin&&!await maintainsModule(db,thread.module_id,member.id))throw new HttpError(403,'Only administrators and the maintainers of the related module can change a request’s status.')
+      const status=String(body.status)
+      if(!Object.hasOwn(REQUEST_STATUSES,status))throw new HttpError(400,'Choose open, planned, shipped or declined.')
+      const note=body.note===undefined||body.note===null||body.note===''?'':required(body.note,'Note',1000)
+      // Notification and history rows are written before the status changes, so repeating the current status does nothing.
+      await db.batch([
+        notifyRequestStatus(db,thread.id,status,member.id),
+        db.prepare('INSERT INTO forum_moderation(id,actor_id,target,action,reason) SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM forum_threads WHERE id=? AND request_status<>?)').bind(crypto.randomUUID(),adminId??member.id,thread.id,'request_status:'+status,note,thread.id,status),
+        db.prepare('UPDATE forum_threads SET request_status=?,updated_at=CURRENT_TIMESTAMP WHERE id=? AND request_status<>?').bind(status,thread.id,status),
+      ])
       return response({ok:true})
     }
     if(action==='status'&&request.method==='PATCH'){
