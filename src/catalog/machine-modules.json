@@ -935,7 +935,7 @@
       "schemaVersion": 3,
       "id": "digimatrix",
       "name": "Digi Matrix",
-      "version": "1.0.0-experimental",
+      "version": "1.0.1-experimental",
       "machine": "digitakt",
       "category": "playback",
       "exclusive": false,
@@ -962,12 +962,10 @@
           "The author measured the whole matrix at about 0.4 % of the audio time, even with all 8 slots on."
         ],
         "usage": [
-          "Send one LFO to several parameters on several tracks, each by a different amount.",
-          "Route one track’s LFO to another track’s filter, as in the author’s example T1 L2 > T4 FLT.FREQ.",
-          "Let one LFO modulate the other one’s speed or depth with the L1.* and L2.* destinations.",
-          "Set X under OWN to use an LFO only through the matrix, not on its own track.",
-          "Shape the source LFO as usual on its own track’s LFO page: SPD, MULT, WAVE, PHAS, FADE and trig MODE.",
-          "Give each pattern its own routings; changing pattern changes the matrix."
+          "Use a build containing Digi Matrix and a pattern with a sounding sample on T4. Set T1’s LFO1 to a slow wave on its normal LFO page.",
+          "Open SETTINGS > MOD MATRIX, press YES to enter, select the first slot and press YES to enable it.",
+          "Set A to source T1, B to L1, C to destination T4, D to FLT.FREQ and E to a positive depth. Play the pattern and hear T4’s filter move.",
+          "Press YES on the routing slot to turn it off, press NO to leave the matrix, and stop playback."
         ]
       },
       "access": {
@@ -978,7 +976,9 @@
           "Choose a slot with UP/DOWN or the LEVEL knob and press YES to turn it on.",
           "Set the slot with knobs A–F; NO leaves the page."
         ],
-        "screenshots": []
+        "screenshots": [
+          "media/settings.png"
+        ]
       },
       "controls": [
         {
@@ -1088,7 +1088,24 @@
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Modwerk’s vendored elekloader builder linked and verified a build with core 2.1 for OS 1.53 and 1.54; nothing was flashed and the evidence tier is none."
+        "summary": "Modwerk’s vendored elekloader builder linked and verified a build with core 2.1 for OS 1.53 and 1.54; nothing was flashed and the evidence tier is none. Documentation captures verify the listed UI pages on OS 1.53; audio, timing and hardware remain unqualified.",
+        "documentation": {
+          "tutorial": {
+            "title": "Quick tutorial: route an LFO to another track",
+            "steps": [
+              "Use a build containing Digi Matrix and a pattern with a sounding sample on T4. Set T1’s LFO1 to a slow wave on its normal LFO page.",
+              "Open SETTINGS > MOD MATRIX, press YES to enter, select the first slot and press YES to enable it.",
+              "Set A to source T1, B to L1, C to destination T4, D to FLT.FREQ and E to a positive depth. Play the pattern and hear T4’s filter move.",
+              "Press YES on the routing slot to turn it off, press NO to leave the matrix, and stop playback."
+            ]
+          },
+          "screenshots": [
+            "media/settings.png",
+            "media/slots-off.png",
+            "media/route.png"
+          ],
+          "captureRecord": "media/capture.json"
+        }
       },
       "license": {
         "spdx": "MIT",
@@ -1104,6 +1121,54 @@
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
+        },
+        {
+          "path": "media/settings.png",
+          "kind": "screenshot",
+          "caption": "MOD MATRIX in Settings",
+          "alt": "MOD MATRIX in Settings on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "1.0.1-experimental",
+            "imageSha256": "d4294009b411885a2c02262859daa3b53e3cb3f2c6ed5fe6507b889b645e6069",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/slots-off.png",
+          "kind": "screenshot",
+          "caption": "Eight matrix slots, initially disabled",
+          "alt": "Eight matrix slots, initially disabled on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "1.0.1-experimental",
+            "imageSha256": "d4294009b411885a2c02262859daa3b53e3cb3f2c6ed5fe6507b889b645e6069",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/route.png",
+          "kind": "screenshot",
+          "caption": "Enabled T1 LFO1 route and its depth",
+          "alt": "Enabled T1 LFO1 route and its depth on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "1.0.1-experimental",
+            "imageSha256": "d4294009b411885a2c02262859daa3b53e3cb3f2c6ed5fe6507b889b645e6069",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
         }
       ],
       "source": {
