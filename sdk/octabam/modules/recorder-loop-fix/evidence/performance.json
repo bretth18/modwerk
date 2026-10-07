@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "module": "recorder-loop-fix",
+  "version": "0.1.0-experimental",
+  "kind": "coldfire",
+  "cycles": {
+    "unit": "cycles/event",
+    "static": 2400,
+    "measured": 1007,
+    "budget": 95778,
+    "method": "Original ColdFire instructions executed in the MCF5206E zero-wait model; conditional V4 event bound, synthetic stock callbacks excluded. Hardware wall-clock, full frame load and audio are unmeasured."
+  },
+  "load": {
+    "frameUs": 362.8,
+    "stockLongestUs": null,
+    "moduleLongestUs": null,
+    "stockIdlePercent": null,
+    "moduleIdlePercent": null,
+    "method": "Missing hardware load capture; no model values substituted."
+  },
+  "stress": {
+    "floodMessagesPerSecond": null,
+    "clockBpm": null,
+    "seconds": null,
+    "stuckNotes": null,
+    "hangs": null,
+    "dropped": null,
+    "droppedExplanation": "No physical flood/audio stress evidence. Existing native fixtures and historical author reports are retained."
+  },
+  "hardwareEvidence": {
+    "status": "owner-waived-where-missing",
+    "approval": "sdk/recorder-loop-fix-build-approval.json",
+    "existingReport": "TESTING.md"
+  }
+}

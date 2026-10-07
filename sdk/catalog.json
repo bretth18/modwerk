@@ -86,6 +86,21 @@
       "id": "vector",
       "version": "0.2.3-experimental",
       "addedAt": "2026-10-06T08:02:00Z"
+    },
+    {
+      "id": "playmodes",
+      "version": "0.1.0-experimental",
+      "addedAt": "2026-10-07T20:00:00Z"
+    },
+    {
+      "id": "mute-modes",
+      "version": "0.1.0-experimental",
+      "addedAt": "2026-10-07T20:00:00Z"
+    },
+    {
+      "id": "recorder-loop-fix",
+      "version": "0.1.0-experimental",
+      "addedAt": "2026-10-07T20:00:00Z"
     }
   ]
 }

@@ -176,6 +176,27 @@
       "fxId": null,
       "fx1": false,
       "fx1Only": false
+    },
+    {
+      "id": "playmodes",
+      "key": "PLAY MODES",
+      "fxId": null,
+      "fx1": false,
+      "fx1Only": false
+    },
+    {
+      "id": "mute-modes",
+      "key": "MUTE_MODES",
+      "fxId": null,
+      "fx1": false,
+      "fx1Only": false
+    },
+    {
+      "id": "recorder-loop-fix",
+      "key": "RECORDER LOOP FIX",
+      "fxId": null,
+      "fx1": false,
+      "fx1Only": false
     }
   ],
   "customIds": [

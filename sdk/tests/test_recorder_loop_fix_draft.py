@@ -46,12 +46,18 @@ class ImportedDraft(unittest.TestCase):
             for table in tables:
                 self.assertEqual(ast.literal_eval(next(k.value for k in table.keywords if k.arg == "insert_at")), 2)
 
-    def test_draft_refuses_release_and_keeps_measured_failures(self):
+    def test_draft_snapshot_keeps_its_original_evidence_beside_the_live_release(self):
         self.assertEqual(RECORD["root"], "sdk/drafts/" + ID)
-        self.assertFalse((APP / "sdk/octabam/modules" / ID).exists())
-        for path in ["sdk/catalog.json", "src/catalog/module-documents.json", "sdk/module-qualification-baseline.json"]:
+        live = APP / "sdk/octabam/modules" / ID
+        self.assertTrue(live.is_dir())
+        for path in ["sdk/catalog.json", "src/catalog/module-documents.json"]:
             entries = json.loads((APP / path).read_text())["modules"]
-            self.assertNotIn(ID, {entry["id"] for entry in entries})
+            self.assertIn(ID, {entry["id"] for entry in entries})
+        baseline = json.loads((APP / "sdk/module-qualification-baseline.json").read_text())["modules"]
+        self.assertNotIn(ID, {entry["id"] for entry in baseline})
+        self.assertTrue(json.loads((live / "evidence/probes.json").read_text())["passed"])
+        current = json.loads((live / "octamod.module.json").read_text())
+        self.assertNotEqual(current.get("build", {}).get("status"), "pending")
         document = json.loads((DRAFT / "octamod.module.json").read_text())
         self.assertEqual(document["version"], RECORD["moduleVersion"])
         self.assertEqual(document["source"]["revision"], RECORD["revision"])

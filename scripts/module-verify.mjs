@@ -165,7 +165,7 @@ if (check) {
   // 4. The browser side, then the record.
   const rows = selections.map(({ ids, keepStockFx2 }) => {
     const proof = json(cacheFile(selectionKey(ids, keepStockFx2)))
-    return { moduleIds: ids, keepStockFx2, menu: { fx1: proof.menu.fx1, fx2: proof.menu.fx2 }, native: proof.error ? { refused: proof.error } : { bytes: proof.bytes, osSha256: proof.osSha256, maskedOsSha256: proof.maskedOsSha256 } }
+    return { moduleIds: ids, keepStockFx2, menu: { fx1: proof.menu.fx1, fx2: proof.menu.fx2 }, native: proof.error ? { refused: proof.error } : { bytes: proof.bytes, osSha256: proof.osSha256, maskedOsSha256: proof.maskedOsSha256, ...(proof.platformArena ? { platformArena: true } : {}) } }
   })
   const { counts, failures } = await compareRecord(id, rows)
   await rejectsChangedFirmware(id)

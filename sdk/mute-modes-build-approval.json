@@ -1,0 +1,13 @@
+{
+  "kind": "owner-approved-update",
+  "id": "mute-modes",
+  "version": "0.1.0-experimental",
+  "approvedBy": "repeat98",
+  "approvedOn": "2026-10-07",
+  "ownerStatement": "Let’s bring those live. I, the owner, approve no hardware evidence if there is none. Make all three selectable and buildable.",
+  "reason": "Retain all historical author hardware evidence; approve publication of the current software-verified integration where fresh hardware evidence is absent. Software tests, source packaging and native/browser parity remain required.",
+  "waived": [
+    "current-build-hardware"
+  ],
+  "sourceSha256": "638a1a0de2a665b9651db6fc950f9b27f409ecf6829808d26832d6a54237f230"
+}

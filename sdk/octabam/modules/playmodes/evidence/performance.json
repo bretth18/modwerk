@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "module": "playmodes",
+  "version": "0.1.0-experimental",
+  "kind": "coldfire",
+  "cycles": {
+    "unit": "cycles/event",
+    "static": 134592,
+    "measured": 55232,
+    "budget": 6600000,
+    "method": "Observed author-emulator maximum 1726 executed instructions, conservatively priced at 32 cycles/instruction; derived model cost, not chip timing. Static event envelope from evidence/cycles.md. Hardware report retained; no stock/flood recording exists."
+  },
+  "load": {
+    "frameUs": 362.8,
+    "stockLongestUs": null,
+    "moduleLongestUs": null,
+    "stockIdlePercent": null,
+    "moduleIdlePercent": null,
+    "method": "Missing hardware load capture; no model values substituted."
+  },
+  "stress": {
+    "floodMessagesPerSecond": null,
+    "clockBpm": null,
+    "seconds": null,
+    "stuckNotes": null,
+    "hangs": null,
+    "dropped": null,
+    "droppedExplanation": "No physical flood/audio stress evidence. Existing native fixtures and historical author reports are retained."
+  },
+  "hardwareEvidence": {
+    "status": "owner-waived-where-missing",
+    "approval": "sdk/playmodes-build-approval.json",
+    "existingReport": "evidence/hardware.md"
+  }
+}

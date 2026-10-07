@@ -1,0 +1,93 @@
+{
+  "model": "MCF5206E core-cycle model, cache-hit zero-wait; not MCF54455 chip timing",
+  "stockCallbacks": "synthetic fixtures; excluded from stock timing claims",
+  "standardProbesPassed": true,
+  "passed": true,
+  "paths": {
+    "hold_copy.s": {
+      "cases": 108,
+      "maxInstructions": 34,
+      "maxModelCycles": 59,
+      "maxCoreCycleUpperBound": 544,
+      "maxAdditionalStackBytes": 12
+    },
+    "hold_guard.s": {
+      "cases": 108,
+      "maxInstructions": 29,
+      "maxModelCycles": 40,
+      "maxCoreCycleUpperBound": 464,
+      "maxAdditionalStackBytes": 12
+    },
+    "hold_xfade_a.s": {
+      "cases": 108,
+      "maxInstructions": 34,
+      "maxModelCycles": 60,
+      "maxCoreCycleUpperBound": 544,
+      "maxAdditionalStackBytes": 20
+    },
+    "hold_xfade_b.s": {
+      "cases": 108,
+      "maxInstructions": 34,
+      "maxModelCycles": 59,
+      "maxCoreCycleUpperBound": 544,
+      "maxAdditionalStackBytes": 20
+    },
+    "hold_xguard.s": {
+      "cases": 108,
+      "maxInstructions": 39,
+      "maxModelCycles": 57,
+      "maxCoreCycleUpperBound": 624,
+      "maxAdditionalStackBytes": 12
+    },
+    "seek-counter": {
+      "cases": 2,
+      "maxInstructions": 5,
+      "maxModelCycles": 13,
+      "maxCoreCycleUpperBound": 80,
+      "maxAdditionalStackBytes": 0
+    },
+    "seekbind": {
+      "cases": 2,
+      "maxInstructions": 5,
+      "maxModelCycles": 10,
+      "maxCoreCycleUpperBound": 80,
+      "maxAdditionalStackBytes": 0
+    },
+    "spacing": {
+      "cases": 555008,
+      "maxInstructions": 127,
+      "maxModelCycles": 1006,
+      "maxCoreCycleUpperBound": 2384,
+      "maxAdditionalStackBytes": 44
+    },
+    "spacing-fractional-and-uint32": {
+      "cases": 1244352,
+      "maxInstructions": 128,
+      "maxModelCycles": 1007,
+      "maxCoreCycleUpperBound": 2400,
+      "maxAdditionalStackBytes": 44
+    },
+    "spacing-late-arm": {
+      "cases": 13279,
+      "maxInstructions": 128,
+      "maxModelCycles": 1007,
+      "maxCoreCycleUpperBound": 2400,
+      "maxAdditionalStackBytes": 44
+    },
+    "spacing-outside-supported": {
+      "cases": 6,
+      "maxInstructions": 21,
+      "maxModelCycles": 91,
+      "maxCoreCycleUpperBound": 358,
+      "maxAdditionalStackBytes": 40
+    }
+  },
+  "lateArmComparison": {
+    "cases": 13279,
+    "idealGapMismatches": 0,
+    "passed": true,
+    "rlen16Cases": 1897,
+    "rlen16Mismatches": 0,
+    "examples": []
+  }
+}

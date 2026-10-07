@@ -146,6 +146,11 @@ def main():
             if 'usb-audio-out-tracks-main-cue' in ids:keys.append('USB MIDI')
             remix=registry.with_platform(Remix(name='octamod-composition-proof',doc='Disposable local full-image identity; never flashed.',modules=tuple(keys),fx1=tuple(menu['fx1']),hidden=tuple(menu['hidden']),fallback='NONE'),known)
             registry.remix=lambda _:remix
+            # Recorder code compares the live pool base. Reserve the browser's
+            # logger pages too, so those module-owned literals are compared exactly.
+            # No logger code or hook is injected into this native source oracle.
+            loggerGeometry = 'recorder-loop-fix' in ids
+            os.environ['OCTAMOD_CORE_LOGGER_PAGES'] = '16' if loggerGeometry else '0'
             with tempfile.TemporaryDirectory(prefix='octamod-composition.') as tmp:
                 work=pathlib.Path(tmp)
                 for name in ['modules','platform','dsp','vendor']:os.symlink(root/name,work/name,target_is_directory=True)
@@ -156,7 +161,7 @@ def main():
                     image=build.OUT.read_bytes()
                     if a.verbose:print(log.getvalue())
                     if a.image_dir:a.image_dir.mkdir(parents=True,exist_ok=True);(a.image_dir/(('+'.join(sorted(ids)) or 'stock')+('-keep' if default else '-compact')+'.bin')).write_bytes(image)
-                    proof={'moduleIds':ids,**({'keepStockFx2':default} if a.static_stock else {'default':default}),'menu':menu,'bytes':len(image),'sha256':sha(image),'osSha256':sha(image[:len(original)]),'maskedOsSha256':maskedOsSha(image,ids),'appendSha256':sha(image[len(original):])}
+                    proof={'moduleIds':ids,**({'keepStockFx2':default} if a.static_stock else {'default':default}),'menu':menu,'bytes':len(image),'sha256':sha(image),'osSha256':sha(image[:len(original)]),'maskedOsSha256':maskedOsSha(image,ids),'appendSha256':sha(image[len(original):]),**({'platformArena':True} if loggerGeometry else {})}
                     if packing:
                         container=work/'out/container.bin';update=work/'out/update.bin';version=packing['version']
                         subprocess.run([str(executable),str(stockContainer),str(build.OUT),version,str(container)],check=True,capture_output=True)

@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "moduleVersion": "0.1.0-experimental",
+  "scope": "Current corrected source at three isolated assembly origins; standalone cave placement, excluding inherited stock callback lifetimes",
+  "regions": [
+    {
+      "name": "seekbind.s",
+      "start": 1074621312,
+      "bytes": 24,
+      "endExclusive": 1074621336
+    },
+    {
+      "name": "seekbind_ctr.s",
+      "start": 1074621440,
+      "bytes": 16,
+      "endExclusive": 1074621456
+    },
+    {
+      "name": "spacing_cave.s",
+      "start": 1074621568,
+      "bytes": 286,
+      "endExclusive": 1074621854
+    },
+    {
+      "name": "hold_copy.s",
+      "start": 1074621952,
+      "bytes": 108,
+      "endExclusive": 1074622060
+    },
+    {
+      "name": "hold_xfade_a.s",
+      "start": 1074622080,
+      "bytes": 110,
+      "endExclusive": 1074622190
+    },
+    {
+      "name": "hold_xfade_b.s",
+      "start": 1074622208,
+      "bytes": 110,
+      "endExclusive": 1074622318
+    },
+    {
+      "name": "hold_guard.s",
+      "start": 1074622336,
+      "bytes": 86,
+      "endExclusive": 1074622422
+    },
+    {
+      "name": "hold_xguard.s",
+      "start": 1074622464,
+      "bytes": 118,
+      "endExclusive": 1074622582
+    }
+  ],
+  "codeAndTablesBytes": 858,
+  "alignmentGapBytes": 412,
+  "occupiedSpanBytes": 1270,
+  "probeAdditionalStackPeakBytes": 44,
+  "reusedStockStateExamples": [
+    {
+      "name": "stock tempo24",
+      "start": 2147489812,
+      "bytes": 4
+    },
+    {
+      "name": "stock arm sample array, eight tracks",
+      "start": 1187510916,
+      "bytes": 32
+    }
+  ],
+  "addedDspProgramBytes": 0,
+  "addedAudioBufferBytes": 0,
+  "boundedOwnedHeapBytes": 0,
+  "completeStockCallbackStackBytes": null,
+  "completeLifetimePeakBytes": null,
+  "hardwareCanaries": null,
+  "qualification": false,
+  "poolBaseRelocations": 11,
+  "historicalUiImageSha256": "45657a36371d7f509205ec268ca8b2499a5515d3fde214ea32ec2035e0a80847",
+  "assemblyOrigin": 1074621312
+}

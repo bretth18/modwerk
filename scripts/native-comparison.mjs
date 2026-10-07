@@ -5,7 +5,8 @@
 //   * a selection native builds is built here, and the module-owned writes (chooser, descriptors, ROM units, DSP payloads)
 //     reproduce native's OS image byte for byte outside the platform writes (arena sizes, the boot call and runtime detours),
 //     which depend on where the logger-bearing runtime links;
-//   * where native has no runtime at all the image is identical outright;
+//   * without a runtime or platform arena reservation, the image is identical outright;
+//   * recorder comparisons reserve the same logger arena geometry natively, so every recorder pool literal is compared exactly;
 //   * the platform and logger writes never touch a byte a module owns.
 import { createHash } from 'node:crypto'
 import { composeOs } from '../src/engine/compose-os.ts'
@@ -39,9 +40,10 @@ export async function compareSelection(original, proof, menus) {
   let image = await applyGuardedOsWrites(original, owned)
   // Analog BD rewrites both DSP payloads and repoints their uploads after the plan, as composeStaticOs does.
   if (proof.moduleIds.includes('analog-bassdrum')) image = (await composeAnalogBd(original, image, proof.moduleIds, menus)).bytes
-  if (proof.bytes === original.length && sha(image) !== proof.osSha256) return { failure: 'the module-owned image differs from native, which has no runtime' }
+  const outright = proof.bytes === original.length && !proof.platformArena
+  if (outright && sha(image) !== proof.osSha256) return { failure: 'the module-owned image differs from native, which has no runtime' }
   const reset = image.slice()
   for (const write of plan.platform) { const offset = write.address - OS_LOAD_ADDRESS; reset.set(original.subarray(offset, offset + write.bytes.length), offset) }
   if (sha(reset) !== proof.maskedOsSha256) return { failure: 'the module-owned image differs from native outside the platform writes' }
-  return { verdict: proof.bytes === original.length ? 'identical' : 'masked' }
+  return { verdict: outright ? 'identical' : 'masked' }
 }

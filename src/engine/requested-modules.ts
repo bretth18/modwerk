@@ -39,12 +39,13 @@ export function selectedRequestedGroups(ids: readonly string[]) {
   }
   return groups
 }
-export async function readRequestedObject(label: string, original?: Uint8Array) {
+export async function readRequestedObject(label: string, original?: Uint8Array, ids: readonly string[] = []) {
   const pkg = facts.objects.find(p => p.label === label)
   if (!pkg || pkg.bytes < 52 || pkg.bytes > 8 * 1024 * 1024 || pkg.code.length !== pkg.bytes * 2 || !/^[0-9a-f]+$/.test(pkg.code)) throw new Error('Invalid requested object package.')
   if (pkg.moduleId !== 'usb-midi' && MODULES.find(m => m.id === pkg.moduleId)?.version !== pkg.version) throw new Error('Requested object version differs from the catalog.')
-  const bytes = Uint8Array.from({ length: pkg.bytes }, (_, i) => parseInt(pkg.code.slice(i * 2, i * 2 + 2), 16))
-  if (await bytesHash(bytes) !== pkg.sha256) throw new Error('Requested object checksum does not match.')
+  const variant = pkg.variants?.find(row => ids.includes(row.whenModule)) ?? pkg
+  const bytes = Uint8Array.from({ length: variant.bytes }, (_, i) => parseInt(variant.code.slice(i * 2, i * 2 + 2), 16))
+  if (await bytesHash(bytes) !== variant.sha256) throw new Error('Requested object checksum does not match.')
   const object = parseColdFireObject(bytes)
   validateStockCopies(object, pkg.stockCopies)
   for (const copy of pkg.stockCopies) {
@@ -56,11 +57,11 @@ export async function readRequestedObject(label: string, original?: Uint8Array) 
   }
   return { label, object }
 }
-export async function requestedRom(ids: readonly string[], cursor: number, overflow: number, caveLimit: number, cave: (address: number, bytes: Uint8Array, note: string) => Promise<void>) {
-  const groups = selectedRequestedGroups(ids), symbols = new Map<string, number>()
-  for (const group of groups) for (const pkg of facts.objects.filter(p => p.moduleId === group.moduleId && !p.dram)) {
+export async function requestedRom(ids: readonly string[], cursor: number, overflow: number, caveLimit: number, cave: (address: number, bytes: Uint8Array, note: string) => Promise<void>, late = false) {
+  const groups = selectedRequestedGroups(ids).filter(group => (group.moduleId === 'mute-modes') === late), symbols = new Map<string, number>()
+  for (const group of groups) for (const pkg of facts.objects.filter(p => p.moduleId === group.moduleId && !p.dram && p.placement !== 'cave')) {
     const address = pkg.caveAddress ?? Math.ceil(cursor / 128) * 128
-    const linked = linkRomText((await readRequestedObject(pkg.label)).object, address, symbols)
+    const linked = linkRomText((await readRequestedObject(pkg.label, undefined, ids)).object, address, symbols)
     await cave(address, linked.bytes, pkg.label + ' ROM unit')
     for (const [name, at] of linked.symbols) symbols.set(name, at)
     if (address >= 0x400d6b20 && address < caveLimit) cursor = Math.max(cursor, address + linked.bytes.length)
@@ -72,12 +73,16 @@ export async function requestedTables(original: Uint8Array, ids: readonly string
   const writes: OsWrite[] = [], view = new DataView(original.buffer, original.byteOffset, original.byteLength)
   for (const group of selectedRequestedGroups(ids)) for (const table of group.tables) {
     const address = Math.ceil(cursor / 128) * 128, bytes = new Uint8Array((table.count + table.symbols.length) * 4)
-    bytes.set(original.subarray(table.old - OS_LOAD_ADDRESS, table.old - OS_LOAD_ADDRESS + table.count * 4))
+    const insertAt = table.insertAt ?? table.count
+    if (!Number.isInteger(insertAt) || insertAt < 0 || insertAt > table.count) throw new Error('Invalid requested table insertion.')
+    const stock = original.subarray(table.old - OS_LOAD_ADDRESS, table.old - OS_LOAD_ADDRESS + table.count * 4)
+    bytes.set(stock.subarray(0, insertAt * 4))
+    bytes.set(stock.subarray(insertAt * 4), (insertAt + table.symbols.length) * 4)
     const values = new DataView(bytes.buffer)
     for (const [i, row] of table.symbols.entries()) {
       const target = symbols.get(row.symbol)
       if (target === undefined) throw new Error('Unresolved requested table symbol: ' + row.symbol)
-      values.setUint32((table.count + i) * 4, target)
+      values.setUint32(((table.insertAt ?? table.count) + i) * 4, target)
     }
     await cave(address, bytes, table.label); cursor = address + bytes.length
     for (const ref of table.refs) {
@@ -110,4 +115,24 @@ export async function requestedHooks(original: Uint8Array, ids: readonly string[
     for (const row of group.pokes) writes.push({ address: row.address, guardLength: row.guardLength, guardSha256: row.guardSha256, bytes: Uint8Array.from(row.code.match(/../g)!, b => parseInt(b, 16)), note: row.note })
   }
   return writes
+}
+
+/** The recorder's source caves follow utility caves in the native placement order. */
+export async function requestedCaves(ids: readonly string[], cursor: number, overflow: number, caveLimit: number, cave: (address: number, bytes: Uint8Array, note: string) => Promise<void>, poolBase: number) {
+  const symbols = new Map<string, number>()
+  for (const group of selectedRequestedGroups(ids)) for (const pkg of facts.objects.filter(row => row.moduleId === group.moduleId && row.placement === 'cave')) {
+    const object = (await readRequestedObject(pkg.label)).object
+    let address = Math.ceil(cursor / 128) * 128, linked = linkRomText(object, address)
+    const inside = address + linked.bytes.length <= caveLimit
+    if (!inside) { address = Math.ceil(overflow / 4) * 4; linked = linkRomText(object, address) }
+    const view = new DataView(linked.bytes.buffer, linked.bytes.byteOffset, linked.bytes.byteLength)
+    let literals = 0
+    for (let i = 0; i + 4 <= linked.bytes.length; i += 2) if (view.getUint32(i) === 0x40a955e0) { literals++; view.setUint32(i, poolBase) }
+    if (literals !== pkg.poolBaseLiterals) throw new Error('Recorder pool-base literal count differs from its declaration.')
+    await cave(address, linked.bytes, pkg.label)
+    for (const [name, value] of linked.symbols) { symbols.set(name, value); symbols.set(pkg.label + '::' + name, value) }
+    if (inside) cursor = address + linked.bytes.length
+    else overflow = Math.ceil((address + linked.bytes.length) / 4) * 4
+  }
+  return { cursor, overflow, symbols }
 }

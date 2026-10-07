@@ -9,6 +9,7 @@ import { MODULES } from '../src/catalog/modules.ts'
 import { modulePath } from '../src/catalog/module-links.ts'
 import type { FirmwareModule } from '../src/catalog/modules.ts'
 import { DETAILS } from '../src/catalog/details.ts'
+import { MODULE_DOCUMENTS_BY_ID } from '../src/catalog/documents.ts'
 import { ModulePreview } from '../src/components/ModulePreview.tsx'
 
 function escapeHtml(value: string) {
@@ -18,8 +19,14 @@ function escapeHtml(value: string) {
 /** Rasterize the same artwork and CSS used by the module cards, without browser or firmware input. */
 export async function moduleThumbnail(id: string, stylesheet: string): Promise<Buffer> {
   const markup = renderToStaticMarkup(createElement(ModulePreview, { id }))
-  const artwork = markup.match(/<svg\b[^>]*>[\s\S]*?<\/svg>/)?.[0]
+  let artwork = markup.match(/<svg\b[^>]*>[\s\S]*?<\/svg>/)?.[0]
   if (!artwork) throw new Error('Missing module thumbnail artwork: ' + id)
+  // librsvg cannot fetch the browser's relative image URL. Embed the same published SVG for server previews.
+  if (artwork.includes('<image ')) {
+    const document = MODULE_DOCUMENTS_BY_ID[id]
+    const source = readFileSync(new URL(`../public/module-media/${id}/${document.version}/presentation/thumbnail.svg`, import.meta.url))
+    artwork = artwork.replace(/(<image\b[^>]*href=")[^"]+("[^>]*>)/, '$1data:image/svg+xml;base64,' + source.toString('base64') + '$2')
+  }
   const rules = Array.from(stylesheet.matchAll(/([^{}]+)\{([^{}]+)\}/g), match => ({ selector: match[1].trim(), declarations: match[2] }))
   const palette = rules.find(rule => rule.selector === `.module-preview[data-module="${id}"]`) ?? rules.find(rule => rule.selector === '.module-preview')
   const color = palette?.declarations.match(/--signal:\s*([^;]+)/)?.[1]
