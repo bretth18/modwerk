@@ -274,7 +274,7 @@ const SECTIONS: FaqSection[] = [
         keywords: 'guest comments ratings likes email sign in bug author community github contribution',
         answer: <>
           <p>Browsing and the configurator work without an account. To post in the forum, comment, rate, like or use <strong>Report an issue</strong>, register and verify your email. Your email address stays private. New issue reports become public GitHub issues, where the module developers track and fix bugs. You don’t need a GitHub account: their replies and fixes appear in your notifications. Manage private configuration details and logs in <a href="#account">Your account</a>.</p>
-          <p>Describe the module, your machine and model, the displayed OS version and how to reproduce the problem. Never attach firmware. Module contributions and updates go through GitHub pull requests and owner review; see <a href="#submit">Submit a module</a>.</p>
+          <p>Describe the module, your machine and model, the displayed OS version and how to reproduce the problem. Never attach firmware. Module contributions and updates go through GitHub pull requests and owner review; see <a href="#submit">Start developing</a>.</p>
         </>,
       },
     ],

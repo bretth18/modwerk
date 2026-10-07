@@ -1,74 +1,91 @@
 import { BackLink } from '../components/BackLink'
-import { DevelopmentGuide } from './DevelopmentGuide'
-import { assetUrl, sourceRepository } from '../hosting'
+import { useState } from 'react'
+import { CopyButton, StarterPrompts } from './StarterPrompts'
+import { cloneCommands } from './starter-prompts'
+import { sourceRepository } from '../hosting'
 import { communityModule } from './modules'
 import { DEVICES_BY_ID } from '../devices/registry'
 export function SubmissionPage({moduleId=''}:{moduleId?:string}) {
   const repository=sourceRepository()
   const module=communityModule(moduleId)
   const moduleRepository=repository||'https://github.com/repeat98/modwerk'
+  const [login,setLogin]=useState('')
+  const clone=cloneCommands(moduleRepository,login)
   if(module&&module.machine!=='octatrack')return <div className="community-page contribution-page"><BackLink href={moduleId?'#developer':'#library'}>{moduleId?'Developer workspace':'Module library'}</BackLink>
     <div className="page-heading"><div><p className="page-kicker">MODWERK / DEVELOPERS</p><h1>Update {module.name}</h1><p>{DEVICES_BY_ID[module.machine].name} · Current version {module.version}. Prepare source, documentation and media together in a GitHub pull request.</p></div><span className="pill">Owner review required</span></div>
     <section className="configuration-section"><h2>Start from the reviewed module</h2><p>Keep its licence, attribution and pinned source provenance. Increase the module’s semantic version for every code change (documentation and media edits need none), and keep the manifest, README, tutorial and test evidence synchronized.</p><div className="forum-actions"><a className="button button-primary" href={moduleRepository+'/tree/main/'+module.sourcePath} target="_blank" rel="noreferrer">Open module source ↗</a><a className="button button-quiet" href={moduleRepository+'/compare'} target="_blank" rel="noreferrer">Open a pull request ↗</a><a href={moduleRepository+'/blob/main/docs/SDK.md'} target="_blank" rel="noreferrer">Machine SDK & evidence rules ↗</a></div></section>
     <section className="configuration-section"><h2>Include the update evidence</h2><p>Use the machine’s v3 <code>modwerk.module.json</code> contract: source/build identity, compatibility, memory and load measurements, hardware coverage and actual UI captures where applicable. State the evidence tier and remaining limitations honestly. Documentation, tutorial, screenshots and credits must match this version.</p><p>Submit only original or properly licensed sources and reviewed media. Keep firmware, stock bytes, dumps and generated firmware builds local. Passing checks does not publish an update; owner merge approves that exact version. Pending or rejected updates keep the existing approved release available.</p></section>
 
   </div>
-  return <div className="community-page contribution-page"><BackLink href={moduleId?'#developer':'#library'}>{moduleId?'Developer workspace':'Module library'}</BackLink>
+  const guide=(path:string)=>moduleRepository+'/blob/main/'+path
+  return <div className="community-page contribution-page start-developing"><BackLink href={moduleId?'#developer':'#library'}>{moduleId?'Developer workspace':'Module library'}</BackLink>
     <div className="page-heading">
-      <div><p className="page-kicker">MODWERK / DEVELOPERS</p><h1>{moduleId ? 'Improve a module' : 'Submit a module'}</h1><p>One contribution process for every machine. Submit source, documentation and media in one pull request.</p></div>
-      <span className="pill">GitHub PRs only</span>
+      <div><p className="page-kicker">MODWERK / DEVELOPERS</p><h1>{moduleId ? 'Improve a module' : 'Start developing'}</h1><p>Build your own module for the Octatrack, Digitakt or Digitone with a coding agent. Fork the repository, paste a starter prompt, test on your unit and open a pull request.</p></div>
+      <span className="pill">Open source</span>
     </div>
-    <section className="configuration-section contribution-start">
-      <div>
-        <h2>Start in the repository</h2>
-        <p>Fork the Modwerk repository, choose the target machine and follow its SDK guide. Every new module, update, screenshot and audio preview goes through owner review. Merging the PR approves that exact version.</p>
-        <p>Questions about developing or submitting a module? <a href="https://discord.gg/mb7B2N7A7" target="_blank" rel="noreferrer">Join the Discord ↗</a></p>
-      </div>
-      {repository ? <div className="contribution-links">
-        <a className="button button-primary" href={repository + '/compare'} target="_blank" rel="noreferrer">Open a pull request ↗</a>
-        <a className="button button-quiet" href={repository + '/blob/main/CONTRIBUTING.md'} target="_blank" rel="noreferrer">Read contribution rules ↗</a>
-      </div> : <p className="service-note" role="status">The Modwerk repository link is not configured yet. Contribution links will appear here when it is connected.</p>}
+    <ol className="start-steps">
+      <li>
+        <h2>Fork the repository</h2>
+        <p>Your own copy of Modwerk on GitHub, with every SDK, guide and check.</p>
+        <a className="button button-primary" href={moduleRepository+'/fork'} target="_blank" rel="noreferrer">Fork on GitHub ↗</a>
+      </li>
+      <li>
+        <h2>Clone and install</h2>
+        <p>Node 24 is all the website and documentation need. Octatrack native builds also need Python 3.10+, Docker and your own OS 1.40C file.</p>
+        <div className="start-code"><pre>{clone}</pre><CopyButton text={clone}/></div>
+      </li>
+      <li>
+        <h2>Paste a starter prompt</h2>
+        <p>Open Claude Code, Codex or another coding agent in the folder and paste a prompt from below. It reads the guides, proposes a plan and scaffolds the module.</p>
+      </li>
+      <li>
+        <h2>Test and open a pull request</h2>
+        <p>Flash the build on your own unit, tell your agent what you saw and open a pull request. The owner reviews it and merging publishes that version.</p>
+        <a className="button button-quiet" href={moduleRepository+'/compare'} target="_blank" rel="noreferrer">Open a pull request ↗</a>
+      </li>
+    </ol>
+    <section className="configuration-section">
+      <h2>Starter prompts</h2>
+      <p className="start-lead">Choose your machine and what you want to build. Add your idea and copy the prompt into your agent, opened in your fork.</p>
+      <StarterPrompts login={login} onLogin={setLogin}/>
     </section>
     <section className="configuration-section">
-      <h2>Choose your machine’s SDK</h2>
-      <ul className="contribution-files">
-        <li><strong>Octatrack MKI / MKII</strong><span>Use the octabam SDK for DSP effects or ColdFire modules. Folders live in <code>{'sdk/octabam/modules/<id>/'}</code>. Existing modules keep <code>octamod.module.json</code> and their native <code>manifest.py</code>; follow the machine guide for the applicable contract.</span></li>
-        <li><strong>Digitakt mk1</strong><span>Use the Digitakt SDK and <code>{'sdk/digitakt/modules/<id>/'}</code>. The shared Modwerk contract uses <code>modwerk.module.json</code>, a <code>build.json</code> specification and authored C or assembly under <code>src/</code>.</span></li>
-        <li><strong>Digitone mk1 / Keys</strong><span>Use the Digitone SDK and <code>{'sdk/digitone/modules/<id>/'}</code>, with the same Modwerk contract and build layout. Declare this machine’s supported OS releases and resources.</span></li>
+      <h2>What the pull request contains</h2>
+      <p className="start-lead">One module per pull request, in <code>{'sdk/<machine>/modules/<id>/'}</code>. Your agent fills these in; <code>npm run module:doctor -- {'<id>'}</code> lists what is still missing.</p>
+      <ul className="start-checklist">
+        <li><strong>Source and build files</strong><span>Your original or properly licensed code, with <code>manifest.py</code> on the Octatrack or <code>build.json</code> on Digitakt and Digitone.</span></li>
+        <li><strong>Manifest</strong><span><code>octamod.module.json</code> or <code>modwerk.module.json</code>: version, compatibility, controls, access steps, resources, evidence, authors and licences.</span></li>
+        <li><strong>README.md</strong><span>Overview, every control, compatibility and limitations, and a tutorial of at least three steps.</span></li>
+        <li><strong>TESTING.md</strong><span>Commands, the exact source revision, measurements and every hardware result, with model, OS, duration and limitations.</span></li>
+        <li><strong>LICENSE</strong><span>Every author’s terms and credit. Ported code keeps its source pinned to an exact commit.</span></li>
+        <li><strong>media/</strong><span>An original 320×192 thumbnail and real screenshots of where to enable the module and its controls. Octatrack captures are black-and-white PNGs.</span></li>
       </ul>
-      <p className="service-note">Digitakt and Digitone are in preview. Source and documentation can be reviewed while firmware builds and downloads await verification. A machine listed for research is not automatically open for module publication; agree the scope with the owner first.</p>
-      {repository && <div className="guide-links">
-        <a href={repository + '/blob/main/docs/SDK.md'} target="_blank" rel="noreferrer">Modwerk SDK overview ↗</a>
-        <a href={repository + '/blob/main/sdk/machines/octatrack/README.md'} target="_blank" rel="noreferrer">Octatrack guide ↗</a>
-        <a href={repository + '/blob/main/sdk/machines/digitakt/README.md'} target="_blank" rel="noreferrer">Digitakt guide ↗</a>
-        <a href={repository + '/blob/main/sdk/machines/digitone/README.md'} target="_blank" rel="noreferrer">Digitone guide ↗</a>
-      </div>}
     </section>
+    <div className="start-columns">
+      <section className="configuration-section">
+        <h2>How review works</h2>
+        <p>Every pull request runs the same checks as CI. Passing them does not publish a module: the owner reads the reports, rights and screenshots, and merging approves that exact version. Increase the version for every code change; documentation and media edits need none.</p>
+        <p>State honestly what you tested. Octatrack modules need a hardware report from a real unit; Digitakt and Digitone record their evidence tier. Digitakt and Digitone are in preview, so agree the scope with the owner first.</p>
+      </section>
+      <section className="configuration-section start-rights">
+        <h2>Keep firmware out</h2>
+        <p>Never commit Elektron firmware, extracted routines or tables, memory dumps or built images. Your OS file stays on your computer; stock code is referenced by address and hash and copied from each user’s own file when they build.</p>
+        <p>Submit only original or properly licensed source and media and credit every author. Review is not automatic legal clearance.</p>
+      </section>
+    </div>
     <section className="configuration-section">
-      <h2>What goes into a module folder</h2>
-      <ul className="contribution-files">
-        <li><strong>Source & build declarations</strong><span>Your original or properly licensed code and the build files required by your machine’s SDK. Keep third-party authorship and pinned source provenance. Never include firmware or extracted Elektron code.</span></li>
-        <li><strong>Module manifest</strong><span>The applicable <code>modwerk.module.json</code> or <code>octamod.module.json</code>: semantic version, machine and OS compatibility, controls, access steps, resource claims, evidence, authors, maintainers, licences and media.</span></li>
-        <li><code>README.md</code><span>Complete overview, how to reach the module on the unit, every control, compatibility and limitations, licence and test references, plus a short practical tutorial matching the manifest.</span></li>
-        <li><code>TESTING.md</code><span>Actual cycle and memory measurements, commands, tested version/source/build, model and OS, tester, date, workload, duration, results and limitations. Identify emulator results, author hardware reports and owner verification accurately.</span></li>
-        <li><code>LICENSE</code><span>Full licence text, attribution and a declaration that the source and media are original or properly licensed. Reviewer verification does not provide automatic legal clearance.</span></li>
-        <li><code>media/</code><span>An original thumbnail and actual hardware or emulator screenshots of the selection/enable location and relevant controls, with exact button/menu steps and version/build/setup provenance. Octatrack captures must follow the real black-and-white PNG style. Audio demonstrations are optional.</span></li>
-      </ul>
-      <p>Automatic USB modules without a dedicated UI must use the narrow, reviewer-verified <code>access.noUiReason</code> declaration. A photo, mockup or reconstructed display cannot replace actual UI evidence.</p>
-      <div className="guide-links">
-        <a href={assetUrl('module-repository.example.json')} download>Octatrack manifest template ↓</a>
-        <a href={assetUrl('module-qualification.example.json')} download>Octatrack qualification template ↓</a>
-        <a href={assetUrl('module-resource-impact.example.json')} download>Octatrack resource gauge template ↓</a>
+      <h2>Guides and help</h2>
+      <div className="start-links">
+        <a href={guide('docs/ADD_A_MODULE.md')} target="_blank" rel="noreferrer"><strong>Add or port a module ↗</strong><span>The full workflow, step by step</span></a>
+        <a href={guide('docs/module-guides/README.md')} target="_blank" rel="noreferrer"><strong>Module guides ↗</strong><span>How each category behaves like the instrument</span></a>
+        <a href={guide('docs/SDK.md')} target="_blank" rel="noreferrer"><strong>SDK overview ↗</strong><span>Contract, evidence tiers and machines</span></a>
+        <a href={guide('sdk/machines/octatrack/README.md')} target="_blank" rel="noreferrer"><strong>Octatrack guide ↗</strong><span>Built on <span translate="no">octabam</span></span></a>
+        <a href={guide('sdk/machines/digitakt/README.md')} target="_blank" rel="noreferrer"><strong>Digitakt guide ↗</strong><span>Core events and budgets</span></a>
+        <a href={guide('sdk/machines/digitone/README.md')} target="_blank" rel="noreferrer"><strong>Digitone guide ↗</strong><span>Core events and budgets</span></a>
+        <a href={guide('CONTRIBUTING.md')} target="_blank" rel="noreferrer"><strong>Contribution rules ↗</strong><span>What every pull request agrees to</span></a>
+        <a href="https://discord.gg/mb7B2N7A7" target="_blank" rel="noreferrer"><strong>Discord ↗</strong><span>Ask other developers</span></a>
       </div>
-    </section>
-    <DevelopmentGuide />
-    <section className="configuration-section">
-      <h2>Review happens on GitHub</h2>
-      <p>Increase the module’s semantic version for every code change; documentation and media edits need none. Keep its manifest, documentation and catalog pin synchronized. PR checks validate the applicable machine contract, compatibility, resource claims, evidence and media. The owner reviews the actual reports, rights declarations and screenshots before merge.</p>
-      <p>New Octatrack modules and updates require worst-case cycle counts under modulation and maximum load, exact memory regions and totals, populated CPU/DSP/memory gauges, and a hardware report from a real unit that states its model, duration, workload and limitations. Existing frozen versions keep their recorded evidence; do not extend their exemptions to new versions.</p>
-      <p>For the shared Modwerk contract, record the evidence tier honestly: no evidence yet (draft), emulator, author hardware or owner verified. Publication requires measured memory/load, actual UI captures where applicable and at least author hardware evidence bound to the version and source. The machine guide defines the details; an evidence badge does not replace owner approval.</p>
-      <p>Passing checks does not publish a module. Owner merge approves the version, and release verification must still pass. Pending PRs, rejected updates and failed builds keep the current approved publication available. Firmware stays on each user’s device and never enters source-build automation.</p>
-      <p className="service-note">No Modwerk account or email is needed to prepare a contribution. Use your GitHub account to open the PR. Comments, ratings and issue reports require a verified Modwerk account.</p>
+      <p className="service-note">Octatrack development builds on <a href="https://github.com/sambanks/octabam" target="_blank" rel="noreferrer">octabam ↗</a>; Digitakt and Digitone on the public research of <a href="https://github.com/irpina/elekloader" target="_blank" rel="noreferrer">elekloader ↗</a> and <a href="https://github.com/m-dwyer/digikit" target="_blank" rel="noreferrer">digikit ↗</a>. You need no Modwerk account to contribute, only GitHub.</p>
     </section>
   </div>
 }
