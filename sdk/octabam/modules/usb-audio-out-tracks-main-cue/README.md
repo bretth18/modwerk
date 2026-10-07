@@ -262,3 +262,9 @@ previous value. This version routes USB MIDI receive through octabam's
 `usbmidi_rx.s`, which timestamps each clock byte as the DIN path does, so
 the tempo follows USB clock. The high-speed receive transfer stays at 64
 bytes. TESTING.md has the details and what was and was not run.
+
+## Stream lifecycle (0.1.4)
+
+USB reset and disconnect request alternate setting 0, and the frame interrupt tears down EP3. Flush polling is bounded even when the controller has stopped. The audio producer skips ring writes while the host has not opened the stream; on reopening it clears the 64-frame startup cushion so the previous session's tail cannot leak into the first packets.
+
+These fixes come from [octabam 6f9e5bc9](https://github.com/sambanks/octabam/blob/6f9e5bc9/modules/usb-audio-out-tracks-main-cue/usbaudio.s). Modwerk retains its 0.1.3 USB MIDI clock receive path and 64-byte receive transfer. The upstream SET_CUR control-request change is outside this lifecycle update.

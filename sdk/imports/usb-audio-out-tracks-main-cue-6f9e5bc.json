@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/sambanks/octabam",
+  "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+  "moduleVersion": "0.1.4-experimental",
+  "modules": [
+    "usb-audio-out-tracks-main-cue"
+  ],
+  "status": "Requested lifecycle fixes ported; 0.1.3 USB MIDI clock path retained; SET_CUR not included",
+  "files": [
+    {
+      "path": "modules/usb-audio-out-tracks-main-cue/usbaudio.s",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "modules/usb-audio-out-tracks-main-cue/usbaudio.s",
+      "sourceSha256": "ab80e1cf24a2f49f20b0bda516cf5943e957da6b294ff1cd3379a4c5974fc450",
+      "vendoredSha256": "ac92cdca02ab3c66a3f931b30cf3ac8b8429bfe7463182398fe9beaac080e4e0",
+      "note": "Selected lifecycle changes from upstream; Modwerk guarded stock declarations and existing MIDI receive path preserved."
+    },
+    {
+      "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "modules/usb-audio-out-tracks-main-cue/manifest.py",
+      "sourceSha256": "022e37709046b1295412d803584f763b6f142ac7fe86a6b6521c4e48d44271c6",
+      "vendoredSha256": "088eeaa10b89bdd9516bffec4430b8ed1bb6a6e1c7bb3998ada9944702ae54c0",
+      "note": "Selected lifecycle changes from upstream; Modwerk guarded stock declarations and existing MIDI receive path preserved."
+    }
+  ]
+}

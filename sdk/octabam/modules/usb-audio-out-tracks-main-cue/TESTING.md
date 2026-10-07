@@ -62,3 +62,11 @@ after the change (octabam #633, 6 Oct 2026). Those runs used octabam's
 `usb-midi` remix, not this module. Here nothing was run on a unit or under
 the port: the verify gates and the emulator's DTIM0 change are not part of
 this SDK.
+
+## 0.1.4 lifecycle update
+
+Ported reset/session-end hooks, bounded EP3 flush polling, and closed-stream producer gating/startup cushion clearing from octabam 6f9e5bc9. The USB MIDI clock receive shim from 0.1.3 is retained. The new stock hook sites are protected by SHA-256 guards against the user's original OS 1.40C; no firmware bytes are stored in the repository.
+
+Current hardware cable pull/reconnect, host crash/reopen, startup capture, stalled-controller timing, Windows and Linux host behavior: **not tested**. Earlier hardware captures do not qualify this new version. Software rebuild and native/browser comparison results are recorded separately after verification.
+
+Software verification on 7 October 2026: isolated stock-free package compilation passed; `npm run module:verify -- usb-audio-out-tracks-main-cue --os <local original OS>` compared 98 selections, with 46 matching module-owned images, 52 matching native refusals and zero mismatches. The logger/platform writes account for the deliberate full-image difference. Modified original firmware is refused. `npm run module:doctor -- usb-audio-out-tracks-main-cue` is green. Fingerprint-only evidence is in `sdk/native-comparisons/usb-audio-out-tracks-main-cue.json`; no firmware or extracted stock bytes are committed.

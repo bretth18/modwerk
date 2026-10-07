@@ -2471,11 +2471,11 @@
       "id": "usb-audio-out-tracks-main-cue",
       "key": "USB AUDIO OUT TRACKS MAIN CUE",
       "name": "USB Audio",
-      "version": "0.1.3-experimental",
+      "version": "0.1.4-experimental",
       "category": "midi-usb",
       "source": {
         "repository": "https://github.com/sambanks/octabam",
-        "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
+        "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
         "path": "modules/usb-audio-out-tracks-main-cue"
       },
       "access": {
@@ -2559,7 +2559,7 @@
           "cpu": {
             "level": "high",
             "basis": "source-estimate",
-            "rationale": "The CPU producer continuously copies twenty audio channels into rings and services high-speed USB packet/DMA completion alongside MIDI. The high tier reflects that sustained maximum-channel workload; CPU headroom is not quantitatively established.",
+            "rationale": "The CPU copies twenty audio channels and services USB packet/DMA completion while the host has opened the audio stream. With the stream closed, the producer is skipped. The high tier describes the active maximum-channel workload; current hardware headroom is not quantitatively established.",
             "source": "README.md"
           },
           "dsp": {
@@ -2571,15 +2571,15 @@
           "memory": {
             "level": "moderate",
             "basis": "source-estimate",
-            "rationale": "Audio rings occupy 88 KiB and DMA descriptors/packet buffers add 3,968 bytes before code and MIDI state. This is a moderate shared feature footprint relative to scalar/control modules and multi-instance reverb rings. Version 0.1.3 adds the 2,028-byte USB MIDI receive unit (usbmidi_rx).",
+            "rationale": "Audio rings occupy 88 KiB and DMA descriptors/packet buffers add 3,968 bytes before code and MIDI state. This is a moderate shared feature footprint relative to scalar/control modules and multi-instance reverb rings. Version 0.1.3 adds the 2,028-byte USB MIDI receive unit (usbmidi_rx). Version 0.1.4 adds two producer lifecycle state bytes.",
             "source": "README.md"
           }
         }
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Selected for the broadest recorded hardware evidence: MKI and MKII, sustained multi-track 24-bit captures and high MIDI receive traffic. The latest source includes track/MAIN alignment and a hardware-tested master-on CUE correction; startup artifacts and unmeasured host/platform cases remain. Octamod native and actual-browser composition/packaging parity and rejection checks passed on 1 October 2026. The owner reported both combined test images working; this is a smoke report, not full feature/load qualification.",
-        "hardwareStatus": "historical",
+        "summary": "Lifecycle fixes ported from octabam 6f9e5bc9: USB reset/session end request alt 0, flush polling is bounded, and the audio producer sleeps while the stream is closed and zeroes its startup cushion on reopening. Current-build hardware and chip timing have not been measured; prior hardware evidence remains historical.",
+        "hardwareStatus": "untested",
         "evidenceRevision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
         "gates": [
           "tools/verify/verify_usb.py",
