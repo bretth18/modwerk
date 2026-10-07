@@ -25,9 +25,12 @@ out = args.out.resolve()
 if out.is_relative_to(repo) or out.exists():
     parser.error('--out must be a new directory outside the repository')
 emulator = args.emulator.resolve()
-revision = subprocess.check_output(['git', '-C', str(emulator), 'rev-parse', 'HEAD'], text=True).strip()
+git_env = {**os.environ, 'GIT_CONFIG_GLOBAL': os.devnull, 'GIT_CONFIG_NOSYSTEM': '1', 'GIT_TERMINAL_PROMPT': '0'}
+revision = subprocess.check_output(['git', '-C', str(emulator), 'rev-parse', 'HEAD'], text=True, env=git_env).strip()
 if revision != 'c1b5735835923e328f8b4950d6ba927875e5b669':
     parser.error('use the reviewed digiemu revision c1b5735835923e328f8b4950d6ba927875e5b669')
+if subprocess.check_output(['git', '-C', str(emulator), 'status', '--porcelain', '--untracked-files=no'], text=True, env=git_env).strip():
+    parser.error('use a clean pinned emulator checkout without tracked source changes')
 sys.path.insert(0, str(emulator))
 from emu.fwcheck import prepare
 from emu.bootstrap import first_run
