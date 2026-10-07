@@ -49,7 +49,7 @@ export async function composeLoggedMidiScenes(original: Uint8Array) {
   const plan = createPlatformOsWrites(runtime, [], { loader: false, reserveBytes: reservedBytes, runtimeBase: runtime.base })
   const writes = await extendMidiScenesArena(author, plan)
   const patched = await applyGuardedOsWrites(author, [...writes, ...logging.writes])
-  const bootstrap = await createRuntimeBootstrap(runtime.bytes, runtime.reserveBytes - LOGGER_RETAINED_BYTES, runtime.base)
+  const bootstrap = await createRuntimeBootstrap(runtime.bytes, runtime.reserveBytes - LOGGER_RETAINED_BYTES, runtime.base, runtime)
   const bytes = new Uint8Array(patched.length + bootstrap.append.length)
   bytes.set(patched); bytes.set(bootstrap.append, patched.length)
   return { bytes, chooser: { ...chooser, hidden: [] }, dsp: [], runtime: { reservedBytes, bytes: runtime.bytes.length, stage: bootstrap.layout.stage, stageEnd: bootstrap.layout.stageEnd }, caveCursor: 0, overflowCursor: 0 }

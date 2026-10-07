@@ -725,6 +725,11 @@ def main():
         sys.exit("remix %r has colliding modules:\n  %s"
                  % (REMIX.name, "\n  ".join(_clashes)))
     img = bytearray(IMG.read_bytes())
+    from remix import keep as _keep
+    _kept = _keep.violations(img, BASE, [remix_modules()[k] for k in REMIX.modules])
+    if _kept:
+        sys.exit("kept stock bytes differ before build: " + "; ".join(_kept))
+
 
     def rd32(a):
         return int.from_bytes(img[a - BASE:a - BASE + 4], "big")
@@ -1222,13 +1227,13 @@ def main():
                          f"{len(_ref)} B) -- re-pin them in the manifest deliberately")
             if not _ref and not _lb:
                 sys.exit(f"{_c.label}: source produced no bytes")
-            if _floating and _inside and _c.cave_addr + len(_lb) > cave_limit:
+            if _floating and _inside and _c.cave_addr + max(len(_lb), _c.reserve) > cave_limit:
                 # A floating source cave that no longer fits the clone window
                 # (the ROM units come first since 15 Sep 2026) goes to the
                 # second zero run, as the label formatters do; re-linked
                 # there, since its absolute references follow the address.
                 _at2 = (_ovf_top + 3) & ~3
-                if _at2 + len(_lb) > OVERFLOW_RUN_END:
+                if _at2 + max(len(_lb), _c.reserve) > OVERFLOW_RUN_END:
                     sys.exit(f"{_c.label}: {len(_lb)} B fits neither the clone "
                              f"window (from 0x{_c.cave_addr:08x}) nor the overflow run")
                 _c = dataclasses.replace(_c, cave_addr=_at2)
@@ -1243,10 +1248,12 @@ def main():
                     if _lb != _ref:
                         sys.exit(f"{_c.source} linked at 0x{_c.cave_addr:08x} no longer "
                                  f"matches the bytes the manifest ratifies")
-                _ovf_top = (_c.cave_addr + len(_lb) + 3) & ~3
+                _ovf_top = (_c.cave_addr + max(len(_lb), _c.reserve) + 3) & ~3
                 if _c.emit is not None:
                     _, _pokes = _c.emit(_c.cave_addr)     # the dispatch repoint follows the cave
                 print(f"  {_c.label}: past the clone window, placed in the overflow run")
+            if _c.reserve and len(_lb) > _c.reserve:
+                sys.exit(f"{_c.label}: source exceeds its declared cave reserve")
             if any(img[_c.cave_addr - BASE:_c.cave_addr - BASE + len(_lb)]):
                 sys.exit(f"{_c.label} not free")
             _b = _lb
@@ -1254,6 +1261,17 @@ def main():
         elif _c.source and not _replay and not _legacy_emit and not _b:
             sys.exit(f"{_c.label}: its source is the only truth and there is no "
                      f"m68k-elf toolchain -- run `make setup`")
+        _used = max(len(_b), _c.reserve)
+        if _c.reserve and len(_b) > _c.reserve:
+            sys.exit(f"{_c.label}: bytes exceed the declared cave reserve")
+        if _c.cave_addr + _used > (cave_limit if _inside else SAFE_CAVE_CEIL):
+            sys.exit(f"{_c.label}: declared cave span overruns its region")
+        if len(img[_c.cave_addr - BASE:_c.cave_addr - BASE + _used]) != _used or any(img[_c.cave_addr - BASE:_c.cave_addr - BASE + _used]):
+            sys.exit(f"{_c.label}: declared cave span is not free")
+        if OVERFLOW_RUN <= _c.cave_addr < OVERFLOW_RUN_END:
+            if _c.cave_addr + _used > OVERFLOW_RUN_END:
+                sys.exit(f"{_c.label}: declared cave span overruns the overflow region")
+            _ovf_top = max(_ovf_top, (_c.cave_addr + _used + 3) & ~3)
         img[_c.cave_addr - BASE:_c.cave_addr - BASE + len(_b)] = _b
         if _c.pool_base_literals:
             _pool_caves.append((_c.label, _c.cave_addr, len(_b), _c.pool_base_literals))
@@ -1287,7 +1305,7 @@ def main():
         print(f"  {_c.label}: {len(_b)} bytes at 0x{_c.cave_addr:08x}"
               f"{_hook}{_c.report_note}")
         if _inside:
-            _cave_top = _c.cave_addr + len(_b)
+            _cave_top = _c.cave_addr + _used
 
     for name in CLONED_ORDER:
         for slot, param in enumerate(_MODS[name].params):
@@ -1426,6 +1444,7 @@ def main():
         _pappend, _psyms, _boot, _pnames = platform_build.build(
             [(_m.key, _u) for _m, _u in _dram], _payloads, pathlib.Path("out/platform"),
             reserve=_reserve, defsyms=_defsym_ovr,
+            regions=[(r.symbol, r.size, r.align) for k in REMIX.modules for r in remix_modules()[k].dram_regions],
             includes={_u.label: _u.include({_k: remix_modules()[_k] for _k in REMIX.modules})
                       for _m, _u in _dram if _u.include is not None})
         for _m, _u in _dram:
@@ -1491,8 +1510,10 @@ def main():
             print(f"  {_m.key}: detour at 0x{_d.site:08x} bridged -- another module's stub "
                   f"stands in for it")
             continue
-        _got = bytes(img[_d.site - BASE:_d.site - BASE + len(_d.expect)])
-        if _got != _d.expect:
+        from remix.detour_guard import expected as _detour_expected
+        _expect = _detour_expected(_d)
+        _got = bytes(img[_d.site - BASE:_d.site - BASE + len(_expect)])
+        if _got != _expect:
             sys.exit(f"{_m.key} detour {_d.note or _d.symbol} at 0x{_d.site:08x} finds "
                      f"{_got.hex()}, not {_d.expect.hex()}; refusing")
         _target = _d.target if _d.target is not None else _sym[_d.unit][_d.symbol]
@@ -3258,13 +3279,18 @@ hostquit:
             print(f"    poke 0x{_aa:08x}: {_aexp.hex()} -> {_aw.hex()}  {_anote}")
         _pappend, _psyms2, _boot, _pnames = platform_build.build(
             [(_m.key, _u) for _m, _u in _dram], _payloads, pathlib.Path("out/platform"),
-            reserve=_reserve, defsyms=_defsym_ovr, preboot=_pres,
+            reserve=_reserve, defsyms=_defsym_ovr,
+            regions=[(r.symbol, r.size, r.align) for k in REMIX.modules for r in remix_modules()[k].dram_regions], preboot=_pres,
             includes={_u.label: _u.include({_k: remix_modules()[_k] for _k in REMIX.modules})
                       for _m, _u in _dram if _u.include is not None})
         if _psyms2 != _psyms or _platform_at is None:
             sys.exit("analog bd: the platform runtime linked differently the second time")
         _appends[_platform_at] = (
             "octabam loader + payloads (" + ", ".join(_pnames) + ")", _pappend)
+
+    _kept = _keep.violations(img, BASE, [remix_modules()[k] for k in REMIX.modules])
+    if _kept:
+        sys.exit("build changed kept stock bytes: " + "; ".join(_kept))
 
     _grown = ""
     for _aname, _append in _appends:

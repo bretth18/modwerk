@@ -486,6 +486,19 @@ def main():
             if clean(products['requested-packages.json']) != clean(baseline['requested-packages.json']): raise ValueError('Requested authored packages or placement recipes differ from the verified baseline')
         print('Every authored compiled package and receiver matches the existing browser/native baseline.', flush=True)
 
+    regions = [dict(moduleId=m.name, symbol=r.symbol, size=r.size, align=r.align)
+               for m in known.values() for r in m.dram_regions]
+    if any(m.keeps or m.conflicts or any(c.reserve for c in m.cf_patches) for m in known.values()):
+        contracts = []
+        for m in known.values():
+            contracts.append(dict(moduleId=m.name, key=m.key,
+                spans=[dict(kind=k, address=a, bytes=n, label=l) for k,a,n,l in m.write_spans()],
+                keeps=[dict(address=k.addr, bytes=fingerprint(k.expect,k.addr)[0], sha256=fingerprint(k.expect,k.addr)[1]) for k in m.keeps],
+                conflicts=[dict(key=k, reason=r) for k,r in m.conflicts]))
+        products['coldfire-packages.json']['contracts'] = contracts
+    if regions:
+        products['coldfire-packages.json']['memoryRegions'] = regions
+
     os.chdir(APP)
     if utility_ids:
         spec = importlib.util.spec_from_file_location('octamod_utility_compiler', APP / 'scripts/build-utility-packages.py')

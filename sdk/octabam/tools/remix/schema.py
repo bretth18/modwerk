@@ -529,6 +529,17 @@ class CavePatch:
     # Checked on every build; a drift refuses.
     reference: object | None = None
 
+    # A source-linked pinned cave can reserve more than its reference bytes.
+    reserve: int = 0
+
+    def __post_init__(self):
+        if type(self.reserve) is not int or not 0 <= self.reserve <= 16 * 1024 * 1024:
+            raise ValueError("CavePatch.reserve must be a bounded nonnegative byte count")
+
+    @property
+    def claim_len(self) -> int:
+        return max(len(self.pinned), self.reserve)
+
 
 SHARED_WINDOW = (0x30000, 0x40000)
 HALF_BASE = {"A":0x30000,"B":0x38000}
@@ -844,6 +855,13 @@ class Detour:
     # -- and the ledger refuses the pair by name.
     subst_return: bool = False
 
+    def __post_init__(self):
+        written = self.pad_to or 6
+        if type(written) is not int or written < 6 or written % 2 or not len(self.expect):
+            raise ValueError("A detour needs an even write span of at least six bytes and a stock guard")
+        if type(self.site) is not int or self.site < 0 or self.site % 2 or self.site + max(written, len(self.expect)) > 0xffffffff:
+            raise ValueError("A detour has an invalid address span")
+
 
 @dataclass(frozen=True)
 class TableGrow:
@@ -868,6 +886,24 @@ class Poke:
     addr: int
     expect: bytes
     write: bytes
+    note: str = ""
+
+
+@dataclass(frozen=True)
+class Keep:
+    """Bytes this module relies on staying stock, claimed without writing.
+
+    The ledger refuses any other module's write that overlaps them (a
+    poke, detour, hook, cave, table or symbol ref, emit poke or runtime
+    write); two modules keeping overlapping bytes compose when their
+    `expect` agrees. The build asserts `expect` against the stock image and
+    again against the finished image, so a write the ledger cannot see --
+    a floating cave or grown table landing here, a menu clone, an arena
+    literal -- is refused too. Writes made at run time by DRAM code are
+    not in the image and are not checked."""
+
+    addr: int
+    expect: bytes
     note: str = ""
 
 
@@ -956,6 +992,34 @@ class ArenaReserve:
 
 
 @dataclass(frozen=True)
+class DramRegion:
+    """Uninitialised DRAM a module's DRAM units name by `symbol`.
+
+    Placed by the platform build at the TOP of the platform's arena reserve
+    (arena.PLATFORM_PAGES, which any remix with DRAM units already pays
+    for), stacked downward in declaration order, and handed to the link as
+    `--defsym symbol=address`. The build refuses when the runtime, its
+    loader stage or its .bss reach the lowest region. The loader never
+    writes these bytes and nothing clears them: a region must not need
+    initial contents. STEM REC's ring (8 MiB since piece 5) and its task's
+    stack are the first users (git show 4d2d6456:docs/superpowers/specs/
+    2026-09-10-stem-rec-poc-design.md, section 5)."""
+
+    symbol: str
+    size: int
+    align: int = 16
+
+    def __post_init__(self):
+        import re
+        if self.symbol in ("_end", "_edata", "__bss_start") or not isinstance(self.symbol, str) or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", self.symbol):
+            raise ValueError("DRAM region needs a linker symbol")
+        if type(self.size) is not int or not 0 < self.size <= 16 * 1024 * 1024:
+            raise ValueError("DRAM region size must be a positive bounded integer")
+        if type(self.align) is not int or not 0 < self.align <= 16 * 1024 * 1024 or self.align & (self.align - 1):
+            raise ValueError("DRAM region alignment must be a bounded power of two")
+
+
+@dataclass(frozen=True)
 class Override:
     """This module's own claim at `site` stands in for another module's --
     the way two mods that hook one stock instruction get to share it.
@@ -1008,6 +1072,8 @@ class Module:
     tables: tuple[TableGrow, ...] = ()
     symbol_refs: tuple[SymbolRef, ...] = ()
     pokes: tuple[Poke, ...] = ()
+    keeps: tuple[Keep, ...] = ()
+    dram_regions: tuple[DramRegion, ...] = ()
     # Pages of the audio page arena this module's DRAM lives in
     # (schema.ArenaReserve). DRAM units need none: the platform reserves
     # its own (arena.PLATFORM_PAGES) whenever a remix carries any.
@@ -1020,6 +1086,7 @@ class Module:
     # stubs stand at those sites (scenes-p2-kits). The ledger refuses a
     # remix that selects it without them.
     requires: tuple[str, ...] = ()
+    conflicts: tuple[tuple[str, str], ...] = ()
     # Which slot carries the MODE select, and what each of its positions
     # renames and re-defaults. Empty for a single-engine module.
     mode_slot: int | None = None
@@ -1060,7 +1127,46 @@ class Module:
     # (tools/experimental/dsp_dynload/runtime_catalog.SHARED).
     dynamic_stock: bool = False
 
+    def write_spans(self):
+        """Every fixed-address write this module declares, as (kind, start,
+        length, label): pinned caves (`len(pinned)`), cave hooks
+        (`len(hook_stock)`, at least the six-byte jsr), detours (the
+        larger of `expect` and `pad_to` or six), table refs and symbol refs
+        (four bytes), plain pokes. Floating caves and emit() pokes depend on
+        placement and are the ledger's to evaluate."""
+        for c in self.cf_patches:
+            if c.cave_addr is not None:
+                yield "cave", c.cave_addr, c.claim_len, c.label
+            if c.hook_addr is not None:
+                yield "hook", c.hook_addr, max(len(c.hook_stock), 6), c.label
+        for d in self.detours:
+            yield "detour", d.site, max(len(d.expect), d.pad_to or 6), d.note or d.symbol
+        for t in self.tables:
+            for addr, _old in t.refs:
+                yield "table ref", addr, 4, t.label
+        for r in self.symbol_refs:
+            yield "symbol ref", r.addr, 4, f"{r.unit}:{r.symbol} ({r.note or hex(r.addr)})"
+        for p in self.pokes:
+            yield "poke", p.addr, max(len(p.expect), len(p.write)), p.note or hex(p.addr)
+
     def __post_init__(self):
+        for need in self.requires:
+            if need in {k for k, _why in self.conflicts}:
+                raise ValueError(f"{self.name}: {need!r} is in both requires and conflicts")
+        for other, _why in self.conflicts:
+            if other == self.key:
+                raise ValueError(f"{self.name}: declares a conflict with itself")
+        for k in self.keeps:
+            for kind, start, length, label in self.write_spans():
+                if start < k.addr + len(k.expect) and k.addr < start + length:
+                    raise ValueError(
+                        f"{self.name}: keeps 0x{k.addr:08x} ({k.note or 'kept bytes'}) "
+                        f"and writes it ({kind} {label} at 0x{start:08x})")
+        if self.dram_regions and not any(unit.dram for unit in self.linked):
+            raise ValueError(f"{self.name}: DRAM regions require a DRAM linked unit")
+        symbols = [region.symbol for region in self.dram_regions]
+        if len(symbols) != len(set(symbols)):
+            raise ValueError(f"{self.name}: duplicate DRAM region symbols")
         if self.params and len(self.params) != 12:
             raise ValueError(f"{self.name}: expected 12 param slots, "
                              f"got {len(self.params)}")

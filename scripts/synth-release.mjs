@@ -15,13 +15,29 @@ export function synthRuntimeSha256(document) {
   const value = { id: document.id, key: document.key, version: document.version, source: document.source, nativeManifest: document.nativeManifest, build: document.build ?? null, controls, compatibility: document.compatibility, resources: document.resources, tests: { hardwareStatus: document.tests.hardwareStatus, evidenceRevision: document.tests.evidenceRevision, gates: document.tests.gates } }
   return createHash('sha256').update(JSON.stringify(value)).digest('hex')
 }
+// The approved release report remains frozen. Current composition evidence
+// can grow with the module pool without changing source, image or waivers.
+export async function nativeParityCoversPool(parity, catalogIds) {
+  const {coverageSelections,selectionKey}=await import('./module-coverage.mjs')
+  if(!Array.isArray(parity.pool)||!parity.pool.includes('synth')||parity.pool.length>32||new Set(parity.pool).size!==parity.pool.length||parity.pool.some(id=>!catalogIds.includes(id))||!Array.isArray(parity.selections)||!parity.summary) return false
+  const expected=coverageSelections('synth',parity.pool).map(row=>selectionKey(row.ids,row.keepStockFx2))
+  const actual=parity.selections.map(row=>Array.isArray(row.moduleIds)&&typeof row.keepStockFx2==='boolean'?selectionKey(row.moduleIds,row.keepStockFx2):null)
+  if(!isDeepStrictEqual(actual,expected)) return false
+  let built=0,refused=0
+  for(const row of parity.selections) {
+    if(row.result==='refused'&&typeof row.native?.refused==='string'&&row.native.refused) refused++
+    else if(['identical','masked'].includes(row.result)&&row.native?.refused===undefined&&Number.isSafeInteger(row.native?.bytes)&&row.native.bytes>0&&[row.native.osSha256,row.native.maskedOsSha256].every(hash=>typeof hash==='string'&&/^[a-f0-9]{64}$/.test(hash))) built++
+    else return false
+  }
+  return parity.summary.selections===expected.length&&parity.summary.built===built&&parity.summary.refused===refused&&parity.summary.mismatches===0
+}
 export async function requireSynthRelease(root, folder, document, sourceHash) {
   const fail = message => { throw new Error('FM Synth: ' + message) }
   const approval = await json(resolve(root, 'sdk/synth-build-approval.json')), declaration = document.tests.releaseWaiver
   if (approval.id !== 'synth' || approval.version !== '0.1.1-experimental' || document.id !== approval.id || document.version !== approval.version || approval.approvedBy !== 'repeat98' || approval.approvedOn !== '2026-10-06' || !isDeepStrictEqual(approval.waived, SYNTH_WAIVED) || approval.imageSha256 !== SYNTH_IMAGE || !declaration || declaration.approvedBy !== approval.approvedBy || declaration.approvedOn !== approval.approvedOn || declaration.moduleVersion !== document.version || declaration.sourceSha256 !== approval.sourceSha256 || declaration.imageSha256 !== approval.imageSha256 || await sourceHash(folder, document) !== approval.sourceSha256 || synthRuntimeSha256(document) !== approval.runtimeSha256) fail('owner approval does not cover this exact version, source, declarations and image')
   if (document.build || document.tests.qualification || document.tests.hardwareStatus !== 'untested' || document.resources.processing.value !== null || document.resources.processing.method !== 'unmeasured' || declaration.report !== 'evidence/software.json') fail('hardware and unmeasured timing/memory must remain honest')
   const report = await json(resolve(folder, declaration.report)), parity = await json(resolve(root, 'sdk/native-comparisons/synth.json'))
-  if (report.id !== document.id || report.moduleVersion !== document.version || report.sourceSha256 !== approval.sourceSha256 || report.imageSha256 !== approval.imageSha256 || report.hardwareStatus !== 'untested' || report.chipWorstCaseCycles !== null || report.completeMemoryBounds !== null || !isDeepStrictEqual(report.nativeBrowserParity, { status: 'passed', selections: 94, built: 37, refused: 57, mismatches: 0, report: 'sdk/native-comparisons/synth.json' }) || parity.moduleVersion !== document.version || parity.moduleSourceSha256 !== approval.sourceSha256 || parity.summary.selections !== 94 || parity.summary.built !== 37 || parity.summary.refused !== 57 || parity.summary.mismatches !== 0) fail('incomplete or stale native/browser evidence')
+  if (report.id !== document.id || report.moduleVersion !== document.version || report.sourceSha256 !== approval.sourceSha256 || report.imageSha256 !== approval.imageSha256 || report.hardwareStatus !== 'untested' || report.chipWorstCaseCycles !== null || report.completeMemoryBounds !== null || !isDeepStrictEqual(report.nativeBrowserParity, { status: 'passed', selections: 94, built: 37, refused: 57, mismatches: 0, report: 'sdk/native-comparisons/synth.json' }) || parity.moduleVersion !== document.version || parity.moduleSourceSha256 !== approval.sourceSha256 || !(await nativeParityCoversPool(parity,(await json(resolve(root,'sdk/catalog.json'))).modules.map(module=>module.id)))) fail('incomplete or stale native/browser evidence')
   const worker = report.worker, audio = report.audio
   if (worker.moduleVersion !== document.version || worker.imageSha256 !== SYNTH_IMAGE || worker.updateSha256 !== '831e7cd878398ee8d1e268e9fc2bcfd902f48e785965e8e510bff58abc1405a6' || worker.worker.moduleIds.join(',') !== 'synth' || Object.values(worker.checks).length !== 6 || Object.values(worker.checks).some(value => value !== 'passed') || worker.allocation.runtimeBytes !== 90268 || worker.allocation.reserveBytes !== 10586112 || worker.limits.chipWorstCaseCycles !== null || worker.limits.completeStackBounds !== null || worker.limits.hardwareStatus !== 'untested' || audio.imageSha256 !== SYNTH_IMAGE || audio.checks.generatedCarrier !== 'passed' || audio.checks.doubleStopSilence !== 'passed' || audio.nonzeroValues <= 0 || audio.carrierPeriodFrames !== 169 || audio.finalHalfSecondPeak !== 0) fail('common-worker packaging, refusals, allocations or playback evidence is incomplete')
   const originalAudio = await json(resolve(folder, 'evidence/browser-audio.json'))

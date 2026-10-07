@@ -4,7 +4,7 @@ import { relocateColdFireObject } from './coldfire-elf.ts'
 import type { CfObject, CfPlacement, CfSection } from './coldfire-elf.ts'
 import type { RuntimeCatalog } from './runtime-catalog.ts'
 export type CfLinkInput = { label: string; object: CfObject }
-export type CfRuntimeLink = { bytes: Uint8Array; symbols: Map<string, number>; placements: Map<string, Map<number, CfPlacement>>; sections: { name: string; address: number; size: number }[] }
+export type CfRuntimeLink = { bytes: Uint8Array; symbols: Map<string, number>; placements: Map<string, Map<number, CfPlacement>>; sections: { name: string; address: number; size: number }[]; memoryEnd: number }
 const MAX_IMAGE = 16 * 1024 * 1024, PAGE = 0x2000
 const align = (address: number, alignment: number) => Math.ceil(address / alignment) * alignment
 function fail(message: string): never { throw new Error('The ColdFire runtime ' + message + '.') }
@@ -58,10 +58,11 @@ export function linkColdFireRuntime(inputs: readonly CfLinkInput[], base: number
       const valid = (section.name === '.text' && section.type === 1 && section.flags === 6) || (section.name === '.rodata' && section.type === 1 && section.flags === 2) || (section.name === '.rodata.str1.1' && section.type === 1 && section.flags === 0x32) || (section.name === '.data' && section.type === 1 && section.flags === 3) || (section.name === '.bss' && section.type === 8 && section.flags === 3)
       if (!valid) fail('has an unsupported allocated section: ' + section.name)
       if (section.type !== 8 && section.data.length !== section.size) fail('has inconsistent section contents')
-      if (section.name === '.bss' && section.size) fail('needs an explicit nonempty zero-fill initialization proof')
       if ((section.flags & 0x10) && input.object.relocations.some(relocation => relocation.section === section.index && relocation.type !== 0)) fail('cannot relocate inside mergeable strings')
       allocated.push({ input, section })
     }
+    if (input.object.symbols.some(symbol => ['_end','_edata','__bss_start'].includes(symbol.name) && symbol.section !== 0)) fail('defines a reserved linker memory boundary')
+    if (input.object.symbols.some(symbol => externals.has(symbol.name) && symbol.section !== 0)) fail('has duplicate declared external symbols')
     if (input.object.symbols.some(symbol => symbol.section === 0xfff2)) fail('needs explicit common-symbol allocation')
   }
   const merged = new Set<CfSection>(), copies: { address: number; bytes: Uint8Array }[] = [], fills: { start: number; end: number }[] = []
@@ -79,12 +80,13 @@ export function linkColdFireRuntime(inputs: readonly CfLinkInput[], base: number
         let at = align(start, Math.max(...parts.map(({ section }) => section.alignment)))
         for (const { section } of parts) at = align(at, section.alignment) + section.size
         const bss = allocated.filter(({ section }) => section.name === '.bss')
-        if (bss.length) at = align(at, Math.max(...bss.map(({ section }) => section.alignment)))
+        if (bss.length) { at = align(at, Math.max(...bss.map(({ section }) => section.alignment))); for (const { section } of bss) at = align(at, section.alignment) + section.size }
         return at
       }
       const pagesAt = (start: number) => Math.ceil(endAt(start) / PAGE) - Math.floor(start / PAGE)
       cursor = pagesAt(alternative) < pagesAt(initial) ? alternative : initial
     }
+    const beforeAlignment = cursor
     cursor = align(cursor, Math.max(...parts.map(({ section }) => section.alignment)))
     const start = cursor
     for (const { input, section } of parts) {
@@ -107,6 +109,9 @@ export function linkColdFireRuntime(inputs: readonly CfLinkInput[], base: number
       extent(cursor)
     }
     sections.push({ name, address: start, size: cursor - start })
+    // An empty .data has symbols but does not advance the GNU BSS location
+    // counter; its stricter alignment must not shift following BSS.
+    if (name === '.data' && !parts.some(part=>part.section.size) && allocated.some(part=>part.section.name === '.bss' && part.section.size)) cursor = beforeAlignment
   }
   const symbols = new Map<string, number>(externals)
   for (const input of inputs) {
@@ -116,7 +121,16 @@ export function linkColdFireRuntime(inputs: readonly CfLinkInput[], base: number
       symbols.set(name, value)
     }
   }
-  // BSS is zero length in this profile. Nonempty BSS is deliberately refused.
+  const memoryEnd = align(cursor, 4)
+  extent(memoryEnd)
+  const bss = sections.find(section => section.name === '.bss')
+  const data = sections.find(section => section.name === '.data')
+  // GNU provides these boundary symbols when referenced. Keep the existing
+  // public export inventory unchanged for modules with no references or BSS.
+  for (const [name, address] of [['__bss_start', bss?.address ?? cursor], ['_edata', data?.size ? data.address + data.size : bss?.address ?? cursor], ['_end', memoryEnd]] as const) {
+    if ((bss?.size || inputs.some(input => input.object.symbols.some(symbol => symbol.name === name && symbol.section === 0))) && !symbols.has(name)) symbols.set(name, address)
+  }
+  // NOBITS contributes to memory placement, never to the packed/load image.
   // `objcopy -O binary` ends the image with the last section that has contents: an empty section adds
   // nothing, not even the page-aligned gap in front of it (a runtime that ends in a module's .rodata).
   const end = Math.max(base, ...sections.filter(section => section.name !== '.bss' && section.size > 0).map(section => section.address + section.size))
@@ -127,7 +141,7 @@ export function linkColdFireRuntime(inputs: readonly CfLinkInput[], base: number
     const result = relocateColdFireObject(input.object, placements.get(input.label)!, symbols)
     for (const section of result.sections) if (!merged.has(input.object.sections[section.index]) && section.data.length) bytes.set(section.data, section.address - base)
   }
-  return { bytes, symbols, placements, sections }
+  return { bytes, symbols, placements, sections, memoryEnd }
 }
 
 // Represent the locally serialized catalog as an in-memory object, so its

@@ -201,6 +201,20 @@ def check(selected) -> list[str]:
                 problems.append(f"{m.name} requires {need} in the remix (its overrides "
                                 f"leave a site with nothing at it otherwise)")
 
+    seen_conflicts = set()
+    for m in selected:
+        for other, reason in m.conflicts:
+            pair = frozenset((m.key, other))
+            if other in keys and pair not in seen_conflicts:
+                seen_conflicts.add(pair)
+                problems.append(f"{m.name} conflicts with {other}: {reason}")
+    dram_owner = {}
+    for m in selected:
+        for region in m.dram_regions:
+            if region.symbol in dram_owner:
+                clash("DRAM region", dram_owner[region.symbol], m.name, f"the symbol {region.symbol}")
+            dram_owner[region.symbol] = m.name
+
     # ---- Part-window bytes (Claims.part_window) -----------------------------
     regions: list[tuple[int, int, str, str]] = []
     for m in selected:
@@ -241,11 +255,11 @@ def check(selected) -> list[str]:
             if c.cave_addr is None:      # floating: the build allocates
                 continue                 # it after everything pinned
             for start, length, owner, label in caves:
-                if _overlap(start, length, c.cave_addr, len(c.pinned)):
+                if _overlap(start, length, c.cave_addr, c.claim_len):
                     clash("ColdFire cave", f"{owner}'s {label}",
                           f"{m.name}'s {c.label}",
                           f"0x{max(start, c.cave_addr):08x}")
-            caves.append((c.cave_addr, len(c.pinned), m.name, c.label))
+            caves.append((c.cave_addr, c.claim_len, m.name, c.label))
             if c.hook_addr is not None:
                 if c.hook_addr in hooks:
                     clash("hook site", hooks[c.hook_addr], m.name,
@@ -304,13 +318,14 @@ def check(selected) -> list[str]:
             pokes.append((r.addr, 4, m.name,
                           f"symbol ref {r.unit}:{r.symbol} ({r.note or hex(r.addr)})"))
         for p in getattr(m, "pokes", ()):
-            pokes.append((p.addr, len(p.expect), m.name, f"poke {p.note or hex(p.addr)}"))
+            pokes.append((p.addr, max(len(p.expect),len(p.write)), m.name, f"poke {p.note or hex(p.addr)}"))
     # A FLOATING emit cave's poke ADDRESSES do not depend on where the cave
     # lands -- only the values written do -- so it is evaluated at a probe
     # address purely to learn its sites. Until it was skipped,
     # and the matrix said Octakit and CC MAP compose while the build
     # refused them: both rewrite the MIDI control-parameter dispatch entry
     # at 0x400d64a0 (her seven midi-control-parameter writes, its repoint).
+    emit_spans = []
     PROBE_ADDR = 0x400D7000
     for m in selected:
         for c in m.cf_patches:
@@ -318,21 +333,22 @@ def check(selected) -> list[str]:
                 continue
             _, cpokes = c.emit(c.cave_addr if c.cave_addr is not None else PROBE_ADDR)
             for pa, expect, _write in cpokes:
-                span = (pa, len(expect), m.name, c.label)
+                span = (pa, max(len(expect),len(_write)), m.name, c.label)
                 for start, length, owner, label in caves:
-                    if owner != m.name and _overlap(start, length, pa, len(expect)):
+                    if owner != m.name and _overlap(start, length, pa, max(len(expect),len(_write))):
                         clash("ColdFire cave", f"{owner}'s {label}",
                               f"{m.name}'s poke at 0x{pa:08x} ({c.label})",
                               f"0x{max(start, pa):08x}")
                 for haddr, owner in hooks.items():
-                    if owner != m.name and _overlap(haddr, 6, pa, len(expect)):
+                    if owner != m.name and _overlap(haddr, 6, pa, max(len(expect),len(_write))):
                         clash("hook site", owner, f"{m.name}'s poke ({c.label})",
                               f"0x{haddr:08x} -- both rewrite the same instruction")
                 for ostart, olength, oowner, olabel in pokes:
-                    if oowner != m.name and _overlap(ostart, olength, pa, len(expect)):
+                    if oowner != m.name and _overlap(ostart, olength, pa, max(len(expect),len(_write))):
                         clash("poke site", f"{oowner} ({olabel})", f"{m.name} ({c.label})",
                               f"0x{max(ostart, pa):08x} -- both rewrite the same bytes")
                 pokes.append(span)
+                emit_spans.append(("emit poke", pa, max(len(expect), len(_write)), m.name, c.label))
 
     # ---- pinned return addresses (schema.Runtime.pinned_returns) ----------
     # A runtime's replacement routine may validate its CALLER: Octakit's
@@ -411,6 +427,85 @@ def check(selected) -> list[str]:
                     clash("poke site", f"{powner} ({plabel})",
                           f"{m.name} (runtime write {label})",
                           f"0x{max(pstart, start):08x} -- both rewrite the same bytes")
+
+    # ---- every fixed-address span against every other module's -------------
+    # The passes above compare emit pokes with everything,
+    # caves with caves and hooks by their first address. This one compares
+    # the rest by the bytes each claim actually writes: plain pokes, table
+    # and symbol refs against each other and against caves and hooks, and
+    # hooks and detours by their whole span (hook_stock, pad_to). A pair the
+    # passes above already reported is not reported twice.
+    spans: list[tuple[str, int, int, str, str]] = []          # (kind, start, length, owner, label)
+    for m in selected:
+        for kind, start, length, label in m.write_spans():
+            if kind == "detour" and (start, m.key) in overridden_detours:
+                continue
+            spans.append((kind, start, length, m.name, label))
+        for u in getattr(m, "linked", ()):
+            if u.cave_addr is not None:
+                spans.append(("cave", u.cave_addr, 6, m.name, f"linked unit {u.label}"))
+    spans += emit_spans
+
+    _HOOKS = ("hook", "detour")
+    _POKES = ("poke", "table ref", "symbol ref", "emit poke")
+
+    def _reported(a, b) -> bool:
+        """Did a pass above already report this overlapping pair?"""
+        ka, kb = a[0], b[0]
+        if ka == "cave" and kb == "cave":
+            return True
+        if ka in _HOOKS and kb in _HOOKS and a[1] == b[1]:
+            return True
+        for x, y in ((a, b), (b, a)):
+            if x[0] == "emit poke":
+                if y[0] == "cave" or y[0] in _POKES:
+                    return True
+                if y[0] in _HOOKS:
+                    return _overlap(y[1], 6, x[1], x[2])
+        return False
+
+    for i, a in enumerate(spans):
+        for b in spans[i + 1:]:
+            if a[3] == b[3] or not _overlap(a[1], a[2], b[1], b[2]) or _reported(a, b):
+                continue
+            at = f"0x{max(a[1], b[1]):08x}"
+            if "cave" in (a[0], b[0]):
+                clash("ColdFire cave", f"{a[3]}'s {a[0]} {a[4]}", f"{b[3]}'s {b[0]} {b[4]}", at)
+            elif a[0] in _HOOKS or b[0] in _HOOKS:
+                clash("hook site", f"{a[3]} ({a[0]} {a[4]})", f"{b[3]} ({b[0]} {b[4]})",
+                      f"{at} -- both rewrite the same instruction")
+            else:
+                clash("poke site", f"{a[3]} ({a[0]} {a[4]})", f"{b[3]} ({b[0]} {b[4]})",
+                      f"{at} -- both rewrite the same bytes")
+
+    # ---- kept bytes (Module.keeps) -----------------------------------------
+    kept = [(k.addr, k.expect, m.name, k.note or f"kept bytes at 0x{k.addr:08x}")
+            for m in selected for k in getattr(m, "keeps", ())]
+    for i, (ka, kexp, kowner, knote) in enumerate(kept):
+        for oa, oexp, oowner, onote in kept[i + 1:]:
+            if oowner == kowner or not _overlap(ka, len(kexp), oa, len(oexp)):
+                continue
+            lo, hi = max(ka, oa), min(ka + len(kexp), oa + len(oexp))
+            if kexp[lo - ka:hi - ka] != oexp[lo - oa:hi - oa]:
+                clash("kept bytes", f"{kowner}'s {knote}", f"{oowner}'s {onote}",
+                      f"0x{lo:08x} -- they expect different stock bytes there, "
+                      f"so one of them is wrong about 1.40C")
+        for kind, start, length, owner, label in spans:
+            if owner != kowner and _overlap(ka, len(kexp), start, length):
+                clash("kept bytes", f"{kowner}'s {knote}", f"{owner} ({kind} {label})",
+                      f"0x{max(ka, start):08x} -- {kowner} relies on these bytes "
+                      f"staying stock")
+
+    # ---- grown tables (TableGrow) ------------------------------------------
+    grown: list[tuple[int, int, str, str]] = []
+    for m in selected:
+        for t in getattr(m, "tables", ()):
+            for start, length, owner, label in grown:
+                if owner != m.name and _overlap(start, length, t.old, 4 * t.count):
+                    clash("grown table", f"{owner}'s {label}", f"{m.name}'s {t.label}",
+                          f"stock array 0x{max(start, t.old):08x} -- each would relocate "
+                          f"its own copy and repoint different refs")
+            grown.append((t.old, 4 * t.count, m.name, t.label))
 
     # ---- the per-core FX2 instance buffer region --------------------------
     # Y:0x4000-0xBFFF is TWO FX2 instance slots of 16,384 words, per core and

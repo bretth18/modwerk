@@ -24,7 +24,7 @@ export async function loadBuilderPreservation(root, approvedRef, moduleId) {
     const added = catalog.modules.filter(module => !previous.modules.some(old => old.id === module.id)).map(module => module.id)
     if (JSON.stringify(added) !== JSON.stringify(record.addedModuleIds) || record.moduleIds.some(id => added.includes(id) || !previous.modules.some(module => module.id === id))) fail()
     for (const [path, change] of Object.entries(record.changes)) {
-      if (!/^(src\/engine\/.+\.ts|sdk\/octabam\/tools\/remix\/.+\.py|scripts\/build-module-packages\.py)$/.test(path) || path.includes('..') || !change || typeof change !== 'object' || !hash(change.after) || !(change.before === null || hash(change.before))) fail()
+      if (!/^(src\/engine\/.+\.ts|sdk\/octabam\/tools\/remix\/.+\.py|sdk\/octabam\/tools\/build\/build_bus\.py|scripts\/build-module-packages\.py)$/.test(path) || path.includes('..') || !change || typeof change !== 'object' || !hash(change.after) || !(change.before === null || hash(change.before))) fail()
       const current = await readFile(resolve(root, path)).catch(() => null)
       if (!current || sha(current) !== change.after) fail()
       let original = null

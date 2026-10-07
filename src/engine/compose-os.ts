@@ -1,3 +1,4 @@
+import { verifyNativeContracts } from './native-contracts.ts'
 import { composeLoggedMidiScenes } from './midi-scenes-logged.ts'
 import { installCoreLogger, LOGGER_RETAINED_BYTES } from './core-logger.ts'
 import { compiledModuleSource } from './module-build.ts'
@@ -15,6 +16,7 @@ import { createPlatformOsWrites } from './platform-writes.ts'
 import { applyGuardedOsWrites, OS_LOAD_ADDRESS } from './os-patches.ts'
 import { DSP_LOADER } from './protocol.ts'
 export async function composeOs(original: Uint8Array, ids: readonly string[], profile?: ChooserProfile, { loader = DSP_LOADER }: { loader?: boolean } = {}) {
+  await verifyNativeContracts(original, ids)
   const pending = moduleBuildError(ids)
   if (pending) throw new Error(pending)
   compiledModuleSource()
@@ -27,9 +29,10 @@ export async function composeOs(original: Uint8Array, ids: readonly string[], pr
   const menus = await composeChoosers(original, ids, profile), cores = await recoverStockDsp(original)
   const dsp = await composeDynamicDsp(cores, ids), runtime = await createColdFireRuntime(cores, ids)
   const logging = await installCoreLogger(runtime, original, ids, menus.chooser)
-  const bootstrap = await createRuntimeBootstrap(runtime.bytes, runtime.reserveBytes - LOGGER_RETAINED_BYTES)
+  const bootstrap = await createRuntimeBootstrap(runtime.bytes, runtime.reserveBytes - LOGGER_RETAINED_BYTES, undefined, runtime)
   if (OS_LOAD_ADDRESS + original.length !== BOOTSTRAP_ADDRESS) throw new Error('The runtime loader does not follow the original OS extent.')
   const patched = await applyGuardedOsWrites(original, [...menus.writes, ...dsp.writes, ...createPlatformOsWrites(runtime, ids, {reserveBytes:runtime.reserveBytes}), ...logging.writes])
+  await verifyNativeContracts(patched, ids)
   const bytes = new Uint8Array(patched.length + bootstrap.append.length); bytes.set(patched); bytes.set(bootstrap.append, patched.length)
   return { bytes, chooser: menus.chooser, dsp: dsp.layouts, runtime: { reservedBytes: runtime.reserveBytes, bytes: runtime.bytes.length, stage: bootstrap.layout.stage, stageEnd: bootstrap.layout.stageEnd }, caveCursor: menus.caveCursor, overflowCursor: menus.overflowCursor }
 }
