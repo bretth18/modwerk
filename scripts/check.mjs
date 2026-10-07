@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process'
 import { performance } from 'node:perf_hooks'
 import { fileURLToPath } from 'node:url'
 import { readChangeScope } from './change-scope.mjs'
+import { checkModuleChangelogs } from './module-changelogs.mjs'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const npmCli = process.env.npm_execpath
@@ -57,6 +58,13 @@ if (!buildOnly) passed = await run('licenses:check') && await run('machines:chec
 if (!buildOnly && !documentationOnly && passed) passed = await run('elekloader:check')
 // Finish generated notice/catalog/media writes before lint, tests, typecheck or bundling read them.
 if (passed && !documentationOnly) passed = await run('licenses:generate') && await run('machines:generate') && await run('modules:generate')
+// Every path, including documentation-only checks and release builds, requires current-version notes.
+if (passed) {
+  try {
+    const notes = checkModuleChangelogs(root)
+    console.log(`Module changelogs: ${notes.modules} modules, ${notes.releases} releases`)
+  } catch (error) { console.error(error.message); passed = false }
+}
 if (passed && !documentationOnly) {
   const results = buildOnly
     ? [await build()]

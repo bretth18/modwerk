@@ -72,23 +72,46 @@ it('rejects stale licence notices before generation can overwrite them', () => {
 })
 
 
-it('checks documentation without starting the application suite, build or generators', () => {
+function documentationCheck(missingNotes = false) {
   const folder = mkdtempSync(join(tmpdir(), 'modwerk-doc-check.'))
   const scripts = join(folder, 'scripts'), log = join(folder, 'scripts.log'), npm = join(folder, 'npm.mjs')
   mkdirSync(scripts)
   const scope = new URL('../../scripts/change-scope.mjs', import.meta.url).href
-  writeFileSync(join(scripts, 'check.mjs'), readFileSync(runner, 'utf8').replace("'./change-scope.mjs'", JSON.stringify(scope)))
+  const changelogs = new URL('../../scripts/module-changelogs.mjs', import.meta.url).href
+  writeFileSync(join(scripts, 'check.mjs'), readFileSync(runner, 'utf8').replace("'./change-scope.mjs'", JSON.stringify(scope)).replace("'./module-changelogs.mjs'", JSON.stringify(changelogs)))
   writeFileSync(npm, `import { appendFileSync } from 'node:fs'; appendFileSync(process.env.CHECK_TEST_LOG, process.argv[3] + '\\n')`)
+  mkdirSync(join(folder, 'src/catalog'), { recursive: true })
+  mkdirSync(join(folder, 'src/community'), { recursive: true })
+  writeFileSync(join(folder, 'src/catalog/module-documents.json'), JSON.stringify({ modules: [{ id: 'euclid', version: '1.0.0' }] }))
+  writeFileSync(join(folder, 'src/catalog/machine-modules.json'), JSON.stringify({ modules: [] }))
+  writeFileSync(join(folder, 'src/community/module-changelogs.json'), JSON.stringify({ schemaVersion: 1, modules: missingNotes ? {} : { euclid: [{ version: '1.0.0', date: '2026-10-07', changes: ['Correct the clock reset during playback.'] }] } }))
   const git = (...args: string[]) => execFileSync('git', args, { cwd: folder, stdio: 'pipe' })
   try {
     git('init'); git('config', 'user.name', 'Test'); git('config', 'user.email', 'test@example.com')
     writeFileSync(join(folder, 'README.md'), 'Old'); git('add', '.'); git('commit', '-m', 'base')
     writeFileSync(join(folder, 'README.md'), 'Better')
+    if (!missingNotes) {
+      const notesPath = join(folder, 'src/community/module-changelogs.json')
+      writeFileSync(notesPath, readFileSync(notesPath, 'utf8').replace('Correct the clock reset during playback.', 'Documentation-only: clarify the playback reset guide.'))
+    }
     const result = spawnSync(process.execPath, [join(scripts, 'check.mjs'), '--base', 'HEAD'], {
       encoding: 'utf8', env: { ...process.env, npm_execpath: npm, CHECK_TEST_LOG: log },
     })
-    expect(result.status, result.stderr).toBe(0)
-    expect(result.stdout).toContain('Documentation check passed')
-    expect(readFileSync(log, 'utf8').trim().split('\n')).toEqual(['licenses:check', 'machines:check', 'modules:check'])
+    return { ...result, scripts: readFileSync(log, 'utf8').trim().split('\n') }
   } finally { rmSync(folder, { recursive: true, force: true }) }
+}
+
+it('checks documentation without starting the application suite, build or generators', () => {
+  const result = documentationCheck()
+  expect(result.status, result.stderr).toBe(0)
+  expect(result.stdout).toContain('Documentation check passed')
+  expect(result.stdout).toContain('Module changelogs: 1 modules, 1 releases')
+  expect(result.scripts).toEqual(['licenses:check', 'machines:check', 'modules:check'])
+})
+
+it('requires current-version release notes even on the documentation-only validation path', () => {
+  const result = documentationCheck(true)
+  expect(result.status).toBe(1)
+  expect(result.stderr).toContain('Missing release notes for euclid v1.0.0')
+  expect(result.scripts).toEqual(['licenses:check', 'machines:check', 'modules:check'])
 })

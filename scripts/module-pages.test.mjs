@@ -40,7 +40,8 @@ it('builds the FM Synth canonical page and keeps the old URL loadable', async ()
   expect(canonical.source).toContain('<link rel="canonical" href="https://modwerk.app/module/fm-synth/" />')
   expect(canonical.source).toContain('<meta property="og:url" content="https://modwerk.app/module/fm-synth/" />')
   expect(legacy.source).toBe(canonical.source)
-})
+  // This integration renders every catalog thumbnail while the full check also bundles the app.
+}, 15_000)
 
 it('boots the app from an absolute base for paths without a page, and keeps crawlers off that copy', () => {
   const page = notFoundPageHtml(html, './')

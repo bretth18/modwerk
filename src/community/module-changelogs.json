@@ -1,0 +1,630 @@
+{
+  "schemaVersion": 1,
+  "modules": {
+    "analog-bassdrum": [
+      {
+        "version": "0.1.2-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: add real emulator screenshots of the selection and control pages, access instructions and capture provenance. The firmware implementation is unchanged."
+        ],
+        "sourceCommit": "dd9ea93fd62a3699d54f5e63c5f1a33fe1544cad"
+      },
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Enable browser firmware builds from verified source packages, with native/browser composition and rejection checks recorded."
+        ],
+        "sourceCommit": "9c4e0e3b7990c6952812d89ac165dfa14151c3ee"
+      },
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "First Modwerk catalog release of the native 808/909 bass-drum track machine, with synthesis before the stock AMP and FX stages.",
+          "Current engine-browser and eight-track behaviour still require hardware qualification."
+        ],
+        "sourceCommit": "d1136ce4c65ea7e1a00c4516cd4aa41c4b0c0d56"
+      }
+    ],
+    "cc-map": [
+      {
+        "version": "0.1.2-experimental",
+        "date": "2026-10-02",
+        "changes": [
+          "First Modwerk catalog release of Sam Banks’s MIDI mapping patch: CC68–73 control the six FX1 SETUP parameters.",
+          "Retain the upstream implementation and real UI captures; verify stock bytes from the user’s own local firmware."
+        ],
+        "sourceCommit": "b98abc5fcefad5e7c180f3746aa740159c19c422"
+      }
+    ],
+    "character": [
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: correct copyright notices, component licence terms and SPDX metadata. No DSP implementation changed."
+        ],
+        "sourceCommit": "7ed7d4efe69c88f0542fb8402e6e0f7c2b5e4e7e"
+      },
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "First Modwerk catalog release of the FX1 character effect, combining wavefolding, saturation, tilt, compression, stereo width and mix."
+        ],
+        "sourceCommit": "b16a5e3b880cb141153f0648e0c8700fc54175ef"
+      }
+    ],
+    "euclid": [
+      {
+        "version": "0.1.4-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Protect clock reset when playback starts: preserve the CPU status register and mask interrupts while resetting timing state.",
+          "Clear the initialized flag before the reset and publish it after the new state is ready, preventing an interrupt from seeing a partial reset. Existing timing, swing and controls are unchanged."
+        ],
+        "sourceCommit": "e027bea0fcaed334ef69c11be4474627814a2e21"
+      },
+      {
+        "version": "0.1.3-experimental",
+        "date": "2026-10-06",
+        "changes": [
+          "Documentation-only: explain how Euclid follows the track’s SWING settings and add a real settings-page capture. The timing implementation is unchanged."
+        ],
+        "sourceCommit": "66486c04df327a6ed0ee03570b8452e7b12bc6df"
+      },
+      {
+        "version": "0.1.2-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: add real emulator screenshots of the selection and control pages, access instructions and capture provenance. The firmware implementation is unchanged."
+        ],
+        "sourceCommit": "dd9ea93fd62a3699d54f5e63c5f1a33fe1544cad"
+      },
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: update author credits in the manifest and guides. The firmware implementation is unchanged."
+        ],
+        "sourceCommit": "d1136ce4c65ea7e1a00c4516cd4aa41c4b0c0d56"
+      },
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "First Modwerk catalog release of the stereo Euclidean modulation effect, following the instrument’s transport, tempo, track speed and swing."
+        ],
+        "sourceCommit": "b16a5e3b880cb141153f0648e0c8700fc54175ef"
+      }
+    ],
+    "midi-scenes": [
+      {
+        "version": "0.2.4-experimental",
+        "date": "2026-10-03",
+        "changes": [
+          "Replace the earlier relocatable package with the author’s exact standalone MIDISC2.0 release recipe and enable its verified browser build.",
+          "MIDI Scenes must be selected alone; combinations with other modules are refused. Broad hardware and timing qualification is still pending."
+        ],
+        "sourceCommit": "58a55da047ee1a3183ccf3f3f6290efadda931ba"
+      },
+      {
+        "version": "0.2.1-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: add real emulator screenshots of the selection and control pages, access instructions and capture provenance. The firmware implementation is unchanged."
+        ],
+        "sourceCommit": "dd9ea93fd62a3699d54f5e63c5f1a33fe1544cad"
+      },
+      {
+        "version": "0.2.0-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation/catalog update to the author’s MIDISC2.0 feature set. Firmware builds are held pending verification; the retained relocatable assembly still implements the earlier 8.2-derived version.",
+          "Document standalone pre-trig scenes, pattern/Part boundary timing, held trig locks, CC-before-notes and the author’s fixes without claiming they are already in the Modwerk build."
+        ],
+        "sourceCommit": "3ab925a29e8334ac2bfec518e5f5bc78414e4474"
+      },
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Enable browser firmware builds from verified source packages, with native/browser composition and rejection checks recorded."
+        ],
+        "sourceCommit": "9c4e0e3b7990c6952812d89ac165dfa14151c3ee"
+      },
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "First Modwerk catalog release of the 1.40MIDISC8.2-derived MIDI scene-lock patch, with scene A/B crossfader morphing and Part save/reload support."
+        ],
+        "sourceCommit": "d1136ce4c65ea7e1a00c4516cd4aa41c4b0c0d56"
+      }
+    ],
+    "miniverb": [
+      {
+        "version": "0.1.2-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: add real emulator screenshots of the selection and control pages, access instructions and capture provenance. The firmware implementation is unchanged."
+        ],
+        "sourceCommit": "dd9ea93fd62a3699d54f5e63c5f1a33fe1544cad"
+      },
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: update author credits in the manifest and guides. The firmware implementation is unchanged."
+        ],
+        "sourceCommit": "d1136ce4c65ea7e1a00c4516cd4aa41c4b0c0d56"
+      },
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "First Modwerk catalog release of the full-rate stereo FX2 reverb, on its own effect ID beside DARK REV."
+        ],
+        "sourceCommit": "b16a5e3b880cb141153f0648e0c8700fc54175ef"
+      }
+    ],
+    "modulation": [
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: correct copyright notices, component licence terms and SPDX metadata. No DSP implementation changed."
+        ],
+        "sourceCommit": "7ed7d4efe69c88f0542fb8402e6e0f7c2b5e4e7e"
+      },
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "First Modwerk catalog release of the FX1 modulation effect, with JUNO, DIM, FLNG, COMB and PHSR modes."
+        ],
+        "sourceCommit": "b16a5e3b880cb141153f0648e0c8700fc54175ef"
+      }
+    ],
+    "previewvol": [
+      {
+        "version": "0.1.2-experimental",
+        "date": "2026-10-02",
+        "changes": [
+          "First Modwerk catalog release of Sam Banks’s preview-volume patch: Flex/Static sample previews use the default AMP volume even when the active track is turned down.",
+          "Retain the upstream implementation and real UI captures; verify stock bytes from the user’s own local firmware."
+        ],
+        "sourceCommit": "b98abc5fcefad5e7c180f3746aa740159c19c422"
+      }
+    ],
+    "quantizer": [
+      {
+        "version": "0.1.2-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: add real emulator screenshots of the selection and control pages, access instructions and capture provenance. The firmware implementation is unchanged."
+        ],
+        "sourceCommit": "dd9ea93fd62a3699d54f5e63c5f1a33fe1544cad"
+      },
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Enable browser firmware builds from verified source packages, with native/browser composition and rejection checks recorded."
+        ],
+        "sourceCommit": "9c4e0e3b7990c6952812d89ac165dfa14151c3ee"
+      },
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "First Modwerk catalog release of the v2.9-derived scale quantizer, adding SCALE, ROOT and synth GLIDE settings.",
+          "Snap the PTCH knob and chromatic trig keys to the selected scale and root."
+        ],
+        "sourceCommit": "d1136ce4c65ea7e1a00c4516cd4aa41c4b0c0d56"
+      }
+    ],
+    "repitch": [
+      {
+        "version": "0.1.2-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: add real emulator screenshots of the selection and control pages, access instructions and capture provenance. The firmware implementation is unchanged."
+        ],
+        "sourceCommit": "dd9ea93fd62a3699d54f5e63c5f1a33fe1544cad"
+      },
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: update author credits in the manifest and guides. The firmware implementation is unchanged."
+        ],
+        "sourceCommit": "d1136ce4c65ea7e1a00c4516cd4aa41c4b0c0d56"
+      },
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "First Modwerk catalog release of REPITCH for Flex/Static tracks: follow project tempo through playback speed instead of granular timestretch.",
+          "Add RPCH to track TSTR and REPITCH to sample attributes. PTCH is disabled while RATE still applies; Pickup machines are unsupported."
+        ],
+        "sourceCommit": "b16a5e3b880cb141153f0648e0c8700fc54175ef"
+      }
+    ],
+    "sidechain-compressor": [
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-05",
+        "changes": [
+          "Integrate Sidechain Compressor into the shared browser builder so it can compose with compatible modules.",
+          "Keep native COMPRESSOR key and monitoring controls. Recorded software/resource checks do not claim broad hardware qualification."
+        ],
+        "sourceCommit": "5434063c4fc84a37020fbad21c1c4a8db79bfbba"
+      },
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-05",
+        "changes": [
+          "First Modwerk catalog release as standalone firmware, with COMPRESSOR key-source selection and sidechain monitoring controls."
+        ],
+        "sourceCommit": "8cce62689c269a5d6d70bfc8e087a843eb3a8caf"
+      }
+    ],
+    "spectrum": [
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: correct copyright notices, component licence terms and SPDX metadata. No DSP implementation changed."
+        ],
+        "sourceCommit": "7ed7d4efe69c88f0542fb8402e6e0f7c2b5e4e7e"
+      },
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "First Modwerk catalog release of the FX1 filter bank, with ladder, SEM, isolator and vowel modes plus envelope and LFO modulation."
+        ],
+        "sourceCommit": "b16a5e3b880cb141153f0648e0c8700fc54175ef"
+      }
+    ],
+    "synth": [
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-06",
+        "changes": [
+          "First Modwerk catalog release of FM Synth as a dedicated SRC track machine, without needing a sample.",
+          "Support one to four voices, chords, glide and sequenced parameter locks. Native UI/software evidence is recorded; hardware behaviour remains untested."
+        ],
+        "sourceCommit": "a1d8fa7d6bd4eb105d7851009a442d729369aadf"
+      }
+    ],
+    "tapeecho": [
+      {
+        "version": "0.1.2-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: add real emulator screenshots of the selection and control pages, access instructions and capture provenance. The firmware implementation is unchanged."
+        ],
+        "sourceCommit": "dd9ea93fd62a3699d54f5e63c5f1a33fe1544cad"
+      },
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: update author credits in the manifest and guides. The firmware implementation is unchanged."
+        ],
+        "sourceCommit": "d1136ce4c65ea7e1a00c4516cd4aa41c4b0c0d56"
+      },
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "First Modwerk catalog release of the CPU-based mono tape echo in FX2, with stereo dry output, tape saturation, age and feedback behaviour."
+        ],
+        "sourceCommit": "b16a5e3b880cb141153f0648e0c8700fc54175ef"
+      }
+    ],
+    "tapehead": [
+      {
+        "version": "0.1.2-experimental",
+        "date": "2026-10-05",
+        "changes": [
+          "Correct the input drive level to compensate for the stock AMP volume scaling, bringing saturation closer to the original DAW effect.",
+          "Apply +12 dB before the saturation stage and compensate by −12 dB afterward."
+        ],
+        "sourceCommit": "177df636fde9419cba2fcb42ddaacdc14a736458"
+      },
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-02",
+        "changes": [
+          "First Modwerk catalog release of the TapeHead saturation effect, ported from JClones with its input limiting, clipping-term and COLOR-mapping corrections."
+        ],
+        "sourceCommit": "979842c888466fc79680ca44f33fd40082e1c50e"
+      }
+    ],
+    "usb-audio-out-tracks-main-cue": [
+      {
+        "version": "0.1.4-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Handle USB reset and disconnect by closing the audio stream and tearing down its endpoint from the frame interrupt.",
+          "Bound endpoint flush polling when the controller stops, skip producer writes while the host stream is closed, and clear the startup buffer when reopening to avoid an old session’s audio tail."
+        ],
+        "sourceCommit": "0b8d61038fbc4eece094d73480217608bfa17f7b"
+      },
+      {
+        "version": "0.1.3-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Make incoming USB MIDI clock update the instrument’s tempo as well as advance the sequencer, so tempo-dependent timestretch, LFOs and effects follow it.",
+          "Retain the 64-byte high-speed USB MIDI receive path."
+        ],
+        "sourceCommit": "9bb586344f6684363e6593ad31d4d1d3b9989ca8"
+      },
+      {
+        "version": "0.1.2-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Documentation-only: clarify that streaming starts from the host and has no dedicated instrument control page; document access and retained evidence. The firmware implementation is unchanged."
+        ],
+        "sourceCommit": "dd9ea93fd62a3699d54f5e63c5f1a33fe1544cad"
+      },
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "Enable browser firmware builds from verified source packages, with native/browser composition and rejection checks recorded."
+        ],
+        "sourceCommit": "9c4e0e3b7990c6952812d89ac165dfa14151c3ee"
+      },
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-01",
+        "changes": [
+          "First Modwerk catalog release of USB audio output for the track, main and cue streams alongside USB MIDI."
+        ],
+        "sourceCommit": "d1136ce4c65ea7e1a00c4516cd4aa41c4b0c0d56"
+      }
+    ],
+    "vector": [
+      {
+        "version": "0.2.3-experimental",
+        "date": "2026-10-06",
+        "changes": [
+          "First Modwerk catalog release of VECTOR as a native SRC pattern generator for Flex/Static sample phrases.",
+          "Provide backing-pool/sample selection and both native control pages; generated phrases edit the current pattern. Saved-project and hardware behaviour remain unverified."
+        ],
+        "sourceCommit": "10775906ee490a590460c5fa7215cf1bd1db61cf"
+      }
+    ],
+    "digitakt-digichain": [
+      {
+        "version": "1.6.1-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Documentation-only: explain the shared hooks, machine icons, Digi Mono/Digi Poly integration and refused combinations. Add guide screenshots; pinned firmware code is unchanged."
+        ],
+        "sourceCommit": "3d437d1747ed0821a132cd6576b8a2fdff01e72c"
+      },
+      {
+        "version": "1.6.0-experimental",
+        "date": "2026-10-06",
+        "changes": [
+          "Import the pinned upstream framework for shared SRC-page hooks, machine rendering and icons used by Digi Mono and Digi Poly.",
+          "The imported SOPHIE, NEIGHBOR and DIGISLICER builds cannot be combined with digichain in Modwerk."
+        ],
+        "sourceCommit": "2f2a09f2c8eb0ebf5695919c7174494b6093705a"
+      }
+    ],
+    "digitakt-digieq": [
+      {
+        "version": "1.0.1-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Documentation-only: expand the EQ controls, kit/global settings and persistence guide, with real page captures. Pinned firmware code is unchanged."
+        ],
+        "sourceCommit": "369b13546c4e7b8fbdbd0376a2c299c77171e569"
+      },
+      {
+        "version": "1.0.0-experimental",
+        "date": "2026-10-06",
+        "changes": [
+          "Import the pinned four-band master EQ, reached with FUNC + LFO, with frequency, level, Q/type and kit/global master settings."
+        ],
+        "sourceCommit": "2f2a09f2c8eb0ebf5695919c7174494b6093705a"
+      }
+    ],
+    "digitakt-digihealth": [
+      {
+        "version": "1.0.2-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Documentation-only: explain FAST AUDIO, top-bar indicators and SYSTEM INFO, with real menu and diagnostics captures. Pinned firmware code is unchanged."
+        ],
+        "sourceCommit": "259c2a105d2267c8bad6fc38d832ddfb6059753a"
+      },
+      {
+        "version": "1.0.1-experimental",
+        "date": "2026-10-04",
+        "changes": [
+          "First Modwerk import of the upstream Digitakt diagnostics mod, including FAST AUDIO and SYSTEM INFO with load, RAM and USB information."
+        ],
+        "sourceCommit": "0a6f0fa0c290f683f31cc28af170f10334b0839a"
+      }
+    ],
+    "digitakt-digimatrix": [
+      {
+        "version": "1.0.1-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Documentation-only: explain route source/destination, OWN selection and bipolar depth, with real matrix-page captures. Pinned firmware code is unchanged."
+        ],
+        "sourceCommit": "a6af902335302572a4623216a167c8ad8e1560e1"
+      },
+      {
+        "version": "1.0.0-experimental",
+        "date": "2026-10-06",
+        "changes": [
+          "Import the pinned modulation matrix, adding eight routes from track LFOs to parameters on other tracks through SETTINGS > MOD MATRIX."
+        ],
+        "sourceCommit": "2f2a09f2c8eb0ebf5695919c7174494b6093705a"
+      }
+    ],
+    "digitakt-digimono": [
+      {
+        "version": "0.13.1-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Documentation-only: add a machine/control guide and real SRC-page captures, explaining stock filter, AMP, LFO and parameter-lock integration. Pinned firmware code is unchanged."
+        ],
+        "sourceCommit": "544668443cc63a06bac0cc26b235b1654a3f30e0"
+      },
+      {
+        "version": "0.13.0-experimental",
+        "date": "2026-10-06",
+        "changes": [
+          "Import the pinned synth-machine collection: MONOSIN, NOISE, SAW, PULSE, ENS, VO and POLYSIN, selected with FUNC + SRC."
+        ],
+        "sourceCommit": "2f2a09f2c8eb0ebf5695919c7174494b6093705a"
+      }
+    ],
+    "digitakt-digineighbor": [
+      {
+        "version": "0.6.1-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Documentation-only: explain source-track selection, pitch/gain, AMP gating and the upstream prototype limitations, with real page captures. Pinned firmware code is unchanged."
+        ],
+        "sourceCommit": "8fe05a8f9b22e35e409dec99bf99933865d2be13"
+      },
+      {
+        "version": "0.6.0-experimental",
+        "date": "2026-10-04",
+        "changes": [
+          "First Modwerk import of NEIGHBOR: route another audio track’s post-filter signal through the receiving track’s AMP and effects."
+        ],
+        "sourceCommit": "0a6f0fa0c290f683f31cc28af170f10334b0839a"
+      }
+    ],
+    "digitakt-digipoly": [
+      {
+        "version": "2.0.1-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Documentation-only: explain NOT1–NOT4, borrowed voice tracks and voice-pool settings, with real page captures. Pinned firmware code is unchanged."
+        ],
+        "sourceCommit": "0bc09b7a4ef53477b897951fdf851e42a4f140dd"
+      },
+      {
+        "version": "2.0.0-experimental",
+        "date": "2026-10-06",
+        "changes": [
+          "Import the pinned POLY SRC machine and SETTINGS > POLY voice pool, using additional tracks for chord voices."
+        ],
+        "sourceCommit": "2f2a09f2c8eb0ebf5695919c7174494b6093705a"
+      }
+    ],
+    "digitakt-digislicer": [
+      {
+        "version": "2.1.1-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Documentation-only: explain waveform/slice editing, up to 64 slices, multi-slice loops and trig controls, with real page captures. Pinned firmware code is unchanged."
+        ],
+        "sourceCommit": "f690e95fdd52a91a9e4f5919d4ad790efe3d7b65"
+      },
+      {
+        "version": "2.1.0-experimental",
+        "date": "2026-10-04",
+        "changes": [
+          "First Modwerk import of DIGISLICER: a waveform SRC machine with custom slices, transient/grid editing and sample slice persistence."
+        ],
+        "sourceCommit": "0a6f0fa0c290f683f31cc28af170f10334b0839a"
+      }
+    ],
+    "digitakt-digisophie": [
+      {
+        "version": "1.1.13-experimental.2",
+        "date": "2026-10-07",
+        "changes": [
+          "Documentation-only: add the model and control guide, including SWEEP, METAL, COLOR, FBK and FOLD, with real page captures. Pinned firmware code is unchanged."
+        ],
+        "sourceCommit": "c886095a7931e34c8a0e43268ce5d399f092382c"
+      },
+      {
+        "version": "1.1.13-experimental.1",
+        "date": "2026-10-05",
+        "changes": [
+          "Metadata-only: correct authorship and upstream adaptation credits. The pinned firmware implementation is unchanged."
+        ],
+        "sourceCommit": "217ee599ef18fecbd6fb3895605dcfffe8455d2e"
+      },
+      {
+        "version": "1.1.13-experimental",
+        "date": "2026-10-04",
+        "changes": [
+          "First Modwerk import of SOPHIE’s FUSE, BOOM, PIPE and SHARD percussion models, with lockable synthesis controls."
+        ],
+        "sourceCommit": "0a6f0fa0c290f683f31cc28af170f10334b0839a"
+      }
+    ],
+    "digitakt-digiutils": [
+      {
+        "version": "1.9.1-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Documentation-only: expand access and display controls, fullscreen/close behaviour and real utility-page captures. Pinned firmware code is unchanged."
+        ],
+        "sourceCommit": "27995ac9dfcc1fd507a7a47962d6cdf7e06795f4"
+      },
+      {
+        "version": "1.9.0-experimental",
+        "date": "2026-10-06",
+        "changes": [
+          "Import the pinned utility pages for waveform, spectrum, XY, tuning and track activity. Master EQ is provided separately by Digi EQ."
+        ],
+        "sourceCommit": "2f2a09f2c8eb0ebf5695919c7174494b6093705a"
+      }
+    ],
+    "digitone-digihealth": [
+      {
+        "version": "1.1.2-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Documentation-only: explain Digitone-specific load indicators and read-only diagnostics, with real menu/page captures. Pinned firmware code is unchanged."
+        ],
+        "sourceCommit": "f45b5b7d3271acd363dbe75c60b802b0f9c4a6d5"
+      },
+      {
+        "version": "1.1.1-experimental",
+        "date": "2026-10-04",
+        "changes": [
+          "First Modwerk import of Digitone SYSTEM INFO diagnostics for load, RAM and USB information. This version does not provide Digitakt’s FAST AUDIO mode."
+        ],
+        "sourceCommit": "0a6f0fa0c290f683f31cc28af170f10334b0839a"
+      }
+    ],
+    "digitone-digitables": [
+      {
+        "version": "1.3.1-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "Documentation-only: explain table editing, TBL/SPD, loops and trig/chord controls, with real table-page captures. Pinned firmware code is unchanged."
+        ],
+        "sourceCommit": "26211d72aa4eb4dd6081be88c0bf63e5ba19cb2e"
+      },
+      {
+        "version": "1.3.0-experimental",
+        "date": "2026-10-06",
+        "changes": [
+          "Import the pinned M8-style pitch tables: 16 tables of 16 semitone steps with table speed, loops and per-trig arpeggio/chord controls."
+        ],
+        "sourceCommit": "2f2a09f2c8eb0ebf5695919c7174494b6093705a"
+      }
+    ]
+  }
+}
