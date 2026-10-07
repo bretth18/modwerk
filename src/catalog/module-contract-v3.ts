@@ -31,9 +31,9 @@ export type ModwerkModule = {
     hardware: { model: string; release: string; testedOn: string; tester: string; durationMinutes: number | null; summary: string; limitations: string[] } | null
     verifiedBy: string | null
   }
-  tests: { report: string; summary: string }
+  tests: { report: string; summary: string; documentation?: { tutorial: { title: string; steps: string[] }; screenshots: string[]; captureRecord: string } }
   license: { spdx: string; file: string; declaration: string }
-  media: { path: string; kind: 'thumbnail' | 'screenshot' | 'audio'; caption: string; alt: string; credit: string; license: string; source: string; capture?: { release: string; moduleVersion: string; imageSha256: string; setup: string } }[]
+  media: { path: string; kind: 'thumbnail' | 'screenshot' | 'audio'; caption: string; alt: string; credit: string; license: string; source: string; capture?: { type?: 'emulator' | 'hardware'; release: string; moduleVersion: string; imageSha256: string; setup: string } }[]
 }
 
 function fail(path: string, message: string): never { throw new Error(path + ': ' + message) }
@@ -154,8 +154,16 @@ export function parseModwerkModule(value: unknown, machines: readonly MachinePro
   }
 
   const evidence = parseEvidence(item.evidence, moduleVersion)
-  const testsValue = object(item.tests, 'module.tests', ['report', 'summary'])
-  const tests = { report: modulePath(testsValue.report, 'module.tests.report'), summary: text(testsValue.summary, 'module.tests.summary', 600) }
+  const testsValue = object(item.tests, 'module.tests', ['report', 'summary'], ['documentation'])
+  const tests: ModwerkModule['tests'] = { report: modulePath(testsValue.report, 'module.tests.report'), summary: text(testsValue.summary, 'module.tests.summary', 600) }
+  if (testsValue.documentation !== undefined) {
+    const docs = object(testsValue.documentation, 'module.tests.documentation', ['tutorial', 'screenshots', 'captureRecord'])
+    const tutorial = object(docs.tutorial, 'module.tests.documentation.tutorial', ['title', 'steps'])
+    const screenshots = list(docs.screenshots, 'module.tests.documentation.screenshots', 1, 24).map((value, index) => modulePath(value, 'module.tests.documentation.screenshots[' + index + ']'))
+    if (new Set(screenshots).size !== screenshots.length) fail('module.tests.documentation.screenshots', 'duplicate screenshot')
+    tests.documentation = { tutorial: { title: text(tutorial.title, 'module.tests.documentation.tutorial.title', 100), steps: texts(tutorial.steps, 'module.tests.documentation.tutorial.steps', 3, 8, 300) }, screenshots, captureRecord: modulePath(docs.captureRecord, 'module.tests.documentation.captureRecord') }
+  }
+
   const licenseValue = object(item.license, 'module.license', ['spdx', 'file', 'declaration'])
   const license = { spdx: text(licenseValue.spdx, 'module.license.spdx', 120), file: modulePath(licenseValue.file, 'module.license.file'), declaration: text(licenseValue.declaration, 'module.license.declaration', 600) }
 
@@ -163,16 +171,24 @@ export function parseModwerkModule(value: unknown, machines: readonly MachinePro
     const path = 'module.media[' + index + ']', value = object(entry, path, ['path', 'kind', 'caption', 'alt', 'credit', 'license', 'source'], ['capture'])
     const result: ModwerkModule['media'][number] = { path: modulePath(value.path, path + '.path'), kind: choice(value.kind, path + '.kind', ['thumbnail', 'screenshot', 'audio'] as const), caption: text(value.caption, path + '.caption', 200), alt: text(value.alt, path + '.alt', 300), credit: text(value.credit, path + '.credit', 200), license: text(value.license, path + '.license', 120), source: text(value.source, path + '.source', 300) }
     if (value.capture !== undefined) {
-      const capture = object(value.capture, path + '.capture', ['release', 'moduleVersion', 'imageSha256', 'setup'])
+      const capture = object(value.capture, path + '.capture', ['release', 'moduleVersion', 'imageSha256', 'setup'], ['type'])
       const release = text(capture.release, path + '.capture.release', 20)
       if (!supported.includes(release)) fail(path + '.capture.release', 'expected a supported OS release')
-      result.capture = { release, moduleVersion: version(capture.moduleVersion, path + '.capture.moduleVersion'), imageSha256: sha256(capture.imageSha256, path + '.capture.imageSha256'), setup: text(capture.setup, path + '.capture.setup', 600) }
+      result.capture = { ...(capture.type === undefined ? {} : { type: choice(capture.type, path + '.capture.type', ['emulator', 'hardware'] as const) }), release, moduleVersion: version(capture.moduleVersion, path + '.capture.moduleVersion'), imageSha256: sha256(capture.imageSha256, path + '.capture.imageSha256'), setup: text(capture.setup, path + '.capture.setup', 600) }
     }
     if (result.kind === 'screenshot' && !result.capture) fail(path + '.capture', 'screenshots record the OS release, module version, image and setup they show')
     return result
   })
   if (!media.some(entry => entry.kind === 'thumbnail')) fail('module.media', 'include an original thumbnail')
   if ('screenshots' in access) for (const screenshot of access.screenshots) if (!media.some(entry => entry.path === screenshot && entry.kind === 'screenshot')) fail('module.access.screenshots', screenshot + ' must be declared as a screenshot in media')
+
+  if (tests.documentation) {
+    if (JSON.stringify(tests.documentation.tutorial.steps) !== JSON.stringify(presentation.usage)) fail('module.tests.documentation.tutorial.steps', 'must match presentation.usage in order')
+    for (const path of tests.documentation.screenshots) {
+      const screenshot = media.find(entry => entry.path === path && entry.kind === 'screenshot')
+      if (!screenshot?.capture?.type || screenshot.capture.moduleVersion !== moduleVersion) fail('module.tests.documentation.screenshots', 'declare each current-version hardware/emulator screenshot in media')
+    }
+  }
 
   const document: ModwerkModule = {
     schemaVersion: 3, id, name: text(item.name, 'module.name', 60), version: moduleVersion, machine: machine.id, category: choice(item.category, 'module.category', MODULE_V3_CATEGORIES), exclusive: item.exclusive as boolean,

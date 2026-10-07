@@ -21,6 +21,25 @@ const published = (): Record<string, unknown> => ({
 const parse = (value: unknown) => parseModwerkModule(value, machines)
 
 describe('module contract v3', () => {
+  it('keeps a declared documentation tutorial and its captures tied to the displayed module version', () => {
+    const value = published() as ReturnType<typeof template>
+    const steps = ['Select PROOF.', 'Move a control.', 'Play and stop the pattern.']
+    value.presentation.usage = steps
+    value.tests.documentation = { tutorial: { title: 'Quick tutorial', steps }, screenshots: ['media/location.png'], captureRecord: 'media/capture.json' }
+    value.media[1].capture.type = 'emulator'
+    expect(parse(value).tests.documentation?.tutorial.steps).toEqual(steps)
+    for (const mutate of [
+      (doc: typeof value) => { doc.tests.documentation.tutorial.steps = steps.slice(0, 2) },
+      (doc: typeof value) => { doc.presentation.usage = [...steps].reverse() },
+      (doc: typeof value) => { doc.tests.documentation.screenshots = ['media/missing.png'] },
+      (doc: typeof value) => { doc.media[1].capture.moduleVersion = '0.0.1' },
+      (doc: typeof value) => { delete doc.media[1].capture.type },
+    ]) {
+      const invalid = structuredClone(value); mutate(invalid)
+      expect(() => parse(invalid)).toThrow()
+    }
+  })
+
   it('accepts the SDK template as an unpublished draft', () => {
     const document = parse(template())
     expect(document).toMatchObject({ machine: 'digitakt', exclusive: false, maintainers: ['example-author'], evidence: { tier: 'none' } })

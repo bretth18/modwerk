@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 // Inspect committed documentation and PNG pixels; never run module source.
 import { readFile } from 'node:fs/promises'
 import { inflateSync } from 'node:zlib'
@@ -11,7 +12,7 @@ export function requireCompleteReadme(document, readme) {
     const index=headings.findIndex(heading=>heading[1].trim().toLowerCase()===title.toLowerCase())
     if(index<0||!readme.slice(headings[index].index+headings[index][0].length,headings[index+1]?.index).trim()) throw new Error(document.id+': README requires a populated '+title+' section')
   }
-  const documentation=document.tests.retainedEvidence?.documentation??document.tests.qualification?.documentation??document.tests.releaseWaiver?.documentation
+  const documentation=document.tests.retainedEvidence?.documentation??document.tests.qualification?.documentation??document.tests.releaseWaiver?.documentation??document.tests.documentation
   if(!documentation) throw new Error(document.id+': complete release documentation is required')
   const tutorial=documentation.tutorial
   const tutorialIndex=headings.findIndex(heading=>heading[1].trim()===tutorial.title)
@@ -75,7 +76,7 @@ export function requireMonochromePng(bytes) {
 export async function requireModuleDocumentation(folder, document, retainedVersion) {
   requireModuleUiForPublication(document, retainedVersion)
   requireCompleteReadme(document,await readFile(await resolveModuleFile(folder,'README.md'),'utf8'))
-  const documentation=document.tests.retainedEvidence?.documentation??document.tests.qualification?.documentation??document.tests.releaseWaiver?.documentation
+  const documentation=document.tests.retainedEvidence?.documentation??document.tests.qualification?.documentation??document.tests.releaseWaiver?.documentation??document.tests.documentation
   for(const path of documentation.screenshots) {
     const media=document.media.find(item=>item.path===path)
     if(!media||media.captureType==='audio'||!path.endsWith('.png')) throw new Error(document.id+': tutorial screenshots must reference declared hardware/emulator PNG media')
@@ -84,5 +85,22 @@ export async function requireModuleDocumentation(folder, document, retainedVersi
   for(const path of paths) {
     if(!path.endsWith('.png')) throw new Error(document.id+': release documentation screenshots must be black-and-white PNGs')
     try{requireMonochromePng(await readFile(await resolveModuleFile(folder,path)))}catch(error){throw new Error(document.id+'/'+path+': '+error.message,{cause:error})}
+  }
+}
+
+/** Documentation evidence is independent of firmware/audio/hardware qualification. */
+export async function requireModwerkDocumentation(folder, document) {
+  const docs = document.tests.documentation
+  if (!docs) return
+  requireCompleteReadme(document, await readFile(await resolveModuleFile(folder, 'README.md'), 'utf8'))
+  const record = JSON.parse(await readFile(await resolveModuleFile(folder, docs.captureRecord), 'utf8'))
+  if (record.schemaVersion !== 1 || record.machine !== document.machine || record.moduleId !== document.id || record.moduleVersion !== document.version || !/^[a-f0-9]{64}$/.test(record.imageSha256)) throw new Error(document.id + ': capture record must identify this module, version and built image')
+  for (const path of new Set([...('screenshots' in document.access ? document.access.screenshots : []), ...docs.screenshots])) {
+    const media = document.media.find(item => item.path === path && item.kind === 'screenshot')
+    const capture = record.captures?.find(item => item.path === path)
+    if (!path.endsWith('.png') || !media?.capture || media.capture.imageSha256 !== record.imageSha256 || media.capture.release !== record.firmware || !capture?.plan?.trim()) throw new Error(document.id + ': screenshot needs a matching image/release and panel-input plan in capture.json: ' + path)
+    const bytes = await readFile(await resolveModuleFile(folder, path))
+    requireMonochromePng(bytes)
+    if (createHash('sha256').update(bytes).digest('hex') !== capture.sha256) throw new Error(document.id + ': screenshot hash differs from capture.json: ' + path)
   }
 }

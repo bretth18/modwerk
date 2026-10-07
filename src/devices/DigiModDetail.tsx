@@ -62,7 +62,9 @@ function DigiModuleGuide({ mod, device }: { mod: DigiMod; device: DeviceProfile 
       <summary><span>How to use it</span><Icon name="plus" size={16} /></summary>
       <div className="disclosure-content">
         <section className="detail-section module-access"><h2>Find it on your {device.name}</h2>{'location' in access ? <><p>{access.location}</p><ol>{access.steps.map(step => <li key={step}>{step}</li>)}</ol></> : <p>{access.noUiReason}</p>}</section>
+        <h3>{document.tests.documentation?.tutorial.title ?? 'Quick tutorial'}</h3>
         <ol className="usage-list">{document.presentation.usage.map(step => <li key={step}>{step}</li>)}</ol>
+        <a href={documentUrl(mod, 'README.md')} target="_blank" rel="noreferrer">Read the complete guide ↗</a>
       </div>
     </details>
     <details className="module-disclosure">
