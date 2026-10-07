@@ -1,7 +1,7 @@
 import { DEVELOPMENT_DISCORD_URL } from '../src/config/development-discord'
 
 /** Keep queued payloads stable for provider retries, and the current previews in docs/news in sync. */
-export const WELCOME_EMAIL_VERSION = 'modwerk-welcome-007'
+export const WELCOME_EMAIL_VERSION = 'modwerk-welcome-008'
 const firstWelcomeEmail = {
   subject: 'Hello from Modwerk',
   html: `<!doctype html>
@@ -245,10 +245,16 @@ const developmentDiscordWelcomeEmail = {
     .replace('Join us on Discord', 'Join the development Discord'),
 }
 /** 7 October 2026 (modwerk-welcome-007): refresh the development Discord invitation. */
-export const welcomeEmail = {
+const refreshedDevelopmentDiscordWelcomeEmail = {
   ...developmentDiscordWelcomeEmail,
-  html: developmentDiscordWelcomeEmail.html.replace('https://discord.gg/ReKtHwnkEU', DEVELOPMENT_DISCORD_URL),
-  text: developmentDiscordWelcomeEmail.text.replace('https://discord.gg/ReKtHwnkEU', DEVELOPMENT_DISCORD_URL),
+  html: developmentDiscordWelcomeEmail.html.replace('https://discord.gg/ReKtHwnkEU', 'https://discord.gg/fe7Kjz5ZSd'),
+  text: developmentDiscordWelcomeEmail.text.replace('https://discord.gg/ReKtHwnkEU', 'https://discord.gg/fe7Kjz5ZSd'),
+}
+/** 7 October 2026 (modwerk-welcome-008): use the latest development Discord invite. */
+export const welcomeEmail = {
+  ...refreshedDevelopmentDiscordWelcomeEmail,
+  html: refreshedDevelopmentDiscordWelcomeEmail.html.replace('https://discord.gg/fe7Kjz5ZSd', DEVELOPMENT_DISCORD_URL),
+  text: refreshedDevelopmentDiscordWelcomeEmail.text.replace('https://discord.gg/fe7Kjz5ZSd', DEVELOPMENT_DISCORD_URL),
 }
 export const welcomeEmailVersions: Readonly<Record<string, typeof welcomeEmail>> = {
   'modwerk-welcome-001': firstWelcomeEmail,
@@ -257,5 +263,6 @@ export const welcomeEmailVersions: Readonly<Record<string, typeof welcomeEmail>>
   'modwerk-welcome-004': submitWelcomeEmail,
   'modwerk-welcome-005': discordSubmitWelcomeEmail,
   'modwerk-welcome-006': developmentDiscordWelcomeEmail,
+  'modwerk-welcome-007': refreshedDevelopmentDiscordWelcomeEmail,
   [WELCOME_EMAIL_VERSION]: welcomeEmail,
 }

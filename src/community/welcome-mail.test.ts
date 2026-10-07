@@ -58,8 +58,8 @@ describe('new member welcome email', () => {
   })
 
   it('matches the readable previews and describes signup rather than news consent', () => {
-    expect(welcomeEmail.html).toBe(readFileSync(new URL('../../docs/news/006-member-welcome.html', import.meta.url), 'utf8'))
-    const plain = readFileSync(new URL('../../docs/news/006-member-welcome.txt', import.meta.url), 'utf8')
+    expect(welcomeEmail.html).toBe(readFileSync(new URL('../../docs/news/007-member-welcome.html', import.meta.url), 'utf8'))
+    const plain = readFileSync(new URL('../../docs/news/007-member-welcome.txt', import.meta.url), 'utf8')
     expect(plain).toBe('Subject: ' + welcomeEmail.subject + '\nPreheader: More modules are coming, and the repo is open for contributions.\n\n' + welcomeEmail.text)
     // The forum tour of modwerk-welcome-003 and -004 is gone again.
     expect(welcomeEmail.html).not.toContain('Introductions')
@@ -67,8 +67,8 @@ describe('new member welcome email', () => {
     expect(welcomeEmail.html).toContain('href="https://modwerk.app/#submit"')
     expect(welcomeEmail.text).toContain('Start developing:\nhttps://modwerk.app/#submit')
     expect(welcomeEmail.html).toContain('https://github.com/repeat98/modwerk')
-    expect(welcomeEmail.html).toContain('href="https://discord.gg/fe7Kjz5ZSd"')
-    expect(welcomeEmail.text).toContain('Join the development Discord:\nhttps://discord.gg/fe7Kjz5ZSd')
+    expect(welcomeEmail.html).toContain('href="https://discord.gg/vzfAdMBtn5"')
+    expect(welcomeEmail.text).toContain('Join the development Discord:\nhttps://discord.gg/vzfAdMBtn5')
     expect(welcomeEmail.html).toContain('https://modwerk.app/#account" style')
     expect(welcomeEmail.html).not.toMatch(/opted in|<script|<img|<iframe|<form|mailto:|—/i)
   })
@@ -92,7 +92,10 @@ describe('new member welcome email', () => {
     const development = welcomeEmailVersions['modwerk-welcome-006']
     expect(development.html).toBe(readFileSync(new URL('../../docs/news/005-member-welcome.html', import.meta.url), 'utf8'))
     expect(readFileSync(new URL('../../docs/news/005-member-welcome.txt', import.meta.url), 'utf8')).toBe('Subject: ' + development.subject + '\nPreheader: More modules are coming, and the repo is open for contributions.\n\n' + development.text)
-    expect(Object.keys(welcomeEmailVersions)).toEqual(['modwerk-welcome-001', 'modwerk-welcome-002', 'modwerk-welcome-003', 'modwerk-welcome-004', 'modwerk-welcome-005', 'modwerk-welcome-006', WELCOME_EMAIL_VERSION])
+    const lastInvite = welcomeEmailVersions['modwerk-welcome-007']
+    expect(lastInvite.html).toBe(readFileSync(new URL('../../docs/news/006-member-welcome.html', import.meta.url), 'utf8'))
+    expect(readFileSync(new URL('../../docs/news/006-member-welcome.txt', import.meta.url), 'utf8')).toBe('Subject: ' + lastInvite.subject + '\nPreheader: More modules are coming, and the repo is open for contributions.\n\n' + lastInvite.text)
+    expect(Object.keys(welcomeEmailVersions)).toEqual(['modwerk-welcome-001', 'modwerk-welcome-002', 'modwerk-welcome-003', 'modwerk-welcome-004', 'modwerk-welcome-005', 'modwerk-welcome-006', 'modwerk-welcome-007', WELCOME_EMAIL_VERSION])
   })
 
   it('keeps queued messages and retry keys stable while new members receive the current welcome', async () => {
@@ -133,7 +136,25 @@ describe('new member welcome email', () => {
     const migration = readFileSync(new URL('../../migrations/0055_refresh_development_discord.sql', import.meta.url), 'utf8')
     db.exec(migration); db.exec(migration)
     expect(db.prepare('SELECT * FROM member_welcome_mail ORDER BY user_id').all()).toEqual(before.map(row => ({
-      ...row, template_version: row.attempts === 0 ? WELCOME_EMAIL_VERSION : 'modwerk-welcome-006',
+      ...row, template_version: row.attempts === 0 ? 'modwerk-welcome-007' : 'modwerk-welcome-006',
+    })))
+  })
+
+  it('refreshes never-attempted welcomes without changing provider retries', async () => {
+    const { register, db } = await fixture()
+    for (const [username, state, attempts, firstAttempt] of [
+      ['newunsent', 'pending', 0, null], ['oldretry', 'pending', 1, 1234],
+      ['oldsending', 'sending', 1, 1234], ['oldaccepted', 'accepted', 1, 1234],
+    ] as const) {
+      const member = await register(username)
+      db.prepare('INSERT INTO member_welcome_mail(user_id,template_version,state,attempts,first_attempt_at) VALUES(?,?,?,?,?)')
+        .run(member.id, 'modwerk-welcome-007', state, attempts, firstAttempt)
+    }
+    const before = db.prepare('SELECT * FROM member_welcome_mail ORDER BY user_id').all()
+    const migration = readFileSync(new URL('../../migrations/0056_refresh_development_discord.sql', import.meta.url), 'utf8')
+    db.exec(migration); db.exec(migration)
+    expect(db.prepare('SELECT * FROM member_welcome_mail ORDER BY user_id').all()).toEqual(before.map(row => ({
+      ...row, template_version: row.attempts === 0 ? WELCOME_EMAIL_VERSION : 'modwerk-welcome-007',
     })))
   })
 
