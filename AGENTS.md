@@ -10,4 +10,4 @@ Modwerk builds custom firmware modules for Elektron instruments. This repository
 - For app and backend work, see [docs/APP_DEVELOPMENT.md](docs/APP_DEVELOPMENT.md).
 - Never commit firmware, extracted stock code or tables, memory dumps or built images. Firmware stays on the developer's computer and never enters CI.
 - Do not edit generated files by hand: `src/catalog/module-documents.json`, `src/catalog/compatibility-checks.json`, the licence notices and the machine registry. `npm run modules:generate`, `licenses:generate` and `machines:generate` write them.
-- Work on a branch off current `main` and open a pull request; the owner merges. Keep unrelated changes out of the diff.
+- Work on a branch off current `main`. Open a pull request for each separate piece of work without being asked: commit, push and run `gh pr create` before you report it as done. Follow-up edits to work that already has an open pull request go on that pull request's branch as further commits, not a new one. The owner merges. Keep unrelated changes out of the diff.
