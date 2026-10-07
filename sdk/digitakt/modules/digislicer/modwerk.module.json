@@ -2,14 +2,14 @@
   "schemaVersion": 3,
   "id": "digislicer",
   "name": "DIGISLICER",
-  "version": "2.1.0-experimental",
+  "version": "2.1.1-experimental",
   "machine": "digitakt",
   "category": "machines",
   "exclusive": false,
   "author": {
     "github": "irpina",
     "credits": [
-      "irpina — DIGISLICER design and code"
+      "irpina \u2014 DIGISLICER design and code"
     ]
   },
   "maintainers": [
@@ -24,73 +24,148 @@
     "label": "DIGISLICER",
     "family": "Sampling",
     "summary": "A slicing machine with a slice editor: cut a sample where you want, and play the slices from the trig keys and the keyboard.",
-    "overview": "DIGISLICER is the SLICE machine with a slice editor. Its SRC page is SLICE’s; press SRC again for a waveform view where you add, split, delete and move slices, auto-slice on transients or use equal grids, watch them play and play them from the trig keys. A sample’s own slices play on every DIGISLICER track and are kept per sample on the +Drive. GRID gains AUTO (slices on the transients) and PLAY gains PIPO (ping-pong loops). With the keyboard on, the trig keys play the slices one per key, as the Octatrack’s trig slice mode, and live recording records them as slice locks. The stock SLICE machine is left as it is.",
+    "overview": "DIGISLICER adds a separate SRC machine with a waveform slice editor to the original Digitakt. Select it below SLICE, choose a sample and press SRC again to edit starts, create a grid or slice on transients. Custom slices belong to the sample and take precedence over GRID on every DIGISLICER track using it; they are saved to the +Drive after closing the editor. GRID adds AUTO and PLAY adds PIPO for forward/backward looping across the slices covered by LEN. With FUNC + TRK keyboard mode enabled, trig keys play slices at the track\u2019s pitch and can record slice locks. The stock SLICE machine retains its normal behavior.",
     "highlights": [
-      "A slice editor on the track’s sample, opened by pressing SRC twice.",
-      "Your slices are saved per sample on the +Drive and play on every DIGISLICER track.",
-      "GRID = AUTO slices on transients; PLAY = PIPO ping-pong loops.",
-      "Trig keys play slices one per key, with live recording as slice locks."
+      "Edit up to 64 slices with coarse/fine start adjustment, a cursor and horizontal/vertical waveform zoom.",
+      "Use transient AUTO slicing or 4/8/16/32/64-slice grids with starts moved to zero crossings.",
+      "Custom slices follow the sample across projects and override GRID on DIGISLICER tracks.",
+      "Keyboard mode plays one slice per trig key, with four pages and live recording of slice locks.",
+      "PIPO ping-pongs for the note\u2019s duration, including spans of multiple slices set with LEN."
     ],
     "usage": [
-      "Chop a break by hand in the editor, then play the slices from the trig keys.",
-      "Use AUTO on drum loops that have no slices of their own."
+      "Choose DIGISLICER with FUNC + SRC, assign a drum loop with SAMP, then press SRC again to open its waveform editor.",
+      "Press YES for the slice menu, select CREATE GRID with UP / DOWN, choose 16 with LEFT / RIGHT and confirm with YES. This replaces the sample\u2019s existing slice layout.",
+      "Select a slice with knob A. Adjust its start with B and fine-tune with C; use D to zoom around the cursor and H to enlarge quiet waveform details.",
+      "Close the editor with SRC or NO and wait at least a second for the slices to save. They now play on every DIGISLICER track using this sample, regardless of GRID.",
+      "Enable keyboard mode with FUNC + TRK and play the slices from trig keys 1\u201316. UP / DOWN select later slice pages; REC + PLAY records the played keys as slice locks.",
+      "Press STOP and leave recording/keyboard mode when finished. To remove the custom layout, reopen the editor and choose YES \u2192 DELETE ALL; playback returns to the SRC page\u2019s GRID setting."
     ]
   },
   "access": {
     "location": "SRC machine list, below SLICE",
     "steps": [
-      "Select a track, press FUNC + SRC and choose DIGISLICER below SLICE.",
-      "Press SRC again to open the slice editor; SRC, NO or another page key closes it."
+      "Use a build containing DIGISLICER for the original Digitakt on OS 1.53 or 1.54.",
+      "Select an audio track, press FUNC + SRC, choose DIGISLICER below SLICE and select a sample with SAMP.",
+      "From the SRC parameter page press SRC again to open the slice editor. SRC or NO closes it; another page key closes it and opens that page.",
+      "For slice performance outside the editor, enable keyboard mode with FUNC + TRK. UP / DOWN select groups of 16 slices."
     ],
-    "screenshots": []
+    "screenshots": [
+      "media/chooser.png"
+    ]
   },
   "controls": [
     {
       "name": "Knob A",
       "default": null,
-      "doc": "Select a slice in the editor",
+      "doc": "In the editor, select a slice one per notch; the cursor jumps to its start. In the slice menu, choose an action, then press YES to apply it.",
       "labels": null
     },
     {
       "name": "Knob B",
       "default": null,
-      "doc": "Move the slice start",
+      "doc": "In the editor, move the selected slice\u2019s start. This edits the shared slice layout for the sample, not only this track.",
       "labels": null
     },
     {
       "name": "Knob C",
       "default": null,
-      "doc": "Move the start by single samples",
+      "doc": "In the editor, fine-adjust the selected start one sample at a time.",
       "labels": null
     },
     {
       "name": "Knob D",
       "default": null,
-      "doc": "Zoom horizontally around the cursor",
+      "doc": "In the editor, zoom horizontally around the cursor. Faster turns zoom faster; move the cursor with LEVEL to focus on another region.",
       "labels": null
     },
     {
       "name": "Knob H",
       "default": null,
-      "doc": "Zoom vertically, up to 64 times",
+      "doc": "In the editor, enlarge the waveform vertically up to 64 times to inspect quiet material; this changes the view, not the audio level.",
       "labels": null
     },
     {
       "name": "LEVEL",
       "default": null,
-      "doc": "Move the cursor; the waveform scrolls with it",
+      "doc": "In the editor, move the waveform cursor; the view scrolls to keep it visible. YES then offers ADD SLICE HERE when a new start is allowed at that position.",
       "labels": null
     },
     {
       "name": "FUNC + YES",
       "default": null,
-      "doc": "AUTO SLICE",
+      "doc": "In the editor, run AUTO SLICE on the sample\u2019s transients. This replaces the sample\u2019s existing custom slice layout.",
       "labels": null
     },
     {
       "name": "YES",
       "default": null,
-      "doc": "Open the slice menu",
+      "doc": "Open the slice menu. UP / DOWN or knob A choose ADD SLICE HERE, SPLIT SLICE, DELETE SLICE, AUTO SLICE, CREATE GRID or DELETE ALL; YES applies the action and NO cancels the menu.",
+      "labels": null
+    },
+    {
+      "name": "SAMP",
+      "default": null,
+      "doc": "On the SRC page, choose the track\u2019s sample. In the editor, FUNC + LEFT / RIGHT changes the sample slot and updates the track\u2019s SAMP selection.",
+      "labels": null
+    },
+    {
+      "name": "GRID",
+      "default": null,
+      "doc": "On the SRC page, select an equal slice grid or AUTO, one step past 64, for transient slices. A sample\u2019s custom slices override this setting; DELETE ALL in the editor restores GRID-based playback.",
+      "labels": null
+    },
+    {
+      "name": "SLICE",
+      "default": null,
+      "doc": "On the SRC page, choose the played slice; slice locks sequence different slices. In keyboard mode each trig key chooses its own slice at the track\u2019s pitch, regardless of the current SLICE value.",
+      "labels": null
+    },
+    {
+      "name": "LEN",
+      "default": null,
+      "doc": "On the SRC page, choose how many slices a note spans. In PIPO mode the voice turns at the end of the last slice covered by LEN and returns to the first slice\u2019s start.",
+      "labels": null
+    },
+    {
+      "name": "PLAY",
+      "default": null,
+      "doc": "On the SRC page, retain the stock playback modes or choose PIPO, one step past FWD, for ping-pong looping while the note lasts. Each new note starts forward; the page shows a bidirectional loop icon.",
+      "labels": null
+    },
+    {
+      "name": "TUNE / BR / LEV",
+      "default": null,
+      "doc": "On the SRC page, the stock SLICE-style pitch, bit reduction and source-level controls still apply. Keyboard slice keys keep the track\u2019s pitch; they select slices rather than transpose notes.",
+      "labels": null
+    },
+    {
+      "name": "LEFT / RIGHT",
+      "default": null,
+      "doc": "In the editor, select the previous or next slice and audition it while the key is held. In CREATE GRID, choose 4, 8, 16, 32 or 64 slices.",
+      "labels": null
+    },
+    {
+      "name": "Trig keys / UP / DOWN",
+      "default": null,
+      "doc": "In the editor, trig keys select and audition slices 1\u201316 while held; UP / DOWN select later groups up to slice 64. Outside the editor, FUNC + TRK keyboard mode uses the same slice pages; keys beyond the slice count stay dark and silent.",
+      "labels": null
+    },
+    {
+      "name": "FUNC + NO",
+      "default": null,
+      "doc": "In the editor, delete the selected slice; its start merges into the preceding slice. Use NO without FUNC to leave the editor and keep the layout.",
+      "labels": null
+    },
+    {
+      "name": "SRC / NO / page keys",
+      "default": null,
+      "doc": "SRC or NO closes the editor and keeps the slices; TRIG, FLTR, AMP or LFO closes it and opens that page. Slices are saved to the +Drive about a second later. PLAY and STOP keep their normal transport functions.",
+      "labels": null
+    },
+    {
+      "name": "FUNC + TRK / recording",
+      "default": null,
+      "doc": "Outside the editor, FUNC + TRK enables slice keyboard mode. REC + PLAY records played slices as locks. In STEP REC (REC + STOP), FUNC + a trig key writes that slice at the cursor.",
       "labels": null
     }
   ],
@@ -144,12 +219,31 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Imported from the author’s v2.1 source; not yet built or tested in Modwerk."
+    "summary": "Imported from the author\u2019s v2.1 source; Modwerk linked and verified the pinned catalog release for the UI documentation run. Documentation captures verify the listed UI pages on OS 1.53; audio, timing and hardware remain unqualified.",
+    "documentation": {
+      "tutorial": {
+        "title": "Quick tutorial: chop and play a drum loop",
+        "steps": [
+          "Choose DIGISLICER with FUNC + SRC, assign a drum loop with SAMP, then press SRC again to open its waveform editor.",
+          "Press YES for the slice menu, select CREATE GRID with UP / DOWN, choose 16 with LEFT / RIGHT and confirm with YES. This replaces the sample\u2019s existing slice layout.",
+          "Select a slice with knob A. Adjust its start with B and fine-tune with C; use D to zoom around the cursor and H to enlarge quiet waveform details.",
+          "Close the editor with SRC or NO and wait at least a second for the slices to save. They now play on every DIGISLICER track using this sample, regardless of GRID.",
+          "Enable keyboard mode with FUNC + TRK and play the slices from trig keys 1\u201316. UP / DOWN select later slice pages; REC + PLAY records the played keys as slice locks.",
+          "Press STOP and leave recording/keyboard mode when finished. To remove the custom layout, reopen the editor and choose YES \u2192 DELETE ALL; playback returns to the SRC page\u2019s GRID setting."
+        ]
+      },
+      "screenshots": [
+        "media/chooser.png",
+        "media/src.png",
+        "media/editor.png"
+      ],
+      "captureRecord": "media/capture.json"
+    }
   },
   "license": {
     "spdx": "GPL-2.0-or-later",
     "file": "LICENSE",
-    "declaration": "The author’s source, imported unchanged from github.com/irpina/digislicer at v2.1 (commit ac0c46d86072) under its GPL-2.0-or-later licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+    "declaration": "The author\u2019s source, imported unchanged from github.com/irpina/digislicer at v2.1 (commit ac0c46d86072) under its GPL-2.0-or-later licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
   },
   "media": [
     {
@@ -160,6 +254,54 @@
       "credit": "Modwerk",
       "license": "GPL-3.0-or-later",
       "source": "Original Modwerk illustration"
+    },
+    {
+      "path": "media/chooser.png",
+      "kind": "screenshot",
+      "caption": "DIGISLICER in the machine chooser",
+      "alt": "DIGISLICER in the machine chooser on the Digitakt monochrome LCD",
+      "credit": "Modwerk documentation capture; Elektron interface; irpina module",
+      "license": "LicenseRef-Digi-UI-Documentation",
+      "source": "original",
+      "capture": {
+        "type": "emulator",
+        "release": "1.53",
+        "moduleVersion": "2.1.1-experimental",
+        "imageSha256": "41891fa6d359fb495f3883854eb478a07a37f81289b666160a47aab33cd782fe",
+        "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. Original DOC_LOOP loaded through the sample browser."
+      }
+    },
+    {
+      "path": "media/src.png",
+      "kind": "screenshot",
+      "caption": "DIGISLICER SRC controls before assigning the loop",
+      "alt": "DIGISLICER SRC controls before assigning the loop on the Digitakt monochrome LCD",
+      "credit": "Modwerk documentation capture; Elektron interface; irpina module",
+      "license": "LicenseRef-Digi-UI-Documentation",
+      "source": "original",
+      "capture": {
+        "type": "emulator",
+        "release": "1.53",
+        "moduleVersion": "2.1.1-experimental",
+        "imageSha256": "41891fa6d359fb495f3883854eb478a07a37f81289b666160a47aab33cd782fe",
+        "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. Original DOC_LOOP loaded through the sample browser."
+      }
+    },
+    {
+      "path": "media/editor.png",
+      "kind": "screenshot",
+      "caption": "Waveform editor with the original DOC_LOOP fixture",
+      "alt": "Waveform editor with the original DOC_LOOP fixture on the Digitakt monochrome LCD",
+      "credit": "Modwerk documentation capture; Elektron interface; irpina module",
+      "license": "LicenseRef-Digi-UI-Documentation",
+      "source": "original",
+      "capture": {
+        "type": "emulator",
+        "release": "1.53",
+        "moduleVersion": "2.1.1-experimental",
+        "imageSha256": "41891fa6d359fb495f3883854eb478a07a37f81289b666160a47aab33cd782fe",
+        "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. Original DOC_LOOP loaded through the sample browser."
+      }
     }
   ]
 }
