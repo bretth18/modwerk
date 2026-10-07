@@ -1,0 +1,91 @@
+{
+  "moduleVersion": "0.1.0-experimental",
+  "sourceSha256": "e3a1355c88e7864210dd47d1c35a51c8467c9a743ef50db6a9ade6b803ce935a",
+  "imageSha256": "601ba3bd042129aacecbeeee0b0e1ab928cee1f5cf9fe7577b060b81b044fb37",
+  "cycles": [
+    {
+      "processor": "coldfire",
+      "worstCase": null,
+      "maxConfiguration": null,
+      "maxInstances": null,
+      "budget": null,
+      "unit": "cycles/event",
+      "method": "emulator",
+      "conditions": {
+        "parameterExtremes": "Describe every minimum, maximum and branch boundary tested.",
+        "parameterModulation": "Describe simultaneous LFOs, p-locks, MIDI CC and scene sweeps; justify each inapplicable mechanism.",
+        "modeSwitching": "Describe repeated/interrupted mode, bypass and Part changes.",
+        "maxLoad": "Describe maximum voices/instances, both cores, FX slots, streaming and USB/MIDI load.",
+        "inputConditions": "Describe silence, impulses, full-scale inputs, feedback and other worst-case signal conditions."
+      },
+      "report": "TESTING.md"
+    }
+  ],
+  "memory": {
+    "regions": [
+      {
+        "name": "Replace with each code, state, table, buffer, stack/heap and padding allocation",
+        "space": "sdram",
+        "words": null,
+        "wordBits": 8,
+        "bytes": null,
+        "scope": "shared"
+      }
+    ],
+    "perInstanceBytes": null,
+    "sharedBytes": null,
+    "maxInstances": null,
+    "totalBytes": null,
+    "conditions": "State exact build options, alignment, accounting convention, allocator/stack bounds and reused stock/shared memory; justify every absent allocation class.",
+    "report": "TESTING.md"
+  },
+  "hardware": {
+    "status": "pending",
+    "model": "MKII",
+    "testedOn": "YYYY-MM-DD",
+    "tester": "Your credited tester handle; no email",
+    "project": {
+      "name": "Your local stress project",
+      "sha256": "REPLACE_WITH_PROJECT_FINGERPRINT",
+      "recipe": "Record generator/tool revision and command, local source template fingerprint, sample recipe, all settings and modifications needed to reproduce this stress project. Keep the project/card/firmware local."
+    },
+    "durationMinutes": null,
+    "audioTracks": 8,
+    "midiTracks": null,
+    "conditions": {
+      "parameterExtremes": "Describe every minimum, maximum and branch boundary tested.",
+      "parameterModulation": "Describe simultaneous LFOs, p-locks, MIDI CC and scene sweeps; justify each inapplicable mechanism.",
+      "modeSwitching": "Describe repeated/interrupted mode, bypass and Part changes.",
+      "maxLoad": "Describe maximum voices/instances, both cores, FX slots, streaming and USB/MIDI load.",
+      "inputConditions": "Describe silence, impulses, full-scale inputs, feedback and other worst-case signal conditions."
+    },
+    "checks": {
+      "audioContinuity": "failed",
+      "transport": "failed",
+      "controls": "failed",
+      "memoryIntegrity": "failed",
+      "recovery": "failed"
+    },
+    "report": "TESTING.md",
+    "maxInstances": null
+  },
+  "documentation": {
+    "tutorial": {
+      "title": "Quick tutorial: keep FX tails when muting",
+      "steps": [
+        "Open PROJECT > SYSTEM > PERSONALIZE and select MUTE MODE.",
+        "Choose OTFX to cut the dry signal while delay and reverb tails continue; trigs keep firing underneath.",
+        "Mute and unmute an audio track with a long delay or reverb tail, then try OTFX-T to suppress new trigs.",
+        "Choose DT-T to let the current voice finish its amp envelope, or OT to restore the stock cut."
+      ]
+    },
+    "screenshots": [
+      "media/ot-system.png",
+      "media/ot-mute-ot.png",
+      "media/ot-mute-otfx.png",
+      "media/ot-mute-otfx-t.png",
+      "media/ot-mute-dt-t.png"
+    ],
+    "screenshotStyle": "black-and-white"
+  }
+}

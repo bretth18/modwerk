@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "moduleVersion": "0.1.0-experimental",
+  "imageSha256": "601ba3bd042129aacecbeeee0b0e1ab928cee1f5cf9fe7577b060b81b044fb37",
+  "assemblyReferences": "mute-source-identity.json",
+  "buildKind": "Author-reference standalone local composition; not Modwerk browser composition",
+  "addedProgramBytes": 1176,
+  "grownTableBytes": 204,
+  "stockGuards": "All local original-image guards passed",
+  "qualification": false
+}
