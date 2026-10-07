@@ -2391,7 +2391,7 @@
       "schemaVersion": 3,
       "id": "digisophie",
       "name": "SOPHIE",
-      "version": "1.1.13-experimental.1",
+      "version": "1.1.13-experimental.2",
       "machine": "digitakt",
       "category": "machines",
       "exclusive": false,
@@ -2410,72 +2410,79 @@
         "label": "SOPHIE",
         "family": "Synthesis",
         "summary": "A metallic percussion machine with four models: FUSE, BOOM, PIPE and SHARD.",
-        "overview": "Sophie is a metallic percussion synth machine for the original Digitakt. It began as a fixed-point adaptation of Sophie for Schwung by Matt Estela and evolved into four models: FUSE, BOOM, PIPE and SHARD. Its audio enters the normal Digitakt AMP, filter, mixer and sends; the custom controls can be parameter-locked.",
+        "overview": "SOPHIE is a metallic percussion synth SRC machine for the original Digitakt on OS 1.53. Sjoerd (Soejrd) adapted Matt Estela’s Sophie for Schwung into four models: FUSE’s bright clang, BOOM’s rounded low body, PIPE’s inharmonic ring and SHARD’s grainy tone/noise attack. TUNE and trig notes set pitch; SWEEP shapes the pitch attack, METAL and COLOR set the metallic character, FBK adds oscillator feedback and FOLD folds the output. The synth feeds the normal AMP, filter, mixer and sends without needing a sample. AMP controls note duration, and custom SRC controls accept parameter locks. Start with one SOPHIE track; the author’s earlier hardware test found two practical with FAST AUDIO, without claiming eight-track operation.",
         "highlights": [
-          "Four metallic percussion models: FUSE, BOOM, PIPE and SHARD.",
-          "FOLD wavefolder with output level compensation.",
-          "Uses the Digitakt’s own AMP, filter, mixer and effects."
+          "Four source models: FUSE, BOOM, PIPE and SHARD, with lockable synthesis controls.",
+          "Bipolar SWEEP starts above or below the played pitch; zero removes the pitch sweep.",
+          "FOLD adds compensated wavefolding; zero bypasses it. The stock SAMP slot is unused by the synth.",
+          "AMP HOLD = NOTE follows TRIG LEN; a finite DEC gives a release, while DEC = INF can sustain indefinitely."
         ],
         "usage": [
-          "Program metallic hits and bells with parameter-locked MODEL and METAL.",
-          "Use AMP HOLD = NOTE so TRIG LEN sets when the release begins."
+          "On one audio track choose SOPHIE with FUNC + SRC. No sample is needed; choose FUSE with MODEL for this example.",
+          "Set SWEEP to 0 and FOLD to 0. On AMP set HOLD to NOTE and choose a finite DEC, so TRIG LEN determines when the release begins.",
+          "Add a few trigs and play the pattern. Adjust TUNE for pitch, then raise METAL and turn COLOR to explore the clang’s harmonics; add FBK gradually.",
+          "Parameter-lock MODEL on a trig to compare BOOM, PIPE and SHARD, or lock SWEEP above/below zero for a descending/ascending pitch attack. Try FOLD, then return it to 0 to bypass wavefolding.",
+          "Press STOP and let the finite AMP release finish. Remove the example locks and return SWEEP and FOLD to 0 for the starting sound; avoid DEC = INF if you want notes to finish."
         ]
       },
       "access": {
         "location": "SRC machine list",
         "steps": [
-          "Select a track, press FUNC + SRC and choose SOPHIE.",
-          "Set the machine’s controls on the SRC page; AMP shapes the note envelope."
+          "Use a build containing SOPHIE for the original Digitakt on OS 1.53; digihealth is optional.",
+          "Select an audio track, press FUNC + SRC and choose SOPHIE from the machine list.",
+          "Adjust TUNE through COLOR on the SRC page. Set note duration and release on AMP, then trigger the track from the sequencer or keyboard."
         ],
-        "screenshots": []
+        "screenshots": [
+          "media/chooser.png"
+        ]
       },
       "controls": [
         {
           "name": "TUNE",
           "default": null,
-          "doc": "Pitch",
+          "doc": "SRC knob A: pitch, combined with the trig’s note. The normal Digitakt AMP, filter and effects process the resulting synth voice.",
           "labels": null
         },
         {
           "name": "MODEL",
           "default": null,
-          "doc": "FUSE / BOOM / PIPE / SHARD",
+          "doc": "SRC knob B: choose FUSE (bright clang), BOOM (rounded sine body and FM attack), PIPE (inharmonic ring) or SHARD (grainy tone with a short noise attack). Each track has one voice; retriggering replaces it.",
           "labels": null
         },
         {
           "name": "FOLD",
           "default": null,
-          "doc": "Wavefolder with output level compensation; zero bypasses it",
+          "doc": "SRC knob C: output wavefolder, 0–127. Zero bypasses it; increasing it adds folds with level compensation before the stock AMP/filter chain. It replaces this machine’s BR control.",
           "labels": null
         },
         {
           "name": "SAMP",
           "default": null,
-          "doc": "Stock sample selector; Sophie does not use the sample",
+          "doc": "SRC knob D: retained stock sample selector. SOPHIE generates its own audio and does not use the selected sample.",
           "labels": null
         },
         {
           "name": "SWEEP",
           "default": null,
-          "doc": "Bipolar pitch sweep toward the played note",
+          "doc": "SRC knob E: bipolar pitch attack, -64 to +63, centered at 0. Positive starts above the played pitch and falls; negative starts below and rises. FUNC + turning uses stock TUNE octave steps (-60 to +24).",
           "labels": null
         },
         {
           "name": "METAL",
           "default": null,
-          "doc": "FM/ring intensity",
+          "doc": "SRC knob F: FM/ring intensity, 0–127. Higher settings increase metallic modulation; its interaction with COLOR and FBK depends on MODEL.",
           "labels": null
         },
         {
           "name": "FBK",
           "default": null,
-          "doc": "Oscillator feedback",
+          "doc": "SRC knob G: oscillator feedback, 0–127. Increase gradually to change the model’s edge and harmonics; this is synthesis feedback, not the delay send’s feedback.",
           "labels": null
         },
         {
           "name": "COLOR",
           "default": null,
-          "doc": "Inharmonic character",
+          "doc": "SRC knob H: inharmonic character, 0–127. Moves through different oscillator-ratio bands for each model; on SHARD it also shapes the noise character.",
           "labels": null
         }
       ],
@@ -2518,7 +2525,26 @@
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Imported from the author’s v1.1.13 source; not yet built or tested in Modwerk."
+        "summary": "Imported from the author’s v1.1.13 source; Modwerk linked and verified the pinned catalog release for the UI documentation run. Documentation captures verify the listed UI pages on OS 1.53; audio, timing and hardware remain unqualified.",
+        "documentation": {
+          "tutorial": {
+            "title": "Quick tutorial: sequence a metallic percussion voice",
+            "steps": [
+              "On one audio track choose SOPHIE with FUNC + SRC. No sample is needed; choose FUSE with MODEL for this example.",
+              "Set SWEEP to 0 and FOLD to 0. On AMP set HOLD to NOTE and choose a finite DEC, so TRIG LEN determines when the release begins.",
+              "Add a few trigs and play the pattern. Adjust TUNE for pitch, then raise METAL and turn COLOR to explore the clang’s harmonics; add FBK gradually.",
+              "Parameter-lock MODEL on a trig to compare BOOM, PIPE and SHARD, or lock SWEEP above/below zero for a descending/ascending pitch attack. Try FOLD, then return it to 0 to bypass wavefolding.",
+              "Press STOP and let the finite AMP release finish. Remove the example locks and return SWEEP and FOLD to 0 for the starting sound; avoid DEC = INF if you want notes to finish."
+            ]
+          },
+          "screenshots": [
+            "media/chooser.png",
+            "media/fuse.png",
+            "media/boom.png",
+            "media/amp.png"
+          ],
+          "captureRecord": "media/capture.json"
+        }
       },
       "license": {
         "spdx": "MIT",
@@ -2534,6 +2560,70 @@
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
+        },
+        {
+          "path": "media/chooser.png",
+          "kind": "screenshot",
+          "caption": "SOPHIE in the machine chooser",
+          "alt": "SOPHIE in the machine chooser on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; soejrd module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "1.1.13-experimental.2",
+            "imageSha256": "54799123bedb06852bc925340e4edbb0dd8496070b188df4c0d3cc900e5040a1",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/fuse.png",
+          "kind": "screenshot",
+          "caption": "FUSE model source controls",
+          "alt": "FUSE model source controls on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; soejrd module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "1.1.13-experimental.2",
+            "imageSha256": "54799123bedb06852bc925340e4edbb0dd8496070b188df4c0d3cc900e5040a1",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/boom.png",
+          "kind": "screenshot",
+          "caption": "BOOM model source controls",
+          "alt": "BOOM model source controls on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; soejrd module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "1.1.13-experimental.2",
+            "imageSha256": "54799123bedb06852bc925340e4edbb0dd8496070b188df4c0d3cc900e5040a1",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
+        },
+        {
+          "path": "media/amp.png",
+          "kind": "screenshot",
+          "caption": "Track amplifier controls",
+          "alt": "Track amplifier controls on the Digitakt monochrome LCD",
+          "credit": "Modwerk documentation capture; Elektron interface; soejrd module",
+          "license": "LicenseRef-Digi-UI-Documentation",
+          "source": "original",
+          "capture": {
+            "type": "emulator",
+            "release": "1.53",
+            "moduleVersion": "1.1.13-experimental.2",
+            "imageSha256": "54799123bedb06852bc925340e4edbb0dd8496070b188df4c0d3cc900e5040a1",
+            "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
+          }
         }
       ],
       "source": {
