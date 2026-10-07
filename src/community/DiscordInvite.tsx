@@ -54,18 +54,17 @@ export function DiscordInvitePrompt({ enabled, next }: { enabled: boolean; next:
     return value === 'discord-member' ? 'member' : value === 'discord-visitor' ? 'visitor' : null
   })
   const [shown, setShown] = useState<{ key: string; audience: Audience } | null>(preview ? { key: 'preview', audience: preview } : null)
-  const presented = useRef(false), signupChosen = useRef(false)
+  const presented = useRef(false)
   const memberId = session.user?.verified && session.user.username ? session.user.id : null
   const key = memberId ? 'member:' + memberId : !session.user && session.available && !loading ? 'visitor' : ''
   useEffect(() => {
-    if (preview || !enabled || !key || presented.current && !(memberId && signupChosen.current)) return
+    if (preview || import.meta.env.DEV && new URLSearchParams(window.location.search).get('preview') === 'welcome' || !enabled || !key || presented.current) return
     let cancelled = false, requested = false, ready = false
     const stop = () => { observer.disconnect(); document.removeEventListener('visibilitychange', check) }
     const check = () => {
-      if (cancelled || presented.current && !(memberId && signupChosen.current) || document.visibilityState === 'hidden' || document.querySelector('dialog[open]')) return
+      if (cancelled || presented.current || document.visibilityState === 'hidden' || document.querySelector('dialog[open]')) return
       if (ready) {
         presented.current = true
-        signupChosen.current = false
         stop()
         setShown({ key, audience: memberId ? 'member' : 'visitor' })
       } else if (!requested) {
@@ -85,5 +84,5 @@ export function DiscordInvitePrompt({ enabled, next }: { enabled: boolean; next:
     return () => { cancelled = true; stop() }
   }, [enabled, key, memberId, preview])
   if (!shown || (!preview && shown.key !== key)) return null
-  return <DiscordInviteDialog audience={shown.audience} next={next} preview={!!preview} onClose={action => { if (!preview && shown.audience === 'visitor' && action === 'signup') signupChosen.current = true; setShown(null) }} />
+  return <DiscordInviteDialog audience={shown.audience} next={next} preview={!!preview} onClose={() => setShown(null)} />
 }

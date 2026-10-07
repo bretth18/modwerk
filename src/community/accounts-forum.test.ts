@@ -43,12 +43,16 @@ describe('verified email accounts',()=>{
   expect((await call('/auth/register','POST',{rulesVersion:COMMUNITY_RULES_VERSION,username:'listener',email,password})).status).toBe(202)
   expect((await call('/auth/login','POST',{email,password})).status).toBe(403)
   const token=sent[0].text.match(/#account\/verify\/([^\s]+)/)![1]
+  expect(db.prepare('SELECT COUNT(*) AS count FROM member_discord_invites').get()).toEqual({count:1})
+  // A registration begun before rollout also switches to the inline welcome at verification.
+  db.exec('DELETE FROM member_discord_invites')
   expect(JSON.stringify(db.prepare('SELECT * FROM account_tokens').all())).not.toContain(token)
   expect((await call('/auth/verify','POST',{token,password:'a completely different password'})).status).toBe(400)
   const verified=await call('/auth/verify','POST',{token,password});expect(verified.status).toBe(200)
   // Verifying with the registration password starts the member session, so the welcome lands in the forum signed in.
   const firstSession=verified.headers.get('X-Octamod-Session')!;expect(firstSession).toContain('.');expect(verified.headers.get('set-cookie')).toBeNull()
   expect((await(await call('/auth/session','GET',undefined,firstSession)).json()).user).toMatchObject({username:'listener',verified:true})
+  expect(await(await call('/auth/discord-invite','POST',{},firstSession)).json()).toEqual({show:false})
   expect((await call('/auth/verify','POST',{token,password})).status).toBe(400)
   const login=await call('/auth/login','POST',{email,password}),session=login.headers.get('X-Octamod-Session')!
   expect(login.status).toBe(200);expect(login.headers.get('set-cookie')).toBeNull()

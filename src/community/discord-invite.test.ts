@@ -8,12 +8,14 @@ beforeEach(() => { vi.stubGlobal('fetch', vi.fn(async () => Response.json({ id: 
 afterEach(() => { vi.unstubAllGlobals(); for (const db of databases.splice(0)) db.close() })
 async function fixture() {
   const server = await testServer(); databases.push(server.db)
-  async function member(username: string) {
+  async function member(username: string, existing = true) {
     const email = username + '@example.test'
     expect((await server.call('/auth/register', 'POST', { username, email, password, rulesVersion: COMMUNITY_RULES_VERSION })).status).toBe(202)
     const id = String(server.db.prepare('SELECT id FROM auth_users WHERE email=?').get(email)!.id)
     server.db.prepare('UPDATE auth_users SET emailVerified=1 WHERE id=?').run(id)
     server.db.prepare('UPDATE users SET email_verified=1 WHERE id=?').run(id)
+    // Existing members predate the inline welcome; fresh signups retain its suppression marker.
+    if (existing) server.db.prepare('DELETE FROM member_discord_invites WHERE user_id=?').run(id)
     async function login() { return (await server.call('/auth/login', 'POST', { email, password })).headers.get('X-Octamod-Session')! }
     return { id, token: await login(), login }
   }
@@ -29,6 +31,22 @@ describe('once-per-account Discord invitation', () => {
     expect(await (await call('/auth/discord-invite', 'POST', {}, await first.login())).json()).toEqual({ show: false })
     expect(await (await call('/auth/discord-invite', 'POST', {}, other.token)).json()).toEqual({ show: true })
     expect(db.prepare('SELECT COUNT(*) AS count FROM member_discord_invites').get()).toEqual({ count: 2 })
+  })
+  it('permanently suppresses the member popup after a browser invitation without claiming another member', async () => {
+    const { call, member } = await fixture(), owner = await member('visitedbefore'), other = await member('stilleligible')
+    expect(await (await call('/auth/discord-invite', 'POST', { alreadyShown: true }, owner.token)).json()).toEqual({ show: false })
+    expect(await (await call('/auth/discord-invite', 'POST', {}, await owner.login())).json()).toEqual({ show: false })
+    expect(await (await call('/auth/discord-invite', 'POST', {}, other.token)).json()).toEqual({ show: true })
+  })
+  it('reserves fresh signups for the inline welcome, with no modal impression count', async () => {
+    const { call, member, db } = await fixture(), owner = await member('newsignup', false)
+    expect(await (await call('/auth/discord-invite', 'POST', {}, owner.token)).json()).toEqual({ show: false })
+    expect(db.prepare('SELECT * FROM usage_daily').all()).toEqual([])
+  })
+  it('rejects invalid suppression input without consuming the invitation', async () => {
+    const { call, member } = await fixture(), owner = await member('badpreference')
+    expect((await call('/auth/discord-invite', 'POST', { alreadyShown: 'yes' }, owner.token)).status).toBe(400)
+    expect(await (await call('/auth/discord-invite', 'POST', {}, owner.token)).json()).toEqual({ show: true })
   })
   it('requires a verified owner and the site origin, and never claims on a GET', async () => {
     const { call, member, db } = await fixture(), owner = await member('inviteowner')

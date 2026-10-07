@@ -16,7 +16,22 @@ describe('invitation delivery in the browser', () => {
     expect(await first).toEqual({ show: true })
     await claims.claimDiscordInvite('second')
     expect(request).toHaveBeenCalledTimes(2)
+    expect(values.get(claims.VISITOR_DISCORD_INVITE_KEY)).toBe('1')
+    expect(await claims.claimDiscordInvite(null)).toEqual({ show: false })
+  })
+  it('carries a visitor invitation into the account claim after signup or sign-in, even on a new visit', async () => {
+    await claims.claimDiscordInvite(null)
+    vi.resetModules()
+    const nextVisit = await import('./discord-invite')
+    await nextVisit.claimDiscordInvite('signed-in')
+    expect(JSON.parse(request.mock.calls[0][1].body)).toEqual({ alreadyShown: true })
+  })
+  it('does not consume a browser invitation when the member claim fails', async () => {
+    request.mockRejectedValueOnce(new Error('Offline'))
+    await expect(claims.claimDiscordInvite('member')).rejects.toThrow('community service')
     expect(values.has(claims.VISITOR_DISCORD_INVITE_KEY)).toBe(false)
+    await claims.claimDiscordInvite('member')
+    expect(request).toHaveBeenCalledTimes(2)
   })
   it('remembers the visitor prompt across page loads, using no account request', async () => {
     expect(await claims.claimDiscordInvite(null)).toEqual({ show: true })

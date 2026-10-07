@@ -72,6 +72,7 @@ export async function completeSocialOnboarding(env:Env,db:Database,body:Record<s
       db.prepare('UPDATE auth_users SET username=?,displayUsername=?,name=?,updatedAt=? WHERE id=? AND EXISTS(SELECT 1 FROM social_pending_accounts WHERE user_id=? AND expires>?)').bind(username,username,username,Date.now(),user.id,user.id,time),
       db.prepare('INSERT OR IGNORE INTO account_policy_acceptances(user_id,version) SELECT user_id,? FROM social_pending_accounts WHERE user_id=? AND expires>?').bind(COMMUNITY_RULES_VERSION,user.id,time),
       db.prepare('INSERT INTO account_news_preferences(user_id,enabled,consent_version,changed_at) SELECT user_id,?,?,? FROM social_pending_accounts WHERE user_id=? AND expires>? ON CONFLICT(user_id) DO NOTHING').bind(Number(enabled),enabled?NEWS_CONSENT_VERSION:null,new Date().toISOString(),user.id,time),
+      db.prepare('INSERT OR IGNORE INTO member_discord_invites(user_id) SELECT user_id FROM social_pending_accounts WHERE user_id=? AND expires>?').bind(user.id,time),
       db.prepare('DELETE FROM social_pending_accounts WHERE user_id=? AND expires>?').bind(user.id,time),
     ])
   } catch {throw new HttpError(409,'Your account could not be saved. Try another username or keep the suggested name.')}

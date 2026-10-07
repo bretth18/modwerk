@@ -283,6 +283,9 @@ describe('social onboarding from either account entry point',()=>{
     for(const path of ['/auth/build-access','/auth/data-export','/auth/account-removal'])expect((await f.call(path,'POST',{},held)).status).toBe(401)
     for(const path of ['/auth/profile','/auth/sessions','/auth/news'])expect((await f.call(path,'GET',undefined,held)).status).toBe(401)
     expect((await f.call('/forum/threads','POST',{title:'Blocked',body:'Pending',category:'general'},held)).status).toBe(401)
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM member_discord_invites').get()).toEqual({count:1})
+    // Simulate a social signup begun before the inline welcome rollout.
+    f.db.exec('DELETE FROM member_discord_invites')
     const body={code:onboarding.code,verifier:pending.verifier,username:'',rulesVersion:COMMUNITY_RULES_VERSION,newsletter:false}
     expect((await f.call('/auth/sso/complete','POST',{...body,rulesVersion:'outdated'})).status).toBe(400)
     const completed=await f.call('/auth/sso/complete','POST',body)
@@ -290,6 +293,7 @@ describe('social onboarding from either account entry point',()=>{
     const session=completed.headers.get('X-Octamod-Session')!
     const own=await(await f.call('/auth/session','GET',undefined,session)).json()
     expect(own).toMatchObject({admin:false,user:{username:onboarding.username,displayName:onboarding.username,verified:true}})
+    expect(await(await f.call('/auth/discord-invite','POST',{},session)).json()).toEqual({show:false})
     expect(f.db.prepare('SELECT version FROM account_policy_acceptances WHERE user_id=?').get(own.user.id)).toEqual({version:COMMUNITY_RULES_VERSION})
     expect(f.db.prepare('SELECT enabled FROM account_news_preferences WHERE user_id=?').get(own.user.id)).toEqual({enabled:0})
     expect((await f.call('/auth/build-access','POST',{},session)).status).toBe(200)
