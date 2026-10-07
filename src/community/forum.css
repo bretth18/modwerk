@@ -924,5 +924,19 @@ li[data-status="error"] .forum-media-status { color: #f0a6ad; }
   .get-started-steps small { display: none; }
   .get-started-action { min-height: 40px; margin-top: 0; }
 }
-.forum-welcome { margin: 0 0 20px; }
-.forum-welcome-discord { display: flex; align-items: center; gap: 8px; width: fit-content; margin-top: 10px; }
+.signup-welcome { position: relative; max-width: 720px; margin: 0 0 24px; padding: 24px; border: 1px solid #4c4b6d; border-radius: 12px; background: #262630; }
+.signup-welcome-close { position: absolute; top: 14px; right: 14px; }
+.signup-welcome h2 { margin: 0 32px 8px 0; font-size: 22px; line-height: 1.35; overflow-wrap: anywhere; }
+.signup-welcome > p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.signup-welcome-community { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin: 20px 0 16px; padding: 18px 0; border-top: 1px solid #41414e; border-bottom: 1px solid #41414e; }
+.signup-welcome-community h3 { margin: 0 0 4px; font-size: 15px; }
+.signup-welcome-community p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.signup-welcome-community .button { flex-shrink: 0; }
+.signup-welcome-support { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; }
+.signup-welcome-support a { display: inline-flex; align-items: center; gap: 6px; color: #c7c5ec; }
+.signup-welcome-support .subtle { font-size: 12px; }
+@media (max-width: 600px) {
+  .signup-welcome { padding: 18px; margin-bottom: 18px; }
+  .signup-welcome h2 { font-size: 20px; }
+  .signup-welcome-community { gap: 12px; }
+}

@@ -60,8 +60,10 @@ export async function authentication(request:Request,env:Env,path:string):Promis
  if(path==='/api/auth/discord-invite'){
   if(request.method!=='POST')throw new HttpError(405,'Use POST to request the Discord invitation.')
   const member=needMember(await accountUser(request,env,db))
+  const body=await jsonBody(request)
+  if(body.alreadyShown!==undefined&&typeof body.alreadyShown!=='boolean')throw new HttpError(400,'Use a boolean invitation preference.')
   const claimed=await db.prepare('INSERT OR IGNORE INTO member_discord_invites(user_id) VALUES(?)').bind(member.id).run()
-  return response({show:claimed.meta.changes===1})
+  return response({show:body.alreadyShown!==true&&claimed.meta.changes===1})
  }
  if(path==='/api/auth/build-access'&&request.method==='POST'){needMember(await accountUser(request,env,db));return response({ok:true})}
  const account=await accountRoutes(request,env,db,path)

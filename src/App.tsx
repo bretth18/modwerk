@@ -1,5 +1,6 @@
 import { AccountPage } from './community/AccountPage'
 import { DiscordInvitePrompt } from './community/DiscordInvite'
+import { SignupWelcome } from './community/SignupWelcome'
 import { NotificationBell } from './community/NotificationBell'
 import { useMembersOnline } from './community/useMembersOnline'
 import { MembersOnlineChip } from './community/MembersOnline'
@@ -282,6 +283,7 @@ export default function App() {
           {machineHasMods && <a className={'configuration-button' + (machineSelected.length ? '' : ' is-empty')} href={deviceHref(currentDevice.id, 'configuration')} aria-label={"Open configuration, " + machineSelected.length + " modules selected"} aria-current={configuration || machineView === 'configuration' ? 'page' : undefined}><Icon name="sliders" size={16} /><span>Configuration</span><span className="toolbar-count">{machineSelected.length}</span></a>}
         </header>
         <main className="workspace-content" id="main-content" ref={mainRef} tabIndex={-1}>
+          {!accountRoute && <SignupWelcome key={route} />}
           {!phoneLayout && projectNotice}
           {workspace.storageError && <div className="file-error" role="alert">{workspace.storageError} Export important configurations before closing this tab.</div>}
           {route === 'faq' ? <FaqPage /> : machineView && !digiDevice ? <EmptyMachine key={currentDevice.id} device={currentDevice} machinePicker={machinePicker} /> : !ready ? <div className="loading-panel" role="status">Opening your workspace…</div> : <>

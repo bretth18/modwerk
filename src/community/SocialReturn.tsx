@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useCommunity } from './context'
 import { completeSocial, finishSocial, type SocialResult } from './social-login'
 import { COMMUNITY_RULES_VERSION } from '../legal/policy'
+import { welcomeHref } from './member-access'
 export function SocialReturn({code}:{code:string}) {
   const {refresh}=useCommunity(),[error,setError]=useState(''),[onboarding,setOnboarding]=useState<SocialResult['onboarding']>(),[busy,setBusy]=useState(false)
   const refreshRef=useRef(refresh),codeRef=useRef(code)
@@ -17,7 +18,7 @@ export function SocialReturn({code}:{code:string}) {
     const fields=new FormData(form)
     try {
       const next=await completeSocial({username:String(fields.get('username')??''),rulesVersion:fields.get('rulesAccepted')==='on'?COMMUNITY_RULES_VERSION:'',newsletter:fields.get('newsletter')==='on'})
-      await refreshRef.current();window.location.assign('#'+next)
+      await refreshRef.current();window.location.assign(welcomeHref(next))
     }catch(error){setError(error instanceof Error?error.message:'Your account could not be created.')}finally{setBusy(false)}
   }
   return <div className="community-page account-page"><BackLink href="#account/login">Sign in</BackLink><section className="configuration-section">

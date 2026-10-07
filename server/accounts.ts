@@ -84,6 +84,8 @@ function createAccountAuth(env: Env, db: Database) {
         return {data:{...user,name:publicName,username:publicName,displayUsername:publicName,image:null}}
       },after:async(user,ctx)=>{
         await syncPublicUser(user)
+        // New members get Discord inline in their signup welcome, so never queue a second popup.
+        await db.prepare('INSERT OR IGNORE INTO member_discord_invites(user_id) VALUES(?)').bind(user.id).run()
         if(ctx?.path==='/callback/:id'){
           const state=await getOAuthState<{flowHash?:string}>()
           const flow=state?.flowHash?await db.prepare("SELECT username,rules_version,newsletter FROM social_flows WHERE token_hash=? AND stage='started'").bind(state.flowHash).first<{username:string|null;rules_version:string|null;newsletter:number}>():null
@@ -173,6 +175,8 @@ export async function accountRoutes(request: Request, env: Env, db: Database, pa
         if(!consumed)throw new HttpError(400,'This link has already been used.')
         // Verifying proves the inbox and the password together, so it also starts the member session.
         const verified=await auth.api.verifyEmail({query:{token:body.token.split('~')[0]},headers,returnHeaders:true})
+        // Also covers registrations begun before the inline welcome was introduced.
+        await db.prepare('INSERT OR IGNORE INTO member_discord_invites(user_id) VALUES(?)').bind(record.user_id).run()
         return sessionResponse(env,verified.headers,{ok:true,message:'Email verified. Welcome to Modwerk.'},'Verification could not be completed.')
       }
       await auth.api.resetPassword({body:{token:body.token,newPassword:body.password},headers})

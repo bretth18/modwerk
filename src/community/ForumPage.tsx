@@ -1,6 +1,3 @@
-import { DEVELOPMENT_DISCORD_URL } from '../config/development-discord'
-import { assetUrl } from '../hosting'
-import { trackUsage } from './usage'
 import { ForumThreadView } from './ForumThreadView'
 import { BackLink } from '../components/BackLink'
 import { ForumProfile, ForumProfileReplies } from './ForumProfile'
@@ -64,8 +61,6 @@ function ForumList({query,profile,machineHint}:{query:URLSearchParams;profile?:s
   // Feature requests open on the most voted ideas; the other views keep recent activity unless an order is chosen.
   const sort=query.get('sort')||(category==='requests'?'top':'active'),newest=sort==='newest',top=sort==='top',status=query.get('status')??''
   const overview=!profile&&!saved&&!following&&!moduleView&&!category&&!filtered&&page===0,home=overview&&!machine
-  // A member who just verified their email arrives here signed in, from the link in the verification message.
-  const welcome=home&&query.get('welcome')==='1'&&!!session.user?.verified
   const heading=(profile?'Public discussions':saved?'Your bookmarks':following&&unreadOnly?'Unread in Following':following?'Following':unreadOnly?'Unread discussions':moduleView?'Module discussions':category&&Object.hasOwn(FORUM_CATEGORIES,category)?FORUM_CATEGORIES[category as ForumCategory]:query.get('q')?'Search results':newest?'New threads':top?'Top voted':'Latest activity')+(machine&&!profile?' · '+machine.name:'')
   const newParams=new URLSearchParams();if(category)newParams.set('category',category);if(machine)newParams.set('machine',machine.id);if(query.get('module'))newParams.set('module',query.get('module')!)
   const startHref=category==='issues'||session.user?.verified?'#forum/new'+(newParams.size?'?'+newParams.toString():''):session.user?'#account':'#account/register'
@@ -76,7 +71,6 @@ function ForumList({query,profile,machineHint}:{query:URLSearchParams;profile?:s
     {profile&&<BackLink href="#forum">All discussions</BackLink>}
     <div className="page-heading forum-heading"><div><span className="forum-eyebrow">Connect · Create · Explore</span><h1>{profile?'@'+profile:'Community forum'}</h1><p>{profile?'Public threads by this member.':'A place for the people who make their machines do more.'}</p></div><a className="button button-primary" href={startHref}><Icon name="plus" size={16}/><span className="forum-start-long">{category==='issues'?'Report an issue':'Start a thread'}</span><span className="forum-start-short">{category==='issues'?'Report':'New thread'}</span></a></div>
     {profile&&<ForumProfile key={profile} username={profile} onLoad={setMember}/>}
-    {welcome&&<p className="success-note forum-welcome" role="status">Welcome to Modwerk, @{session.user!.username}. Your email is confirmed and you are signed in. Have a look around, and say hello when you are ready.<a className="forum-welcome-discord" href={DEVELOPMENT_DISCORD_URL} target="_blank" rel="noreferrer" onClick={() => trackUsage('discord_welcome_join_clicked')}><img src={assetUrl('auth/discord.svg')} width={20} height={15} alt="" aria-hidden="true" />Join the development Discord <span aria-hidden="true">↗</span></a></p>}
     {home&&session.user?.verified&&<GetStarted machine={machineHint}/>}
     {home&&session.user?.verified&&<SinceVisit onReadAll={()=>setRevision(value=>value+1)}/>}
     {home&&<ForumOnlineNow/>}
