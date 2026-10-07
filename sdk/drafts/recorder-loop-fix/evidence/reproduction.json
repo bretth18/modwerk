@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "moduleVersion": "0.1.0-experimental",
+  "runner": "qualification/run.py",
+  "exitStatus": 2,
+  "stockRead": false,
+  "sourceOracleComparisons": 24,
+  "nativeProbeResultSha256": "bd6e6e83246a6d34e3953420187b9cb63605f0a356816297f696518c7f56cd67",
+  "nativeLibraries": {
+    "libot_machine.a": "202fe2a24536dc3f2a71b862821ffe1848a693233d4a9a3bf42548f523c378df",
+    "lib68kEmu.a": "87d4e8ee563619ebffaa07de0f36a9422664c0d21ba7eb028f7387b146afe435"
+  },
+  "emulatorSourceTreeGit": "f766828bbe0bfb3be11d61db368b2c085b741866",
+  "mc68kRevision": "4a6d0d17a1f2b30077ab726c27fe9bb770fa0456",
+  "portRegressions": {
+    "passed": 4,
+    "total": 4,
+    "tests": [
+      "emac",
+      "periph",
+      "mc68kColdFireTimingTest",
+      "mc68kColdFireDivideTest"
+    ]
+  },
+  "isolation": "Docker; --network none, read-only root, dropped capabilities, no-new-privileges, no credentials, private tmpfs with executable temporary probe."
+}

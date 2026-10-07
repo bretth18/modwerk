@@ -1,0 +1,81 @@
+{
+  "firmware": "1.40C",
+  "imageSha256": "24d22dc0d10e7328fca57e8eec3930b2690ae2f55ec3bf2f5e2e9075a11d87f6",
+  "emulatorSha256": "f438a3c9f9f48da3468437a7ed7041b13dcc9a8a9ac4bcb1c866592d9dea530c",
+  "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6.",
+  "palette": {
+    "on": [
+      240,
+      240,
+      240
+    ],
+    "off": [
+      24,
+      24,
+      24
+    ]
+  },
+  "keyMs": 150,
+  "plan": [
+    {
+      "wait": 3000
+    },
+    {
+      "press": [
+        "YES"
+      ]
+    },
+    {
+      "wait": 2000
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "wait": 1500
+    },
+    {
+      "hold": [
+        "T1"
+      ]
+    },
+    {
+      "press": [
+        "DOWN"
+      ]
+    },
+    {
+      "wait": 100
+    },
+    {
+      "capture": "ot-mode-all-reversed.png"
+    },
+    {
+      "press": [
+        "DOWN"
+      ]
+    },
+    {
+      "press": [
+        "DOWN"
+      ]
+    },
+    {
+      "wait": 100
+    },
+    {
+      "capture": "ot-mode-all-pingpong2.png"
+    },
+    {
+      "release": [
+        "T1"
+      ]
+    }
+  ],
+  "screenshots": {
+    "ot-mode-all-reversed.png": "60bbdf606c098ce3031593930aa6c523c53283e7b1820120312c5834e3339aea",
+    "ot-mode-all-pingpong2.png": "3d2995c63b2909327105f4534ee63b01bfd1600c65382811de69abe138f3d916"
+  }
+}

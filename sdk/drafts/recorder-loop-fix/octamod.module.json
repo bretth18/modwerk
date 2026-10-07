@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 2,
+  "id": "recorder-loop-fix",
+  "key": "RECORDER LOOP FIX",
+  "name": "Recorder Loop Fix",
+  "version": "0.1.0-experimental",
+  "category": "playback",
+  "source": {
+    "repository": "https://github.com/sambanks/octabam",
+    "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+    "path": "modules/recorder-loop-fix"
+  },
+  "build": {
+    "status": "pending",
+    "reason": "Pinned source draft. Native execution found a one-sample long-run spacing defect in 953 cases. Shared-builder integration, full stock-callback timing, same-load performance comparison and current-image hardware evidence are also pending."
+  },
+  "author": {
+    "github": "sambanks",
+    "credits": [
+      "Sam Banks: all eight recorder patches, source oracles and octabam declaration.",
+      "Modwerk contributors: source import, original qualification probes, documentation and SVG thumbnail."
+    ]
+  },
+  "nativeManifest": "manifest.py",
+  "presentation": {
+    "label": "Cleaner recorder loops",
+    "family": "Recorder buffer playback",
+    "summary": "Fix recorder-buffer voice reprime, counter resets, alternating recording lengths and sound-on-sound zero samples at the loop boundary.",
+    "overview": "Fix recorder-buffer voice reprime, counter resets, alternating recording lengths and sound-on-sound zero samples at the loop boundary. This source import remains a draft until composition and release qualification are complete.",
+    "highlights": [
+      "Automatic when included in a qualified image; there is no menu, knob or effect slot. Remove the module when building to restore stock behavior.",
+      "Applies to Flex playback of recorder buffers, including sound-on-sound. Ordinary sample playback fallback paths are retained.",
+      "Uses the stock tempo, arm sample and recorder length. It does not run a separate clock."
+    ],
+    "usage": [
+      "Use a disposable project and assign a Flex track to its own recorder buffer.",
+      "Set RLEN to 16 at 128 BPM and place recording and playback trigs at the start of the bar; for sound-on-sound set SRC3 to that track.",
+      "Record a sustained tone and listen across successive wraps, then repeat after stopping and restarting transport.",
+      "Compare with stock using the same project, tempo and sample. A fractional-sample loop can still repeat or skip one sample at a wrap."
+    ]
+  },
+  "access": {
+    "location": "Automatic on Flex recorder-buffer playback; stock SRC and recorder setup pages.",
+    "steps": [
+      "Use a disposable project and assign a Flex track to its own recorder buffer.",
+      "Set RLEN to 16 at 128 BPM and place recording and playback trigs at the start of the bar; for sound-on-sound set SRC3 to that track.",
+      "Record a sustained tone and listen across successive wraps, then repeat after stopping and restarting transport.",
+      "Compare with stock using the same project, tempo and sample. A fractional-sample loop can still repeat or skip one sample at a wrap."
+    ],
+    "screenshots": [
+      "media/ot-flex-setup.png",
+      "media/ot-recorder-setup.png"
+    ]
+  },
+  "controls": [],
+  "compatibility": {
+    "firmware": "1.40C",
+    "effectId": null,
+    "location": "Flex / Static",
+    "conflicts": [],
+    "limitations": [
+      "Draft source: not selectable in the configurator until release checks pass.",
+      "Automatic when included in a qualified image; there is no menu, knob or effect slot. Remove the module when building to restore stock behavior.",
+      "Applies to Flex playback of recorder buffers, including sound-on-sound. Ordinary sample playback fallback paths are retained.",
+      "Uses the stock tempo, arm sample and recorder length. It does not run a separate clock.",
+      "At fractional bar lengths, a wrap can still repeat or skip one sample; this does not guarantee a perfectly seamless loop at every tempo.",
+      "Eight hook sites and eleven pool-base literals must participate in the common builder allocation ledger; catalog publication and native/browser composition remain pending.",
+      "The native spacing algorithm can choose a loop length one sample off after several minutes at short RLEN values: 953/13,279 ideal consecutive-arm cases failed. At 197 BPM and RLEN 1, the first tested failure was five minutes. RLEN 16 had no failures in the tested integer-BPM sweep through four hours; arbitrary fractional tempo or arm histories are not qualified."
+    ]
+  },
+  "resources": {
+    "recorded": "7 October 2026; authored-source assembly and isolated native-code probes",
+    "storage": {
+      "label": "Authored code and relocated menu tables",
+      "display": "718 bytes before placement padding",
+      "value": 718,
+      "unit": "bytes",
+      "method": "static",
+      "conditions": "Program bytes 718, tables 0. This is a standalone source footprint, not a complete common-builder or stock memory inventory. Actual probe stack peaks and model timing are recorded separately.",
+      "source": "evidence/source-identity.json"
+    },
+    "processing": {
+      "label": "ColdFire native paths",
+      "display": "Measured model cycles; chip wall-clock pending",
+      "value": 301,
+      "unit": "model cycles/event",
+      "method": "emulator",
+      "conditions": "MCF5206E core-cycle model, cache-hit zero-wait; not MCF54455 chip timing. Synthetic stock callbacks exclude their actual work. Conservative V4 code-cycle path bounds exclude cache, bus and interrupt contention; see TESTING.md.",
+      "source": "evidence/probes.json"
+    },
+    "impact": {
+      "conditions": "Source estimate for eight audio tracks; no added DSP program. Complete timing and placement remain pending.",
+      "cpu": {
+        "level": "low",
+        "basis": "source-estimate",
+        "rationale": "Finite ColdFire hook paths with bounded eight-track loops; native paths and stack peaks were measured. The independent long-run spacing oracle has a measured failure, so low cost does not imply correct loop spacing.",
+        "source": "TESTING.md"
+      },
+      "dsp": {
+        "level": "minimal",
+        "basis": "source-estimate",
+        "rationale": "No new DSP program; existing voice and FX dispatch is retained.",
+        "source": "manifest.py"
+      },
+      "memory": {
+        "level": "low",
+        "basis": "source-estimate",
+        "rationale": "Small authored ROM patches and reused stock state; no new audio buffer allocation.",
+        "source": "TESTING.md"
+      }
+    }
+  },
+  "tests": {
+    "report": "TESTING.md",
+    "summary": "All 24 assembly-oracle checks passed. Short-arm and hold/seek native probes passed; the independent long-run spacing sweep FAILED in 953 of 13,279 cases. RLEN 16 passed 1,897 tested long-run cases. Publication remains blocked; see TESTING.md.",
+    "hardwareStatus": "historical",
+    "evidenceRevision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+    "gates": [
+      "qualification/probe.cpp"
+    ]
+  },
+  "license": {
+    "spdx": "MIT",
+    "file": "LICENSE",
+    "declaration": "Original authored sources and upstream licence notices are retained with exact source pins. Only authored source, address/length/hash stock guards and sanitized evidence are included. No firmware, extracted stock routine/table, runtime image, card or RAM/LCD dump is included. Modwerk qualification probes are GPL-3.0-or-later; thumbnail and documentation are original Modwerk work. LCD captures, when present, retain underlying Elektron rights as declared in media/LICENSE.md. Owner rights review is required before publication."
+  },
+  "media": [
+    {
+      "path": "media/ot-flex-setup.png",
+      "captureType": "emulator",
+      "caption": "SRC SETUP: FLEX highlighted. Native monochrome LCD; stopped CPU-only capture.",
+      "alt": "SRC SETUP: FLEX highlighted on the Octatrack LCD.",
+      "credit": "Modwerk contributors; Elektron Octatrack UI",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "SRC SETUP",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "45657a36371d7f509205ec268ca8b2499a5515d3fde214ea32ec2035e0a80847",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. ColdFire UI execution with DSP host stub; no audio claim. Local standalone composition, not shared-builder parity. Empty private OCTAMOD/MEASURE SET was requested; missing-project prompts dismissed with three NO presses. Native initialized UI state, no valid saved project or recorder-slot assignment claimed."
+      }
+    },
+    {
+      "path": "media/ot-recorder-setup.png",
+      "captureType": "emulator",
+      "caption": "RECORDING 1 SETUP 1: RLEN 16 and SRC3 T1. Native monochrome LCD; stopped CPU-only capture.",
+      "alt": "RECORDING 1 SETUP 1: RLEN 16 and SRC3 T1 on the Octatrack LCD.",
+      "credit": "Modwerk contributors; Elektron Octatrack UI",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "RECORDING 1 SETUP 1",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "45657a36371d7f509205ec268ca8b2499a5515d3fde214ea32ec2035e0a80847",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. ColdFire UI execution with DSP host stub; no audio claim. Local standalone composition, not shared-builder parity. Empty private OCTAMOD/MEASURE SET was requested; missing-project prompts dismissed with three NO presses. Native initialized UI state, no valid saved project or recorder-slot assignment claimed."
+      }
+    }
+  ]
+}

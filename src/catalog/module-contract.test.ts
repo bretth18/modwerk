@@ -15,6 +15,7 @@ describe('module folder contract',()=>{
   const source={repository:'https://github.com/sambanks/octabam',revision:'a'.repeat(40),path:'modules/quantizer'}
   const build={status:'pending',reason:'Awaiting Octamod verification.'}
   expect(parseModuleDocument({...example,source,build,category:'machines'}).source).toEqual(source)
+  expect(parseModuleDocument({...example,source,build,category:'system'}).category).toBe('system')
   for(const change of [{revision:'main'},{repository:'http://github.com/sambanks/octabam'},{repository:'https://github.com/sambanks/octabam?token=secret'},{path:'../modules/quantizer'},{extra:true}])expect(()=>parseModuleDocument({...example,source:{...source,...change}})).toThrow()
   expect(()=>parseModuleDocument({...example,build})).toThrow('source pin')
   for(const change of [{status:'verified'},{reason:''},{override:true}])expect(()=>parseModuleDocument({...example,source,build:{...build,...change}})).toThrow()

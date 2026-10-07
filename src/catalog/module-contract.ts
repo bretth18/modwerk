@@ -25,7 +25,7 @@ export type ModuleReleaseWaiver = {
   approvedBy: 'repeat98'; approvedOn: '2026-10-02' | '2026-10-03' | '2026-10-06'; reason: string; report: string
   documentation: ModuleQualification['documentation']
 }
-export const MODULE_CATEGORIES = ['effects', 'playback', 'machines', 'scenes', 'midi-usb'] as const
+export const MODULE_CATEGORIES = ['effects', 'playback', 'machines', 'scenes', 'midi-usb', 'system'] as const
 export type ModuleDocument = {
   schemaVersion: 2; id: string; key: string; name: string; version: string; category: typeof MODULE_CATEGORIES[number]
   source?: { repository: string; revision: string; path: string }

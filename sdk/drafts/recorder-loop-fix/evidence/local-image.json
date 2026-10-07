@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "moduleVersion": "0.1.0-experimental",
+  "imageSha256": "45657a36371d7f509205ec268ca8b2499a5515d3fde214ea32ec2035e0a80847",
+  "assemblyReferences": "recorder-source-identity.json",
+  "buildKind": "Local eight-cave composition at 128-byte-aligned ROM origins; not Modwerk browser composition",
+  "addedProgramBytes": 718,
+  "stockGuards": "All local original-image guards passed",
+  "qualification": false
+}
