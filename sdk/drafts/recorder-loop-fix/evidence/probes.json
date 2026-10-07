@@ -1,0 +1,150 @@
+{
+  "model": "MCF5206E core-cycle model, cache-hit zero-wait; not MCF54455 chip timing",
+  "stockCallbacks": "synthetic fixtures; excluded from stock timing claims",
+  "standardProbesPassed": true,
+  "passed": false,
+  "paths": {
+    "hold_copy.s": {
+      "cases": 108,
+      "maxInstructions": 34,
+      "maxModelCycles": 59,
+      "maxCoreCycleUpperBound": 544,
+      "maxAdditionalStackBytes": 12
+    },
+    "hold_guard.s": {
+      "cases": 108,
+      "maxInstructions": 29,
+      "maxModelCycles": 40,
+      "maxCoreCycleUpperBound": 464,
+      "maxAdditionalStackBytes": 12
+    },
+    "hold_xfade_a.s": {
+      "cases": 108,
+      "maxInstructions": 34,
+      "maxModelCycles": 60,
+      "maxCoreCycleUpperBound": 544,
+      "maxAdditionalStackBytes": 20
+    },
+    "hold_xfade_b.s": {
+      "cases": 108,
+      "maxInstructions": 34,
+      "maxModelCycles": 59,
+      "maxCoreCycleUpperBound": 544,
+      "maxAdditionalStackBytes": 20
+    },
+    "hold_xguard.s": {
+      "cases": 108,
+      "maxInstructions": 39,
+      "maxModelCycles": 57,
+      "maxCoreCycleUpperBound": 624,
+      "maxAdditionalStackBytes": 12
+    },
+    "seek-counter": {
+      "cases": 2,
+      "maxInstructions": 5,
+      "maxModelCycles": 13,
+      "maxCoreCycleUpperBound": 80,
+      "maxAdditionalStackBytes": 0
+    },
+    "seekbind": {
+      "cases": 2,
+      "maxInstructions": 5,
+      "maxModelCycles": 10,
+      "maxCoreCycleUpperBound": 80,
+      "maxAdditionalStackBytes": 0
+    },
+    "spacing": {
+      "cases": 555008,
+      "maxInstructions": 43,
+      "maxModelCycles": 301,
+      "maxCoreCycleUpperBound": 798,
+      "maxAdditionalStackBytes": 24
+    },
+    "spacing-late-arm": {
+      "cases": 13279,
+      "maxInstructions": 43,
+      "maxModelCycles": 301,
+      "maxCoreCycleUpperBound": 798,
+      "maxAdditionalStackBytes": 24
+    }
+  },
+  "lateArmComparison": {
+    "cases": 13279,
+    "idealGapMismatches": 953,
+    "passed": false,
+    "rlen16Cases": 1897,
+    "rlen16Mismatches": 0,
+    "examples": [
+      {
+        "bpm": 32,
+        "rlen": 1,
+        "elapsedSeconds": 14400,
+        "arm": 635040000,
+        "nativeLength": 20672,
+        "idealNextArmGap": 20671
+      },
+      {
+        "bpm": 34,
+        "rlen": 1,
+        "elapsedSeconds": 14400,
+        "arm": 635040000,
+        "nativeLength": 19456,
+        "idealNextArmGap": 19455
+      },
+      {
+        "bpm": 38,
+        "rlen": 1,
+        "elapsedSeconds": 14400,
+        "arm": 635040000,
+        "nativeLength": 17408,
+        "idealNextArmGap": 17407
+      },
+      {
+        "bpm": 39,
+        "rlen": 1,
+        "elapsedSeconds": 14400,
+        "arm": 635040000,
+        "nativeLength": 16962,
+        "idealNextArmGap": 16961
+      },
+      {
+        "bpm": 40,
+        "rlen": 1,
+        "elapsedSeconds": 14400,
+        "arm": 635040000,
+        "nativeLength": 16538,
+        "idealNextArmGap": 16537
+      },
+      {
+        "bpm": 43,
+        "rlen": 1,
+        "elapsedSeconds": 14400,
+        "arm": 635040000,
+        "nativeLength": 15384,
+        "idealNextArmGap": 15383
+      },
+      {
+        "bpm": 51,
+        "rlen": 1,
+        "elapsedSeconds": 7200,
+        "arm": 317520000,
+        "nativeLength": 12971,
+        "idealNextArmGap": 12970
+      },
+      {
+        "bpm": 56,
+        "rlen": 1,
+        "elapsedSeconds": 7200,
+        "arm": 317520000,
+        "nativeLength": 11813,
+        "idealNextArmGap": 11812
+      }
+    ]
+  },
+  "schemaVersion": 1,
+  "module": "recorder-loop-fix",
+  "moduleVersion": "0.1.0-experimental",
+  "qualification": false,
+  "report": "TESTING.md",
+  "upstreamRevision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136"
+}

@@ -1126,7 +1126,8 @@ def main():
             (_work / "remix.inc").write_text(
                 _u.include({_k: remix_modules()[_k] for _k in REMIX.modules}))
         if _u.reference is not None:
-            _ra, _rsha = _u.reference
+            _reference = _u.reference({_k: remix_modules()[_k] for _k in REMIX.modules}) if callable(_u.reference) else _u.reference
+            _ra, _rsha = _reference
             (_work / "ref").mkdir(exist_ok=True)
             _rb, _, _ = _link(_src, _ra, _u.cpu, _work / "ref", defsyms=_defs, incdir=_inc)
             _got = hashlib.sha256(_rb).hexdigest()
@@ -1148,7 +1149,7 @@ def main():
         _sym[_u.label] = _syms
         print(f"  {_m.key}: {_u.label} {len(_b)} B linked at 0x{_at:08x}"
               f"{' (pinned)' if _u.cave_addr is not None else ''}"
-              f"{' -- matches the author\'s build at 0x%08x' % _u.reference[0] if _u.reference else ''}")
+              f"{' -- matches the author\'s build at 0x%08x' % _reference[0] if _u.reference else ''}")
         if _in:
             _cave_top = max(_cave_top, _at + len(_b))
         elif OVERFLOW_RUN <= _at < OVERFLOW_RUN_END:
@@ -1403,8 +1404,17 @@ def main():
     _reservations = [(_m.name, _m.arena.where, _m.arena.pages)
                      for _k in REMIX.modules for _m in (remix_modules()[_k],)
                      if getattr(_m, "arena", None) is not None]
+    # The browser's always-present logger takes sixteen further pages. Native
+    # comparison can reserve the identical geometry without carrying logger code.
+    # Keep authored DRAM units at the same base; enlarge their existing reserve.
+    _logger_pages = os.environ.get("OCTAMOD_CORE_LOGGER_PAGES", "0")
+    if _logger_pages not in ("0", "16"):
+        sys.exit("OCTAMOD_CORE_LOGGER_PAGES must be 0 or 16")
+    _logger_pages = int(_logger_pages)
     if _dram:
-        _reservations.append(("octabam platform", "bottom", arena.PLATFORM_PAGES))
+        _reservations.append(("octabam platform", "bottom", arena.PLATFORM_PAGES + _logger_pages))
+    elif _logger_pages:
+        _reservations.append(("Modwerk core logger geometry", "bottom", _logger_pages))
     _reserve = None
     if _reservations:
         _placed, _abase, _acount = arena.layout(_reservations)
@@ -1452,7 +1462,8 @@ def main():
             if _u.reference is not None:
                 # The author's oracle for a DRAM unit: linked alone at the
                 # author's own address, for the chip (the platform's ISA).
-                _ra, _rsha = _u.reference
+                _reference = _u.reference({_k: remix_modules()[_k] for _k in REMIX.modules}) if callable(_u.reference) else _u.reference
+                _ra, _rsha = _reference
                 _rw = pathlib.Path("out/platform/ref") / _u.label
                 _rw.mkdir(parents=True, exist_ok=True)
                 _rb, _, _ = _link(pathlib.Path(_u.source), _ra, "54455", _rw)
@@ -1489,7 +1500,8 @@ def main():
     for _m, _t in [(remix_modules()[_k], _t) for _k in REMIX.modules
                    for _t in getattr(remix_modules()[_k], "tables", ())]:
         _ents = [rd32(_t.old + i * 4) for i in range(_t.count)]
-        _ents += [_sym[u][s] for u, s in _t.symbols]
+        _insert = _t.count if _t.insert_at is None else _t.insert_at
+        _ents[_insert:_insert] = [_sym[u][s] for u, s in _t.symbols]
         _blob = b"".join(v.to_bytes(4, "big") for v in _ents)
         _at = (_cave_top + 0x7f) & ~0x7f
         if any(img[_at - BASE:_at - BASE + len(_blob)]):

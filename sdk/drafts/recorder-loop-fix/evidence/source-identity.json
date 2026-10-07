@@ -1,0 +1,486 @@
+{
+  "stockRead": false,
+  "toolchain": "GNU assembler (GNU Binutils) 2.47.20260726",
+  "results": [
+    {
+      "source": "seekbind.s",
+      "label": "seek-bind cave",
+      "bytes": 24,
+      "sha256": "ac1d04b1e07496ccc7acc566a1547f0ce6ba9be67aaebacc020bc5d1e596696e",
+      "proofs": [
+        {
+          "source": "seekbind.s",
+          "origin": 1074621312,
+          "bytes": 24,
+          "sha256": "ac1d04b1e07496ccc7acc566a1547f0ce6ba9be67aaebacc020bc5d1e596696e",
+          "symbols": {
+            "seekA": 1074621312,
+            "diff": 1074621328,
+            "__bss_start": 1074629528,
+            "_edata": 1074629528,
+            "_end": 1074629528
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "seekbind.s",
+          "origin": 1074622464,
+          "bytes": 24,
+          "sha256": "ac1d04b1e07496ccc7acc566a1547f0ce6ba9be67aaebacc020bc5d1e596696e",
+          "symbols": {
+            "seekA": 1074622464,
+            "diff": 1074622480,
+            "__bss_start": 1074630680,
+            "_edata": 1074630680,
+            "_end": 1074630680
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "seekbind.s",
+          "origin": 1074603216,
+          "bytes": 24,
+          "sha256": "ac1d04b1e07496ccc7acc566a1547f0ce6ba9be67aaebacc020bc5d1e596696e",
+          "symbols": {
+            "seekA": 1074603216,
+            "diff": 1074603232,
+            "__bss_start": 1074611432,
+            "_edata": 1074611432,
+            "_end": 1074611432
+          },
+          "matchesAuthor": true
+        }
+      ],
+      "hookAddress": 1073805516,
+      "hookLength": 6,
+      "hookSha256": "a3f764639ca07534cc4150642deaf4f10c519053b868df0cd3e051af427b7f60",
+      "poolBaseLiterals": 0
+    },
+    {
+      "source": "seekbind_ctr.s",
+      "label": "seek-bind counter cave",
+      "bytes": 16,
+      "sha256": "d8009618e97b94e85bd63c7f46f0af4b3d05882dad3ae7b9c951ed233b3e6c30",
+      "proofs": [
+        {
+          "source": "seekbind_ctr.s",
+          "origin": 1074621312,
+          "bytes": 16,
+          "sha256": "d8009618e97b94e85bd63c7f46f0af4b3d05882dad3ae7b9c951ed233b3e6c30",
+          "symbols": {
+            "seekB": 1074621312,
+            "same": 1074621322,
+            "__bss_start": 1074629520,
+            "_edata": 1074629520,
+            "_end": 1074629520
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "seekbind_ctr.s",
+          "origin": 1074622464,
+          "bytes": 16,
+          "sha256": "d8009618e97b94e85bd63c7f46f0af4b3d05882dad3ae7b9c951ed233b3e6c30",
+          "symbols": {
+            "seekB": 1074622464,
+            "same": 1074622474,
+            "__bss_start": 1074630672,
+            "_edata": 1074630672,
+            "_end": 1074630672
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "seekbind_ctr.s",
+          "origin": 1074603216,
+          "bytes": 16,
+          "sha256": "d8009618e97b94e85bd63c7f46f0af4b3d05882dad3ae7b9c951ed233b3e6c30",
+          "symbols": {
+            "seekB": 1074603216,
+            "same": 1074603226,
+            "__bss_start": 1074611424,
+            "_edata": 1074611424,
+            "_end": 1074611424
+          },
+          "matchesAuthor": true
+        }
+      ],
+      "hookAddress": 1073805364,
+      "hookLength": 8,
+      "hookSha256": "394be08d1b375089ffcb34270ce0bb194ed6769a3fcbe7d56c656c6db976d6ac",
+      "poolBaseLiterals": 0
+    },
+    {
+      "source": "spacing_cave.s",
+      "label": "spacing cave",
+      "bytes": 146,
+      "sha256": "9bb7efab9cb8ac9adc534fa3b40aba8da10fe2ab2de5ff1249a939964f2145c6",
+      "proofs": [
+        {
+          "source": "spacing_cave.s",
+          "origin": 1074621312,
+          "bytes": 146,
+          "sha256": "9bb7efab9cb8ac9adc534fa3b40aba8da10fe2ab2de5ff1249a939964f2145c6",
+          "symbols": {
+            "cave": 1074621312,
+            "guard": 1074621430,
+            "keep": 1074621448,
+            "_edata": 1074629650,
+            "__bss_start": 1074629652,
+            "_end": 1074629652
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "spacing_cave.s",
+          "origin": 1074622464,
+          "bytes": 146,
+          "sha256": "9bb7efab9cb8ac9adc534fa3b40aba8da10fe2ab2de5ff1249a939964f2145c6",
+          "symbols": {
+            "cave": 1074622464,
+            "guard": 1074622582,
+            "keep": 1074622600,
+            "_edata": 1074630802,
+            "__bss_start": 1074630804,
+            "_end": 1074630804
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "spacing_cave.s",
+          "origin": 1074603216,
+          "bytes": 146,
+          "sha256": "9bb7efab9cb8ac9adc534fa3b40aba8da10fe2ab2de5ff1249a939964f2145c6",
+          "symbols": {
+            "cave": 1074603216,
+            "guard": 1074603334,
+            "keep": 1074603352,
+            "_edata": 1074611554,
+            "__bss_start": 1074611556,
+            "_end": 1074611556
+          },
+          "matchesAuthor": true
+        }
+      ],
+      "hookAddress": 1073769996,
+      "hookLength": 6,
+      "hookSha256": "3b77fc06791be946482421e53ffef0821264bef53b186b831a0a6505d56d79cb",
+      "poolBaseLiterals": 0
+    },
+    {
+      "source": "hold_copy.s",
+      "label": "hold cave (copy)",
+      "bytes": 108,
+      "sha256": "4b0a8a00246263bd90f11d456f323f7c13517de70133b6d3afc48bef79b56b4b",
+      "proofs": [
+        {
+          "source": "hold_copy.s",
+          "origin": 1074621312,
+          "bytes": 108,
+          "sha256": "4b0a8a00246263bd90f11d456f323f7c13517de70133b6d3afc48bef79b56b4b",
+          "symbols": {
+            "stub": 1074621312,
+            "fix": 1074621330,
+            "fixback": 1074621410,
+            "fixnull": 1074621412,
+            "fixret": 1074621418,
+            "__bss_start": 1074629612,
+            "_edata": 1074629612,
+            "_end": 1074629612
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "hold_copy.s",
+          "origin": 1074622464,
+          "bytes": 108,
+          "sha256": "4b0a8a00246263bd90f11d456f323f7c13517de70133b6d3afc48bef79b56b4b",
+          "symbols": {
+            "stub": 1074622464,
+            "fix": 1074622482,
+            "fixback": 1074622562,
+            "fixnull": 1074622564,
+            "fixret": 1074622570,
+            "__bss_start": 1074630764,
+            "_edata": 1074630764,
+            "_end": 1074630764
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "hold_copy.s",
+          "origin": 1074603216,
+          "bytes": 108,
+          "sha256": "4b0a8a00246263bd90f11d456f323f7c13517de70133b6d3afc48bef79b56b4b",
+          "symbols": {
+            "stub": 1074603216,
+            "fix": 1074603234,
+            "fixback": 1074603314,
+            "fixnull": 1074603316,
+            "fixret": 1074603322,
+            "__bss_start": 1074611516,
+            "_edata": 1074611516,
+            "_end": 1074611516
+          },
+          "matchesAuthor": true
+        }
+      ],
+      "hookAddress": 1073776322,
+      "hookLength": 6,
+      "hookSha256": "3378c72f1ed9109d2bd92f1e85e72150e10a4604376578dd792af4e59c10c0fc",
+      "poolBaseLiterals": 3
+    },
+    {
+      "source": "hold_xfade_a.s",
+      "label": "hold cave (crossfade, +0x48)",
+      "bytes": 110,
+      "sha256": "1bc8087f7d35e60d60d6ff73bc775bccb17026da799cab14843bb4f6a24dbceb",
+      "proofs": [
+        {
+          "source": "hold_xfade_a.s",
+          "origin": 1074621312,
+          "bytes": 110,
+          "sha256": "1bc8087f7d35e60d60d6ff73bc775bccb17026da799cab14843bb4f6a24dbceb",
+          "symbols": {
+            "stub": 1074621312,
+            "fix": 1074621332,
+            "fixback": 1074621412,
+            "fixnull": 1074621414,
+            "fixret": 1074621420,
+            "_edata": 1074629614,
+            "__bss_start": 1074629616,
+            "_end": 1074629616
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "hold_xfade_a.s",
+          "origin": 1074622464,
+          "bytes": 110,
+          "sha256": "1bc8087f7d35e60d60d6ff73bc775bccb17026da799cab14843bb4f6a24dbceb",
+          "symbols": {
+            "stub": 1074622464,
+            "fix": 1074622484,
+            "fixback": 1074622564,
+            "fixnull": 1074622566,
+            "fixret": 1074622572,
+            "_edata": 1074630766,
+            "__bss_start": 1074630768,
+            "_end": 1074630768
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "hold_xfade_a.s",
+          "origin": 1074603216,
+          "bytes": 110,
+          "sha256": "1bc8087f7d35e60d60d6ff73bc775bccb17026da799cab14843bb4f6a24dbceb",
+          "symbols": {
+            "stub": 1074603216,
+            "fix": 1074603236,
+            "fixback": 1074603316,
+            "fixnull": 1074603318,
+            "fixret": 1074603324,
+            "_edata": 1074611518,
+            "__bss_start": 1074611520,
+            "_end": 1074611520
+          },
+          "matchesAuthor": true
+        }
+      ],
+      "hookAddress": 1073775934,
+      "hookLength": 8,
+      "hookSha256": "77fc999ca1fc167b277dc189315c0be0b8cfff81d92c4986a55d6127a37be354",
+      "poolBaseLiterals": 3
+    },
+    {
+      "source": "hold_xfade_b.s",
+      "label": "hold cave (crossfade, +0x4c)",
+      "bytes": 110,
+      "sha256": "a1d1333c6eb6d9a0d8ace777d323c85f8ba9bf60cd24aceba396d6e5fb28c6cf",
+      "proofs": [
+        {
+          "source": "hold_xfade_b.s",
+          "origin": 1074621312,
+          "bytes": 110,
+          "sha256": "a1d1333c6eb6d9a0d8ace777d323c85f8ba9bf60cd24aceba396d6e5fb28c6cf",
+          "symbols": {
+            "stub": 1074621312,
+            "fix": 1074621332,
+            "fixback": 1074621412,
+            "fixnull": 1074621414,
+            "fixret": 1074621420,
+            "_edata": 1074629614,
+            "__bss_start": 1074629616,
+            "_end": 1074629616
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "hold_xfade_b.s",
+          "origin": 1074622464,
+          "bytes": 110,
+          "sha256": "a1d1333c6eb6d9a0d8ace777d323c85f8ba9bf60cd24aceba396d6e5fb28c6cf",
+          "symbols": {
+            "stub": 1074622464,
+            "fix": 1074622484,
+            "fixback": 1074622564,
+            "fixnull": 1074622566,
+            "fixret": 1074622572,
+            "_edata": 1074630766,
+            "__bss_start": 1074630768,
+            "_end": 1074630768
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "hold_xfade_b.s",
+          "origin": 1074603216,
+          "bytes": 110,
+          "sha256": "a1d1333c6eb6d9a0d8ace777d323c85f8ba9bf60cd24aceba396d6e5fb28c6cf",
+          "symbols": {
+            "stub": 1074603216,
+            "fix": 1074603236,
+            "fixback": 1074603316,
+            "fixnull": 1074603318,
+            "fixret": 1074603324,
+            "_edata": 1074611518,
+            "__bss_start": 1074611520,
+            "_end": 1074611520
+          },
+          "matchesAuthor": true
+        }
+      ],
+      "hookAddress": 1073775950,
+      "hookLength": 8,
+      "hookSha256": "a4c7b8c2e06be9c6dd682837e7d18743db2c2e38f748fac2ca1763b3079f8450",
+      "poolBaseLiterals": 3
+    },
+    {
+      "source": "hold_guard.s",
+      "label": "hold cave (copy guard)",
+      "bytes": 86,
+      "sha256": "d4f1507c932d8abe74f3629f6c762ab62ec58ece663acfac1fff968c898b666d",
+      "proofs": [
+        {
+          "source": "hold_guard.s",
+          "origin": 1074621312,
+          "bytes": 86,
+          "sha256": "d4f1507c932d8abe74f3629f6c762ab62ec58ece663acfac1fff968c898b666d",
+          "symbols": {
+            "stub": 1074621312,
+            "capped": 1074621324,
+            "back": 1074621390,
+            "done": 1074621392,
+            "_edata": 1074629590,
+            "__bss_start": 1074629592,
+            "_end": 1074629592
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "hold_guard.s",
+          "origin": 1074622464,
+          "bytes": 86,
+          "sha256": "d4f1507c932d8abe74f3629f6c762ab62ec58ece663acfac1fff968c898b666d",
+          "symbols": {
+            "stub": 1074622464,
+            "capped": 1074622476,
+            "back": 1074622542,
+            "done": 1074622544,
+            "_edata": 1074630742,
+            "__bss_start": 1074630744,
+            "_end": 1074630744
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "hold_guard.s",
+          "origin": 1074603216,
+          "bytes": 86,
+          "sha256": "d4f1507c932d8abe74f3629f6c762ab62ec58ece663acfac1fff968c898b666d",
+          "symbols": {
+            "stub": 1074603216,
+            "capped": 1074603228,
+            "back": 1074603294,
+            "done": 1074603296,
+            "_edata": 1074611494,
+            "__bss_start": 1074611496,
+            "_end": 1074611496
+          },
+          "matchesAuthor": true
+        }
+      ],
+      "hookAddress": 1073776406,
+      "hookLength": 6,
+      "hookSha256": "15734e36c99ed02a2dfcbc4e5f51363cbb71e4f4d4f87b8bfaeacc2f83df6f8b",
+      "poolBaseLiterals": 1
+    },
+    {
+      "source": "hold_xguard.s",
+      "label": "hold cave (crossfade guard)",
+      "bytes": 118,
+      "sha256": "06ea39eb4ae05fca2282fc697ae04671e00cd832afe977276a99f63776b94914",
+      "proofs": [
+        {
+          "source": "hold_xguard.s",
+          "origin": 1074621312,
+          "bytes": 118,
+          "sha256": "06ea39eb4ae05fca2282fc697ae04671e00cd832afe977276a99f63776b94914",
+          "symbols": {
+            "stub": 1074621312,
+            "capped": 1074621324,
+            "notA": 1074621410,
+            "notB": 1074621420,
+            "back": 1074621422,
+            "done": 1074621424,
+            "_edata": 1074629622,
+            "__bss_start": 1074629624,
+            "_end": 1074629624
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "hold_xguard.s",
+          "origin": 1074622464,
+          "bytes": 118,
+          "sha256": "06ea39eb4ae05fca2282fc697ae04671e00cd832afe977276a99f63776b94914",
+          "symbols": {
+            "stub": 1074622464,
+            "capped": 1074622476,
+            "notA": 1074622562,
+            "notB": 1074622572,
+            "back": 1074622574,
+            "done": 1074622576,
+            "_edata": 1074630774,
+            "__bss_start": 1074630776,
+            "_end": 1074630776
+          },
+          "matchesAuthor": true
+        },
+        {
+          "source": "hold_xguard.s",
+          "origin": 1074603216,
+          "bytes": 118,
+          "sha256": "06ea39eb4ae05fca2282fc697ae04671e00cd832afe977276a99f63776b94914",
+          "symbols": {
+            "stub": 1074603216,
+            "capped": 1074603228,
+            "notA": 1074603314,
+            "notB": 1074603324,
+            "back": 1074603326,
+            "done": 1074603328,
+            "_edata": 1074611526,
+            "__bss_start": 1074611528,
+            "_end": 1074611528
+          },
+          "matchesAuthor": true
+        }
+      ],
+      "hookAddress": 1073776088,
+      "hookLength": 6,
+      "hookSha256": "b318906f923048d283a9c0b1db59cf11e1c592631a9d142296ed4708b2e7594e",
+      "poolBaseLiterals": 1
+    }
+  ]
+}

@@ -19,7 +19,11 @@ describe('release package scope and reviewed source inventory', () => {
   })
   it('binds approved standalone MIDI Scenes without compiling its archived 8.2 port', async () => {
     const versions = await compiledModuleVersions(root, catalog), paths = await moduleSourcePaths(root)
-    expect(Object.keys(versions)).toEqual(['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', ...requested.filter(id => id !== 'vector'),'previewvol','cc-map','sidechain-compressor','vector'])
+    expect(Object.keys(versions)).toEqual(['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', ...requested.filter(id => id !== 'vector'),'previewvol','cc-map','sidechain-compressor','vector','playmodes','mute-modes','recorder-loop-fix'])
+    for (const id of ['playmodes', 'mute-modes', 'recorder-loop-fix']) {
+      expect(versions[id]).toBe('0.1.0-experimental')
+      expect(paths).toContain('modules/' + id + '/manifest.py')
+    }
     expect(versions['midi-scenes']).toBe('0.2.4-experimental')
     expect(versions.miniverb).toBe('0.1.2-experimental')
     for (const id of verifiedRequested) {

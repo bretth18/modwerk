@@ -11,8 +11,49 @@ function sine(offset: number, amplitude = 30, frequency = 2.2) {
   }).join(' ')
 }
 
+function muteSignal(mode: number) {
+  return Array.from({ length: 121 }, (_, i) => {
+    const x = 80 + i * 1.76
+    const afterMute = Math.max(0, x - 160)
+    const envelope = x < 160 ? 11 : mode === 0 ? 0 : mode === 1 ? 6
+      : mode === 2 ? 8 * Math.exp(-afterMute / 28) : 11 * Math.max(0, 1 - afterMute / 75)
+    const y = 48 + mode * 31 + Math.sin(i * .6) * envelope
+    return (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1)
+  }).join(' ')
+}
+
+function recorderSignal() {
+  return Array.from({ length: 121 }, (_, i) => {
+    const x = 28 + i * 2.2
+    const phase = i / 40 * Math.PI * 2
+    const y = 85 + Math.sin(phase) * 29 + Math.sin(phase * 2) * 8
+    return (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1)
+  }).join(' ')
+}
+
 // Hand-drawn art for the catalog modules. A module without an entry shows its presentation/thumbnail.svg.
 const ART: Readonly<Record<string, () => ReactElement>> = {
+  'mute-modes': () => <g>
+    <path className="signal-secondary" d="M160 33V155" strokeDasharray="3 5" />
+    <text x="147" y="25">MUTE</text>
+    {['OT', 'OTFX', 'OTFX-T', 'DT-T'].map((mode, i) => <g key={mode}>
+      <text x="25" y={52 + i * 31}>{mode}</text>
+      <path className="signal-ghost" d={'M80 ' + (48 + i * 31) + 'H292'} />
+      <path className="signal-main" d={muteSignal(i)} />
+    </g>)}
+    <text x="25" y="177">CUT / TAILS / TRIGS / ENVELOPE</text>
+  </g>,
+  'recorder-loop-fix': () => <g>
+    <path className="signal-ghost" d="M28 85H292" />
+    {[28, 116, 204, 292].map(x => <g key={x}>
+      <path className="signal-secondary" d={'M' + x + ' 41V129'} strokeDasharray="3 5" />
+      <circle className="signal-dot" cx={x} cy="85" r="3" />
+    </g>)}
+    <path className="signal-main" d={recorderSignal()} />
+    <path className="signal-secondary" d="M292 132V145Q292 153 284 153H36Q28 153 28 145V132M23 138L28 132L33 138" />
+    <text x="25" y="28">RECORD</text><text x="249" y="28">REPEAT</text>
+    <text x="25" y="177">RLEN</text><text x="218" y="177">TEMPO SYNC</text>
+  </g>,
   vector: () => <g>
     {[3, 5, 8, 5, 10, 8, 5, 3, 5, 8, 12, 10, 8, 5, 3, 5].map((pitch, i) => <g key={i}>
       <path className="signal-secondary" d={'M' + (32 + i * 17) + ' 144V' + (132 - pitch * 7)} />

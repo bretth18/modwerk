@@ -10,7 +10,7 @@ import argparse, hashlib, importlib.util, json, os, re, shutil, struct, subproce
 APP = Path(__file__).resolve().parents[1]
 ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead']
 HOOKED = ['sidechain-compressor']
-REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer', 'synth', 'vector']
+REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer', 'synth', 'vector', 'playmodes', 'mute-modes', 'recorder-loop-fix']
 UTILITIES = ['previewvol', 'cc-map']
 ASSET_NAMES = ['dsp-packages.json', 'coldfire-packages.json', 'resident-dsp.json', 'rom-packages.json',
                'bootstrap-package.json', 'menu-recipes.json', 'descriptor-recipes.json', 'platform-writes.json', 'requested-packages.json', 'utility-packages.json']
@@ -143,18 +143,43 @@ def compile_requested(root, known, documents, versions, revision, provenance, na
                     inherited = bytes(data[offset:offset+23]); data[offset:offset+23] = bytes(23)
                     copies.append(dict(section=section, offset=value+9, source=address+9, bytes=23, sha256=HASH(inherited)))
             manifest = 'platform/usb-midi/manifest.py' if m.name == 'usb-midi' else f'modules/{m.name}/manifest.py'
-            objects.append(dict(label=u.label,moduleId=m.name,version=documents[m.name]['version'] if m.name in documents else None,key=m.key,author=author,nativeAuthor=m.author,cpu=cpu,dram=u.dram,caveAddress=u.cave_addr,source=u.source,sources={q:sources[q] for q in [u.source,manifest]},bytes=len(data),code=data.hex(),sha256=HASH(data),stockCopies=copies))
+            objects.append(dict(label=u.label,moduleId=m.name,version=documents[m.name]['version'] if m.name in documents else None,key=m.key,author=author,nativeAuthor=m.author,cpu=cpu,dram=u.dram,caveAddress=u.cave_addr,source=u.source,sources={q:sources[q] for q in [u.source,manifest]},bytes=len(data),code=data.hex(),sha256=HASH(data),stockCopies=copies,placement="linked",poolBaseLiterals=0,variants=[]))
+        if m.name == 'mute-modes':
+            unit = next(u for u in m.linked if u.label == 'mm_softmute')
+            work = root / 'requested' / unit.label
+            (work / 'remix.inc').write_text(unit.include({**selection, 'SIDECHAIN_COMPRESSOR': known['SIDECHAIN_COMPRESSOR']}))
+            obj = work / 'sidechain.o'
+            run(['m68k-elf-as', '-mcpu=' + unit.cpu, '-I', work, '-o', obj, root / unit.source], root)
+            raw = obj.read_bytes()
+            pkg = next(row for row in objects if row['label'] == unit.label)
+            pkg['variants'] = [dict(whenModule='sidechain-compressor', bytes=len(raw), code=raw.hex(), sha256=HASH(raw))]
+        for index, patch in enumerate(m.cf_patches if m.name == 'recorder-loop-fix' else ()):
+            label = 'recorder_cave_' + str(index)
+            work = root / 'requested' / label; work.mkdir(parents=True)
+            text = (root / patch.source).read_text().replace('.include "modules/recorder-loop-fix/fix.inc"', (root / 'modules/recorder-loop-fix/fix.inc').read_text())
+            validate_source(text)
+            text = '.text\n.global ' + label + '_entry\n' + label + '_entry:\n' + text
+            src = work / 'source.s'; src.write_text(text)
+            obj = work / 'unit.o'
+            run(['m68k-elf-as', '-mcpu=' + patch.cpu, '-o', obj, src], root)
+            raw = obj.read_bytes()
+            manifest = 'modules/recorder-loop-fix/manifest.py'
+            objects.append(dict(label=label,moduleId=m.name,version=documents[m.name]['version'],key=m.key,author=author,nativeAuthor=m.author,cpu=patch.cpu,dram=False,caveAddress=patch.cave_addr,source=patch.source,sources={q:sources[q] for q in [patch.source,manifest,'modules/recorder-loop-fix/fix.inc']},bytes=len(raw),code=raw.hex(),sha256=HASH(raw),stockCopies=[],placement='cave',poolBaseLiterals=patch.pool_base_literals,variants=[]))
         detours, refs, pokes, tables = [], [], [], []
         for d in m.detours:
             length, digest = fingerprint(d.expect,d.site)
             detours.append(dict(address=d.site,guardLength=length,guardSha256=digest,unit=d.unit,symbol=d.symbol,target=d.target,kind=d.kind,writeLength=d.pad_to or 6,note=d.note))
+        for index, patch in enumerate(m.cf_patches if m.name == 'recorder-loop-fix' else ()):
+            length,digest=fingerprint(patch.hook_stock,patch.hook_addr)
+            label='recorder_cave_'+str(index)
+            detours.append(dict(address=patch.hook_addr,guardLength=length,guardSha256=digest,unit=label,symbol=label+'_entry',target=None,kind='jsr',writeLength=length,note=patch.label))
         for r in m.symbol_refs:
             refs.append(dict(address=r.addr,guardLength=4,guardSha256=HASH(r.expect.to_bytes(4,'big')),unit=r.unit,symbol=r.symbol,addend=r.addend,note=r.note))
         for q in m.pokes:
             length,digest=fingerprint(q.expect,q.addr)
             pokes.append(dict(address=q.addr,guardLength=length,guardSha256=digest,code=q.write.hex(),note=q.note))
         for t in m.tables:
-            tables.append(dict(label=t.label,old=t.old,count=t.count,symbols=[dict(unit=u,symbol=n) for u,n in t.symbols],refs=[dict(address=a,old=o) for a,o in t.refs]))
+            tables.append(dict(label=t.label,old=t.old,count=t.count,symbols=[dict(unit=u,symbol=n) for u,n in t.symbols],refs=[dict(address=a,old=o) for a,o in t.refs],insertAt=t.count if t.insert_at is None else t.insert_at))
         groups.append(dict(moduleId=m.name,key=m.key,author=author,nativeAuthor=m.author,detours=detours,refs=refs,pokes=pokes,tables=tables))
     import ab_image, dsp909
     ab_image.OUT = root / 'requested/analog'; dsp909.DSP_ASM=assembler; dsp909.DISASM=disassembler

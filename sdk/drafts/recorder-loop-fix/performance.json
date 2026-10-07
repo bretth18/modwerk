@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "module": "recorder-loop-fix",
+  "moduleVersion": "0.1.0-experimental",
+  "qualification": false,
+  "status": "pending",
+  "report": "TESTING.md",
+  "coldfireNativeProbe": {
+    "evidence": "evidence/probes.json",
+    "method": "MCF5206E model cycles and conservative conditional V4 path bounds",
+    "stockCallbackBodiesIncluded": false
+  },
+  "comparison": {
+    "stock": null,
+    "module": null,
+    "longestFrameInterruptCycles": null,
+    "idleShare": null,
+    "projectFingerprint": null,
+    "reason": "No complete same-project CF Meter stock/module run or current-image physical timing result; model probe cycles cannot populate this comparison."
+  },
+  "hardware": {
+    "status": "untested-current-image",
+    "midiSources": 0,
+    "midiDestinations": 0
+  },
+  "audio": {
+    "status": "not-tested",
+    "reason": "Native branch fixtures and UI boot do not test DSP audio continuity."
+  }
+}

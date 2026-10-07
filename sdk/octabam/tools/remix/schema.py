@@ -877,6 +877,11 @@ class TableGrow:
     count: int
     symbols: tuple[tuple[str, str], ...]
     refs: tuple[tuple[int, int], ...]
+    insert_at: int | None = None
+
+    def __post_init__(self):
+        if self.insert_at is not None and (type(self.insert_at) is not int or not 0 <= self.insert_at <= self.count):
+            raise ValueError("Table insertion must lie within the stock pointer array")
 
 
 @dataclass(frozen=True)

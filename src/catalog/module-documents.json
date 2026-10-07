@@ -4742,6 +4742,679 @@
           }
         }
       ]
+    },
+    {
+      "schemaVersion": 2,
+      "id": "playmodes",
+      "key": "PLAY MODES",
+      "name": "Play Modes",
+      "version": "0.1.0-experimental",
+      "category": "machines",
+      "source": {
+        "repository": "https://github.com/devilfish707/Octaplay",
+        "revision": "1d2e9dc2bada2fea79d1ba07a8a56e1812a20ad8",
+        "path": "playmodes"
+      },
+      "access": {
+        "location": "Automatic when included in a build: hold a TRACK key on the main screen and press UP or DOWN.",
+        "steps": [
+          "Include Play Modes in your build. It uses no effect slot and no knob.",
+          "Load a pattern and choose its SCALE MODE in PATTERN SETTINGS: NORMAL for one shared mode, PER TRACK for one mode per track.",
+          "Hold TRACK 1 (or the track to change) and press DOWN or UP; the popup shows the new mode. Press PLAY.",
+          "Hold the TRACK key and press UP until the popup shows NORMAL to return to stock playback."
+        ],
+        "screenshots": [
+          "media/ot-mode-all-reversed.png",
+          "media/ot-mode-all-pingpong2.png"
+        ]
+      },
+      "author": {
+        "github": "devilfish707",
+        "credits": [
+          "devilfish707: engine, firmware glue, investigation and documentation.",
+          "Firmware addresses cited from octabam (Sam Banks), SCALE QUANTIZER and DIRECT JUMP (Tim Hastie), the KYOTI notes (Zac-Kyoti) and OctaKit (June Kiff)."
+        ]
+      },
+      "nativeManifest": "manifest.py",
+      "presentation": {
+        "label": "PLAYHEAD DIRECTION",
+        "family": "Sequencer",
+        "summary": "Play patterns reversed, pingpong, random or shuffled: per pattern, shared by every track or set per track.",
+        "overview": "Play Modes changes which step the sequencer plays at each position: NORMAL, REVERSED, PINGPONG (end steps once), PINGPONG 2 (end steps twice), RANDOM or SHUFFLE. Each pattern keeps its own modes: one shared mode under SCALE MODE NORMAL, one per audio and MIDI track under PER TRACK. Trigs, conditions, micro-timing, swing and locks move with their step; tempo, lengths, chains and the trig LEDs stay in step. The modes are saved with the project, survive a power cycle and follow pattern copy, paste and clear.",
+        "highlights": [
+          "Six playhead modes, including two pingpongs and a shuffle that plays every step once per pass",
+          "Per pattern; per track under PER TRACK scale mode, audio and MIDI tracks",
+          "Hold a TRACK key and press UP or DOWN; a popup names the mode",
+          "Saved in the project, kept over a power cycle, carried by pattern copy and paste"
+        ],
+        "usage": [
+          "Hold a TRACK key and press DOWN to step through NORMAL, REVERSED, PINGPONG, PINGPONG 2, RANDOM and SHUFFLE; UP walks back. The popup shows ALL <mode> under SCALE MODE NORMAL, or T1..T8 / M1..M8 <mode> under PER TRACK.",
+          "Each pattern keeps its own modes; PLAY and every pattern change start the tracks from their first step again.",
+          "Under PER TRACK, MASTER LENGTH limits how far a track gets; set it to INF to let every track run its full length in every mode."
+        ]
+      },
+      "controls": [],
+      "compatibility": {
+        "firmware": "1.40C",
+        "effectId": null,
+        "location": "Project sequencer",
+        "conflicts": [],
+        "limitations": [
+          "Does not combine with octabam's PLOCKS P2 (not in this catalog): both use battery RAM 0x100f8600.. and the 20 pattern-copy memcpy sites.",
+          "Deliberate stock-flow change: TRACK held + UP / DOWN changes the mode and does not reach the stock arrow handler; project.work gains #PLAY_MODES= comment lines.",
+          "Copying a single track does not copy its mode; PROJECT > NEW may keep the previous project's modes (untested).",
+          "Played interactively on one MKII (builds 12-19); MKI, micro-timing, trig conditions, slides, live recording and MIDI tracks beyond a first check are untested.",
+          "Chip worst-case cycles are unmeasured; no stress project has been run.",
+          "Like every DRAM module, the build gives up about 10 MB of sample memory to the platform reserve."
+        ]
+      },
+      "resources": {
+        "recorded": "7 October 2026: emulator instruction counts and build-report memory; chip timing unmeasured",
+        "storage": {
+          "label": "DRAM data + battery RAM",
+          "display": "13,724 B: 11,414 B unit in DRAM + 2,310 B battery RAM",
+          "value": 13724,
+          "unit": "bytes",
+          "method": "static",
+          "conditions": "Code 6,628, read-only data 102, state and pattern table 4,684 (SDRAM platform reserve), battery table 2,310 (CS1). All shared; stack at most 104 bytes. See evidence/memory.md.",
+          "source": "evidence/memory.md"
+        },
+        "processing": {
+          "label": "ColdFire processing",
+          "display": "≤ 4,206 instructions per track step (1,726 measured)",
+          "value": 4206,
+          "unit": "instructions/event",
+          "method": "emulator",
+          "conditions": "Instruction counts of the module's own code in octabam's ColdFire core, no firmware, synthetic sequencer state; SHUFFLE's walk bounded analytically. Chip cycles: 32-cycle-per-instruction allowance, not measured.",
+          "source": "evidence/cycles.md"
+        },
+        "impact": {
+          "conditions": "16 tracks (8 audio, 8 MIDI) in SHUFFLE, the most expensive mode, at the highest tempo and finest track scale; a project load rewriting the battery table.",
+          "cpu": {
+            "level": "low",
+            "basis": "source-estimate",
+            "rationale": "Per track per step a few byte reads, one pass test and one mapping; SHUFFLE adds a keyed permutation (about two evaluations, three multiplies each). Battery-RAM writes only on key presses, pattern copies and project loads.",
+            "source": "TESTING.md"
+          },
+          "dsp": {
+            "level": "minimal",
+            "basis": "source-estimate",
+            "rationale": "No DSP code, tables or buffers; stock DSP processing is unchanged.",
+            "source": "TESTING.md"
+          },
+          "memory": {
+            "level": "low",
+            "basis": "source-estimate",
+            "rationale": "About 4.7 KB of DRAM data in the platform reserve plus the unit's code, and a 2,310-byte battery-RAM table; no per-instance copies.",
+            "source": "TESTING.md"
+          }
+        }
+      },
+      "tests": {
+        "report": "TESTING.md",
+        "summary": "Host suites for the engine and firmware glue pass; instruction counts in octabam's ColdFire core bound one track step at 4,206 instructions (1,726 measured); the author ran build 19 on an MKII for about 15 minutes (functional report). No stress run, no chip timing.",
+        "hardwareStatus": "reported",
+        "evidenceRevision": "1d2e9dc2bada2fea79d1ba07a8a56e1812a20ad8",
+        "gates": [
+          "modules/playmodes/verify.py"
+        ],
+        "qualification": {
+          "documentation": {
+            "tutorial": {
+              "title": "Quick tutorial",
+              "steps": [
+                "Include Play Modes in your build and load a pattern with a trig on step 1 only; SCALE MODE NORMAL.",
+                "Hold TRACK 1, press DOWN once: ALL REVERSED. Press PLAY: the trig sounds on the last step of every bar, and the trig LEDs walk 16 → 1.",
+                "Hold TRACK 1, press DOWN twice more: ALL PINGPONG 2: the trig sounds twice in a row at every turn back to step 1. Hold TRACK 1 and press UP until ALL NORMAL to return to stock playback."
+              ]
+            },
+            "screenshots": [
+              "media/ot-mode-all-reversed.png",
+              "media/ot-mode-all-pingpong2.png"
+            ],
+            "screenshotStyle": "black-and-white"
+          },
+          "moduleVersion": "0.1.0-experimental",
+          "sourceSha256": "bc2a7b45ca856ba03591fa4516c0e871ef5139c4972343bb22315d6116876fce",
+          "imageSha256": "24d22dc0d10e7328fca57e8eec3930b2690ae2f55ec3bf2f5e2e9075a11d87f6",
+          "cycles": [
+            {
+              "processor": "coldfire",
+              "worstCase": 134592,
+              "maxConfiguration": 2153472,
+              "maxInstances": 16,
+              "budget": 6600000,
+              "unit": "cycles/event",
+              "method": "emulator",
+              "conditions": {
+                "parameterExtremes": "Every mode, track lengths 1–64, MASTER LENGTH INF and 0, all seven track scales across the 16 tracks.",
+                "parameterModulation": "No knob, LFO or p-lock reaches the module; mode changes by TRACK + UP / DOWN measured separately (543 instructions). Scenes, LFOs and locks are stock and unchanged.",
+                "modeSwitching": "Every mode and both scale modes, with a PLAY restart on every run; pattern-row reloads on pattern switches included.",
+                "maxLoad": "All 16 tracks (8 audio, 8 MIDI) in one step, SHUFFLE at the longest walk (length 33), every track restarting: bounded at 67,296 instructions; budget one step at 300 BPM, 2X scale, 264 MHz.",
+                "inputConditions": "No audio path. 60 SHUFFLE seeds per length; the walk length bound (32) from the permutation's construction, its cost measured as 101 + 98 × walk."
+              },
+              "report": "evidence/performance.json"
+            }
+          ],
+          "memory": {
+            "regions": [
+              {
+                "name": "Code: C engine and glue, 35 detour stubs and entries",
+                "space": "sdram",
+                "words": 6628,
+                "wordBits": 8,
+                "bytes": 6628,
+                "scope": "shared"
+              },
+              {
+                "name": "Read-only data: mode names, project key, tables",
+                "space": "sdram",
+                "words": 102,
+                "wordBits": 8,
+                "bytes": 102,
+                "scope": "shared"
+              },
+              {
+                "name": "State, flags, popup text, project line and the 256-pattern mode table",
+                "space": "sdram",
+                "words": 4684,
+                "wordBits": 8,
+                "bytes": 4684,
+                "scope": "shared"
+              },
+              {
+                "name": "Battery-RAM mode table 0x100f8600..0x100f8f06",
+                "space": "cpu-ram",
+                "words": 2310,
+                "wordBits": 8,
+                "bytes": 2310,
+                "scope": "shared"
+              }
+            ],
+            "perInstanceBytes": 0,
+            "sharedBytes": 13724,
+            "maxInstances": 16,
+            "totalBytes": 13724,
+            "conditions": "From the build-19 runtime ELF and the battery layout; one table for all tracks and patterns, no per-track copies; stack at most 104 bytes below the caller (measured); no heap, DSP memory or cave space. The platform reserve's 10 MB is shared by every DRAM module.",
+            "report": "evidence/memory.md"
+          },
+          "hardware": {
+            "kind": "functional",
+            "status": "reported",
+            "model": "MKII",
+            "testedOn": "2026-10-07",
+            "tester": "devilfish707",
+            "sourceRevision": "1d2e9dc2bada2fea79d1ba07a8a56e1812a20ad8",
+            "imageSha256": "24d22dc0d10e7328fca57e8eec3930b2690ae2f55ec3bf2f5e2e9075a11d87f6",
+            "summary": "On an Octatrack MKII the author ran build 19 (this source) for about 15 minutes after builds 12–18: PINGPONG 2, per-pattern modes, save and reload, a power cycle, pattern copy and paste (also to other banks) and clear pattern all worked as described.",
+            "limitations": [
+              "A short interactive report, not a timed stress run; no audio or timing measurement.",
+              "One MKII; no MKI.",
+              "Micro-timing, trig conditions, slides, live recording, scenes and Parts during non-NORMAL playback, and MIDI tracks beyond a first check were not tested.",
+              "No combination with other modules on the unit."
+            ],
+            "report": "evidence/hardware.md"
+          }
+        }
+      },
+      "license": {
+        "spdx": "MIT",
+        "file": "LICENSE",
+        "declaration": "Original code and thumbnail by devilfish707, MIT. Firmware addresses are cited from public module sources and read from the author's own OS; no Elektron firmware, extracted routines, tables or images are included."
+      },
+      "media": [
+        {
+          "path": "media/ot-mode-all-reversed.png",
+          "captureType": "emulator",
+          "caption": "Hold TRACK 1 and press DOWN on the main screen: the popup names the new mode, here ALL REVERSED (SCALE MODE NORMAL: one mode for every track).",
+          "alt": "Main screen of pattern A01 with a popup reading ALL REVERSED.",
+          "credit": "devilfish707 (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "Main screen, TRACK + DOWN popup",
+            "shows": "location-and-controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.0-experimental",
+            "imageSha256": "24d22dc0d10e7328fca57e8eec3930b2690ae2f55ec3bf2f5e2e9075a11d87f6",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card (new project, pattern A01); TRACK 1 held, DOWN pressed. Image: the author's build 19, the one tested on the unit."
+          }
+        },
+        {
+          "path": "media/ot-mode-all-pingpong2.png",
+          "captureType": "emulator",
+          "caption": "Still holding TRACK 1, two more DOWN presses: ALL PINGPONG 2, the bounce that plays the end steps twice.",
+          "alt": "Main screen of pattern A01 with a popup reading ALL PINGPONG 2.",
+          "credit": "devilfish707 (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "Main screen, TRACK + DOWN popup",
+            "shows": "location-and-controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.0-experimental",
+            "imageSha256": "24d22dc0d10e7328fca57e8eec3930b2690ae2f55ec3bf2f5e2e9075a11d87f6",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card (new project, pattern A01); TRACK 1 held, DOWN pressed. Image: the author's build 19, the one tested on the unit."
+          }
+        }
+      ]
+    },
+    {
+      "schemaVersion": 2,
+      "id": "mute-modes",
+      "key": "MUTE_MODES",
+      "name": "Mute Modes",
+      "version": "0.1.0-experimental",
+      "category": "system",
+      "source": {
+        "repository": "https://github.com/sambanks/octabam",
+        "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+        "path": "modules/mute-modes"
+      },
+      "access": {
+        "location": "PROJECT > SYSTEM > PERSONALIZE > MUTE MODE",
+        "steps": [
+          "Open PROJECT > SYSTEM > PERSONALIZE and select MUTE MODE.",
+          "Choose OTFX to cut the dry signal while delay and reverb tails continue; trigs keep firing underneath.",
+          "Mute and unmute an audio track with a long delay or reverb tail, then try OTFX-T to suppress new trigs.",
+          "Choose DT-T to let the current voice finish its amp envelope, or OT to restore the stock cut."
+        ],
+        "screenshots": [
+          "media/ot-system.png",
+          "media/ot-mute-ot.png",
+          "media/ot-mute-otfx.png",
+          "media/ot-mute-otfx-t.png",
+          "media/ot-mute-dt-t.png"
+        ]
+      },
+      "author": {
+        "github": "Zac-Kyoti",
+        "credits": [
+          "Zac-Kyoti: mute runtime, PERSONALIZE menu and author byte references. Sam Banks: octabam integration.",
+          "Modwerk contributors: source import, original qualification probes, documentation and SVG thumbnail."
+        ]
+      },
+      "nativeManifest": "manifest.py",
+      "presentation": {
+        "label": "Four mute modes",
+        "family": "Track mute behavior",
+        "summary": "Choose a stock cut, FX tails, trig suppression or amp-envelope completion for muted and soloed-out audio tracks.",
+        "overview": "Choose a stock cut, FX tails, trig suppression or amp-envelope completion for muted and soloed-out audio tracks.",
+        "highlights": [
+          "OT is the default. The global PERSONALIZE setting is stored in battery SRAM; it is not a Part or project setting.",
+          "An OS upgrade resets PERSONALIZE. Saving or switching Parts/projects does not make the mode project-specific.",
+          "SIDECHAIN_COMPRESSOR requires its SC_KEY assembly variant so a muted key continues feeding the compressor."
+        ],
+        "usage": [
+          "Open PROJECT > SYSTEM > PERSONALIZE and select MUTE MODE.",
+          "Choose OTFX to cut the dry signal while delay and reverb tails continue; trigs keep firing underneath.",
+          "Mute and unmute an audio track with a long delay or reverb tail, then try OTFX-T to suppress new trigs.",
+          "Choose DT-T to let the current voice finish its amp envelope, or OT to restore the stock cut."
+        ]
+      },
+      "controls": [
+        {
+          "name": "MUTE MODE",
+          "default": 0,
+          "count": 4,
+          "doc": "Global PERSONALIZE selection; YES wraps, LEFT/RIGHT clamp.",
+          "labels": [
+            "OT",
+            "OTFX",
+            "OTFX-T",
+            "DT-T"
+          ]
+        }
+      ],
+      "compatibility": {
+        "firmware": "1.40C",
+        "effectId": null,
+        "location": "Audio tracks",
+        "conflicts": [],
+        "limitations": [
+          "OT is the default. The global PERSONALIZE setting is stored in battery SRAM; it is not a Part or project setting.",
+          "An OS upgrade resets PERSONALIZE. Saving or switching Parts/projects does not make the mode project-specific.",
+          "SIDECHAIN_COMPRESSOR requires its SC_KEY assembly variant so a muted key continues feeding the compressor.",
+          "No effect slot is consumed. Audio tracks and solo exclusions are affected; MIDI track mute behavior is unchanged."
+        ]
+      },
+      "resources": {
+        "recorded": "7 October 2026; authored-source assembly and isolated native-code probes",
+        "storage": {
+          "label": "Authored code and relocated menu tables",
+          "display": "1380 bytes before placement padding",
+          "value": 1380,
+          "unit": "bytes",
+          "method": "static",
+          "conditions": "Program bytes 1176, tables 204. This is a standalone source footprint, not a complete common-builder or stock memory inventory. Actual probe stack peaks and model timing are recorded separately.",
+          "source": "evidence/source-identity.json"
+        },
+        "processing": {
+          "label": "ColdFire native paths",
+          "display": "Measured model cycles; chip wall-clock pending",
+          "value": 382,
+          "unit": "model cycles/event",
+          "method": "emulator",
+          "conditions": "MCF5206E core-cycle model, cache-hit zero-wait; not MCF54455 chip timing. Synthetic stock callbacks exclude their actual work. Conservative V4 code-cycle path bounds exclude cache, bus and interrupt contention; see TESTING.md.",
+          "source": "evidence/probes.json"
+        },
+        "impact": {
+          "conditions": "Source estimate for eight audio tracks; no added DSP program. Complete timing and placement remain pending.",
+          "cpu": {
+            "level": "low",
+            "basis": "source-estimate",
+            "rationale": "Finite ColdFire hook paths with bounded eight-track loops; native paths and stack peaks were measured.",
+            "source": "TESTING.md"
+          },
+          "dsp": {
+            "level": "minimal",
+            "basis": "source-estimate",
+            "rationale": "No new DSP program; existing voice and FX dispatch is retained.",
+            "source": "manifest.py"
+          },
+          "memory": {
+            "level": "low",
+            "basis": "source-estimate",
+            "rationale": "Small authored ROM patches and reused stock state; no new audio buffer allocation.",
+            "source": "TESTING.md"
+          }
+        }
+      },
+      "tests": {
+        "report": "TESTING.md",
+        "summary": "All three author SHA-256 references match. Native mask/mode/menu/sidechain probes passed with measured instruction counts, model cycles and stack peaks. Actual LCD menu/mode captures were reviewed. Full audio, complete callback timing and current-image hardware remain pending. Published with owner approval for missing hardware evidence; historical author reports are retained. Software integration is checked separately.",
+        "hardwareStatus": "historical",
+        "evidenceRevision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+        "gates": [
+          "qualification/probe.cpp"
+        ],
+        "documentation": {
+          "tutorial": {
+            "title": "Quick tutorial: keep FX tails when muting",
+            "steps": [
+              "Open PROJECT > SYSTEM > PERSONALIZE and select MUTE MODE.",
+              "Choose OTFX to cut the dry signal while delay and reverb tails continue; trigs keep firing underneath.",
+              "Mute and unmute an audio track with a long delay or reverb tail, then try OTFX-T to suppress new trigs.",
+              "Choose DT-T to let the current voice finish its amp envelope, or OT to restore the stock cut."
+            ]
+          },
+          "screenshots": [
+            "media/ot-system.png",
+            "media/ot-mute-ot.png",
+            "media/ot-mute-otfx.png",
+            "media/ot-mute-otfx-t.png",
+            "media/ot-mute-dt-t.png"
+          ],
+          "screenshotStyle": "black-and-white"
+        }
+      },
+      "license": {
+        "spdx": "MIT",
+        "file": "LICENSE",
+        "declaration": "Original authored sources and upstream licence notices are retained with exact source pins. Only authored source, address/length/hash stock guards and sanitized evidence are included. No firmware, extracted stock routine/table, runtime image, card or RAM/LCD dump is included. Modwerk qualification probes are GPL-3.0-or-later; thumbnail and documentation are original Modwerk work. LCD captures, when present, retain underlying Elektron rights as declared in media/LICENSE.md."
+      },
+      "media": [
+        {
+          "path": "media/ot-system.png",
+          "captureType": "emulator",
+          "caption": "PROJECT > SYSTEM. Native monochrome LCD; stopped CPU-only capture.",
+          "alt": "PROJECT > SYSTEM on the Octatrack LCD.",
+          "credit": "Modwerk contributors; Elektron Octatrack UI",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "PROJECT / SYSTEM",
+            "shows": "location",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.0-experimental",
+            "imageSha256": "601ba3bd042129aacecbeeee0b0e1ab928cee1f5cf9fe7577b060b81b044fb37",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. ColdFire UI execution with DSP host stub; no audio claim. Local standalone composition, not shared-builder parity. Empty private OCTAMOD/MEASURE SET was requested; missing-project prompts dismissed with three NO presses. Native initialized UI state, no valid saved project or recorder-slot assignment claimed."
+          }
+        },
+        {
+          "path": "media/ot-mute-ot.png",
+          "captureType": "emulator",
+          "caption": "MUTE MODE: OT. Native monochrome LCD; stopped CPU-only capture.",
+          "alt": "MUTE MODE: OT on the Octatrack LCD.",
+          "credit": "Modwerk contributors; Elektron Octatrack UI",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "PERSONALIZE",
+            "shows": "location-and-controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.0-experimental",
+            "imageSha256": "601ba3bd042129aacecbeeee0b0e1ab928cee1f5cf9fe7577b060b81b044fb37",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. ColdFire UI execution with DSP host stub; no audio claim. Local standalone composition, not shared-builder parity. Empty private OCTAMOD/MEASURE SET was requested; missing-project prompts dismissed with three NO presses. Native initialized UI state, no valid saved project or recorder-slot assignment claimed."
+          }
+        },
+        {
+          "path": "media/ot-mute-otfx.png",
+          "captureType": "emulator",
+          "caption": "MUTE MODE: OTFX. Native monochrome LCD; stopped CPU-only capture.",
+          "alt": "MUTE MODE: OTFX on the Octatrack LCD.",
+          "credit": "Modwerk contributors; Elektron Octatrack UI",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "PERSONALIZE",
+            "shows": "location-and-controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.0-experimental",
+            "imageSha256": "601ba3bd042129aacecbeeee0b0e1ab928cee1f5cf9fe7577b060b81b044fb37",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. ColdFire UI execution with DSP host stub; no audio claim. Local standalone composition, not shared-builder parity. Empty private OCTAMOD/MEASURE SET was requested; missing-project prompts dismissed with three NO presses. Native initialized UI state, no valid saved project or recorder-slot assignment claimed."
+          }
+        },
+        {
+          "path": "media/ot-mute-otfx-t.png",
+          "captureType": "emulator",
+          "caption": "MUTE MODE: OTFX-T. Native monochrome LCD; stopped CPU-only capture.",
+          "alt": "MUTE MODE: OTFX-T on the Octatrack LCD.",
+          "credit": "Modwerk contributors; Elektron Octatrack UI",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "PERSONALIZE",
+            "shows": "location-and-controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.0-experimental",
+            "imageSha256": "601ba3bd042129aacecbeeee0b0e1ab928cee1f5cf9fe7577b060b81b044fb37",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. ColdFire UI execution with DSP host stub; no audio claim. Local standalone composition, not shared-builder parity. Empty private OCTAMOD/MEASURE SET was requested; missing-project prompts dismissed with three NO presses. Native initialized UI state, no valid saved project or recorder-slot assignment claimed."
+          }
+        },
+        {
+          "path": "media/ot-mute-dt-t.png",
+          "captureType": "emulator",
+          "caption": "MUTE MODE: DT-T. Native monochrome LCD; stopped CPU-only capture.",
+          "alt": "MUTE MODE: DT-T on the Octatrack LCD.",
+          "credit": "Modwerk contributors; Elektron Octatrack UI",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "PERSONALIZE",
+            "shows": "location-and-controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.0-experimental",
+            "imageSha256": "601ba3bd042129aacecbeeee0b0e1ab928cee1f5cf9fe7577b060b81b044fb37",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. ColdFire UI execution with DSP host stub; no audio claim. Local standalone composition, not shared-builder parity. Empty private OCTAMOD/MEASURE SET was requested; missing-project prompts dismissed with three NO presses. Native initialized UI state, no valid saved project or recorder-slot assignment claimed."
+          }
+        }
+      ]
+    },
+    {
+      "schemaVersion": 2,
+      "id": "recorder-loop-fix",
+      "key": "RECORDER LOOP FIX",
+      "name": "Recorder Loop Fix",
+      "version": "0.1.0-experimental",
+      "category": "playback",
+      "source": {
+        "repository": "https://github.com/sambanks/octabam",
+        "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+        "path": "modules/recorder-loop-fix"
+      },
+      "access": {
+        "location": "Automatic on Flex recorder-buffer playback; stock SRC and recorder setup pages.",
+        "steps": [
+          "Use a disposable project and assign a Flex track to its own recorder buffer.",
+          "Set RLEN to 16 at 128 BPM and place recording and playback trigs at the start of the bar; for sound-on-sound set SRC3 to that track.",
+          "Record a sustained tone and listen across successive wraps, then repeat after stopping and restarting transport.",
+          "Compare with stock using the same project, tempo and sample. A fractional-sample loop can still repeat or skip one sample at a wrap."
+        ],
+        "screenshots": [
+          "media/ot-flex-setup.png",
+          "media/ot-recorder-setup.png"
+        ]
+      },
+      "author": {
+        "github": "sambanks",
+        "credits": [
+          "Sam Banks: all eight recorder patches, source oracles and octabam declaration.",
+          "Modwerk contributors: source import, original qualification probes, documentation and SVG thumbnail.",
+          "Modwerk: overflow-safe inverse arm phase correction; GPL-3.0-or-later. Original Sam Banks cave attribution and MIT terms retained."
+        ]
+      },
+      "nativeManifest": "manifest.py",
+      "presentation": {
+        "label": "Cleaner recorder loops",
+        "family": "Recorder buffer playback",
+        "summary": "Fix recorder-buffer voice reprime, counter resets, alternating recording lengths and sound-on-sound zero samples at the loop boundary.",
+        "overview": "Fix recorder-buffer voice reprime, counter resets, alternating recording lengths and sound-on-sound zero samples at the loop boundary.",
+        "highlights": [
+          "Automatic when included in a qualified image; there is no menu, knob or effect slot. Remove the module when building to restore stock behavior.",
+          "Applies to Flex playback of recorder buffers, including sound-on-sound. Ordinary sample playback fallback paths are retained.",
+          "Uses the stock tempo, arm sample and recorder length. It does not run a separate clock."
+        ],
+        "usage": [
+          "Use a disposable project and assign a Flex track to its own recorder buffer.",
+          "Set RLEN to 16 at 128 BPM and place recording and playback trigs at the start of the bar; for sound-on-sound set SRC3 to that track.",
+          "Record a sustained tone and listen across successive wraps, then repeat after stopping and restarting transport.",
+          "Compare with stock using the same project, tempo and sample. A fractional-sample loop can still repeat or skip one sample at a wrap."
+        ]
+      },
+      "controls": [],
+      "compatibility": {
+        "firmware": "1.40C",
+        "effectId": null,
+        "location": "Flex / Static",
+        "conflicts": [],
+        "limitations": [
+          "Automatic when included in a qualified image; there is no menu, knob or effect slot. Remove the module when building to restore stock behavior.",
+          "Applies to Flex playback of recorder buffers, including sound-on-sound. Ordinary sample playback fallback paths are retained.",
+          "Uses the stock tempo, arm sample and recorder length. It does not run a separate clock.",
+          "At fractional bar lengths, a wrap can still repeat or skip one sample; this does not guarantee a perfectly seamless loop at every tempo.",
+          "Eight hook sites and eleven pool-base literals are guarded and relocated by the native and browser builders; builds that exhaust ROM space are refused.",
+          "The corrected fixed-RLEN spacing path covers RLEN 1–64 and 30–300 BPM; outside this range it retains stock length. Non-consecutive recording arms and physical audio continuity remain untested."
+        ]
+      },
+      "resources": {
+        "recorded": "7 October 2026; authored-source assembly and isolated native-code probes",
+        "storage": {
+          "label": "Authored code and relocated menu tables",
+          "display": "858 authored code bytes before placement padding",
+          "value": 858,
+          "unit": "bytes",
+          "method": "static",
+          "conditions": "Corrected source cave footprint; measured independently at three origins. Eight aligned caves occupy 1270 bytes at the tested origin. No new DSP program, audio buffer or heap; 44-byte added probe-stack peak. Inherited callback lifetime bounds and physical canaries are unmeasured.",
+          "source": "evidence/memory-layout.json"
+        },
+        "processing": {
+          "label": "ColdFire native paths",
+          "display": "1007 model cycles/event; chip timing unmeasured",
+          "value": 1007,
+          "unit": "model cycles/event",
+          "method": "emulator",
+          "conditions": "MCF5206E core-cycle model, cache-hit zero-wait; not MCF54455 chip timing. Synthetic stock callbacks exclude their actual work. Conservative V4 code-cycle path bounds exclude cache, bus and interrupt contention; see TESTING.md.",
+          "source": "evidence/probes.json"
+        },
+        "impact": {
+          "conditions": "Source estimate for eight audio tracks; no added DSP program. Complete timing and placement remain pending.",
+          "cpu": {
+            "level": "low",
+            "basis": "source-estimate",
+            "rationale": "Finite ColdFire hook paths with bounded eight-track loops; native paths and stack peaks were measured. The independent long-run spacing oracle has a measured failure, so low cost does not imply correct loop spacing.",
+            "source": "TESTING.md"
+          },
+          "dsp": {
+            "level": "minimal",
+            "basis": "source-estimate",
+            "rationale": "No new DSP program; existing voice and FX dispatch is retained.",
+            "source": "manifest.py"
+          },
+          "memory": {
+            "level": "low",
+            "basis": "source-estimate",
+            "rationale": "Small authored ROM patches and reused stock state; no new audio buffer allocation.",
+            "source": "TESTING.md"
+          }
+        }
+      },
+      "tests": {
+        "report": "TESTING.md",
+        "summary": "All eight source caves match their declared pins at three origins; seven retain the original author bytes. Corrected spacing passes 555,008 early cases and all 13,279 independent long-run cases, removing the original 953 mismatches. Hardware reports remain historical; current-build hardware evidence is owner-waived.",
+        "hardwareStatus": "historical",
+        "evidenceRevision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+        "gates": [
+          "qualification/probe.cpp"
+        ],
+        "documentation": {
+          "tutorial": {
+            "title": "Quick tutorial: compare a self-recording loop",
+            "steps": [
+              "Use a disposable project and assign a Flex track to its own recorder buffer.",
+              "Set RLEN to 16 at 128 BPM and place recording and playback trigs at the start of the bar; for sound-on-sound set SRC3 to that track.",
+              "Record a sustained tone and listen across successive wraps, then repeat after stopping and restarting transport.",
+              "Compare with stock using the same project, tempo and sample. A fractional-sample loop can still repeat or skip one sample at a wrap."
+            ]
+          },
+          "screenshots": [
+            "media/ot-flex-setup.png",
+            "media/ot-recorder-setup.png"
+          ],
+          "screenshotStyle": "black-and-white"
+        }
+      },
+      "license": {
+        "spdx": "MIT AND GPL-3.0-or-later",
+        "file": "LICENSE",
+        "declaration": "Original authored sources and upstream licence notices are retained with exact source pins. Only authored source, address/length/hash stock guards and sanitized evidence are included. No firmware, extracted stock routine/table, runtime image, card or RAM/LCD dump is included. Modwerk qualification probes are GPL-3.0-or-later; thumbnail and documentation are original Modwerk work. LCD captures, when present, retain underlying Elektron rights as declared in media/LICENSE.md."
+      },
+      "media": [
+        {
+          "path": "media/ot-flex-setup.png",
+          "captureType": "emulator",
+          "caption": "SRC SETUP: FLEX highlighted. Native monochrome LCD; stopped CPU-only capture.",
+          "alt": "SRC SETUP: FLEX highlighted on the Octatrack LCD.",
+          "credit": "Modwerk contributors; Elektron Octatrack UI",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "SRC SETUP",
+            "shows": "location",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.0-experimental",
+            "imageSha256": "45657a36371d7f509205ec268ca8b2499a5515d3fde214ea32ec2035e0a80847",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. ColdFire UI execution with DSP host stub; no audio claim. Local standalone composition, not shared-builder parity. Empty private OCTAMOD/MEASURE SET was requested; missing-project prompts dismissed with three NO presses. Native initialized UI state, no valid saved project or recorder-slot assignment claimed."
+          }
+        },
+        {
+          "path": "media/ot-recorder-setup.png",
+          "captureType": "emulator",
+          "caption": "RECORDING 1 SETUP 1: RLEN 16 and SRC3 T1. Native monochrome LCD; stopped CPU-only capture.",
+          "alt": "RECORDING 1 SETUP 1: RLEN 16 and SRC3 T1 on the Octatrack LCD.",
+          "credit": "Modwerk contributors; Elektron Octatrack UI",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "RECORDING 1 SETUP 1",
+            "shows": "location",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.0-experimental",
+            "imageSha256": "45657a36371d7f509205ec268ca8b2499a5515d3fde214ea32ec2035e0a80847",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. ColdFire UI execution with DSP host stub; no audio claim. Local standalone composition, not shared-builder parity. Empty private OCTAMOD/MEASURE SET was requested; missing-project prompts dismissed with three NO presses. Native initialized UI state, no valid saved project or recorder-slot assignment claimed."
+          }
+        }
+      ]
     }
   ]
 }

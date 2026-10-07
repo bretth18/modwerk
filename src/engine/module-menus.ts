@@ -1,4 +1,4 @@
-import { requestedRom, requestedTables, requestedHooks } from './requested-modules.ts'
+import { requestedRom, requestedTables, requestedHooks, requestedCaves } from './requested-modules.ts'
 import { composeUtilityRom } from './utility-modules.ts'
 import type { CfRuntimeLink } from './coldfire-link.ts'
 import descriptorRecipes from './assets/descriptor-recipes.json' with { type: 'json' }
@@ -79,7 +79,9 @@ export async function composeModuleMenus(original: Uint8Array, ids: readonly str
   cursor = utilityUnits.cursor; overflow = utilityUnits.overflow; writes.push(...utilityUnits.writes)
   // Catalog order puts a replacing module after the requested and utility modules, so its units follow theirs unless it leads.
   for (const descriptor of baseline.descriptors) if (!leading.includes(descriptor.id)) await placeRawPointers(descriptor)
-  const requestedSymbols = new Map([...(runtime?.symbols ?? []), ...rom.symbols])
+  const lateRom = await requestedRom(ids, cursor, overflow, caveLimit, cave, true)
+  cursor = lateRom.cursor; overflow = lateRom.overflow
+  const requestedSymbols = new Map([...(runtime?.symbols ?? []), ...rom.symbols, ...lateRom.symbols])
   if (modules.some(module => module.id === 'spectrum')) {
     const descriptor = baseline.descriptors.find(descriptor => descriptor.id === 'spectrum')!
     const address = 0x400c45b0, linked = linkRomText(await readRomPackage('spectrum-shape'), address, new Map([['CLONE_SPECTRUM', descriptor.address]]))
@@ -98,6 +100,9 @@ export async function composeModuleMenus(original: Uint8Array, ids: readonly str
   }
   const utilityCaves = await composeUtilityRom(ids, cursor, overflow, caveLimit, cave, 'caves')
   cursor = utilityCaves.cursor; overflow = utilityCaves.overflow; writes.push(...utilityCaves.writes)
+  const caves = await requestedCaves(ids, cursor, overflow, caveLimit, cave, 0x40a955e0 + ((runtime as (CfRuntimeLink & { reserveBytes?: number }) | null)?.reserveBytes ?? 0))
+  cursor = caves.cursor; overflow = caves.overflow
+  for (const [name, value] of caves.symbols) requestedSymbols.set(name, value)
   const tables = await requestedTables(original, ids, cursor, cave, requestedSymbols)
   cursor = tables.cursor; writes.push(...tables.writes)
   writes.push(...await requestedHooks(original, ids, requestedSymbols, runtime))

@@ -1,0 +1,198 @@
+{
+  "stockRead": false,
+  "toolchain": "GNU assembler (GNU Binutils) 2.47.20260726",
+  "results": [
+    {
+      "source": "seekbind.s",
+      "origin": 1074621312,
+      "bytes": 24,
+      "sha256": "ac1d04b1e07496ccc7acc566a1547f0ce6ba9be67aaebacc020bc5d1e596696e",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "seekbind.s",
+      "origin": 1074622464,
+      "bytes": 24,
+      "sha256": "ac1d04b1e07496ccc7acc566a1547f0ce6ba9be67aaebacc020bc5d1e596696e",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "seekbind.s",
+      "origin": 1074603216,
+      "bytes": 24,
+      "sha256": "ac1d04b1e07496ccc7acc566a1547f0ce6ba9be67aaebacc020bc5d1e596696e",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "seekbind_ctr.s",
+      "origin": 1074621312,
+      "bytes": 16,
+      "sha256": "d8009618e97b94e85bd63c7f46f0af4b3d05882dad3ae7b9c951ed233b3e6c30",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "seekbind_ctr.s",
+      "origin": 1074622464,
+      "bytes": 16,
+      "sha256": "d8009618e97b94e85bd63c7f46f0af4b3d05882dad3ae7b9c951ed233b3e6c30",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "seekbind_ctr.s",
+      "origin": 1074603216,
+      "bytes": 16,
+      "sha256": "d8009618e97b94e85bd63c7f46f0af4b3d05882dad3ae7b9c951ed233b3e6c30",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "spacing_cave.s",
+      "origin": 1074621312,
+      "bytes": 286,
+      "sha256": "d7e50790fd5a0334cf75b994d34ab04e55d20e165c1b9a7c029c8b81f12b22f5",
+      "matchesAuthor": false,
+      "variant": "plain"
+    },
+    {
+      "source": "spacing_cave.s",
+      "origin": 1074622464,
+      "bytes": 286,
+      "sha256": "d7e50790fd5a0334cf75b994d34ab04e55d20e165c1b9a7c029c8b81f12b22f5",
+      "matchesAuthor": false,
+      "variant": "plain"
+    },
+    {
+      "source": "spacing_cave.s",
+      "origin": 1074603216,
+      "bytes": 286,
+      "sha256": "d7e50790fd5a0334cf75b994d34ab04e55d20e165c1b9a7c029c8b81f12b22f5",
+      "matchesAuthor": false,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_copy.s",
+      "origin": 1074621312,
+      "bytes": 108,
+      "sha256": "4b0a8a00246263bd90f11d456f323f7c13517de70133b6d3afc48bef79b56b4b",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_copy.s",
+      "origin": 1074622464,
+      "bytes": 108,
+      "sha256": "4b0a8a00246263bd90f11d456f323f7c13517de70133b6d3afc48bef79b56b4b",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_copy.s",
+      "origin": 1074603216,
+      "bytes": 108,
+      "sha256": "4b0a8a00246263bd90f11d456f323f7c13517de70133b6d3afc48bef79b56b4b",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_xfade_a.s",
+      "origin": 1074621312,
+      "bytes": 110,
+      "sha256": "1bc8087f7d35e60d60d6ff73bc775bccb17026da799cab14843bb4f6a24dbceb",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_xfade_a.s",
+      "origin": 1074622464,
+      "bytes": 110,
+      "sha256": "1bc8087f7d35e60d60d6ff73bc775bccb17026da799cab14843bb4f6a24dbceb",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_xfade_a.s",
+      "origin": 1074603216,
+      "bytes": 110,
+      "sha256": "1bc8087f7d35e60d60d6ff73bc775bccb17026da799cab14843bb4f6a24dbceb",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_xfade_b.s",
+      "origin": 1074621312,
+      "bytes": 110,
+      "sha256": "a1d1333c6eb6d9a0d8ace777d323c85f8ba9bf60cd24aceba396d6e5fb28c6cf",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_xfade_b.s",
+      "origin": 1074622464,
+      "bytes": 110,
+      "sha256": "a1d1333c6eb6d9a0d8ace777d323c85f8ba9bf60cd24aceba396d6e5fb28c6cf",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_xfade_b.s",
+      "origin": 1074603216,
+      "bytes": 110,
+      "sha256": "a1d1333c6eb6d9a0d8ace777d323c85f8ba9bf60cd24aceba396d6e5fb28c6cf",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_guard.s",
+      "origin": 1074621312,
+      "bytes": 86,
+      "sha256": "d4f1507c932d8abe74f3629f6c762ab62ec58ece663acfac1fff968c898b666d",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_guard.s",
+      "origin": 1074622464,
+      "bytes": 86,
+      "sha256": "d4f1507c932d8abe74f3629f6c762ab62ec58ece663acfac1fff968c898b666d",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_guard.s",
+      "origin": 1074603216,
+      "bytes": 86,
+      "sha256": "d4f1507c932d8abe74f3629f6c762ab62ec58ece663acfac1fff968c898b666d",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_xguard.s",
+      "origin": 1074621312,
+      "bytes": 118,
+      "sha256": "06ea39eb4ae05fca2282fc697ae04671e00cd832afe977276a99f63776b94914",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_xguard.s",
+      "origin": 1074622464,
+      "bytes": 118,
+      "sha256": "06ea39eb4ae05fca2282fc697ae04671e00cd832afe977276a99f63776b94914",
+      "matchesAuthor": true,
+      "variant": "plain"
+    },
+    {
+      "source": "hold_xguard.s",
+      "origin": 1074603216,
+      "bytes": 118,
+      "sha256": "06ea39eb4ae05fca2282fc697ae04671e00cd832afe977276a99f63776b94914",
+      "matchesAuthor": true,
+      "variant": "plain"
+    }
+  ]
+}

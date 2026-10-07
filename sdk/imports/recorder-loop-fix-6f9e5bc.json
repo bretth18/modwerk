@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/sambanks/octabam",
+  "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+  "moduleVersion": "0.1.0-experimental",
+  "root": "sdk/drafts/recorder-loop-fix",
+  "modules": [
+    "recorder-loop-fix"
+  ],
+  "files": [
+    {
+      "path": "upstream/README.md",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "modules/recorder-loop-fix/README.md",
+      "sourceBytes": 3478,
+      "sourceGitBlob": "e94d6d7f265b136720fa02fde875973f63765e3b",
+      "sourceSha256": "f394854913934da43986d83f484f572499a76691db57f49d0b1e5a41d1ba2c3b",
+      "vendoredSha256": "f394854913934da43986d83f484f572499a76691db57f49d0b1e5a41d1ba2c3b"
+    },
+    {
+      "path": "fix.inc",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "modules/recorder-loop-fix/fix.inc",
+      "sourceBytes": 1704,
+      "sourceGitBlob": "8db526e9412f746ba10452c8c30d924546a1b347",
+      "sourceSha256": "41d1326f45d24be27aa41b788940286e050e15f278b82e41c01372f2cea61d21",
+      "vendoredSha256": "41d1326f45d24be27aa41b788940286e050e15f278b82e41c01372f2cea61d21"
+    },
+    {
+      "path": "hold_copy.s",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "modules/recorder-loop-fix/hold_copy.s",
+      "sourceBytes": 697,
+      "sourceGitBlob": "47c8132ae0b1d6333b93a9d32e1c4d4e21ea9b80",
+      "sourceSha256": "db24947657aad4e6087c44345b341bf685386121f07dcf86d0fd1d10e199aac8",
+      "vendoredSha256": "db24947657aad4e6087c44345b341bf685386121f07dcf86d0fd1d10e199aac8"
+    },
+    {
+      "path": "hold_guard.s",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "modules/recorder-loop-fix/hold_guard.s",
+      "sourceBytes": 1804,
+      "sourceGitBlob": "5e6b19dc328fa90e0703d24a132c7b3165917cdc",
+      "sourceSha256": "983a7d44e845d646e0dc5328c3f7bd606f001a7fdada6443dcab4b87809fc970",
+      "vendoredSha256": "983a7d44e845d646e0dc5328c3f7bd606f001a7fdada6443dcab4b87809fc970"
+    },
+    {
+      "path": "hold_xfade_a.s",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "modules/recorder-loop-fix/hold_xfade_a.s",
+      "sourceBytes": 759,
+      "sourceGitBlob": "8d020afe275a42152c05d29e1bb6d9a29ce56e57",
+      "sourceSha256": "3e17d3ed2a79b08402fae7dda609560cba8754fa72d9a70a470e8410167e5d52",
+      "vendoredSha256": "3e17d3ed2a79b08402fae7dda609560cba8754fa72d9a70a470e8410167e5d52"
+    },
+    {
+      "path": "hold_xfade_b.s",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "modules/recorder-loop-fix/hold_xfade_b.s",
+      "sourceBytes": 676,
+      "sourceGitBlob": "e0572798ca5bc9cebd0e7919ea1c62873bbbd8eb",
+      "sourceSha256": "20d1fb2bcaf4e8620c10d229b1d424d8e73556c3b6cd7b98aab562236b669725",
+      "vendoredSha256": "20d1fb2bcaf4e8620c10d229b1d424d8e73556c3b6cd7b98aab562236b669725"
+    },
+    {
+      "path": "hold_xguard.s",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "modules/recorder-loop-fix/hold_xguard.s",
+      "sourceBytes": 2181,
+      "sourceGitBlob": "d02b1fa63d185128029a48e40129761aff0cdf5e",
+      "sourceSha256": "1432228f91eef2ecf3ed2426e434631a836f24f63bc39dc5f1295da8bc000e61",
+      "vendoredSha256": "1432228f91eef2ecf3ed2426e434631a836f24f63bc39dc5f1295da8bc000e61"
+    },
+    {
+      "path": "seekbind.s",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "modules/recorder-loop-fix/seekbind.s",
+      "sourceBytes": 557,
+      "sourceGitBlob": "54f915c36b2289a88bfa08558f5b5c5410f038bf",
+      "sourceSha256": "c796b0252e7f1f9385938ce28e5f808da5c26596e1e4b9d487cff540703ccc5b",
+      "vendoredSha256": "c796b0252e7f1f9385938ce28e5f808da5c26596e1e4b9d487cff540703ccc5b"
+    },
+    {
+      "path": "seekbind_ctr.s",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "modules/recorder-loop-fix/seekbind_ctr.s",
+      "sourceBytes": 424,
+      "sourceGitBlob": "fa454cdde1c325d4c3cb29a9072664b48905731b",
+      "sourceSha256": "4416f8dab164857482815ae9326fc6881d5d28132f6478bae7edead6b37525c2",
+      "vendoredSha256": "4416f8dab164857482815ae9326fc6881d5d28132f6478bae7edead6b37525c2"
+    },
+    {
+      "path": "spacing_cave.s",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "modules/recorder-loop-fix/spacing_cave.s",
+      "sourceBytes": 3219,
+      "sourceGitBlob": "877450b47fa3396c616cd2f945fe1a60fe608dd0",
+      "sourceSha256": "42b4d932a0467b9ae84a83103427b5be1e5fe1e5a988eded87935767359dcdb1",
+      "vendoredSha256": "42b4d932a0467b9ae84a83103427b5be1e5fe1e5a988eded87935767359dcdb1"
+    },
+    {
+      "path": "LICENSE",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "LICENSE",
+      "sourceBytes": 2112,
+      "sourceGitBlob": "112114d5d319dc4a789dacf1e84b867420a03614",
+      "sourceSha256": "f91a43799d9e31ccc3540f385f68c4d6ff5a096f93ae933be2ce98f6b3f7f113",
+      "vendoredSha256": "f91a43799d9e31ccc3540f385f68c4d6ff5a096f93ae933be2ce98f6b3f7f113"
+    },
+    {
+      "path": "manifest.py",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136",
+      "sourcePath": "modules/recorder-loop-fix/manifest.py",
+      "sourceBytes": 9234,
+      "sourceGitBlob": "7b5d10ccfa2ad93a5fd0c127bbf353e812dbb90e",
+      "sourceSha256": "506d5af293003ae6d7d7433dca97e8dd59e7a426454fec9cd81bca632d0905af",
+      "vendoredSha256": "165d904ee51a457990b08cb69892b49d31ce0569163cf8700ac544cc391cbf58",
+      "transforms": [
+        "Replace stock hook expectations with lazy address/length/SHA-256 guards; remove unused stock expectation constants.",
+        "Keep authored byte oracles and assembly source unchanged."
+      ]
+    }
+  ],
+  "stockGuards": [
+    {
+      "address": "SEEKBIND_HOOK",
+      "bytes": 6,
+      "sha256": "a3f764639ca07534cc4150642deaf4f10c519053b868df0cd3e051af427b7f60"
+    },
+    {
+      "address": "0x4000f834",
+      "bytes": 8,
+      "sha256": "394be08d1b375089ffcb34270ce0bb194ed6769a3fcbe7d56c656c6db976d6ac"
+    },
+    {
+      "address": "SPACING_HOOK",
+      "bytes": 6,
+      "sha256": "3b77fc06791be946482421e53ffef0821264bef53b186b831a0a6505d56d79cb"
+    },
+    {
+      "address": "0x400086c2",
+      "bytes": 6,
+      "sha256": "3378c72f1ed9109d2bd92f1e85e72150e10a4604376578dd792af4e59c10c0fc"
+    },
+    {
+      "address": "0x4000853e",
+      "bytes": 8,
+      "sha256": "77fc999ca1fc167b277dc189315c0be0b8cfff81d92c4986a55d6127a37be354"
+    },
+    {
+      "address": "0x4000854e",
+      "bytes": 8,
+      "sha256": "a4c7b8c2e06be9c6dd682837e7d18743db2c2e38f748fac2ca1763b3079f8450"
+    },
+    {
+      "address": "0x40008716",
+      "bytes": 6,
+      "sha256": "15734e36c99ed02a2dfcbc4e5f51363cbb71e4f4d4f87b8bfaeacc2f83df6f8b"
+    },
+    {
+      "address": "0x400085d8",
+      "bytes": 6,
+      "sha256": "b318906f923048d283a9c0b1db59cf11e1c592631a9d142296ed4708b2e7594e"
+    }
+  ],
+  "excluded": [
+    "Firmware and stock expectation bytes",
+    "Generated firmware, runtime images and memory dumps",
+    "Unrelated modules and author repository tooling"
+  ],
+  "status": "Draft; no catalog or firmware download enabled"
+}
