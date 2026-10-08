@@ -176,6 +176,34 @@
       "candidatePeak": 23360,
       "baselinePeak": 20296,
       "extraPercent": 15.096570752857708
+    },
+    {
+      "name": "30 seconds: eight moving instances, dirty init and all buffer guards",
+      "passed": true,
+      "blocks": 82688,
+      "peak": 23360
+    },
+    {
+      "name": "dark: stereo, no clipping and decaying percussion tail",
+      "passed": true
+    },
+    {
+      "name": "neutral: stereo, no clipping and decaying percussion tail",
+      "passed": true
+    },
+    {
+      "name": "bright: stereo, no clipping and decaying percussion tail",
+      "passed": true
+    },
+    {
+      "name": "smoothed endpoints and return to exact neutral",
+      "passed": true,
+      "lastState": 0
+    },
+    {
+      "name": "full-range Tone jumps retain the per-sample slew bound",
+      "passed": true,
+      "maxBlockStep": 1018399
     }
   ],
   "loads": [
@@ -226,6 +254,54 @@
       ],
       "peak_audio": 4194304,
       "clipped_samples": 0
+    },
+    {
+      "effect": "MINIVERB",
+      "case": "neutral_load",
+      "instances": 8,
+      "blocks": 2048,
+      "cores": [
+        {
+          "core": 0,
+          "mean_block": 21092.0,
+          "peak_block": 21092,
+          "peak_at": 128,
+          "init_instructions": 184
+        },
+        {
+          "core": 1,
+          "mean_block": 21092.0,
+          "peak_block": 21092,
+          "peak_at": 128,
+          "init_instructions": 184
+        }
+      ],
+      "peak_audio": 4194304,
+      "clipped_samples": 0
+    },
+    {
+      "effect": "MINIVERB",
+      "case": "stress_30s",
+      "instances": 8,
+      "blocks": 82688,
+      "cores": [
+        {
+          "core": 0,
+          "mean_block": 23290.703149262423,
+          "peak_block": 23360,
+          "peak_at": 224,
+          "init_instructions": 184
+        },
+        {
+          "core": 1,
+          "mean_block": 23283.84387131211,
+          "peak_block": 23360,
+          "peak_at": 224,
+          "init_instructions": 184
+        }
+      ],
+      "peak_audio": 1872156,
+      "clipped_samples": 0
     }
   ],
   "sources": {
@@ -253,5 +329,6 @@
     "cycles": 411,
     "loop_end": "mv_end",
     "total_words": 532
-  }
+  },
+  "complete": true
 }

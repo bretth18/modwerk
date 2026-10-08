@@ -31,9 +31,8 @@ hashes, measurements and verdicts.
 
 ## Results — 8 October 2026
 
-Current source hashes and native verdicts are recorded in
-[evidence/dsp-regression.json](evidence/dsp-regression.json) once the full run
-finishes. The baseline is the unchanged published source at main commit
+All **46 native DSP checks passed**. Current source hashes and exact verdicts
+are recorded in [evidence/dsp-regression.json](evidence/dsp-regression.json). The baseline is the unchanged published source at main commit
 `2899ff214b51004ecb70b10dba519556740a0f65`.
 
 Verified so far: 532 assembled program words; a static 411-word/cycle sample-loop
@@ -53,7 +52,7 @@ assembled code at 44.1 kHz, 16-sample blocks.
 | Eight instances vs isolated renders, both cores and interleaved scheduling | Bit-identical; no cross-instance influence |
 | One excited instance, repeated at all eight positions | Other seven outputs exactly silent |
 | Dirty scalar and delay state, active private/shared Y and loaded P guards | Passed short regression runs |
-| 30-second moving eight-instance guarded render | Pending completion |
+| 30-second moving eight-instance guarded render | 82,688 blocks, 23,360 instructions/core/block peak; zero clipping, stray writes or clobber |
 
 Private common-builder composition succeeded with only Mini Verb and the two
 existing stock DSP loader modules. MAIN OS SHA-256:
@@ -66,6 +65,17 @@ The real six-control LCD was captured on this image through the maintained
 capture script, viewed and matched to the declaration. See
 [media/capture.json](media/capture.json) for the exact panel sequence and hashes.
 No fresh hardware test is implied.
+
+Tone endpoints and percussion tails are stereo, unclipped and decaying. Both
+full-range jumps follow the per-sample smoother, and the actual state settles
+back to exactly zero at Tone 64. The long render is DSP-only; it does not run
+eight actual voice engines, project LFOs or saved locks.
+
+Repository validation used Node 24.21.0 and `npm ci`.
+`npm run check -- --base origin/main` passed: 188 test files / 1,266 tests,
+plus SDK, lint, typecheck, bundle, catalogue, licence and media checks.
+`npm run module:doctor -- miniverb` is green for the unchanged published module;
+it does not qualify this staged draft.
 
 Aliasing audit: not tested. Native endpoint and musical renders check unclipped
 output and spectral attenuation; they do not constitute listening acceptance.
