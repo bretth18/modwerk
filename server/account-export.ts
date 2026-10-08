@@ -2,6 +2,7 @@ import { confirmAccount } from './account-confirmation'
 import type { Database, User } from './platform'
 import { HttpError, jsonBody, response } from './security'
 import { throttle } from './auth'
+import { backfillWorkingReports } from './working-reports'
 
 /** Only the verified owner, after reauthentication. Never export credentials or another member's text. */
 export async function accountExport(request:Request,db:Database,owner:User|null,sessionCreatedAt?:Date|string){
@@ -10,6 +11,7 @@ export async function accountExport(request:Request,db:Database,owner:User|null,
   await throttle(db,'account-export:'+owner.id,5,900)
   const body=await jsonBody(request)
   await confirmAccount(db,owner.id,body,sessionCreatedAt)
+  await backfillWorkingReports(db)
   // Explicit field lists keep operator notes, access/session tokens and password hashes out.
   const queries={
     account:'SELECT id,name,email,emailVerified,createdAt,updatedAt,username,displayUsername FROM auth_users WHERE id=?',
@@ -21,6 +23,7 @@ export async function accountExport(request:Request,db:Database,owner:User|null,
     newsEmails:'SELECT campaign_id,status,attempted_at,attempts FROM news_deliveries WHERE member_id=?',
     configurations:'SELECT id,name,modules_json,revision,updated_at,keep_stock_fx2,module_versions_json FROM configurations WHERE user_id=?',
     comments:"SELECT p.id,t.module_id,p.body,p.created_at FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id WHERE p.user_id=? AND p.hidden<2 AND t.id='module-' || t.module_id AND p.id<>t.id",
+    workingReports:'SELECT module_id,machine,os,module_version,build_json,source_post_id,created_at FROM module_working_reports WHERE user_id=?',
     ratings:'SELECT module_id,value FROM ratings WHERE user_id=?',
     likes:'SELECT module_id FROM likes WHERE user_id=?',
     threads:'SELECT id,title,COALESCE(section,category) AS category,machine,module_id,configuration_json,issue_json,status,locked,hidden,created_at,updated_at FROM forum_threads WHERE user_id=?',

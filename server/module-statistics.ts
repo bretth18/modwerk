@@ -2,14 +2,16 @@ import type { Database } from './platform'
 import { COMMUNITY_MODULES } from '../src/community/modules'
 import recipes from '../src/catalog/module-sets.json'
 import type { ModuleStatistics } from '../src/community/module-statistics'
-import { WORKS_REPORT_POST } from './hardware-reports'
+import { WORKING_REPORT_JOINS, WORKING_REPORT_VISIBLE } from './hardware-reports'
+import { backfillWorkingReports } from './working-reports'
 // Issue reports enter only as counts and dates for the stability grade, private or public alike; nothing else about
 // a report leaves the inbox.
 export async function moduleStatistics(db: Database): Promise<ModuleStatistics[]> {
+  await backfillWorkingReports(db)
   const [publications,meta,statistics] = await Promise.all([
     db.prepare('SELECT module_id FROM module_publications').all<{module_id:string}>(),
     db.prepare("SELECT value FROM module_download_meta WHERE key='collection_started'").first<{value:string}>(),
-    db.prepare(`WITH w AS (SELECT t.module_id,COUNT(DISTINCT p.user_id) AS worksReports FROM forum_posts p JOIN forum_threads t ON t.id=p.thread_id JOIN users wu ON wu.id=p.user_id WHERE t.id='module-' || t.module_id AND t.hidden=0 AND ${WORKS_REPORT_POST} GROUP BY t.module_id),
+    db.prepare(`WITH w AS (SELECT r.module_id,COUNT(DISTINCT r.user_id) AS worksReports ${WORKING_REPORT_JOINS} WHERE ${WORKING_REPORT_VISIBLE} GROUP BY r.module_id),
       ids AS (SELECT module_id FROM ratings UNION SELECT module_id FROM likes UNION SELECT module_id FROM module_downloads UNION SELECT module_id FROM issues UNION SELECT module_id FROM w),
       r AS (SELECT module_id,AVG(value) AS average,COUNT(*) AS count FROM ratings GROUP BY module_id),
       l AS (SELECT module_id,COUNT(*) AS likes FROM likes GROUP BY module_id),

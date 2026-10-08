@@ -28,19 +28,28 @@ describe('after a firmware download', () => {
     expect(hardwareReportBody('Octatrack', '1.40C', verb, [verb, echo])).toBe('**Works on my Octatrack** (OS 1.40C) · Verb 1.0.0, built together with Echo 0.2.0.')
     expect(hardwareReportBody('Digitakt', '', verb, [verb])).toBe('**Works on my Digitakt** · Verb 1.0.0.')
   })
-  it('offers members a hardware report on each module after automatic update follows', () => {
+  it('offers members a one-click confirmation on each module after automatic update follows', () => {
     const html = render(member, ['miniverb'])
     expect(html).toContain('After you flash')
     expect(html).not.toContain('Follow this module')
     expect(html).toContain('works on my Octatrack')
     expect(html).toContain('>Works</button>')
-    expect(html).toContain('shares a public hardware report')
+    expect(html).toContain('saves your confirmation with the build details')
     expect(html).not.toContain('<form')
     expect(html).not.toContain('<textarea')
     expect(html).not.toContain('aria-expanded')
     expect(html).toContain('aria-haspopup="dialog"')
     expect(html).toContain('aria-label="Report a problem with Mini Verb"')
     expect(html).not.toContain('?report=1')
+  })
+  it('offers explicit selection for several modules without preselecting companions', () => {
+    const html = render(member, ['miniverb', 'tapeecho'])
+    expect(html).toContain('Select all — I tested every module shown')
+    expect(html).toContain('Select Mini Verb as tested')
+    expect(html).toContain('Select Tape Echo as tested')
+    expect(html).toContain('Report selected working')
+    expect(html).not.toContain('checked=')
+    expect(html).toContain('No forum post.')
   })
   it('embeds only pending choices in a reminder without another heading', () => {
     const html = renderToStaticMarkup(createElement(CommunityContext.Provider, { value: { session: member, developer: null, catalog: [], refresh: async () => {}, refreshDeveloper: async () => {} } },

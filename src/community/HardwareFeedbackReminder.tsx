@@ -9,7 +9,7 @@ export function HardwareFeedbackReminder() {
   const { session } = useCommunity(), memberId = session.user?.verified ? session.user.id : ''
   const [loaded, setLoaded] = useState<{ memberId: string; record?: HardwareFeedback } | null>(null)
   const heading = useId()
-  const [posted, setPosted] = useState<{ memberId: string; href: string } | null>(null)
+  const [posted, setPosted] = useState<{ memberId: string } | null>(null)
   useEffect(() => {
     if (!posted) return
     function clear() { setPosted(null) }
@@ -37,12 +37,12 @@ export function HardwareFeedbackReminder() {
     }
   }, [memberId])
   const record = memberId && loaded?.memberId === memberId ? loaded.record : undefined
-  const confirmation = memberId && posted?.memberId === memberId ? <p className="hardware-feedback-confirmation" role="status"><Icon name="check" size={15}/>Works report saved. <a className="text-button" href={posted.href}>View report</a><button type="button" className="icon-button" aria-label="Dismiss feedback confirmation" onClick={() => setPosted(null)}><Icon name="close" size={15}/></button></p> : null
+  const confirmation = memberId && posted?.memberId === memberId ? <p className="hardware-feedback-confirmation" role="status"><Icon name="check" size={15}/>Works report saved.<button type="button" className="icon-button" aria-label="Dismiss feedback confirmation" onClick={() => setPosted(null)}><Icon name="close" size={15}/></button></p> : null
   if (!record) return confirmation
   const id = feedbackId(record), modules = pendingFeedback(record)
   return <section className="configuration-section hardware-feedback-reminder" aria-labelledby={heading}>
     <div className="section-title"><h2 id={heading}>Tried your {record.machine} modules?</h2><button type="button" className="icon-button" aria-label="Dismiss feedback reminder for this build" onClick={() => { setPosted(null); updateHardwareFeedback(memberId, record, 'dismiss') }}><Icon name="close" size={16}/></button></div>
-    <BuildFollowUp key={id} machine={record.machine} os={record.os} modules={record.modules} pendingIds={modules.map(module => module.id)} onPosted={href => setPosted({ memberId, href })} embedded />
+    <BuildFollowUp key={id} machine={record.machine} os={record.os} modules={record.modules} pendingIds={modules.map(module => module.id)} onSaved={() => setPosted({ memberId })} embedded />
     {confirmation}
     <button type="button" className="text-button hardware-feedback-later" onClick={() => { setPosted(null); updateHardwareFeedback(memberId, record, 'later') }}>Not yet — remind me tomorrow</button>
   </section>

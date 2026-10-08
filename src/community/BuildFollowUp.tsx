@@ -1,59 +1,59 @@
 import { useId, useRef, useState } from 'react'
 import { Icon } from '../components/Icon'
-import { threadHref } from '../routing'
-import { post } from './api'
-import { hardwareReportBody, type BuiltModule } from './build-follow-up'
+import type { BuiltModule } from './build-follow-up'
 import { useCommunity } from './context'
-import { moduleThreadId } from './modules'
-import { updateHardwareFeedback } from './hardware-feedback'
+import { feedbackId, updateHardwareFeedback } from './hardware-feedback'
 import { ModuleIssueDialog } from './ModuleIssueDialog'
 import { MODULE_STATISTICS_CHANGED } from './module-statistics'
+import { saveWorkingReports } from './module-works-report'
 
-const errorText = (error: unknown) => error instanceof Error ? error.message : 'The request could not be completed.'
+type FollowUpProps = { machine: string; os: string; modules: readonly BuiltModule[]; pendingIds?: readonly string[]; onSaved?: () => void; embedded?: boolean }
 
-/** Shown once a build is downloaded: tell each module's thread how it runs on the unit.
- * The build panels sit behind the member gate, so only verified members see it. */
-export function BuildFollowUp({ machine, os, modules, pendingIds, onPosted, embedded = false }: { machine: string; os: string; modules: readonly BuiltModule[]; pendingIds?: readonly string[]; onPosted?: (href: string) => void; embedded?: boolean }) {
+/** Individual Works buttons save in one press. Bulk confirmation is explicit. */
+export function BuildFollowUp(props: FollowUpProps) {
   const { session } = useCommunity()
-  const heading = useId()
-  if (!modules.length || !session.user?.verified) return null
-  return <section className={'build-follow-up' + (embedded ? '' : ' configuration-section')} aria-labelledby={embedded ? undefined : heading} aria-label={embedded ? 'Module hardware feedback' : undefined}>
-    {!embedded && <div className="section-title"><h2 id={heading}>After you flash</h2></div>}
-    <p className="service-note">{!embedded && <>Tried {modules.length > 1 ? 'these modules' : 'this module'} on your {machine}? </>}“Works” shares a public hardware report. A simple yes is enough.</p>
-    <ul className="build-follow-up-list">{modules.filter(module => !pendingIds || pendingIds.includes(module.id)).map(module => <HardwareReport key={module.id} memberId={session.user!.id} machine={machine} os={os} module={module} build={modules} onPosted={onPosted} />)}</ul>
-  </section>
+  if (!props.modules.length || !session.user?.verified) return null
+  return <BuildFeedback key={session.user.id + ':' + feedbackId(props)} {...props} memberId={session.user.id}/>
 }
 
-/** One click posts a positive hardware report; a problem opens the module's form in place. */
-function HardwareReport({ memberId, machine, os, module, build, onPosted }: { memberId: string; machine: string; os: string; module: BuiltModule; build: readonly BuiltModule[]; onPosted?: (href: string) => void }) {
-  const [busy, setBusy] = useState(false), [error, setError] = useState(''), [posted, setPosted] = useState('')
-  const submitting = useRef(false)
-  const [reporting, setReporting] = useState(false)
-  const thread = moduleThreadId(module.id)
-  async function submit() {
-    if (submitting.current || posted) return
-    submitting.current = true
-    setBusy(true); setError('')
+function BuildFeedback({ machine, os, modules, pendingIds, onSaved, embedded = false, memberId }: FollowUpProps & { memberId: string }) {
+  const heading = useId(), submitting = useRef(false)
+  const [busy, setBusy] = useState(false), [error, setError] = useState(''), [reported, setReported] = useState<string[]>([]), [selected, setSelected] = useState<string[]>([])
+  const [reporting, setReporting] = useState('')
+  const shown = modules.filter(module => !pendingIds || pendingIds.includes(module.id))
+  const remaining = shown.filter(module => !reported.includes(module.id)).map(module => module.id)
+  const chosen = selected.filter(id => remaining.includes(id))
+  async function submit(ids: string[]) {
+    if (submitting.current || !ids.length) return
+    submitting.current = true; setBusy(true); setError('')
     try {
-      const result = await post<{ id: string; page: number }>('/forum/threads/' + thread + '/replies', { body: hardwareReportBody(machine, os, module, build) })
-      const href = threadHref(thread, module.name + ' discussion', '?page=' + result.page + '&post=' + result.id)
-      setPosted(href); onPosted?.(href)
+      const build = { machine, os, modules }
+      await saveWorkingReports(ids, build)
+      setReported(current => [...new Set([...current, ...ids])]); setSelected(current => current.filter(id => !ids.includes(id)))
+      onSaved?.()
       window.dispatchEvent(new Event(MODULE_STATISTICS_CHANGED))
-      updateHardwareFeedback(memberId, { machine, os, modules: build }, { completed: module.id })
-    } catch (error) { setError(errorText(error)) }
+      updateHardwareFeedback(memberId, build, { completed: ids })
+    } catch (error) { setError(error instanceof Error ? error.message : 'Your report could not be saved. Try again.') }
     finally { submitting.current = false; setBusy(false) }
   }
-  return <li className="build-follow-up-module">
-    <div className="build-follow-up-row">
-      <span className="build-follow-up-name"><strong>{module.name}</strong><span className="subtle">{module.version}</span></span>
-      <div className="forum-actions">
-        {posted ? <a className="text-button build-follow-up-posted" href={posted} aria-label={module.name + ': works report saved. View report'}><Icon name="check" size={15} />Works · reported</a>
-          : <button type="button" className="button button-quiet" disabled={busy} aria-label={'Report ' + module.name + ' works on my ' + machine} onClick={() => void submit()}><Icon name="check" size={15} />{busy ? 'Saving…' : 'Works'}</button>}
-        <button type="button" className="button button-quiet" aria-haspopup="dialog" aria-label={'Report a problem with ' + module.name} onClick={() => setReporting(true)}>Report a problem</button>
+  return <section className={'build-follow-up' + (embedded ? '' : ' configuration-section')} aria-labelledby={embedded ? undefined : heading} aria-label={embedded ? 'Module hardware feedback' : undefined}>
+    {!embedded && <div className="section-title"><h2 id={heading}>After you flash</h2></div>}
+    <p className="service-note">{!embedded && <>Tried {modules.length > 1 ? 'these modules' : 'this module'} on your {machine}? </>}“Works” saves your confirmation with the build details. No forum post.</p>
+    {shown.length > 1 && <div className="build-follow-up-selection">
+      <label><input type="checkbox" disabled={busy || !remaining.length} checked={!!remaining.length && chosen.length === remaining.length} onChange={event => setSelected(event.target.checked ? remaining : [])}/>Select all — I tested every module shown</label>
+      <button type="button" className="button button-quiet" disabled={busy || !chosen.length} onClick={() => void submit(chosen)}>{busy ? 'Saving…' : 'Report selected working' + (chosen.length ? ' (' + chosen.length + ')' : '')}</button>
+    </div>}
+    <ul className="build-follow-up-list">{shown.map(module => <li key={module.id} className="build-follow-up-module">
+      <div className="build-follow-up-row">
+        <label className="build-follow-up-select">{shown.length > 1 && <input type="checkbox" checked={chosen.includes(module.id)} disabled={busy || reported.includes(module.id)} aria-label={'Select ' + module.name + ' as tested'} onChange={event => setSelected(current => event.target.checked ? [...current, module.id] : current.filter(id => id !== module.id))}/>}<span className="build-follow-up-name"><strong>{module.name}</strong><span className="subtle">{module.version}</span></span></label>
+        <div className="forum-actions">
+          <button type="button" className="button button-quiet" disabled={busy || reported.includes(module.id)} aria-label={module.name + (reported.includes(module.id) ? ': works report saved' : ': report works on my ' + machine)} onClick={() => void submit([module.id])}><Icon name="check" size={15}/>{reported.includes(module.id) ? 'Works · reported' : busy ? 'Saving…' : 'Works'}</button>
+          <button type="button" className="button button-quiet" aria-haspopup="dialog" aria-label={'Report a problem with ' + module.name} onClick={() => setReporting(module.id)}>Report a problem</button>
+        </div>
       </div>
-    </div>
-    {posted && <span className="sr-only" role="status">{module.name}: works report saved.</span>}
+    </li>)}</ul>
+    {reported.length > 0 && <span className="sr-only" role="status">Working confirmations saved for {reported.length} {reported.length === 1 ? 'module' : 'modules'}.</span>}
     {error && <p className="file-error" role="alert">{error}</p>}
-    {reporting && <ModuleIssueDialog id={module.id} build={{ machine, os, modules: build }} onClose={() => setReporting(false)}/>}
-  </li>
+    {reporting && <ModuleIssueDialog id={reporting} build={{ machine, os, modules }} onClose={() => setReporting('')}/>}
+  </section>
 }

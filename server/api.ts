@@ -17,6 +17,7 @@ import { validateDigiIssueContext } from '../src/community/digi-issue-context'
 import { recordAnonymousCount, recordUsage, recordModuleDownload, usageStatistics } from './usage'
 import { moduleStatistics } from './module-statistics'
 import { worksReportCount } from './hardware-reports'
+import { workingReportRoute } from './working-reports'
 import { membersOnline } from './presence'
 import { adminInsights } from './admin-insights'
 import { adminAccounts } from './admin-accounts'
@@ -74,6 +75,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     const developerAuth = await developerAuthentication(request,env,db)
     if(developerAuth)return developerAuth
     const user = await currentUser(request,db,env)
+    if (path === '/api/working-reports') return await workingReportRoute(request,db,user)
     const announcements = await publicAnnouncementRoutes(request,db,user)
     if(announcements)return announcements
     // Private history rows name the administrator account that acted; the key falls back to the fixed administrator row.
