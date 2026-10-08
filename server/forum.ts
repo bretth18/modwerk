@@ -11,6 +11,7 @@ import { shoutbox } from './shoutbox'
 import { FIRST_UNREAD_FIELDS, FIRST_UNREAD_JOIN, markForumRead, noteForumVisit, recordThreadRead, UNREAD, UNREAD_FIELDS, UNREAD_JOINS } from './forum-unread'
 import { forumHighlights, maintainerColumn, memberProfile } from './recognition'
 import { adminRoleRoutes, memberRoles } from './member-roles'
+import { worksReportCount } from './hardware-reports'
 
 type Thread = {id:string;user_id:string;category:string;section:string|null;module_id:string|null;request_status:string;locked:number;hidden:number;configuration_json:string|null;issue_json:string|null}
 /** Public configuration threads (alias t) whose snapshot includes a module: binds the snapshot machine, then the native module ID.
@@ -197,7 +198,7 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     const maintainer = maintainerColumn(thread.module_id)
     // A member's view also asks where their reading left off, before this page moves the marker to its last post.
     const [details,pagePosts] = await Promise.all([
-      db.prepare(`SELECT ${threadFields},t.hidden,
+      db.prepare(`SELECT ${threadFields},t.hidden,${worksReportCount('t.module_id')} AS worksReports,
         EXISTS(SELECT 1 FROM forum_follows f WHERE f.thread_id=t.id AND f.user_id=?) AS following,
         EXISTS(SELECT 1 FROM forum_bookmarks b WHERE b.thread_id=t.id AND b.user_id=?) AS bookmarked,
         EXISTS(SELECT 1 FROM forum_reactions r WHERE r.user_id=? AND r.post_id=${OPENING_POST}) AS voted${reader?','+FIRST_UNREAD_FIELDS:''}

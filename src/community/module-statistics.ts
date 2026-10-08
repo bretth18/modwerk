@@ -1,7 +1,8 @@
 import { bayesianRating, ratingPrior } from './rating-ranking'
 
 // openIssues, lastIssueAt and firstDownloadAt feed the stability grade; an older response without them grades as untried.
-export type ModuleStatistics = { module_id: string; average: number | null; count: number; likes: number; downloads: number; downloadsStarted: string | null; firstDownloadAt?: string | null; openIssues?: number; lastIssueAt?: string | null }
+export type ModuleStatistics = { module_id: string; average: number | null; count: number; likes: number; downloads: number; downloadsStarted: string | null; worksReports?: number; firstDownloadAt?: string | null; openIssues?: number; lastIssueAt?: string | null }
+export const MODULE_STATISTICS_CHANGED = 'modwerk-module-statistics'
 export const DEFAULT_MODULE_SORT = 'updated'
 // Every library sort, with the short label the phone results bar shows beside its sort icon.
 export const MODULE_SORTS = [

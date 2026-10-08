@@ -6,6 +6,10 @@ import { BuildFollowUp } from './BuildFollowUp'
 import { builtModules, hardwareReportBody } from './build-follow-up'
 import { CommunityContext } from './context'
 import { communityModule } from './modules'
+import { downloadedReportContext } from './build-follow-up'
+import { resolveReportConfiguration, defaultConfigurationChoice } from './report-configuration'
+import { IssueReport } from './IssueReport'
+import { DigiIssueReport } from './DigiIssueReport'
 
 const member: Session = { available: true, admin: false, user: { id: 'member', displayName: 'Member', username: 'member', verified: true } }
 function render(session: Session, ids: string[]) {
@@ -34,8 +38,9 @@ describe('after a firmware download', () => {
     expect(html).not.toContain('<form')
     expect(html).not.toContain('<textarea')
     expect(html).not.toContain('aria-expanded')
-    expect(html).toContain('href="#module/')
-    expect(html).toContain('?report=1')
+    expect(html).toContain('aria-haspopup="dialog"')
+    expect(html).toContain('aria-label="Report a problem with Mini Verb"')
+    expect(html).not.toContain('?report=1')
   })
   it('embeds only pending choices in a reminder without another heading', () => {
     const html = renderToStaticMarkup(createElement(CommunityContext.Provider, { value: { session: member, developer: null, catalog: [], refresh: async () => {}, refreshDeveloper: async () => {} } },
@@ -49,5 +54,25 @@ describe('after a firmware download', () => {
   it('shows nothing without a verified member or without catalog modules', () => {
     expect(render({ ...member, user: { ...member.user!, verified: false } }, ['miniverb'])).toBe('')
     expect(render(member, [])).toBe('')
+  })
+  it('attaches the downloaded versions instead of a later active configuration or current catalog', () => {
+    const modules = [{ id: 'miniverb', name: 'Mini Verb', version: '0.1.1-experimental' }, { id: 'euclid', name: 'Euclid', version: '0.1.2-experimental' }]
+    const workspace = downloadedReportContext({ machine: 'Octatrack', os: '1.40C', modules })
+    expect(resolveReportConfiguration(defaultConfigurationChoice(['miniverb']), workspace, 'octatrack', null)).toMatchObject({ source: 'saved', name: 'Downloaded build', modules: [{ id: 'miniverb', version: modules[0].version }, { id: 'euclid', version: modules[1].version }], build: '', keepStockFx2: null })
+    const html = renderToStaticMarkup(createElement(CommunityContext.Provider, { value: { session: member, developer: null, catalog: [], refresh: async () => {}, refreshDeveloper: async () => {} } }, createElement(IssueReport, { id: 'miniverb', author: 'repeat98', embedded: true, workspaceContext: workspace, baseOs: '1.40C' })))
+    expect(html).toContain('class="issue-report" open=""')
+    expect(html).toContain('Downloaded build (active)')
+    expect(html).toMatch(/<input[^>]*required=""[^>]*name="title"/)
+    expect(html).toContain('name="actual" required=""')
+    expect(html).toContain('Post report')
+  })
+  it('prefills machine-specific reports with native IDs and the downloaded OS and version', () => {
+    const module = communityModule('digitakt-digihealth')!
+    const workspace = downloadedReportContext({ machine: 'Digitakt', os: '1.54', modules: [{ id: module.id, name: module.name, version: '0.1.0' }] })
+    expect(workspace.modules).toEqual([{ id: 'digihealth', version: '0.1.0' }])
+    const html = renderToStaticMarkup(createElement(CommunityContext.Provider, { value: { session: member, developer: null, catalog: [], refresh: async () => {}, refreshDeveloper: async () => {} } }, createElement(DigiIssueReport, { id: module.id, embedded: true, workspaceContext: workspace, baseOs: '1.54', moduleVersion: '0.1.0' })))
+    expect(html).toContain('<option selected="">1.54</option>')
+    expect(html).toContain('name="moduleVersion"')
+    expect(html).toContain('value="0.1.0"')
   })
 })

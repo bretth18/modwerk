@@ -4,8 +4,10 @@ import { threadHref } from '../routing'
 import { post } from './api'
 import { hardwareReportBody, type BuiltModule } from './build-follow-up'
 import { useCommunity } from './context'
-import { moduleIssueHref, moduleThreadId } from './modules'
+import { moduleThreadId } from './modules'
 import { updateHardwareFeedback } from './hardware-feedback'
+import { ModuleIssueDialog } from './ModuleIssueDialog'
+import { MODULE_STATISTICS_CHANGED } from './module-statistics'
 
 const errorText = (error: unknown) => error instanceof Error ? error.message : 'The request could not be completed.'
 
@@ -22,10 +24,11 @@ export function BuildFollowUp({ machine, os, modules, pendingIds, onPosted, embe
   </section>
 }
 
-/** One click posts a positive hardware report; a problem goes to the module's issue form. */
+/** One click posts a positive hardware report; a problem opens the module's form in place. */
 function HardwareReport({ memberId, machine, os, module, build, onPosted }: { memberId: string; machine: string; os: string; module: BuiltModule; build: readonly BuiltModule[]; onPosted?: (href: string) => void }) {
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [posted, setPosted] = useState('')
   const submitting = useRef(false)
+  const [reporting, setReporting] = useState(false)
   const thread = moduleThreadId(module.id)
   async function submit() {
     if (submitting.current || posted) return
@@ -35,6 +38,7 @@ function HardwareReport({ memberId, machine, os, module, build, onPosted }: { me
       const result = await post<{ id: string; page: number }>('/forum/threads/' + thread + '/replies', { body: hardwareReportBody(machine, os, module, build) })
       const href = threadHref(thread, module.name + ' discussion', '?page=' + result.page + '&post=' + result.id)
       setPosted(href); onPosted?.(href)
+      window.dispatchEvent(new Event(MODULE_STATISTICS_CHANGED))
       updateHardwareFeedback(memberId, { machine, os, modules: build }, { completed: module.id })
     } catch (error) { setError(errorText(error)) }
     finally { submitting.current = false; setBusy(false) }
@@ -45,10 +49,11 @@ function HardwareReport({ memberId, machine, os, module, build, onPosted }: { me
       <div className="forum-actions">
         {posted ? <a className="text-button build-follow-up-posted" href={posted} aria-label={module.name + ': works report saved. View report'}><Icon name="check" size={15} />Works · reported</a>
           : <button type="button" className="button button-quiet" disabled={busy} aria-label={'Report ' + module.name + ' works on my ' + machine} onClick={() => void submit()}><Icon name="check" size={15} />{busy ? 'Saving…' : 'Works'}</button>}
-        <a className="button button-quiet" href={moduleIssueHref(module.id)} aria-label={'Report a problem with ' + module.name}>Report a problem</a>
+        <button type="button" className="button button-quiet" aria-haspopup="dialog" aria-label={'Report a problem with ' + module.name} onClick={() => setReporting(true)}>Report a problem</button>
       </div>
     </div>
     {posted && <span className="sr-only" role="status">{module.name}: works report saved.</span>}
     {error && <p className="file-error" role="alert">{error}</p>}
+    {reporting && <ModuleIssueDialog id={module.id} build={{ machine, os, modules: build }} onClose={() => setReporting(false)}/>}
   </li>
 }
