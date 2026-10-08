@@ -1,7 +1,7 @@
 name: Module PR checks
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review, edited]
+    types: [opened, synchronize, reopened, ready_for_review]
     branches: [main, 'modwerk/**', 'codex/modwerk-*']
 permissions:
   contents: read

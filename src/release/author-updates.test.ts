@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ACTIONS_BOT_ID, AUTHOR_RELEASE_REQUEST, AUTHOR_RELEASE_EVIDENCE, authorizeAuthorUpdate, authorRequestedRelease, parseAuthorRegistry, requireAuthorChecks, type AuthorChange, type AuthorModule } from './author-updates'
+import { ACTIONS_BOT_ID, AUTHOR_RELEASE_REQUEST, AUTHOR_RELEASE_EVIDENCE, authorizeAuthorUpdate, authorReleaseEvent, authorRequestedRelease, parseAuthorRegistry, requireAuthorChecks, type AuthorChange, type AuthorModule } from './author-updates'
 
 const registry = { schemaVersion: 1 as const, accounts: { devilfish707: 86663946, irpina: 264014615 } }
 const author = { login: 'devilfish707', id: 86663946, type: 'User' }, base = 'b'.repeat(40), head = 'a'.repeat(40)
@@ -75,5 +75,23 @@ describe('exact author release checks', () => {
     for (const name of ['module-contract', 'octatrack-source', 'elemod-source']) for (const conclusion of ['skipped', 'cancelled', 'failure']) expect(() => requireAuthorChecks(run, jobs.map(job => job.name === name ? { ...job, conclusion } : job), 'repeat98/modwerk', head, base, 12, scope)).toThrow(name)
     expect(() => requireAuthorChecks(run, [...jobs, jobs[1]], 'repeat98/modwerk', head, base, 12, scope)).toThrow('module-contract')
     expect(() => requireAuthorChecks(run, jobs.filter(job => job.name !== 'elemod-source'), 'repeat98/modwerk', head, base, 12, { ...scope, elemodCompile: false })).not.toThrow()
+  })
+})
+
+const workflowEvent = { action: 'completed', workflow_run: { ...run, id: 77 } }
+const pullEvent = { action: 'edited', pull_request: { number: 9, state: 'open', draft: false, head: { sha: head }, base: { ref: 'main' } } }
+describe('trusted author release event selection', () => {
+  it('selects exact successful CI or the open PR whose release boxes were edited', () => {
+    expect(authorReleaseEvent(workflowEvent)).toEqual({ head, runId: 77 })
+    expect(authorReleaseEvent(pullEvent)).toEqual({ head, number: 9 })
+  })
+  it('rejects incomplete/failed/non-PR workflow events and malformed identity', () => {
+    for (const mutation of [{ event: 'push' }, { conclusion: 'failure' }, { status: 'in_progress' }, { id: 0 }, { id: '77' }, { head_sha: 'invalid' }]) expect(() => authorReleaseEvent({ ...workflowEvent, workflow_run: { ...workflowEvent.workflow_run, ...mutation } })).toThrow()
+    expect(() => authorReleaseEvent({ ...workflowEvent, action: 'requested' })).toThrow()
+    expect(() => authorReleaseEvent({ ...pullEvent, workflow_run: null })).toThrow()
+  })
+  it('rejects closed/draft/non-main PRs, unrelated actions and malformed identity', () => {
+    for (const mutation of [{ state: 'closed' }, { draft: true }, { base: { ref: 'other' } }, { number: 0 }, { number: '9' }, { head: { sha: 'invalid' } }]) expect(() => authorReleaseEvent({ ...pullEvent, pull_request: { ...pullEvent.pull_request, ...mutation } })).toThrow()
+    expect(() => authorReleaseEvent({ ...pullEvent, action: 'closed' })).toThrow()
   })
 })

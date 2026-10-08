@@ -16,23 +16,28 @@ function fixture(options = {}) {
     if (path.endsWith('/dispatches')) return null
     throw new Error('Unexpected API path ' + path)
   }
-  return { api, calls, execute: () => mergeAuthorPull(api, repository, 9, head, base, { octatrack: true, packages: false, elemodCompile: false }, 77) }
+  return { api, calls, execute: expectedRunId => mergeAuthorPull(api, repository, 9, head, base, { octatrack: true, packages: false, elemodCompile: false }, expectedRunId) }
 }
 describe('author merge and publication transaction', () => {
   it('merges the expected head and dispatches both deployments after verifying merge parents', async () => {
     const f = fixture()
-    expect(await f.execute()).toBe(77)
+    expect(await f.execute(77)).toBe(77)
     expect(f.calls.filter(call => call.method === 'PUT')).toEqual([{ path: '/pulls/9/merge', method: 'PUT', data: { sha: head, merge_method: 'merge' } }])
     expect(f.calls.filter(call => call.method === 'POST')).toEqual(['pages.yml', 'worker.yml'].map(name => ({ path: '/actions/workflows/' + name + '/dispatches', method: 'POST', data: { ref: 'main' } })))
   })
+  it('checks the latest successful source CI when the author opts in after CI finishes', async () => {
+    const f = fixture({ runId: 78 })
+    expect(await f.execute()).toBe(78)
+    expect(f.calls.some(call => call.method === 'PUT')).toBe(true)
+  })
   it.each([{ runId: 78 }, { conclusion: 'failure' }, { draft: true }, { head: merged }, { base: merged }, { withdraw: true }, { ref: 'other' }])('never mutates GitHub when validation changes: %j', async options => {
     const f = fixture(options)
-    await expect(f.execute()).rejects.toThrow()
+    await expect(f.execute(77)).rejects.toThrow()
     expect(f.calls.every(call => call.method === 'GET')).toBe(true)
   })
   it.each([{ refused: true }, { mergedBase: head }])('does not publish a refused merge or an untested concurrent base: %j', async options => {
     const f = fixture(options)
-    await expect(f.execute()).rejects.toThrow()
+    await expect(f.execute(77)).rejects.toThrow()
     expect(f.calls.some(call => call.method === 'POST')).toBe(false)
   })
 })
