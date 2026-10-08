@@ -79,9 +79,16 @@ Not run. The one intended change (LO-FI's AMF pitch at the affected values; see 
 - Result, as reported: passed. The ring-modulator pitch rose at every step in all three cases, including 7→8, 16→17, 22→23 and 47→48.
 - Not covered by this check: AMF above 60, modulation, persistence and load (see the stress run below).
 
-### Stress run
+### Stress run, 8 October 2026 (reported by Bryan Tysinger)
 
-Not yet run.
+Same unit and image as the functional check above.
+
+- Project: a disposable project (referred to here as AMFSTRESS), fingerprint `dcaa2e11b5a6faec43cc4e7ceedc37ba80f747ee7990429864ed10f71c8a6fce`, computed on the project folder copied from the card with `find . -type f -not -name .DS_Store -print0 | LC_ALL=C sort -z | xargs -0 shasum -a 256 | shasum -a 256`. The project stays with the tester.
+- Recipe, as reported: eight audio tracks playing a single-cycle sine; LO-FI on FX1 and FX2 of all eight tracks (16 instances, both DSP cores, both slots); every AMF value tried; three LFOs per track, all values tried; AMF parameter-locked on all tracks.
+- Duration: about 10 minutes of audio (tester's estimate).
+- Controls: passed. Transport (stop/start, tempo changes, Part switching while playing): passed. Audio continuity (no dropouts, clicks, hangs or screen lag): passed. Memory integrity (unsaved edits, then Part reload and project reload back to the saved state): passed. Recovery (power-cycle, project reload; all instances, settings and the corrected pitch back): passed.
+- Context, not evidence for this image: the tester has run the same two-word fix, built with his own octa-bt-pt tool, for several months without issues.
+- Limits: the duration is an estimate and below the 15 minutes first proposed; MIDI tracks, MIDI CC modulation and scenes were not part of the run.
 
 ## Release notes to add when the module is listed
 
