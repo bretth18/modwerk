@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0-experimental",
+  "mainOsSha256": "fd42fa81ee3cf23a47381a96d2e70be3efbaab250f5c3aedb5a1e11cd4a2529e",
+  "staticCycles": {
+    "words": 411,
+    "cycles": 411,
+    "loop_end": "mv_end",
+    "total_words": 532
+  },
+  "moduleSources": {
+    "miniverb.asm": "b41a3e8b159fd4594af3eada72e84933d067b0335a2b1adc786bfcadc95fd136",
+    "manifest.py": "e18af286c50d9778cb60ddbe8b9348c4b4a71c04cb45171419d4d2a6681cc31c"
+  },
+  "toolchainImage": "sha256:6711f0abb3c30dcfda4e9a8a812555f8bbceb37a0fc988918b5d624b603d4a6a",
+  "qualification": "Private native composition and LCD only; not a release-parity or hardware qualification."
+}
