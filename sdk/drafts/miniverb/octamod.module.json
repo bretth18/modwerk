@@ -122,7 +122,7 @@
     "gates": [
       "tools/verify/verify_miniverb.py"
     ],
-    "evidenceRevision": "86ef6f93a2430ef38abe88121cc395742ac580c7"
+    "evidenceRevision": "9764190e616cec58b20b59507a60c6a423e66327"
   },
   "license": {
     "spdx": "MIT",
@@ -184,7 +184,7 @@
   },
   "source": {
     "repository": "https://github.com/repeat98/modwerk",
-    "revision": "86ef6f93a2430ef38abe88121cc395742ac580c7",
+    "revision": "9764190e616cec58b20b59507a60c6a423e66327",
     "path": "sdk/drafts/miniverb"
   }
 }
