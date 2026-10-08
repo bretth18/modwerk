@@ -3,6 +3,8 @@ import { api, post } from './api'
 import { COMMUNITY_MODULES } from './modules'
 import { NotificationList } from './NotificationList'
 import { PublicAnnouncementCard } from './PublicAnnouncement'
+import { accountHref } from './member-access'
+import { DEVELOPMENT_DISCORD_URL } from '../config/development-discord'
 import { SUPPORT_URL } from '../config/support'
 import type { AnnouncementVisibility } from './notification-contract'
 
@@ -15,6 +17,7 @@ const sentAt = (value: string) => new Date(value.replace(' ', 'T') + 'Z').toLoca
 /** Where a bell entry leads, in the words the operator would use: the bell opens the link, else the module page, else the library. */
 function destination(url: string | null, moduleId: string | null) {
   if (url === SUPPORT_URL) return 'Ko-fi'
+  if (url === DEVELOPMENT_DISCORD_URL) return 'the development Discord'
   if (url) return url.replace(/^https:\/\//, '')
   if (moduleId) return (COMMUNITY_MODULES.find(module => module.id === moduleId)?.name ?? moduleId) + ' page'
   return 'Library'
@@ -71,11 +74,12 @@ export function AnnouncementsPanel() {
       <aside className="announcement-preview" aria-label="Preview">
         <p className="announcement-preview-label">{visibility === 'public' ? 'Preview of the public card' : 'Preview in the bell'}</p>
         <div className={visibility === 'public' ? 'announcement-public-preview' : 'announcement-preview-card'} aria-hidden="true" inert>
-          {visibility === 'public' ? <PublicAnnouncementCard line={{ kind: 'announcement', text: title.trim() || 'Your title', excerpt: body.trim() || 'Your message appears here.', href: url || COMMUNITY_MODULES.find(module => module.id === moduleId)?.href || '#library', ids: ['preview'], seen: false, created_at: new Date().toISOString(), actor: null, official: true, avatar: null }} onDismiss={() => {}} onOpen={() => {}} /> :
+          {visibility === 'public' ? <PublicAnnouncementCard line={{ kind: 'announcement', text: title.trim() || 'Your title', excerpt: body.trim() || 'Your message appears here.', href: url || COMMUNITY_MODULES.find(module => module.id === moduleId)?.href || '#library', ids: ['preview'], seen: false, created_at: new Date().toISOString(), actor: null, official: true, avatar: null }} signup={accountHref('register')} onDismiss={() => {}} onOpen={() => {}} /> :
           <NotificationList lines={[{ kind: 'announcement', text: title.trim() || 'Your title', excerpt: body.trim() || 'Your message appears here.', href: '#admin/announcements', ids: ['preview'], seen: false, created_at: new Date().toISOString(), actor: null, official: true, avatar: null }]} onOpen={() => {}} />
           }
         </div>
         <p className="announcement-hint">{visibility === 'public' ? 'Visible to everyone' : 'Visible to current signed-in members'} · Opens {destination(url || null, moduleId || null)}</p>
+        {visibility === 'public' && url === DEVELOPMENT_DISCORD_URL && <p className="announcement-hint">Signed-out visitors also see Create account. Browsers that already handled a Discord invitation, the former visitor popup or a member’s own invitation, skip this card.</p>}
       </aside>
     </div>
     {error && <p className="file-error" role="alert">{error}</p>}

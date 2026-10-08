@@ -5,6 +5,7 @@ import { PublicAnnouncementCard } from './PublicAnnouncement'
 import type { BellItem } from './notification-contract'
 import type { NotificationLine } from './notification-text'
 import { SUPPORT_URL } from '../config/support'
+import { DEVELOPMENT_DISCORD_URL } from '../config/development-discord'
 
 let storage: Map<string, string>, news: typeof import('./public-announcement')
 const id = (character: string) => 'announcement-' + character.repeat(32)
@@ -60,5 +61,19 @@ describe('quiet public announcements', () => {
     expect(support).toContain('Credits &amp; acknowledgements')
     expect(support).toContain('target="_blank" rel="noreferrer"')
     expect(support).toContain('aria-label="Dismiss announcement"')
+  })
+  it('turns a Discord announcement into the community invitation, offering signed-out visitors an account too', () => {
+    const line: NotificationLine = { kind: 'announcement', text: 'Join the Modwerk community', excerpt: 'Meet other developers on Discord.', href: DEVELOPMENT_DISCORD_URL, ids: [id('a')], seen: false, created_at: '', actor: null, official: true, avatar: null }
+    const member = renderToStaticMarkup(createElement(PublicAnnouncementCard, { line, onDismiss() {}, onOpen() {} }))
+    expect(member).toContain('Join Discord'); expect(member).toContain('auth/discord.svg')
+    expect(member).toContain(`href="${DEVELOPMENT_DISCORD_URL}" target="_blank" rel="noreferrer"`)
+    expect(member).toContain('opens in a new tab')
+    expect(member).not.toContain('Create account')
+    const visitor = renderToStaticMarkup(createElement(PublicAnnouncementCard, { line, signup: '#account/register?next=library', onDismiss() {}, onOpen() {} }))
+    expect(visitor).toContain('Join Discord')
+    expect(visitor).toContain('href="#account/register?next=library"')
+    expect(visitor).toContain('Create account')
+    const other = renderToStaticMarkup(createElement(PublicAnnouncementCard, { line: { ...line, href: '#library' }, signup: '#account/register?next=library', onDismiss() {}, onOpen() {} }))
+    expect(other).not.toContain('Create account'); expect(other).not.toContain('Join Discord')
   })
 })

@@ -182,6 +182,15 @@ describe('operator announcements in the bell', () => {
     }
   })
 
+  it('keeps the Discord community draft unsent and valid as the public replacement for the visitor popup', async () => {
+    const { announce, call } = await fixture()
+    const draft = JSON.parse(readFileSync(new URL('../../docs/announcements/discord-community-2026-10-08.draft.json', import.meta.url), 'utf8'))
+    expect((await (await call('/announcements')).json()).items).toEqual([])
+    expect(draft).toMatchObject({ url: DEVELOPMENT_DISCORD_URL, visibility: 'public' })
+    expect((await announce(draft)).status).toBe(201)
+    expect((await (await call('/announcements')).json()).items).toEqual([expect.objectContaining({ title: draft.title, excerpt: draft.body, url: DEVELOPMENT_DISCORD_URL })])
+  })
+
   it('refuses what a bell entry may not contain', async () => {
     const { announce } = await fixture()
     for (const bad of [
