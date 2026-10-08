@@ -1,3 +1,4 @@
+import type { CatalogBrowse } from '../catalog/catalog-browse'
 import { ModuleDetailLayout } from '../components/ModuleDetailLayout'
 import { ModuleResourceSummary, type ResourceIndicator } from '../components/ModuleResourceSummary'
 import { Icon } from '../components/Icon'
@@ -87,9 +88,9 @@ function DigiModuleGuide({ mod, device }: { mod: DigiMod; device: DeviceProfile 
   </>
 }
 
-export function DigiModDetail({ device, mod, selected, onToggle }: { device: DeviceProfile & { id: DigiMod['device'] }; mod: DigiMod; selected: boolean; onToggle: () => void }) {
+export function DigiModDetail({ device, mod, selected, onToggle, browse, onBackToResults }: { browse?: CatalogBrowse | null; onBackToResults?: () => void; device: DeviceProfile & { id: DigiMod['device'] }; mod: DigiMod; selected: boolean; onToggle: () => void }) {
   const document = digiModuleDocument(mod), id = mod.device + '-' + mod.id
-  return <ModuleDetailLayout id={id} title={mod.title} family={mod.category}
+  return <ModuleDetailLayout browse={browse} onBackToResults={onBackToResults} id={id} title={mod.title} family={mod.category}
     detail={'location' in document.access ? document.access.location : document.access.noUiReason}
     author={mod.author} authorUrl={mod.repository} description={mod.summary} selected={selected} onToggle={onToggle}
     backHref={deviceHref(mod.device)} backLabel={'All ' + device.name + ' modules'}
