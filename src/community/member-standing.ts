@@ -14,11 +14,11 @@ export type Contributions = { threads: number; replies: number; likesReceived: n
 
 /** Ranked tiers, lowest first. Each starts at its point threshold. */
 export const TIERS = [
-  { id: 'listener', name: 'Listener', from: 0 },
-  { id: 'jammer', name: 'Jammer', from: 25 },
-  { id: 'performer', name: 'Performer', from: 100 },
-  { id: 'producer', name: 'Producer', from: 300 },
-  { id: 'headliner', name: 'Headliner', from: 1000 },
+  { id: 'listener', name: 'New member', from: 0 },
+  { id: 'jammer', name: 'Member', from: 25 },
+  { id: 'performer', name: 'Contributor', from: 100 },
+  { id: 'producer', name: 'Regular contributor', from: 300 },
+  { id: 'headliner', name: 'Established contributor', from: 1000 },
 ] as const
 export type Tier = typeof TIERS[number]
 
