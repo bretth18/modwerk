@@ -29,7 +29,7 @@ export function MobileMenu({ route, online, selectedCount, configurationHref, ad
     [
       { href: '#forum', label: 'Forum', icon: 'message', current: route.startsWith('forum'), online },
       { href: '#account', label: 'Account / sign in', icon: 'shield', current: route.startsWith('account') },
-      ...(developer ? [{ href: '#developer', label: 'Developer workspace', icon: 'sliders' as const, current: route.startsWith('developer') }] : []),
+      ...(developer ? [{ href: '#developer', label: 'Creator settings', icon: 'sliders' as const, current: route.startsWith('developer') }] : []),
       { href: '#submit', label: 'Start developing', icon: 'plus', current: route.startsWith('submit') },
       ...(admin ? [{ href: '#admin', label: 'Admin workspace', icon: 'shield' as const, current: route === 'admin' || route === 'review' }] : []),
     ],

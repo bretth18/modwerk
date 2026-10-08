@@ -47,7 +47,7 @@ export function AccountMenu({ route }: { route: string }) {
       {open && <div ref={panelRef} id={panelId} className="sidebar-account-menu" role="navigation" aria-label="Account" onKeyDown={moveFocus}>
         <a href="#account" aria-current={route === 'account' || route.startsWith('account/') ? 'page' : undefined}><Icon name="shield" size={16} />Your account</a>
         {user.username && <a href={'#forum/profile/' + encodeURIComponent(user.username)}><Icon name="message" size={16} />Your public profile</a>}
-        {developer?.user && <a href="#developer" aria-current={route === 'developer' || route.startsWith('developer/') ? 'page' : undefined}><Icon name="sliders" size={16} />Developer workspace</a>}
+        {developer?.user && <a href="#developer" aria-current={route === 'developer' || route.startsWith('developer/') ? 'page' : undefined}><Icon name="sliders" size={16} />Creator settings</a>}
         {session.admin && <a href="#admin" aria-current={route === 'admin' || route === 'review' ? 'page' : undefined}><Icon name="star" size={16} />Admin workspace</a>}
         <hr />
         <button type="button" disabled={busy} onClick={() => void signOut()}><Icon name="back" size={16} />{busy ? 'Signing out…' : 'Sign out'}</button>

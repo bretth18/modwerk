@@ -235,8 +235,8 @@ describe('community access and review',()=>{
    const {items}=await (await call('/notifications','GET',undefined,reporter)).json()
    expect(items).toMatchObject([{kind:'issue_resolved',github_actor:'sambanks',title:'Knob issue',url:'https://github.com/repeat98/octamod/issues/41'},{kind:'issue_comment',excerpt:'Thanks, I can reproduce this on 1.40C.'}])
    expect(notificationLines(items).map(line=>[line.text,line.href])).toEqual([
-    ['@sambanks on GitHub marked your bug report “Knob issue” as fixed','https://github.com/repeat98/octamod/issues/41'],
-    ['@sambanks on GitHub replied to your bug report “Knob issue”','https://github.com/repeat98/octamod/issues/41'],
+    ['@sambanks on GitHub marked your bug report “Knob issue” as fixed','#account/report/'+row.id],
+    ['@sambanks on GitHub replied to your bug report “Knob issue”','#account/report/'+row.id],
    ])
    // Reopening from the admin inbox reopens the GitHub issue too.
    expect(await (await call('/admin/issues/'+row.id,'PATCH',{status:'open'},'',undefined,admin)).json()).toEqual({ok:true,github:'synced'})

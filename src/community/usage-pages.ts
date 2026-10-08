@@ -5,7 +5,7 @@ import { COMMUNITY_MODULES, nativeModule } from './modules'
 const sections = {
   forum: 'Forum', 'forum-thread': 'Forum · discussions', 'forum-profile': 'Forum · profiles',
   'forum-messages': 'Private messages', 'forum-compose': 'New discussion', 'forum-shoutbox': 'Shoutbox archive',
-  account: 'Account', developer: 'Developer workspace', 'module-sets': 'Module sets', 'module-set': 'Module set details',
+  account: 'Account', developer: 'Creator settings', 'module-sets': 'Module sets', 'module-set': 'Module set details',
   'community-module': 'Community module details', submit: 'Submit a module', faq: 'FAQ', credits: 'Credits',
   privacy: 'Privacy notice', impressum: 'Impressum', 'community-rules': 'Community rules',
   'report-content': 'Report content', 'page-not-found': 'Page not found',
