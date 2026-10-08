@@ -9,6 +9,7 @@ import { moduleHref } from '../routing'
 import { Icon } from './Icon'
 import { ModulePreview } from './ModulePreview'
 import { ModuleRelease } from './ModuleRelease'
+import { USB_AUDIO_MODULE } from '../config/usb-audio'
 
 export type ModuleCardProps = {
   module: FirmwareModule
@@ -23,9 +24,9 @@ export type ModuleCardProps = {
   onBrowse?: () => void
 }
 
-export function AddButton({ name, selected, onToggle }: { name: string; selected: boolean; onToggle: () => void }) {
-  const label = (selected ? 'Remove ' : 'Add ') + name + (selected ? ' from configuration' : ' to configuration')
-  return <button className={'add-button ' + (selected ? 'is-added' : '')} aria-label={label} title={label} aria-pressed={selected} onClick={onToggle}><Icon name={selected ? 'check' : 'plus'} size={15} /><span>{selected ? 'Added' : 'Add'}</span></button>
+export function AddButton({ name, selected, onToggle, configure = false }: { name: string; selected: boolean; onToggle: () => void; configure?: boolean }) {
+  const label = configure && !selected ? 'Configure ' + name : (selected ? 'Remove ' : 'Add ') + name + (selected ? ' from configuration' : ' to configuration')
+  return <button className={'add-button ' + (selected ? 'is-added' : '')} aria-label={label} title={label} aria-pressed={selected} onClick={onToggle}><Icon name={selected ? 'check' : configure ? 'sliders' : 'plus'} size={15} /><span>{selected ? 'Added' : configure ? 'Configure' : 'Add'}</span></button>
 }
 
 // Rating, likes and downloads on one line. An unrated module shows no star; an unavailable count shows a dash so a
@@ -56,8 +57,9 @@ export function ModuleCard({ module, selected, statistics, viewedVersion, baseli
     <div className="module-card-body">
       <div className="module-card-title">
         <div className="module-card-heading"><a href={moduleHref(module.id)} onClick={onBrowse} onAuxClick={onBrowse}>{module.name}</a><ModuleRelease module={module} viewedVersion={viewedVersion} baseline={baseline} /></div>
-        <AddButton name={module.name} selected={selected} onToggle={onToggle} />
+        <AddButton name={module.name} selected={selected} onToggle={onToggle} configure={module.id === USB_AUDIO_MODULE} />
       </div>
+      {module.id === USB_AUDIO_MODULE && <span className="module-compatibility-badge module-card-compatibility"><Icon name="wave" size={12} />Outbox 8 compatible</span>}
       <div className="card-credit"><a href={module.authorUrl} target="_blank" rel="noreferrer">{module.authorName}</a><span>{module.detail}</span></div>
       <p className="card-description">{module.description}</p>
       <div className="card-bottom"><span>{DETAILS[module.id].family}</span><CardStats statistics={statistics} /></div>

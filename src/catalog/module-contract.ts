@@ -80,13 +80,13 @@ function qualificationReport(value: unknown, path: string): string {
   if(file!=='TESTING.md'&&(!file.startsWith('evidence/')||!/\.(md|json|txt)$/.test(file))) fail(path,'use TESTING.md or a text report under evidence/, never firmware or a project/card dump')
   return file
 }
-function qualificationDocumentation(value: unknown, path: string): ModuleQualification['documentation'] {
+function qualificationDocumentation(value: unknown, path: string, noUi=false): ModuleQualification['documentation'] {
   const docs=object(value,path+'.documentation',['tutorial','screenshots','screenshotStyle'])
   const tutorial=object(docs.tutorial,path+'.documentation.tutorial',['title','steps'])
   const steps=texts(tutorial.steps,path+'.documentation.tutorial.steps',12)
   if(steps.length<3) fail(path+'.documentation.tutorial.steps','require at least three practical tutorial steps: setup/select, use controls and verify the result')
   const screenshots=list(docs.screenshots,path+'.documentation.screenshots',8).map((value,i)=>modulePath(value,path+'.documentation.screenshots['+i+']'))
-  if(!screenshots.length||new Set(screenshots).size!==screenshots.length) fail(path+'.documentation.screenshots','require real documentation screenshots without duplicates')
+  if((!screenshots.length&&!noUi)||new Set(screenshots).size!==screenshots.length) fail(path+'.documentation.screenshots','require real documentation screenshots without duplicates')
   return {tutorial:{title:text(tutorial.title,path+'.documentation.tutorial.title',100),steps},screenshots,screenshotStyle:enumeration(docs.screenshotStyle,path+'.documentation.screenshotStyle',['black-and-white'])}
 }
 function releaseWaiver(value: unknown): ModuleReleaseWaiver {
@@ -192,7 +192,6 @@ export function parseModuleDocument(value: unknown): ModuleDocument {
     compareModuleVersions(moduleVersion,moduleVersion)
     retainedEvidence={commit,moduleVersion,documentation:qualificationDocumentation(value.documentation,p)}
   }
-  const documentation='documentation' in t?qualificationDocumentation(t.documentation,'tests'):undefined
   const proof='qualification' in t?qualification(t.qualification):undefined
   const waiver='releaseWaiver' in t?releaseWaiver(t.releaseWaiver):undefined
   if(proof&&waiver) fail('tests','use measured qualification or an owner release waiver, never both')
@@ -239,6 +238,7 @@ export function parseModuleDocument(value: unknown): ModuleDocument {
     if(noUiReason&&(controls.length||c.effectId!==null||c.location!=='USB'||screenshots.length)) fail('access.noUiReason','only automatic USB modules without OT controls or screenshots may declare no dedicated OT UI')
     access={location:text(a.location,'access.location',300),steps,screenshots,...(noUiReason?{noUiReason}:{})}
   }
+  const documentation='documentation' in t?qualificationDocumentation(t.documentation,'tests',!!access?.noUiReason):undefined
   return {schemaVersion:2,id,key:text(d.key,'key',60),name:text(d.name,'name',100),version,category:enumeration(d.category,'category',MODULE_CATEGORIES),...(source?{source}:{}),...(build?{build}:{}),...(access?{access}:{}),author:{github,...authorName,credits:texts(a.credits,'author.credits',30)},nativeManifest,presentation:{label:text(p.label,'presentation.label',80),family:text(p.family,'presentation.family',80),summary:text(p.summary,'presentation.summary',300),overview:text(p.overview,'presentation.overview'),highlights:texts(p.highlights,'presentation.highlights',12),usage:texts(p.usage,'presentation.usage',12)},controls,compatibility:{firmware:'1.40C',effectId:c.effectId as number|null,location:enumeration(c.location,'compatibility.location',['FX1','FX2','FX1 / FX2','Flex / Static','Track machine','Audio tracks','MIDI tracks','Project sequencer','USB']),conflicts:texts(c.conflicts,'compatibility.conflicts',64),limitations:texts(c.limitations,'compatibility.limitations',24)},resources:{recorded:text(r.recorded,'resources.recorded',100),storage:metric(r.storage,'resources.storage'),processing:metric(r.processing,'resources.processing'),...(impact?{impact}:{})},tests:{report:modulePath(t.report,'tests.report'),summary:text(t.summary,'tests.summary'),hardwareStatus:enumeration(t.hardwareStatus,'tests.hardwareStatus',['untested','historical','reported','verified']),evidenceRevision,gates:texts(t.gates,'tests.gates',64),...(documentation?{documentation}:{}),...(proof?{qualification:proof}:{}),...(waiver?{releaseWaiver:waiver}:{}),...(retainedEvidence?{retainedEvidence}:{})},license:{spdx:text(l.spdx,'license.spdx',100),file:modulePath(l.file,'license.file'),declaration:text(l.declaration,'license.declaration')},media}
 }
 

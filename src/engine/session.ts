@@ -1,3 +1,4 @@
+import { usbAudioBuildError } from '../config/usb-audio'
 import { compiledModuleSource } from './module-build.ts'
 import { inspectBaseFirmware } from './base'
 import { decodeFirmware, encodeFirmware, type DecodedFirmware } from './elek'
@@ -22,6 +23,8 @@ export function createEngineSession(reply: (response: EngineResponse, transfer?:
         if (current !== generation) throw new Error('The selected firmware changed. Verify it again.')
         base = decoded; reply({ id: request.id, type: 'inspection', inspection }); return
       }
+      const usbError = usbAudioBuildError(request.usbAudio)
+      if (usbError) throw new Error(usbError)
       const original = base, current = generation
       if (!original) throw new Error('Choose and verify your base firmware first.')
       const modules = resolveSelection(request.moduleIds)
@@ -32,7 +35,7 @@ export function createEngineSession(reply: (response: EngineResponse, transfer?:
       const claims = checkSelection(request.moduleIds, DSP_LOADER && request.keepStockFx2)
       if (!claims.checked || claims.issues.length) throw new Error(claims.issues.join(' ') || 'This module selection could not be validated.')
       reply({ id: request.id, type: 'progress', phase: 'composing' })
-      const result = await composeSelection(original.mainOs, request.moduleIds, request.keepStockFx2)
+      const result = await composeSelection(original.mainOs, request.moduleIds, request.keepStockFx2, request.usbAudio)
       if (current !== generation) throw new Error('The selected firmware changed. Build again.')
       const source = compiledModuleSource()
       const report: BuildReport = {

@@ -357,6 +357,16 @@
     ],
     "usb-audio-out-tracks-main-cue": [
       {
+        "version": "0.2.0-experimental",
+        "date": "2026-10-08",
+        "changes": [
+          "Add Outbox 8 support and six selectable USB audio output layouts with a configure-before-add setup.",
+          "Show source explanations, per-layout CPU estimates, physical-output routing, and saved / unsaved state. Save and share USB settings in configuration backups.",
+          "Support the Outbox 44.1 kHz control handshake and retain USB MIDI receive / clock and reset handling. Existing configurations without USB settings keep the classic twenty-channel code path.",
+          "Experimental release approved without current-build hardware tests. Chip timing, complete hardware memory bounds and untested host combinations remain unmeasured."
+        ]
+      },
+      {
         "version": "0.1.4-experimental",
         "date": "2026-10-07",
         "changes": [

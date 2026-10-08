@@ -64,7 +64,7 @@ function nativeChange(change, machine) {
   const common = /^sdk\/(build|runtime)\//.test(path)
   if (machine === 'octatrack') return common || /^sdk\/octabam\/(modules|platform|tools|dsp|licenses)\//.test(path)
     || path === 'sdk/catalog.json' || /^src\/engine\/assets\/(?!elemod\/)/.test(path)
-    || /^scripts\/(build-module-packages\.py|build-utility-packages\.py|build-modules-isolated\.sh|import-module-build\.mjs|module-source\.mjs)$/.test(path)
+    || /^scripts\/(build-module-packages\.py|build-utility-packages\.py|build-usb-audio-packages\.py|build-modules-isolated\.sh|import-module-build\.mjs|module-source\.mjs)$/.test(path)
   return common || /^sdk\/(digitakt|digitone|elemod|machines)\//.test(path)
     || /^sdk\/octabam\/(scripts\/vendor\.sh|tools\/patches\/|tools\/harness\/dsp_host)/.test(path)
     || /^scripts\/(build-elemod[^/]*|elemod-elf\.mjs|verify-elemod-source-parity\.mjs)$/.test(path)

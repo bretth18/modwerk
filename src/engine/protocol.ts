@@ -1,4 +1,5 @@
 import type { FirmwareInspection } from './base'
+import type { UsbAudioConfiguration } from '../config/usb-audio'
 export type BuildReport = {
   version: string; revision: string; sourceCommit: string | null; sourceTreeSha256: string; moduleIds: string[]; moduleVersions: Record<string,string>; keepStockFx2: boolean
   osBytes: number; runtimeBytes: number; reservedBytes: number; fx1Rows: number; fx2Rows: number
@@ -8,7 +9,7 @@ export type BuildReport = {
 export type BuildProgress = 'composing' | 'packing' | 'verifying'
 export type EngineRequest =
   | { id: number; type: 'inspect'; buffer: ArrayBuffer; name: string }
-  | { id: number; type: 'validate' | 'build'; moduleIds: string[]; keepStockFx2: boolean }
+  | { id: number; type: 'validate' | 'build'; moduleIds: string[]; keepStockFx2: boolean; usbAudio?: UsbAudioConfiguration }
   | { id: number; type: 'clear' }
 export type EngineResponse =
   | { id: number; type: 'inspection'; inspection: FirmwareInspection }

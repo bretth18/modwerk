@@ -1,6 +1,7 @@
 import type { MemberRole } from './member-standing'
 import { machineModules } from './modules'
 import { compareModuleVersions } from '../catalog/versions'
+import { parseUsbAudioConfiguration, USB_AUDIO_MODULE, type UsbAudioConfiguration } from '../config/usb-audio'
 import { DEVICES_BY_ID } from '../devices/registry'
 export const FORUM_CATEGORIES = { general: 'General discussion', introductions: 'Introductions', showcase: 'Showcase', requests: 'Feature requests', tutorials: 'Tutorials & guides', modules: 'Module help', configs: 'Shared configurations', issues: 'Bug reports' } as const
 export const FORUM_CATEGORY_DESCRIPTIONS: Record<keyof typeof FORUM_CATEGORIES, string> = {
@@ -28,11 +29,11 @@ export function forumMachine(value: unknown): string | null {
   return value
 }
 export type ForumMachineSummary = { machine: string; threads: number; updated_at: string }
-export type SharedConfiguration = { name: string; device?: string; moduleIds: string[]; moduleVersions: Record<string,string>; keepStockFx2: boolean }
+export type SharedConfiguration = { name: string; device?: string; moduleIds: string[]; moduleVersions: Record<string,string>; keepStockFx2: boolean; usbAudio?: UsbAudioConfiguration }
 export function sharedConfiguration(value: unknown): SharedConfiguration {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Choose a configuration to share.')
   const item = value as SharedConfiguration
-  if (Object.keys(item).some(key => !['name','device','moduleIds','moduleVersions','keepStockFx2'].includes(key))) throw new Error('Only configuration names, machine, module choices, versions and settings can be shared. Firmware and other files are not accepted.')
+  if (Object.keys(item).some(key => !['name','device','moduleIds','moduleVersions','keepStockFx2','usbAudio'].includes(key))) throw new Error('Only configuration names, machine, module choices, versions and settings can be shared. Firmware and other files are not accepted.')
   const device = item.device ?? 'octatrack'
   if (item.device !== undefined && typeof item.device !== 'string') throw new Error('Choose a valid configuration machine.')
   if (typeof device !== 'string' || !['octatrack','digitakt','digitone'].includes(device)) throw new Error('Choose a machine with configurable modules.')
@@ -43,7 +44,9 @@ export function sharedConfiguration(value: unknown): SharedConfiguration {
     if (typeof version !== 'string' || version.length > 80) throw new Error('Include the exact version of every module.')
     compareModuleVersions(version, version)
   }
-  return { name: item.name.trim(), ...(item.device ? {device} : {}), moduleIds: [...item.moduleIds], moduleVersions: { ...item.moduleVersions }, keepStockFx2: item.keepStockFx2 }
+  if (item.usbAudio !== undefined && (device !== 'octatrack' || !item.moduleIds.includes(USB_AUDIO_MODULE))) throw new Error('USB Audio settings require the Octatrack USB Audio module.')
+  const usbAudio = item.usbAudio === undefined ? undefined : parseUsbAudioConfiguration(item.usbAudio)
+  return { name: item.name.trim(), ...(item.device ? {device} : {}), moduleIds: [...item.moduleIds], moduleVersions: { ...item.moduleVersions }, keepStockFx2: item.keepStockFx2, ...(usbAudio ? { usbAudio } : {}) }
 }
 export type ForumThread = { id:string;title:string;category:ForumCategory;machine:string|null;module_id:string|null;username:string|null;avatar?:string|null;official?:number;status:'open'|'resolved';request_status:RequestStatus;votes:number;locked:number;pinned:number;hidden?:number;created_at:string;updated_at:string;replies:number;last_post_id?:string|null;last_username?:string|null;last_excerpt?:string|null;last_post_page?:number;media_kinds?:string|null;unread?:number;new_replies?:number }
 /** What happened since a member's previous forum visit; `since` is null on the first visit. */

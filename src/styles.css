@@ -229,6 +229,8 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .text-button { display: inline-flex; align-items: center; gap: 5px; border: 0; background: none; padding: 0; font-size: 12px; color: #a8b0ff; }
 .text-button:hover { color: #d0d5ff; }
 .pill { display: inline-block; font-size: 12px; padding: 4px 7px; border-radius: 4px; background: #303039; color: #b4b4c4; border: 1px solid #42424d; white-space: nowrap; }
+.module-compatibility-badge { padding: 3px 7px; border: 1px solid #79b5f83d; border-radius: 999px; background: #79b5f80d; color: #a4caf5; font-size: 11px; font-weight: 500; letter-spacing: normal; line-height: 1.4; white-space: nowrap; }
+.module-card-compatibility { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; margin-top: 6px; }
 .back-link { display: inline-flex; align-items: center; gap: 4px; color: #aaaab9; font-size: 12px; margin-bottom: 23px; }
 .back-link:hover { color: white; }
 .module-page-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 23px; }
@@ -307,6 +309,8 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .detail-tags { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .detail-tags .subtle { font-size: 12px; }
 .detail-intro h1 { font-size: 32px; margin-bottom: 8px; }
+.detail-title { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-bottom: 8px; }
+.detail-intro .detail-title h1 { margin: 0; }
 .author-link { color: #aaaabd; font-size: 13px; }
 .detail-intro > p { font-size: 14px; color: #b2b2bf; line-height: 1.7; margin: 17px 0 13px; max-width: 330px; }
 .detail-rating { display: flex; align-items: center; gap: 8px; color: #90909f; font-size: 12px; min-height: 24px; margin-bottom: 21px; }

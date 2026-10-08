@@ -68,7 +68,7 @@ describe('reviewed imports with verified loader-free composition', () => {
     expect(parseSelection(JSON.stringify(selection)).moduleIds).toEqual(imported)
     expect(selection.modules.find(module => module.id === 'midi-scenes')?.version).toBe('0.2.4-experimental')
     for (const id of verified) {
-      expect(selection.modules.find(module => module.id === id)?.version).toBe(id === 'usb-audio-out-tracks-main-cue' ? '0.1.4-experimental' : '0.1.2-experimental')
+      expect(selection.modules.find(module => module.id === id)?.version).toBe(id === 'usb-audio-out-tracks-main-cue' ? '0.2.0-experimental' : '0.1.2-experimental')
     }
   })
 
@@ -81,7 +81,7 @@ describe('reviewed imports with verified loader-free composition', () => {
     }
     expect(getModuleSource(resolveSelection(['midi-scenes'])[0])).toBe('https://github.com/bkkbrls-del/midisc/tree/4f9a89453fdcdd39a3cd57f010ffa489cac721cd/tools/midisc')
     expect(MODULE_DOCUMENTS_BY_ID['midi-scenes'].tests.hardwareStatus).toBe('reported')
-    expect(MODULE_DOCUMENTS_BY_ID['usb-audio-out-tracks-main-cue'].compatibility.limitations.join(' ')).toContain('output only')
+    expect(MODULE_DOCUMENTS_BY_ID['usb-audio-out-tracks-main-cue'].compatibility.limitations.join(' ').toLowerCase()).toContain('output only')
     expect(MODULE_DOCUMENTS_BY_ID['analog-bassdrum'].compatibility.conflicts).toContain('synth')
   })
 })

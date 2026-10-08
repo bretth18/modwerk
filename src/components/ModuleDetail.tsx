@@ -1,5 +1,6 @@
 import type { CatalogBrowse } from '../catalog/catalog-browse'
 import { assetUrl } from '../hosting'
+import { useState } from 'react'
 import { ModuleControls } from './ModuleControls'
 import { IssueReport } from '../community/IssueReport'
 import type { FirmwareModule } from '../catalog/modules'
@@ -11,15 +12,23 @@ import { ModuleResources } from './ModuleResources'
 import { ModuleResourceIndicators } from './ModuleResourceIndicators'
 import { MODULE_DOCUMENTS_BY_ID } from '../catalog/documents'
 import { ModuleDetailLayout } from './ModuleDetailLayout'
+import { UsbAudioConfigurator } from './UsbAudioConfigurator'
+import { USB_AUDIO_MODULE, usbAudioPreset, type UsbAudioConfiguration } from '../config/usb-audio'
 
-export function ModuleDetail({ module, selected, onToggle, browse, onBackToResults }: { browse?: CatalogBrowse | null; onBackToResults?: () => void; module: FirmwareModule; selected: boolean; onToggle: () => void }) {
+export function ModuleDetail({ module, selected, onToggle, browse, onBackToResults, usbAudio, configurationName, configurationId, onConfigureUsbAudio }: { browse?: CatalogBrowse | null; onBackToResults?: () => void; module: FirmwareModule; selected: boolean; onToggle: () => void; usbAudio?: UsbAudioConfiguration; configurationName?: string; configurationId?: string; onConfigureUsbAudio?: (value: UsbAudioConfiguration | undefined) => void }) {
+  const previewKey = configurationId + JSON.stringify(usbAudio)
+  const [usbDraft, setUsbDraft] = useState<{ key: string; value: UsbAudioConfiguration }>({ key: previewKey, value: usbAudio ?? usbAudioPreset('outbox') })
+  const draft = usbDraft.key === previewKey ? usbDraft.value : usbAudio ?? usbAudioPreset('outbox')
   const details = DETAILS[module.id]
   const moduleDocument = MODULE_DOCUMENTS_BY_ID[module.id]
   return <ModuleDetailLayout browse={browse} onBackToResults={onBackToResults} id={module.id} title={module.name} family={details.family} detail={module.detail}
+    titleBadge={module.id === USB_AUDIO_MODULE ? 'Outbox 8 compatible' : undefined}
+    configureTarget={module.id === USB_AUDIO_MODULE && onConfigureUsbAudio ? 'usb-setup' : undefined}
     author={module.authorName} authorUrl={module.authorUrl} description={module.description}
     selected={selected} onToggle={onToggle} backHref="#library" backLabel="All modules"
-    preview={<ModulePreview id={module.id} />} resources={<ModuleResourceIndicators id={module.id} />}
+    preview={<ModulePreview id={module.id} />} resources={<ModuleResourceIndicators id={module.id} usbLayout={module.id === USB_AUDIO_MODULE && onConfigureUsbAudio ? draft.layout : undefined} />}
     notice={moduleDocument.build && <p className="service-note" role="status">{moduleDocument.build.reason}</p>}
+    overviewIntro={module.id === USB_AUDIO_MODULE && onConfigureUsbAudio && <UsbAudioConfigurator key={previewKey} draft={draft} onDraftChange={value => setUsbDraft({ key: previewKey, value })} configuration={usbAudio} selected={selected} configurationName={configurationName} onConfigure={onConfigureUsbAudio} />}
     guide={<>
       <details className="module-disclosure">
         <summary><span>About & credits</span><Icon name="plus" size={16} /></summary>

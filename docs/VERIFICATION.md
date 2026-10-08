@@ -2,6 +2,53 @@
 
 **Owner-approved logger release (3 October 2026):** the owner explicitly lifted the logger addition’s qualification restrictions, authorized local firmware/DSP checks, approved the current module versions and logger for release, and waived hardware testing. Downloads are enabled with the logger included. This exception does not claim measured chip timing, complete stress qualification or new hardware evidence. Existing firmware isolation, original-source provenance, compatibility checks, stock fingerprint guards and packaging integrity remain in force. MIDI Scenes keeps its pinned standalone code and 12-page reservation; the logger occupies the top 16 pages of the arena, and a one-page guard separates it from the sample arena; guarded arena updates reserve all 29 pages. Mixed MIDI Scenes configurations remain incompatible. The earlier full-image proofs below predate logger integration; local verification of this change is recorded separately. See [logger evidence and limitations](../sdk/runtime/logging/TESTING.md).
 
+## USB Audio 0.2 / Outbox 8 — 8 October 2026
+
+Version `0.2.0-experimental` adds six selectable USB output layouts and an
+Outbox routing-plan configurator to the existing module page. The owner
+approved release without hardware testing; hardware behavior, real-chip
+cycles, complete stack / DMA bounds and canaries remain unmeasured. The
+source-bound approval is in
+`sdk/usb-audio-out-tracks-main-cue-build-approval.json`. No inherited result
+is presented as current hardware qualification.
+
+The shared stock-free pipeline built and imported all source-only packages
+in the isolated toolchain container. Descriptor MSC spans and the post-LEVEL
+curve remain zero placeholders in distributed artifacts. All six layouts
+passed complete GNU runtime byte/symbol comparison alone, with Quantizer,
+and with Tape Echo + Euclid (18 cases). Every case passed guarded hooks,
+combined-ISR checks, immutable stock and full packaging round trips. Public
+composition matched each case; the public worker inspected the original and
+produced complete packaged firmware for all six standalone layouts. Altered
+stock was refused. Only hashes/linked-section data are committed in
+[sanitized layout evidence](../sdk/octabam/modules/usb-audio-out-tracks-main-cue/evidence/layouts.json).
+
+Configurations without USB settings retain the classic source path. Its
+current native comparison covers 110 selections: 50 builds matching outside
+the shared platform writes, 60 matching refusals, zero mismatches. The
+existing Analog BD interaction matrix was regenerated: all 136 native
+identities/refusals equal the earlier outputs. Its browser/GNU bootstrap
+verification passed 130 builds, six refusals and five complete packaging
+round trips. No firmware or stock-derived binary was committed.
+
+The GUI keeps the existing page structure, distinguishes physical Outbox
+outputs from USB source pairs, explains estimated CPU tiers and requires an
+explicit setup before adding USB Audio. Source integrity, backup/share
+persistence, configure-first navigation, routing feedback and compact
+responsive layout were checked. See the module's
+[testing record](../sdk/octabam/modules/usb-audio-out-tracks-main-cue/TESTING.md)
+for scope and the preserved historical evidence.
+
+The required full check passed 1,169 tests in 177 files, 49 SDK tests,
+licence/catalog/source checks, lint, type checks and the production bundle.
+The broader `module:verify -- --all --check` still reports old companion
+records for Euclid (8), Mute Modes (2), Playmodes (2), Recorder Loop Fix (4)
+and Sidechain Compressor (10). A clean archive of main at `11fa6d5` produces
+exactly the same failures, relating to the earlier Synth / Analog BD updates;
+this release introduces none. The updated USB record also removes main's
+four stale Synth companion comparisons. Those unrelated records were not
+relabelled as passing or refreshed as part of this USB release.
+
 ## One command for the native comparison — 5 October 2026
 
 `npm run module:verify -- <id> --os <your 1.40C update>` replaces the per-module suites and verifier scripts for new modules (owner decision in [DECISIONS.md](DECISIONS.md#5-october-2026--a-faster-module-workflow)).
