@@ -1,5 +1,5 @@
 import { apiUrl } from '../hosting'
-import type { UsageDevice, UsageEvent } from './usage-contract'
+import type { AnnouncementCountEvent, UsageDevice, UsageEvent } from './usage-contract'
 import { USAGE_CONSENT_VERSION } from '../legal/policy'
 import { canTrackModuleDownload } from './module-downloads'
 const preferenceKey = 'octamod.usage.consent', visitorKey = 'octamod.usage.daily-visitor', configurationsKey = 'octamod.usage.started-configurations'
@@ -37,7 +37,7 @@ export function anonymousCountsAllowed() {
 export function setAnonymousCountsAllowed(enabled: boolean) {
   try { if(enabled)localStorage.removeItem(anonymousOffKey); else localStorage.setItem(anonymousOffKey,'1'); return true } catch { return false }
 }
-function countAnonymously(body: {event: UsageEvent; device?: UsageDevice} | {event: 'module_download'; moduleId: string}) {
+function countAnonymously(body: {event: UsageEvent; device?: UsageDevice} | {event: 'module_download'; moduleId: string} | {event: AnnouncementCountEvent; announcementId: string}) {
   try {void fetch(apiUrl('/usage/count'),{method:'POST',credentials:'omit',redirect:'error',referrerPolicy:'no-referrer',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).catch(()=>{})} catch { /* Counts never block device work. */ }
 }
 function visitor() {
@@ -56,6 +56,12 @@ export function trackUsage(event: UsageEvent, device?: UsageDevice) {
   if(!usageAllowed()){if(anonymousCountsAllowed())countAnonymously({event,...machine});return}
   const dailyVisitor=visitor();if(!dailyVisitor)return
   try {void fetch(apiUrl('/usage/events'),{method:'POST',credentials:'omit',redirect:'error',referrerPolicy:'no-referrer',keepalive:true,headers:{'Content-Type':'application/json','X-Octamod-Usage-Consent':USAGE_CONSENT_VERSION},body:JSON.stringify({event,...machine,eventId:crypto.randomUUID(),visitor:dailyVisitor})}).catch(()=>{})} catch { /* Counts never block device work. */ }
+}
+/** Public announcement cards count every viewer, signed in or not, through the identifier-free path: only the action and
+ * the public announcement ID are sent. Opting in to usage statistics does not stop it; DNT, GPC or an objection does. */
+export function trackAnnouncement(event: AnnouncementCountEvent, announcementId: string) {
+  if(!/^announcement-[a-f0-9]{32}$/.test(announcementId)||(!usageAllowed()&&!anonymousCountsAllowed()))return
+  countAnonymously({event,announcementId})
 }
 let lastPage = ''
 export function trackPageView(route: string) {

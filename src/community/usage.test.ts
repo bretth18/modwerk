@@ -104,6 +104,15 @@ describe('optional usage reporting',()=>{
   expect(values.size).toBe(0)
   usage.setAnonymousCountsAllowed(false);expect(values.get('modwerk.usage.anonymous-off')).toBe('1');usage.setAnonymousCountsAllowed(true);expect(values.size).toBe(0)
  })
+ it('counts public announcement cards for every viewer with only the action and announcement ID, unless the browser objects',()=>{
+  const id='announcement-'+'a'.repeat(32)
+  usage.trackAnnouncement('announcement_shown',id);usage.trackAnnouncement('announcement_dismissed','announcement-not-an-id')
+  usage.setUsageAllowed(true);usage.trackAnnouncement('announcement_opened',id)
+  expect(request.mock.calls.map(([url,options])=>[url,options.credentials,JSON.parse(options.body)])).toEqual([['/api/usage/count','omit',{event:'announcement_shown',announcementId:id}],['/api/usage/count','omit',{event:'announcement_opened',announcementId:id}]])
+  usage.setUsageAllowed(false);usage.setAnonymousCountsAllowed(false);request.mockClear();usage.trackAnnouncement('announcement_dismissed',id)
+  usage.setAnonymousCountsAllowed(true);vi.stubGlobal('navigator',{doNotTrack:'1'});usage.trackAnnouncement('announcement_dismissed',id)
+  expect(request).not.toHaveBeenCalled()
+ })
  it('never blocks local work when storage or the service is unavailable',async()=>{
   vi.stubGlobal('localStorage',{getItem:()=>{throw new Error('Unavailable')}});expect(()=>usage.trackUsage('page_view')).not.toThrow()
   expect(request.mock.calls.map(([url])=>url)).toEqual(['/api/usage/count'])

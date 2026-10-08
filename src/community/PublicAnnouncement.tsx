@@ -10,7 +10,7 @@ import { accountHref } from './member-access'
 import type { BellItem } from './notification-contract'
 import type { NotificationLine } from './notification-text'
 import { dismissPublicAnnouncement, latestPublicAnnouncement, publicAnnouncementDismissed, publicAnnouncementLine } from './public-announcement'
-import { trackUsage } from './usage'
+import { trackAnnouncement, trackUsage } from './usage'
 
 /** The same card is used in the public prompt and the operator's preview. It never takes focus. `signup` adds Create account to a Discord card. */
 export function PublicAnnouncementCard({ line, signup, onDismiss, onOpen }: { line: NotificationLine; signup?: string; onDismiss: () => void; onOpen: (action?: 'signup') => void }) {
@@ -35,7 +35,7 @@ export function PublicAnnouncement({ enabled, next }: { enabled: boolean; next: 
   return <PublicAnnouncementContent key={memberId ?? 'visitor'} member={!!memberId} signup={session.user ? undefined : accountHref('register', next)} enabled={enabled && !loading} />
 }
 function PublicAnnouncementContent({ member, signup, enabled }: { member: boolean; signup?: string; enabled: boolean }) {
-  const [item, setItem] = useState<BellItem | null>(null), [visible, setVisible] = useState(false), counted = useRef(false)
+  const [item, setItem] = useState<BellItem | null>(null), [visible, setVisible] = useState(false), counted = useRef('')
   const discord = item?.url === DEVELOPMENT_DISCORD_URL
   useEffect(() => {
     const controller = new AbortController()
@@ -68,10 +68,16 @@ function PublicAnnouncementContent({ member, signup, enabled }: { member: boolea
     check()
     return () => { window.clearTimeout(timer); observer.disconnect(); document.removeEventListener('visibilitychange', check); document.removeEventListener('focusin', check); document.removeEventListener('focusout', check); window.removeEventListener('storage', check) }
   }, [enabled, item])
-  // Signed-out responses to a Discord card keep the existing anonymous visitor invitation totals.
-  useEffect(() => { if (visible && discord && signup && !counted.current) { counted.current = true; trackUsage('discord_visitor_prompt_shown') } }, [visible, discord, signup])
+  // Once per card on this page, however often a dialog hides and reveals it. Signed-out views of a Discord card also keep the visitor invitation totals.
+  useEffect(() => {
+    if (!visible || !item || counted.current === item.id) return
+    counted.current = item.id
+    trackAnnouncement('announcement_shown', item.id)
+    if (discord && signup) trackUsage('discord_visitor_prompt_shown')
+  }, [visible, item, discord, signup])
   function acknowledge(action: 'open' | 'signup' | 'dismiss') {
     if (!item) return
+    trackAnnouncement(action === 'dismiss' ? 'announcement_dismissed' : 'announcement_opened', item.id)
     if (discord) {
       rememberDiscordInviteHere() // Signing in later carries this into the member invitation, so no popup follows.
       if (signup) trackUsage(action === 'signup' ? 'discord_visitor_signup_clicked' : action === 'open' ? 'discord_visitor_join_clicked' : 'discord_visitor_dismissed')
