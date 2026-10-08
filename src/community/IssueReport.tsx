@@ -1,6 +1,6 @@
 import { BugReportNotice, BugReportSuccess, ExistingIssues } from './BugReportNotice'
 import { ReportNotifications } from './ReportNotifications'
-import { useIssueTracker, type BugReportResult } from './issue-tracker'
+import { refreshModuleIssues, useIssueTracker, type BugReportResult } from './issue-tracker'
 import { useEffect, useId, useRef, useState } from 'react'
 import { post } from './api'
 import { useCommunity } from './context'
@@ -76,6 +76,7 @@ export function IssueReport({id,author,openRequest=0}:{id:string;author:string;o
   const context:IssueContext={model,flash,os:log?.summary.os??REPORT_OS,modules:resolved.modules,keepStockFx2:resolved.keepStockFx2,build:resolved.build}
   try{
    const result=await post<BugReportResult>('/modules/'+id+'/issues',{title:fields.title,steps:fields.steps,expected:fields.expected,actual:fields.actual,context,visibility:'forum',notifyUpdates:fields.notifyUpdates==='on',...(log?{log:log.text}:{})})
+   refreshModuleIssues(id)
    setSent(result)
    setFollow(fields.notifyUpdates==='on')
    window.dispatchEvent(new Event('modwerk-module-updates'))

@@ -190,7 +190,7 @@ describe('community access and review',()=>{
    const privateId=String(db.prepare('SELECT id FROM issues').get()!.id)
    expect((await call('/admin/issues/'+privateId+'/github','POST',{},'',undefined,admin)).status).toBe(400)
    expect(requests).toHaveLength(0)
-   expect(await (await call('/modules/spectrum/issues')).json()).toEqual({tracker:'github',issues:[],allUrl:'https://github.com/repeat98/octamod/issues?q='+encodeURIComponent('is:issue is:open label:"module:spectrum"')})
+   expect(await (await call('/modules/spectrum/issues')).json()).toEqual({tracker:'github',issues:[],openCount:0,closedCount:0,hasMore:false,allUrl:'https://github.com/repeat98/octamod/issues?q='+encodeURIComponent('is:issue is:open label:"module:spectrum"')})
    // A public report becomes a GitHub issue straight away and gets no forum thread of its own.
    const published=await call('/modules/spectrum/issues','POST',issue({visibility:'forum',steps:'Ping @someone about #12 <img src=x>'}),reporter)
    expect(published.status).toBe(201)
@@ -208,7 +208,10 @@ describe('community access and review',()=>{
    expect((await call('/admin/issues/'+row.id+'/github','POST',{},reporter)).status).toBe(403)
    const retried=await (await call('/admin/issues/'+row.id+'/github','POST',{},'',undefined,admin)).json();expect(retried).toEqual({state:'synced',url:'https://github.com/repeat98/octamod/issues/41'})
    expect(await (await call('/admin/issues/'+row.id+'/github','POST',{},'',undefined,admin)).json()).toEqual({state:'synced'});expect(requests).toHaveLength(2)
-   expect((await (await call('/modules/spectrum/issues')).json()).issues).toEqual([expect.objectContaining({title:'Knob issue',url:'https://github.com/repeat98/octamod/issues/41'})])
+   const publicReports=await (await call('/modules/spectrum/issues')).json()
+   expect(publicReports).toMatchObject({openCount:1,closedCount:0,hasMore:false})
+   expect(publicReports.issues).toEqual([expect.objectContaining({title:'Knob issue',url:'https://github.com/repeat98/octamod/issues/41',number:41,status:'open',reporter:'other',details:expect.objectContaining({steps:'Ping @someone about #12 <img src=x>',expected:'Sweep',actual:'Freeze'})})])
+   for(const secret of ['context_json','reporter_id','OCTAMOD-LOG','c'.repeat(64)])expect(JSON.stringify(publicReports)).not.toContain(secret)
    // GitHub activity: only correctly signed deliveries for this repository and a mirrored issue count.
    let delivery=0
    const hook=async(payload:unknown,{event='issues',signature,id}:{event?:string;signature?:string;id?:string}={})=>{const body=new TextEncoder().encode(JSON.stringify(payload)).buffer as ArrayBuffer;return handleApi(new Request(env.APP_URL+'/api/github/webhook',{method:'POST',headers:{'Content-Type':'application/json','X-GitHub-Event':event,'X-GitHub-Delivery':id??'delivery-'+ ++delivery,'X-Hub-Signature-256':signature??await signGithubPayload('hook-secret',body)},body}),env)}
@@ -225,6 +228,8 @@ describe('community access and review',()=>{
    expect((await (await call('/issues/mine','GET',undefined,reporter)).json()).find((item:{id:string})=>item.id===row.id).status).toBe('open')
    expect(await (await hook(closed,{id:'close-1'})).json()).toEqual({ok:true,handled:true})
    expect((await (await call('/issues/mine','GET',undefined,reporter)).json()).find((item:{id:string})=>item.id===row.id).status).toBe('closed')
+   expect(await (await call('/modules/spectrum/issues')).json()).toMatchObject({openCount:0,closedCount:1,issues:[]})
+   expect(await (await call('/modules/spectrum/issues?status=closed')).json()).toMatchObject({openCount:0,closedCount:1,issues:[{id:row.id,status:'closed',title:'Knob issue'}]})
    const {items}=await (await call('/notifications','GET',undefined,reporter)).json()
    expect(items).toMatchObject([{kind:'issue_resolved',github_actor:'sambanks',title:'Knob issue',url:'https://github.com/repeat98/octamod/issues/41'},{kind:'issue_comment',excerpt:'Thanks, I can reproduce this on 1.40C.'}])
    expect(notificationLines(items).map(line=>[line.text,line.href])).toEqual([
@@ -247,6 +252,36 @@ describe('community access and review',()=>{
    await hook(closed,{id:'local-change-echo'})
    expect(db.prepare('SELECT status FROM issues WHERE id=?').get(row.id)).toEqual({status:'open'})
   }finally{vi.unstubAllGlobals()}
+ })
+ it('paginates public module reports with complete counts and keeps private and hidden reports out',async()=>{
+  const {call,db,env}=await fixture()
+  Object.assign(env,{GITHUB_TOKEN:'github_pat_test',GITHUB_REPOSITORY:'repeat98/octamod'})
+  const description={device:'Octatrack MKII',version:'0.1.0',steps:'1. Load the module\n2. Turn the knob',expected:'Sweep',actual:'Freeze'}
+  for(let index=0;index<13;index++)db.prepare("INSERT INTO issues(id,module_id,author_login,reporter_id,title,body,status,github_number,github_url,public_json,context_json) VALUES(?,'spectrum','sambanks','other',?,'PRIVATE REPORT BODY',?,?,?,?,'PRIVATE CONFIGURATION')")
+   .run('public-'+index,'Report '+index,index===12?'closed':'open',index+1,'https://github.com/repeat98/octamod/issues/'+(index+1),JSON.stringify(description))
+  db.prepare("INSERT INTO issues(id,module_id,author_login,reporter_id,title,body) VALUES('private','spectrum','sambanks','other','PRIVATE TITLE','PRIVATE REPORT BODY')").run()
+  db.prepare("INSERT INTO issues(id,module_id,author_login,reporter_id,title,body,github_url,public_json) VALUES('other-module','miniverb','repeat98','other','OTHER MODULE','PRIVATE REPORT BODY','https://github.com/repeat98/octamod/issues/99',?)").run(JSON.stringify(description))
+  const first=await (await call('/modules/spectrum/issues')).json()
+  expect(first).toMatchObject({openCount:12,closedCount:1,hasMore:true})
+  expect(first.issues).toHaveLength(10)
+  expect(first.issues[0]).toMatchObject({id:'public-11',details:description,reporter:'other',status:'open'})
+  for(const secret of ['PRIVATE','OTHER MODULE','context_json','reporter_id'])expect(JSON.stringify(first)).not.toContain(secret)
+  const second=await (await call('/modules/spectrum/issues?page=1')).json()
+  expect(second).toMatchObject({openCount:12,closedCount:1,hasMore:false})
+  expect(second.issues.map((item:{id:string})=>item.id)).toEqual(['public-1','public-0'])
+  expect(await (await call('/modules/spectrum/issues?status=closed')).json()).toMatchObject({openCount:12,closedCount:1,hasMore:false,issues:[{id:'public-12',status:'closed'}],allUrl:'https://github.com/repeat98/octamod/issues?q='+encodeURIComponent('is:issue is:closed label:"module:spectrum"')})
+  delete env.GITHUB_TOKEN
+  for(const [id,hidden] of [['visible',0],['hidden',1]] as const){
+   db.prepare("INSERT INTO forum_threads(id,user_id,title,category,module_id,hidden) VALUES(?,'other',?,'issues','spectrum',?)").run(id,id,hidden)
+   db.prepare("INSERT INTO issues(id,module_id,author_login,reporter_id,title,body,forum_thread_id,public_json) VALUES(?,'spectrum','sambanks','other',?,'PRIVATE REPORT BODY',?,?)").run(id+'-report',id,id,JSON.stringify(description))
+  }
+  const forumReports=await (await call('/modules/spectrum/issues')).json()
+  expect(forumReports).toMatchObject({tracker:'forum',openCount:13,closedCount:1,allUrl:null,hasMore:true})
+  expect(forumReports.issues[0]).toMatchObject({id:'visible-report',url:'#forum/thread/visible',details:description,number:null})
+  expect(JSON.stringify(forumReports)).not.toContain('hidden-report')
+  db.prepare("UPDATE issues SET status='closed' WHERE module_id='spectrum'").run()
+  expect(await (await call('/modules/spectrum/issues')).json()).toMatchObject({openCount:0,closedCount:14,hasMore:false,issues:[]})
+  for(const query of ['?status=all','?page=-1','?page=1.5','?page=nope','?page=10001'])expect((await call('/modules/spectrum/issues'+query)).status).toBe(400)
  })
  it('retires account-bound cloud configuration copies; configurations stay on the device',async()=>{
   const {call,tokens}=await fixture(),auth='octamod_session='+tokens.author
