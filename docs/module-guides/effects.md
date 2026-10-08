@@ -8,7 +8,7 @@ Read [the module guides index](README.md) first. If your effect does anything in
 
 ## Plan the DSP budget first
 
-New FX must target the measured worst stock effect's cost or less. Choose the algorithm, filter order, interpolation and feedback topology around that budget before implementation, then measure and optimize as features are added. Compare the closest stock counterpart and the most expensive stock effect under matched worst-case conditions on both cores, including moving controls and trigger splits. A justification, a reduced instance limit or a passing stability render cannot excuse an FX that exceeds the stock ceiling. See [Performance](README.md#performance) for the audit and its units.
+New FX should aim for DSP cost in the same ballpark as stock SPRING REV at its worst settings. Choose the algorithm, filter order, interpolation and feedback topology with that target in mind, then measure and optimize as features are added. Benchmark Spring's expensive types/settings, moving controls and trigger splits under matched conditions on both cores. This is a design target without a fixed ratio or hard per-effect ceiling. Substantially higher cost needs optimization and review of the remaining headroom. See [Performance](README.md#performance) for the evidence and audit.
 
 ## Decide the kind first
 
@@ -83,7 +83,7 @@ done
 How much it costs and whether it survives being worked hard: see [Performance](README.md#performance) for the three measurements and the record. For an effect:
 
 - [ ] **Cycles.** `tools/build/cycle_count.py` for the static floor, `dsp_host` at the dearest knob and mode settings with the knobs moving for the measured cost. State `instancesPerCore`, the most you support.
-- [ ] **Stock.** Name the stock effect closest in function (a delay against COMPRESSOR is not a comparison; a reverb against PLATE REV is), and record the most expensive stock effect's measured cost. Read both comparisons from `benchmark_stock_dsp.py` under matched conditions. The FX must fit within the worst stock cost; if it exceeds that ceiling, optimize it before qualification. Explain additional cost over the closest counterpart in TESTING.md, while staying inside the ceiling.
+- [ ] **Stock.** Name the stock effect closest in function (a delay against COMPRESSOR is not a comparison; a reverb against PLATE REV is), and benchmark worst-case stock SPRING REV as the cost target for new FX. Aim for the same ballpark under matched conditions, including expensive modes/settings, moving controls and trigger splits on both cores. Read the closest-counterpart ratio from `benchmark_stock_dsp.py`; explain additional cost and remaining headroom in TESTING.md, and revisit substantially heavier designs for optimization and review.
 - [ ] **Stress.** `stress_project.py` and `pressure.py render` with `dsp_host -guard -dirty`: your instances on both cores, three LFOs per track, locked slots on every step.
 - [ ] `npm run perf:audit -- check <module>/evidence/performance.json` passes, and its table is in TESTING.md.
 
