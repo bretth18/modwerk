@@ -31,7 +31,7 @@ function WorksReportAction({ id }: { id: string }) {
     finally { submitting.current = false; setBusy(false) }
   }
   return <>
-    <button type="button" className="button module-works-action" disabled={loading || busy || posted} aria-pressed={posted} title="Confirm this module works. Saved with available build details; no forum post." onClick={() => gate('Sign in to report this module working', () => void submit())()}><Icon name="check" size={16}/>{busy ? 'Saving…' : posted ? 'Reported working' : 'Works for me'}</button>
+    <button type="button" className={'button module-works-action ' + (posted ? 'module-works-reported' : 'button-quiet')} disabled={loading || busy || posted} title="Confirm this module works. Saved with available build details; no forum post." onClick={() => gate('Sign in to report this module working', () => void submit())()}><Icon name={posted ? 'check' : 'plus'} size={16}/>{busy ? 'Saving…' : posted ? 'Reported working' : 'Works for me'}</button>
     {dialog}
     {posted && <span className="sr-only" role="status">Working report saved.</span>}
     {error && <p className="file-error module-works-error" role="alert">{error}</p>}

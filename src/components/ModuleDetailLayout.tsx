@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useId, useState, type ReactNode } from 'react'
 import { ModuleCommunity } from '../community/ModuleCommunity'
 import { CreatorSupport } from '../community/CreatorSupport'
 import { ModuleChangelog } from '../community/ModuleChangelog'
@@ -33,6 +33,7 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
   overviewIntro?: ReactNode
 }) {
   const navigation = catalogNeighbors(browse, id)
+  const feedbackHeading = useId()
   const [tab, setTab] = useState<DetailTab>(linkedTab)
   const [issueOpenRequest, setIssueOpenRequest] = useState(0)
   const issues = useModuleIssues(id)
@@ -66,15 +67,17 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
         <div className="module-creator"><a className="author-link" href={authorUrl} target="_blank" rel="noreferrer">by {author} ↗</a><CreatorSupport key={id} id={id}/></div>
         <p className="detail-description">{description}</p>
         {notice && <div className="detail-notice">{notice}</div>}
-        <div className="detail-works-summary" title={WORKS_REPORT_NOTE} aria-label={workingCount == null ? 'Working report count unavailable.' : workingCount + (workingCount === 1 ? ' member reports' : ' members report') + ' this module working, across versions.'}>
-          <Icon name="check" size={22}/><span><strong><span>{workingCount?.toLocaleString() ?? '—'}</span><span className="detail-works-desktop"> {workingCount === 1 ? 'member reports' : 'members report'} working</span><span className="detail-works-mobile"> report working</span></strong><small><span className="detail-works-mobile">Members · </span>Across versions</small></span>
-        </div>
-        <div className="detail-rating"><button className="text-button" onClick={showDiscussion}>Reviews & discussion{discussionBadge}</button></div>
         <button className={'button module-configure-action ' + (selected ? 'button-added' : 'button-primary')} onClick={configureTarget && !selected ? showConfiguration : onToggle} aria-pressed={selected}><Icon name={selected ? 'check' : configureTarget ? 'sliders' : 'plus'} size={16} />{selected ? 'Added to configuration' : configureTarget ? 'Configure ' + title : 'Add to configuration'}</button>
         <ModuleUpdateButton id={id} compact />
-        <p className="detail-feedback-prompt">Tried it on your instrument?</p>
-        <ModuleWorksReportButton key={id} id={id}/>
-        <button type="button" className="button button-danger module-issue-action" onClick={showIssueReport}><Icon name="message" size={15} />Report an issue</button>
+        <section className="module-feedback" aria-labelledby={feedbackHeading}>
+          <div className="detail-feedback-prompt"><h2 id={feedbackHeading}>Tried it on your instrument?</h2><p>Let others know how it went.</p></div>
+          <div className="detail-works-summary" title={WORKS_REPORT_NOTE} aria-label={workingCount == null ? 'Working report count unavailable.' : workingCount + (workingCount === 1 ? ' member reports' : ' members report') + ' this module working, across versions.'}>
+            <Icon name="check" size={22}/><span><strong>{workingCount?.toLocaleString() ?? '—'} {workingCount === 1 ? 'member reports' : 'members report'} working</strong><small>Across versions</small></span>
+          </div>
+          <ModuleWorksReportButton key={id} id={id}/>
+          <button type="button" className="button button-quiet module-issue-action" onClick={showIssueReport}><Icon name="message" size={15} />Report an issue</button>
+        </section>
+        <div className="detail-rating"><button className="text-button" onClick={showDiscussion}>Reviews & discussion{discussionBadge}</button></div>
       </div>
       {resources}
     </section>
