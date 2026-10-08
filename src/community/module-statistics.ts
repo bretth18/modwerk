@@ -2,12 +2,17 @@ import { bayesianRating, ratingPrior } from './rating-ranking'
 
 // openIssues, lastIssueAt and firstDownloadAt feed the stability grade; an older response without them grades as untried.
 export type ModuleStatistics = { module_id: string; average: number | null; count: number; likes: number; downloads: number; downloadsStarted: string | null; firstDownloadAt?: string | null; openIssues?: number; lastIssueAt?: string | null }
-type SortableModule = { id: string; name: string; authorName: string; addedAt?: string }
+export const DEFAULT_MODULE_SORT = 'updated'
+type SortableModule = { id: string; name: string; authorName: string; addedAt?: string; updatedAt?: string }
+const timestamp = (date: string | undefined) => { const value = Date.parse(date ?? ''); return Number.isFinite(value) ? value : 0 }
 export function compareModules(a: SortableModule, b: SortableModule, sort: string, statistics: readonly ModuleStatistics[] | null) {
   if (sort === 'collection') return 0
+  if (sort === 'updated') {
+    const updated = (module: SortableModule) => Math.max(timestamp(module.addedAt), timestamp(module.updatedAt))
+    return updated(b) - updated(a) || a.name.localeCompare(b.name)
+  }
   if (sort === 'recent') {
-    const added = (module: SortableModule) => { const timestamp = Date.parse(module.addedAt ?? ''); return Number.isFinite(timestamp) ? timestamp : 0 }
-    return added(b) - added(a) || a.name.localeCompare(b.name)
+    return timestamp(b.addedAt) - timestamp(a.addedAt) || a.name.localeCompare(b.name)
   }
   if (sort === 'name') return a.name.localeCompare(b.name)
   if (sort === 'author') return a.authorName.localeCompare(b.authorName) || a.name.localeCompare(b.name)

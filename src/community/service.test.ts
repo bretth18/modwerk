@@ -663,9 +663,9 @@ it('retains the first approved addition date when a community module is updated'
  insert.run('initial', 'Version one', 'approved', '2026-10-01 12:00:00')
  insert.run('update', 'Version two', 'approved', '2026-10-02 12:00:00')
  db.prepare("INSERT INTO module_publications(module_id,submission_id) VALUES('new-filter','initial')").run()
- expect((await (await call('/catalog')).json())[0].added_at).toBe('2026-10-01T12:00:00Z')
+ expect((await (await call('/catalog')).json())[0]).toMatchObject({ added_at: '2026-10-01T12:00:00Z', updated_at: '2026-10-01T12:00:00Z' })
  db.prepare("UPDATE module_publications SET submission_id='update' WHERE module_id='new-filter'").run()
- expect((await (await call('/catalog')).json())[0]).toMatchObject({ title: 'Version two', reviewed_at: '2026-10-02 12:00:00', added_at: '2026-10-01T12:00:00Z' })
+ expect((await (await call('/catalog')).json())[0]).toMatchObject({ title: 'Version two', reviewed_at: '2026-10-02 12:00:00', added_at: '2026-10-01T12:00:00Z', updated_at: '2026-10-02T12:00:00Z' })
 })
 
 describe('usage breakdowns: failed builds, machines and weekly module trends',()=>{
