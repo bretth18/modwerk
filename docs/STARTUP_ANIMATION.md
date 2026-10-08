@@ -68,3 +68,27 @@ this patch leaves module/runtime bytes intact; they do not upgrade earlier
 stateful-module qualification or physical reports.
 
 No hardware flashing or module qualification-status change was performed.
+
+## Firmware name before the animation
+
+Updates built after the boot-name follow-up use **Elekloader** in the fixed
+ten-byte ELEK name field. This includes standalone MIDI Scenes. The build
+report and installation instructions use the same name; individual module
+versions remain separate. The owner reported that the previous physical boot
+screen showed Octamod, and the saved visitor update decoded as `OCTAMOD79`.
+
+[Boot-name verification](media/startup/boot-name-verification.json) records
+three current profiles: FM Synth through the visitor composition path,
+standalone MIDI Scenes and dynamic-loader Mini Verb. Each MAIN hash matches
+its previously tested startup image. The complete native Python ELUP output
+matches browser encoding byte for byte, and the original inputs, opaque tail
+and seed remain intact. For the real saved visitor update, the complete ELEK
+container differs only in the ten name bytes. No OS/runtime/DSP instructions,
+artwork, image extents or memory reservations change. Historical packaging
+proofs above retain their original names and hashes.
+
+Session regression tests cover validation and build reports plus the exact
+update header for Repitch, MIDI Scenes and USB Audio + Quantizer, with both
+stock-FX2 choices. The MAIN-only emulator does not implement the resident
+bootloader screen that precedes the animation. The new name is therefore
+verified in the actual update header; its physical rendering remains untested.

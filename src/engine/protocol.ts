@@ -27,4 +27,6 @@ export const DOWNLOADS_ENABLED = true
 // The dynamic DSP loader (stock effects and modules uploaded on demand) has not been proven on hardware.
 // Off: stock DSP code stays built in and modules use the space of stock effects left off both menus.
 export const DSP_LOADER = false
-export const FIRMWARE_VERSION = 'OCTAMOD79'
+// The ELEK update name appears on the resident bootloader's screen.
+// Its fixed field is ten ASCII bytes; module versions are reported separately.
+export const FIRMWARE_VERSION = 'Elekloader'

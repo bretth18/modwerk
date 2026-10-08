@@ -2,14 +2,16 @@ import { describe, expect, it } from 'vitest'
 import { composeOs } from './compose-os'
 import proofs from './assets/composition-proofs.json'
 import staticProofs from './assets/static-composition-proofs.json'
-import { DSP_LOADER, FIRMWARE_VERSION } from './protocol'
+import { DSP_LOADER } from './protocol'
 import { CATALOG_SOURCE } from '../catalog/modules'
 describe('complete local OS composer', () => {
   it('keeps the dynamic loader off and pins every loader-free selection and packaging identity', () => {
     expect(DSP_LOADER).toBe(false)
     expect(staticProofs.revision).toBe(CATALOG_SOURCE.revision)
     expect(staticProofs.staticStock).toBe(true)
-    expect(staticProofs.packing?.version).toBe(FIRMWARE_VERSION)
+    // These immutable proofs retain their original packaging name. New builds
+    // use Elekloader; renaming the header does not relabel historical evidence.
+    expect(staticProofs.packing?.version).toBe('OCTAMOD79')
     expect(staticProofs.proofs).toHaveLength(512)
     expect(new Set(staticProofs.proofs.map(proof => [...proof.moduleIds].sort().join('+') + ':' + proof.keepStockFx2)).size).toBe(512)
     const accepted = staticProofs.proofs.filter(proof => !proof.error)
@@ -19,7 +21,7 @@ describe('complete local OS composer', () => {
     for (const proof of accepted) {
       expect(proof.firmware?.sha256).toMatch(/^[a-f0-9]{64}$/)
       expect(proof.firmware?.containerSha256).toMatch(/^[a-f0-9]{64}$/)
-      expect(proof.firmware?.version).toBe(FIRMWARE_VERSION)
+      expect(proof.firmware?.version).toBe('OCTAMOD79')
       expect(proof).not.toHaveProperty('code')
       expect(proof).not.toHaveProperty('image')
     }

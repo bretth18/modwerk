@@ -1,0 +1,68 @@
+{
+  "kind": "elekloader-boot-name",
+  "label": "Elekloader",
+  "fieldBytes": 10,
+  "previousLabels": [
+    "OCTAMOD79",
+    "MIDISC2.0"
+  ],
+  "proofs": [
+    {
+      "ids": [
+        "synth"
+      ],
+      "loader": false,
+      "label": "Elekloader",
+      "mainBytes": 1129801,
+      "mainSha256": "7693b142529ead3039b4d7b5aa2fe61fe726505741e3fcaa2426b8bd93f1094a",
+      "matchesPreviousTestedMain": true,
+      "firmwareBytes": 465324,
+      "firmwareSha256": "621872e31510ea95fef04629669d0c09a38f2ec16404deefce13e5bdd6c839d0",
+      "nativePackagingParity": "passed",
+      "opaqueTailAndSeed": "preserved"
+    },
+    {
+      "ids": [
+        "midi-scenes"
+      ],
+      "loader": false,
+      "label": "Elekloader",
+      "mainBytes": 1117508,
+      "mainSha256": "bdfea6186121d24e3c227a86fb4648fd40a8f162382b20fb9313baa6ce5a8f82",
+      "matchesPreviousTestedMain": true,
+      "firmwareBytes": 454228,
+      "firmwareSha256": "513ab04552da725d2591c9206e042083bad44e2881b218d4761dbe495269facc",
+      "nativePackagingParity": "passed",
+      "opaqueTailAndSeed": "preserved"
+    },
+    {
+      "ids": [
+        "miniverb"
+      ],
+      "loader": true,
+      "label": "Elekloader",
+      "mainBytes": 1144321,
+      "mainSha256": "daf8dfc01817af3278aac0507fc7bfe2003c447888c69c531752985bd6dac393",
+      "matchesPreviousTestedMain": true,
+      "firmwareBytes": 469888,
+      "firmwareSha256": "951a69702920de36ffff395bb1abbc3c5b62fd67c0a9e64dd68a5ada7c37ec90",
+      "nativePackagingParity": "passed",
+      "opaqueTailAndSeed": "preserved"
+    }
+  ],
+  "originalUnchanged": true,
+  "previousDownloadUnchanged": true,
+  "hardware": "new label untested",
+  "emulatorLimitation": "The MAIN-only emulator excludes the resident bootloader name screen.",
+  "checks": {
+    "command": "VITEST_MAX_WORKERS=1 npm run check -- --base origin/main",
+    "status": "passed",
+    "tests": 1252,
+    "testFiles": 186,
+    "lint": "passed",
+    "typeScript": "passed",
+    "sdk": "passed",
+    "productionBundle": "passed",
+    "earlierAttempt": "8 unrelated test timeouts under concurrent local load; final retry used one worker with unchanged timeouts"
+  }
+}
