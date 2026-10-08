@@ -3,6 +3,7 @@ import { DiscordInvitePrompt } from './community/DiscordInvite'
 import { SignupWelcome } from './community/SignupWelcome'
 import { HardwareFeedbackReminder } from './community/HardwareFeedbackReminder'
 import { NotificationBell } from './community/NotificationBell'
+import { PublicAnnouncement } from './community/PublicAnnouncement'
 import { useMembersOnline } from './community/useMembersOnline'
 import { MembersOnlineChip } from './community/MembersOnline'
 import { DeveloperPage } from './community/DeveloperPage'
@@ -283,6 +284,7 @@ export default function App() {
       {configurationsOpen && <ConfigurationBrowser configurations={workspace.configurations} activeId={sidebarConfiguration?.id} currentDevice={machineHasMods ? currentDevice.id : 'octatrack'} onSelect={changeConfiguration} onCreate={newConfiguration} onClose={() => setConfigurationsOpen(false)} />}
       {configDialog && <ConfigurationDialog mode={configDialog} initialName={configDialog === 'create' ? '' : configDialog === 'duplicate' ? (machineActive?.name ?? '') + ' copy' : machineActive?.name ?? ''} onSubmit={submitConfigurationDialog} onClose={() => { setConfigDialog(null); setCreateDevice(null) }} />}
       <DiscordInvitePrompt enabled={!accountRoute && !developerRoute && !['admin', 'privacy', 'impressum', 'community-rules', 'report-content'].includes(route)} next={route} />
+      <PublicAnnouncement enabled={!accountRoute && !developerRoute && !configuration && machineView !== 'configuration' && !route.startsWith('submit') && !['admin', 'review', 'privacy', 'impressum', 'community-rules', 'report-content'].includes(route)} />
       {supportOpen && <SupportDialog url={SUPPORT_URL} onClose={() => setSupportOpen(false)} />}
       <div className="workspace">
         <header className="app-toolbar" ref={toolbarRef}>

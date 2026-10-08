@@ -953,6 +953,28 @@ h1 { font-size: 28px; }
 .announcement-preview-card { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
 .announcement-preview-card a { cursor: default; }
 .announcement-preview-card a:hover { background: transparent; }
+.announcement-public-preview { max-width: 380px; }
+.public-announcement { position: fixed; z-index: 35; right: 22px; bottom: 48px; width: 360px; max-width: calc(100vw - 32px); }
+.public-announcement-card { padding: 16px 20px 20px; border: 1px solid #616080; border-radius: 16px; background: radial-gradient(ellipse at top left, #929bff16, transparent 75%), #27272f; box-shadow: 0 16px 50px #0007, inset 0 1px #ffffff0a; }
+.public-announcement-card > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: -4px -8px 14px 0; }
+.public-announcement-brand { display: inline-flex; align-items: center; gap: 9px; color: #b8b8cd; font-size: 11px; font-weight: 600; letter-spacing: .05em; }
+.public-announcement-brand img { flex-shrink: 0; }
+.public-announcement-card .icon-button { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border-radius: 10px; color: #b7b7c8; }
+.public-announcement-card .icon-button:hover { color: #fff; background: #ffffff0c; }
+.public-announcement-kicker { display: inline-block; margin-bottom: 9px; padding: 4px 7px; border: 1px solid #d0b48e33; border-radius: 5px; background: #d0b48e0c; color: #ddc29e; font-size: 10px; font-weight: 600; }
+.public-announcement-card h2 { font-size: 19px; font-weight: 650; line-height: 1.35; letter-spacing: -.3px; color: #f2f2fa; overflow-wrap: anywhere; }
+.public-announcement-card > p { margin-top: 10px; color: #b8b8c8; font-size: 13px; line-height: 1.6; white-space: pre-line; overflow-wrap: anywhere; }
+.public-announcement-action { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 40px; margin-top: 18px; padding: 8px 12px; border: 1px solid #929bff50; border-radius: 8px; background: #929bff18; color: #d0d4ff; font-size: 12px; font-weight: 600; }
+.public-announcement-action:hover { border-color: #929bff; background: #929bff28; color: #fff; }
+.public-announcement .public-announcement-card { max-height: calc(100dvh - 128px); overflow-y: auto; overscroll-behavior: contain; }
+.app-shell:has(.forum-chat-launcher) .public-announcement { bottom: 112px; }
+@media(max-width: 600px) {
+  .public-announcement { left: 12px; right: 12px; bottom: calc(16px + env(safe-area-inset-bottom)); width: auto; max-width: none; }
+  .public-announcement-card { padding: 14px 18px 18px; }
+  .public-announcement-card h2 { font-size: 18px; }
+  .public-announcement-card .icon-button, .public-announcement-action { min-width: 44px; min-height: 44px; }
+  .app-shell:has(.forum-chat-launcher) .public-announcement { bottom: calc(76px + env(safe-area-inset-bottom)); }
+}
 .announcement-sent-heading { margin: 30px 0 10px; font-size: 14px; font-weight: 600; }
 .announcement-read-note { max-width: 80ch; margin: 0 0 14px; color: var(--muted); font-size: 12px; line-height: 1.6; }
 .announcement-sent { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
