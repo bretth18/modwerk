@@ -20,8 +20,11 @@ const synthetic = (): DecodedFirmware => ({
 })
 
 describe('Octatrack firmware boot name', () => {
+  it('uses only the panel boot font letter range', () => {
+    expect(FIRMWARE_VERSION).toMatch(/^[A-Z0-9. ]{1,10}$/)
+  })
   it.each([['repitch'], ['midi-scenes'], ['usb-audio-out-tracks-main-cue', 'quantizer']])(
-    'uses Elekloader in validation, the build report and all ten update-header bytes for %j', async (...moduleIds) => {
+    'uses ELEKLOADER in validation, the build report and all ten update-header bytes for %j', async (...moduleIds) => {
       const original = synthetic(), input = encodeFirmware(original, original.mainOs, 'STOCK')
       const before = input.slice(), replies: EngineResponse[] = []
       const handle = createEngineSession(response => { replies.push(response) })
@@ -32,17 +35,17 @@ describe('Octatrack firmware boot name', () => {
         const validated = replies.at(-1)
         expect(validated?.type).toBe('validated')
         if (validated?.type !== 'validated') throw new Error(JSON.stringify(validated))
-        expect(validated.report.version).toBe('Elekloader')
+        expect(validated.report.version).toBe('ELEKLOADER')
         await handle({ id: 3, type: 'build', moduleIds, keepStockFx2 })
         const built = replies.at(-1)
         expect(built?.type).toBe('built')
         if (built?.type !== 'built') throw new Error(JSON.stringify(built))
-        expect(FIRMWARE_VERSION).toBe('Elekloader')
-        expect(built.report.version).toBe('Elekloader')
+        expect(FIRMWARE_VERSION).toBe('ELEKLOADER')
+        expect(built.report.version).toBe('ELEKLOADER')
         expect(built.report.moduleIds).toEqual(moduleIds)
         if (moduleIds.includes('midi-scenes')) expect(built.report.moduleVersions['midi-scenes']).toBe('0.2.4-experimental')
         const decoded = decodeFirmware(new Uint8Array(built.buffer))
-        expect(new TextDecoder().decode(decoded.header.subarray(8))).toBe('Elekloader')
+        expect(new TextDecoder().decode(decoded.header.subarray(8))).toBe('ELEKLOADER')
         expect(decoded.header.subarray(0, 8)).toEqual(original.header.subarray(0, 8))
         expect(decoded.mainOs).toEqual(original.mainOs)
         expect(decoded.tail).toEqual(original.tail)
