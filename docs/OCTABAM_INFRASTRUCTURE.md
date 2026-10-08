@@ -11,7 +11,7 @@ The selective import is pinned to [sambanks/octabam `7b2984c8`](https://github.c
 | Validation efficiency | Emulator source-content stamps avoid rebuilds caused only by checkout timestamps. Isolated `Gate.once` checks run once in a validation run, on the smallest selected carrier. |
 | Toolchain reliability | macOS setup detects a binary architecture mismatch and stale DSP patches. Emulator builds use the hardware architecture under Rosetta. Linux drum-analysis linking includes the available Intel profiling library and libdl, and reports compiler errors. |
 
-Modwerk retains its compilation memo, local stock guards, stock-copy recipes, dynamic-loader support, DRAM/BSS checks and independent scenario capture streams. Its approved images keep the stock mailbox at `0x38000`; the new census uses that address. The upstream mailbox relocation and module changes are excluded.
+Modwerk retains its compilation memo, local stock guards, stock-copy recipes, dynamic-loader support, DRAM/BSS checks and independent scenario capture streams. The Makefile exports `OCTABAM_STATIC_STOCK=1`, so `make`-built images keep the stock DSP code and omit the experimental stock loader, which froze hardware; `OCTABAM_STATIC_STOCK=0` opts in for emulator work. Its approved images keep the stock mailbox at `0x38000`; the new census uses that address. The upstream mailbox relocation and module changes are excluded.
 
 The direct dirty-state render excludes hook-only stock-DSP replacements, whose behavior needs the firmware path. The census checks non-zero writes in 256-word shared-memory regions. An allowed range overlapping a region accepts that region: it cannot identify every stray word, observe zero-over-zero writes, or attribute private-memory writes to individual modules.
 

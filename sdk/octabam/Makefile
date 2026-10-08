@@ -18,6 +18,16 @@ DSP_ASM := vendor/dsp56300/build/source/dsp_host/dsp_asm
 BUILD   ?= 79
 VERSION ?= OCTABAM$(BUILD)
 
+# Keep the stock DSP code built in (Remix.static_stock) for every target.
+# tools/remix/registry.py otherwise adds the experimental stock loader (DSP
+# DYNLOAD STOCK, platform/dsp-dynload/README.md: emulator qualification only)
+# to every remix. Images carrying it booted on hardware with no audio and the
+# sequencer stuck on trig 1 (1 Oct 2026; an MKII with the loader and no
+# modules, 8 Oct 2026); ot_emu did not reproduce it. Emulator work on the
+# loader opts in with OCTABAM_STATIC_STOCK=0. Never flash such an image.
+OCTABAM_STATIC_STOCK ?= 1
+export OCTABAM_STATIC_STOCK
+
 # Which modules the image carries. `make modules` lists what is available;
 # remixes/<name>/remix.py is the selection. There is no default: a target
 # that builds or checks an image takes REMIX=<name> (make modules lists

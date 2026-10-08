@@ -34,7 +34,14 @@ and keep the official firmware and backups available.
   `out/OCTATRACK_OCTABAM<nn>.bin` (card path) and
   `out/OCTATRACK_OS1.40C_OCTABAM<nn>.syx` (MIDI path). `<nn>` is one or two
   digits; bump it every flash so the unit's version string maps to a
-  commit.
+  commit. `make` keeps the stock DSP code built in
+  (`OCTABAM_STATIC_STOCK=1`). **Never flash an image built with
+  `OCTABAM_STATIC_STOCK=0`, or by running `tools/build/build_bus.py`
+  directly without it:** those carry the experimental stock loader (DSP
+  DYNLOAD STOCK), which is for the emulator only. On hardware such images
+  booted with no audio and the sequencer stuck on trig 1, including an MKII
+  image with the loader and no modules (8 Oct 2026). ot_emu did not
+  reproduce it.
 - **The official rescue firmware**: `downloads/extracted/OCTATRACK_OS1.40C.syx`,
   present after `make os`.
 - For the MIDI path and for recovery: a 5-pin DIN MIDI interface into the

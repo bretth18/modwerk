@@ -9,7 +9,7 @@
       "path": "Makefile",
       "sourcePath": "Makefile",
       "sourceSha256": "eec807c291f72003c94a96e6bac67ea5611bc68454495398fdff6dd256391230",
-      "vendoredSha256": "914f0a1ad4b86d18794c7c1e34886a28ab83ac29241101123e6113fa0e121f47"
+      "vendoredSha256": "7cd8a5bd31cda65880843849d2e2a7930f10f28104e6b6e890ac5b7e44bbf76e"
     },
     {
       "path": "scripts/setup.sh",
@@ -199,7 +199,8 @@
     "Support NONE fallback and exclude hook-only stock-DSP dispatch from the direct dirty-state render.",
     "Pass assembler constants through the compilation memo; retain stock-copy recipes and declared-value author oracles.",
     "Price remaining FX2 slots after a capped insert and compare server-free configurations to prevent cycle undercounts.",
-    "Integrate upstream regression suites in the repository SDK check; adapt mailbox and native fixture paths."
+    "Integrate upstream regression suites in the repository SDK check; adapt mailbox and native fixture paths.",
+    "Export OCTABAM_STATIC_STOCK=1 from the Makefile so make-built images keep stock DSP code and omit the experimental DSP DYNLOAD STOCK loader, which froze hardware; OCTABAM_STATIC_STOCK=0 opts in for emulator work."
   ],
   "verificationRecord": "infrastructure-verification/octabam-7b2984c8.json",
   "limitations": [
