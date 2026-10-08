@@ -1,3 +1,4 @@
+import type { CatalogBrowse } from '../catalog/catalog-browse'
 import { assetUrl } from '../hosting'
 import { ModuleControls } from './ModuleControls'
 import { IssueReport } from '../community/IssueReport'
@@ -11,10 +12,10 @@ import { ModuleResourceIndicators } from './ModuleResourceIndicators'
 import { MODULE_DOCUMENTS_BY_ID } from '../catalog/documents'
 import { ModuleDetailLayout } from './ModuleDetailLayout'
 
-export function ModuleDetail({ module, selected, onToggle }: { module: FirmwareModule; selected: boolean; onToggle: () => void }) {
+export function ModuleDetail({ module, selected, onToggle, browse, onBackToResults }: { browse?: CatalogBrowse | null; onBackToResults?: () => void; module: FirmwareModule; selected: boolean; onToggle: () => void }) {
   const details = DETAILS[module.id]
   const moduleDocument = MODULE_DOCUMENTS_BY_ID[module.id]
-  return <ModuleDetailLayout id={module.id} title={module.name} family={details.family} detail={module.detail}
+  return <ModuleDetailLayout browse={browse} onBackToResults={onBackToResults} id={module.id} title={module.name} family={details.family} detail={module.detail}
     author={module.authorName} authorUrl={module.authorUrl} description={module.description}
     selected={selected} onToggle={onToggle} backHref="#library" backLabel="All modules"
     preview={<ModulePreview id={module.id} />} resources={<ModuleResourceIndicators id={module.id} />}

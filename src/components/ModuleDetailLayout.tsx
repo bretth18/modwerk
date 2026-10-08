@@ -7,6 +7,8 @@ import { useModuleIssues } from '../community/issue-tracker'
 import { ModuleUpdateButton } from '../community/ModuleUpdateButton'
 import { ShareModuleButton } from '../community/ShareModuleButton'
 import { Icon } from './Icon'
+import { catalogNeighbors, type CatalogBrowse } from '../catalog/catalog-browse'
+import { CatalogNavigation } from './CatalogNavigation'
 
 type DetailTab = 'Overview' | 'Media' | 'Discussion' | 'Changelog' | 'Issues'
 const tabs: DetailTab[] = ['Overview', 'Media', 'Discussion', 'Changelog', 'Issues']
@@ -17,12 +19,14 @@ function linkedTab(): DetailTab {
   return tabs.find(value => value.toLowerCase() === query.get('tab')) ?? 'Overview'
 }
 
-export function ModuleDetailLayout({ id, title, family, detail, author, authorUrl, description, selected, onToggle, backHref, backLabel, preview, resources, notice, guide, issueReport }: {
+export function ModuleDetailLayout({ id, title, family, detail, author, authorUrl, description, selected, onToggle, backHref, backLabel, preview, resources, notice, guide, issueReport, browse, onBackToResults }: {
+  browse?: CatalogBrowse | null; onBackToResults?: () => void
   id: string; title: string; family: string; detail: string; author: string; authorUrl: string; description: string
   selected: boolean; onToggle: () => void; backHref: string; backLabel: string
   preview: ReactNode; resources: ReactNode; notice?: ReactNode; guide: ReactNode
   issueReport: (openRequest: number) => ReactNode
 }) {
+  const navigation = catalogNeighbors(browse, id)
   const [tab, setTab] = useState<DetailTab>(linkedTab)
   const [issueOpenRequest, setIssueOpenRequest] = useState(0)
   const issues = useModuleIssues(id)
@@ -34,9 +38,10 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
   }
   function showIssueReport() { setTab('Issues'); setIssueOpenRequest(request => request + 1) }
   const discussionBadge = <span className="module-tab-count-slot"><span className="tab-count">{discussionCount ?? '—'}<span className="sr-only">{discussionCount === null ? ' comments loading' : discussionCount === 1 ? ' comment' : ' comments'}</span></span></span>
-  return <div className="detail-page">
+  return <div className={'detail-page' + (navigation && navigation.total > 1 ? ' has-catalog-navigation' : '')}>
+    {navigation && navigation.total > 1 && <CatalogNavigation navigation={navigation} />}
     <div className="module-page-actions">
-      <a className="back-link" href={backHref}><Icon name="back" size={15} />{backLabel}</a>
+      <div className="module-browse-context"><a className="back-link" href={navigation?.backHref ?? backHref} onClick={navigation ? onBackToResults : undefined}><Icon name="back" size={15} />{navigation ? 'Back to results' : backLabel}</a>{navigation && <span className="catalog-position" aria-label={'Module ' + navigation.position + ' of ' + navigation.total + ' results'}>{navigation.position} of {navigation.total}</span>}</div>
       <div className="module-page-buttons"><ShareModuleButton id={id} title={title} /><button type="button" className="button button-danger module-issue-action" onClick={showIssueReport}><Icon name="message" size={15} />Report an issue</button></div>
     </div>
     <section className="detail-hero detail-hero-with-resources" aria-labelledby="module-title">

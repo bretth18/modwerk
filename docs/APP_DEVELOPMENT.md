@@ -14,6 +14,12 @@ The browser composes real firmware with the dynamic DSP loader disabled. **Downl
 
 Every visible module must support firmware generation and download in a compatible configuration. Pending updates stay on their branches; failed builds keep the approved deployment. Do not set the global download flag to false while an update awaits review. The public download policy regression test is part of `npm run check`; fix or isolate the pending change instead of weakening that check. MIDI Scenes remains standalone and ordinary compatibility/placement failures still explain how to fix a selection.
 
+## Browsing module results
+
+On desktop (above 1100px), module detail pages offer left and right chevrons and Left/Right arrow keys to move through the catalog results that were visible when a module was opened. The result order includes the selected machine, category, search, type and sort; All machines continues across machine groups in their displayed order. Paging stops at each end. “Back to results” restores the same filters. The last result selection stays in this tab's session storage so refreshing a module page keeps the context; unavailable storage still permits paging during the visit. Direct pages outside that result selection keep their usual library link.
+
+Inputs, tab lists, menus, media controls and open dialogs retain their arrow-key behavior. Phones and smaller layouts retain the normal module page without side chevrons or global arrow-key navigation.
+
 ## Run locally
 
 Use Node.js 24:

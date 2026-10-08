@@ -20,6 +20,7 @@ export type ModuleCardProps = {
   canCompare: boolean
   onToggle: () => void
   onCompare: () => void
+  onBrowse?: () => void
 }
 
 export function AddButton({ name, selected, onToggle }: { name: string; selected: boolean; onToggle: () => void }) {
@@ -46,15 +47,15 @@ export function CardProof({ stability, name, compared, canCompare, onCompare }: 
   </div>
 }
 
-export function ModuleCard({ module, selected, statistics, viewedVersion, baseline, compared, canCompare, onToggle, onCompare }: ModuleCardProps) {
+export function ModuleCard({ module, selected, statistics, viewedVersion, baseline, compared, canCompare, onToggle, onCompare, onBrowse }: ModuleCardProps) {
   return <article className={'module-card ' + (selected ? 'is-selected' : '')}>
-    <a href={moduleHref(module.id)} className="module-cover" aria-label={'View ' + module.name}>
+    <a href={moduleHref(module.id)} onClick={onBrowse} onAuxClick={onBrowse} className="module-cover" aria-label={'View ' + module.name}>
       <ModulePreview id={module.id} />
       <div className="hover-info"><span>{module.description}</span><strong>Explore module <Icon name="arrow" size={15} /></strong></div>
     </a>
     <div className="module-card-body">
       <div className="module-card-title">
-        <div className="module-card-heading"><a href={moduleHref(module.id)}>{module.name}</a><ModuleRelease module={module} viewedVersion={viewedVersion} baseline={baseline} /></div>
+        <div className="module-card-heading"><a href={moduleHref(module.id)} onClick={onBrowse} onAuxClick={onBrowse}>{module.name}</a><ModuleRelease module={module} viewedVersion={viewedVersion} baseline={baseline} /></div>
         <AddButton name={module.name} selected={selected} onToggle={onToggle} />
       </div>
       <div className="card-credit"><a href={module.authorUrl} target="_blank" rel="noreferrer">{module.authorName}</a><span>{module.detail}</span></div>
