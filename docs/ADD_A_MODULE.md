@@ -84,6 +84,8 @@ Use the exact catalog/manifest version and the source-update date (`YYYY-MM-DD`)
 
 `npm run check -- --base origin/main` and `npm run build` reject missing current-version notes, duplicate/invalid versions, malformed dates and unknown module IDs. `node scripts/module-changelogs.mjs` runs just this inexpensive metadata check. Regenerate catalogs after a manifest version changes, then validate before committing. Notes live outside module source folders so adding them does not invalidate retained qualification records or trigger native compilation.
 
+The published release inventory includes these exact version-matched notes. Update emails include every change and limitation from that entry in HTML and plain text, with a link to the module’s Changelog tab. The Worker retains the published notes for delayed digests and refuses to announce a new version without them.
+
 Documentation-only changes do not need a version bump: update the current entry with a clearly marked documentation-only note if the change belongs in its release history. A new version, including a metadata-only version when deliberately published, must always have its own entry.
 
 ## Documentation-only updates

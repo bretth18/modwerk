@@ -68,6 +68,8 @@ describe('documentation and firmware scheduling', () => {
     }
     expect(scope(change('server/api.ts')).worker).toBe(true)
     expect(scope(change('src/community/usage-pages.ts')).worker).toBe(true)
+    expect(scope(change('src/community/module-release-contract.ts')).worker).toBe(true)
+    expect(scope(change('src/community/module-release-notes.ts')).worker).toBe(true)
     expect(scope(change('.github/module-authors.json')).worker).toBe(true)
     expect(scope(change('src/devices/DigiModDetail.tsx')).worker).toBe(false)
   })

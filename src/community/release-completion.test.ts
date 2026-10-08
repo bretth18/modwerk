@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { DatabaseSync } from 'node:sqlite'
 import { testDatabase } from './test-server'
 import { communityModule } from './modules'
+import { moduleChangelogs } from './module-changelogs'
 import { developerApi } from '../../server/developers'
 import type { Env, User } from '../../server/platform'
 
@@ -28,7 +29,7 @@ function fixture({ mirrored = false } = {}) {
   vi.stubGlobal('fetch', vi.fn(async (value: string | URL, options: RequestInit) => {
     const url = String(value), method = options.method ?? 'GET', body = options.body ? JSON.parse(String(options.body)) : undefined
     calls.push({ url, method, body })
-    if (url === 'https://app.example.test/module-releases.json') return Response.json({ format: 'modwerk-module-releases-v1', modules: [{ id: module.id, name: module.name, version: live ? module.version : '0.0.1', href: module.href }] })
+    if (url === 'https://app.example.test/module-releases.json') return Response.json({ format: 'modwerk-module-releases-v1', modules: [{ id: module.id, name: module.name, version: live ? module.version : '0.0.1', href: module.href, ...(live ? { notes: moduleChangelogs[module.id].find(entry => entry.version === module.version) } : {}) }] })
     if (gitFailure) return new Response('{}', { status: 503 })
     if (url.includes('/issues/21/comments')) { if (method === 'POST') comments.push(body); return Response.json(method === 'GET' ? comments : { id: 1 }) }
     if (url.endsWith('/issues/21') && method === 'PATCH') return Response.json({ state: 'closed' })
