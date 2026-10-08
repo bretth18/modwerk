@@ -79,8 +79,11 @@ The focused checks cover constant audio, full-range steps in both directions,
 rapid retriggers, stepped automation, the assembled code at both core placements,
 and four simultaneous mixed voices per placement with distinct patches and reset
 isolation. They do not prove stock AMP/FX timing or physical reboot survival. The separate
-firmware control-state matrix passed; full-chain audio after reload/restart is
-still unverified.
+firmware control-state matrix passed. The full-emulator SIGBUS was traced to
+Docker's 64 MiB shared-memory default and resolved with `--shm-size 256m`; the
+unchanged candidate boots both cores and loads its project. Full-chain usable
+audio after reload/restart remains unverified; see the bounded audio probes in
+the testing report.
 
 ## Authorship and licences
 

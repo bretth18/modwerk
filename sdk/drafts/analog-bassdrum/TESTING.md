@@ -75,6 +75,7 @@ writes only to a new temporary workspace and container tmpfs:
 ```sh
 docker run --rm --network none --read-only --cap-drop ALL \
   --security-opt no-new-privileges --pids-limit 128 --memory 2g --cpus 2 \
+  --shm-size 256m \
   --mount type=bind,source=<repository>,target=/source,readonly \
   --mount type=bind,source=<new-private-workspace>,target=/work \
   --tmpfs /tmp -w /work -e PYTHONDONTWRITEBYTECODE=1 \
@@ -103,21 +104,48 @@ source/FX main/setup controls match throughout. Editing T1 preserves T5 and
 editing FX2 preserves FX1. These are **control-state passes**, separate from the
 DSP instance/audio tests above. No physical device was rebooted.
 
-The DSP-enabled candidate emulator probe exits with SIGBUS (exit −7), before
-usable audio or capture readiness. Full-chain audio after these transitions
-therefore remains unverified. The actual controller LCD captures use the working
-stand-in DSP path. A private copy of `scripts/capture-module-ui.py` removes its
-forced `--dsp` argument and sets a 20-second project-load budget; the source LCD
-renderer and actual panel actions are unchanged. Both tool hashes, exact actions,
-source/image/emulator identities and visually reviewed PNG hashes are retained
-in [media/capture.json](media/capture.json). An initial plan left a DISARM popup
-on two captures; those were rejected and recaptured after it expired.
+The initial DSP-enabled probe exited with SIGBUS (exit −7), before usable
+audio or capture readiness. The actual controller LCD captures therefore used
+the working stand-in DSP path. A private copy of `scripts/capture-module-ui.py`
+removed its forced `--dsp` argument and set a 20-second project-load budget; the
+source LCD renderer and actual panel actions were unchanged. Both tool hashes,
+exact actions, source/image/emulator identities and visually reviewed PNG hashes
+are retained in [media/capture.json](media/capture.json). Those historical captures
+remain labelled stand-in DSP. An initial plan left a DISARM popup on two captures;
+those were rejected and recaptured after it expired.
+
+## Full-emulator SIGBUS diagnosis and fix — 8 October 2026
+
+[evidence/emulator-shm.json](evidence/emulator-shm.json) records the regression and
+recovery on the unchanged candidate image (`87e56b38…`) and unchanged emulator.
+Docker's default `/dev/shm` allowance is 64 MiB. The DSP library reserves 52 MiB
+of shared-memory backing per core (104 MiB for the pair), including the
+invalid-address backing block. Mapping succeeds before storage is touched;
+constructing the second DSP core exhausts that pool and raises SIGBUS.
+
+An identical `--dsp --max 1000` probe exits −7 with `--shm-size 64m`; with
+`--shm-size 256m` it constructs both cores and stops normally at the intentional
+instruction budget (exit 1, BUDGET). The existing isolation settings and 2 GiB
+overall memory limit stay in place. No firmware or emulator source change was
+needed. The capture tool now checks for at least 128 MiB free in `/dev/shm` on
+Linux, reports the `--shm-size 256m` setting and refuses before creating its output
+directory. Both the real 64 MiB rejection and 256 MiB acceptance passed.
+
+With 256 MiB, the full candidate boots both DSP cores, passes the RTOS gate and
+completes LOAD PROJECT with distinct T1 808 and T5 909 assignments and both FX
+slots populated. The initial 64-frame playback probe reaches its frame target
+and captures 623,039 eight-channel frames, but all samples are zero: it did not
+reach a trigger. That probe establishes crash recovery and project loading,
+not usable audio. A separate 1,024-frame probe with `--internal-clock` reached
+its 180-second wall-clock cap and was killed; no usable-audio pass is claimed.
+The follow-up ran Node 24 `npm run check -- --base origin/main`: all 185 test
+files / 1,249 tests and lint/build/SDK/catalog checks passed.
 
 ## Open acceptance paths
 
 - Usable full-chain audio after Part/project reload and battery-only restart:
-  **unverified**, because the candidate's DSP-enabled full-emulator run failed
-  with SIGBUS. Control-state persistence passes above do not upgrade this path.
+  **unverified**. The shared-memory startup crash is resolved, but control-state
+  persistence passes above do not upgrade this path.
 - Full machine reset/model-replacement isolation and maximum audio/FX load:
   **untested**. Native voice reset/isolation tests do not replace these checks.
 - Worst-case chip cycles, complete final-image memory accounting, native/browser

@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import selectors
 import subprocess
+import sys
 import tempfile
 import time
 
@@ -36,6 +37,21 @@ def load(name, path):
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
+
+
+def check_dsp_shared_memory():
+    # Two reviewed DSP MemoryBuffers need 104 MiB of backing storage before
+    # project/audio work. Docker defaults to 64 MiB; mmap succeeds there but
+    # touching the second buffer raises SIGBUS. Reserve some working headroom.
+    if sys.platform != 'linux' or not Path('/dev/shm').exists():
+        return
+    space = os.statvfs('/dev/shm')
+    available = space.f_bavail * space.f_frsize
+    if available < 128 * 1024 * 1024:
+        raise ValueError(
+            f'DSP capture needs at least 128 MiB free in /dev/shm '
+            f'({available // (1024 * 1024)} MiB available). '
+            'For Docker, start the isolated container with --shm-size 256m.')
 
 
 def main():
@@ -99,6 +115,10 @@ def main():
     output = args.output.resolve()
     if output.exists():
         parser.error('Output exists; choose a new directory to preserve previous captures.')
+    try:
+        check_dsp_shared_memory()
+    except ValueError as error:
+        parser.error(str(error))
     lcd = load('octamod_lcd', ROOT / 'sdk/octabam/tools/emu/lcd_view.py')
     # Render the actual bitplane in the required monochrome documentation style.
     # Preserve every LCD pixel; this changes only the two display colors.
