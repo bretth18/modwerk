@@ -334,12 +334,12 @@
     "id": "analog-rytm-mkii",
     "order": 80,
     "name": "Analog Rytm",
-    "status": "open",
-    "summary": "Analog drum machine with pads. No public firmware research yet.",
+    "status": "research",
+    "summary": "OS 1.74 file format documented; stock file rebuilds byte-identical; from-source replacement OS in progress.",
     "steps": {
-      "format": "open",
-      "rebuild": "open",
-      "boot": "open",
+      "format": "done",
+      "rebuild": "done",
+      "boot": "started",
       "core": "open",
       "mods": "open"
     },
@@ -351,6 +351,18 @@
     },
     "variants": [
       "MKII"
+    ],
+    "research": [
+      {
+        "label": "rytm-fw-re",
+        "url": "https://github.com/ethernet8023/rytm-fw-re",
+        "note": "Static analysis of OS 1.74: container/transport format, boot contract, startup-menu recovery path, display pipeline (FPGA fifo bridge protocol), plus a from-source replacement OS that builds and wraps into a flashable syx. No firmware hosted."
+      },
+      {
+        "label": "elektron-firmware-tool",
+        "url": "https://github.com/mischa85/elektron-firmware-tool",
+        "note": "Writer. Verified on OS 1.74: unchanged repack is byte-identical to the stock file (sysex re-encode and aPLib recompression included); section replacement round-trips exactly on re-extract."
+      }
     ]
   },
   {
