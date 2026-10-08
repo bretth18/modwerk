@@ -39,7 +39,7 @@ export function readHardwareFeedback(memberId: string, now = Date.now()): Hardwa
 }
 function save(memberId: string, records: HardwareFeedback[]) {
   try { localStorage.setItem(key(memberId), JSON.stringify(records)); window.dispatchEvent(new Event(FEEDBACK_CHANGED)) }
-  catch { /* Optional reminders must never stop a download or a successful forum reply. */ }
+  catch { /* Optional reminders must never stop a download or a successful working confirmation. */ }
 }
 /** Keep the latest build of each machine. Re-downloading the same build preserves completed and dismissed feedback. */
 export function rememberHardwareFeedback(memberId: string, build: DownloadedBuild, now = Date.now()) {
@@ -53,12 +53,12 @@ export function pendingFeedback(record: HardwareFeedback) { return record.module
 export function dueHardwareFeedback(memberId: string, now = Date.now()) {
   return readHardwareFeedback(memberId, now).find(item => !item.dismissed && item.remindAt <= now && pendingFeedback(item).length)
 }
-export function updateHardwareFeedback(memberId: string, build: DownloadedBuild, action: 'dismiss' | 'later' | { completed: string }, now = Date.now()) {
+export function updateHardwareFeedback(memberId: string, build: DownloadedBuild, action: 'dismiss' | 'later' | { completed: string | readonly string[] }, now = Date.now()) {
   if (!memberId) return
   const id = feedbackId(build)
   save(memberId, readHardwareFeedback(memberId, now).map(record => feedbackId(record) !== id ? record : {
     ...record,
     ...(action === 'dismiss' ? { dismissed: true } : action === 'later' ? { remindAt: now + FEEDBACK_SNOOZE }
-      : { completed: [...new Set([...record.completed, action.completed])].filter(moduleId => record.modules.some(module => module.id === moduleId)) }),
+      : { completed: [...new Set([...record.completed, ...(typeof action.completed === 'string' ? [action.completed] : action.completed)])].filter(moduleId => record.modules.some(module => module.id === moduleId)) }),
   }))
 }

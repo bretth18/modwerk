@@ -35,7 +35,7 @@ describe('hardware feedback on a later visit', () => {
     expect(pendingFeedback(dueHardwareFeedback('alice', now + FEEDBACK_DELAY)!)).toEqual([build.modules[1]])
     // Full build context remains available in a report about the remaining module.
     expect(readHardwareFeedback('alice', now + FEEDBACK_DELAY)[0].modules).toHaveLength(2)
-    updateHardwareFeedback('alice', build, { completed: 'tapeecho' }, now + FEEDBACK_DELAY)
+    updateHardwareFeedback('alice', build, { completed: ['miniverb', 'tapeecho'] }, now + FEEDBACK_DELAY)
     rememberHardwareFeedback('alice', build, now + 2 * FEEDBACK_DELAY)
     expect(dueHardwareFeedback('alice', now + 3 * FEEDBACK_DELAY)).toBeUndefined()
     rememberHardwareFeedback('bob', build, now)

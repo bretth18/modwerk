@@ -26,5 +26,5 @@ export function ShareModuleButton({ id, title }: { id: string; title: string }) 
     window.clearTimeout(timer.current)
     timer.current = window.setTimeout(() => setNotice(''), 4000)
   }
-  return <span className="share-control"><button type="button" className="button button-quiet" onClick={() => void share()}><Icon name="share" size={15} />Share</button>{notice && <span className="share-notice" role="status">{notice}</span>}</span>
+  return <span className="share-control"><button type="button" className="button button-quiet" aria-label={'Share ' + title} onClick={() => void share()}><Icon name="share" size={15} /><span className="share-button-label">Share</span></button>{notice && <span className="share-notice" role="status">{notice}</span>}</span>
 }
