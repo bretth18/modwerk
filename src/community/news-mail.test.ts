@@ -147,7 +147,9 @@ describe('news mail campaigns', () => {
     await act(id, 'queue')
     await run()
     const oneClick = messages[0].headers!['List-Unsubscribe'].slice(1, -1), token = new URL(oneClick).searchParams.get('token')!
-    expect((await call('/news/unsubscribe?token=' + encodeURIComponent(token.slice(0, -1) + '0'), 'POST', undefined)).status).toBe(400)
+    // Always change the MAC: a valid token can already end in 0.
+    const tampered = token.slice(0, -1) + (token.endsWith('0') ? '1' : '0')
+    expect((await call('/news/unsubscribe?token=' + encodeURIComponent(tampered), 'POST', undefined)).status).toBe(400)
     expect(db.prepare('SELECT enabled FROM account_news_preferences WHERE user_id=?').get(reader.id)).toEqual({ enabled: 1 })
     expect((await call('/news/unsubscribe?token=' + encodeURIComponent(token), 'POST', undefined)).status).toBe(200)
     expect(db.prepare('SELECT enabled,consent_version FROM account_news_preferences WHERE user_id=?').get(reader.id)).toEqual({ enabled: 0, consent_version: null })
