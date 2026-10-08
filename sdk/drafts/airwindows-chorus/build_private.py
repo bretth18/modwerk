@@ -33,7 +33,8 @@ def main():
         native=pathlib.Path(tmp)
         for folder in ['modules','platform','tools','dsp']:
             shutil.copytree(ROOT/'sdk/octabam'/folder,native/folder,ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
-        shutil.copytree(HERE,native/'modules/airwindows-chorus',ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
+        if not (native/'modules/airwindows-chorus').exists():
+            shutil.copytree(HERE,native/'modules/airwindows-chorus',ignore=shutil.ignore_patterns('__pycache__','*.pyc'))
         (native/'vendor').symlink_to(vendor,target_is_directory=True)
         (native/'out/raw').mkdir(parents=True)
         shutil.copyfile(raw,native/'out/raw/section_3_MAIN_OS.bin')

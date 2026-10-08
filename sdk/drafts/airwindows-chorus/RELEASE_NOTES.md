@@ -8,8 +8,13 @@
 - Use per-instance stereo rings, safe dry handling of stale FX1 IDs,
   deterministic initialization and exact settled dry bypass.
 - Retain original source, Chris Johnson's credit and full MIT notice.
-- Hardware, complete browser/native composition parity and publication are
-  pending. Buffer precision differs from the original float plugin; extreme
+- Replace the synchronous delay-buffer clear with bounded valid-history
+  initialization; finite native audio fixtures remain byte-identical.
+- The owner reports a successful 50-minute MKII test of the earlier image
+  with several instances and full knob sweeps. Fresh hardware testing of the
+  initialization update is explicitly owner-waived; persistence, modulation
+  and eight-track hardware coverage remain unverified. Integration and
+  publication remain pending. Buffer precision differs from the float plugin; extreme
   delay modulation retains pitch/aliasing artifacts. No public release yet.
 
 When qualified and added to `sdk/catalog.json`, copy this version-matched

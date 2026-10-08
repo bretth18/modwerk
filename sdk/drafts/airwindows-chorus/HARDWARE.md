@@ -1,7 +1,11 @@
 # MKII test request — Air Chorus 0.1.0-experimental
 
-No physical results have been reported yet. Record only observations from the
-exact private image in `evidence/private-build.json`, not an earlier build.
+The owner reports a successful 50-minute MKII test of the first candidate,
+with several distinct instances and full knob sweeps. The changed AIRC0R1
+candidate has an explicit current-image hardware waiver; omitted checks remain
+unverified. See [the attributed report](evidence/hardware-report.md).
+The following steps are available for further testing of the exact private
+image in `evidence/private-build.json`.
 The MAIN OS hash is also the UI capture image identity. This is a compact
 development image: stock FX1 remains, FX2 offers NONE and Air Chorus. Keep
 existing projects intact and use a disposable test project.

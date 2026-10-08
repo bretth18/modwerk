@@ -24,24 +24,33 @@ def main():
         # Refuse changed call topology instead of silently understating it.
         spans={"sample":source.split("ac_sample:\n")[1].split("ac_frameend:\n")[0],
                "sine":source.split("ac_sine:\n")[1].split("ac_channel:\n")[0],
-               "channel":source.split("ac_channel:\n")[1].split("ac_tap:\n")[0],
-               "tap":source.split("ac_tap:\n")[1]}
+               "channel":source.split("ac_channel:\n")[1].split("ac_maskedread:\n")[0],
+               "tap":source.split("ac_maskedread:\n")[1]}
         calls=lambda text:re.findall(r"^\s*bsr\s+(\w+)",text,re.M)
         assert calls(spans['sample'])==['ac_sine','ac_channel','ac_channel']
-        assert calls(spans['channel'])==['ac_tap']*4
+        assert not calls(spans['channel'])
+        assert len(re.findall(r'^\s*jsr\s+\(r2\)',spans['channel'],re.M))==4
+        assert re.findall(r'^\s*move\s+#>(\w+),r2',source,re.M)==['ac_maskedread','ac_warmread']
+        assert not re.search(r'\br2\b',spans['sample']+spans['sine']+spans['tap'])
+        assert len(re.findall(r'\br2\b',spans['channel']))==4
         assert not calls(spans['sine']) and not calls(spans['tap'])
         for text in spans.values():
             labels={m.group(1):m.start() for m in re.finditer(r"^(\w+):",text,re.M)}
             for m in re.finditer(r"^\s*b(?:ra|cc|cs|eq|ne|ge|lt|gt|le|mi|pl)\s+(\w+)",text,re.M):
                 assert labels[m.group(1)]>m.start(), 'Non-forward branch needs a new bound'
-            assert not re.search(r"^\s*(?:do|rep|jmp|jsr)\b",text,re.M)
+            assert not re.search(r"^\s*(?:do|rep|jmp)\b",text,re.M)
+            assert not re.search(r"^\s*jsr\b",re.sub(r"^\s*jsr\s+\(r2\).*?$","",text,flags=re.M),re.M)
         branch_cost=lambda text:4*len(re.findall(r"^\s*b(?:ra|cc|cs|eq|ne|ge|lt|gt|le|mi|pl)\b",text,re.M))
-        tap=verify.ORG+words-s['ac_tap']
-        channel=s['ac_tap']-s['ac_channel']+4*(tap+4)+branch_cost(spans['channel'])
+        tap=max(s['ac_warmread']-s['ac_maskedread'],verify.ORG+words-s['ac_warmread'])
+        channel=s['ac_maskedread']-s['ac_channel']+4*(tap+4)+branch_cost(spans['channel'])
         sine=s['ac_channel']-s['ac_sine']+branch_cost(spans['sine'])
         sample=s['ac_frameend']+1-s['ac_sample']+(sine+4)+2*(channel+4)+branch_cost(spans['sample'])
         # Include endpoint helpers, first-call seeding, loop entry and return.
         control=s['ac_sample']-s['proc']+3*(s['ac_sine']-s['ac_endpoint']+4)+16
+        init_source=source.split('init:\n')[1].split('proc:\n')[0]
+        assert re.findall(r'^\s*do\s+#(\d+)',init_source,re.M)==['56']
+        assert not re.search(r'^\s*(?:bsr|jsr|rep|jmp)\b',init_source,re.M)
+        init=s['proc']-s['init']+56+16
         bound=sample+(control+15)//16
         split_bound=sample+(2*control+15)//16
         record={'version':'0.1.0-experimental','programWords':words,'tableWords':1026,
@@ -49,6 +58,9 @@ def main():
                 'perSampleLoopUpperBound':sample,'perCallSetupUpperBound':control,
                 'perSampleAt16FramesUpperBound':bound,'perSampleAt16FramesWithSplitUpperBound':split_bound,
                 'fourFx2InstancesPerCoreUpperBound':4*split_bound,
+                'initUpperBound':init,
+                'perInstanceBlockWithSplitAndInitUpperBound':16*sample+2*control+init,
+                'fourInstanceCoreBlockWithSplitAndInitUpperBound':4*(16*sample+2*control+init),
                 'stateSpanWords':56,'stereoBufferWordsPerInstance':16384,
                 'perCoreFourInstanceReservedWords':4*(0x100+16384),
                 'coldfire':'No authored ColdFire routine; existing platform and stock editor paths not bounded here.',

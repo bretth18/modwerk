@@ -122,7 +122,7 @@
         "shows": "location",
         "firmware": "1.40C",
         "moduleVersion": "0.1.0-experimental",
-        "imageSha256": "4b7da0962c061b8be7cca57a68513fef493f2718a70a1cfe1b49c53ff88a6d04",
+        "imageSha256": "8ecec31ef7511756e17aaba2cd569a32e4471bcebe0dd0738615327fb850a6df",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6."
       }
     },
@@ -139,7 +139,7 @@
         "shows": "location-and-controls",
         "firmware": "1.40C",
         "moduleVersion": "0.1.0-experimental",
-        "imageSha256": "4b7da0962c061b8be7cca57a68513fef493f2718a70a1cfe1b49c53ff88a6d04",
+        "imageSha256": "8ecec31ef7511756e17aaba2cd569a32e4471bcebe0dd0738615327fb850a6df",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6."
       }
     },
@@ -156,7 +156,7 @@
         "shows": "controls",
         "firmware": "1.40C",
         "moduleVersion": "0.1.0-experimental",
-        "imageSha256": "4b7da0962c061b8be7cca57a68513fef493f2718a70a1cfe1b49c53ff88a6d04",
+        "imageSha256": "8ecec31ef7511756e17aaba2cd569a32e4471bcebe0dd0738615327fb850a6df",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6."
       }
     },
@@ -173,7 +173,7 @@
         "shows": "controls",
         "firmware": "1.40C",
         "moduleVersion": "0.1.0-experimental",
-        "imageSha256": "4b7da0962c061b8be7cca57a68513fef493f2718a70a1cfe1b49c53ff88a6d04",
+        "imageSha256": "8ecec31ef7511756e17aaba2cd569a32e4471bcebe0dd0738615327fb850a6df",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6."
       }
     }

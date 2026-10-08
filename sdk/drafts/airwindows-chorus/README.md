@@ -7,10 +7,13 @@ retained under `upstream/`, pinned to Airwindows commit
 `e718c9bcfcdd736deeddb08bffe6bce2aa8e0eea`.
 
 Version: **0.1.0-experimental**. This is a development candidate outside the
-public catalogue. Hardware qualification, complete composition/browser parity
-and publication review remain pending. See [TESTING.md](TESTING.md).
+public catalogue while integration is completed. The owner reports a successful
+50-minute MKII test with several instances and full knob sweeps on the first
+image, and explicitly waived fresh hardware testing of the initialization update.
+Unreported persistence, modulation and eight-track hardware checks remain open.
+See [TESTING.md](TESTING.md) and [the hardware report](evidence/hardware-report.md).
 
-## Signal path
+## Overview
 
 Stereo sine-modulated delay with Airwindows' alternating even/odd high-frequency
 “air” compensation and three-point interpolated read. Both channels share the
@@ -42,6 +45,11 @@ avoiding a first-sample jump across several delay taps. There is no block-end
 snap, including trig-split calls. Audible pitch movement while the delay
 changes remains part of the effect. Extreme pitch modulation can alias.
 
+## Usage
+
+Air Chorus appears in the audio-track FX2 chooser. Its dry default is safe;
+raise MIX to hear the effect.
+
 ## Tutorial: a slow chorus
 
 1. On a disposable audio project, select a Flex or Static track playing a
@@ -54,7 +62,7 @@ changes remains part of the effect. Extreme pitch modulation can alias.
    To remove the effect entirely, select NONE in FX2 SETUP. Stop transport
    before changing or saving the private test configuration.
 
-## Actual LCD walkthrough
+## Screens and audio
 
 ![Air Chorus highlighted in FX2 SETUP](media/ot-location.png)
 
@@ -63,15 +71,20 @@ Confirm with YES, then press FX2. SPD is encoder A, RNG is B, MIX is F.
 ![Air Chorus at SPD 64, RNG 64, MIX 64](media/ot-example.png)
 
 Set MIX 0 for dry after its smoothing tail, or select NONE to remove the effect.
-These stopped emulator screenshots document the controls; hardware sound is pending.
+These stopped emulator screenshots document the controls. The user reports
+a successful 50-minute test with several distinct instances and full knob
+sweeps on the earlier image. The initialization update has a current-image
+hardware waiver; its software renders match the tested version.
 
-## Compatibility and limits
+## Compatibility and limitations
 
 - Development target: original Octatrack OS 1.40C, MKI/MKII architecture;
-  actual MKII hardware testing is pending. Use only the exact private image
+  a 50-minute MKII functional test was reported for the earlier image.
+  Fresh hardware testing of the initialization update is explicitly owner-waived. Use only the exact private image
   identified in the test report for qualification.
 - Each FX2 instance owns its stock 16,384-word Y buffer: two 8,192-word
-  rings. The greatest read age stays within the ring. Four instances per
+  rings. Unwritten history returns zero without a synchronous buffer clear;
+  after 8,192 samples each ring is fully valid. The greatest read age stays within the ring. Four instances per
   DSP core / eight audio tracks fit the allocator layout; maximum-load
   hardware deadlines have not been established.
 - FX1 has only 3,072 buffer words. It is excluded from the chooser. A stale
@@ -90,7 +103,7 @@ These stopped emulator screenshots document the controls; hardware sound is pend
   range. Initial phase is π/2. Removing/reassigning the effect resets its
   private buffer and LFO; tail/phase persistence is not promised.
 
-## Attribution and source
+## Authorship and licences
 
 Original: [Chris Johnson / Airwindows](https://www.airwindows.com/),
 [Chorus source](https://github.com/airwindows/airwindows/tree/e718c9bcfcdd736deeddb08bffe6bce2aa8e0eea/plugins/WinVST/Chorus).
@@ -98,7 +111,7 @@ The MIT licence permits adapting and distributing the source with its notice;
 full text is in [LICENSE](LICENSE). The user's desktop DLL/AU/VST files are
 not redistributed. This port uses published source and original assembly.
 
-## Development
+## Tests and measurements
 
 `verify.py` assembles the actual DSP and compares synthetic-memory renders
 with `reference.py`, a transcription of the pinned source. `verify_controls.py`
@@ -107,3 +120,7 @@ self-test, without importing its firmware-dependent published rig driver.
 Both need the locally built DSP toolchain (`DSP_TOOLS` overrides its path).
 Keep every firmware image, extracted stock byte, raw memory dump and audio
 fixture private. Only sanitized text evidence and actual UI exports belong here.
+
+See [TESTING.md](TESTING.md) for full cycle, memory, stock-comparison and sound-quality results. No shareable hardware audio recording was supplied.
+
+[Initial dry controls](media/ot-controls.png) · [Return to dry](media/ot-dry.png)

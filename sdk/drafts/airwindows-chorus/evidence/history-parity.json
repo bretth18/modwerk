@@ -1,0 +1,81 @@
+{
+  "version": "0.1.0-experimental",
+  "assembledSha256": "b5a3c90b8089142e5fd6330714ed4eb844a169c43ad445f7d082fd8c5132fbf0",
+  "cases": [
+    {
+      "knobs": [
+        0,
+        0,
+        127
+      ],
+      "frames": 32768,
+      "bitIdentical": true
+    },
+    {
+      "knobs": [
+        64,
+        64,
+        64
+      ],
+      "frames": 32768,
+      "bitIdentical": true
+    },
+    {
+      "knobs": [
+        127,
+        127,
+        127
+      ],
+      "frames": 32768,
+      "bitIdentical": true
+    },
+    {
+      "knobs": [
+        127,
+        0,
+        127
+      ],
+      "frames": 32768,
+      "bitIdentical": true
+    },
+    {
+      "knobs": [
+        32,
+        127,
+        64
+      ],
+      "frames": 32768,
+      "bitIdentical": true
+    },
+    {
+      "knobs": [
+        64,
+        64,
+        0
+      ],
+      "frames": 32768,
+      "bitIdentical": true
+    },
+    {
+      "split": 0,
+      "frames": 32768,
+      "bitIdentical": true
+    },
+    {
+      "split": 1,
+      "frames": 32768,
+      "bitIdentical": true
+    },
+    {
+      "split": 8,
+      "frames": 32768,
+      "bitIdentical": true
+    },
+    {
+      "split": 15,
+      "frames": 32768,
+      "bitIdentical": true
+    }
+  ],
+  "limits": "Finite dirty-history and ring-wrap fixtures; not a physical test of this changed image."
+}

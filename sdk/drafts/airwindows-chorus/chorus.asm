@@ -16,7 +16,8 @@
 ; 20/21 RANGE first slew stage,22/23 MIX first stage,28/29 tap scratch,
 ; 2a sine scratch,30 table base,31 sine scratch,32 phase low,
 ; 33 speed-target low,34/35 air delta hi/lo,36 selected air factor.
-; Init clears the complete 56-word used state span, including reserved gaps.
+; 37 count of valid ring history (0..8192); initial history is logically zero.
+; Init clears the complete 56-word state span, including reserved gaps.
 ; init preserves r1/n1/m1. Proc never reads the allocator pointer again.
 ; CYCLES_FORWARD_BRANCHES
 init:
@@ -38,16 +39,8 @@ ac_zero:
         tst     a
         tmi     x0,b
         move    b,x:(r7+$01)
-        tst     b
-        bne     ac_noalloc
-        move    x:(r7+$00),r5
-        clr     a
-        move    #>16384,y0
-        do      y0,>ac_bufzero
-        move    a,y:(r5)+
-ac_bufzero:
-        nop
-ac_noalloc:
+ ; Unwritten history reads as zero until each ring position has been filled.
+; This avoids a 16384-word clear inside the effect-change dispatcher block.
         move    #>$200000,x0
         move    x0,x:(r7+$03)
         rts
@@ -58,6 +51,14 @@ proc:
         move    #>$ffffff,m5
         move    #>$ffffff,m4
         move    #>$ffffff,m3
+; Warm rings use the original tap body. Choose once per processing call;
+; a call that finishes filling history keeps the masked path until next call.
+        move    #>ac_maskedread,r2
+        move    x:(r7+$37),a
+        cmp     #>8192,a
+        blt     ac_historyready
+        move    #>ac_warmread,r2
+ac_historyready:
         move    #>$fab1e0,r5
         move    r5,x:(r7+$30)
 ; Endpoint 127 maps to 1, other bytes k/128: exactly original default at 64.
@@ -180,6 +181,13 @@ ac_sample:
         move    x:(r7+$10),a
         asr     #10,a,a
         move    a1,x:(r7+$12)
+; Count this sample before either channel writes/reads the current position.
+        move    x:(r7+$37),a
+        add     #>1,a
+        move    #>8192,x0
+        cmp     x0,a
+        tge     x0,a
+        move    a1,x:(r7+$37)
 ; Air pre-emphasis and three-point read are the same for each channel.
         lua     (r7+$15),r3
         move    x:(r7+$00),r4
@@ -379,19 +387,19 @@ ac_factorready:
         add     x0,a
         and     #>$1fff,a
         move    a1,n5
-        bsr     ac_tap
+        jsr     (r2)
         move    a,x:(r7+$28)
         move    n5,a
         add     #>1,a
         and     #>$1fff,a
         move    a1,n5
-        bsr     ac_tap
+        jsr     (r2)
         move    a,x:(r7+$29)
         move    n5,a
         add     #>1,a
         and     #>$1fff,a
         move    a1,n5
-        bsr     ac_tap
+        jsr     (r2)
         move    a,y1
         move    x:(r7+$28),x0
         sub     x0,a
@@ -405,7 +413,7 @@ ac_factorready:
         asr     #1,a,a
         move    a,x:(r7+$14)
 ; Correction -0.01 * (s0 - 2*s1 + s2), after the 0.5 normalization.
-        bsr     ac_tap
+        jsr     (r2)
         move    a,b
         move    x:(r7+$28),x0
         add     x0,b
@@ -435,7 +443,23 @@ ac_factorready:
         teq     x0,a
         rts
 
-ac_tap:
+ac_maskedread:
+; Read only written history. Offset subtraction is wrapped within this ring;
+; at 8192 valid samples every position is live. MOVE preserves the CMP flags.
+        move    n5,a
+        move    x:(r7+$02),x0
+        sub     x0,a
+        and     #>$1fff,a
+        move    a1,b
+        move    x:(r7+$37),x0
+        cmp     x0,b
+        move    r4,r5
+        move    (r5)+n5
+        move    y:(r5),a
+        move    #>0,x0
+        tge     x0,a
+        rts
+ac_warmread:
         move    r4,r5
         move    (r5)+n5
         move    y:(r5),a

@@ -17,7 +17,7 @@
         "staticDbfs": -140.0
       }
     },
-    "maxInstructionsPerSample": 448.8
+    "maxInstructionsPerSample": 524.8
   },
   {
     "case": "panel",
@@ -37,7 +37,7 @@
         "staticDbfs": -111.92559984993491
       }
     },
-    "maxInstructionsPerSample": 446.6
+    "maxInstructionsPerSample": 524.8
   },
   {
     "case": "panel",
@@ -57,7 +57,7 @@
         "staticDbfs": -140.0
       }
     },
-    "maxInstructionsPerSample": 446.6
+    "maxInstructionsPerSample": 524.8
   },
   {
     "case": "endpoints",
@@ -77,7 +77,7 @@
         "staticDbfs": -140.0
       }
     },
-    "maxInstructionsPerSample": 448.8
+    "maxInstructionsPerSample": 524.8
   },
   {
     "case": "endpoints",
@@ -97,7 +97,7 @@
         "staticDbfs": -140.0
       }
     },
-    "maxInstructionsPerSample": 448.8
+    "maxInstructionsPerSample": 527.1
   },
   {
     "case": "endpoints",
@@ -117,6 +117,6 @@
         "staticDbfs": -140.0
       }
     },
-    "maxInstructionsPerSample": 448.8
+    "maxInstructionsPerSample": 527.1
   }
 ]

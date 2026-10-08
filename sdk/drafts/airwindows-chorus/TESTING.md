@@ -1,9 +1,11 @@
 # Air Chorus 0.1.0-experimental — test record
 
-Recorded 8 October 2026. Development candidate; **hardware untested**.
+Recorded 8 October 2026. Development candidate. The owner reports a successful
+50-minute MKII test with several instances/full knob sweeps on the first image;
+fresh hardware testing of the initialization update is explicitly owner-waived. See [the hardware report](evidence/hardware-report.md).
 Original source pin: `e718c9bcfcdd736deeddb08bffe6bce2aa8e0eea`.
-Actual assembly SHA-256 (439 words, P:0x2000 synthetic origin):
-`1a2f67c27872906a2927424040c12f8c652888f143343b14061fd16151504e4f`. No firmware or extracted stock bytes are committed.
+Actual assembly SHA-256 (455 words, P:0x2000 synthetic origin):
+`b5a3c90b8089142e5fd6330714ed4eb844a169c43ad445f7d082fd8c5132fbf0`. No firmware or extracted stock bytes are committed.
 
 ## Native DSP renders
 
@@ -63,7 +65,9 @@ turns but failed full-scale jumps because its first sample could move the
 read position by several samples. Final RANGE/MIX use cascaded 48-bit,
 per-sample poles; SPEED uses one. Original interpolation is retained.
 The census cannot establish a physical DSP deadline, the panel-to-r6 path,
-or inaudibility below its tone/difference floor. Human listening is pending.
+or inaudibility below its tone/difference floor. Full knob sweeps worked well
+in the owner's 50-minute MKII report of the earlier image; the changed image
+has no fresh physical listening result.
 
 ## Sound-quality audit
 
@@ -100,17 +104,23 @@ and this flagged render is not recorded as a passed sound-quality audit.
 callee loops before charging whole assembled word spans at every call,
 including mutually exclusive arms, plus four cycles per branch/call. The
 repository's ordinary cycle counter cannot price these branched nested callees.
-Model upper bound: 620 loop cycles/sample plus 120 setup cycles/call;
-628 cycles/sample at 16 unsplit frames, 635 with two trig-split calls;
-2,540 for four FX2 instances on a core, before contention stalls.
-Observed interpreter maximum: 448.8 instructions/sample;
-that is not a chip cycle measurement. Memory stalls and complete ColdFire
+Model upper bound: 708 loop cycles/sample plus 129 setup cycles/call;
+717 cycles/sample at 16 unsplit frames, 725 with two trig-split calls.
+Initialization has a separate 99-cycle upper bound. Charging initialization
+and two split calls to all four FX2 instances each block gives 46,740 modeled
+cycles/core/block, versus the SDK usable budget 49,920. The theoretical
+72,560-cycle core budget reserves 22,640 for stock processing/dispatcher/
+transport/streaming. The remaining modeled allowance is 3,180 cycles per
+block before contention stalls or other custom effects. These are conditional
+software instruction-word bounds, not measured chip deadlines.
+Observed interpreter costs are retained in the current software/stock reports;
+executed instructions are not a chip cycle measurement. Memory stalls and complete ColdFire
 stock/platform paths remain unbounded. No authored ColdFire routine exists.
 
-Code: 439 P words; quarter-sine table plus endpoint: 1,026 P words;
-combined native package: 1,465 words (4,395 bytes at 24 bits/word).
+Code: 455 P words; quarter-sine table plus endpoint: 1,026 P words;
+combined native package: 1,481 words (4,443 bytes at 24 bits/word).
 Each instance initializes 56 X words in its reserved 256-word state slot and
-16,384 Y words in its existing FX2 buffer. Four FX2 instances reserve 66,560
+uses 16,384 Y words in its existing FX2 buffer without a burst clear. Four FX2 instances reserve 66,560
 X+Y words per core, eight 133,120 across both cores. This includes the whole
 reserved X slot and excludes unrelated stock state, stacks and platform RAM.
 Unused/reserved state is explicitly cleared. No global sample RAM is claimed
@@ -134,14 +144,14 @@ unqualified. No stock code/table/dump, raw schedule or audio is committed.
 | --- | ---: |
 | Stock Chorus | 253.625 |
 | Stock Spring Reverb | 314.000 |
-| Air Chorus | 448.250 |
+| Air Chorus (cold-buffer path) | 524.500 |
 
-Air Chorus is 1.43× this expensive Spring sweep and 1.77× stock Chorus.
+Air Chorus is 1.67× this expensive Spring sweep and 2.07× stock Chorus while the ring history fills (8,192 frames, about 186 ms). Afterward it uses the original fast tap path.
 The extra work buys the full original long stereo sweep, separate alternating
 48-bit air states and precise multi-stage control smoothing. This is in the
 same order of cost as the Spring design target, not a claim of matched chip
 headroom. Executed instruction counts are not compared directly with the
-628/635 modeled cycle bound. Record: `evidence/stock-comparison.json`, including
+717/725 modeled cycle bound. Record: `evidence/stock-comparison.json`, including
 source image and harness hashes, per-core/split figures and exact conditions.
 The physical eight-track deadline, complete DSP workload and ColdFire cost
 still need qualification and explicit review before release.
@@ -149,7 +159,7 @@ still need qualification and explicit review before release.
 ## Private firmware composition / UI / remaining gates
 
 Native standalone compilation on the user's verified original 1.40C MAIN OS
-passes on both DSP payloads with 1,259 donor P words free. A loader-bearing
+passes on both DSP payloads with 1,243 donor P words free. A loader-bearing
 composition with all stock FX2 also assembles and proves relocation at four
 bases, but its attempted empty-card UI sequence did not select Air Chorus;
 it is not qualified. No passing browser/native comparison is claimed.
@@ -168,7 +178,8 @@ binds the native/test inputs to their exact file hashes. Emulation does not veri
 panel audio timing, persistence, maximum-load deadlines or hardware sound.
 See [HARDWARE.md](HARDWARE.md) for the MKII test request.
 
-Publication remains blocked by actual hardware results, complete native/browser
+The owner approved limited functional coverage and waived fresh hardware
+testing of the exact initialization update. Publication still needs native/browser
 composition and rejection coverage, stock/platform performance evidence and
 owner first-release review. The candidate stays under `sdk/drafts`, outside
 catalogue/package discovery. `module:doctor` cannot go green for an unlisted
@@ -194,3 +205,19 @@ existing `encodeFirmware` codec and the user's original update to package it;
 read the saved update back and compare decoded MAIN bytes. Keep all stock-
 derived outputs private. The required repository check is
 `npm run check -- --base origin/main` before each commit.
+
+## Bounded initialization update
+
+The hardware-tested implementation cleared all 16,384 Y words in one init call
+(16,466 executed interpreter instructions). The release candidate instead
+clears the 56-word X state and tracks valid ring history. Every unwritten tap
+is logically zero; after 8,192 frames the original unmasked tap body is used.
+The sample count is saturated and offsets are wrapped before validity checks.
+
+The changed DSP passed the complete native render/control/instance suite.
+Ten additional dirty-history fixtures, including 32,768-frame ring wraps,
+endpoint settings and moving controls at split positions 0/1/8/15, are
+byte-identical to the hardware-tested DSP. `evidence/history-parity.json`
+records these finite comparisons. They do not establish current-image hardware
+behavior. `evidence/hardware-report.md` retains both the original 50-minute
+result and the owner's explicit current-image waiver.
