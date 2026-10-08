@@ -227,6 +227,8 @@
 .account-auth-tabs a { display: flex; align-items: center; justify-content: center; min-height: 40px; padding: 8px 12px; border-radius: 5px; color: var(--muted); font-size: 13px; font-weight: 500; }
 .account-auth-tabs a:hover { color: #e1e1ec; background: #28282f; }
 .account-auth-tabs a[aria-current="page"] { color: #d4d8ff; background: #34384f; box-shadow: inset 0 1px #ffffff08; }
+.account-social-options { display: grid; gap: 12px; margin-top: 24px; }
+.account-social-options .service-note { margin: 0; text-align: center; font-size: 12px; line-height: 1.65; }
 .account-page .community-form { margin: 22px 0 18px; gap: 18px; }
 .account-auth .community-form label { gap: 7px; font-weight: 500; }
 .account-page .community-form .risk-accept { flex-direction: row; align-items: flex-start; gap: 10px; margin-top: 0; font-weight: 400; }
@@ -310,6 +312,10 @@
 .developer-verification-actions .button { width: 100%; white-space: normal; }
 .developer-verification-actions .text-button { min-height: 32px; text-align: left; }
 .developer-verification-note { color: var(--muted); font-size: 12px; line-height: 1.65; padding-top: 16px; border-top: 1px solid var(--line); }
+.developer-community { display: grid; gap: 10px; padding-top: 18px; border-top: 1px solid var(--line); }
+.developer-community p { color: var(--muted); font-size: 12px; line-height: 1.65; }
+.developer-community .button { min-height: 40px; }
+.developer-community img { object-fit: contain; }
 .developer-verification :is(.service-note, .file-error, .success-note) { margin: 0; }
 .developer-verification .success-note { display: flex; align-items: center; gap: 8px; padding: 10px 12px; font-size: 12px; overflow-wrap: anywhere; }
 .account-page :is(.account-auth, .developer-verification) button:disabled { opacity: 1; color: var(--muted); border-color: var(--line); background: #27272c; box-shadow: none; }
