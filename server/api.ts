@@ -152,11 +152,18 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       return response({ok:true})
     }
     if ((match=path.match(/^\/api\/modules\/([a-z0-9-]+)\/issues$/)) && request.method==='GET') {
-      // Lets reporters find an existing issue before filing a duplicate. Titles are public on GitHub already.
+      // Only the description the reporter published is readable here, never the private report body or context.
       await knownModule(db,match[1]);const config=githubConfig(env)
-      if(!config)return response({tracker:'forum',issues:[],allUrl:null})
-      const issues=(await db.prepare("SELECT title,github_url AS url,created_at FROM issues WHERE module_id=? AND status='open' AND github_url IS NOT NULL ORDER BY created_at DESC LIMIT 10").bind(match[1]).all()).results
-      return response({tracker:'github',issues,allUrl:'https://github.com/'+config.repository+'/issues?q='+encodeURIComponent('is:issue is:open label:"module:'+match[1]+'"')})
+      const status=url.searchParams.get('status')??'open',page=Number(url.searchParams.get('page')??0)
+      if(!['open','closed'].includes(status))throw new HttpError(400,'Choose open or closed issues.')
+      if(!Number.isSafeInteger(page)||page<0||page>10000)throw new HttpError(400,'Choose a valid issue page.')
+      const publicReports="FROM issues i LEFT JOIN forum_threads t ON t.id=i.forum_thread_id WHERE i.module_id=? AND (i.github_url IS NOT NULL OR (i.public_json IS NOT NULL AND t.hidden=0))"
+      const [counts,rows]=await Promise.all([
+        db.prepare("SELECT COALESCE(SUM(i.status='open'),0) AS openCount,COALESCE(SUM(i.status='closed'),0) AS closedCount "+publicReports).bind(match[1]).first<{openCount:number;closedCount:number}>(),
+        db.prepare("SELECT i.id,i.title,i.github_url,i.github_number AS number,i.forum_thread_id,i.created_at,i.status,i.public_json,(SELECT u.username FROM users u WHERE u.id=i.reporter_id) AS reporter "+publicReports+" AND i.status=? ORDER BY i.created_at DESC,i.rowid DESC LIMIT 11 OFFSET ?").bind(match[1],status,page*10).all<{id:string;title:string;github_url:string|null;number:number|null;forum_thread_id:string|null;created_at:string;status:'open'|'closed';public_json:string|null;reporter:string|null}>(),
+      ])
+      const issues=rows.results.slice(0,10).map(({public_json,github_url,forum_thread_id,...item})=>({...item,url:github_url??'#forum/thread/'+forum_thread_id,details:public_json?JSON.parse(public_json):null}))
+      return response({tracker:config?'github':'forum',issues,openCount:counts?.openCount??0,closedCount:counts?.closedCount??0,hasMore:rows.results.length>10,allUrl:config?'https://github.com/'+config.repository+'/issues?q='+encodeURIComponent('is:issue is:'+status+' label:"module:'+match[1]+'"'):null})
     }
     if ((match=path.match(/^\/api\/modules\/([a-z0-9-]+)\/issues$/)) && request.method==='POST') {
       const owner=needMember(user)

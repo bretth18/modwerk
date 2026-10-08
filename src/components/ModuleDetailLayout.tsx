@@ -1,7 +1,8 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { ModuleCommunity } from '../community/ModuleCommunity'
 import { ModuleChangelog } from '../community/ModuleChangelog'
-import { ModuleIssues } from '../community/ModuleIssues'
+import { IssueCount, ModuleIssues } from '../community/ModuleIssues'
+import { useModuleIssues } from '../community/issue-tracker'
 import { ModuleUpdateButton } from '../community/ModuleUpdateButton'
 import { ShareModuleButton } from '../community/ShareModuleButton'
 import { Icon } from './Icon'
@@ -23,6 +24,7 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
 }) {
   const [tab, setTab] = useState<DetailTab>(linkedTab)
   const [issueOpenRequest, setIssueOpenRequest] = useState(0)
+  const issues = useModuleIssues(id)
   const [discussionCount, setDiscussionCount] = useState<number | null>(null)
   useEffect(() => { const navigate = () => setTab(linkedTab()); window.addEventListener('hashchange', navigate); return () => window.removeEventListener('hashchange', navigate) }, [])
   function showDiscussion() {
@@ -57,7 +59,7 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
         if (event.key === 'Home') next = tabs[0]
         if (event.key === 'End') next = tabs[tabs.length - 1]
         if (next) { event.preventDefault(); setTab(next); document.getElementById('tab-' + next)?.focus() }
-      }}>{value}{value === 'Discussion' && discussionCount !== null && <span className="tab-count">{discussionCount}<span className="sr-only">{discussionCount === 1 ? ' comment' : ' comments'}</span></span>}</button>)}
+      }}>{value}{value === 'Issues' && issues.data && <IssueCount count={issues.data.openCount}/>}{value === 'Discussion' && discussionCount !== null && <span className="tab-count">{discussionCount}<span className="sr-only">{discussionCount === 1 ? ' comment' : ' comments'}</span></span>}</button>)}
     </div>
     <div id="detail-content" role="tabpanel" aria-labelledby={'tab-' + tab} tabIndex={0}>
       {tab === 'Overview' && <>
@@ -67,7 +69,7 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
       {tab === 'Media' && <ModuleCommunity id={id} mode="media" onDiscussionCount={setDiscussionCount} />}
       {tab === 'Discussion' && <ModuleCommunity id={id} mode="discussion" onReportIssue={showIssueReport} onDiscussionCount={setDiscussionCount} />}
       {tab === 'Changelog' && <ModuleChangelog key={id} id={id} />}
-      {tab === 'Issues' && <ModuleIssues key={id} id={id} onReportIssue={showIssueReport} />}
+      {tab === 'Issues' && <ModuleIssues key={id} id={id} issues={issues} onReportIssue={showIssueReport} />}
       {/* Stays mounted on the other tabs so a report in progress is not lost. */}
       <div hidden={tab !== 'Issues'}>{issueReport(issueOpenRequest)}</div>
     </div>

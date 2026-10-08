@@ -8,7 +8,7 @@ import { communityModule } from './modules'
 import { DEVICES_BY_ID } from '../devices/registry'
 import { BugReportNotice, BugReportSuccess, ExistingIssues } from './BugReportNotice'
 import { ReportNotifications } from './ReportNotifications'
-import { useIssueTracker, type BugReportResult } from './issue-tracker'
+import { refreshModuleIssues, useIssueTracker, type BugReportResult } from './issue-tracker'
 import { useOpenIssueReport } from './useOpenIssueReport'
 import { DiscussionIssueDraft } from './DiscussionIssueDraft'
 import { useDiscussionIssueDraft } from './discussion-issue-draft'
@@ -38,6 +38,7 @@ export function DigiIssueReport({ id, openRequest = 0 }: { id: string; openReque
       if (!resolved.modules.length) throw new Error('Choose the configuration the ' + device.name + ' runs: a saved one, or tick its modules.')
       const context: DigiIssueContext = { machine: module.machine as DigiIssueContext['machine'], model: fields.model, flash: fields.flash as FlashState, os: fields.os, moduleVersion: fields.moduleVersion.trim() || module.version, modules: resolved.modules, keepStockFx2: null, build: resolved.build }
       setSent(await post<BugReportResult>('/modules/' + id + '/issues', { title: fields.title, steps: fields.steps, expected: fields.expected, actual: fields.actual, context, visibility: 'forum', notifyUpdates: fields.notifyUpdates === 'on' }))
+      refreshModuleIssues(id)
       setKept({ model: fields.model, os: fields.os, flash: fields.flash, moduleVersion: context.moduleVersion, follow: fields.notifyUpdates === 'on' })
       clearDraft()
       window.dispatchEvent(new Event('modwerk-module-updates'))
