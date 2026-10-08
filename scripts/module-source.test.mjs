@@ -21,7 +21,7 @@ describe('release package scope and reviewed source inventory', () => {
     const versions = await compiledModuleVersions(root, catalog), paths = await moduleSourcePaths(root)
     expect(Object.keys(versions)).toEqual(['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', ...requested.filter(id => id !== 'vector'),'previewvol','cc-map','sidechain-compressor','vector','playmodes','mute-modes','recorder-loop-fix'])
     for (const id of ['playmodes', 'mute-modes', 'recorder-loop-fix']) {
-      expect(versions[id]).toBe('0.1.0-experimental')
+      expect(versions[id]).toBe(id === 'playmodes' ? '0.1.1-experimental' : '0.1.0-experimental')
       expect(paths).toContain('modules/' + id + '/manifest.py')
     }
     expect(versions['midi-scenes']).toBe('0.2.4-experimental')

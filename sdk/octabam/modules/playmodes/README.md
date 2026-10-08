@@ -1,13 +1,13 @@
 # Play Modes
 
-Version: `0.1.0-experimental` · author: [@devilfish707](https://github.com/devilfish707) · source: [devilfish707/Octaplay](https://github.com/devilfish707/Octaplay)
+Version: `0.1.1-experimental` · author: [@devilfish707](https://github.com/devilfish707) · source: [devilfish707/Octaplay](https://github.com/devilfish707/Octaplay)
 
 The sequencer's playhead in six directions, per pattern, shared by every
 track or set per track. ColdFire-only (no DSP code, no effect slot), for
 original OS 1.40C.
 
-**Experimental.** Played on the author's MKII in test images (builds 12–19,
-3–7 Oct 2026); not stress-tested, chip timing unmeasured. See
+**Experimental.** Played on the author's MKII in test images (builds 12–24,
+3–8 Oct 2026); not stress-tested, chip timing unmeasured. See
 [TESTING.md](TESTING.md).
 
 ![Play Modes thumbnail: normal, reversed, pingpong and shuffle playhead paths over 16 steps](presentation/thumbnail.svg)
@@ -88,6 +88,11 @@ that many master steps (default 16), so a 20-step track never gets past
 step 16 in any mode. Each mode works on the steps a track actually reaches
 before that restart: REVERSED then plays 16 → 1, the mirror of what NORMAL
 plays. Set MASTER LENGTH to INF to let each track run its full length.
+Each track also follows where the stock playhead really wraps, so a mode
+always works on the steps the track actually plays; NORMAL is always the
+stock step. When MASTER LENGTH starts the tracks over, PINGPONG and
+PINGPONG 2 start their bounce again from step 1, RANDOM and SHUFFLE a new
+order.
 With INF a pattern never reaches its end, so a queued pattern change waits
 for CHAIN AFTER; a pattern on USE PAT SET. with PAT.LEN never changes
 (stock behaviour): choose USE PRJ SET. or give it its own CHAIN AFTER.

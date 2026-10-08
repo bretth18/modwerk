@@ -965,3 +965,29 @@ verification and changed-stock rejection. Other generated module code is unchang
 The standalone native MAIN differs from the hardware test only by relocation of
 the identical stock FX1 chooser table; the public worker retains the approved
 logger/startup additions. Private firmware, projects, cards and dumps stay local.
+
+## Play Modes 0.1.1 — 8 October 2026
+
+Import devilfish707's Octaplay build-24 source `41dbdaa` without modifying
+the authored runtime. Host engine/glue tests and ColdFire generation pass.
+The prior adapter fails 360 assertions in the updated regression suite;
+the update passes. Native/browser comparison covers 110 configurations:
+54 builds match outside the existing platform writes, 56 refusals match,
+zero mismatches. Altered stock input is refused. Current native-composition
+LCD captures show ALL REVERSED and ALL PINGPONG 2; hashes and actions are
+retained in the module's `media/capture.json`. No firmware is committed.
+
+Retain the author's attributed MKII build-20–24 functional reports.
+Build-19 save/reload and physical reboot evidence remains historical;
+current physical reboot, Part/project restore after unsaved edits, distinct
+track isolation, MKI operation, chip timing and stock/flood benchmarks
+remain unverified. The owner approved the missing current-build hardware checks for exactly
+0.1.1 and native source `86105af3` on 8 October 2026, separately from the
+historical 0.1.0 approval. No missing behavior is recorded as verified.
+
+Owner exception, 8 October 2026: “Approve scoped exception and release.”
+Applies only to Play Modes 0.1.1-experimental and native source
+`86105af37d68fcd051cab991b747c949d7813733b73a1fe6d900cf3ec239c5a6`.
+Waives fresh physical reboot, Part/project restore after unsaved edits,
+distinct-track isolation and stock/flood performance tests. Retain the
+author's MKII functional report; missing checks stay unverified.

@@ -664,6 +664,15 @@
     ],
     "playmodes": [
       {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-08",
+        "changes": [
+          "Import devilfish707's build-24 fixes: switching NORMAL to PER TRACK follows the track's actual length, and PER TRACK uses MASTER SCALE instead of the former NORMAL-mode scale.",
+          "Keep the full track length across short MASTER LENGTH passes; restart both pingpong modes at master loops, including 14/16 and 15/16 lengths, and show the played step on the trig LEDs.",
+          "Rebuild Modwerk's source packages and verify native/browser composition. Author-reported MKII functional tests are retained; current physical persistence/isolation, MKI, chip timing and stress tests remain unverified. The owner approved those missing current-build hardware checks for this exact release."
+        ]
+      },
+      {
         "version": "0.1.0-experimental",
         "date": "2026-10-07",
         "changes": [
