@@ -199,5 +199,5 @@
     "staticStock": true
   },
   "releaseProvenance": "Fresh native draft-code captures, reviewed on 8 October. Private development staging retains 0.1.1 packaging metadata; executable changes match the pending 0.1.2 source inventory. These captures confer no release approval.",
-  "sourceSha256": "a47617205ac152aa5fc0bec4a143758744382b7c9ad5481a0028db1295891140"
+  "sourceSha256": "bfcea761ed3006ddfb15d8a133d4aa0f757611b43c745ab268258086ddb7a2b2"
 }

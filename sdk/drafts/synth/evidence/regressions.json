@@ -97,5 +97,13 @@
     "upstream/quantizer/quantizer.s": "d1737168a1750f540b3dfbefdd2a64b11084013b9f7b71b31aa4f189d33a24c5",
     "upstream/quantizer/manifest.py": "e637e3718e4b65320b847ef0758e0d46800f8be6b8020290f89192c798c535ef",
     "stock-guards.json": "3a197afbd8994e969a9d431b5b3ba4b2c4f0a82d390e9c787199c3610ba93aaf"
-  }
+  },
+  "sourceCommit": "73490ef77f36bf523bc28f2b385d62e331ec7c5c",
+  "compiledSourceSha256": {
+    "upstream/synth/poly.s": "76118486cb929d140475a7b4122e874c0680bf3dbdd9e508c20e729a69e576a8",
+    "upstream/quantizer/quantizer.s": "dd78b1bb215bf296f1bf887f3acc4d3a5a8b2828e360c8722c11bea72664f2fd",
+    "upstream/quantizer/manifest.py": "e637e3718e4b65320b847ef0758e0d46800f8be6b8020290f89192c798c535ef",
+    "stock-guards.json": "3a197afbd8994e969a9d431b5b3ba4b2c4f0a82d390e9c787199c3610ba93aaf"
+  },
+  "stagingDifferences": "Two new five-line comment headers only; assembly bodies and quantizer declaration/stock guard inventory match exactly. Private manifest retains original release proof prose and 0.1.1 packaging metadata; runtime changes are the pending draft code."
 }

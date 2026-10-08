@@ -1,0 +1,30 @@
+{
+  "sourceCommit": "73490ef77f36bf523bc28f2b385d62e331ec7c5c",
+  "checkedOn": "2026-10-08",
+  "command": "npm run check -- --base origin/main",
+  "node": "24.21.0",
+  "result": "passed",
+  "testFiles": 167,
+  "tests": 1077,
+  "otherChecks": [
+    "lint",
+    "types",
+    "production build",
+    "catalogs",
+    "licenses",
+    "SDK"
+  ],
+  "doctor": {
+    "command": "npm run module:doctor -- synth",
+    "result": "green",
+    "scope": "Unchanged released 0.1.1; not qualification of this pending draft."
+  },
+  "additionalChecks": [
+    "Draft contract parsed",
+    "Python syntax parsed",
+    "Import hashes matched",
+    "Exact assembly bodies and declaration/stock inventory matched private compiled staging",
+    "All retained screenshot hashes matched",
+    "No firmware/WAV/card/bytecode artifacts in draft"
+  ]
+}

@@ -250,7 +250,7 @@
     "report": "TESTING.md",
     "summary": "Pending release: output headroom and MIDI chromatic drawer stack fix. See TESTING.md for reproduced failures and current development-image results. No current hardware qualification or release approval.",
     "hardwareStatus": "untested",
-    "evidenceRevision": "3238863f2635f8db840b4d42ab9f0d3bea48c006",
+    "evidenceRevision": "73490ef77f36bf523bc28f2b385d62e331ec7c5c",
     "gates": [
       "verify.py",
       "verify-audio.py",
