@@ -8,12 +8,16 @@ import { DEVELOPMENT_DISCORD_URL } from '../config/development-discord'
 import { SUPPORT_URL } from '../config/support'
 import type { AnnouncementVisibility } from './notification-contract'
 
-type Sent = { id: string; slug: string; title: string; body: string; url: string | null; module_id: string | null; created_at: string; reads: number; audience: number; visibility: AnnouncementVisibility }
+type Sent = { id: string; slug: string; title: string; body: string; url: string | null; module_id: string | null; created_at: string; reads: number; audience: number; visibility: AnnouncementVisibility
+  /** Public card totals from every viewer, signed in or not, since `counts_started`. */
+  shown: number; opened: number; dismissed: number; counts_started: string | null }
 const errorText = (error: unknown) => error instanceof Error ? error.message : 'The request could not be completed.'
 const BODY_LIMIT = 400
 /** The key makes a send idempotent; this proposes one from the title and today's date. */
 const keyFrom = (title: string) => (title.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48) + '-' + new Date().toISOString().slice(0, 10)).replace(/^-+/, '')
 const sentAt = (value: string) => new Date(value.replace(' ', 'T') + 'Z').toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+/** Announcements sent before card totals began show when their totals start. */
+const countedFrom = (item: Sent) => item.counts_started && Date.parse(item.created_at.replace(' ', 'T') + 'Z') < Date.parse(item.counts_started) ? new Date(item.counts_started).toLocaleDateString(undefined, { dateStyle: 'medium' }) : ''
 /** Where a bell entry leads, in the words the operator would use: the bell opens the link, else the module page, else the library. */
 function destination(url: string | null, moduleId: string | null) {
   if (url === SUPPORT_URL) return 'Ko-fi'
@@ -85,9 +89,9 @@ export function AnnouncementsPanel() {
     {error && <p className="file-error" role="alert">{error}</p>}
     {note && <p className="success-note" role="status">{note}</p>}
     <h3 className="announcement-sent-heading">Sent{items.length ? <span className="subtle"> {items.length}</span> : null}</h3>
-    <p className="announcement-read-note">Public acknowledgements count members who clicked or dismissed the card. Bell entries count members who opened them or used “Mark all read.” Passive views and signed-out visitors are not counted. The audience includes eligible members who have not visited since it was sent; earlier read markers are preserved when visibility changes.</p>
+    <p className="announcement-read-note">Card totals count everyone who was shown, opened or dismissed a public card, signed-out visitors included. They identify no one and leave out browsers sending Do Not Track or Global Privacy Control and visitors who objected to counting. Acknowledgements count members who clicked or dismissed the card; bell entries count members who opened them or used “Mark all read.” The audience includes eligible members who have not visited since it was sent; earlier read markers are preserved when visibility changes.</p>
     {loading ? <p className="service-note" role="status">Loading announcements…</p> : items.length ? <ul className="announcement-sent">{items.map(item => {
-      const share = item.audience ? Math.min(100, Math.round(item.reads / item.audience * 100)) : 0
+      const share = item.audience ? Math.min(100, Math.round(item.reads / item.audience * 100)) : 0, from = countedFrom(item)
       return <li key={item.id}>
         <div className="announcement-sent-text">
           <strong>{item.title}</strong>
@@ -96,7 +100,13 @@ export function AnnouncementsPanel() {
           <small><time>{sentAt(item.created_at)}</time><span>Opens {destination(item.url, item.module_id)}</span><code title="Key">{item.slug}</code></small>
         </div>
         <div className="announcement-sent-reads">
-          <span><strong>{item.reads}</strong> of {item.audience} {item.visibility === 'public' ? 'acknowledged' : 'marked read'}</span>
+          {(item.visibility === 'public' || item.shown + item.opened + item.dismissed > 0) && <>
+            <dl className="announcement-card-counts" aria-label={'Card totals for ' + item.title + ', everyone including signed-out visitors'}>
+              <div><dt>Shown</dt><dd>{item.shown}</dd></div><div><dt>Opened</dt><dd>{item.opened}</dd></div><div><dt>Dismissed</dt><dd>{item.dismissed}</dd></div>
+            </dl>
+            {from && <small>Totals from {from}</small>}
+          </>}
+          <span><strong>{item.reads}</strong> of {item.audience} {item.visibility === 'public' ? 'members acknowledged' : 'marked read'}</span>
           <span className="announcement-meter" aria-hidden="true"><span style={{ width: share + '%' }} /></span>
         </div>
         <button type="button" className="button button-quiet announcement-remove" disabled={busy} onClick={() => void retract(item)} aria-label={'Remove ' + item.title}>Remove</button>

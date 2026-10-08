@@ -985,7 +985,7 @@ h1 { font-size: 28px; }
 .announcement-sent-heading { margin: 30px 0 10px; font-size: 14px; font-weight: 600; }
 .announcement-read-note { max-width: 80ch; margin: 0 0 14px; color: var(--muted); font-size: 12px; line-height: 1.6; }
 .announcement-sent { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-.announcement-sent li { display: grid; grid-template-columns: minmax(0, 1fr) 150px auto; gap: 20px; align-items: center; padding: 14px 16px; }
+.announcement-sent li { display: grid; grid-template-columns: minmax(0, 1fr) 190px auto; gap: 20px; align-items: center; padding: 14px 16px; }
 .announcement-sent li + li { border-top: 1px solid var(--line); }
 .announcement-visibility { display: flex; align-items: center; gap: 8px; margin: 10px 0; color: var(--muted); font-size: 12px; }
 .announcement-visibility select { padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: #1e1e24; color: #e5e5ef; font: inherit; }
@@ -996,6 +996,11 @@ h1 { font-size: 28px; }
 .announcement-sent-text code { font: 11px var(--mono); color: #8f8f9b; overflow-wrap: anywhere; }
 .announcement-sent-reads { display: grid; gap: 7px; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
 .announcement-sent-reads strong { color: #ececf2; font-size: 14px; font-weight: 600; }
+.announcement-sent-reads small { color: #8f8f9b; font-size: 11px; }
+.announcement-card-counts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin: 0; }
+.announcement-card-counts div { display: grid; gap: 1px; }
+.announcement-card-counts dt { color: #8f8f9b; font-size: 10px; }
+.announcement-card-counts dd { margin: 0; color: #ececf2; font-size: 14px; font-weight: 600; }
 .announcement-meter { display: block; height: 4px; border-radius: 4px; background: var(--line); overflow: hidden; }
 .announcement-meter span { display: block; height: 100%; border-radius: inherit; background: var(--accent); }
 .announcement-remove { min-height: 34px; padding: 6px 11px; font-size: 12px; }

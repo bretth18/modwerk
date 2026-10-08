@@ -98,10 +98,11 @@ export async function moduleReleaseAnnouncement(db: Database, release: ModuleRel
 export async function adminAnnouncements(request: Request, db: Database, path: string): Promise<Response | null> {
   if (!path.startsWith('/api/admin/announcements')) return null
   if (path === '/api/admin/announcements' && request.method === 'GET') {
-    // Counts only eligible members; anonymous public readers are not tracked.
+    // Reads and audience count eligible members; the card totals count every viewer, signed in or not, without identifying anyone.
     return response((await db.prepare(`SELECT a.id,a.slug,a.title,a.body,a.url,a.module_id,a.created_at,a.visibility,(SELECT COUNT(*) FROM announcement_reads r WHERE r.announcement_id=a.id) AS reads,
-      (SELECT COUNT(*) FROM users u WHERE ${AUDIENCE} AND u.email_verified=1 AND u.suspended=0 AND u.username IS NOT NULL AND NOT EXISTS(SELECT 1 FROM social_pending_accounts s WHERE s.user_id=u.id)) AS audience
-      FROM announcements a ORDER BY a.created_at DESC,a.rowid DESC LIMIT 50`).all()).results)
+      (SELECT COUNT(*) FROM users u WHERE ${AUDIENCE} AND u.email_verified=1 AND u.suspended=0 AND u.username IS NOT NULL AND NOT EXISTS(SELECT 1 FROM social_pending_accounts s WHERE s.user_id=u.id)) AS audience,
+      COALESCE(c.shown,0) AS shown,COALESCE(c.opened,0) AS opened,COALESCE(c.dismissed,0) AS dismissed,(SELECT value FROM usage_meta WHERE key='announcement_counts_started') AS counts_started
+      FROM announcements a LEFT JOIN announcement_counts c ON c.announcement_id=a.id ORDER BY a.created_at DESC,a.rowid DESC LIMIT 50`).all()).results)
   }
   if (path === '/api/admin/announcements' && request.method === 'POST') {
     const body = await jsonBody(request)

@@ -191,6 +191,25 @@ describe('operator announcements in the bell', () => {
     expect((await (await call('/announcements')).json()).items).toEqual([expect.objectContaining({ title: draft.title, excerpt: draft.body, url: DEVELOPMENT_DISCORD_URL })])
   })
 
+  it('counts public cards for everyone, signed in or not, without storing who saw them', async () => {
+    const { announce, call, admin, db } = await fixture()
+    const publicId = (await (await announce({ ...release, visibility: 'public' })).json()).id as string
+    const memberId = (await (await announce({ ...release, slug: 'members-only-note', visibility: 'signed-in' })).json()).id as string
+    const count = (event: string, id: string) => call('/usage/count', 'POST', { event, announcementId: 'announcement-' + id })
+    for (const event of ['announcement_shown', 'announcement_shown', 'announcement_opened', 'announcement_dismissed']) expect((await count(event, publicId)).status).toBe(200)
+    // Bell-only and unknown announcements gain nothing; the response does not reveal which exist.
+    expect((await count('announcement_shown', memberId)).status).toBe(200)
+    expect((await count('announcement_shown', 'f'.repeat(32))).status).toBe(200)
+    for (const bad of [{ event: 'announcement_clicked', announcementId: 'announcement-' + publicId }, { event: 'announcement_shown', announcementId: publicId }, { event: 'announcement_shown', announcementId: 'announcement-' + publicId, userId: 'someone' }, { event: 'page_view', announcementId: 'announcement-' + publicId }])
+      expect((await call('/usage/count', 'POST', bad)).status, JSON.stringify(bad)).toBe(400)
+    expect(db.prepare('SELECT * FROM announcement_counts').all()).toEqual([{ announcement_id: publicId, shown: 2, opened: 1, dismissed: 1 }])
+    const listed = await (await call('/admin/announcements', 'GET', undefined, '', admin)).json() as Array<Record<string, unknown>>
+    expect(listed.find(item => item.id === publicId)).toMatchObject({ shown: 2, opened: 1, dismissed: 1, counts_started: expect.stringMatching(/^\d{4}-\d{2}-\d{2}T/) })
+    expect(listed.find(item => item.id === memberId)).toMatchObject({ shown: 0, opened: 0, dismissed: 0 })
+    expect((await call('/admin/announcements/' + publicId, 'DELETE', undefined, '', admin)).status).toBe(200)
+    expect(db.prepare('SELECT COUNT(*) AS n FROM announcement_counts').get()).toEqual({ n: 0 })
+  })
+
   it('refuses what a bell entry may not contain', async () => {
     const { announce } = await fixture()
     for (const bad of [

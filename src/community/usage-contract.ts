@@ -1,5 +1,8 @@
 export const USAGE_EVENTS = ['page_view', 'configuration_started', 'build_succeeded', 'build_failed', 'firmware_download_requested', 'configuration_exported', 'support_opened', 'support_link_opened', 'discord_member_prompt_shown', 'discord_member_join_clicked', 'discord_member_dismissed', 'discord_visitor_prompt_shown', 'discord_visitor_signup_clicked', 'discord_visitor_join_clicked', 'discord_visitor_dismissed', 'discord_welcome_join_clicked'] as const
 export type UsageEvent = typeof USAGE_EVENTS[number]
+/** What a public announcement card counts, for every viewer; each report names one public announcement and nothing else. */
+export const ANNOUNCEMENT_COUNTS = { announcement_shown: 'shown', announcement_opened: 'opened', announcement_dismissed: 'dismissed' } as const
+export type AnnouncementCountEvent = keyof typeof ANNOUNCEMENT_COUNTS
 /** Machines that build firmware here. Builds, failed builds and download requests may name one; nothing else does. */
 export const USAGE_DEVICES = ['octatrack', 'digitakt', 'digitone'] as const
 export type UsageDevice = typeof USAGE_DEVICES[number]

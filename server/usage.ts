@@ -3,7 +3,7 @@ import { USAGE_CONSENT_VERSION } from '../src/legal/policy'
 import { boundedBody, HttpError, response } from './security'
 import { throttle } from './auth'
 import { canTrackModuleDownload } from '../src/community/module-downloads'
-import { DEVICE_EVENTS, USAGE_DEVICES, USAGE_EVENTS, type UsageDevice, type UsageEvent, type UsageDay, type UsageDeviceTotals, type UsageHour } from '../src/community/usage-contract'
+import { ANNOUNCEMENT_COUNTS, DEVICE_EVENTS, USAGE_DEVICES, USAGE_EVENTS, type AnnouncementCountEvent, type UsageDevice, type UsageEvent, type UsageDay, type UsageDeviceTotals, type UsageHour } from '../src/community/usage-contract'
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/
 const columns: Record<UsageEvent, string> = { page_view:'page_views', configuration_started:'configurations', build_succeeded:'builds', build_failed:'builds_failed', firmware_download_requested:'downloads', configuration_exported:'exports', support_opened:'support_opens', support_link_opened:'support_clicks', discord_member_prompt_shown:'discord_member_shown', discord_member_join_clicked:'discord_member_joins', discord_member_dismissed:'discord_member_dismissals', discord_visitor_prompt_shown:'discord_visitor_shown', discord_visitor_signup_clicked:'discord_visitor_signups', discord_visitor_join_clicked:'discord_visitor_joins', discord_visitor_dismissed:'discord_visitor_dismissals', discord_welcome_join_clicked:'discord_welcome_joins' }
 /** Optional machine on builds, failed builds and download requests: one of three fixed names, never anything else. */
@@ -66,7 +66,7 @@ async function visitorSalt(db: Database, today: string) {
   if (!saved) throw new HttpError(503,'Usage counts are not available right now.')
   return saved.value
 }
-/** Counts without consent: only a closed event name (and, for downloads, one public module ID) is accepted.
+/** Counts without consent: only a closed event name (and, for downloads, one public module ID; for announcement cards, one public announcement ID) is accepted.
  * Nothing is read from or stored on the device. Unique visitors are estimated from a digest of IP address and
  * User-Agent, keyed with the backend secret and a daily salt; the raw values are never stored and digests are
  * kept only until the hourly cleanup removes the previous day (at most about 48 hours). A separate keyed IP
@@ -81,11 +81,18 @@ export async function recordAnonymousCount(request: Request, env: Env, db: Datab
   catch(error) { if(error instanceof HttpError)throw error; throw new HttpError(400,'Invalid usage count.') }
   const keys = Object.keys(body).sort().join(',')
   const moduleCount = keys === 'event,moduleId' && body.event === 'module_download' && typeof body.moduleId === 'string' && canTrackModuleDownload(body.moduleId)
-  if (!moduleCount && (!['event','device,event'].includes(keys) || typeof body.event !== 'string' || !USAGE_EVENTS.includes(body.event as UsageEvent))) throw new HttpError(400,'Invalid usage count.')
-  const device = moduleCount ? null : deviceOf(body,body.event as UsageEvent)
+  const announcementCount = keys === 'announcementId,event' && typeof body.event === 'string' && Object.hasOwn(ANNOUNCEMENT_COUNTS,body.event) && typeof body.announcementId === 'string' && /^announcement-[a-f0-9]{32}$/.test(body.announcementId)
+  if (!moduleCount && !announcementCount && (!['event','device,event'].includes(keys) || typeof body.event !== 'string' || !USAGE_EVENTS.includes(body.event as UsageEvent))) throw new HttpError(400,'Invalid usage count.')
+  const device = moduleCount || announcementCount ? null : deviceOf(body,body.event as UsageEvent)
   if (device === undefined) throw new HttpError(400,'Invalid usage count.')
   const now = new Date(), today = day(now)
   await throttle(db,'usage-count:' + await privateHash(secret,today + ':count-rate:' + (request.headers.get('CF-Connecting-IP') ?? 'local')),300,3600)
+  if (announcementCount) {
+    const column = ANNOUNCEMENT_COUNTS[body.event as AnnouncementCountEvent], id = (body.announcementId as string).slice('announcement-'.length) // Column from the closed map above.
+    // Only a currently public announcement gains a count; one removed meanwhile is ignored.
+    await db.prepare(`INSERT INTO announcement_counts(announcement_id,${column}) SELECT id,1 FROM announcements WHERE id=? AND visibility='public' ON CONFLICT(announcement_id) DO UPDATE SET ${column}=${column}+1`).bind(id).run()
+    return response({ok:true})
+  }
   if (moduleCount) {
     await db.batch([
       db.prepare('INSERT INTO module_downloads(module_id,downloads,first_download_at) VALUES(?,1,?) ON CONFLICT(module_id) DO UPDATE SET downloads=downloads+1').bind(body.moduleId,now.toISOString()),
