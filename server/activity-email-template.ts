@@ -2,20 +2,31 @@ import { escape } from './account-email-template'
 import { SUPPORT_EMAIL } from '../src/support'
 import { notificationLines } from '../src/community/notification-text'
 import type { NotificationItem } from '../src/community/notification-contract'
+import type { ReleaseNotes } from '../src/community/module-release-notes'
+
+type ActivityEmailItem = NotificationItem & { releaseNotes?: ReleaseNotes }
 
 /** Same scriptless, image-free shell as the account emails. User content is escaped and never linked directly. */
-export function renderActivityEmail(items: NotificationItem[], urls: { app: string; notifications: string; settings: string; unsubscribe: string }, more = 0) {
+export function renderActivityEmail(items: ActivityEmailItem[], urls: { app: string; notifications: string; settings: string; unsubscribe: string }, more = 0) {
   const app = new URL(urls.app)
   const lines = notificationLines(items, target => new URL(target, app).href)
+  const notesById = new Map(items.filter(item => item.kind === 'module_update' && item.releaseNotes?.version === item.module_version).map(item => [item.id, item.releaseNotes!]))
   const total = items.length + more
   const subject = (lines.length === 1 && !more ? lines[0].text : `${total} new ${total === 1 ? 'notification' : 'notifications'} on Modwerk`).replace(/[\r\n]+/g, ' ').slice(0, 150)
   const footer = `You receive activity email because it is on for your Modwerk account.`
-  const text = [`What's new on Modwerk`, '', ...lines.flatMap(line => [line.text, ...(line.excerpt ? ['  ' + line.excerpt] : []), '  ' + line.href, '']), ...(more ? [`…and ${more} more in your notifications: ${urls.notifications}`, ''] : []),
+  const text = [`What's new on Modwerk`, '', ...lines.flatMap(line => {
+    const notes = notesById.get(line.ids[0])
+    return [line.text, ...(notes ? ['  Changelog', ...notes.changes.map(change => '  - ' + change)] : line.excerpt ? ['  ' + line.excerpt] : []), '  ' + line.href, '']
+  }), ...(more ? [`…and ${more} more in your notifications: ${urls.notifications}`, ''] : []),
     footer, `Choose what you receive: ${urls.settings}`, `Unsubscribe from activity email: ${urls.unsubscribe}`].join('\n')
-  const rows = lines.map(line => `<tr><td style="padding:14px 0;border-top:1px solid #36363e;">
+  const rows = lines.map(line => {
+    const notes = notesById.get(line.ids[0])
+    return `<tr><td style="padding:14px 0;border-top:1px solid #36363e;">
 <a href="${escape(line.href)}" style="color:#f4f4f8;font-size:15px;line-height:23px;font-weight:bold;text-decoration:none;">${escape(line.text)}</a>
-${line.excerpt ? `<p style="margin:6px 0 0;color:#a8a8b8;font-size:14px;line-height:22px;">${escape(line.excerpt)}</p>` : ''}
-</td></tr>`).join('\n')
+${notes ? `<p style="margin:8px 0 0;color:#c7a16c;font-size:12px;line-height:20px;font-weight:bold;">Changelog</p>
+<ul style="margin:4px 0 0;padding-left:20px;color:#c4c4ce;font-size:14px;line-height:22px;">${notes.changes.map(change => `<li>${escape(change)}</li>`).join('')}</ul>` : line.excerpt ? `<p style="margin:6px 0 0;color:#a8a8b8;font-size:14px;line-height:22px;">${escape(line.excerpt)}</p>` : ''}
+</td></tr>`
+  }).join('\n')
   const html = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escape(subject)}</title></head>
 <body style="margin:0;padding:0;background-color:#171719;color:#ededf2;font-family:Arial,Helvetica,sans-serif;">

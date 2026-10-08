@@ -64,21 +64,34 @@ export async function moduleChangelogRoute(db: Database, moduleId: string) {
 
 /** Monotonic versions and per-recipient release keys keep retries/concurrent cron runs quiet. */
 export async function recordModuleReleases(db: Database, releases: ModuleRelease[], initializeInventory = true) {
+  // Validate the whole inventory before advancing any version or subscriber. Old inventories can
+  // still be polled during rollout, but an unseen version must wait for its written changelog.
+  releases = parseModuleReleases({ format: 'modwerk-module-releases-v1', modules: releases })
+  const states = new Map<string, string | null>()
+  for (const release of releases) {
+    const previous = await db.prepare('SELECT version FROM module_release_state WHERE module_id=?').bind(release.id).first<{ version: string }>()
+    states.set(release.id, previous?.version ?? null)
+    if ((!previous || compareModuleVersions(release.version, previous.version) > 0) && !release.notes) throw new Error('Missing release notes for ' + release.id + ' v' + release.version + '.')
+  }
   let notified = 0
   // The first live inventory establishes a baseline; it must not announce the whole existing library.
   const initialized = !!await db.prepare('SELECT 1 AS initialized FROM module_release_inventory WHERE singleton=1').first()
   for (const release of releases) {
-    const previous = await db.prepare('SELECT version FROM module_release_state WHERE module_id=?').bind(release.id).first<{ version: string }>()
-    if (previous && compareModuleVersions(release.version, previous.version) <= 0) continue
+    const previous = states.get(release.id)
+    if (previous && compareModuleVersions(release.version, previous) <= 0) {
+      // Fill a legacy pending notification's notes without replacing an existing release snapshot.
+      if (release.notes) await db.prepare('UPDATE module_releases SET notes=? WHERE module_id=? AND version=? AND notes IS NULL').bind(JSON.stringify(release.notes), release.id, release.version).run()
+      continue
+    }
     const followers = (await db.prepare('SELECT s.user_id,s.after_version FROM module_update_subscriptions s JOIN users u ON u.id=s.user_id JOIN auth_users a ON a.id=u.id WHERE s.module_id=? AND u.email_verified=1 AND a.emailVerified=1 AND u.suspended=0 AND u.username IS NOT NULL AND NOT EXISTS(SELECT 1 FROM social_pending_accounts p WHERE p.user_id=u.id)').bind(release.id).all<{ user_id: string; after_version: string | null }>()).results
     const recipients = followers.filter(member => member.after_version !== null && compareModuleVersions(release.version, member.after_version) > 0)
     const statements = [
-      db.prepare('INSERT INTO module_releases(module_id,version,name,href) VALUES(?,?,?,?) ON CONFLICT DO NOTHING').bind(release.id, release.version, release.name, release.href),
+      db.prepare('INSERT INTO module_releases(module_id,version,name,href,notes) VALUES(?,?,?,?,?) ON CONFLICT(module_id,version) DO UPDATE SET notes=COALESCE(module_releases.notes,excluded.notes)').bind(release.id, release.version, release.name, release.href, JSON.stringify(release.notes)),
       ...(!previous && initialized ? [await moduleReleaseAnnouncement(db, release)] : []),
       ...recipients.map(member => db.prepare(`INSERT INTO notifications(id,user_id,kind,module_id,module_version,delivery_id) SELECT lower(hex(randomblob(16))),?,'module_update',?,?,? WHERE EXISTS(SELECT 1 FROM module_update_subscriptions WHERE user_id=? AND module_id=? AND after_version=?) ON CONFLICT DO NOTHING`).bind(member.user_id, release.id, release.version, 'module-release:' + release.id + ':' + release.version, member.user_id, release.id, member.after_version)),
       // Do not move a subscriber back from a newer version if an old cached site is served.
       ...followers.filter(member => member.after_version === null || compareModuleVersions(release.version, member.after_version) > 0).map(member => db.prepare('UPDATE module_update_subscriptions SET after_version=? WHERE user_id=? AND module_id=? AND after_version IS ?').bind(release.version, member.user_id, release.id, member.after_version)),
-      db.prepare('INSERT INTO module_release_state(module_id,version) VALUES(?,?) ON CONFLICT(module_id) DO UPDATE SET version=excluded.version WHERE module_release_state.version IS ?').bind(release.id, release.version, previous?.version ?? null),
+      db.prepare('INSERT INTO module_release_state(module_id,version) VALUES(?,?) ON CONFLICT(module_id) DO UPDATE SET version=excluded.version WHERE module_release_state.version IS ?').bind(release.id, release.version, previous ?? null),
     ]
     // Bound D1 batches while retaining retry-safe fanout.
     if (statements.length > 90) {

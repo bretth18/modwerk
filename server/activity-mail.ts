@@ -6,6 +6,7 @@ import { SUPPORT_EMAIL } from '../src/support'
 import { renderActivityEmail } from './activity-email-template'
 import { ITEM_SQL, RECIPIENTS, toItem, unsubscribeToken, VISIBLE } from './notifications'
 import { DIGEST_HOURS, EMAIL_SETTING, type NotificationItem } from '../src/community/notification-contract'
+import { parseReleaseNotes } from '../src/community/module-release-notes'
 
 /** Matches SQLite CURRENT_TIMESTAMP so stored times compare as text. */
 const sqlTime = (value: Date) => value.toISOString().replace('T', ' ').slice(0, 19)
@@ -55,7 +56,12 @@ export async function sendActivityDigests(env: Env, db: Database, now = new Date
     const settings = new URL(app); settings.hash = 'account/notifications'
     const page = new URL(app); page.hash = 'account/unsubscribe/' + token
     const inbox = new URL(app); inbox.hash = 'account'
-    const message = renderActivityEmail(included, { app: app.href, notifications: inbox.href, settings: settings.href, unsubscribe: page.href }, wanted.length - included.length)
+    const mailItems = await Promise.all(included.map(async item => {
+      if (item.kind !== 'module_update') return item
+      const release = await db.prepare('SELECT notes FROM module_releases WHERE module_id=? AND version=?').bind(item.module_id, item.module_version ?? null).first<{ notes: string | null }>()
+      return release?.notes ? { ...item, releaseNotes: parseReleaseNotes(JSON.parse(release.notes), item.module_id!) } : item
+    }))
+    const message = renderActivityEmail(mailItems, { app: app.href, notifications: inbox.href, settings: settings.href, unsubscribe: page.href }, wanted.length - included.length)
     const oneClick = env.AUTH_BASE_URL ? new URL('/api/notifications/unsubscribe?token=' + encodeURIComponent(token), env.AUTH_BASE_URL).href : null
     const result = await fetch('https://api.resend.com/emails', {
       method: 'POST', signal: AbortSignal.timeout(10000),

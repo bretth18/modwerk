@@ -47,7 +47,7 @@ describe('automatic download update follows', () => {
   it('uses published version history, notifies once, and stops future releases and pending email on opt-out', async () => {
     const { call, db, env, token, user } = await fixture()
     const module = communityModule('miniverb')!
-    const release = (version: string) => ({ id: module.id, name: module.name, href: module.href, version })
+    const release = (version: string) => ({ id: module.id, name: module.name, href: module.href, version, notes: { version, date: '2026-10-08', changes: ['Correct the playback behavior for this version.'] } })
     await recordModuleReleases(env.DB!, [release('1.0.0')])
     await call('/modules/miniverb/download', 'POST', {}, token)
     expect(db.prepare("SELECT COUNT(*) AS count FROM notifications WHERE kind='module_update'").get()!.count).toBe(0)

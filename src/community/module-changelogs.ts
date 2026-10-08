@@ -1,7 +1,8 @@
 import data from './module-changelogs.json' with { type: 'json' }
 import { compareModuleVersions } from '../catalog/versions.ts'
+import { parseReleaseNotes, type ReleaseNotes } from './module-release-notes.ts'
 
-export type ReleaseNotes = { version: string; date: string; changes: string[]; sourceCommit?: string }
+export type { ReleaseNotes } from './module-release-notes.ts'
 export type RecordedRelease = { version: string; recordedAt: string }
 export type ModuleRelease = { version: string; previousVersion: string | null; recordedAt?: string; notes?: ReleaseNotes }
 export type ChangelogModules = Record<string, ReleaseNotes[]>
@@ -19,14 +20,10 @@ export function parseModuleChangelogs(value: unknown, catalog?: readonly Catalog
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id) || !Array.isArray(entries) || !entries.length) throw new Error('Missing release notes for ' + id)
     const versions = new Set<string>()
     modules[id] = entries.map(entry => {
-      if (!object(entry) || typeof entry.version !== 'string') throw new Error('Invalid changelog version for ' + id)
-      compareModuleVersions(entry.version, entry.version)
-      if (versions.has(entry.version)) throw new Error('Duplicate changelog version for ' + id + ': ' + entry.version)
-      versions.add(entry.version)
-      if (typeof entry.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(entry.date) || !Number.isFinite(Date.parse(entry.date)) || new Date(entry.date).toISOString().slice(0, 10) !== entry.date) throw new Error('Invalid changelog date for ' + id)
-      if (!Array.isArray(entry.changes) || !entry.changes.length || entry.changes.some(change => typeof change !== 'string' || change.trim().length < 12 || change.length > 1000)) throw new Error('Describe the changes in release notes for ' + id + ' v' + entry.version)
-      if (entry.sourceCommit !== undefined && (typeof entry.sourceCommit !== 'string' || !/^[0-9a-f]{40}$/.test(entry.sourceCommit))) throw new Error('Invalid source commit for ' + id)
-      return { version: entry.version, date: entry.date, changes: entry.changes as string[], ...(entry.sourceCommit ? { sourceCommit: entry.sourceCommit as string } : {}) }
+      const notes = parseReleaseNotes(entry, id)
+      if (versions.has(notes.version)) throw new Error('Duplicate changelog version for ' + id + ': ' + notes.version)
+      versions.add(notes.version)
+      return notes
     }).sort((a, b) => compareModuleVersions(b.version, a.version))
   }
   if (catalog) {
