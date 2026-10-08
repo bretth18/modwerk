@@ -14,6 +14,8 @@ export type UsageHour = Omit<UsageDay, 'day'> & { hour: string }
 /** Period totals for one machine, from the day the breakdowns began. */
 export type UsageDeviceTotals = { device: UsageDevice; builds: number; builds_failed: number; downloads: number }
 export type UsageComparison = { from: string; to: string; rows: UsageDay[]; unavailableReason: 'collection' | 'retention' | null }
+/** Counts per named page and UTC day, without visitor identifiers. */
+export type UsagePageDay = { day: string; page: string; views: number }
 export type UsageStatistics = { generatedAt: string; collectionStarted: string | null; from: string; to: string; days: number; rows: UsageDay[]; comparison?: UsageComparison
   /** When failed builds and the machine split began to be counted; earlier days have neither. */
   breakdownsStarted?: string | null
@@ -23,4 +25,7 @@ export type UsageStatistics = { generatedAt: string; collectionStarted: string |
   discordInvitesStarted?: string | null
   /** The period's hours, only for the 7-day view; hourly totals are kept for 14 days. */
   hourly?: UsageHour[]
-  devices?: UsageDeviceTotals[] }
+  devices?: UsageDeviceTotals[]
+  /** Optional for compatibility with a backend deployed before page-level counts. */
+  pagesStarted?: string | null
+  pages?: UsagePageDay[] }

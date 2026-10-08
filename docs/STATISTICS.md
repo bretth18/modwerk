@@ -7,7 +7,7 @@ The Statistics tab is the first tab and default view in `#admin`. It reports mem
 | Measure | Trigger | Limit |
 | --- | --- | --- |
 | Visitors today | Distinct random browser identifiers received during one UTC day | Identifiers rotate daily; this is not a count of people or period-wide unique visitors. Any supported event establishes a visit. |
-| Page views | Initial visit or navigation to a different public app view | Admin views are excluded. The route, URL and referrer are not sent. |
+| Page views | Initial visit or navigation to a different app path | Fixed page names only; admin/review views and query-only changes are excluded. Raw routes, URLs and referrers are not sent. |
 | Configurations started | First module added to an empty configuration, or a nonempty import/duplicate | Empty automatic configurations do not count. Configuration IDs are deduplicated on the device and never sent. |
 | Successful builds | Completed local builds that still belong to the current operation | Failed, rejected and cancelled builds do not count. |
 | Firmware download requests | Click on an enabled firmware download button | Does not prove that the file was saved or flashed. |
@@ -22,6 +22,14 @@ Every count also adds to a total for its UTC hour (`usage_hourly`, keyed `YYYY-M
 Selected-period event totals include today. Percentage changes compare the completed portion of the selected period (6 or 29 days) with an equally long immediately preceding window. The first collection day is excluded conservatively, and comparisons require both full windows to be within collected, retained history. There is no 90-day comparison because its preceding window exceeds the existing 90-day retention. A zero previous total shows an absolute increase rather than an infinite percentage. Averages, busiest days and days with visitors use fully collected completed days, including covered zero-activity days. Daily visitors are not summed into period-wide unique visitors. Aggregate events are not a linked conversion funnel.
 
 CSV contains only daily aggregate values, UTC dates and `uncollected`, `partial` or `complete` coverage. Uncollected metric fields are blank; a recorded zero stays zero. It contains no visitor identifiers, module/configuration grouping or private report content.
+
+## Page traffic
+
+Migration `0061_page_traffic.sql` adds `usage_page_daily(day,page,views)`, retained for 90 UTC days by the existing cleanup. The admin dashboard ranks named pages by views and share, with a selectable daily chart using the same 7/30/90-day period. These are repeatable page views, not unique visitors per page. Earlier totals cannot be split retroactively. The first named event sets `pages_started`; earlier days show unavailable and the start day and today are partial. Older clients may still send unnamed views: the dashboard shows their count separately and excludes them from named-page shares.
+
+Both `/usage/count` and `/usage/events` accept an optional `page` only for `page_view`. `usage-pages.ts` supplies a finite, server-validated catalog: site sections, libraries/configurators and public catalog module IDs. Library categories are grouped by machine. Discussions, profiles, direct messages, account screens, module-set details and community module details are grouped without their IDs. Queries, fragments, usernames, account tokens and arbitrary paths are never sent. Unknown routes use a fixed “Page not found” key. Admin/review and redirect-only routes do not count. Navigating between two distinct paths counts again even when they share a page group; query-only changes and repeated React effects do not. No new visitor identifiers, sessions or per-person page histories are stored.
+
+The existing opt-out, DNT/GPC, origin checks, omitted credentials/referrer and abuse limits apply. Opted-in event retries update global and page counts atomically and only once, even if a retry changes its page. The bilingual notice and usage-consent version are updated; existing opt-ins require a new choice for the expanded payload. Apply the migration and deploy the Worker before the frontend; older identifier-free clients can still send unnamed views, and the dashboard supports older responses.
 
 ## Community invitation responses
 
@@ -41,7 +49,7 @@ Issue links open the existing private inbox, with per-module links selecting ope
 
 The `#privacy` page lets visitors turn counts off on their device. Do Not Track and Global Privacy Control suppress reporting before an identifier is created. Storage failures also suppress reporting; network failures never block configuration or firmware work. The request omits cookies, guest/admin session headers and referrers.
 
-`POST /api/usage/events` accepts only a closed event enum and two random UUIDs (`visitor`, `eventId`), with a 512-byte limit and an exact field allowlist. It rejects firmware bodies, configuration contents, arbitrary extra fields and requests from another website origin. No accounts are created. No IP address, user agent, guest identity, route, module list or firmware is stored with these site statistics. Public module reporting is separate, as described below.
+`POST /api/usage/events` accepts a closed event enum and two random UUIDs (`visitor`, `eventId`), optionally a validated machine for build/download events or a fixed page key for page views, with a 512-byte limit and an exact field allowlist. It rejects firmware bodies, configuration contents, arbitrary extra fields and requests from another website origin. No accounts are created. No IP address, user agent, guest identity, raw route, module list or firmware is stored with these site statistics. Public module reporting is separate, as described below.
 
 The server stores only purpose-separated daily HMAC digests for duplicate suppression. Key material derives from the existing backend-only `ADMIN_KEY_SHA256`; it must never appear in frontend variables or API responses. Rotating the administrator key invalidates existing admin sessions and also changes active visitor digests, so counts around a rotation can overcount. `GET /api/admin/statistics?days=7|30|90` remains behind the existing administrator authorization boundary, including on self-hosted adapters.
 

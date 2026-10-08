@@ -36,6 +36,7 @@ async function fixture(){
  db.exec(readFileSync(new URL('../../migrations/0011_forum_accounts.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0012_better_auth.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0054_discord_invitation.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0061_page_traffic.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0010_issue_reports.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0013_issue_privacy.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0015_forum_machines.sql',import.meta.url),'utf8'))
@@ -509,6 +510,52 @@ describe('private aggregate usage statistics',()=>{
   for(let i=0;i<200;i++)expect((await call('/usage/events','POST',usageEvent())).status).toBe(200)
   expect((await call('/usage/events','POST',usageEvent())).status).toBe(429)
   expect(db.prepare('SELECT visitors,page_views FROM usage_daily').get()).toEqual({visitors:1,page_views:200})
+ })
+})
+
+describe('page-level traffic',()=>{
+ it('counts both collectors, deduplicates changed-page retries and keeps legacy unnamed views',async()=>{
+  vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(new Date('2026-10-08T12:00:00Z'))
+  const {call,db,admin}=await fixture(),event={...usageEvent(),page:'forum'}
+  for(const body of [event,event,{...event,page:'faq'}])expect((await call('/usage/events','POST',body)).status).toBe(200)
+  expect((await call('/usage/count','POST',{event:'page_view',page:'forum'})).status).toBe(200)
+  expect((await call('/usage/count','POST',{event:'page_view',page:'module:miniverb'})).status).toBe(200)
+  expect((await call('/usage/count','POST',{event:'page_view'})).status).toBe(200)
+  const result=await (await call('/admin/statistics?days=7','GET',undefined,'',undefined,admin)).json()
+  expect(result.pagesStarted).toBe('2026-10-08T12:00:00.000Z')
+  expect(result.pages).toEqual([{day:'2026-10-08',page:'forum',views:2},{day:'2026-10-08',page:'module:miniverb',views:1}])
+  expect(result.rows[0].page_views).toBe(4)
+  expect(Object.keys(db.prepare('SELECT * FROM usage_page_daily').get()!)).toEqual(['day','page','views'])
+  expect((await call('/admin/statistics')).status).toBe(403)
+ })
+ it('rejects arbitrary pages and page fields on other events before counting',async()=>{
+  const {call,db}=await fixture()
+  for(const path of ['/usage/events','/usage/count'])for(const extra of [
+   {page:'__proto__'}, {page:'account/verify/private-token'}, {page:'forum?search=secret'}, {page:'module:unknown'},
+   {page:null}, {page:'forum',event:'build_succeeded'}, {page:'forum',device:'octatrack'}, {page:'forum',url:'private'}
+  ])expect((await call(path,'POST',{...(path.endsWith('/events')?usageEvent():{event:'page_view'}),...extra})).status).toBe(400)
+  expect(db.prepare('SELECT * FROM usage_page_daily').all()).toEqual([])
+  expect(db.prepare('SELECT * FROM usage_daily').all()).toEqual([])
+ })
+ it('rolls back both totals and permits a retry when the page write fails',async()=>{
+  const {call,db}=await fixture(),event={...usageEvent(),page:'forum'}
+  db.exec("CREATE TRIGGER fail_page_count BEFORE INSERT ON usage_page_daily BEGIN SELECT RAISE(ABORT,'Synthetic page failure'); END")
+  for(const path of ['/usage/events','/usage/count'])expect((await call(path,'POST',path.endsWith('/events')?event:{event:'page_view',page:'forum'})).status).toBe(500)
+  for(const table of ['usage_daily','usage_hourly','usage_events','usage_visitors','usage_page_daily'])expect(db.prepare('SELECT COUNT(*) AS n FROM '+table).get()).toEqual({n:0})
+  expect(db.prepare("SELECT value FROM usage_meta WHERE key='pages_started'").get()).toBeUndefined()
+  db.exec('DROP TRIGGER fail_page_count')
+  expect((await call('/usage/events','POST',event)).status).toBe(200)
+  expect(db.prepare('SELECT views FROM usage_page_daily').get()).toEqual({views:1})
+ })
+ it('filters page history to 7/30/90 days, expires it after 90 and honors browser privacy',async()=>{
+  vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(new Date('2026-10-08T12:00:00Z'))
+  const {call,db,env,admin}=await fixture()
+  for(const day of ['2026-07-10','2026-07-11','2026-09-09','2026-10-02','2026-10-08'])db.prepare('INSERT INTO usage_page_daily(day,page,views) VALUES(?,?,1)').run(day,'forum')
+  for(const [days,length] of [[7,2],[30,3],[90,4]])expect((await (await call('/admin/statistics?days='+days,'GET',undefined,'',undefined,admin)).json()).pages).toHaveLength(length)
+  await cleanupUsage(env.DB!)
+  expect(db.prepare('SELECT COUNT(*) AS n FROM usage_page_daily').get()).toEqual({n:4})
+  for(const path of ['/usage/events','/usage/count'])for(const header of ['DNT','Sec-GPC'])expect((await handleCommunity(new Request(env.APP_URL+'/api'+path,{method:'POST',headers:{Origin:env.APP_URL!,'Content-Type':'application/json',[header]:'1'},body:JSON.stringify({...usageEvent(),page:'faq'})}),env)).status).toBe(204)
+  expect(db.prepare("SELECT * FROM usage_page_daily WHERE page='faq'").all()).toEqual([])
  })
 })
 

@@ -14,6 +14,7 @@ on:
       # The API compiles this shared catalog; new frontend modules must be known to it.
       - 'src/community/modules.ts'
       - 'src/community/creator-support.ts'
+      - 'src/community/usage-pages.ts'
       - 'src/config/support.ts'
       - 'src/catalog/**'
       - '!src/catalog/**/*.test.ts'

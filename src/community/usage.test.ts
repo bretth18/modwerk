@@ -18,7 +18,7 @@ describe('optional usage reporting',()=>{
    if(preference)values.set('octamod.usage.opt-out',preference)
    request.mockClear();usage.trackPageView('library'+preference);usage.trackUsage('build_succeeded');usage.trackConfigurationStarted('33333333-3333-4333-8333-333333333333');usage.trackFirmwareDownload(['miniverb'],'octatrack')
    // Only identifier-free totals leave the browser before consent.
-   for(const [url,options] of request.mock.calls){expect(url).toBe('/api/usage/count');expect(options.credentials).toBe('omit');expect(options.headers).toEqual({'Content-Type':'application/json'});expect(Object.keys(JSON.parse(options.body)).every(key=>key==='event'||key==='moduleId'||key==='device')).toBe(true)}
+   for(const [url,options] of request.mock.calls){expect(url).toBe('/api/usage/count');expect(options.credentials).toBe('omit');expect(options.headers).toEqual({'Content-Type':'application/json'});expect(Object.keys(JSON.parse(options.body)).every(key=>key==='event'||key==='moduleId'||key==='device'||key==='page')).toBe(true)}
    expect(values.has('octamod.usage.daily-visitor')).toBe(false);expect(values.has('octamod.usage.started-configurations')).toBe(false)
   }
   usage.setAnonymousCountsAllowed(false);request.mockClear();usage.trackPageView('forum');usage.trackUsage('build_succeeded');usage.trackFirmwareDownload(['miniverb'],'octatrack')
@@ -50,12 +50,12 @@ describe('optional usage reporting',()=>{
   expect(Object.keys(JSON.parse(options.body)).sort()).toEqual(['event','eventId','visitor'])
   expect(options.body).not.toContain(configuration);expect(options.headers).toEqual({'Content-Type':'application/json','X-Octamod-Usage-Consent':USAGE_CONSENT_VERSION})
  })
- it('deduplicates page effects, excludes admin views, never sends routes and rotates the visitor daily',()=>{
+ it('deduplicates page effects, excludes admin views, sends only known page keys and rotates the visitor daily',()=>{
   usage.setUsageAllowed(true)
   usage.trackPageView('library');usage.trackPageView('library');usage.trackPageView('admin');usage.trackPageView('library')
   expect(request).toHaveBeenCalledTimes(2)
   const first=JSON.parse(request.mock.calls[0][1].body);expect(first.visitor).toBe(JSON.parse(request.mock.calls[1][1].body).visitor)
-  expect(request.mock.calls[0][1].body).not.toContain('library')
+  expect(first.page).toBe('library:octatrack')
   vi.setSystemTime(new Date('2026-10-02T00:00:01Z'));usage.trackUsage('page_view')
   expect(JSON.parse(request.mock.calls[2][1].body).visitor).not.toBe(first.visitor)
  })
@@ -118,5 +118,22 @@ describe('optional usage reporting',()=>{
   expect(request.mock.calls.map(([url])=>url)).toEqual(['/api/usage/count'])
   vi.stubGlobal('localStorage',{getItem:()=>JSON.stringify({version:USAGE_CONSENT_VERSION,acceptedAt:new Date().toISOString()}),setItem:()=>{},removeItem:()=>{}});request.mockRejectedValue(new Error('Offline'))
   expect(()=>usage.trackUsage('build_succeeded')).not.toThrow();expect(()=>usage.trackFirmwareDownload(['miniverb'],'octatrack')).not.toThrow();await Promise.resolve()
+ })
+})
+
+describe('page traffic privacy and navigation', () => {
+ it.each([false, true])('sends only fixed page names with opt-in=%s', optedIn => {
+  if (optedIn) usage.setUsageAllowed(true)
+  for (const route of ['account/reset/private-token?email=private@example.test', 'forum/messages/private_username', 'forum/thread/private-id?search=secret', 'forum/profile/private_username', 'developer/private-report']) usage.trackPageView(route)
+  expect(request.mock.calls.map(([, options]) => JSON.parse(options.body).page)).toEqual(['account', 'forum-messages', 'forum-thread', 'forum-profile', 'developer'])
+  for (const [, options] of request.mock.calls) {
+   expect(options.credentials).toBe('omit'); expect(options.referrerPolicy).toBe('no-referrer')
+   expect(options.body).not.toMatch(/private|secret|email|username|token|search/)
+  }
+  if (!optedIn) expect(values.size).toBe(0)
+ })
+ it('ignores query changes and admin/review screens but counts separate visits within a page group', () => {
+  for (const route of ['forum/thread/one', 'forum/thread/one?page=2', 'forum/thread/two', 'admin?tab=accounts', 'review/private', 'forum/thread/two']) usage.trackPageView(route)
+  expect(request.mock.calls.map(([, options]) => JSON.parse(options.body))).toEqual(Array.from({length: 3}, () => ({event: 'page_view', page: 'forum-thread'})))
  })
 })
