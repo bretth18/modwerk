@@ -39,7 +39,7 @@ export function createEngineSession(reply: (response: EngineResponse, transfer?:
       if (current !== generation) throw new Error('The selected firmware changed. Build again.')
       const source = compiledModuleSource()
       const report: BuildReport = {
-        version: request.moduleIds.includes('midi-scenes') ? 'MIDISC2.0' : FIRMWARE_VERSION, revision: CATALOG_SOURCE.revision, sourceCommit: source.sourceCommit, sourceTreeSha256: source.sourceTreeSha256,
+        version: FIRMWARE_VERSION, revision: CATALOG_SOURCE.revision, sourceCommit: source.sourceCommit, sourceTreeSha256: source.sourceTreeSha256,
         moduleIds: modules.map(module => module.id), moduleVersions: Object.fromEntries(modules.map(module=>[module.id,module.version])), keepStockFx2: request.keepStockFx2,
         osBytes: result.bytes.length, runtimeBytes: result.runtime.bytes, reservedBytes: result.runtime.reservedBytes,
         fx1Rows: result.chooser.fx1.length, fx2Rows: result.chooser.fx2.length,

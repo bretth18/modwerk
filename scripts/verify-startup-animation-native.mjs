@@ -51,7 +51,7 @@ try {
     assert.equal(Buffer.compare(Buffer.from(result.bytes), readFileSync(target)), 0, 'Complete native/browser image parity')
     let firmware = null
     if (container) {
-      const update = encodeFirmware(container, result.bytes, test.ids.includes('midi-scenes') ? 'MIDISC2.0' : FIRMWARE_VERSION)
+      const update = encodeFirmware(container, result.bytes, FIRMWARE_VERSION)
       const decoded = decodeFirmware(update)
       assert.equal(Buffer.compare(Buffer.from(decoded.mainOs), Buffer.from(result.bytes)), 0, 'Complete firmware round trip')
       assert.deepEqual(decoded.tail, container.tail); assert.equal(decoded.seed, container.seed)
