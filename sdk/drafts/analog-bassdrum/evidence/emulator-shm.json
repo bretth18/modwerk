@@ -1,0 +1,115 @@
+{
+  "schema": 1,
+  "date": "2026-10-08",
+  "candidateVersion": "0.1.3-experimental",
+  "candidateFiles": {
+    "bd909.asm": "66f1abde9715b49a145daa1868d00b1ea73989bee2a8e904b9c44149a4d4afc8",
+    "dsp909.py": "480a064a304380079019125eef98e9c68da26bd5408bbe38845563ccac94d2e4",
+    "dsp808.py": "3d61ba9c258c319d90d7beb47f6cbc7dafb7336c49d8386912478d284cef603d",
+    "build-ab_image.py": "d51e8face61e0642f24743cc8081b1d258943f5040a3b34d003cf34a4f797c14"
+  },
+  "candidateImageSha256": "87e56b38fe45a5b10fda2129193f67946b078f4d84b07a0cb1afbc2ef0ebaa54",
+  "stockMainOsSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+  "emulatorSha256": "89759d97c794f62b304dff1912a2ac1c7965289b4d019fbdbb0dbcf3c3d9f312",
+  "emulatorChanges": "same existing test-only 1 MiB battery RAM mapping/restore; no emulator or firmware source changes for SIGBUS",
+  "diagnosis": "Docker /dev/shm exhaustion during construction of the second DSP MemoryBuffer",
+  "backingStorage": {
+    "bytesPerCore": 54525952,
+    "coreCount": 2,
+    "totalBytes": 109051904,
+    "calculation": "(0x800000 P + 2 * 0x200000 XY + 0x100000 invalid-address backing) words * 4 host bytes * 2 cores",
+    "spaceReservedByMmapCanExceedAvailableBacking": true
+  },
+  "container": {
+    "network": "none",
+    "readOnly": true,
+    "capabilities": "none",
+    "noNewPrivileges": true,
+    "memoryLimit": "2g",
+    "cpus": 2,
+    "pidsLimit": 128,
+    "sharedMemory": "256m",
+    "sourceAndFixtureMounts": "read-only",
+    "output": "new private workspace",
+    "toolchainImage": "octamod-tapehead-qualification-tools:local",
+    "toolchainImageId": "sha256:3a5861370c0f3d4eb2507af6a20821ab6ad20569c9fb22f4dfce9d93d4fd93e2"
+  },
+  "toolInputs": {
+    "source/dsp56kBase/mmuhelper.cpp": "16cbda36cbbbc5465e983dab582d9e6f460218dbf497033958e57dfa062818ca",
+    "source/dsp56kEmu/memorybuffer.cpp": "40b1b9934d1aa195dd951d110080f3390ad3975383c6813ffd10c752af4e1c2a",
+    "source/dsp56kEmu/memory.h": "ef25cbf62b45ced64a406b50f08ed6957b16db1972c190d62dc524f8a306bc91",
+    "build/source/dsp56kEmu/libdsp56kEmu.a": "e46b6c5b44176551de5ef3107050656dc43cbeb8310187523d4e20a3e000c307"
+  },
+  "reproduction64MiB": {
+    "sharedMemoryBytes": 67108864,
+    "emulatorExitCode": -7,
+    "dspPairInitialized": false,
+    "stage": "DSP construction before firmware execution"
+  },
+  "capturePreflight64MiB": {
+    "availableBytes": 67108864,
+    "accepted": false,
+    "error": "DSP capture needs at least 128 MiB free in /dev/shm (64 MiB available). For Docker, start the isolated container with --shm-size 256m.",
+    "captureRejectedBeforeOutputCreated": true
+  },
+  "recovery256MiB": {
+    "availableBytes": 268435456,
+    "accepted": true,
+    "error": null,
+    "emulatorExitCode": 1,
+    "dspPairInitialized": true,
+    "stopReason": "intentional 1000-instruction budget"
+  },
+  "captureToolSha256": "0d234a1bcfae080f86110263e37a3c34a7ed692412e0221bd6cf7da84f52f9c7",
+  "fullEmulator": {
+    "exitCode": 0,
+    "bothBootRomsCompleted": true,
+    "rtosGate": "passed",
+    "projectLoad": "LOAD PROJECT handled",
+    "tracks": [
+      "T1",
+      "T5"
+    ],
+    "engines": [
+      "808",
+      "909"
+    ],
+    "framesReached": 64,
+    "audioFramesCaptured": 623039,
+    "audioChannels": 8,
+    "allAudioSamplesZero": true,
+    "limitation": "unclocked 64-frame probe did not reach a trigger; does not establish usable audio"
+  },
+  "clockedPlayback": {
+    "status": "timed out",
+    "wallTimeLimitSeconds": 180,
+    "requestedFrames": 1024,
+    "internalClock": true,
+    "usableAudio": "unverified",
+    "limitation": "process killed at wall-clock cap; no completed load/frame/audio result retained"
+  },
+  "persistenceAudio": "not tested in this follow-up",
+  "physicalHardware": "untested",
+  "validation": {
+    "captureRefuses64MiBBeforeCreatingOutput": true,
+    "captureAccepts256MiB": true,
+    "npmRunCheck": "passed; 185 files / 1249 tests; lint/build/SDK/catalog checks passed",
+    "sourceAndImageUnchanged": true
+  },
+  "reproduction": {
+    "startupArguments": [
+      "--dsp",
+      "--max",
+      "1000"
+    ],
+    "lowMemoryExpectedExit": -7,
+    "sufficientMemoryExpectedExit": 1,
+    "intentionalBudget": "1000 instructions; successful DSP construction then BUDGET is expected"
+  },
+  "rawArtifacts": "private; no firmware, card, audio, LCD or memory bytes retained in repository",
+  "cardSha256": "1df8ce759dc852de6ad65fce7bf176d7f4c76caef13df50c3e5c7d25eeb04607",
+  "fixtureNames": {
+    "set": "OCTABAM",
+    "project": "RIG"
+  }
+}

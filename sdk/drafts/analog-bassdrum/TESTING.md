@@ -1,9 +1,9 @@
 # Analog BD modulation fix — testing
 
-Release: `0.1.3-experimental`; approved base: `0.1.2-experimental`.
+Candidate: `0.1.3-experimental`; approved base: `0.1.2-experimental`.
 Owner report, 8 October 2026: modulating TDEP and SAT produces audible zipping.
 The report did not identify the device, image hash or modulation settings.
-The later owner hardware result and release approval are recorded below.
+This is a report of the problem, not candidate hardware acceptance.
 
 ## Native evidence — 8 October 2026
 
@@ -56,7 +56,7 @@ histories reuse +21/+22; temporary body/pulse scratch moves to consumed MODEL
 and unused-control slots +54/+59. Controls are recopied before each block. Init
 clears PAD, so first-use seeding also resets the SAT history without clearing
 another voice. ColdFire assignment, transport and saved control layouts are
-byte-identical to the approved base (bound in [evidence/native.json](evidence/native.json)).
+byte-identical to the approved base (bound in `draft.json`).
 
 Relative resource estimates: ColdFire demand unchanged; DSP remains high per
 active voice because synthesis plus desk now also performs per-sample smoothing
@@ -83,7 +83,7 @@ docker run --rm --network none --read-only --cap-drop ALL \
   python3 /source/sdk/drafts/analog-bassdrum/qualification/run.py --output /work
 ```
 
-Use the original pinned 0.1.2 SDK snapshot when running these historical development scripts; the promoted module is already overlaid. The runner verifies input identities before creating the disposable SDK overlay,
+The runner verifies input identities before creating the disposable SDK overlay,
 compiles the two test hosts, then runs baseline, static/modulation, jump and
 multiple-instance gates. Only sanitized `evidence.json` may be retained publicly;
 compiled payloads, raw audio/state, firmware, projects and cards remain private.
@@ -144,89 +144,16 @@ files / 1,249 tests and lint/build/SDK/catalog checks passed.
 ## Open acceptance paths
 
 - Usable full-chain audio after Part/project reload and battery-only restart:
-  **owner-reported physical MKII pass**, confirmed below. The emulator audio path
-  remains unverified; emulator control-state passes are separate.
+  **unverified**. The shared-memory startup crash is resolved, but control-state
+  persistence passes above do not upgrade this path.
 - Full machine reset/model-replacement isolation and maximum audio/FX load:
   **untested**. Native voice reset/isolation tests do not replace these checks.
-- Worst-case chip cycles and complete final-image memory bounds: **unmeasured**,
-  accepted for this exact owner-approved experimental update. Native/browser
-  composition and release packaging are checked separately below. The
-  owner-attributed MKII operation/reload/reboot/audio report is recorded below.
+- Worst-case chip cycles, complete final-image memory accounting, native/browser
+  composition/packaging parity and owner-attributed physical operation/reboot/audio
+  reports: **pending**.
 
-No physical device was flashed by the agent. The owner tested the private build.
-The private candidate image, cards,
-raw audio/LCD/memory traces and logs are not published. The owner requested release of this exact tested update. The separate source-bound
-owner approval preserves the named incomplete measurements as explicit limits. The existing approved thumbnail is retained;
+No physical device was flashed or rebooted. The private candidate image, cards,
+raw audio/LCD/memory traces and logs are not published. The draft stays outside
+native discovery/catalog/packages and requires the repository's full runtime-update
+qualification before promotion. The existing approved thumbnail is retained;
 this update changes modulation behavior without changing the control design.
-
-## Owner functional hardware report and release approval — 8 October 2026
-
-Jannik Aßfalg (`repeat98`) received `OCTATRACK_ANALOG_BD_0.1.3_TEST.bin`,
-label `AB013TEST`, built from commit `207964506864dec8a71ca0bc35ca19aca46a6f48`.
-Complete update SHA-256:
-`48217f8b1bf2b9284fc5831a79b94f020c70f1dafc94f6a72ff6857765a83a5a`.
-Decoded MAIN OS SHA-256:
-`87e56b38fe45a5b10fda2129193f67946b078f4d84b07a0cb1afbc2ef0ebaa54`.
-The file passed native/browser full-update byte parity, checksum and decoded
-MAIN identity checks. Firmware remains local.
-
-The owner's exact statement was: **“works great and stable, let's release”**.
-This is a credited functional hardware report and release authorization for
-`0.1.3-experimental`, not a measured stress or worst-case timing result. The owner then answered **“MK2 yes all”** to the question asking for the model
-and whether distinct 808/909 instances, Part/project reload and normal power-off/on
-all kept their settings and audible output. This records an MKII physical
-functional/persistence pass, separately from the emulator evidence. Duration,
-maximum instance/FX load and worst-case chip timing were not reported.
-
-The separate `sdk/analog-bassdrum-build-approval.json` binds the release approval
-to this version and final native-source fingerprint. It preserves the existing
-owner-approved update path for worst-case chip cycles and complete memory bounds. These exceptions do not grant later versions
-a pass; source integrity, native/browser composition, packaging, licences, UI
-provenance and documentation remain required.
-
-## Release composition and packaging — 8 October 2026
-
-The promotion was rebased onto approved main `f7ba0d1`, including Mini Verb 0.2.0.
-A clean, tracked-source-only build at `fdb94e7ab46cb9240962456594819650ec4bc1fa`
-compiled the published 0.1.3 packages without stock firmware. Toolchain image:
-`sha256:6711f0abb3c30dcfda4e9a8a812555f8bbceb37a0fc988918b5d624b603d4a6a`.
-Source tree SHA-256:
-`dabaf66190efa66d07ddd7a5cc4eed7baf7efa4980887e093d733edb3ac4e053`.
-Every other generated code package is unchanged from approved main; the requested
-package changes only Analog BD's engine data and associated hashes/word counts.
-
-`npm run module:verify -- analog-bassdrum --os <owner-stock> --jobs 1
---image modwerk-source-tools:continuation` passed 112 selections: 36 native/browser
-matching builds and 76 matching refusals, zero mismatches. The record is
-`sdk/native-comparisons/analog-bassdrum.json`. Changed stock input is refused.
-Use one worker for this native builder: its DSP assembly output paths are shared;
-a two-worker probe raced those paths and failed the decode preflight.
-
-The native Analog BD suite then refreshed all 136 DSP/utility profiles, with
-both stock-FX2 menu choices: 130 builds and six expected refusals. The source-bound
-fingerprints are in `src/engine/assets/analog-bd-composition-proofs.json`.
-`node scripts/verify-analog-bd-native.mjs <owner-stock> <proofs>` passed all 130
-module-owned MAIN comparisons and independent GNU bootloader byte comparisons,
-six matching refusals and five complete browser firmware round trips. Stock input
-is unchanged and no platform/logger writes overlap module-owned writes.
-
-Four full native update packages match browser ELEK/ELUP encoding byte-for-byte:
-Analog BD alone and Analog BD + Tape Echo + all five utilities, each with stock
-FX2 kept and compact. Every decoded MAIN, container tail and checksum passes.
-Compression is sampled here; the 136-case matrix checks composition/bootloader
-bytes for every accepted profile. Firmware and native packing inputs stay private.
-
-The standalone native MAIN is
-`e5639f9f47feaaaf74d202c411409d42a021017d0067e3c5aa4f2493798fd8d3`.
-Only 50 bytes differ from the owner's test MAIN: the shared builder clones the
-identical stock FX1 chooser table at `0x400d6b20` and changes its three references
-at `0x40037990`, `0x40052706` and `0x40059bd2`. Restoring those four chooser writes
-reproduces the owner's entire MAIN hash exactly, including the appended payloads.
-The test image retains the original stock FX1 references; both menus are identical.
-The public worker also adds its already-approved logger/startup infrastructure.
-The standalone public-worker composition, label `ELEKLOADER`, round-trips to MAIN
-`80dfdd8f938daaf86f87e1332cec93a735a9c3ba00997ce70a20b9886b2fdeac`;
-full update is 575,496 bytes, SHA-256
-`c871fc7424404985ca2c4c1a2ee3be1fa5c68e47494c6abf66ef4e3d479dca33`.
-These are software checks; the credited physical report remains bound to the
-actual `AB013TEST` image and is not relabelled as a physical test of every composition.

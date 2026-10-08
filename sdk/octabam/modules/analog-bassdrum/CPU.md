@@ -1,5 +1,29 @@
 # Analog BD load measurements
 
+## Modulation smoothing, 8 October 2026 — 0.1.3-experimental
+
+The exact smoothing code tested by the owner and in the isolated native gates
+peaks at 6,176 executed instructions per 16-frame 909 block (386/sample) and
+4,294 per 808 block (268.375/sample). These include the combined engine at both
+core placements under the focused modulation/retrigger workload. They are
+executed instruction counts, not worst-case chip cycles or full-chain budgets.
+
+Combined code uses 946 P words per core plus the separate 35-word stock helper.
+The X upload remains 3,776 words per core; the existing four 64-word voice
+blocks per engine/core and saved control layout are unchanged. No X/Y or
+ColdFire allocation is added. [TESTING.md](TESTING.md) records the reused state
+words, native instance/audio tests and the owner-reported MKII persistence pass.
+Complete stack/lifetime memory bounds remain unmeasured.
+
+The legacy instruction-growth guards and original moving-control state hashes
+below predate smoothing. They are not a pass for 0.1.3, and were not silently
+raised or regenerated. Current smoothing regression results are in
+[evidence/native.json](evidence/native.json), with their reproduction scripts
+retained under `sdk/drafts/analog-bassdrum/qualification/` against the pinned
+0.1.2 base. The earlier full-chain FX/load runs remain historical: eight-voice
+maximum FX load and worst-case chip timing are unqualified for this update.
+The exact source-bound owner approval accepts these incomplete measurements.
+
 ## Louder source output, 30 September 2026
 
 Both models now have +12.04 dB gain relative to the 29 September level

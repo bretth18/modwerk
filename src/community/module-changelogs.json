@@ -3,6 +3,14 @@
   "modules": {
     "analog-bassdrum": [
       {
+        "version": "0.1.3-experimental",
+        "date": "2026-10-08",
+        "changes": [
+          "Smooth 909 TDEP and both engines' SAT modulation to reduce audible zipper noise while preserving fixed-control sound and saved parameter layouts.",
+          "Owner reports stable MKII operation with distinct 808/909 instances and Part/project reload and power-cycle persistence. Worst-case chip timing and maximum FX load remain unmeasured."
+        ]
+      },
+      {
         "version": "0.1.2-experimental",
         "date": "2026-10-01",
         "changes": [

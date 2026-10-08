@@ -149,6 +149,13 @@
       "fx1Only": false
     },
     {
+      "id": "analog-bassdrum",
+      "key": "ANALOG BD",
+      "fxId": null,
+      "fx1": false,
+      "fx1Only": false
+    },
+    {
       "id": "usb-audio-out-tracks-main-cue",
       "key": "USB AUDIO OUT TRACKS MAIN CUE",
       "fxId": null,

@@ -168,6 +168,15 @@ When actual project state is required, pass `--card`, `--set-name` and
 project and refuses captures unless LOAD PROJECT completed. Never use an
 empty-card session as evidence of a project-dependent menu. The record includes
 only its card fingerprint and neutral fixture names; keep the actual card local.
+On Linux, the two DSP cores need 104 MiB of shared-memory backing before
+project/audio work. Docker's default `/dev/shm` is only 64 MiB: memory mapping
+succeeds, then touching the second core's buffer raises SIGBUS before DSP setup
+finishes. Start the existing isolated container with `--shm-size 256m`, retaining
+its read-only source mount, private output mount, disabled network and dropped
+capabilities. This changes the shared-memory allowance within the container's
+overall memory limit. The capture script checks for at least 128 MiB free before
+starting the emulator and reports the required setting if space is insufficient.
+
 On macOS the emulator needs shared-memory access. Do not capture a failed load
 as a successful control page or bypass selection guards to manufacture it.
 

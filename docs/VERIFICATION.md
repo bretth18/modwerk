@@ -945,3 +945,23 @@ Mix moves to F. Owner accepted the sound and stability in Octemu and explicitly
 waived physical hardware evidence for this exact version/source; hardware and
 physical reboot persistence remain untested. See the module TESTING.md and
 `sdk/miniverb-build-approval.json`.
+
+
+### Analog BD 0.1.3 modulation smoothing — 8 October 2026
+
+Promoted the exact owner-tested TDEP/SAT DSP update. The MKII owner reports stable
+operation with distinct 808/909 instances and settings/audio retained after Part,
+project and normal power-off/on. The hardware update/MAIN hashes and the separate
+emulator/native results are recorded in the module's TESTING.md. Worst-case chip
+cycles, full memory bounds and eight-voice maximum FX load remain unmeasured or
+untested under the exact source-bound owner-approved experimental update.
+
+On current main with Mini Verb 0.2.0, stock-free compilation passed. Required
+coverage: 112 selections, 36 matching builds and 76 matching refusals. Broader
+Analog BD matrix: 136 profiles, 130 native/browser MAIN and GNU bootloader matches,
+six expected refusals, five full browser update round trips. Four representative
+full native updates match browser encoding byte-for-byte, with checksum/MAIN/tail
+verification and changed-stock rejection. Other generated module code is unchanged.
+The standalone native MAIN differs from the hardware test only by relocation of
+the identical stock FX1 chooser table; the public worker retains the approved
+logger/startup additions. Private firmware, projects, cards and dumps stay local.
