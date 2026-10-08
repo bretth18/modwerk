@@ -270,6 +270,20 @@
       "usedIn": [
         "modules/sidechain-compressor"
       ]
+    },
+    {
+      "id": "octa-bt-pt",
+      "name": "Bryan Tysinger octa-bt-pt (LO-FI AMF fix)",
+      "spdx": "MIT",
+      "noticeFile": "octa-bt-pt.txt",
+      "sources": [
+        {
+          "path": "sdk/octabam/modules/lofi-amf-fix/upstream/LICENSE"
+        }
+      ],
+      "usedIn": [
+        "modules/lofi-amf-fix"
+      ]
     }
   ],
   "moduleComponents": {
@@ -300,6 +314,9 @@
     ],
     "synth": [
       "octa-panel"
+    ],
+    "lofi-amf-fix": [
+      "octa-bt-pt"
     ]
   }
 }
