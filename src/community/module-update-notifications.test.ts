@@ -187,29 +187,32 @@ describe('new module release announcements', () => {
     expect(db.prepare('SELECT module_id FROM announcements').all()).toEqual([{ module_id: 'vector' }])
   })
 
-  it('baselines the library, then reaches non-followers through the bell with private read state and no email or push', async () => {
+  it('baselines the library, then announces new modules publicly with private acknowledgements and no bell, email or push', async () => {
     const f = await fixture(), one = await f.member('releaseone'), two = await f.member('releasetwo')
     await f.publish(release('miniverb'), release('tapeecho'))
     expect(await f.items(one.session)).toEqual([])
     await f.publish(release('vector', '0.2.3-experimental'), release('synth', '0.1.1-experimental'))
-    const items = await f.items(one.session)
+    const publicItems = async (session: string) => (await (await f.call('/announcements/mine', 'GET', undefined, session)).json()).items as BellItem[]
+    const items = await publicItems(one.session)
     expect(items).toHaveLength(2)
     expect(items.map(item => item.kind)).toEqual(['announcement', 'announcement'])
     expect(notificationLines(items)).toEqual(expect.arrayContaining([
       expect.objectContaining({ text: 'VECTOR is now available', href: '#module/vector' }),
       expect.objectContaining({ text: 'FM Synth is now available', href: '#module/fm-synth' }),
     ]))
-    expect(await (await f.call('/notifications/unread', 'GET', undefined, two.session)).json()).toEqual({ unread: 2 })
-    await f.call('/notifications', 'PATCH', { ids: [items[0].id] }, one.session)
-    expect((await f.items(one.session)).filter(item => item.seen)).toHaveLength(1)
-    expect((await f.items(two.session)).every(item => !item.seen)).toBe(true)
+    expect(await f.items(one.session)).toEqual([])
+    expect(await (await f.call('/notifications/unread', 'GET', undefined, two.session)).json()).toEqual({ unread: 0 })
+    await f.call('/announcements/mine', 'PATCH', { ids: [items[0].id] }, one.session)
+    expect((await publicItems(one.session)).filter(item => item.seen)).toHaveLength(1)
+    expect((await publicItems(two.session)).every(item => !item.seen)).toBe(true)
     expect(await f.digests()).toEqual({ sent: 0 })
     expect(f.db.prepare('SELECT COUNT(*) AS count FROM notifications').get()!.count).toBe(0)
     expect(f.db.prepare('SELECT COUNT(*) AS count FROM push_deliveries').get()!.count).toBe(0)
     // Public release history remains readable by visitors and members who join later.
     f.db.prepare("UPDATE announcements SET created_at=datetime('now','-1 minute')").run()
     const late = await f.member('releaselate')
-    expect(await f.items(late.session)).toHaveLength(2)
+    expect(await f.items(late.session)).toEqual([])
+    expect(await publicItems(late.session)).toHaveLength(2)
     const publicBell = await f.call('/announcements')
     expect(publicBell.status).toBe(200)
     expect((await publicBell.json()).items).toHaveLength(2)

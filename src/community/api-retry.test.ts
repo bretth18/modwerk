@@ -14,10 +14,10 @@ describe('community read recovery',()=>{
   vi.stubGlobal('sessionStorage',{getItem:()=>'b'.repeat(64)})
   const fetch=vi.fn().mockImplementation(async()=>Response.json({}))
   vi.stubGlobal('fetch',fetch)
-  for(const path of ['/catalog','/community/summary?fresh=1','/announcements','/notifications'])await api(path)
+  for(const path of ['/catalog','/community/summary?fresh=1','/announcements','/notifications','/announcements/mine'])await api(path)
   const headers=fetch.mock.calls.map(([,options])=>(options as RequestInit).headers as Headers)
-  expect(headers.map(value=>value.has('Authorization'))).toEqual([false,false,false,true])
-  expect(headers.map(value=>value.has('X-Octamod-Admin'))).toEqual([false,false,false,true])
+  expect(headers.map(value=>value.has('Authorization'))).toEqual([false,false,false,true,true])
+  expect(headers.map(value=>value.has('X-Octamod-Admin'))).toEqual([false,false,false,true,true])
  })
 
  it('retries a transient session failure once',async()=>{
@@ -50,6 +50,15 @@ describe('community read recovery',()=>{
   vi.stubGlobal('fetch',fetch)
   await expect(post('/notifications/preferences',{likes:false},'PATCH')).rejects.toThrow('Couldn’t reach')
   expect(fetch).toHaveBeenCalledTimes(1)
+ })
+ it('retries an interrupted public acknowledgement without changing its ids',async()=>{
+  const fetch=vi.fn().mockRejectedValueOnce(new TypeError('connection dropped')).mockResolvedValueOnce(Response.json({ok:true}))
+  vi.stubGlobal('fetch',fetch)
+  const result=post('/announcements/mine',{ids:['announcement-'+'a'.repeat(32)]},'PATCH')
+  await vi.advanceTimersByTimeAsync(200)
+  expect(await result).toEqual({ok:true})
+  expect(fetch).toHaveBeenCalledTimes(2)
+  expect(fetch.mock.calls[0][1].body).toBe(fetch.mock.calls[1][1].body)
  })
  it('does not replay a mutation when the connection drops',async()=>{
   const fetch=vi.fn().mockRejectedValue(new TypeError('connection dropped'))

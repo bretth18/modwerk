@@ -1,0 +1,23 @@
+import { communityBase } from '../hosting'
+import type { BellItem } from './notification-contract'
+
+const key = () => 'modwerk.public-announcements.dismissed:' + communityBase()
+const dismissedThisVisit = new Set<string>()
+function savedDismissals(): string[] {
+  try {
+    const value: unknown = JSON.parse(localStorage.getItem(key()) ?? '[]')
+    return Array.isArray(value) ? value.filter((id): id is string => typeof id === 'string' && /^announcement-[a-f0-9]{32}$/.test(id)).slice(0, 50) : []
+  } catch { return [] }
+}
+export function publicAnnouncementDismissed(id: string) {
+  return dismissedThisVisit.has(key() + ':' + id) || savedDismissals().includes(id)
+}
+export function dismissPublicAnnouncement(id: string) {
+  dismissedThisVisit.add(key() + ':' + id)
+  try { localStorage.setItem(key(), JSON.stringify([id, ...savedDismissals().filter(saved => saved !== id)].slice(0, 50))) } catch { /* Optional news stays dismissed for this visit when storage is blocked. */ }
+}
+/** Only the newest broadcast gets a card. Dismissing it must never reveal an older backlog. */
+export function latestPublicAnnouncement(items: BellItem[]) {
+  const latest = items[0]
+  return latest && !latest.seen && !publicAnnouncementDismissed(latest.id) ? latest : null
+}

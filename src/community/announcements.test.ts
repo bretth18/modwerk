@@ -56,7 +56,7 @@ describe('operator announcements in the bell', () => {
     await announce({ ...release, visibility: 'public' })
     const { id } = await (await call('/forum/threads', 'POST', { title: 'Module settings discussion', body: 'Share your settings.', category: 'modules', moduleId: 'miniverb' }, author.session)).json()
     await call('/forum/threads/' + id + '/replies', 'POST', { body: 'A reply for the author.' }, other.session)
-    expect((await bell(author.session)).items.map(item => item.kind).sort()).toEqual(['announcement', 'announcement', 'reply'])
+    expect((await bell(author.session)).items.map(item => item.kind).sort()).toEqual(['announcement', 'reply'])
     // Public reads also work with stale credentials and never include admin/read metadata.
     const result = await call('/announcements', 'GET', undefined, 'stale-session')
     expect(result.status).toBe(200)
@@ -76,11 +76,15 @@ describe('operator announcements in the bell', () => {
     await announce({ ...release, slug: 'public-history', visibility: 'public' })
     db.prepare("UPDATE announcements SET created_at='2000-01-01 00:00:00'").run()
     const late = await member('publiclate')
-    expect(await unread(early.session)).toBe(2)
+    expect(await unread(early.session)).toBe(1)
     const laterBell = await bell(late.session)
-    expect(laterBell.items).toHaveLength(1); expect(laterBell.unread).toBe(1)
+    expect(laterBell.items).toEqual([]); expect(laterBell.unread).toBe(0)
     expect((await call('/notifications', 'PATCH', {}, late.session)).status).toBe(200)
-    expect(await unread(late.session)).toBe(0); expect(await unread(early.session)).toBe(2)
+    expect(await unread(late.session)).toBe(0); expect(await unread(early.session)).toBe(1)
+    const mine = await (await call('/announcements/mine', 'GET', undefined, late.session)).json()
+    expect(mine.items).toEqual([expect.objectContaining({ title: release.title, seen: false })])
+    await call('/announcements/mine', 'PATCH', { ids: [mine.items[0].id] }, late.session)
+    expect((await (await call('/announcements/mine', 'GET', undefined, late.session)).json()).items[0].seen).toBe(true)
     const listed = await (await call('/admin/announcements', 'GET', undefined, '', admin)).json() as { visibility: string; audience: number; reads: number }[]
     expect(listed.find(item => item.visibility === 'public')).toMatchObject({ audience: 2, reads: 1 })
     expect(listed.find(item => item.visibility === 'signed-in')).toMatchObject({ audience: 1, reads: 0 })
@@ -106,7 +110,8 @@ describe('operator announcements in the bell', () => {
     expect((await (await call('/announcements')).json()).items).toHaveLength(1)
     expect(db.prepare('SELECT * FROM announcements WHERE id=?').get(id)).toEqual({ ...before, visibility: 'public' })
     expect(db.prepare('SELECT * FROM announcement_reads').all()).toEqual(reads)
-    expect((await bell(reader.session)).items[0].seen).toBe(true)
+    expect((await bell(reader.session)).items).toEqual([])
+    expect((await (await call('/announcements/mine', 'GET', undefined, reader.session)).json()).items[0].seen).toBe(true)
     expect((await call(path, 'PATCH', { visibility: 'signed-in' }, '', admin)).status).toBe(200)
     expect((await (await call('/announcements')).json()).items).toEqual([])
     expect(db.prepare('SELECT COUNT(*) AS n FROM announcements').get()).toEqual({ n: 1 })
@@ -121,6 +126,33 @@ describe('operator announcements in the bell', () => {
     insert.run('private-one', 'private-one', 'Member message', 'Private audience.', 'administrator', 'signed-in', '2099-01-01 00:00:00')
     const { items } = await (await call('/announcements')).json() as { items: BellItem[] }
     expect(items.map(item => item.title)).toEqual(Array.from({ length: 10 }, (_, n) => 'Public ' + (12 - n)))
+  })
+
+  it('keeps public acknowledgements separate from every bell read action and private to each member', async () => {
+    const { call, announce, member, bell, unread, db } = await fixture(), one = await member('cardreader'), two = await member('othercardreader')
+    const privateId = 'announcement-' + (await (await announce(release)).json()).id
+    const publicId = 'announcement-' + (await (await announce({ ...release, slug: 'public-card', visibility: 'public' })).json()).id
+    const mine = async (session: string) => (await (await call('/announcements/mine', 'GET', undefined, session)).json()).items as BellItem[]
+    for (const session of ['', 'stale-session']) {
+      expect((await call('/announcements/mine', 'GET', undefined, session)).status).toBe(401)
+      expect((await call('/announcements/mine', 'PATCH', { ids: [publicId] }, session)).status).toBe(401)
+    }
+    for (const ids of [undefined, [], ['bad-id'], Array(51).fill(publicId)]) expect((await call('/announcements/mine', 'PATCH', { ids }, one.session)).status).toBe(400)
+    expect((await mine(one.session)).map(item => item.id)).toEqual([publicId])
+    await call('/notifications', 'PATCH', { ids: [publicId] }, one.session)
+    expect((await mine(one.session))[0].seen).toBe(false)
+    await call('/announcements/mine', 'PATCH', { ids: [privateId] }, one.session)
+    expect(await unread(one.session)).toBe(1)
+    await call('/notifications', 'PATCH', {}, one.session)
+    expect(await unread(one.session)).toBe(0)
+    expect((await mine(one.session))[0].seen).toBe(false)
+    await call('/announcements/mine', 'PATCH', { ids: [publicId] }, one.session)
+    await call('/announcements/mine', 'PATCH', { ids: [publicId] }, one.session) // Retry is idempotent.
+    expect((await mine(one.session))[0].seen).toBe(true)
+    expect((await mine(two.session))[0].seen).toBe(false)
+    expect(await unread(two.session)).toBe(1)
+    expect((await bell(two.session)).items.map(item => item.id)).toEqual([privateId])
+    expect(db.prepare('SELECT COUNT(*) AS count FROM announcement_reads WHERE user_id=?').get(one.id)).toEqual({ count: 2 })
   })
 
   it('upgrades existing manual announcements without making them public or changing read markers', () => {

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { api, post } from './api'
 import { COMMUNITY_MODULES } from './modules'
 import { NotificationList } from './NotificationList'
+import { PublicAnnouncementCard } from './PublicAnnouncement'
 import { SUPPORT_URL } from '../config/support'
 import type { AnnouncementVisibility } from './notification-contract'
 
@@ -37,7 +38,7 @@ export function AnnouncementsPanel() {
     } catch (error) { setError(errorText(error)) } finally { setBusy(false) }
   }
   async function retract(item: Sent) {
-    if (!window.confirm(`Remove “${item.title}” from every bell?`)) return
+    if (!window.confirm(`Remove “${item.title}” from the site?`)) return
     setBusy(true); setError(''); setNote('')
     try { await api('/admin/announcements/' + item.id, { method: 'DELETE' }); await load() } catch (error) { setError(errorText(error)) } finally { setBusy(false) }
   }
@@ -52,7 +53,7 @@ export function AnnouncementsPanel() {
   const ready = title.trim().length >= 3 && !!body.trim() && slug.length >= 3
   return <section className="configuration-section announcements-admin">
     <h2>Announcements</h2>
-    <p className="service-note">Public announcements are visible to everyone, including signed-out visitors. Signed-in announcements reach verified members who joined before they were sent. Announcements appear in the bell and are never emailed.</p>
+    <p className="service-note">Public announcements appear as a dismissible floating card for everyone, including signed-out visitors. Only the latest announcement is shown; dismissed news stays quiet. Signed-in announcements appear in the bell of verified members who joined before they were sent. Neither is emailed.</p>
     <div className="announcement-compose">
       <form className="community-form announcement-form" onSubmit={event => void send(event)}>
         <label>Visibility<select value={visibility} onChange={event => setVisibility(event.target.value as AnnouncementVisibility)}><option value="public">Public — everyone</option><option value="signed-in">Signed-in users</option></select></label>
@@ -68,9 +69,11 @@ export function AnnouncementsPanel() {
         <div className="announcement-actions"><button type="submit" className="button button-primary" disabled={busy || !ready}>{busy ? 'Working…' : visibility === 'public' ? 'Send public announcement' : 'Send to signed-in users'}</button></div>
       </form>
       <aside className="announcement-preview" aria-label="Preview">
-        <p className="announcement-preview-label">Preview in the bell</p>
-        <div className="announcement-preview-card" aria-hidden="true" inert>
+        <p className="announcement-preview-label">{visibility === 'public' ? 'Preview of the public card' : 'Preview in the bell'}</p>
+        <div className={visibility === 'public' ? 'announcement-public-preview' : 'announcement-preview-card'} aria-hidden="true" inert>
+          {visibility === 'public' ? <PublicAnnouncementCard line={{ kind: 'announcement', text: title.trim() || 'Your title', excerpt: body.trim() || 'Your message appears here.', href: url || COMMUNITY_MODULES.find(module => module.id === moduleId)?.href || '#library', ids: ['preview'], seen: false, created_at: new Date().toISOString(), actor: null, official: true, avatar: null }} onDismiss={() => {}} onOpen={() => {}} /> :
           <NotificationList lines={[{ kind: 'announcement', text: title.trim() || 'Your title', excerpt: body.trim() || 'Your message appears here.', href: '#admin/announcements', ids: ['preview'], seen: false, created_at: new Date().toISOString(), actor: null, official: true, avatar: null }]} onOpen={() => {}} />
+          }
         </div>
         <p className="announcement-hint">{visibility === 'public' ? 'Visible to everyone' : 'Visible to current signed-in members'} · Opens {destination(url || null, moduleId || null)}</p>
       </aside>
@@ -78,7 +81,7 @@ export function AnnouncementsPanel() {
     {error && <p className="file-error" role="alert">{error}</p>}
     {note && <p className="success-note" role="status">{note}</p>}
     <h3 className="announcement-sent-heading">Sent{items.length ? <span className="subtle"> {items.length}</span> : null}</h3>
-    <p className="announcement-read-note">Marked read counts members who opened the announcement or used “Mark all read.” Viewing the bell and signed-out visitors are not counted. The audience includes eligible members who have not visited since it was sent.</p>
+    <p className="announcement-read-note">Public acknowledgements count members who clicked or dismissed the card. Bell entries count members who opened them or used “Mark all read.” Passive views and signed-out visitors are not counted. The audience includes eligible members who have not visited since it was sent; earlier read markers are preserved when visibility changes.</p>
     {loading ? <p className="service-note" role="status">Loading announcements…</p> : items.length ? <ul className="announcement-sent">{items.map(item => {
       const share = item.audience ? Math.min(100, Math.round(item.reads / item.audience * 100)) : 0
       return <li key={item.id}>
@@ -89,7 +92,7 @@ export function AnnouncementsPanel() {
           <small><time>{sentAt(item.created_at)}</time><span>Opens {destination(item.url, item.module_id)}</span><code title="Key">{item.slug}</code></small>
         </div>
         <div className="announcement-sent-reads">
-          <span><strong>{item.reads}</strong> of {item.audience} marked read</span>
+          <span><strong>{item.reads}</strong> of {item.audience} {item.visibility === 'public' ? 'acknowledged' : 'marked read'}</span>
           <span className="announcement-meter" aria-hidden="true"><span style={{ width: share + '%' }} /></span>
         </div>
         <button type="button" className="button button-quiet announcement-remove" disabled={busy} onClick={() => void retract(item)} aria-label={'Remove ' + item.title}>Remove</button>

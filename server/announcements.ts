@@ -1,12 +1,12 @@
-import type { Database } from './platform'
-import { ADMIN_ACTOR, throttle } from './auth'
+import type { Database, User } from './platform'
+import { ADMIN_ACTOR, needMember, throttle } from './auth'
 import { digest, HttpError, jsonBody, response } from './security'
 import { communityModule } from '../src/community/modules'
 import type { AnnouncementVisibility, BellItem } from '../src/community/notification-contract'
 import type { ModuleRelease } from '../src/community/module-release-contract'
 import { DEVELOPMENT_DISCORD_URL } from '../src/config/development-discord'
 
-/** Bell ids of announcements carry this prefix, so one list and one read call serve both kinds. */
+/** Announcement ids stay distinct from personal activity ids. */
 export const ANNOUNCEMENT_PREFIX = 'announcement-'
 const LISTED = 10
 const newId = 'lower(hex(randomblob(16)))'
@@ -16,8 +16,12 @@ type Row = { id: string; title: string; body: string; url: string | null; module
 const AUDIENCE = "(a.visibility='public' OR a.created_at>=u.created_at)"
 const VISIBLE = `FROM announcements a JOIN users u ON u.id=? LEFT JOIN announcement_reads r ON r.announcement_id=a.id AND r.user_id=u.id WHERE ${AUDIENCE}`
 
-/** An anonymous read exposes only public bell content, without admin metadata or member read state. */
-export async function publicAnnouncementItems(db: Database): Promise<BellItem[]> {
+/** Public content is anonymous; an authenticated read includes only that member's acknowledgement state. */
+export async function publicAnnouncementItems(db: Database, memberId?: string): Promise<BellItem[]> {
+  if (memberId) {
+    const rows = (await db.prepare(`SELECT a.id,a.title,a.body,a.url,a.module_id,a.created_at,r.announcement_id IS NOT NULL AS seen ${VISIBLE} AND a.visibility='public' ORDER BY a.created_at DESC,a.rowid DESC LIMIT ${LISTED}`).bind(memberId).all<Row>()).results
+    return rows.map(toItem)
+  }
   const rows = (await db.prepare(`SELECT id,title,body,url,module_id,created_at,1 AS seen FROM announcements WHERE visibility='public' ORDER BY created_at DESC,rowid DESC LIMIT ${LISTED}`).all<Row>()).results
   return rows.map(toItem)
 }
@@ -33,20 +37,34 @@ function visibility(value: unknown): AnnouncementVisibility {
 }
 
 export async function announcementItems(db: Database, memberId: string): Promise<BellItem[]> {
-  const rows = (await db.prepare(`SELECT a.id,a.title,a.body,a.url,a.module_id,a.created_at,r.announcement_id IS NOT NULL AS seen ${VISIBLE} ORDER BY a.created_at DESC,a.rowid DESC LIMIT ${LISTED}`).bind(memberId).all<Row>()).results
+  const rows = (await db.prepare(`SELECT a.id,a.title,a.body,a.url,a.module_id,a.created_at,r.announcement_id IS NOT NULL AS seen ${VISIBLE} AND a.visibility='signed-in' ORDER BY a.created_at DESC,a.rowid DESC LIMIT ${LISTED}`).bind(memberId).all<Row>()).results
   return rows.map(toItem)
 }
 
 export async function announcementUnread(db: Database, memberId: string) {
-  return (await db.prepare(`SELECT COUNT(*) AS unread ${VISIBLE} AND r.announcement_id IS NULL`).bind(memberId).first<{ unread: number }>())?.unread ?? 0
+  return (await db.prepare(`SELECT COUNT(*) AS unread ${VISIBLE} AND a.visibility='signed-in' AND r.announcement_id IS NULL`).bind(memberId).first<{ unread: number }>())?.unread ?? 0
 }
 
-/** Marks the given bell ids, or every announcement the member can see, as read. */
-export async function markAnnouncementsRead(db: Database, memberId: string, ids: string[] | null) {
+/** Each surface acknowledges only its own audience; marking the bell read never dismisses public news. */
+export async function markAnnouncementsRead(db: Database, memberId: string, ids: string[] | null, audience: AnnouncementVisibility = 'signed-in') {
   const own = ids?.map(id => id.slice(ANNOUNCEMENT_PREFIX.length))
   if (own && !own.length) return
-  await db.prepare(`INSERT OR IGNORE INTO announcement_reads(user_id,announcement_id) SELECT u.id,a.id FROM announcements a JOIN users u ON u.id=? WHERE ${AUDIENCE}${own ? ` AND a.id IN (${own.map(() => '?').join(',')})` : ''}`)
-    .bind(memberId, ...(own ?? [])).run()
+  await db.prepare(`INSERT OR IGNORE INTO announcement_reads(user_id,announcement_id) SELECT u.id,a.id FROM announcements a JOIN users u ON u.id=? WHERE ${AUDIENCE} AND a.visibility=?${own ? ` AND a.id IN (${own.map(() => '?').join(',')})` : ''}`)
+    .bind(memberId, audience, ...(own ?? [])).run()
+}
+
+/** Public news has its own member read state, independent of the bell and its Mark all read action. */
+export async function publicAnnouncementRoutes(request: Request, db: Database, user: User | null): Promise<Response | null> {
+  if (new URL(request.url).pathname !== '/api/announcements/mine') return null
+  const member = needMember(user)
+  if (request.method === 'GET') return response({ items: await publicAnnouncementItems(db, member.id) })
+  if (request.method === 'PATCH') {
+    const { ids } = await jsonBody(request)
+    if (!Array.isArray(ids) || !ids.length || ids.length > 50 || ids.some(id => typeof id !== 'string' || !/^announcement-[a-f0-9]{32}$/.test(id))) throw new HttpError(400, 'Choose up to 50 public announcements.')
+    await markAnnouncementsRead(db, member.id, ids, 'public')
+    return response({ ok: true })
+  }
+  throw new HttpError(404, 'Announcement route not found.')
 }
 
 export const adminText = (value: unknown, label: string, minimum: number, maximum: number) => {
@@ -67,7 +85,7 @@ export function announcementLink(value: unknown) {
   throw new HttpError(400, 'Link to a page in the app (#...), https://modwerk.app/ or the development Discord invite.')
 }
 
-/** One public bell-only announcement per newly published module. */
+/** One public announcement per newly published module; follower version updates remain in the bell. */
 export async function moduleReleaseAnnouncement(db: Database, release: ModuleRelease) {
   // Hash the public module id so even the longest inventory ids fit the 64-character key limit.
   const slug = 'module-release-' + (await digest(release.id)).slice(0, 48)

@@ -20,7 +20,7 @@ import { membersOnline } from './presence'
 import { adminInsights } from './admin-insights'
 import { adminAccounts } from './admin-accounts'
 import { adminActivity } from './admin-activity'
-import { adminAnnouncements, publicAnnouncementItems } from './announcements'
+import { adminAnnouncements, publicAnnouncementItems, publicAnnouncementRoutes } from './announcements'
 import { adminNews, newsUnsubscribe } from './news-mail'
 import recipes from '../src/catalog/module-sets.json'
 import type { Database, Env, Media, User } from './platform'
@@ -73,6 +73,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     const developerAuth = await developerAuthentication(request,env,db)
     if(developerAuth)return developerAuth
     const user = await currentUser(request,db,env)
+    const announcements = await publicAnnouncementRoutes(request,db,user)
+    if(announcements)return announcements
     // Private history rows name the administrator account that acted; the key falls back to the fixed administrator row.
     const adminId = await adminActor(request,env,db), admin = !!adminId
     const push = await pushRoutes(request,env,db,user,admin)
