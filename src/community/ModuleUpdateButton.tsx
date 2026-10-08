@@ -7,7 +7,8 @@ import { modulePageHref } from './modules'
 import type { ModuleUpdateSubscription } from './module-release-contract'
 
 function UpdateDeliveryNote({ id, compact = false }: { id?: string; compact?: boolean }) {
-  return <p id={id} className="service-note">{compact ? 'New releases in your bell · ' : 'Get new releases in your bell. Choose email delivery in '}<a href="#account/notifications">{compact ? 'Settings' : 'notification settings'}</a>.</p>
+  if (compact) return <span id={id} className="sr-only">Downloads automatically follow module updates. Choose email delivery in your account's notification settings.</span>
+  return <p id={id} className="service-note">Get new releases in your bell. Choose email delivery in <a href="#account/notifications">notification settings</a>.</p>
 }
 
 export function ModuleUpdateButton({ id, compact = false }: { id: string; compact?: boolean }) {
