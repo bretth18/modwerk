@@ -1,0 +1,32 @@
+USB audio and MIDI contributions (USB Audio 0.2)
+
+Source: sambanks/octabam at 7b2984c859732ae6c797ae49c7d61d250b1b6519.
+The applicable full MIT copyright and licence notices for Octabam and
+octemu are retained in sdk/octabam/licenses/ and the third-party notice bundle.
+
+Mark Roberts (@markandrus / octemu): original USB audio and MIDI
+implementations, descriptors, audio producer, packet builder and rate control.
+
+Bryan Tysinger (@bryantysinger): MAIN/CUE channel layouts, stream latency
+and alignment work including CUE alignment with MASTER TRACK, and upstream
+hardware measurements of the shared USB audio stack.
+
+Sam Banks (@sambanks): Octabam port and output layouts, USB MIDI receive
+FIFO and clock timestamp fixes, shared audio/MIDI interrupt integration,
+bus reset and session-end handling.
+
+allmyfriendsaresynths (@clickysteve): fixed-rate UAC2 SET_CUR handshake
+for Outbox 8 compatibility, post-fader track layout following LEVEL,
+mute, solo and the crossfader, and upstream hardware measurements.
+
+Modwerk: local setup, routing plan and browser integration.
+
+Contribution sources:
+https://github.com/sambanks/octabam/blob/7b2984c859732ae6c797ae49c7d61d250b1b6519/modules/usb-audio-out-tracks-main-cue/README.md
+https://github.com/sambanks/octabam/blob/7b2984c859732ae6c797ae49c7d61d250b1b6519/modules/usb-audio-out-tracks-post/README.md
+https://github.com/sambanks/octabam/blob/7b2984c859732ae6c797ae49c7d61d250b1b6519/modules/usb-midi/README.md
+https://github.com/sambanks/octabam/pull/597
+
+Upstream hardware reports describe their original builds. Local qualification
+evidence and limits are recorded in
+sdk/octabam/modules/usb-audio-out-tracks-main-cue/TESTING.md.

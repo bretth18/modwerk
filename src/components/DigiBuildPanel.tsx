@@ -31,6 +31,7 @@ export function DigiBuildPanel({ device, firmware, moduleIds, onExport, exported
   const deviceInfo = 'device' in state ? state.device : undefined, key = 'key' in state ? state.key : ''
   const shown = version || deviceInfo?.default_version || '2.0a', length = deviceInfo?.version_len ?? 4
   const result = state.phase === 'built' && state.result.version === shown ? state.result : undefined
+  const downloadName = result ? 'Modwerk-' + device.id + '-' + result.files[0].name : ''
   const approvalKey = JSON.stringify([device.id,ready ? firmware.firmware?.sha256 : '',[...moduleIds].sort(),shown])
   const riskAccepted = accepted === approvalKey
   const versionError = /^[\x20-\x7e]*$/.test(shown) && shown.length === length ? '' : 'Use exactly ' + length + ' plain characters.'
@@ -46,7 +47,7 @@ export function DigiBuildPanel({ device, firmware, moduleIds, onExport, exported
     : state.phase === 'failed' ? state.error
     : state.phase !== 'built' ? ''
     : !result ? 'The displayed OS version changed. Build again to use the new version.'
-    : 'Firmware built and verified: ' + result.files[0].name + '.'
+    : 'Firmware built and verified: ' + downloadName + '.'
   // the engine's log of the last build, built or failed: shown under the result, and saved as text for bug reports
   const done = state.phase === 'built' || state.phase === 'failed' ? state : undefined
   const outcome = done?.result, lines = outcome?.log ?? []
@@ -70,7 +71,7 @@ export function DigiBuildPanel({ device, firmware, moduleIds, onExport, exported
           <small id="digi-version-help">{versionError || 'Shown instead of the stock version, so you can tell the builds apart.'}</small></label>}
       </div>
       <div className="build-actions">
-        {busy ? <button className="button button-quiet" onClick={cancel}>Cancel build</button> : result && DIGI_DOWNLOADS_ENABLED ? <button className="button button-primary" disabled={!riskAccepted} onClick={() => { save(result.files[0].data, result.files[0].name); setDownloaded(key); if (state.phase === 'built') { const ids=state.moduleIds.map(id => device.id + '-' + id);trackFirmwareDownload(ids, device.id);followDownloads(ids, { machine: device.name, os: release ?? '', modules: builtModules(ids) }) } }}><Icon name="download" size={16}/>Download .syx</button> : null}
+        {busy ? <button className="button button-quiet" onClick={cancel}>Cancel build</button> : result && DIGI_DOWNLOADS_ENABLED ? <button className="button button-primary" disabled={!riskAccepted} onClick={() => { save(result.files[0].data, downloadName); setDownloaded(key); if (state.phase === 'built') { const ids=state.moduleIds.map(id => device.id + '-' + id);trackFirmwareDownload(ids, device.id);followDownloads(ids, { machine: device.name, os: release ?? '', modules: builtModules(ids) }) } }}><Icon name="download" size={16}/>Download .syx</button> : null}
         {!busy && (state.phase === 'ready' || state.phase === 'failed' || state.phase === 'built'
           ? <button className={'button ' + (result ? 'button-quiet' : 'button-primary')} disabled={!!versionError || !riskAccepted} onClick={() => void build(shown)} aria-describedby="digi-build-status"><Icon name="sliders" size={16} />{result ? 'Build again' : 'Build firmware'}</button>
           : <button className="button button-primary" disabled={!ready || !!missing.length || busy} onClick={() => void check()} aria-describedby="digi-build-status"><Icon name="check" size={16} />{state.phase === 'blocked' ? 'Check again' : 'Check selection'}</button>)}

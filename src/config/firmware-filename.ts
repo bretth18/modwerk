@@ -6,5 +6,5 @@ export function firmwareFilename(configurationName: string, sha256: string): str
     .replace(/[^a-z0-9]+/g, '-')
     .slice(0, 80)
     .replace(/^-+|-+$/g, '') || 'configuration'
-  return `octamod-${name}-${sha256.slice(0, 6).toLowerCase()}.bin`
+  return `Modwerk-octatrack-${name}-${sha256.slice(0, 6).toLowerCase()}.bin`
 }
