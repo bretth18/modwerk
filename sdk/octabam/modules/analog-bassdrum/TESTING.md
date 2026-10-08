@@ -83,7 +83,7 @@ docker run --rm --network none --read-only --cap-drop ALL \
   python3 /source/sdk/drafts/analog-bassdrum/qualification/run.py --output /work
 ```
 
-The runner verifies input identities before creating the disposable SDK overlay,
+Use the original pinned 0.1.2 SDK snapshot when running these historical development scripts; the promoted module is already overlaid. The runner verifies input identities before creating the disposable SDK overlay,
 compiles the two test hosts, then runs baseline, static/modulation, jump and
 multiple-instance gates. Only sanitized `evidence.json` may be retained publicly;
 compiled payloads, raw audio/state, firmware, projects and cards remain private.
@@ -183,3 +183,50 @@ to this version and final native-source fingerprint. It preserves the existing
 owner-approved update path for worst-case chip cycles and complete memory bounds. These exceptions do not grant later versions
 a pass; source integrity, native/browser composition, packaging, licences, UI
 provenance and documentation remain required.
+
+## Release composition and packaging — 8 October 2026
+
+The promotion was rebased onto approved main `f7ba0d1`, including Mini Verb 0.2.0.
+A clean, tracked-source-only build at `fdb94e7ab46cb9240962456594819650ec4bc1fa`
+compiled the published 0.1.3 packages without stock firmware. Toolchain image:
+`sha256:6711f0abb3c30dcfda4e9a8a812555f8bbceb37a0fc988918b5d624b603d4a6a`.
+Source tree SHA-256:
+`dabaf66190efa66d07ddd7a5cc4eed7baf7efa4980887e093d733edb3ac4e053`.
+Every other generated code package is unchanged from approved main; the requested
+package changes only Analog BD's engine data and associated hashes/word counts.
+
+`npm run module:verify -- analog-bassdrum --os <owner-stock> --jobs 1
+--image modwerk-source-tools:continuation` passed 112 selections: 36 native/browser
+matching builds and 76 matching refusals, zero mismatches. The record is
+`sdk/native-comparisons/analog-bassdrum.json`. Changed stock input is refused.
+Use one worker for this native builder: its DSP assembly output paths are shared;
+a two-worker probe raced those paths and failed the decode preflight.
+
+The native Analog BD suite then refreshed all 136 DSP/utility profiles, with
+both stock-FX2 menu choices: 130 builds and six expected refusals. The source-bound
+fingerprints are in `src/engine/assets/analog-bd-composition-proofs.json`.
+`node scripts/verify-analog-bd-native.mjs <owner-stock> <proofs>` passed all 130
+module-owned MAIN comparisons and independent GNU bootloader byte comparisons,
+six matching refusals and five complete browser firmware round trips. Stock input
+is unchanged and no platform/logger writes overlap module-owned writes.
+
+Four full native update packages match browser ELEK/ELUP encoding byte-for-byte:
+Analog BD alone and Analog BD + Tape Echo + all five utilities, each with stock
+FX2 kept and compact. Every decoded MAIN, container tail and checksum passes.
+Compression is sampled here; the 136-case matrix checks composition/bootloader
+bytes for every accepted profile. Firmware and native packing inputs stay private.
+
+The standalone native MAIN is
+`e5639f9f47feaaaf74d202c411409d42a021017d0067e3c5aa4f2493798fd8d3`.
+Only 50 bytes differ from the owner's test MAIN: the shared builder clones the
+identical stock FX1 chooser table at `0x400d6b20` and changes its three references
+at `0x40037990`, `0x40052706` and `0x40059bd2`. Restoring those four chooser writes
+reproduces the owner's entire MAIN hash exactly, including the appended payloads.
+The test image retains the original stock FX1 references; both menus are identical.
+The public worker also adds its already-approved logger/startup infrastructure.
+The standalone public-worker composition, label `ELEKLOADER`, round-trips to MAIN
+`80dfdd8f938daaf86f87e1332cec93a735a9c3ba00997ce70a20b9886b2fdeac`;
+full update is 575,496 bytes, SHA-256
+`c871fc7424404985ca2c4c1a2ee3be1fa5c68e47494c6abf66ef4e3d479dca33`.
+These are software checks; the credited physical report remains bound to the
+actual `AB013TEST` image and is not relabelled as a physical test of every composition.

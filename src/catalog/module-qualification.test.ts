@@ -85,7 +85,7 @@ describe('module qualification hard gates',()=>{
       // Generated web documents include display-only baseline resource estimates.
       // Qualify the source manifest, as publication validation does.
       const source=parseModuleDocument(JSON.parse(readFileSync(resolve(folder,'octamod.module.json'),'utf8')))
-      expect(await requireFolderQualification(folder,source,frozen)).toBe(unchanged?'retained':source.tests.retainedEvidence?'retained-evidence':module.id==='midi-scenes'?'owner-approved-standalone':['miniverb','synth','usb-audio-out-tracks-main-cue','euclid','mute-modes','recorder-loop-fix'].includes(module.id)?'owner-approved-update':'qualified')
+      expect(await requireFolderQualification(folder,source,frozen)).toBe(unchanged?'retained':source.tests.retainedEvidence?'retained-evidence':module.id==='midi-scenes'?'owner-approved-standalone':['miniverb','synth','usb-audio-out-tracks-main-cue','euclid','mute-modes','recorder-loop-fix','analog-bassdrum'].includes(module.id)?'owner-approved-update':'qualified')
     }
   })
   it('binds an owner-approved update to its exact version and native source, never to verified hardware',async()=>{
