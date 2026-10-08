@@ -1,0 +1,116 @@
+{
+  "kind": "original-MKII-panel-renderer-headless-capture",
+  "sourceImageSha256": "7693b142529ead3039b4d7b5aa2fe61fe726505741e3fcaa2426b8bd93f1094a",
+  "headlessEmulatorSha256": "89759d97c794f62b304dff1912a2ac1c7965289b4d019fbdbb0dbcf3c3d9f312",
+  "panelVersion": 8,
+  "panelImageSha256": "c9ac2aaf571095437cf73dd1d532383841027c5197e33f6989c314cb1ad42347",
+  "captures": [
+    {
+      "text": "Elekloader",
+      "originalRendererCallsReturned": 10,
+      "lcdDataBytes": 80,
+      "lcdWritesMatchOriginalPanelFont": true,
+      "pixelSha256": "646a38ae1d8b9338942ce8084f4e2b5e43df5f9d963e296bd69f231b95231e26",
+      "png": "boot-name-lowercase.png",
+      "pngSha256": "995c75f77df3a8f064c8929613d14ef05eba1f6ed3611a564f9212af91bdb131"
+    },
+    {
+      "text": "ELEKLOADER",
+      "originalRendererCallsReturned": 10,
+      "lcdDataBytes": 80,
+      "lcdWritesMatchOriginalPanelFont": true,
+      "pixelSha256": "95a0a5e895674e3e29d95ea418db738948d513ebeec9374667c89a55e79af711",
+      "png": "boot-name-fixed.png",
+      "pngSha256": "5d24fd31755d51cd8ae45eeafa80a5a22ddb7d914871065062ab620115330831"
+    },
+    {
+      "text": "OCTAMOD79 ",
+      "originalRendererCallsReturned": 10,
+      "lcdDataBytes": 80,
+      "lcdWritesMatchOriginalPanelFont": true,
+      "pixelSha256": "de8a3aaa5a524548332028ab7ecfabc7c53df79d0c25e8c12826cad95fb8113e",
+      "png": "boot-name-previous.png",
+      "pngSha256": "afa1fd6d7769d15382fece31c76dc8b2fdb7afdc14bbe63c302d87d42b7aac52"
+    }
+  ],
+  "method": "Boot the actual MAIN image as MKII with an empty disposable FAT16 card. Execute the unchanged embedded panel draw-character instructions through --step call at 0x400d9a62; PC-relative calls execute the original copied routines. Map the original panel font at its absolute address and seed the resident loader page 7 / cell 6 cursor. Capture actual GPIO/LCD command and data writes via --watch-mem and decode them to 128x64 pixels. Verify all 80 transmitted columns against the original panel font, then crop the observed ten cells at integer scale 8. No replacement glyphs, drawn labels or instruction patches.",
+  "diagnosis": "Lowercase codes select symbols, patterns or filled blocks. Uppercase ELEKLOADER renders letters in the same ten cells.",
+  "limits": [
+    "Panel renderer function capture, not a full resident-loader boot or physical device.",
+    "MKI panel firmware/font is absent from MAIN and was not emulated.",
+    "No module state, audio or persistence qualification changed."
+  ],
+  "firmwareAndFontDataKeptPrivate": true,
+  "sourceBaseCommit": "2899ff214b51004ecb70b10dba519556740a0f65",
+  "verificationScriptSha256": "aa13a73a1c00329d45e5b22e52017903dfdb257d4517d236a57592640747f2d9",
+  "packaging": {
+    "kind": "elekloader-boot-name",
+    "label": "ELEKLOADER",
+    "fieldBytes": 10,
+    "previousLabels": [
+      "Elekloader",
+      "OCTAMOD79",
+      "MIDISC2.0"
+    ],
+    "proofs": [
+      {
+        "ids": [
+          "synth"
+        ],
+        "loader": false,
+        "label": "ELEKLOADER",
+        "mainBytes": 1129801,
+        "mainSha256": "7693b142529ead3039b4d7b5aa2fe61fe726505741e3fcaa2426b8bd93f1094a",
+        "matchesPreviousTestedMain": true,
+        "firmwareBytes": 465324,
+        "firmwareSha256": "0f51a7891cadc7e7c1ffa7d682521ba2599e347cba0a01b9efd39bd395ae3ad1",
+        "nativePackagingParity": "passed",
+        "opaqueTailAndSeed": "preserved"
+      },
+      {
+        "ids": [
+          "midi-scenes"
+        ],
+        "loader": false,
+        "label": "ELEKLOADER",
+        "mainBytes": 1117508,
+        "mainSha256": "bdfea6186121d24e3c227a86fb4648fd40a8f162382b20fb9313baa6ce5a8f82",
+        "matchesPreviousTestedMain": true,
+        "firmwareBytes": 454228,
+        "firmwareSha256": "31d476937c14d171843232fc9cf531d92a80177f114d638d7c8d117aab5995d8",
+        "nativePackagingParity": "passed",
+        "opaqueTailAndSeed": "preserved"
+      },
+      {
+        "ids": [
+          "miniverb"
+        ],
+        "loader": true,
+        "label": "ELEKLOADER",
+        "mainBytes": 1144321,
+        "mainSha256": "daf8dfc01817af3278aac0507fc7bfe2003c447888c69c531752985bd6dac393",
+        "matchesPreviousTestedMain": true,
+        "firmwareBytes": 469888,
+        "firmwareSha256": "e35eb1955d953c7617941b5987e97a34dd1d6098d960c5001fde3e630925e4a0",
+        "nativePackagingParity": "passed",
+        "opaqueTailAndSeed": "preserved"
+      }
+    ],
+    "originalUnchanged": true,
+    "previousDownloadUnchanged": true,
+    "hardware": "new label untested",
+    "emulatorLimitation": "Original MKII panel draw routine captured separately above; full resident-loader boot and physical rendering remain untested."
+  },
+  "rights": "Captures show actual original MKII panel boot glyphs; underlying Elektron rights reserved. No firmware, raw font tables or memory dumps are published.",
+  "checks": {
+    "focusedTests": 10,
+    "fullRepositoryCheck": "passed",
+    "testFiles": 188,
+    "tests": 1267,
+    "node": "24.21.0",
+    "workerLimit": 1,
+    "sourceCheckedBeforeFastForward": "2899ff214b51004ecb70b10dba519556740a0f65",
+    "rebasedMain": "51c18a8783204688f77cfe702de041623f6b7cd2",
+    "appAndSdkSourcesUnchangedAcrossFastForward": true
+  }
+}

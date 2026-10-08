@@ -29,5 +29,6 @@ export const DOWNLOADS_ENABLED = true
 // Off: stock DSP code stays built in and modules use the space of stock effects left off both menus.
 export const DSP_LOADER = false
 // The ELEK update name appears on the resident bootloader's screen.
+// The panel boot font has uppercase letters; lowercase codes draw symbols.
 // Its fixed field is ten ASCII bytes; module versions are reported separately.
-export const FIRMWARE_VERSION = 'Elekloader'
+export const FIRMWARE_VERSION = 'ELEKLOADER'

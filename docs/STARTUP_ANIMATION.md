@@ -71,24 +71,62 @@ No hardware flashing or module qualification-status change was performed.
 
 ## Firmware name before the animation
 
-Updates built after the boot-name follow-up use **Elekloader** in the fixed
-ten-byte ELEK name field. This includes standalone MIDI Scenes. The build
-report and installation instructions use the same name; individual module
-versions remain separate. The owner reported that the previous physical boot
-screen showed Octamod, and the saved visitor update decoded as `OCTAMOD79`.
+Updates now use **ELEKLOADER** in the fixed ten-byte ELEK name field, including
+standalone MIDI Scenes. The original panel boot font uses uppercase letter
+codes; lowercase codes select symbols, patterns and filled blocks. The first
+follow-up used `Elekloader`: its header was correct, but its glyphs were wrong.
+The owner reported the malformed text on their device. This correction keeps
+the same ten cells, with no extra firmware space or runtime changes.
 
-[Boot-name verification](media/startup/boot-name-verification.json) records
-three current profiles: FM Synth through the visitor composition path,
-standalone MIDI Scenes and dynamic-loader Mini Verb. Each MAIN hash matches
-its previously tested startup image. The complete native Python ELUP output
-matches browser encoding byte for byte, and the original inputs, opaque tail
-and seed remain intact. For the real saved visitor update, the complete ELEK
-container differs only in the ten name bytes. No OS/runtime/DSP instructions,
-artwork, image extents or memory reservations change. Historical packaging
-proofs above retain their original names and hashes.
+The headless emulator ran the **original MKII panel character-drawing routine**
+for the previous `OCTAMOD79 `, the broken `Elekloader`, and corrected
+`ELEKLOADER`. Each of the 30 original calls returned. The captures below decode
+the routine's actual LCD controller command/data writes, with all 80 columns
+per name matched against the original local panel font. They are crops of the
+ten observed name cells, enlarged at integer scale 8; no text is reconstructed.
 
-Session regression tests cover validation and build reports plus the exact
-update header for Repitch, MIDI Scenes and USB Audio + Quantizer, with both
-stock-FX2 choices. The MAIN-only emulator does not implement the resident
-bootloader screen that precedes the animation. The new name is therefore
-verified in the actual update header; its physical rendering remains untested.
+Broken lowercase name:
+
+![Actual original MKII panel routine output for Elekloader](media/startup/boot-name-lowercase.png)
+
+Corrected uppercase name:
+
+![Actual original MKII panel routine output for ELEKLOADER](media/startup/boot-name-fixed.png)
+
+[Renderer and packaging verification](media/startup/boot-name-renderer-verification.json)
+records the exact MAIN, emulator, panel and capture hashes. Reproduce on a host
+where the reviewed local emulator runs:
+
+```sh
+python3 scripts/verify-boot-name-renderer.py \
+  --image /private/path/decoded-MAIN.os \
+  --emulator /private/path/ot_emu \
+  --output /private/path/new-capture-directory
+```
+
+The checker uses a new empty disposable FAT16 card. It runs the unchanged
+embedded panel instructions through the headless emulator's function-call
+path, maps the original local font at the panel's own absolute address, seeds
+the resident loader's page/cell cursor, and records the GPIO/LCD writes.
+Firmware, font tables, card and raw logs remain private. The new checker needs
+no Unicorn installation and does not change emulator or firmware instructions.
+
+This is a **panel-renderer function capture**, not a complete resident-loader
+boot. Standard Octemu/headless MAIN boot skips the resident loader, and Octemu
+currently ignores its character protocol. MKI panel firmware/font is absent
+from MAIN and was not emulated; the new physical rendering is still untested.
+These limits do not negate the reproduced MKII lowercase glyph failure.
+
+Native Python ELUP output matches browser packaging byte for byte for FM Synth,
+standalone MIDI Scenes and dynamic-loader Mini Verb. Every MAIN hash still
+matches its previously tested startup image; original inputs, opaque tail and
+seed remain intact. Against the saved visitor baseline, the complete ELEK
+container differs only in the ten name bytes. OS/runtime/DSP instructions,
+artwork, extents and memory reservations remain unchanged.
+
+Session regression tests cover validation/build reports and all ten header
+bytes for Repitch, MIDI Scenes and USB Audio + Quantizer with both stock-FX2
+choices. A separate letter-range assertion rejects accidental lowercase
+branding. Individual module versions remain separate. The earlier
+[header-only proof](media/startup/boot-name-verification.json) retains its
+original names and hashes as historical packaging evidence, not glyph evidence.
