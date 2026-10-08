@@ -57,7 +57,18 @@ Not tested. The module changes the ring-modulator frequency only; aliasing, clip
 
 ## Performance
 
-Not tested. `evidence/performance.json` does not exist yet. The replacement is a one-word multiply of the same family as the stock one, so LO-FI's instruction count is unchanged; its cycle count before and after has not been measured. Comparator: stock LO-FI itself.
+8 October 2026, Bryan Tysinger's Mac. `sdk/octabam/tools/harness/benchmark_stock_dsp.py`, unmodified, default 4,096 blocks, one independent instance per DSP core, fixed and moving knobs, audio at X:0; `dsp_host` built from this checkout (`cmake --build sdk/octabam/vendor/dsp56300/build --target dsp_host`), SHA-256 `0f357c16bfa5db472ef0e40b3c37777bc2c5a74b0649b9d50891ab32d42aa499`. Run twice in the same tree, the only difference being the MAIN OS placed in `out/raw` (removed afterwards): the original 1.40C (`164f3122…af0a84e`) and the image with this module's two pokes (`175989699c70…a667cbbe`). Units are executed instructions per sample in the emulator, null stub subtracted, **not hardware cycles**.
+
+| LO-FI | Stock image | Patched image |
+| --- | ---: | ---: |
+| Fixed knobs | 275.4375 | 275.4375 |
+| Moving knobs, mean | 275.4022 | 275.4032 |
+| Worst tested | 275.4375 | 275.4375 |
+| Peak block, both cores (instructions / 16 samples) | 4,474 | 4,474 |
+
+Every other stock effect's figures are identical between the two runs. Reference from the same runs: SPRING REV worst 257.5, dearest stock effect DJ EQ 293.375. LO-FI's moving-knob peak output differs between the runs (2,073,161 stock, 2,035,612 patched) while its fixed-knob output is identical (2,012,557), consistent with the moving pass reaching the changed multiply; which knobs that pass moves was not checked, so this is not a test of the fix.
+
+Not produced: `evidence/performance.json`. Its DSP record asks for a static floor of the module's own per-sample loop (`cycle_count.py`) and a `pressure.py render` stress run over a remix's layouts; this module has no loop or effect of its own, and neither tool applies to a two-word rewrite inside stock LO-FI. The qualification record likewise asks for integer worst-case cycles per instance. See the open question in the pull request.
 
 ## Stock flows
 
