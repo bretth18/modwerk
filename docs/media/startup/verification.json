@@ -1,0 +1,207 @@
+{
+  "kind": "modwerk-startup-native-parity",
+  "originalSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+  "writes": [
+    {
+      "address": 1074430460,
+      "guardLength": 5058,
+      "guardSha256": "f971e2be4bb3e5921267c7eac46aae8bb57b70a45642dfd2eb3c6e8bf15d5b6c",
+      "note": "Modwerk startup particles",
+      "replacementSha256": "2c714630810df45bf213e0082fd1fe001a52cb43c26648a924d168df46210a9b"
+    },
+    {
+      "address": 1074543666,
+      "guardLength": 440,
+      "guardSha256": "8d15a3a53fdbb8d824f37bde83b5c4e955704c06fcffa5f6ae2f349dff63b7b6",
+      "note": "Modwerk startup wordmark",
+      "replacementSha256": "c275ea9a1b31bbe1db7e3678ddfb011f674b7bd144bd42e08a7dad6def58bb11"
+    }
+  ],
+  "proofs": [
+    {
+      "ids": [],
+      "loader": false,
+      "direct": false,
+      "keep": false,
+      "bytes": 1117442,
+      "sha256": "d921d2f8db082b0668b171251749febef136dc2cee5db6577a374a9d5cdc3870",
+      "nativeParity": "passed",
+      "firmware": {
+        "bytes": 450372,
+        "sha256": "3e53dd2c2afbdd3cdba77e577387b3801ed055f1b6c0cac7590c7fbfcc8402d9",
+        "roundTrip": "passed"
+      }
+    },
+    {
+      "ids": [
+        "repitch"
+      ],
+      "loader": false,
+      "direct": false,
+      "keep": false,
+      "bytes": 1117471,
+      "sha256": "6b1ad50631ba1beb1a22d3dc4918623db7e51efccc36575137a151ec741c0022",
+      "nativeParity": "passed",
+      "firmware": {
+        "bytes": 450840,
+        "sha256": "abc1708494f604102706ae3b563f28c6004431cd7f60d7910a2e53ea96257ba6",
+        "roundTrip": "passed"
+      }
+    },
+    {
+      "ids": [
+        "miniverb"
+      ],
+      "loader": false,
+      "direct": false,
+      "keep": false,
+      "bytes": 1117478,
+      "sha256": "e68fc08d279b98f6603d5c9729d31f30ab9f2ebce78e61fda66af85f39eef8e4",
+      "nativeParity": "passed",
+      "firmware": {
+        "bytes": 450364,
+        "sha256": "4b30497d47efbd7c6aeab79236e0a0b0d376cab0c9c7a0758955fb152f2971ce",
+        "roundTrip": "passed"
+      }
+    },
+    {
+      "ids": [
+        "tapeecho",
+        "euclid"
+      ],
+      "loader": false,
+      "direct": false,
+      "keep": false,
+      "bytes": 1221761,
+      "sha256": "bb89dccf67925b25f521a7a1d173ae3f1cf2e28df334d4262b6cd6fa511285ce",
+      "nativeParity": "passed",
+      "firmware": {
+        "bytes": 565664,
+        "sha256": "307813c09a4d4068c43a6789828476bfc8c8149062354f9b30a796f22b42656c",
+        "roundTrip": "passed"
+      }
+    },
+    {
+      "ids": [
+        "analog-bassdrum"
+      ],
+      "loader": false,
+      "direct": false,
+      "keep": false,
+      "bytes": 1270109,
+      "sha256": "bc6ae67ed42fb67490e0f13e7b00b656eeda8225d5f3372c6570af6a26fcc72f",
+      "nativeParity": "passed",
+      "firmware": {
+        "bytes": 573052,
+        "sha256": "65a337119946759fe8e48ab65161c52c8effbb14a53558545f28a191b5eae41f",
+        "roundTrip": "passed"
+      }
+    },
+    {
+      "ids": [
+        "sidechain-compressor"
+      ],
+      "loader": false,
+      "direct": false,
+      "keep": false,
+      "bytes": 1117497,
+      "sha256": "e4ec95111845d27582cf14e5eb318a6fe6eb343abc967e44473d692907d0cee3",
+      "nativeParity": "passed",
+      "firmware": {
+        "bytes": 450684,
+        "sha256": "2c47bc8e337fac1974a2a1ff3c262967322251df7e64153f11388a7640e29e9e",
+        "roundTrip": "passed"
+      }
+    },
+    {
+      "ids": [
+        "usb-audio-out-tracks-main-cue",
+        "quantizer"
+      ],
+      "loader": false,
+      "direct": false,
+      "keep": false,
+      "bytes": 1122403,
+      "sha256": "9ccf89be3b294a2acf9767301c23c01e4424452a2cbe8ad1655b3b01c73ae81a",
+      "nativeParity": "passed",
+      "firmware": {
+        "bytes": 456156,
+        "sha256": "6050dd5bb85698ff61b1cb091d24b54a58ee3546b0c0dd3e0ead9cf4812baf40",
+        "roundTrip": "passed"
+      }
+    },
+    {
+      "ids": [
+        "midi-scenes"
+      ],
+      "loader": false,
+      "direct": false,
+      "keep": false,
+      "bytes": 1117508,
+      "sha256": "bdfea6186121d24e3c227a86fb4648fd40a8f162382b20fb9313baa6ce5a8f82",
+      "nativeParity": "passed",
+      "firmware": {
+        "bytes": 454228,
+        "sha256": "5b70d4de39a261ef87464efa6ab51a1d656b375816c56da5d552819828aaf73f",
+        "roundTrip": "passed"
+      }
+    },
+    {
+      "ids": [
+        "miniverb"
+      ],
+      "loader": true,
+      "direct": false,
+      "keep": false,
+      "bytes": 1144321,
+      "sha256": "daf8dfc01817af3278aac0507fc7bfe2003c447888c69c531752985bd6dac393",
+      "nativeParity": "passed",
+      "firmware": {
+        "bytes": 469888,
+        "sha256": "69ac6cddeedc0bd9eaa1de7b68d4b494e7ea68f8e0cad5a2dac3144b1ca6396d",
+        "roundTrip": "passed"
+      }
+    },
+    {
+      "ids": [],
+      "loader": false,
+      "direct": true,
+      "keep": true,
+      "bytes": 1117471,
+      "sha256": "15b40494795d5a46387a28f06e7d2c874a173f041addebc22b541674701cbb5f",
+      "nativeParity": "passed",
+      "firmware": {
+        "bytes": 450408,
+        "sha256": "7a28156a8de3a6313338a70a6ace16fbcb506b81720c630e24ad8604b81d73b7",
+        "roundTrip": "passed"
+      }
+    }
+  ],
+  "alteredGraphicsRejected": true,
+  "repeatPatchRejected": true,
+  "originalUnchanged": true,
+  "hardware": "untested",
+  "baselineComparison": {
+    "profiles": 10,
+    "sameImageLengths": true,
+    "bytesOutsideBothGraphicTables": "identical",
+    "appendedRuntimes": "identical"
+  },
+  "checks": {
+    "engineTests": 20,
+    "focusedEslint": "passed",
+    "focusedTypeScript": "passed",
+    "viteBundle": "passed",
+    "fullTypeScript": "passed",
+    "repositoryTests": 1191,
+    "repositoryTestFiles": 180,
+    "repositoryCheck": "npm run check -- --base origin/main: passed"
+  },
+  "sourceSha256": {
+    "src/engine/startup-animation.ts": "6416aa712b692879f94f785ac3da47bac72d6463c42ce574da90e0f62d2e55c9",
+    "sdk/runtime/startup/build.py": "ae216a5edfb73ca148b373d442f67ab5d3974d4b18f3ec4cdacabc676f16815b",
+    "sdk/runtime/startup/artwork.json": "191f28c9870db93bccebb2c9f81723213f3f8f7e3a679ba286a16522d4ea7e6f"
+  },
+  "verifiedBaseCommit": "8304186565dd53025e7fb7a575ff500756ad84fa",
+  "opaqueTailAndSeed": "preserved in all ten firmware round trips"
+}

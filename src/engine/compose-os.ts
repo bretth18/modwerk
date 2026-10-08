@@ -1,3 +1,4 @@
+import { createStartupAnimationWrites } from './startup-animation.ts'
 import { verifyNativeContracts } from './native-contracts.ts'
 import { composeLoggedMidiScenes } from './midi-scenes-logged.ts'
 import { installCoreLogger, LOGGER_RETAINED_BYTES } from './core-logger.ts'
@@ -34,7 +35,7 @@ export async function composeOs(original: Uint8Array, ids: readonly string[], pr
   const logging = await installCoreLogger(runtime, original, ids, menus.chooser)
   const bootstrap = await createRuntimeBootstrap(runtime.bytes, runtime.reserveBytes - LOGGER_RETAINED_BYTES, undefined, runtime)
   if (OS_LOAD_ADDRESS + original.length !== BOOTSTRAP_ADDRESS) throw new Error('The runtime loader does not follow the original OS extent.')
-  const patched = await applyGuardedOsWrites(original, [...menus.writes, ...dsp.writes, ...createPlatformOsWrites(runtime, ids, {reserveBytes:runtime.reserveBytes}), ...logging.writes])
+  const patched = await applyGuardedOsWrites(original, [...menus.writes, ...dsp.writes, ...createPlatformOsWrites(runtime, ids, {reserveBytes:runtime.reserveBytes}), ...logging.writes, ...createStartupAnimationWrites()])
   await verifyNativeContracts(patched, ids)
   const bytes = new Uint8Array(patched.length + bootstrap.append.length); bytes.set(patched); bytes.set(bootstrap.append, patched.length)
   return { bytes, chooser: menus.chooser, dsp: dsp.layouts, runtime: { reservedBytes: runtime.reserveBytes, bytes: runtime.bytes.length, stage: bootstrap.layout.stage, stageEnd: bootstrap.layout.stageEnd }, caveCursor: menus.caveCursor, overflowCursor: menus.overflowCursor }
