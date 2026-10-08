@@ -137,8 +137,8 @@
   .library-machine-switcher { flex: 0 0 auto; }
   .library-machine-button { display: flex; align-items: center; gap: 8px; background: #27272d; white-space: nowrap; }
   .library-machine-button:focus-visible { outline-offset: -2px; }
-  .library-machine-button > svg { width: 12px; height: 12px; color: #a8afff; transition: transform .15s; }
-  .library-machine-button[aria-expanded="true"] > svg { transform: rotate(180deg); }
+  .library-machine-button > svg:last-child { width: 12px; height: 12px; color: #a8afff; transition: transform .15s; }
+  .library-machine-button[aria-expanded="true"] > svg:last-child { transform: rotate(180deg); }
   /* The phone chooser is a bottom sheet; styles.css holds the sheet frame shared with the menu. */
   .library-machine-menu { max-height: min(80dvh, 640px); }
   .library-machine-menu a { min-height: 50px; font-size: 14px; }

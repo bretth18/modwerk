@@ -12,7 +12,8 @@ const GROUPS = [
 
 type MachineSwitcherProps = { current: DeviceProfile; all: boolean; counts: Record<string, number>; compact?: boolean; active?: boolean }
 
-// The library's machine menu, at the start of its filter row: switching swaps the library, its counts and the build panel.
+// The library's machine menu, at the start of its filter row (on phones, pinned before the category chips, picture only):
+// switching swaps the library, its counts and the build panel.
 export function MachineSwitcher({ current, all, counts, compact = false, active = false }: MachineSwitcherProps) {
   const total = Object.values(counts).reduce((sum, count) => sum + count, 0)
   const [open, setOpen] = useState(false)
@@ -64,10 +65,8 @@ export function MachineSwitcher({ current, all, counts, compact = false, active 
   return (
     <div className={compact ? 'library-machine-switcher' : 'machine-switcher'}>
       <button ref={buttonRef} type="button" className={compact ? 'library-machine-button' + (active ? ' active' : '') : 'sidebar-device'} aria-label={compact ? (all ? 'All mods' : current.name) + ', choose machine' : undefined} aria-current={compact && active ? 'page' : undefined} aria-expanded={open} aria-controls={panelId} onClick={toggleMenu} onKeyDown={event => { if (!open && (event.key === 'ArrowDown' || event.key === 'ArrowUp')) { event.preventDefault(); toggleMenu() } }}>
-        {compact ? <span>{all ? 'All mods' : current.name}</span> : <>
-          {all ? <AllMachinesArt /> : <DeviceImage device={current} eager />}
-          <span><small>Machine</small><strong>{all ? 'All machines' : current.name}</strong></span>
-        </>}
+        {all ? <AllMachinesArt /> : <DeviceImage device={current} eager />}
+        {!compact && <span><small>Machine</small><strong>{all ? 'All machines' : current.name}</strong></span>}
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m7 10 5 5 5-5" /></svg>
       </button>
       {open && (compact ? createPortal(<><div className="sheet-scrim" aria-hidden="true" />{menu}</>, document.body) : menu)}

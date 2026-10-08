@@ -2,6 +2,7 @@ import { DigiModPreview } from './DigiModPreview'
 export { DigiModPreview } from './DigiModPreview'
 export { DigiModDetail } from './DigiModDetail'
 import { useRef, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { downloadDigiSelection, parseDigiSelection } from '../config/digi-selection'
 import { Icon } from '../components/Icon'
 import { issueRepository } from '../community/report-context'
@@ -15,6 +16,7 @@ import { moduleStability, STABILITY_NOTE } from '../catalog/module-stability'
 import { AddButton, CardProof, CardStats, ModuleCard } from '../components/ModuleCard'
 import { SelectionWarning } from '../components/SelectionWarning'
 import { LibraryTools } from '../components/LibraryTools'
+import { LibraryResultsBar } from '../components/LibraryResultsBar'
 import { compareModules, downloadCoverage, type ModuleStatistics } from '../community/module-statistics'
 import { RATING_RANKING_NOTE } from '../community/rating-ranking'
 import { DeviceImage, PhotoCredit } from './DeviceImage'
@@ -73,9 +75,10 @@ type AllMachinesLibraryProps = {
 }
 
 // One mounted library keeps its machine picker, heading and controls in place while the collection changes.
-type MachineLibraryProps = AllMachinesLibraryProps & { device?: DeviceProfile; children?: ReactNode; onClearSearch?: () => void }
+// On phones the machine picker sits in the category row and the results bar renders into resultsSlot, beneath it.
+type MachineLibraryProps = AllMachinesLibraryProps & { device?: DeviceProfile; children?: ReactNode; onClearSearch?: () => void; phone?: boolean; resultsSlot?: HTMLElement | null }
 
-export function MachineLibrary({ device, query, category, octatrackModules: octatrack, octatrackSelected, onToggleOctatrack, digiSelected, onToggleDigi, family, onFamilyChange, sort, onSortChange, statistics, octatrackConflicts, comparison, onCompare, onOpenComparison, viewedModuleVersions, moduleBaseline, machinePicker, children, onClearSearch, onBrowse }: MachineLibraryProps) {
+export function MachineLibrary({ device, query, category, octatrackModules: octatrack, octatrackSelected, onToggleOctatrack, digiSelected, onToggleDigi, family, onFamilyChange, sort, onSortChange, statistics, octatrackConflicts, comparison, onCompare, onOpenComparison, viewedModuleVersions, moduleBaseline, machinePicker, children, onClearSearch, onBrowse, phone = false, resultsSlot }: MachineLibraryProps) {
   const term = query.toLowerCase().trim()
   const hasMods = !device || device.status === 'available' || device.status === 'preview'
   const families = Array.from(new Set([
@@ -83,6 +86,12 @@ export function MachineLibrary({ device, query, category, octatrackModules: octa
     ...DIGI_MODS.filter(mod => !device || mod.device === device.id).map(mod => mod.category),
   ]))
   const libraryFamily = families.includes(family) ? family : 'all'
+  // Each module in view before the type filter, by type: the phone type sheet counts what each choice would show.
+  const scopeFamilies = [
+    ...(!device || device.id === 'octatrack' ? AVAILABLE_MODULES.filter(module => (!category || module.category === category) && (module.name + ' ' + module.description + ' ' + module.authorName + ' ' + module.author).toLowerCase().includes(term)).map(module => DETAILS[module.id].family) : []),
+    ...DIGI_MODS.filter(mod => (!device || mod.device === device.id) && (!category || mod.libraryCategory === category) && (mod.title + ' ' + mod.summary + ' ' + mod.author).toLowerCase().includes(term)).map(mod => mod.category),
+  ]
+  const typeCounts = families.map(value => ({ value, count: scopeFamilies.filter(item => item === value).length })).filter(option => option.count || option.value === libraryFamily)
   const warnings = [
     ...((!device || device.id === 'octatrack') && octatrackConflicts.length ? [{device: DEVICES_BY_ID.octatrack, description: 'Some modules cannot run together. Choose a compatible set in your configuration.'}] : []),
     ...(['digitakt', 'digitone'] as const).filter(id => !device || device.id === id).flatMap(id => {
@@ -107,12 +116,15 @@ export function MachineLibrary({ device, query, category, octatrackModules: octa
     ...digiGroups.map(({ id, mods }) => ({device: DEVICES_BY_ID[id], count: mods.length, cards: mods.map(mod => <DigiModCard key={mod.id} mod={mod} selected={digiSelected[id].includes(mod.id)} statistics={statistics?.find(item => item.module_id === id + '-' + mod.id)} onToggle={() => onToggleDigi(id, mod.id)} compared={comparison.includes(id + '-' + mod.id)} canCompare={comparison.length < 3 || comparison.includes(id + '-' + mod.id)} onCompare={() => onCompare(id + '-' + mod.id)} onBrowse={browseResults} />)})),
   ]
   const total = groups.reduce((sum, group) => sum + group.count, 0)
+  const shownGroups = groups.filter(group => group.count)
+  const onlyGroup = !device && shownGroups.length === 1 ? shownGroups[0].device : undefined
+  const resultsSummary = !hasMods ? 'No modules yet · ' + device?.name : term ? total + ' ' + (total === 1 ? 'result' : 'results') + ' for “' + query.trim() + '”' : total + ' ' + (total === 1 ? 'module' : 'modules') + ' · ' + ((device ?? onlyGroup)?.name ?? 'All machines')
   return <div className="library-page">
     <div className="page-heading"><div><p className="page-kicker">MODWERK / {device?.name.toUpperCase() ?? 'ALL MACHINES'}</p><h1>{category ? LIBRARY_CATEGORY_LABELS[category] : device ? 'Module library' : 'All mods'}</h1><p>{category === 'standalone' ? STANDALONE_NOTE : 'Explore modules for your Elektron instruments.'}</p></div><span className="library-total">{total} modules</span></div>
     {!!warnings.length && <SelectionWarning warnings={warnings.map(warning => ({id: warning.device.id, title: warning.device.name + ': your selection needs a change', description: warning.description, href: deviceHref(warning.device.id, 'configuration')}))} />}
-    <LibraryTools family={libraryFamily} families={families} onFamilyChange={onFamilyChange} sort={sort} onSortChange={onSortChange} comparisonCount={comparison.length} onCompare={onOpenComparison} buildHref={hasMods ? deviceHref(device?.id ?? 'octatrack', 'configuration') : null} buildLabel={hasMods ? 'Build firmware for ' + (device?.name ?? 'Octatrack') : 'No modules to build yet'} machine={machinePicker} disabled={!hasMods} />
+    {phone ? resultsSlot && createPortal(<LibraryResultsBar summary={resultsSummary} sort={sort} onSortChange={onSortChange} family={libraryFamily} onFamilyChange={onFamilyChange} families={typeCounts} allCount={scopeFamilies.length} disabled={!hasMods} />, resultsSlot) : <LibraryTools family={libraryFamily} families={families} onFamilyChange={onFamilyChange} sort={sort} onSortChange={onSortChange} comparisonCount={comparison.length} onCompare={onOpenComparison} buildHref={hasMods ? deviceHref(device?.id ?? 'octatrack', 'configuration') : null} buildLabel={hasMods ? 'Build firmware for ' + (device?.name ?? 'Octatrack') : 'No modules to build yet'} machine={machinePicker} disabled={!hasMods} />}
     {device || !total ? <div className="library-subheading"><span>{term ? 'Results for “' + query.trim() + '”' : 'Explore the collection'}</span><span className="subtle">{device ? device.name + (device.firmware ? ' · OS ' + device.firmware.releases.join(' / ') : ' · no modules yet') : 'All machines'}</span></div> : null}
-    {groups.filter(group => group.count).map(group => <section key={group.device.id} className="machine-section" aria-labelledby={!device ? 'machine-' + group.device.id : undefined}>
+    {shownGroups.map(group => <section key={group.device.id} className={'machine-section' + (onlyGroup ? ' is-only-group' : '')} aria-labelledby={!device ? 'machine-' + group.device.id : undefined}>
       {!device && <div className="library-subheading"><span id={'machine-' + group.device.id}>{group.device.name} <span className="subtle">· {group.count} {group.count === 1 ? 'module' : 'modules'}{group.device.status === 'preview' ? ' · preview' : ''}</span></span><div className="machine-library-actions"><a className="text-button" href={deviceHref(group.device.id)}>Open {group.device.name} library <Icon name="arrow" size={13} /></a>{group.device.id !== 'octatrack' && <a className="button button-primary" href={deviceHref(group.device.id,'configuration')} aria-label={'Build firmware for ' + group.device.name}><Icon name="sliders" size={16}/>Build firmware</a>}</div></div>}
       <div className="module-grid">{group.cards}</div>
     </section>)}
