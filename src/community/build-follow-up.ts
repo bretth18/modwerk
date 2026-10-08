@@ -11,13 +11,10 @@ export function builtModules(ids: readonly string[], versions: Readonly<Record<s
   })
 }
 
-export const HARDWARE_NOTE_LIMIT = 2000
-
-/** The reply a member posts to a module's thread once it works on their unit: what they flashed, then their own words. */
-export function hardwareReportBody(machine: string, os: string, module: BuiltModule, build: readonly BuiltModule[], note: string) {
+/** The one-click hardware report keeps the unit, OS and full downloaded build context. */
+export function hardwareReportBody(machine: string, os: string, module: BuiltModule, build: readonly BuiltModule[]) {
   const others = build.filter(item => item.id !== module.id)
   const summary = '**Works on my ' + machine + '**' + (os ? ' (OS ' + os + ')' : '') + ' · ' + module.name + ' ' + module.version
     + (others.length ? ', built together with ' + others.map(item => item.name + ' ' + item.version).join(', ') : '') + '.'
-  const text = note.trim().slice(0, HARDWARE_NOTE_LIMIT)
-  return text ? summary + '\n\n' + text : summary
+  return summary
 }

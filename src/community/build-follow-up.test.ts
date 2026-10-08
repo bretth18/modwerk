@@ -21,17 +21,30 @@ describe('after a firmware download', () => {
   })
   it('writes a hardware report that names the unit, the OS and the rest of the build', () => {
     const [verb, echo] = [{ id: 'a', name: 'Verb', version: '1.0.0' }, { id: 'b', name: 'Echo', version: '0.2.0' }]
-    expect(hardwareReportBody('Octatrack', '1.40C', verb, [verb, echo], '')).toBe('**Works on my Octatrack** (OS 1.40C) · Verb 1.0.0, built together with Echo 0.2.0.')
-    expect(hardwareReportBody('Digitakt', '', verb, [verb], '  Lovely on drums.  ')).toBe('**Works on my Digitakt** · Verb 1.0.0.\n\nLovely on drums.')
-    expect(hardwareReportBody('Digitakt', '', verb, [verb], 'x'.repeat(3000)).length).toBeLessThan(2100)
+    expect(hardwareReportBody('Octatrack', '1.40C', verb, [verb, echo])).toBe('**Works on my Octatrack** (OS 1.40C) · Verb 1.0.0, built together with Echo 0.2.0.')
+    expect(hardwareReportBody('Digitakt', '', verb, [verb])).toBe('**Works on my Digitakt** · Verb 1.0.0.')
   })
   it('offers members a hardware report on each module after automatic update follows', () => {
     const html = render(member, ['miniverb'])
     expect(html).toContain('After you flash')
     expect(html).not.toContain('Follow this module')
-    expect(html).toContain('Works on my Octatrack')
+    expect(html).toContain('works on my Octatrack')
+    expect(html).toContain('>Works</button>')
+    expect(html).toContain('shares a public hardware report')
+    expect(html).not.toContain('<form')
+    expect(html).not.toContain('<textarea')
+    expect(html).not.toContain('aria-expanded')
     expect(html).toContain('href="#module/')
     expect(html).toContain('?report=1')
+  })
+  it('embeds only pending choices in a reminder without another heading', () => {
+    const html = renderToStaticMarkup(createElement(CommunityContext.Provider, { value: { session: member, developer: null, catalog: [], refresh: async () => {}, refreshDeveloper: async () => {} } },
+      createElement(BuildFollowUp, { machine: 'Octatrack', os: '1.40C', modules: builtModules(['miniverb', 'tapeecho']), pendingIds: ['tapeecho'], embedded: true })))
+    expect(html).toContain('Tape Echo')
+    expect(html).not.toContain('Mini Verb')
+    expect(html).not.toContain('After you flash')
+    expect(html).not.toContain('<h2')
+    expect(html).toContain('Module hardware feedback')
   })
   it('shows nothing without a verified member or without catalog modules', () => {
     expect(render({ ...member, user: { ...member.user!, verified: false } }, ['miniverb'])).toBe('')

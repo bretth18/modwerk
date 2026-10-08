@@ -8,8 +8,18 @@ import { Icon } from '../components/Icon'
 export function HardwareFeedbackReminder() {
   const { session } = useCommunity(), memberId = session.user?.verified ? session.user.id : ''
   const [loaded, setLoaded] = useState<{ memberId: string; record?: HardwareFeedback } | null>(null)
-  const [expanded, setExpanded] = useState(''), heading = useId(), details = useId()
+  const heading = useId()
   const [posted, setPosted] = useState<{ memberId: string; href: string } | null>(null)
+  useEffect(() => {
+    if (!posted) return
+    function clear() { setPosted(null) }
+    const timer = window.setTimeout(clear, 6000)
+    window.addEventListener('hashchange', clear)
+    return () => {
+      window.clearTimeout(timer)
+      window.removeEventListener('hashchange', clear)
+    }
+  }, [posted])
   useEffect(() => {
     function refresh() { if (document.visibilityState !== 'hidden') setLoaded({ memberId, record: dueHardwareFeedback(memberId) }) }
     refresh()
@@ -27,17 +37,13 @@ export function HardwareFeedbackReminder() {
     }
   }, [memberId])
   const record = memberId && loaded?.memberId === memberId ? loaded.record : undefined
-  const confirmation = memberId && posted?.memberId === memberId ? <p className="success-note" role="status">Thanks for sharing your hardware experience. <a href={posted.href}>See your reply</a></p> : null
+  const confirmation = memberId && posted?.memberId === memberId ? <p className="hardware-feedback-confirmation" role="status"><Icon name="check" size={15}/>Works report saved. <a className="text-button" href={posted.href}>View report</a><button type="button" className="icon-button" aria-label="Dismiss feedback confirmation" onClick={() => setPosted(null)}><Icon name="close" size={15}/></button></p> : null
   if (!record) return confirmation
-  const id = feedbackId(record), modules = pendingFeedback(record), open = expanded === id
+  const id = feedbackId(record), modules = pendingFeedback(record)
   return <section className="configuration-section hardware-feedback-reminder" aria-labelledby={heading}>
-    <div className="section-title"><h2 id={heading}>Tried your {record.machine} modules?</h2><button type="button" className="icon-button" aria-label="Dismiss feedback reminder for this build" onClick={() => updateHardwareFeedback(memberId, record, 'dismiss')}><Icon name="close" size={16}/></button></div>
-    <p>You downloaded {modules.slice(0, 3).map(module => module.name).join(', ')}{modules.length > 3 ? ' and ' + (modules.length - 3) + ' more' : ''}. If you’ve tried it on your hardware, a quick note helps other people choosing modules.</p>
-    <div className="forum-actions">
-      <button type="button" className="button button-quiet" aria-expanded={open} aria-controls={details} onClick={() => setExpanded(open ? '' : id)}>{open ? 'Close feedback' : 'Share how it went'}</button>
-      <button type="button" className="text-button" onClick={() => updateHardwareFeedback(memberId, record, 'later')}>Not yet — remind me tomorrow</button>
-    </div>
+    <div className="section-title"><h2 id={heading}>Tried your {record.machine} modules?</h2><button type="button" className="icon-button" aria-label="Dismiss feedback reminder for this build" onClick={() => { setPosted(null); updateHardwareFeedback(memberId, record, 'dismiss') }}><Icon name="close" size={16}/></button></div>
+    <BuildFollowUp key={id} machine={record.machine} os={record.os} modules={record.modules} pendingIds={modules.map(module => module.id)} onPosted={href => setPosted({ memberId, href })} embedded />
     {confirmation}
-    {open && <div id={details}><BuildFollowUp key={id} machine={record.machine} os={record.os} modules={record.modules} pendingIds={modules.map(module => module.id)} onPosted={href => setPosted({ memberId, href })} /></div>}
+    <button type="button" className="text-button hardware-feedback-later" onClick={() => { setPosted(null); updateHardwareFeedback(memberId, record, 'later') }}>Not yet — remind me tomorrow</button>
   </section>
 }
