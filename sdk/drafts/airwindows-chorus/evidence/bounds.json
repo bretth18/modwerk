@@ -1,0 +1,16 @@
+{
+  "version": "0.1.0-experimental",
+  "programWords": 439,
+  "tableWords": 1026,
+  "model": "instruction words plus conservative call/branch surcharge; no contention stalls",
+  "perSampleLoopUpperBound": 620,
+  "perCallSetupUpperBound": 120,
+  "perSampleAt16FramesUpperBound": 628,
+  "perSampleAt16FramesWithSplitUpperBound": 635,
+  "fourFx2InstancesPerCoreUpperBound": 2540,
+  "stateSpanWords": 56,
+  "stereoBufferWordsPerInstance": 16384,
+  "perCoreFourInstanceReservedWords": 66560,
+  "coldfire": "No authored ColdFire routine; existing platform and stock editor paths not bounded here.",
+  "hardwareTiming": "unmeasured"
+}

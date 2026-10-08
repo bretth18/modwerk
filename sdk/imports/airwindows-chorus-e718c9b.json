@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/airwindows/airwindows",
+  "revision": "e718c9bcfcdd736deeddb08bffe6bce2aa8e0eea",
+  "moduleVersion": "0.1.0-experimental",
+  "root": "sdk/drafts/airwindows-chorus",
+  "modules": [
+    "airwindows-chorus"
+  ],
+  "files": [
+    {
+      "path": "upstream/ChorusProc.cpp",
+      "sourcePath": "plugins/WinVST/Chorus/ChorusProc.cpp",
+      "sourceBytes": 8227,
+      "sourceGitBlob": "8550758cfcfe2829c824abc48c48ce130c44cb8e",
+      "sourceSha256": "badb0771407e561901b379086911547acf1c06e34f6096cd5c21e390a4929de0",
+      "vendoredSha256": "badb0771407e561901b379086911547acf1c06e34f6096cd5c21e390a4929de0"
+    },
+    {
+      "path": "upstream/Chorus.cpp",
+      "sourcePath": "plugins/WinVST/Chorus/Chorus.cpp",
+      "sourceBytes": 5361,
+      "sourceGitBlob": "7a444dba40ca4f1c31a06863c2433ea480e2c0a4",
+      "sourceSha256": "27b591719463d630352ed66bfa80e8a47f69578811195fd65fa50cc94a372dd9",
+      "vendoredSha256": "27b591719463d630352ed66bfa80e8a47f69578811195fd65fa50cc94a372dd9"
+    },
+    {
+      "path": "upstream/Chorus.h",
+      "sourcePath": "plugins/WinVST/Chorus/Chorus.h",
+      "sourceBytes": 2788,
+      "sourceGitBlob": "a17120a0f524fd8b1f68106c3591989ab2c45cab",
+      "sourceSha256": "212d5d9764753706f25b864b683fcdd562546a0e3541f2b4a1d3d73917e34fe7",
+      "vendoredSha256": "212d5d9764753706f25b864b683fcdd562546a0e3541f2b4a1d3d73917e34fe7"
+    },
+    {
+      "path": "upstream/LICENSE",
+      "sourcePath": "LICENSE",
+      "sourceBytes": 1070,
+      "sourceGitBlob": "e8feef9bdb417d8662f50cc43e6329c0bd071460",
+      "sourceSha256": "b4f5719b00ba3fecf8c0ce651e843651bd80f08a10cf4cf1f00e673a5bcaf23b",
+      "vendoredSha256": "b4f5719b00ba3fecf8c0ce651e843651bd80f08a10cf4cf1f00e673a5bcaf23b"
+    }
+  ]
+}

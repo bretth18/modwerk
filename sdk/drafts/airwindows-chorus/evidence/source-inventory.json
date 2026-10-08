@@ -1,0 +1,17 @@
+{
+  "version": "0.1.0-experimental",
+  "files": {
+    "benchmark.py": "6ea884369db002a30781201541f9173e34e71125c02e89e5cf79e3c31c50d4c9",
+    "build_private.py": "3ae3a0ed6c0799bfb260f9f7db5d25faba2b9fc8814d6f5eee834d0145239b63",
+    "chorus.asm": "e414f6379e86a78db159a8b3d21163698691d9dcf6da4ba7572c4dadc635803b",
+    "manifest.py": "9257a83bed59cbd5c4d8aa898639c939f7987fdb0a0e759e30758d51d876da1a",
+    "reference.py": "c80b98ae389a9c5e3b1338f5d45a6009cfb1965129c414be003b0251c3fcbad7",
+    "render_quality.py": "758e5c4fb676fadd1b06d0a2ad790bdc3e440922d4429fd81178ff15c93c296b",
+    "verify.py": "16bc5000c3b03d60d085636f1a0beb7d975602c4c28bd38e5e17f5b17fa54fbc",
+    "verify_bounds.py": "8cde69a3f16dfa3592e27a369d477da74ffbb8cccf63bf7fccf870843f1c0d94",
+    "verify_controls.py": "88250f0374f553697f917a91639300716979be9de7b1e379f4a1195c701c2a8d",
+    "verify_instances.py": "173dbb6ff4ac80d2adedde30fd1a1a407e00832ee8161e2f959131b7a09da0c1"
+  },
+  "assembledSha256": "1a2f67c27872906a2927424040c12f8c652888f143343b14061fd16151504e4f",
+  "mainOsSha256": "4b7da0962c061b8be7cca57a68513fef493f2718a70a1cfe1b49c53ff88a6d04"
+}

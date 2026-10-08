@@ -1,0 +1,10 @@
+{
+  "version": "0.1.0-experimental",
+  "firmwareHeader": "AIRC0.1",
+  "configuration": "Compact Air Chorus only; stock FX1 retained, FX2 NONE/Air Chorus.",
+  "mainOsSha256": "4b7da0962c061b8be7cca57a68513fef493f2718a70a1cfe1b49c53ff88a6d04",
+  "savedUpdateSha256": "74854a87299c44f31592257ca1472248448fb27d5dd327c799c99cdc404dc794",
+  "updateBytes": 447000,
+  "roundTrip": "byte-identical MAIN OS",
+  "hardwareStatus": "untested"
+}
