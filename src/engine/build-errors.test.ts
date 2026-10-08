@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { explainBuildFailure, isMenuSpaceFailure } from './build-errors'
+import { MenuSpaceError } from './placement-error'
 describe('build refusal wording', () => {
+  it('preserves the failing module and measured space instead of replacing it with generic advice', () => {
+    const error = new MenuSpaceError('Mute Modes menu and patch code', 208, 60, ['mute-modes'])
+    expect(explainBuildFailure(error)).toContain('Mute Modes')
+    expect(explainBuildFailure(error)).toContain('208 bytes needed, 60 bytes available')
+    expect(isMenuSpaceFailure(error.message)).toBe(true)
+  })
   it('explains the stock FX2 trade only where the switch is offered', () => {
     expect(explainBuildFailure('payload A: nothing is harvested, so there is nowhere to place EUCLID.', true)).toContain('Turn off Keep stock FX2')
     expect(explainBuildFailure('payload A: nothing is harvested, so there is nowhere to place EUCLID.')).not.toContain('Keep stock FX2')

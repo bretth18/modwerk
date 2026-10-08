@@ -6,6 +6,7 @@ import { recoverStockDsp } from './stock-dsp'
 import { composeSelection } from './compose-os'
 import chooserMetadata from './assets/chooser-metadata.json'
 import { explainBuildFailure } from './build-errors'
+import { diagnosePlacement, isPlacementFailure } from './placement-conflicts'
 import { checkSelection } from '../catalog/compatibility'
 import { moduleAvailabilityError } from '../catalog/availability'
 import { CATALOG_SOURCE, resolveSelection } from '../catalog/modules'
@@ -35,7 +36,19 @@ export function createEngineSession(reply: (response: EngineResponse, transfer?:
       const claims = checkSelection(request.moduleIds, DSP_LOADER && request.keepStockFx2)
       if (!claims.checked || claims.issues.length) throw new Error(claims.issues.join(' ') || 'This module selection could not be validated.')
       reply({ id: request.id, type: 'progress', phase: 'composing' })
-      const result = await composeSelection(original.mainOs, request.moduleIds, request.keepStockFx2, request.usbAudio)
+      let result
+      try { result = await composeSelection(original.mainOs, request.moduleIds, request.keepStockFx2, request.usbAudio) }
+      catch (error) {
+        if (!isPlacementFailure(error)) throw error
+        const conflict = await diagnosePlacement(request.moduleIds, error, ids => {
+          const claims = checkSelection(ids, DSP_LOADER && request.keepStockFx2)
+          if (!claims.checked || claims.issues.length) return Promise.reject(new Error('Selection declarations did not pass.'))
+          // USB settings belong only to the USB Audio module; removing it must remove its settings too.
+          return composeSelection(original.mainOs, ids, request.keepStockFx2, ids.includes('usb-audio-out-tracks-main-cue') ? request.usbAudio : undefined)
+        }, () => current === generation)
+        if (current !== generation) throw new Error('The selected firmware changed. Build again.', { cause: error })
+        reply({ id: request.id, type: 'error', message: conflict.description, conflict }); return
+      }
       if (current !== generation) throw new Error('The selected firmware changed. Build again.')
       const source = compiledModuleSource()
       const report: BuildReport = {
@@ -57,7 +70,7 @@ export function createEngineSession(reply: (response: EngineResponse, transfer?:
       reply({ id: request.id, type: 'built', report, buffer, sha256 }, [buffer])
     } catch (error) {
       const detail=error instanceof Error?error.message:'The firmware could not be prepared.'
-      const message=explainBuildFailure(detail,DSP_LOADER && 'keepStockFx2' in request && request.keepStockFx2)
+      const message=explainBuildFailure(error instanceof Error ? error : detail,DSP_LOADER && 'keepStockFx2' in request && request.keepStockFx2)
       reply({ id: request.id, type: 'error', message })
     }
   }
