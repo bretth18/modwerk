@@ -1,13 +1,13 @@
 {
   "kind": "owner-approved-update",
   "id": "playmodes",
-  "version": "0.1.0-experimental",
+  "version": "0.1.1-experimental",
   "approvedBy": "repeat98",
-  "approvedOn": "2026-10-07",
-  "ownerStatement": "Let’s bring those live. I, the owner, approve no hardware evidence if there is none. Make all three selectable and buildable.",
-  "reason": "Retain the author’s existing build-19 MKII hardware report. Approve the release where physical load/stress evidence is absent; software verification remains required.",
+  "approvedOn": "2026-10-08",
+  "ownerStatement": "Approve scoped exception and release",
+  "reason": "Owner approves the exact 0.1.1 build-24 source on the author’s MKII functional results. Fresh physical reboot, Part/project restore after unsaved edits, distinct-track isolation and stock/flood performance tests are waived for this release. These behaviors remain unverified; build-19 physical persistence evidence remains historical.",
   "waived": [
     "current-build-hardware"
   ],
-  "sourceSha256": "bc2a7b45ca856ba03591fa4516c0e871ef5139c4972343bb22315d6116876fce"
+  "sourceSha256": "86105af37d68fcd051cab991b747c949d7813733b73a1fe6d900cf3ec239c5a6"
 }

@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/devilfish707/Octaplay",
+  "revision": "41dbdaaaf18ddea0bc18f72bc88cc1a0926b84f0",
+  "moduleVersion": "0.1.1-experimental",
+  "root": "sdk/octabam/modules/playmodes",
+  "modules": [
+    "playmodes"
+  ],
+  "modwerkForkCommit": "72cbf56a169794096c9babc8396b6db1dfd6776e",
+  "files": [
+    {
+      "path": "adapter.c",
+      "sourcePath": "playmodes/adapter.c",
+      "sourceBytes": 25150,
+      "sourceGitBlob": "3032a08f7d57408cb65dfef3a4dd9ef633c2d862",
+      "sourceSha256": "b8786b2bfbfa9ed8f8b87ba0bdd98fbf4ed6cc0f16da8811e5cdfa3aa442fe9f",
+      "vendoredSha256": "b8786b2bfbfa9ed8f8b87ba0bdd98fbf4ed6cc0f16da8811e5cdfa3aa442fe9f"
+    },
+    {
+      "path": "hooks.s",
+      "sourcePath": "playmodes/hooks.s",
+      "sourceBytes": 16564,
+      "sourceGitBlob": "62812a0c4d198f6123b742b797ae6f5efb6b685f",
+      "sourceSha256": "55899e51737e76e9da1886353cc2330beb0f5b499e96c70fdd621172337332a3",
+      "vendoredSha256": "55899e51737e76e9da1886353cc2330beb0f5b499e96c70fdd621172337332a3"
+    },
+    {
+      "path": "playmode.c",
+      "sourcePath": "playmodes/playmode.c",
+      "sourceBytes": 6675,
+      "sourceGitBlob": "bd025acd9a3fcf59fdbb6bc06bac64ba51507cc4",
+      "sourceSha256": "3c414a2eb48d3c198c369ee8924ed6608a0b55cf4fa03f57e424184f8485968e",
+      "vendoredSha256": "3c414a2eb48d3c198c369ee8924ed6608a0b55cf4fa03f57e424184f8485968e"
+    },
+    {
+      "path": "playmode.h",
+      "sourcePath": "playmodes/playmode.h",
+      "sourceBytes": 4859,
+      "sourceGitBlob": "bf17505be542a549b84c351f5db1b9f84492fbf1",
+      "sourceSha256": "1ba24397d193a3ca0ad4ed43652d19eef6ad7b0049bc26eb1265a21c69950ccc",
+      "vendoredSha256": "1ba24397d193a3ca0ad4ed43652d19eef6ad7b0049bc26eb1265a21c69950ccc"
+    },
+    {
+      "path": "playmodes.s",
+      "sourcePath": "playmodes/playmodes.s",
+      "sourceBytes": 58794,
+      "sourceGitBlob": "f7e7b041b37ec3bd9a6e5d1d39b45446ec811764",
+      "sourceSha256": "34a2464faadfd583c4fd9c773cfefd6e77c8125c291016a9b90942a2bb91f001",
+      "vendoredSha256": "34a2464faadfd583c4fd9c773cfefd6e77c8125c291016a9b90942a2bb91f001"
+    },
+    {
+      "path": "test_adapter.c",
+      "sourcePath": "playmodes/test_adapter.c",
+      "sourceBytes": 22958,
+      "sourceGitBlob": "6bb46b525277f6e869b1212d2368b90a085146f3",
+      "sourceSha256": "6765da074aa8f293081a3b2c824f81a589a7d4629e4c682c646ceb66a0804eb9",
+      "vendoredSha256": "6765da074aa8f293081a3b2c824f81a589a7d4629e4c682c646ceb66a0804eb9"
+    },
+    {
+      "path": "test_playmode.c",
+      "sourcePath": "playmodes/test_playmode.c",
+      "sourceBytes": 12099,
+      "sourceGitBlob": "13d13b973a19ccdf2017085fd1fdbe643f7c21ef",
+      "sourceSha256": "25857c24842be4797e6a3b584c991a04329691591baf3f70a2944f69012187b4",
+      "vendoredSha256": "25857c24842be4797e6a3b584c991a04329691591baf3f70a2944f69012187b4"
+    },
+    {
+      "path": "generate.py",
+      "sourcePath": "playmodes/generate.py",
+      "sourceBytes": 4573,
+      "sourceGitBlob": "def875f73fb28cdae2124018efaf06d83beaaeb0",
+      "sourceSha256": "b4d9cb0b38d5a946c53e4ccbf629c0cf16f59047f6a95360464acb89d6bf52a5",
+      "vendoredSha256": "b4d9cb0b38d5a946c53e4ccbf629c0cf16f59047f6a95360464acb89d6bf52a5"
+    },
+    {
+      "path": "verify.py",
+      "sourcePath": "playmodes/verify.py",
+      "sourceBytes": 2116,
+      "sourceGitBlob": "d767d1640a4b3547d223d6bbdd887a7752ce8b0c",
+      "sourceSha256": "377cc8d573ac98b1d9ec430b05f9d488bc8a37b8841cf6d9fbb64badafbf15ca",
+      "vendoredSha256": "377cc8d573ac98b1d9ec430b05f9d488bc8a37b8841cf6d9fbb64badafbf15ca"
+    },
+    {
+      "path": "LICENSE",
+      "sourcePath": "playmodes/LICENSE",
+      "sourceBytes": 1069,
+      "sourceGitBlob": "278e381cf396c7ce5147e143f4b06f6fd54725fb",
+      "sourceSha256": "0efcf0273ce262004ef2203cb8ab990b49422cf4af15da806f7516fc4c634085",
+      "vendoredSha256": "0efcf0273ce262004ef2203cb8ab990b49422cf4af15da806f7516fc4c634085"
+    }
+  ],
+  "notes": [
+    "Author's build-24 runtime and host tests imported byte for byte; Modwerk metadata, current UI captures and release validation are separate.",
+    "Native manifest retains the existing reviewed MACHINES adaptation and stock guards. No firmware or extracted stock bytes imported."
+  ]
+}

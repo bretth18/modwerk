@@ -16,6 +16,8 @@ char pm_toast[16];
 uint8_t pm_table[256][17];
 uint16_t pm_cur;
 uint8_t pm_clip[17], pm_undo[17];
+uint8_t pm_comp[16];
+uint8_t pm_hist[16][4];
 
 unsigned pm_seq_step(unsigned track, unsigned raw);
 unsigned pm_seq_peek(unsigned track, unsigned raw);
@@ -105,7 +107,8 @@ int main(void) {
      * the scheduler across the pattern end it keeps the previous pass. */
     set_playing(0, 0);                 /* NORMAL scale, length 8, shared mode */
     key(0, +1);                        /* REVERSED -> PINGPONG */
-    pm_seq_step(0, 0);                 /* the reset after the switch */
+    /* One call per step: the same step twice is a new pass (see
+     * pm_seq_step), so the first step after the switch is step 0 itself. */
     for (unsigned r = 0; r < 8; ++r) {
         pm_seq_step(0, r);
         CHECK(pm_show(0, r) == r, "pingpong pass 0: display %u", r);
@@ -136,7 +139,8 @@ int main(void) {
     {
         uint8_t *p = pattern(1, 3);
         uint8_t *t1 = p + 0 * 0x91a, *t2 = p + 1 * 0x91a, *t3 = p + 2 * 0x91a;
-        p[0x8e54] = 2;                          /* master scale 1X (6 ticks) */
+        p[0x8e52] = 2;                          /* MASTER SCALE 1X (6 ticks) */
+        p[0x8e54] = 0;                          /* the NORMAL-mode scale (2X) must not count */
         t1[0x50] = 20; t1[0x51] = 2;            /* T1: 20 steps at 1X */
         t2[0x50] = 20; t2[0x51] = 1;            /* T2: 20 steps at 3/2X (4 ticks) */
         t3[0x50] = 5;  t3[0x51] = 2;            /* T3: 5 steps, shorter than the master */
@@ -161,6 +165,96 @@ int main(void) {
         for (unsigned r = 0; r < 16; ++r)
             CHECK(pm_seq_step(0, r) == 15 - r, "T1 reversed under master 16: %u -> %u", r, 15 - r);
         p[0x8e50] = 0xff; p[0x8e51] = 0xff;
+    }
+
+    /* The playhead wins over the pattern bytes: the reported case (NORMAL
+     * LEN 10, switched to PER TRACK) seen from both sides. */
+    {
+        uint8_t *p = pattern(1, 3);
+        p[0x8e55] = 1; p[0x8e50] = 0xff; p[0x8e51] = 0xff;
+        p[0x91a * 4 + 0x50] = 10; p[0x91a * 4 + 0x51] = 2;   /* T5: bytes say 10 */
+        set_playing(1, 3);
+        pm_table[1 * 16 + 3][5] = PM_REVERSE;                 /* B04's T5 REVERSED */
+        pm_cur = 0; pm_restart = 1;
+        for (unsigned r = 0; r < 16; ++r) pm_seq_step(4, r);  /* stock plays 16 */
+        pm_seq_step(4, 0);                                    /* and wraps */
+        for (unsigned r = 1; r < 16; ++r)
+            CHECK(pm_seq_step(4, r) == 15 - r, "T5 learnt 16 steps: %u -> %u", r, 15 - r);
+        CHECK(pm_show(4, 3) == 12, "the LEDs agree (%u)", pm_show(4, 3));
+        p[0x91a * 4 + 0x50] = 24;                             /* an edit: learnt length dropped */
+        CHECK(pm_seq_peek(4, 0) == 23, "an edited length is taken at once (%u)", pm_seq_peek(4, 0));
+        p[0x91a * 4 + 0x50] = 16;
+        pm_restart = 1;
+        for (unsigned r = 0; r < 10; ++r) pm_seq_step(4, r);  /* bytes say 16, stock wraps at 10 */
+        pm_seq_step(4, 0);
+        for (unsigned r = 1; r < 10; ++r)
+            CHECK(pm_seq_step(4, r) == 9 - r, "T5 learnt 10 steps: %u -> %u", r, 9 - r);
+        /* MASTER LENGTH 16 over a 14-step track: stock plays 0..13, 0, 1,
+         * then restarts every track. The short pass is not its length:
+         * REVERSED keeps playing 14..1, 14, 13 (the user's report). */
+        p[0x91a * 4 + 0x50] = 14; p[0x8e50] = 0; p[0x8e51] = 16; p[0x8e52] = 2;
+        pm_table[1 * 16 + 3][5] = PM_REVERSE; pm_cur = 0; pm_restart = 1;
+        static const unsigned stock[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,0,1};
+        for (unsigned pass = 0; pass < 4; ++pass)
+            for (unsigned i = 0; i < 16; ++i) {
+                unsigned got = pm_seq_step(4, stock[i]);
+                CHECK(got == 13 - stock[i], "pass %u, stock step %u -> %u (got %u)", pass, stock[i], 13 - stock[i], got);
+            }
+        /* PINGPONG and PINGPONG 2 start the bounce again at each master
+         * restart; within the master loop the bounce turns at step 14. */
+        static const unsigned pp[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,12,11};
+        static const unsigned pp2[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,13,12};
+        for (unsigned mode = PM_PINGPONG; mode <= PM_PINGPONG2; mode += PM_PINGPONG2 - PM_PINGPONG) {
+            pm_table[1 * 16 + 3][5] = (uint8_t)mode; pm_cur = 0; pm_restart = 1;
+            for (unsigned loop = 0; loop < 4; ++loop)
+                for (unsigned i = 0; i < 16; ++i) {
+                    unsigned got = pm_seq_step(4, stock[i]), want = (mode == PM_PINGPONG ? pp : pp2)[i];
+                    CHECK(got == want, "mode %u loop %u step %u: %u, want %u", mode, loop, i, got, want);
+                }
+        }
+        /* 15 steps under MASTER LENGTH 16: stock 0..14, 0, then restarts at
+         * 0 (the same step twice). PINGPONG: 1..15, 14, then 1 again. */
+        p[0x91a * 4 + 0x50] = 15;
+        static const unsigned stock15[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,0};
+        static const unsigned pp15[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,13};
+        static const unsigned pp215[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,14};
+        static const unsigned rev15[] = {14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,14};
+        const unsigned modes[] = {PM_PINGPONG, PM_PINGPONG2, PM_REVERSE};
+        const unsigned *want15[] = {pp15, pp215, rev15};
+        for (unsigned k = 0; k < 3; ++k) {
+            pm_table[1 * 16 + 3][5] = (uint8_t)modes[k]; pm_cur = 0; pm_restart = 1;
+            for (unsigned loop = 0; loop < 4; ++loop)
+                for (unsigned i = 0; i < 16; ++i) {
+                    unsigned got = pm_seq_step(4, stock15[i]);
+                    CHECK(got == want15[k][i], "15/16 mode %u loop %u step %u: %u, want %u", modes[k], loop, i, got, want15[k][i]);
+                }
+        }
+        /* The LEDs trail the tick by one call: while step 16 shows, the
+         * tick has already handled the restart (0 again). They must show
+         * what plays: PINGPONG 2 ... 15, 15, 1, 2. */
+        pm_table[1 * 16 + 3][5] = PM_PINGPONG2; pm_cur = 0; pm_restart = 1;
+        unsigned prev = 0;
+        for (unsigned loop = 0; loop < 3; ++loop)
+            for (unsigned i = 0; i < 16; ++i) {
+                unsigned played = pm_seq_step(4, stock15[i]);
+                if (loop || i) {
+                    unsigned shown = pm_show(4, stock15[(i + 15) % 16]);
+                    CHECK(shown == prev, "15/16 LEDs loop %u step %u: %u, want %u", loop, i, shown, prev);
+                }
+                CHECK(pm_show(4, stock15[i]) == played || i == 0,
+                      "15/16 LEDs caught up at step %u", i);
+                prev = played;
+            }
+        p[0x91a * 4 + 0x50] = 14;
+        p[0x8e50] = 0xff; p[0x8e51] = 0xff;
+        /* NORMAL is stock, whatever the length. */
+        pm_table[1 * 16 + 3][5] = PM_NORMAL; pm_cur = 0;
+        for (unsigned r = 0; r < 20; ++r)
+            CHECK(pm_seq_step(4, r) == r && pm_show(4, r) == r && pm_seq_peek(4, r) == r, "NORMAL passes %u through", r);
+        p[0x91a * 4 + 0x50] = 16;
+        for (unsigned i = 0; i < 17; ++i) pm_table[1 * 16 + 3][i] = 0;
+        pm_cur = 0;
+        set_playing(0, 0);
     }
 
     /* Per pattern: each pattern keeps its own modes. */
