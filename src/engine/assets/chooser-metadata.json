@@ -149,6 +149,13 @@
       "fx1Only": false
     },
     {
+      "id": "airwindows-chorus",
+      "key": "AIR CHORUS",
+      "fxId": 30,
+      "fx1": false,
+      "fx1Only": false
+    },
+    {
       "id": "analog-bassdrum",
       "key": "ANALOG BD",
       "fxId": null,
@@ -217,6 +224,7 @@
     23,
     26,
     29,
+    30,
     31
   ],
   "layout": {

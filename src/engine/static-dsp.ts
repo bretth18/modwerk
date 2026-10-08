@@ -13,7 +13,7 @@ import type { StockDspCore } from './stock-dsp.ts'
 import { parseDspMemory, readDspWords, writeDspWords, type DspMemory } from './dsp-memory.ts'
 import { OS_LOAD_ADDRESS, type OsWrite } from './os-patches.ts'
 import type { ChooserProfile } from './choosers.ts'
-import { analogBdReservations } from './analog-bd-layout.ts'
+import { ANALOG_BD_DSP_COMPANIONS, analogBdReservations } from './analog-bd-layout.ts'
 
 // The shared X dispatch table holds init[32], then process[32].
 const INIT_TABLE = 0x215, PROC_TABLE = 0x235
@@ -74,6 +74,10 @@ export function staticModulePlan(ids: readonly string[]) {
 }
 
 export function planSelectionDsp(tag: string, effects: readonly Effect[], listed: ReadonlySet<string>, plan: readonly Placeable[], ids: readonly string[]) {
+  if (ids.includes('analog-bassdrum')) {
+    const blockers = facts.modules.filter(module => ids.includes(module.id) && !ANALOG_BD_DSP_COMPANIONS.includes(module.id))
+    if (blockers.length) throw new Error('ANALOG BD cannot share DSP memory with ' + blockers.map(module => module.key).join(', '))
+  }
   return planStaticPlacement(tag, effects, listed, plan, ids.includes('analog-bassdrum') ? analogBdReservations(tag) : [])
 }
 

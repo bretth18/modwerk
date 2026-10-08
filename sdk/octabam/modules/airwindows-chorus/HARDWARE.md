@@ -13,7 +13,7 @@ existing projects intact and use a disposable test project.
 ## Test steps
 
 1. Back up your card/projects and keep your original Elektron 1.40C update
-   locally. Install the private `AIR_CHORUS_0.1.0_MKII_TEST.bin` through the
+   locally. Install the private `AIR_CHORUS_0.1.0_RELEASE_TEST.bin` through the
    instrument's normal OS-update procedure. Record that the update installed
    and booted successfully, the model (MKII) and the elapsed test duration.
 2. In a fresh disposable project, select a Flex or Static track playing a
@@ -53,5 +53,4 @@ existing projects intact and use a disposable test project.
 
 Do not check a qualification or author-release evidence box from these
 instructions alone. The actual results must be attributed and reviewed.
-Publication remains pending complete native/browser integration, resource,
-UI and hardware evidence and owner first-release approval.
+The owner authorized release with the exact-image hardware waiver recorded in the attributed report; these optional test steps do not upgrade missing coverage.

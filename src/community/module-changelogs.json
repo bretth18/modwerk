@@ -703,6 +703,18 @@
           "Presentation: show repeating recorder segments and tempo boundaries using the library's shared signal artwork, grid, palette and typography."
         ]
       }
+    ],
+    "airwindows-chorus": [
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-08",
+        "changes": [
+          "First release of Chris Johnson’s MIT-licensed Airwindows Chorus as an Octatrack FX2 module; original source and full attribution retained.",
+          "Smooth SPD, RNG and MIX per sample, preserve the original air compensation and three-point delay read, and initialize dirty rings without a long synchronous clear.",
+          "Owner reports 50 minutes of successful MKII use with several instances and full knob sweeps on the first image. Fresh hardware testing of the bounded-init image is waived; eight-track timing, locks/scenes/LFOs and physical persistence remain unverified.",
+          "Delay precision is approximately 16 bits; extreme modulation retains pitch and aliasing artifacts."
+        ]
+      }
     ]
   }
 }

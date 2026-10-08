@@ -6,12 +6,7 @@ licensed under MIT. Chris wrote the original algorithm; Jannik Assfalg
 retained under `upstream/`, pinned to Airwindows commit
 `e718c9bcfcdd736deeddb08bffe6bce2aa8e0eea`.
 
-Version: **0.1.0-experimental**. This is a development candidate outside the
-public catalogue while integration is completed. The owner reports a successful
-50-minute MKII test with several instances and full knob sweeps on the first
-image, and explicitly waived fresh hardware testing of the initialization update.
-Unreported persistence, modulation and eight-track hardware checks remain open.
-See [TESTING.md](TESTING.md) and [the hardware report](evidence/hardware-report.md).
+Version: **0.1.0-experimental**. The owner reports a successful 50-minute MKII test with several instances and full knob sweeps on the first image, and explicitly waived fresh hardware testing of the initialization update. Unreported persistence, modulation and eight-track hardware checks remain open. See [TESTING.md](TESTING.md) and [the hardware report](evidence/hardware-report.md).
 
 ## Overview
 
@@ -52,15 +47,9 @@ raise MIX to hear the effect.
 
 ## Tutorial: a slow chorus
 
-1. On a disposable audio project, select a Flex or Static track playing a
-   sustained sound. Hold FUNC and press FX2, use UP/DOWN to highlight **Air Chorus**, and
-   press YES to assign it. This is an FX2 effect; it is not offered in FX1.
-2. Press FX2 for the controls. Set SPD 64 and RNG 64 with encoders A/B.
-   Raise MIX with encoder F from its dry default to 64. Expect a slow,
-   short-delay chorus; sweep MIX and RANGE to listen for control crackle.
-3. Return MIX to 0 to hear the dry sound after the short smoothing tail.
-   To remove the effect entirely, select NONE in FX2 SETUP. Stop transport
-   before changing or saving the private test configuration.
+1. Select an audio track playing a sustained sound. Hold FUNC and press FX2, highlight Air Chorus with UP/DOWN, then press YES to assign it.
+2. Press FX2. Set SPD 64 and RNG 64 with A/B, then raise MIX to 64 with F. Expect a slow chorus; sweep the controls to check for crackle.
+3. Return MIX to 0 for dry after its smoothing tail, or select NONE in FX2 SETUP to remove the effect. Stop transport before saving your test configuration.
 
 ## Screens and audio
 
@@ -78,7 +67,7 @@ hardware waiver; its software renders match the tested version.
 
 ## Compatibility and limitations
 
-- Development target: original Octatrack OS 1.40C, MKI/MKII architecture;
+- Target: original Octatrack OS 1.40C, MKI/MKII architecture;
   a 50-minute MKII functional test was reported for the earlier image.
   Fresh hardware testing of the initialization update is explicitly owner-waived. Use only the exact private image
   identified in the test report for qualification.
@@ -90,9 +79,7 @@ hardware waiver; its software renders match the tested version.
 - FX1 has only 3,072 buffer words. It is excluded from the chooser. A stale
   project that nevertheless dispatches this ID in FX1 passes dry and does
   not clear or write an FX2-sized buffer.
-- Bus engines which claim fixed/shared FX2 memory need composition rejection;
-  their coexistence has not been qualified. Other module combinations and
-  loader persistence remain pending. The compact private test image retains stock FX1; FX2 offers NONE and Air Chorus only. Existing project FX2 IDs may fall back to NONE. Use a disposable project.
+- Bus engines claiming fixed/shared FX2 memory are refused by the common composer. The module is FX2 only; the configurator determines available companions and stock effects. The compact hardware-test image retained stock FX1 and offered NONE/Air Chorus in FX2. Public configurations can have different menus. Use a disposable project for first installation.
 - This is a fixed-point adaptation, not a bit-identical floating-point copy.
   It uses a 1,025-point interpolated quarter-sine table, 48-bit air/filter
   state and a 48-bit phase. Delay samples use eight guard bits (approximately

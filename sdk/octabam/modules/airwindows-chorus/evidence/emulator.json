@@ -1,0 +1,123 @@
+{
+  "version": "0.1.0-experimental",
+  "imageSha256": "8ecec31ef7511756e17aaba2cd569a32e4471bcebe0dd0738615327fb850a6df",
+  "emulatorSha256": "f521565f3866947788d7c45507576a4ed386d2e4ef57e9683ab65fa0acc6a166",
+  "dspEnabledAssignmentRun": {
+    "model": "MKII panel",
+    "tracks": [
+      1,
+      5,
+      2,
+      6
+    ],
+    "settings": [
+      [
+        32,
+        48,
+        64
+      ],
+      [
+        96,
+        80,
+        100
+      ],
+      [
+        64,
+        127,
+        90
+      ],
+      [
+        127,
+        32,
+        127
+      ]
+    ],
+    "bootAndAssignments": "passed",
+    "transport": "stopped; empty disposable card; no sample audio"
+  },
+  "controlStateReadback": {
+    "dspEnabled": false,
+    "tracks": [
+      1,
+      5
+    ],
+    "passed": true,
+    "snapshots": {
+      "T1-initial": {
+        "T1": {
+          "effectId": 30,
+          "spd": 32,
+          "rng": 48,
+          "mix": 64
+        },
+        "T5": {
+          "effectId": 8,
+          "spd": 47,
+          "rng": 0,
+          "mix": 0
+        }
+      },
+      "T5-initial": {
+        "T1": {
+          "effectId": 30,
+          "spd": 32,
+          "rng": 48,
+          "mix": 64
+        },
+        "T5": {
+          "effectId": 30,
+          "spd": 96,
+          "rng": 80,
+          "mix": 100
+        }
+      },
+      "T1-return": {
+        "T1": {
+          "effectId": 30,
+          "spd": 32,
+          "rng": 48,
+          "mix": 64
+        },
+        "T5": {
+          "effectId": 30,
+          "spd": 96,
+          "rng": 80,
+          "mix": 100
+        }
+      },
+      "T1-edit": {
+        "T1": {
+          "effectId": 30,
+          "spd": 127,
+          "rng": 48,
+          "mix": 64
+        },
+        "T5": {
+          "effectId": 30,
+          "spd": 96,
+          "rng": 80,
+          "mix": 100
+        }
+      },
+      "T5-return": {
+        "T1": {
+          "effectId": 30,
+          "spd": 127,
+          "rng": 48,
+          "mix": 64
+        },
+        "T5": {
+          "effectId": 30,
+          "spd": 96,
+          "rng": 80,
+          "mix": 100
+        }
+      }
+    },
+    "method": "Corrected panel sequence: assign Air Chorus on T1, edit all three controls; assign T5 with different settings; return T1; edit only SPD; return T5. Read native Part RAM after each step using the headless port peek command. Only authored effect IDs/parameter values are retained; raw memory stays private."
+  },
+  "limitations": [
+    "No physical device, real audio or timing result; physical persistence remains unverified.",
+    "Earlier four-track screenshots included transient numeric displays; the two-track native Part readback establishes retained control values."
+  ]
+}

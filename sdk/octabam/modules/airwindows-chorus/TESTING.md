@@ -1,6 +1,6 @@
 # Air Chorus 0.1.0-experimental — test record
 
-Recorded 8 October 2026. Development candidate. The owner reports a successful
+Recorded 8 October 2026. Initial experimental release. The owner reports a successful
 50-minute MKII test with several instances/full knob sweeps on the first image;
 fresh hardware testing of the initialization update is explicitly owner-waived. See [the hardware report](evidence/hardware-report.md).
 Original source pin: `e718c9bcfcdd736deeddb08bffe6bce2aa8e0eea`.
@@ -71,6 +71,9 @@ has no fresh physical listening result.
 
 ## Sound-quality audit
 
+The quality renders below were retained from the first candidate, before the
+bounded-initialization change. Ten static/moving/split fixtures are sample-identical
+after that change; the complete quality fixture set was not rendered again.
 The guide's `npm run fx:audit` plan/check analysis was used at its unchanged
 default limits (alias −60 dBc, DC −60 dBFS, idle −90 dBFS).
 Static setting: SPD 0 (phase frozen), RNG 127, MIX 127. All eight tone cases
@@ -123,9 +126,8 @@ Each instance initializes 56 X words in its reserved 256-word state slot and
 uses 16,384 Y words in its existing FX2 buffer without a burst clear. Four FX2 instances reserve 66,560
 X+Y words per core, eight 133,120 across both cores. This includes the whole
 reserved X slot and excludes unrelated stock state, stacks and platform RAM.
-Unused/reserved state is explicitly cleared. No global sample RAM is claimed
-by the module itself. The loader-bearing image has separate shared platform
-arena costs; they are not zero and that integration remains pending.
+All 56 used state words are explicitly cleared; the other 200 reserved words are untouched. No global sample RAM is claimed
+by the module itself. The loader-bearing image has separate shared platform arena costs managed by the common composer. See [MEMORY.md](MEMORY.md) for exact ranges, packed flash data, descriptor padding and charged shared stack/chooser reservations.
 
 ## Matched stock DSP cost comparison
 
@@ -153,38 +155,79 @@ same order of cost as the Spring design target, not a claim of matched chip
 headroom. Executed instruction counts are not compared directly with the
 717/725 modeled cycle bound. Record: `evidence/stock-comparison.json`, including
 source image and harness hashes, per-core/split figures and exact conditions.
-The physical eight-track deadline, complete DSP workload and ColdFire cost
-still need qualification and explicit review before release.
+The physical eight-track deadline, complete DSP workload and ColdFire cost remain unmeasured; the owner accepted the current-image hardware limit.
 
-## Private firmware composition / UI / remaining gates
+## Eight-instance performance replay
 
-Native standalone compilation on the user's verified original 1.40C MAIN OS
-passes on both DSP payloads with 1,243 donor P words free. A loader-bearing
-composition with all stock FX2 also assembles and proves relocation at four
-bases, but its attempted empty-card UI sequence did not select Air Chorus;
-it is not qualified. No passing browser/native comparison is claimed.
-The private hardware candidate is the compact standalone image identified in
-`evidence/private-build.json`; its saved ELEK/ELUP update round-trip is checked
-against the native MAIN bytes. Stock FX1 is retained; old FX2 assignments can
-fall back to NONE. Use only a disposable project.
+`verify_stress.py <module folder> <private output folder>` runs 85,444
+16-frame blocks (31.00009 s of audio) with four instances per core, eight
+independent stereo inputs, 0.98-FS bursts, dirty initialization and both local
+and shared-memory guards. Each instance receives three 120-BPM-derived
+LFO target streams and rapid endpoint locks over 12 parameter-byte targets.
+Only SPD/RNG/MIX are active; nine slots are deliberately unused. This models
+DSP target bytes, not the instrument's actual ColdFire sequencer, LFO, MIDI,
+scenes or panel route. No physical workload or timing pass follows from it.
+All inits returned, both cores completed, every instance produced audio,
+and there were zero stray writes, clobbers or hangs. See `evidence/stress.json`.
+The observed total meter peaks are 33,879 (core A) and 33,783 (core B)
+executed instructions/block, including host overhead; init totals are 300
+instructions/core for four instances. These are not hardware clock cycles.
 
-Four actual LCD exports from the exact compact image are retained under `media/`,
-with their plan and hashes in `media/capture.json`. All were visually reviewed: chooser
-location; confirmed SPD/RNG 64 and MIX 0; MIX 64 example; return to MIX 0.
-The final capture used `scripts/capture-module-ui.py`, the native standalone
-image hash and `--shm-size 256m` in the reviewed container. Labels were shortened
-from SPEED/RANGE to SPD/RNG for readable panel spacing. `evidence/source-inventory.json`
-binds the native/test inputs to their exact file hashes. Emulation does not verify physical reboot,
-panel audio timing, persistence, maximum-load deadlines or hardware sound.
-See [HARDWARE.md](HARDWARE.md) for the MKII test request.
+`npm run perf:audit -- check sdk/octabam/modules/airwindows-chorus/evidence/performance.json`:
 
-The owner approved limited functional coverage and waived fresh hardware
-testing of the exact initialization update. Publication still needs native/browser
-composition and rejection coverage, stock/platform performance evidence and
-owner first-release review. The candidate stays under `sdk/drafts`, outside
-catalogue/package discovery. `module:doctor` cannot go green for an unlisted
-module; its catalogue/qualification/package/parity gates must be satisfied at
-promotion. No baseline or prior-version exception is extended to this source.
+| Check | Result |
+| --- | --- |
+| Cycles | Note: 4 × 725 = 2900 of the 3120-cycle module allowance/sample/core; measured cold cost 524.5 executed instructions/sample/instance |
+| Stock benchmark | Note: 2.07× stock Chorus, 1.67× expensive split Spring; original algorithm/smoothing and temporary history guard justify the work |
+| Stress | Pass: eight modeled tracks, four/core, three LFO target streams, 12 targeted slots, 31 s, dirty/local+shared guards, no clobber or hang |
+
+The audit's `static` field uses a modeled-cycle upper bound as a conservative
+instruction-count ceiling; it does not equate instructions with hardware
+cycles. The standard stock reserve is 22,640 modeled cycles/core/block.
+Only 3,180 additional modeled cycles remain after all four split calls and
+inits; memory stalls and additional custom FX can reduce that allowance.
+The replay adapter is used because the ordinary linear cycle counter cannot
+price this bounded indirect-tap topology. It does not claim that inactive
+parameter slots or ColdFire paths were exercised as audible controls.
+
+## Firmware composition and emulator UI
+
+Native standalone compilation of the verified original 1.40C MAIN passes on
+both DSP payloads, with 1,243 donor P words free. The private exact-image
+candidate is identified in `evidence/private-build.json`; its saved ELEK/ELUP
+update decodes byte-identically to the native MAIN. It retains stock FX1
+and offers NONE/Air Chorus in FX2. Public compositions use the common
+builder, which may select different menus/platform features.
+
+Four real LCD exports from AIRC0R1 are retained under `media/`, with their
+plan and hashes in `media/capture.json`. All were visually reviewed: chooser,
+confirmed SPD/RNG 64 and MIX 0, MIX 64 example, return to dry. Capture used
+`scripts/capture-module-ui.py`, both DSP cores and `--shm-size 256m`.
+The same image booted and accepted differently controlled Air Chorus
+assignments on T1, T5, T2 and T6 in the headless MKII panel. This empty-card,
+stopped-transport run verifies UI/assignment, not physical audio/persistence.
+A separate panel-state readback run checks track isolation without DSP audio.
+
+`npm run module:verify -- airwindows-chorus --os <local original update>
+--image octamod-tapehead-qualification-tools:local --jobs 2` compares the
+browser composer with native octabam, covering the module alone, every
+available companion, maximum selections, sampled larger combinations and
+both stock-FX2 retention choices. Results and fingerprints are in
+`sdk/native-comparisons/airwindows-chorus.json`; chooser metadata and declaration
+checks are generated by the native exporters. Unsupported combinations are
+refused, including Analog BD and configurations with no harvested P space.
+Keeping all stock FX2 is unavailable for this large P-table insert. Shared
+platform/logger writes are accounted for separately from module-owned bytes.
+The 114 selections produce 46 matching builds (16 identical outright, 30
+identical outside shared platform writes) and 68 matching refusals, with zero
+mismatches. These comparisons establish no chip deadline.
+
+The owner approved limited functional hardware coverage and waived fresh
+physical testing of AIRC0R1. `sdk/airwindows-chorus-build-approval.json` binds
+only that hardware exception to this exact version/source. Source cycle,
+memory, package, integration, licence and UI evidence still apply. Earlier
+hardware evidence remains historical; no baseline or other module exception
+is extended. See [HARDWARE.md](HARDWARE.md) for optional remaining MKII checks.
 
 ## Reproduction
 

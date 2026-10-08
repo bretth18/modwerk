@@ -17,7 +17,7 @@
     "label": "AIR CHORUS",
     "family": "Chorus",
     "summary": "Chris Johnson's Airwindows Chorus, ported to Octatrack FX2 with smooth controls.",
-    "overview": "Stereo sine-modulated delay with the original air compensation, three-point read and MIX/depth interaction. This fixed-point development candidate is outside the public catalogue pending complete integration and hardware qualification.",
+    "overview": "Stereo sine-modulated delay with Chris Johnson’s original air compensation, three-point read and MIX/depth interaction, adapted to fixed-point DSP with smooth controls.",
     "highlights": [
       "Original Airwindows algorithm and credit",
       "SPEED, RANGE and MIX with per-sample smoothing",
@@ -58,11 +58,10 @@
     "location": "FX2",
     "conflicts": [],
     "limitations": [
-      "Draft: not offered in the public library or configurator.",
       "FX2 only; stale FX1 dispatch passes dry without writing its buffer.",
       "About 16-bit delay-buffer precision; dry bypass retains 24 bits.",
       "Extreme modulation retains pitch and aliasing artifacts.",
-      "Bus-memory combinations, browser/native composition parity and physical hardware deadlines/persistence are not qualified."
+      "Earlier candidate passed a reported 50-minute MKII test; fresh hardware testing of bounded initialization is owner-waived. Eight-track hardware timing, locks/scenes/LFOs and physical Part/project/reboot persistence remain unverified."
     ]
   },
   "resources": {
@@ -73,30 +72,68 @@
       "value": 49320,
       "unit": "bytes at 24 bits/word",
       "method": "static",
-      "conditions": "Uses the existing FX2 allocation. Host reserves 256 X state words per instance; 56 are initialized/used. Shared code/table need another 1,465 P words per core. Not additional sample RAM allocation.",
+      "conditions": "Uses the existing 16,384-word FX2 buffer and 256-word X state reservation; 56 X words are used. Shared code/table use 1,481 P words per core. No new sample heap.",
       "source": "evidence/bounds.json"
     },
     "processing": {
       "label": "Conservative DSP code budget",
-      "display": "628 modeled cycles/sample",
-      "value": 628,
+      "display": "725 modeled cycles/sample",
+      "value": 725,
       "unit": "modeled cycles/sample",
       "method": "static",
-      "conditions": "Entire reachable word spans, mutually exclusive arms included, with conservative branch/call surcharges and first-call control work charged every 16 frames. Excludes memory stalls and ColdFire stock/platform paths; not measured chip timing.",
+      "conditions": "Conservative DSP word-span bound, two trig-split calls per 16 frames. Four instances plus four bounded initializations: 46,740 modeled cycles/core/block, within the SDK 49,920 module allowance. Excludes contention stalls; not measured chip timing.",
       "source": "evidence/bounds.json"
+    },
+    "impact": {
+      "conditions": "Per active FX2 instance at expensive settings and moving controls, including the cold valid-history path; code/table shared per core, stock buffers reused. Estimates do not assert chip capacity or hardware headroom.",
+      "cpu": {
+        "level": "minimal",
+        "basis": "source-estimate",
+        "rationale": "No authored ColdFire audio routine, heap, sequencer or callback; existing descriptor/editor/dispatcher paths deliver three target bytes. Shared loader/logger overhead is composition-wide.",
+        "source": "TESTING.md"
+      },
+      "dsp": {
+        "level": "high",
+        "basis": "measured-comparison",
+        "rationale": "Cold path peaks at 524.5 net executed instructions/sample versus stock Chorus 253.625 and expensive split Spring 314; full stereo taps, air compensation and sample smoothing cost more than simpler inserts. Timing is unmeasured.",
+        "source": "evidence/stock-comparison.json"
+      },
+      "memory": {
+        "level": "high",
+        "basis": "source-estimate",
+        "rationale": "Full 16,384-word stereo FX2 ring per instance, 256 reserved X words (56 used), plus 1,481 P code/table words per core. Reuses existing buffers; no added sample heap.",
+        "source": "TESTING.md"
+      }
     }
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Native float-reference, control movement, memory, init/bypass and trig-split render checks passed. Eight synthetic instances on two DSP cores match isolated renders. Static sound-quality audit passed. Extreme-modulation audit flags are retained. Native standalone compilation and actual LCD documentation pass; broader composition and hardware qualification remain incomplete.",
-    "hardwareStatus": "untested",
-    "evidenceRevision": "e718c9bcfcdd736deeddb08bffe6bce2aa8e0eea",
+    "summary": "Native reference, moving-control, dirty-history, isolation, bounds and sound-quality checks pass within documented limits. Actual MKII report applies to the first image; exact initialization update is owner-waived. Current emulator UI and composition checks are recorded separately.",
+    "hardwareStatus": "historical",
+    "evidenceRevision": "26d09b85543b7c02d8179a2b942bb70533b59232",
     "gates": [
       "verify.py",
       "verify_controls.py",
       "verify_instances.py",
       "verify_bounds.py"
-    ]
+    ],
+    "documentation": {
+      "tutorial": {
+        "title": "Tutorial: a slow chorus",
+        "steps": [
+          "Select an audio track playing a sustained sound. Hold FUNC and press FX2, highlight Air Chorus with UP/DOWN, then press YES to assign it.",
+          "Press FX2. Set SPD 64 and RNG 64 with A/B, then raise MIX to 64 with F. Expect a slow chorus; sweep the controls to check for crackle.",
+          "Return MIX to 0 for dry after its smoothing tail, or select NONE in FX2 SETUP to remove the effect. Stop transport before saving your test configuration."
+        ]
+      },
+      "screenshots": [
+        "media/ot-location.png",
+        "media/ot-controls.png",
+        "media/ot-example.png",
+        "media/ot-dry.png"
+      ],
+      "screenshotStyle": "black-and-white"
+    }
   },
   "source": {
     "repository": "https://github.com/airwindows/airwindows",
@@ -192,9 +229,5 @@
       "media/ot-example.png",
       "media/ot-dry.png"
     ]
-  },
-  "build": {
-    "status": "pending",
-    "reason": "Native standalone build and actual custom-effect LCD captures pass. New module still requires hardware, complete browser/native composition and rejection coverage, stock/platform performance evidence and owner first-release review."
   }
 }
