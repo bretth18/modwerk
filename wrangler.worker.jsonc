@@ -16,11 +16,10 @@
     "PRIVACY_READY": "false",
     "SESSION_TRANSPORT": "bearer",
     "WELCOME_MAIL_ENABLED": "true",
-    // Activity digests per day. 15 leaves the free Resend tier (100/day) room for account mail; raise after upgrading.
-    "ACTIVITY_MAIL_DAILY_LIMIT": "15",
-    // News campaign messages per day, beside the 80 account sends and the activity digests. 5 keeps the three within
-    // the free tier; raise after upgrading. A campaign to more members than this is sent over several days.
-    "NEWS_MAIL_DAILY_LIMIT": "5"
+    // Paid Resend plan: 50,000/month. Keep room for 80 account emails/day and other provider usage.
+    // Together these daily budgets allow at most 48,980 sends in a 31-day month.
+    "ACTIVITY_MAIL_DAILY_LIMIT": "1000",
+    "NEWS_MAIL_DAILY_LIMIT": "500"
   },
   "d1_databases": [
     {
