@@ -93,7 +93,7 @@ export function MachineLibrary({ device, query, category, octatrackModules: octa
   const digiGroups = (['digitakt', 'digitone'] as const).filter(id => !device || device.id === id).map(id => ({
     id,
     mods: DIGI_MODS.filter(mod => mod.device === id && (!category || mod.libraryCategory === category) && (libraryFamily === 'all' || mod.category === libraryFamily) && (mod.title + ' ' + mod.summary + ' ' + mod.author).toLowerCase().includes(term))
-      .sort((a,b) => compareModules({id: id + '-' + a.id, name: a.title, authorName: a.author}, {id: id + '-' + b.id, name: b.title, authorName: b.author}, sort, statistics)),
+      .sort((a,b) => compareModules({id: id + '-' + a.id, name: a.title, authorName: a.author, updatedAt: a.updatedAt}, {id: id + '-' + b.id, name: b.title, authorName: b.author, updatedAt: b.updatedAt}, sort, statistics)),
   }))
   function browseResults() {
     onBrowse?.({

@@ -2,7 +2,7 @@ import { communityModule } from './modules'
 import type { BellItem } from './notification-contract'
 import { threadPath } from './forum-links'
 
-export type NotificationLine = { text: string; excerpt: string | null; href: string; ids: string[]; seen: boolean; created_at: string; actor: string | null; official: boolean; avatar: string | null }
+export type NotificationLine = { kind: BellItem['kind']; text: string; excerpt: string | null; href: string; ids: string[]; seen: boolean; created_at: string; actor: string | null; official: boolean; avatar: string | null }
 /** Who to show beside the line: the acting member's picture, Modwerk for official and system entries, initials otherwise. */
 function who(item: BellItem) {
   const official = item.actorOfficial || item.kind === 'announcement' || item.kind === 'module_update'
@@ -39,8 +39,8 @@ export function notificationLines(items: BellItem[], link: (hash: string) => str
       groups.get(key)!.push(item)
       continue
     }
-    const actor = people([item]), base = { ids: [item.id], seen: item.seen, created_at: item.created_at, ...who(item) }
-    if (item.kind === 'announcement') { lines.push({ ...base, text: `Modwerk: ${item.title ?? 'News'}`, excerpt: excerpt(item.excerpt), href: item.url ?? (item.module_id ? moduleHref(item.module_id) : link('#library')) }); continue }
+    const actor = people([item]), base = { kind: item.kind, ids: [item.id], seen: item.seen, created_at: item.created_at, ...who(item) }
+    if (item.kind === 'announcement') { lines.push({ ...base, text: item.title ?? 'News', excerpt: excerpt(item.excerpt), href: item.url ?? (item.module_id ? moduleHref(item.module_id) : link('#library')) }); continue }
     if (item.kind === 'reply') lines.push({ ...base, text: `${actor} replied in ${quote(item.title)}`, excerpt: excerpt(item.excerpt), href: threadHref(item) })
     else if (item.kind === 'mention') lines.push(item.thread_id ? { ...base, text: `${actor} mentioned you in ${quote(item.title)}`, excerpt: excerpt(item.excerpt), href: threadHref(item) } : { ...base, text: `${actor} mentioned you in Shoutbox 8`, excerpt: excerpt(item.excerpt), href: link('#forum/shoutbox') })
     else if (item.kind === 'bug_report') lines.push({ ...base, text: `New bug report for ${moduleName(item.module_id)} from ${actor}: ${quote(item.title)}`, excerpt: excerpt(item.excerpt), href: threadHref(item) })
@@ -57,7 +57,7 @@ export function notificationLines(items: BellItem[], link: (hash: string) => str
   }
   return lines.map(line => {
     if (!Array.isArray(line)) return line
-    const first = line[0], base = { ids: line.map(item => item.id), seen: line.every(item => item.seen), created_at: first.created_at, excerpt: null, ...who(first) }
+    const first = line[0], base = { kind: first.kind, ids: line.map(item => item.id), seen: line.every(item => item.seen), created_at: first.created_at, excerpt: null, ...who(first) }
     if (first.kind === 'message') return { ...base, excerpt: excerpt(first.excerpt), text: `${people(line)} sent you ${line.length === 1 ? 'a message' : line.length + ' messages'}`, href: link(first.actor ? '#forum/messages/' + first.actor : '#forum/messages') }
     return first.kind === 'post_like'
       ? { ...base, text: `${people(line)} liked your post in ${quote(first.title)}`, href: threadHref(first) }

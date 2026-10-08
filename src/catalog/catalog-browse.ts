@@ -6,7 +6,7 @@ import { moduleHref } from '../routing'
 
 export type CatalogBrowse = { route: string; query: string; family: string; sort: string; ids: readonly string[] }
 const STORAGE_KEY = 'modwerk.catalog-browse'
-const sorts = ['recent', 'collection', 'name', 'author', 'rated', 'liked', 'downloaded']
+const sorts = ['updated', 'recent', 'collection', 'name', 'author', 'rated', 'liked', 'downloaded']
 
 function validLibraryRoute(route: string) {
   if (route === 'library' || LIBRARY_CATEGORIES.includes(route as typeof LIBRARY_CATEGORIES[number])) return true

@@ -196,8 +196,8 @@ describe('new module release announcements', () => {
     expect(items).toHaveLength(2)
     expect(items.map(item => item.kind)).toEqual(['announcement', 'announcement'])
     expect(notificationLines(items)).toEqual(expect.arrayContaining([
-      expect.objectContaining({ text: 'Modwerk: VECTOR is now available', href: '#module/vector' }),
-      expect.objectContaining({ text: 'Modwerk: FM Synth is now available', href: '#module/fm-synth' }),
+      expect.objectContaining({ text: 'VECTOR is now available', href: '#module/vector' }),
+      expect.objectContaining({ text: 'FM Synth is now available', href: '#module/fm-synth' }),
     ]))
     expect(await (await f.call('/notifications/unread', 'GET', undefined, two.session)).json()).toEqual({ unread: 2 })
     await f.call('/notifications', 'PATCH', { ids: [items[0].id] }, one.session)

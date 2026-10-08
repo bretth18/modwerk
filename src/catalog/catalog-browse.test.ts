@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { catalogNeighbors, parseCatalogBrowse, type CatalogBrowse } from './catalog-browse'
 import { CatalogNavigation } from '../components/CatalogNavigation'
+import { DEFAULT_MODULE_SORT } from '../community/module-statistics'
 
 const browse: CatalogBrowse = { route: 'all/system', query: 'health', family: 'all', sort: 'name', ids: ['digitakt-digihealth', 'digitone-digihealth'] }
 
@@ -29,6 +30,14 @@ describe('paging through catalog results', () => {
     expect(restored).toEqual({ ...browse, family: 'Utilities' })
     expect(parseCatalogBrowse(JSON.stringify({ ...browse, route: 'effects', ids: ['miniverb'] }))?.route).toBe('effects')
     expect(parseCatalogBrowse(JSON.stringify({ ...browse, route: 'digitakt/system' }))?.route).toBe('digitakt/system')
+  })
+
+  it('preserves the recently updated default and captured order after reload', () => {
+    const updated = { ...browse, sort: DEFAULT_MODULE_SORT, ids: [...browse.ids].reverse() }
+    const restored = parseCatalogBrowse(JSON.stringify(updated))
+    expect(restored).toEqual(updated)
+    expect(catalogNeighbors(restored, 'digitone-digihealth')?.next?.href).toBe('#digitakt/module/digihealth')
+    expect(catalogNeighbors(restored, 'digitakt-digihealth')?.next).toBeUndefined()
   })
 
   it('does not page outside the selection or wrap a single result', () => {
