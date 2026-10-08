@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createLazyFirmwareClient } from './firmware-client'
 import type { EngineRequest, EngineResponse } from '../engine/protocol'
+import { USB_AUDIO_MODULE, usbAudioPreset } from '../config/usb-audio'
 class FakeWorker {
   static created: FakeWorker[] = []
   posted: EngineRequest[] = []
@@ -31,6 +32,28 @@ describe('lazy firmware client', () => {
     expect(FakeWorker.created).toHaveLength(1)
     client.dispose()
     expect(worker.terminated).toBe(true)
+  })
+  it('forwards saved USB settings through validation and build to the worker', async () => {
+    const client = createLazyFirmwareClient()
+    const usbAudio = { ...usbAudioPreset('outbox'), layout: 'main-cue' as const, outboxPairs: [1, 2, 0, 0] }
+    const moduleIds = [USB_AUDIO_MODULE]
+    const validation = client.validate(moduleIds, false, usbAudio)
+    await flush()
+    const [worker] = FakeWorker.created
+    expect(worker.posted[0]).toEqual({ id: 1, type: 'validate', moduleIds, keepStockFx2: false, usbAudio })
+    worker.reply({ id: 1, type: 'validated', report: {} } as unknown as EngineResponse)
+    await validation
+    const progress = vi.fn()
+    const build = client.build(moduleIds, false, progress, usbAudio)
+    await flush()
+    expect(FakeWorker.created).toHaveLength(1)
+    expect(worker.posted[1]).toEqual({ id: 2, type: 'build', moduleIds, keepStockFx2: false, usbAudio })
+    worker.reply({ id: 2, type: 'progress', phase: 'packing' })
+    expect(progress).toHaveBeenCalledWith('packing')
+    const result = { id: 2, type: 'built', report: {}, buffer: new ArrayBuffer(0), sha256: 'test' } as unknown as EngineResponse
+    worker.reply(result)
+    expect(await build).toBe(result)
+    client.dispose()
   })
   it('ignores cancel and clear before any request, and refuses requests after dispose', async () => {
     const client = createLazyFirmwareClient()
