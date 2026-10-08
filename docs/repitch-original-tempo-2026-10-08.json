@@ -1,0 +1,202 @@
+{
+  "date": "2026-10-08",
+  "status": "reported-failure-not-reproduced",
+  "moduleVersion": "0.1.2-experimental",
+  "firmware": "1.40C",
+  "imageSha256": "68b5ece6b4441739a70e870b59d1a9ee7946755a72a9de91057af49417ada997",
+  "nativeSourceFiles": {
+    "repitch.s": "55114bdea09fe82c1bd68b725e77cc1873e2e956fb9ce9f071e3155a63fb721b",
+    "manifest.py": "52c9c6e81ec38764237baf8470ad34f5747bc3af519e026d8ad96b3251e252c7"
+  },
+  "emulatorSha256": "89759d97c794f62b304dff1912a2ac1c7965289b4d019fbdbb0dbcf3c3d9f312",
+  "toolchainImageId": "sha256:3a5861370c0f3d4eb2507af6a20821ab6ad20569c9fb22f4dfce9d93d4fd93e2",
+  "isolation": "Network-disabled, read-only container; dropped capabilities; private writable scratch directory; 1 GiB /dev/shm.",
+  "unchangedPublishedRuntime": true,
+  "physicalHardware": "not-tested",
+  "fixture": {
+    "projectBpm": 120,
+    "tracks": [
+      {
+        "track": 1,
+        "machine": "FLEX",
+        "tstr": "RPCH",
+        "originalBpm": 120,
+        "sampleHz": 440
+      },
+      {
+        "track": 5,
+        "machine": "STATIC",
+        "tstr": "AUTO",
+        "sampleTimestretch": "REPITCH",
+        "originalBpm": 90,
+        "sampleHz": 660
+      }
+    ],
+    "audio": "Two original generated 2-second stereo 16-bit PCM sine loops at 44100 Hz; distinct sample slots; no user sample content retained."
+  },
+  "nativeContracts": {
+    "status": "passed",
+    "stockIdenticalIncrements": 8520,
+    "scaledIncrements": 480,
+    "failures": 0
+  },
+  "liveAttributeRegression": {
+    "status": "passed",
+    "source": "scripts/repitch-original-tempo-probe.cpp",
+    "sourceSha256": "da24984e3e2181be3965d04d14a45cf91e72865a80aadabc8dafe63c1daa030b",
+    "accessRoutePairs": [
+      "FLEX RPCH + STATIC AUTO/REPITCH",
+      "FLEX AUTO/REPITCH + STATIC RPCH"
+    ],
+    "originalTemposBpm": [
+      240,
+      60,
+      121,
+      90
+    ],
+    "stockAttributeSetter": "0x40099090",
+    "setterInvocations": 16,
+    "differentPtchValuesIgnored": true,
+    "otherInstanceTempoAndIncrementUnchanged": true,
+    "stockImageWithoutRepitch": "correctly rejected with exit 1",
+    "otherInstanceFullSettingsAndStateUnchanged": true
+  },
+  "panelOriginalTempo": {
+    "status": "passed",
+    "track": 1,
+    "beforeBpm": 120,
+    "afterBpm": 121,
+    "beforeIncrementQ26": "0x04000000",
+    "afterIncrementQ26": "0x03f78985",
+    "otherTrackIncrementQ26": "0x05555555",
+    "otherTrackUnchanged": true,
+    "method": "Actual MKII AED > ATTR, ORIGINAL TEMPO, four RIGHT presses while the two tracks play; framebuffer inspected privately."
+  },
+  "liveAudio": {
+    "method": "Two simultaneous tracks; change T1 original tempo 120 to 240 BPM through the same stock setter used by ATTR at frame 1600; project BPM stays 120. Hann-window FFT with three-bin log-magnitude peak interpolation; tolerance 1 Hz. Only DSP core 0 produced a capture.",
+    "status": "passed",
+    "before": [
+      {
+        "expectedHz": 440,
+        "measuredHz": 439.992,
+        "relativePeak": 0.864
+      },
+      {
+        "expectedHz": 880,
+        "measuredHz": 880.008,
+        "relativePeak": 1.0
+      }
+    ],
+    "after": [
+      {
+        "expectedHz": 220,
+        "measuredHz": 219.978,
+        "relativePeak": 1.0
+      },
+      {
+        "expectedHz": 880,
+        "measuredHz": 879.979,
+        "relativePeak": 0.99
+      }
+    ]
+  },
+  "savedBaseline": {
+    "originalTemposBpm": [
+      121,
+      90
+    ],
+    "tstr": [
+      "RPCH",
+      "AUTO"
+    ],
+    "rate": [
+      127,
+      127
+    ]
+  },
+  "persistence": {
+    "partSaveReload": {
+      "stateMatchesSaved": true,
+      "assignmentsSamplesParametersAndOriginalTempo": "passed",
+      "audio": [
+        {
+          "expectedHz": 436.3636363636364,
+          "measuredHz": 436.364,
+          "relativePeak": 1.0
+        },
+        {
+          "expectedHz": 880,
+          "measuredHz": 880.008,
+          "relativePeak": 0.894
+        }
+      ],
+      "unsavedEditsDiffer": true
+    },
+    "projectSaveReload": {
+      "stateMatchesSaved": true,
+      "assignmentsSamplesParametersAndOriginalTempo": "passed",
+      "method": "Real PROJECT SAVE and RELOAD PROJECT panel confirmations; later unsaved original-tempo and RATE edits on both tracks restore the saved baseline.",
+      "unsavedEditsDiffer": true,
+      "audio": [
+        {
+          "expectedHz": 436.3636363636364,
+          "measuredHz": 436.371,
+          "relativePeak": 1.0
+        },
+        {
+          "expectedHz": 880,
+          "measuredHz": 880.005,
+          "relativePeak": 0.877
+        }
+      ],
+      "dspStateMatchesSaved": true
+    },
+    "freshProjectLoad": {
+      "stateMatchesSaved": true,
+      "assignmentsSamplesParametersAndOriginalTempo": "passed",
+      "audio": [
+        {
+          "expectedHz": 436.3636363636364,
+          "measuredHz": 436.364,
+          "relativePeak": 1.0
+        },
+        {
+          "expectedHz": 880,
+          "measuredHz": 880.008,
+          "relativePeak": 0.894
+        }
+      ]
+    },
+    "batteryRamOnlyRestart": {
+      "stateMatchesSaved": true,
+      "assignmentsSamplesParametersAndOriginalTempo": "passed",
+      "audio": [
+        {
+          "expectedHz": 436.3636363636364,
+          "measuredHz": 436.371,
+          "relativePeak": 1.0
+        },
+        {
+          "expectedHz": 880,
+          "measuredHz": 880.005,
+          "relativePeak": 0.877
+        }
+      ],
+      "method": "Fresh process discards volatile memory; restore only 1 MiB battery-backed RAM and saved card before boot; no --mount, --set, --project, --sequencer or explicit project-load call; enable frame engine, wait, press PLAY and capture actual audio."
+    }
+  },
+  "limitations": [
+    "No physical unit was flashed or rebooted.",
+    "DSP core 1 produced no ESAI capture in this local emulator; separate audio behavior on that core remains unverified. Repitch itself adds only ColdFire hooks.",
+    "MKI panel, slices, recorders and maximum audio load were not exercised.",
+    "Multiple different samples and two instances were exercised; replacing/resetting an instance was not exercised.",
+    "The failing device build, project/sample tempos and TSTR setting were unavailable. No firmware fix is claimed.",
+    "This is focused emulator evidence, not a new hardware/cycle/memory qualification or a Repitch release."
+  ],
+  "retainedArtifacts": "Only authored test source, sanitized measurements and documentation. Firmware, card/project copies, samples, PCM/WAV and raw RAM/framebuffers stay private.",
+  "checks": {
+    "npmRunCheck": "passed; 185 test files, 1266 tests",
+    "moduleContractAgainstMain": "passed",
+    "whitespace": "passed"
+  }
+}
