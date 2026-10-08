@@ -24,6 +24,19 @@ function checked(body: unknown, text: string) {
   return typeof body === 'string' && body.split(/\r?\n/).some(line => /^\s*- \[[xX]\] /.test(line) && line.replace(/^\s*- \[[xX]\] /, '').trim() === text)
 }
 export function authorRequestedRelease(body: unknown) { return checked(body, AUTHOR_RELEASE_REQUEST) && checked(body, AUTHOR_RELEASE_EVIDENCE) }
+/** Select an event candidate only; live PR ownership, opt-in, scope and exact CI are rechecked before merge. */
+export function authorReleaseEvent(value: unknown): { head: string; number?: number; runId?: number } {
+  const event = object(value), run = object(event.workflow_run), pr = object(event.pull_request)
+  const validId = (id: unknown): id is number => Number.isSafeInteger(id) && Number(id) > 0
+  const validHead = (head: unknown): head is string => typeof head === 'string' && /^[a-f0-9]{40}$/.test(head)
+  if ('workflow_run' in event) {
+    if (event.action !== 'completed' || run.event !== 'pull_request' || run.status !== 'completed' || run.conclusion !== 'success' || !validId(run.id) || !validHead(run.head_sha)) throw new Error('Only successful PR workflow completions can request author release.')
+    return { head: run.head_sha, runId: run.id }
+  }
+  const head = object(pr.head).sha
+  if (event.action !== 'edited' || pr.state !== 'open' || pr.draft || object(pr.base).ref !== 'main' || !validId(pr.number) || !validHead(head)) throw new Error('Only edits to an open main PR can request author release.')
+  return { head, number: pr.number }
+}
 const packageNames = ['dsp-packages', 'coldfire-packages', 'resident-dsp', 'rom-packages', 'bootstrap-package', 'menu-recipes', 'descriptor-recipes', 'platform-writes', 'requested-packages', 'utility-packages', 'usb-audio-packages', 'module-build']
 function manifestPath(folder: string) { return folder + '/' + (folder.startsWith('sdk/octabam/') ? 'octamod' : 'modwerk') + '.module.json' }
 export function moduleReleaseId(module: AuthorModule) { return module.folder.startsWith('sdk/octabam/') ? String(module.document.id) : String(module.document.machine) + '-' + module.document.id }
@@ -112,7 +125,11 @@ export function authorizeAuthorUpdate(registry: AuthorRegistry, author: unknown,
   let packages = false
   for (const change of changes) {
     if (!change.regular || Array.from(change.path).some(char => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127) || change.path.split('/').some(part => ['.', '..', '.git', '.github', '.gitattributes', '.gitmodules'].includes(part)) || /\.(bin|syx|zip|exe|dll|dylib)$/i.test(change.path)) throw new Error('Unsafe author update path: ' + change.path)
-    if (touched.some(module => change.path.startsWith(module.folder + '/'))) continue
+    const own = touched.find(module => change.path.startsWith(module.folder + '/'))
+    if (own) {
+      if (change.path === own.folder + '/' + object(own.document.license).file || /^(?:licen[cs]e|copying|notice)(?:[._-]|$)/i.test(change.path.split('/').at(-1) ?? '')) throw new Error('Licence text changes require owner review.')
+      continue
+    }
     if (vendorPaths.has(change.path)) continue
     if (change.path === 'sdk/catalog.json' || ['src/catalog/module-documents.json', 'src/catalog/machine-modules.json'].includes(change.path)) {
       if (!change.before || !change.after) throw new Error('Catalog removal requires owner review.')
