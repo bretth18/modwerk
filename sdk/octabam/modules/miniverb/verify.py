@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the draft through the existing native assembler and DSP host.
+"""Render Mini Verb through the existing native assembler and DSP host.
 
 Needs a disposable Octabam tree, its patched vendor toolchain, DSP_HOST and
 an original local MAIN OS extraction. All binary output stays outside Git.
@@ -35,7 +35,8 @@ bench.OUT = output
 # three-minute timeout. Only this test's host calls get the longer deadline.
 bench.subprocess = SimpleNamespace(run=lambda command, **kw: subprocess.run(command, **{**kw, 'timeout': 900}))
 folder = Path(__file__).resolve().parent
-baseline = registry.by_key('MINIVERB')
+baseline = registry._load_one(folder / 'upstream/manifest-0.1.2.py')
+baseline_asm = folder / 'upstream/miniverb-0.1.2.asm'
 candidate = registry._load_one(folder / 'manifest.py')
 # Select the existing module profile just as the source-package compiler does.
 from remix.schema import Remix  # noqa: E402
@@ -47,7 +48,7 @@ report = {'moduleVersion': '0.2.0-experimental', 'sampleRate': 44100,
           'sources': {name: hashlib.sha256((folder / name).read_bytes()).hexdigest()
                       for name in ('miniverb.asm', 'manifest.py', 'verify.py')},
           'stockMainSha256': hashlib.sha256(args.stock.read_bytes()).hexdigest(),
-          'baselineSources': {name: hashlib.sha256((sdk / 'modules/miniverb' / name).read_bytes()).hexdigest()
+          'baselineSources': {name: hashlib.sha256((folder / 'upstream' / {'miniverb.asm': 'miniverb-0.1.2.asm', 'manifest.py': 'manifest-0.1.2.py'}[name]).read_bytes()).hexdigest()
                               for name in ('miniverb.asm', 'manifest.py')}}
 
 def gate(name, ok, **detail):
@@ -75,10 +76,10 @@ def assembled(name, path):
         p = output / f'{name}_{c}.mem'; p.write_bytes(blob); mems.append(p)
     return mems
 
-old = assembled('baseline', sdk / baseline.dsp.asm)
+old = assembled('baseline', baseline_asm)
 new = assembled('candidate', folder / 'miniverb.asm')
 import cycle_count  # noqa: E402
-for name, path in (('baseline', sdk / baseline.dsp.asm), ('candidate', folder / 'miniverb.asm')):
+for name, path in (('baseline', baseline_asm), ('candidate', folder / 'miniverb.asm')):
     cycle_count._ASM['miniverb'] = path
     static = cycle_count.measure('miniverb')
     gate(name + ': static cycle marker preserves code', cycle_count.verify('miniverb', static))

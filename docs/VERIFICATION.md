@@ -936,3 +936,12 @@ The application now carries the failing module and required/remaining byte count
 The complete recorded native comparison replay covers 844 profiles: 327 built identities match, 491 refusals match, and 26 historical mismatches remain. Replaying unchanged main at `8b6bcaafa72a5fb8b8b3183898d2726c1c9b2634` produces the same results and mismatches: old Analog BD admission/menus and earlier FM Synth image identities in companion records. This diagnostic update adds no native mismatch and does not relabel those stale records as passes.
 
 Node 24 `VITEST_MAX_WORKERS=1 npm run check -- --base origin/main` passed all 1,258 application/tooling tests in 187 files, 48 SDK checks, lint, TypeScript, catalogue/licence validation and the production build. The one-worker override avoids existing wall-clock test timeouts under local CPU contention; test timeout thresholds and the repository configuration are unchanged. Added regressions cover the full-context two-removal search, single-removal preference, bounded work, stale results, DSP/menu messages, worker payload preservation and actionable panel rendering.
+
+Mini Verb 0.2.0-experimental: 46 current-source DSP regressions passed, including
+exact neutral/dry behavior, endpoint spectra, eight-instance isolation and a
+30-second guarded moving-control render. Native/browser parity passed all 110
+selections (52 builds, 58 matching refusals, zero mismatches). Tone occupies C;
+Mix moves to F. Owner accepted the sound and stability in Octemu and explicitly
+waived physical hardware evidence for this exact version/source; hardware and
+physical reboot persistence remain untested. See the module TESTING.md and
+`sdk/miniverb-build-approval.json`.

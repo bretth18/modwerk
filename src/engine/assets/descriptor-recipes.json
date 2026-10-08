@@ -932,7 +932,7 @@
         {
           "offset": 96,
           "width": 1,
-          "value": 40
+          "value": 64
         },
         {
           "offset": 97,
@@ -943,6 +943,11 @@
           "offset": 98,
           "width": 1,
           "value": 2
+        },
+        {
+          "offset": 99,
+          "width": 1,
+          "value": 40
         },
         {
           "offset": 202,
@@ -1092,7 +1097,7 @@
         {
           "offset": 398,
           "width": 4,
-          "value": 69905
+          "value": 1118481
         },
         {
           "offset": 394,
@@ -1124,7 +1129,7 @@
         {
           "offset": 34,
           "width": 6,
-          "value": "MIX"
+          "value": "TONE"
         },
         {
           "offset": 40,
@@ -1135,9 +1140,14 @@
           "offset": 46,
           "width": 6,
           "value": "RATE"
+        },
+        {
+          "offset": 52,
+          "width": 6,
+          "value": "MIX"
         }
       ],
-      "sourceSha256": "ea8eb70ef4d9e374bdcd90ffcbc67263ec27b10883ceb120df7f22185f6788e3"
+      "sourceSha256": "e18af286c50d9778cb60ddbe8b9348c4b4a71c04cb45171419d4d2a6681cc31c"
     },
     {
       "id": "modulation",
@@ -2533,7 +2543,7 @@
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
     "character": "0.1.1-experimental",
-    "miniverb": "0.1.2-experimental",
+    "miniverb": "0.2.0-experimental",
     "tapeecho": "0.1.2-experimental",
     "euclid": "0.1.4-experimental",
     "repitch": "0.1.2-experimental",

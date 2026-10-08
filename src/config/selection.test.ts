@@ -27,7 +27,7 @@ describe('selection export', () => {
 describe('configuration import and chooser persistence',()=>{
  it('round-trips a compact chooser without importing firmware',()=>{
   const exported={...createSelection(['miniverb','repitch'],null,false),name:'Compact set'}
-  expect(parseSelection(JSON.stringify(exported))).toEqual({name:'Compact set',moduleIds:['miniverb','repitch'],moduleVersions:{miniverb:'0.1.2-experimental',repitch:'0.1.2-experimental'},keepStockFx2:false})
+  expect(parseSelection(JSON.stringify(exported))).toEqual({name:'Compact set',moduleIds:['miniverb','repitch'],moduleVersions:pinModuleVersions(['miniverb','repitch']),keepStockFx2:false})
  })
  it('defaults old backups to retained stock effects and rejects changed catalog identities',()=>{
   const legacy={...createSelection(['euclid'],null),schemaVersion:1,name:'Legacy'}

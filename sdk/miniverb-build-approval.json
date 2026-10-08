@@ -1,0 +1,13 @@
+{
+  "kind": "owner-approved-update",
+  "id": "miniverb",
+  "version": "0.2.0-experimental",
+  "approvedBy": "repeat98",
+  "approvedOn": "2026-10-08",
+  "waived": [
+    "current-build-hardware"
+  ],
+  "sourceSha256": "b2bc62ed7a4371dc6c765536e12f7fb9abb76183a5ac8ec3fda9191b96a891d2",
+  "ownerStatement": "ok it works well and is stable, release it. I explicitely allow no hardware evidence in this case",
+  "reason": "Owner accepted sound and stability in Octemu and explicitly authorized the published update. Physical hardware evidence alone is waived; native/browser parity, source-only reproduction, software resource bounds and release documentation remain required."
+}

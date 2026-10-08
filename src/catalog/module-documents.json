@@ -514,7 +514,7 @@
       "id": "miniverb",
       "key": "MINIVERB",
       "name": "Mini Verb",
-      "version": "0.1.2-experimental",
+      "version": "0.2.0-experimental",
       "category": "effects",
       "access": {
         "location": "Audio track FX2 SETUP: Mini Verb in the effect chooser.",
@@ -522,7 +522,7 @@
           "Select an audio track with its TRACK key.",
           "Hold FUNC and press FX2 to open FX2 SETUP.",
           "Turn LEVEL to Mini Verb and press YES to assign it.",
-          "Press FX2 to close SETUP, then adjust DECAY, DAMP, MIX, MOD and RATE."
+          "Press FX2 to close SETUP; DECAY, DAMP and TONE are above MOD, RATE and MIX."
         ],
         "screenshots": [
           "media/ot-location.png",
@@ -541,17 +541,17 @@
       "presentation": {
         "label": "DIFFUSED SPACE",
         "family": "Reverb",
-        "summary": "A diffused reverb with a modulated tail.",
-        "overview": "A compact diffused reverb with a modulated tail. Control its length and darkness, then use modulation depth and rate to add movement to the space.",
+        "summary": "A compact diffused reverb with wet-output tone and modulation.",
+        "overview": "Tone darkens or brightens the wet signal with one pole per stereo channel, while DAMP controls high-frequency decay inside the unchanged tank.",
         "highlights": [
           "Diffused, modulated reverb tail",
-          "Damping for darker spaces",
-          "Five dedicated controls"
+          "Independent tail damping and output tone",
+          "Mix in the lower-right slot; Tone above it"
         ],
         "usage": [
-          "Choose MINI VERB in FX2. DECAY controls the tail; higher DAMP makes the sound darker.",
-          "MOD sets modulation depth and RATE selects one of eight modulation speeds. Use MIX to place the reverb behind the dry signal.",
-          "The delay ring clears progressively on initialization. Audio stays dry until the ring is ready."
+          "Choose MINI VERB in FX2. DECAY and DAMP set the tail; TONE colors the wet output.",
+          "Turn TONE below 64 for darker reverb or above 64 for brighter reverb. At 64 the accepted voice is unchanged.",
+          "MOD and RATE add movement. MIX is now encoder F, below TONE; set MIX to 0 to bypass."
         ]
       },
       "controls": [
@@ -570,10 +570,10 @@
           "labels": null
         },
         {
-          "name": "MIX",
-          "default": 40,
+          "name": "TONE",
+          "default": 64,
           "count": 128,
-          "doc": "dry/wet, smoothed; 0 dry, 127 wet",
+          "doc": "wet color: 0 dark, 64 neutral, 127 bright; smoothed",
           "labels": null
         },
         {
@@ -598,6 +598,13 @@
             "2.36",
             "2.69"
           ]
+        },
+        {
+          "name": "MIX",
+          "default": 40,
+          "count": 128,
+          "doc": "dry/wet, smoothed; 0 dry, 127 wet",
+          "labels": null
         }
       ],
       "compatibility": {
@@ -606,59 +613,78 @@
         "location": "FX2",
         "conflicts": [],
         "limitations": [
-          "The documented sweep exercises moving controls, trigger splits and eight instances for 4,096 blocks per case. The README explicitly says it has not been flashed or verified on hardware."
+          "Stored projects, locks, scenes and LFO destinations use parameter slots: old MIX in slot C becomes TONE. Reassign Mix to slot F and set Tone to 64.",
+          "Physical hardware and power-cycle persistence remain untested; the owner explicitly waived hardware evidence for this exact update after accepting sound and stability in Octemu.",
+          "Cycle bounds use a static software model and inherited stock reserve; whole-instrument contention, maximum streaming/USB load and arbitrary companion FX are not measured."
         ]
       },
       "resources": {
-        "recorded": "20 Sep 2026",
+        "recorded": "2026-10-08",
         "storage": {
           "label": "DSP program / buffer",
-          "display": "457 words / 16K ring",
+          "display": "532 words / 16K ring",
           "value": null,
           "unit": "see display",
           "method": "static",
-          "conditions": "Per-instance Y ring allocation; 13,750 positions are occupied by the documented layout.",
-          "source": "README.md"
+          "conditions": "532 assembled program words; unchanged 16K Y ring and 32-word X scalar allocation. Four additional scalar words use previously empty slots inside that block.",
+          "source": "TESTING.md"
         },
         "processing": {
           "label": "DSP instruction peak",
-          "display": "20,296 per core/block",
+          "display": "23,360 instructions/core/block",
           "value": null,
           "unit": "see display",
           "method": "emulator",
-          "conditions": "Worst tested case with eight instances, four per core, at 44.1 kHz and 16-sample blocks. Excludes dispatcher, voice engines, other effects and hardware stalls.",
-          "source": "README.md"
+          "conditions": "Eight instances, four per core, at 44.1 kHz and 16-sample blocks; moving controls and mixed trigger splits. Executed instructions, not chip cycles or whole-instrument CPU.",
+          "source": "TESTING.md"
         },
         "impact": {
-          "conditions": "Audio modules are rated for an active instance, including expensive modes and changing controls; MIDI/USB features are rated while enabled. More tracks or instances increase demand. Shared runtime reservations and reused stock buffers are not added again per module. These rough source-backed tiers do not establish hardware headroom or qualification.",
+          "conditions": "Eight FX2 instances, four per core; source-backed relative estimates, without whole-device utilization or silicon timing claims.",
           "cpu": {
-            "level": "minimal",
+            "level": "low",
             "basis": "source-estimate",
-            "rationale": "The reverb audio engine runs on the DSP. ColdFire parameter publication and UI still cost work, but the described module does not add a continuous CPU audio engine. CPU demand is a source estimate.",
-            "source": "README.md"
+            "rationale": "Existing stock parameter publication; no new ColdFire callback or runtime.",
+            "source": "TESTING.md"
           },
           "dsp": {
-            "level": "high",
-            "basis": "measured-comparison",
-            "rationale": "The eight-instance emulator record reports a worst tested 20,296 instructions per core/block, close to stock Spring and above Plate/Dark in the same test. This supports a high relative processing tier; it excludes other processing and hardware stalls.",
-            "source": "README.md"
+            "level": "moderate",
+            "basis": "source-estimate",
+            "rationale": "411 modeled loop cycles/sample; 8,192 conservative modeled cycles/instance/block. Eight moving instances peak at 23,360 executed instructions/core/block.",
+            "source": "TESTING.md"
           },
           "memory": {
-            "level": "high",
+            "level": "moderate",
             "basis": "source-estimate",
-            "rationale": "Each active instance owns a 16K-word DSP Y ring, with 13,750 positions occupied by the documented layout, plus scalar state and code. This is the largest per-instance DSP delay footprint among these listed effects.",
-            "source": "README.md"
+            "rationale": "Existing 16K ring and X reservation unchanged; 402,936 logical bytes for eight instances including both programs and full hardware stack capacity.",
+            "source": "TESTING.md"
           }
         }
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "The documented sweep exercises moving controls, trigger splits and eight instances for 4,096 blocks per case. The README explicitly says it has not been flashed or verified on hardware.",
+        "summary": "46 current-source native DSP regressions and real emulator LCD layout pass. Owner accepted sound and stability in Octemu and explicitly approved this release without physical hardware evidence. Software bounds and memory reservations are recorded in TESTING.md.",
         "hardwareStatus": "untested",
-        "evidenceRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+        "evidenceRevision": "80b6b5444ab57e8eb05cecfb372557d0ed567b1d",
         "gates": [
-          "tools/verify/verify_miniverb.py"
-        ]
+          "verify.py: exact neutral and dry, endpoint spectra, eight-instance isolation, dirty-state guards and 30-second moving render",
+          "Native/browser composition parity and changed-original refusal",
+          "Reproducible source-only packages"
+        ],
+        "documentation": {
+          "tutorial": {
+            "title": "Quick tutorial",
+            "steps": [
+              "Select an audio track, hold FUNC and press FX2, then choose Mini Verb with LEVEL and YES.",
+              "Press FX2, turn encoder F (MIX) to 127, and compare encoder C (TONE) at 0, 64 and 127 while playing a sample.",
+              "Lower MIX to place the colored reverb behind the dry signal; set MIX to 0 to hear the exact dry signal and bypass the wet output."
+            ]
+          },
+          "screenshots": [
+            "media/ot-location.png",
+            "media/ot-controls.png"
+          ],
+          "screenshotStyle": "black-and-white"
+        }
       },
       "license": {
         "spdx": "MIT",
@@ -669,35 +695,35 @@
         {
           "path": "media/ot-location.png",
           "captureType": "emulator",
-          "caption": "Mini Verb selected in the FX2 SETUP chooser. Its five controls are on the main FX2 page.",
-          "alt": "Mini Verb selected in the FX2 SETUP chooser. Its five controls are on the main FX2 page.",
-          "credit": "Octamod contributors (headless capture)",
+          "caption": "Hold FUNC and press FX2, choose Mini Verb with LEVEL, then press YES.",
+          "alt": "Mini Verb selected in the FX2 SETUP chooser.",
+          "credit": "Modwerk contributors (headless capture)",
           "license": "LicenseRef-OT-UI-Documentation",
           "source": "original",
           "otUi": {
             "page": "FX2 SETUP",
             "shows": "location",
             "firmware": "1.40C",
-            "moduleVersion": "0.1.2-experimental",
-            "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
-            "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+            "moduleVersion": "0.2.0-experimental",
+            "imageSha256": "fd42fa81ee3cf23a47381a96d2e70be3efbaab250f5c3aedb5a1e11cd4a2529e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6."
           }
         },
         {
           "path": "media/ot-controls.png",
           "captureType": "emulator",
-          "caption": "Mini Verb on the main FX2 page: DECAY, DAMP, MIX, MOD and RATE.",
-          "alt": "Mini Verb on the main FX2 page: DECAY, DAMP, MIX, MOD and RATE.",
-          "credit": "Octamod contributors (headless capture)",
+          "caption": "Press FX2 and compare TONE on encoder C at 0, 64 and 127; set MIX on encoder F to 0 to bypass.",
+          "alt": "Main FX2 page with DECAY, DAMP, TONE above MOD, RATE, MIX.",
+          "credit": "Modwerk contributors (headless capture)",
           "license": "LicenseRef-OT-UI-Documentation",
           "source": "original",
           "otUi": {
             "page": "FX2 main",
             "shows": "controls",
             "firmware": "1.40C",
-            "moduleVersion": "0.1.2-experimental",
-            "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
-            "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+            "moduleVersion": "0.2.0-experimental",
+            "imageSha256": "fd42fa81ee3cf23a47381a96d2e70be3efbaab250f5c3aedb5a1e11cd4a2529e",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6."
           }
         }
       ]

@@ -1,9 +1,0 @@
-{
-  "version": "0.2.0-experimental",
-  "date": "2026-10-08",
-  "changes": [
-    "Source draft, not published: move MIX from upper-right encoder C to the free lower-right encoder F and add TONE above it.",
-    "TONE is neutral at 64; darker settings low-pass the wet output and brighter settings high-pass it using one pole per stereo channel. The feedback tank and DAMP remain unchanged.",
-    "Layout migration is required: old MIX values, locks, scenes and LFO destinations in slot C now address TONE. Restore TONE to 64 and move Mix settings/automation to slot F. Hardware and current-image release qualification remain pending."
-  ]
-}
