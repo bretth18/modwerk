@@ -1,5 +1,4 @@
 import { AccountPage } from './community/AccountPage'
-import { DiscordInvitePrompt } from './community/DiscordInvite'
 import { SignupWelcome } from './community/SignupWelcome'
 import { HardwareFeedbackReminder } from './community/HardwareFeedbackReminder'
 import { NotificationBell } from './community/NotificationBell'
@@ -305,7 +304,6 @@ export default function App() {
       {compareOpen&&<ModuleComparison ids={comparison} selected={selectedIds} onToggle={toggleModule} digiSelected={{digitakt:activeFor('digitakt')?.moduleIds??[],digitone:activeFor('digitone')?.moduleIds??[]}} onToggleDigi={(device,id)=>workspace.toggleModule(id,device)} onClose={()=>setCompareOpen(false)}/>}
       {configurationsOpen && <ConfigurationBrowser configurations={workspace.configurations} activeId={sidebarConfiguration?.id} currentDevice={machineHasMods ? currentDevice.id : 'octatrack'} onSelect={changeConfiguration} onCreate={newConfiguration} onClose={() => setConfigurationsOpen(false)} />}
       {configDialog && <ConfigurationDialog mode={configDialog} initialName={configDialog === 'create' ? '' : configDialog === 'duplicate' ? (machineActive?.name ?? '') + ' copy' : machineActive?.name ?? ''} onSubmit={submitConfigurationDialog} onClose={() => { setConfigDialog(null); setCreateDevice(null) }} />}
-      <DiscordInvitePrompt enabled={!accountRoute && !developerRoute && !['admin', 'privacy', 'impressum', 'community-rules', 'report-content'].includes(route)} />
       <PublicAnnouncement next={route} enabled={!accountRoute && !developerRoute && !configuration && machineView !== 'configuration' && !route.startsWith('submit') && !['admin', 'review', 'privacy', 'impressum', 'community-rules', 'report-content'].includes(route)} />
       {supportOpen && <SupportDialog url={SUPPORT_URL} onClose={() => setSupportOpen(false)} />}
       <div className="workspace">
