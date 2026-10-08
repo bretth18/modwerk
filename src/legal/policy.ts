@@ -1,5 +1,5 @@
 /** Bump the usage version when its purposes, recipients or retention change. */
-export const USAGE_CONSENT_VERSION = '2026-10-04'
+export const USAGE_CONSENT_VERSION = '2026-10-08'
 export const COMMUNITY_RULES_VERSION = '2026-10-04'
 export const OPERATOR = {
   name: 'Jannik Aßfalg',
