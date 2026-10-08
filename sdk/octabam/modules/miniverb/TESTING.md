@@ -1,59 +1,148 @@
-# Mini Verb testing
+# Mini Verb 0.2.0-experimental testing
 
-Version: 0.1.2-experimental · author: [Jannik Aßfalg](https://github.com/repeat98)
+This is the published experimental update. The owner accepted the sound and
+stability in Octemu and explicitly waived physical hardware evidence for this
+exact source/version on 8 October 2026. This is a new approval, not an extension
+of the earlier frozen baseline. Hardware remains untested.
 
-This revision updates author credits only. The historical evidence below is retained; no new hardware or DSP qualification is claimed.
+## Native DSP regression
 
+The verifier uses the existing `build_bus.assemble` assembler/disassembler
+round-trip audit, stock-payload frame context and `benchmark_reverbs` DSP host.
+It injects each independently assembled module at P:0x2000 into temporary
+private payload dumps for a controlled DSP comparison. This does not prove
+placement in a complete release image. No firmware or memory dumps are committed.
 
-## Source evidence
+Reproduce with a disposable native SDK copy and the private MAIN OS extraction:
 
-Evidence source: repeat98/octamad commit `b8deefc88b2c3e5f3c6158e364eb741df1924e1d`. Read [the original record](README.md).
+```sh
+DSP_HOST=/absolute/path/to/current-checkout/dsp_host \
+python3 -B sdk/octabam/modules/miniverb/verify.py \
+  --sdk /absolute/path/to/disposable/octabam \
+  --stock /absolute/path/to/private/section_3_MAIN_OS.bin \
+  --output /absolute/path/to/private/miniverb-tone-results
+```
 
-The documented sweep exercises moving controls, trigger splits and eight instances for 4,096 blocks per case. The README explicitly says it has not been flashed or verified on hardware.
+Build `dsp_host` from this checkout's `tools/harness/dsp_host/dsp_host.cpp` against
+the patched toolchain, not a stale shared host. Both emulated cores need more
+than Docker's default 64 MiB shared-memory allocation; the local offline run
+uses `--shm-size 512m`. Raw commands, parameters, meters, logs and WAVs remain
+in the private output directory. The committed report contains only source
+hashes, measurements and verdicts.
 
-## Commands and results
+## Results — 8 October 2026
 
-Declared native gates:
+All **46 native DSP checks passed**. Current source hashes and exact verdicts
+are recorded in [evidence/dsp-regression.json](evidence/dsp-regression.json). The baseline is the unchanged published source at main commit
+`2899ff214b51004ecb70b10dba519556740a0f65`.
 
-`tools/verify/verify_miniverb.py`
+Verified: 532 assembled program words; a static 411-word/cycle sample-loop
+bound (baseline 457 program words / 360 static cycles), with marker insertion
+proven byte-identical. The bound excludes chip contention and does not sum
+ColdFire work, dispatcher or voice engines. The DSP host executes the actual
+assembled code at 44.1 kHz, 16-sample blocks.
 
-This SDK import did not rerun these gates. CPU-heavy checks remain paused. Historical results are source records, not new qualification of the SDK or a combined configuration. Record exact commands, tested source commit, workload, modes, track count, duration and results here whenever the module changes.
+| Measurement | Actual result |
+| --- | --- |
+| Eight moving instances, mixed splits, four per core | 23,360 instructions/core/block; baseline 20,296; +15.10% |
+| Eight neutral instances | 21,092 instructions/core/block; baseline fixed peak 20,132; +4.77% |
+| Dark endpoint, 70 Hz / 4 kHz relative to neutral | -0.10 dB / -18.85 dB |
+| Bright endpoint, 70 Hz / 4 kHz relative to neutral | -16.60 dB / -0.34 dB |
+| TONE 64 with moving original controls, splits 0/1/7/15 | Bit-identical to the accepted previous voice |
+| MIX 0 at TONE 0/64/127 | Bit-exact bipolar dry passthrough |
+| Eight instances vs isolated renders, both cores and interleaved scheduling | Bit-identical; no cross-instance influence |
+| One excited instance, repeated at all eight positions | Other seven outputs exactly silent |
+| Dirty scalar and delay state, active private/shared Y and loaded P guards | Passed short regression runs |
+| 30-second moving eight-instance guarded render | 82,688 blocks, 23,360 instructions/core/block peak; zero clipping, stray writes or clobber |
 
-## Hardware and limitations
+Private common-builder composition succeeded with only Mini Verb and the two
+existing stock DSP loader modules. MAIN OS SHA-256:
+`fd42fa81ee3cf23a47381a96d2e70be3efbaab250f5c3aedb5a1e11cd4a2529e`.
+[evidence/private-composition.json](evidence/private-composition.json) binds the
+runtime sources, image and isolated toolchain; the firmware remains private.
+This proves composition of that selection, not exhaustive native/browser parity.
 
-Hardware status: untested. Worst tested case with eight instances, four per core, at 44.1 kHz and 16-sample blocks. Excludes dispatcher, voice engines, other effects and hardware stalls.
+The real six-control LCD was captured on this image through the maintained
+capture script, viewed and matched to the declaration. See
+[media/capture.json](media/capture.json) for the exact panel sequence and hashes.
+No fresh hardware test is implied.
 
-Do not claim a passed hardware test without a model, image version, conditions and actual result. Packaging parity is separate from audio quality and hardware safety.
+Tone endpoints and percussion tails are stereo, unclipped and decaying. Both
+full-range jumps follow the per-sample smoother, and the actual state settles
+back to exactly zero at Tone 64. The long render is DSP-only; it does not run
+eight actual voice engines, project LFOs or saved locks.
 
-## OT UI captures — 1 October 2026
+Repository validation uses Node 24.21.0 and `npm ci`, followed by
+`npm run check -- --base origin/main` and `npm run module:doctor -- miniverb`.
 
-Module version: 0.1.2-experimental. Actual firmware-rendered LCD pixels captured
-through the headless `ot_emu` interactive panel and `lcd_view.py`;
-128×64 LCD, integer scale 6, MKII panel, transport stopped. Empty
-scratch FAT16 card; no samples, personal projects or hardware connection.
+The current-source native/browser comparison covers 110 selections: 52 builds
+(16 identical and 36 matching module-owned writes with platform writes masked),
+58 matching refusals and zero mismatches. A changed original is refused.
+See `sdk/native-comparisons/miniverb.json`. Source-only packages reproduce the
+release source; firmware and raw native artifacts remain private.
 
-The image was compiled from a temporary copy of the original seven module
-sources and their required internal loader; pending imports were excluded.
-Build environment: `REMIX=ui-capture XBUS=1 SPEC=1 DEV=0 BUILD=79
-OCTABAM_STATIC_STOCK=0 OCTABAM_NO_CACHE=1`; native `build_bus.main()`
-uses the catalog's seven-module profile (`MINIVERB`, `TAPE ECHO`, `EUCLID`
-on FX2; the three station modules and Euclid added to FX1). No native
-qualification, stress, audio-render or firmware parity gates were run.
+Aliasing audit: not tested. Native endpoint and musical renders check unclipped
+output and spectral attenuation. The owner subsequently accepted the sound and
+stability in Octemu: “ok it works well and is stable, release it. I explicitely
+allow no hardware evidence in this case”. No duration, instance count or physical
+hardware result was reported.
+Idle behavior is covered by eight silent instances after dirty initialization.
 
-Local MAIN OS build SHA-256: `5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83`.
-Emulator binary SHA-256: `93484e4b71c70f48f795825103146a36ef95ef9ac06ee627e28608ae3e3bb3eb`.
+## Remaining coverage limits
 
-Panel sequence and PNG hashes are recorded in [media/capture.json](media/capture.json).
-Capture command: `ot_emu --image <local-image> --card <empty-scratch-card>
---dsp --frame --ms 3000 --interactive --lcd <temporary-plane> --main-level off
---rtc host --mkii`; input uses panel key rows and encoder detents. Export:
-`lcd_view.png(lcd_view.screen(lcd_view.read_plane(<temporary-plane>)), <png>, 6)`.
-The maintained equivalent is `scripts/capture-module-ui.py`; see
-[the capture workflow](../../../../docs/MODULE_UI_CAPTURES.md).
+- Worst-case chip cycles including memory contention, ColdFire publication and complete load.
+- A 30-second full project stress workload with eight tracks, three LFOs per track and parameter locks.
+- Full first-time-use walkthrough beyond the captured selection and six-control main page.
+- Actual parameter locks, LFOs, scenes and crossfader on both sides of Tone neutral.
+- Multiple distinct instances on both DSP cores, including editing/resetting/replacing one in isolation.
+- Part save/reload, project save/load/reload and a physical reboot with usable audio restored.
+- Original-project migration of old Mix values, locks, scenes and LFO destinations.
 
-Only screenshots, hashes and documentation are retained. This evidence
-does not alter the existing hardware status or qualify a firmware release.
+Hardware status: **not tested**. No unit was flashed or rebooted. An emulator
+DSP render cannot establish physical reboot persistence or whole-instrument
+headroom. The explicit owner hardware waiver applies only to this exact version/source;
+no old version's waiver or qualification is extended.
 
-Publication metadata was synchronized with current main without changing native code.
-The capture record preserves the original draft version and records the source-file
-comparison binding these exact pixels to this documentation/media-only update.
+## Conservative software cycle bound and exact reservations
+
+The assembler/disassembler-audited program occupies 532 DSP words. The
+branch-inclusive sample-loop bound is 411 modeled cycles/sample. At most two
+process calls split one 16-sample block: 6,576 loop cycles, plus at most twice
+the entire 121-word outside-loop code, twice 128 clearing stores and 32 init
+stores. Even charging another 256 cycles for loop setup, branches and returns
+is 7,362 modeled cycles. We round upward to **8,192 cycles/instance/block**.
+This is a conditional static instruction model, without chip wall-clock or
+measured memory-contention timing. The neutral bypass is cheaper. All branches
+are charged together even when mutually exclusive; initialization and both
+clearing calls are charged alongside active audio, although clearing returns
+early. There is no new ColdFire callback, table or linked runtime.
+
+The supported maximum is eight FX2 instances, four per core. Against octabam's
+200 MIPS / 44.1 kHz budget (4,535 cycles/sample), reserve the existing
+STOCK_SHARE = 1,415 cycles/sample for stock voice/dispatcher/transport work.
+At 16 samples/block: 32,768 module cycles + 22,640 stock reserve = **55,408
+cycles/core/block**, below the 72,560 arithmetic budget by 17,152. This does
+not qualify arbitrary companion FX, USB load, streaming stalls or silicon
+contention; native composition accepts only selections within its own ledger.
+
+Exact logical reservations, with three bytes per 24-bit DSP word:
+
+| Region | Scope | Words | Bytes |
+| --- | --- | ---: | ---: |
+| Full inherited X instance block, including 32 scalar words | per instance | 256 | 768 |
+| Full allocator-owned Y ring | per instance | 16,384 | 49,152 |
+| Program in both core payloads | shared | 1,064 | 3,192 |
+| Full DSP hardware system stack capacity on both cores | shared | 64 × 48-bit entries | 384 |
+
+Per-instance reservation is 49,920 bytes; shared is 3,576; eight instances
+total **402,936 logical bytes**. X r7+0x20..0x3f is fully cleared; new Tone
+words 0x2e/0x2f/0x3c/0x3d consume unused positions within it. Each inherited
+instance spans r7..r7+0xff; the stock dispatcher strides 0x300 per track.
+Y allocations are assigned per track by the existing allocator, use 0x3fff
+modulo alignment and fit the declared 16K region. Occupied ring positions
+0..13,749 and the 128-word progressive clearing stride remain unchanged.
+The program has no recursive call, software heap, new CPU RAM/SDRAM, runtime
+table, variable-sized allocation or additional padding. Hardware stack
+capacity is conservatively charged in full; host int32 backing is an emulator
+representation, not DSP logical allocation. Guarded dirty-state tests cover
+private/shared Y and loaded P; physical hardware canaries remain unmeasured.

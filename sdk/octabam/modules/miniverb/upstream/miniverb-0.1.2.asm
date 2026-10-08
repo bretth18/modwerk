@@ -1,11 +1,9 @@
-; CYCLES_FORWARD_BRANCHES
 ; Mini Verb v4: four branches, eight in-loop allpass diffusers, 44.1 kHz.
 ; Own 16K allocator buffer and r7+$20..$3f. No global writable state.
 ; Four input allpasses, two interpolated/modulated in-loop allpasses.
 ; Orthogonal Householder feedback. INIT resets all state, preserves r1/n1/m1.
 ; 20 base,21 head,22 clear;24..27 targets;28..2a smooth decay/damp/mix;
-; 2b DC LP,2c diffused input,2d smoothed depth;2e tone target,2f tone smooth;
-; 30..33 damping state;3c/3d stereo tone LP state;
+; 2b DC LP,2c diffused input,2d smoothed depth;30..33 damping state;
 ; 34 mean,35 feedback*mean,37 bounded phase;38..3b fully diffused branch taps.
 ; Ring segments: write..furthest read (including modulation neighbor):
 ; AP: 0..113
@@ -78,7 +76,7 @@ mv_ready:
         sub     b,a
         move    a,x:(r7+$25)
 ; Full-wet endpoint, all other values knob/128; mix zero is exact dry.
-        move    x:(r6+$5),a
+        move    x:(r6+$2),a
         move    #>$7f0000,x0
         cmp     x0,a
         bne     mv_mix
@@ -87,28 +85,6 @@ mv_mix:
         move    a,x:(r7+$26)
         move    x:(r6+$3),a
         move    a,x:(r7+$27)
-; Signed wet-output tone. Center is exact neutral, endpoints are dark/bright.
-        move    x:(r6+$2),a
-        move    #>$7f0000,x0
-        cmp     x0,a
-        beq     mv_bright
-        sub     #>$400000,a
-        asl     #$1,a,a
-        bra     mv_color
-mv_bright:
-        move    #>$7fffff,a
-mv_color:
-        move    a,x:(r7+$2e)
-; Snap a settled sub-LSB remainder once per call, outside the sample loop.
-        move    x:(r7+$2f),b
-        sub     b,a
-        abs     a
-        move    #>$000100,x0
-        cmp     x0,a
-        bge     mv_glide
-        move    x:(r7+$2e),a
-        move    a,x:(r7+$2f)
-mv_glide:
 ; RATE is an 8-way control: AGU step 1..8, 0.336..2.692 Hz.
         move    x:(r6+$4),a
         asr     #$10,a,a
@@ -148,13 +124,6 @@ mv_glide:
         asr     #$8,a,a
         add     b,a
         move    a,x:(r7+$2d)
-; Smooth signed tone per sample. Sub-LSB settling happens outside the loop.
-        move    x:(r7+$2e),a
-        move    x:(r7+$2f),b
-        sub     b,a
-        asr     #$8,a,a
-        add     b,a
-        move    a,x:(r7+$2f)
 ; Mono input with headroom, DC highpass via a 0.001 lowpass subtraction.
         move    x:(r0),a
         move    x:(r0+n0),x0
@@ -436,11 +405,8 @@ mv_glide:
         add     x0,a
         move    #>$ffdb12,n5
         move    a,y:(r5+n5)
-; Tone lives outside the feedback tank and affects only wet audio. One pole
-; per channel: complementary LP/HP at about 453 Hz, alpha=1/16.
-; A shared fixed crossover avoids coefficient switching at neutral.
-        move    #>$080000,y0
-; Stereo projections reconstruct the matrix half-sum from its mean.
+; Stereo projections reconstruct the matrix half-sum from its mean. Mix directly into audio.
+        move    x:(r7+$2a),y1
         move    x:(r7+$34),a
         asl     #$1,a,a
         move    x:(r7+$3a),x0
@@ -448,28 +414,6 @@ mv_glide:
         move    x:(r7+$3b),x0
         sub     x0,a
         asl     #$1,a,a                 ; recover wet level outside the tank
-        move    x:(r7+$2f),b
-        tst     b
-        beq     mv_left_mix
-        move    a,x1                    ; wet input to the stereo tone pole
-        move    x:(r7+$3c),b
-        sub     b,a
-        move    a,x0
-        mpy     y0,x0,a
-        add     b,a
-        move    a,x:(r7+$3c)
-        move    x:(r7+$2f),b
-        tst     b
-        bge     mv_left_band
-        sub     x1,a                    ; negative high band for dark tone
-mv_left_band:
-        move    a,x0                    ; bright removes low band
-        move    b,y1
-        mpy     x0,y1,a     x1,b         ; signed tone; park wet input in parallel
-        sub     a,b
-        move    b,a
-mv_left_mix:
-        move    x:(r7+$2a),y1
         move    x:(r0),b
         sub     b,a
         move    a,x0
@@ -483,28 +427,6 @@ mv_left_mix:
         move    x:(r7+$3b),x0
         sub     x0,a
         asl     #$1,a,a                 ; recover wet level outside the tank
-        move    x:(r7+$2f),b
-        tst     b
-        beq     mv_right_mix
-        move    a,x1                    ; wet input to the stereo tone pole
-        move    x:(r7+$3d),b
-        sub     b,a
-        move    a,x0
-        mpy     y0,x0,a
-        add     b,a
-        move    a,x:(r7+$3d)
-        move    x:(r7+$2f),b
-        tst     b
-        bge     mv_right_band
-        sub     x1,a                    ; negative high band for dark tone
-mv_right_band:
-        move    a,x0                    ; bright removes low band
-        move    b,y1
-        mpy     x0,y1,a     x1,b         ; signed tone; park wet input in parallel
-        sub     a,b
-        move    b,a
-mv_right_mix:
-        move    x:(r7+$2a),y1
         move    x:(r0),b
         sub     b,a
         move    a,x0

@@ -146,6 +146,15 @@
     ],
     "miniverb": [
       {
+        "version": "0.2.0-experimental",
+        "date": "2026-10-08",
+        "changes": [
+          "Move MIX from upper-right encoder C to lower-right encoder F and add TONE above it.",
+          "TONE is neutral at 64; darker settings low-pass the wet output and brighter settings high-pass it using one pole per stereo channel. The feedback tank and DAMP remain unchanged.",
+          "Old MIX values, locks, scenes and LFO destinations in slot C now address TONE. Restore TONE to 64 and move Mix settings/automation to slot F. Owner accepted sound and stability in Octemu and explicitly waived physical hardware evidence for this exact experimental update."
+        ]
+      },
+      {
         "version": "0.1.2-experimental",
         "date": "2026-10-01",
         "changes": [
