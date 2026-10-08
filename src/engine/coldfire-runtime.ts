@@ -6,17 +6,24 @@ import { readColdFirePackage, PLATFORM_UNITS } from './coldfire-package.ts'
 import { linkColdFireRuntime, runtimeCatalogObject } from './coldfire-link.ts'
 import { createDynamicRuntimeCatalog } from './runtime-catalog.ts'
 import type { StockDspCore } from './stock-dsp.ts'
+import { readUsbAudioObjects } from './usb-audio.ts'
+import { USB_AUDIO_MODULE, type UsbAudioConfiguration } from '../config/usb-audio.ts'
 // Native arena.BASE. All accepted selections reserve the platform at its bottom.
 export const PLATFORM_RUNTIME_BASE = 0x40a955e0
 /** Loader-free runtime with the core logger in every configuration. */
-export async function createStaticColdFireRuntime(ids: readonly string[], original?: Uint8Array, base = PLATFORM_RUNTIME_BASE) {
+export async function createStaticColdFireRuntime(ids: readonly string[], original?: Uint8Array, base = PLATFORM_RUNTIME_BASE, usbAudio?: UsbAudioConfiguration) {
   const units = []
   const selected = selectedRequestedGroups(ids)
   for (const module of resolveSelection(ids)) {
+    if (usbAudio && module.id === USB_AUDIO_MODULE) {
+      if (!original) throw new Error('USB Audio needs verified local firmware.')
+      units.push(...await readUsbAudioObjects(usbAudio, original)); continue
+    }
     if (module.id === 'tapeecho' || module.id === 'euclid') units.push(await readColdFirePackage(module.id))
     for (const pkg of requestedFacts.objects.filter(pkg => pkg.moduleId === module.id && pkg.dram && selected.some(g => g.moduleId === pkg.moduleId))) units.push(await readRequestedObject(pkg.label, original))
   }
-  if (selected.some(g => g.moduleId === 'usb-midi')) for (const pkg of requestedFacts.objects.filter(pkg => pkg.moduleId === 'usb-midi')) units.push(await readRequestedObject(pkg.label, original))
+  if (usbAudio && !ids.includes(USB_AUDIO_MODULE)) throw new Error('USB Audio settings require the USB Audio module.')
+  if (!usbAudio && selected.some(g => g.moduleId === 'usb-midi')) for (const pkg of requestedFacts.objects.filter(pkg => pkg.moduleId === 'usb-midi')) units.push(await readRequestedObject(pkg.label, original))
   const reserveBytes = (units.length ? 1707 * 6144 : 0) + LOGGER_RESERVE_BYTES
   const regions = placeDramRegions(selectedDramRegions(ids), base, base + reserveBytes - LOGGER_RETAINED_BYTES)
   units.push(await readCoreLogger())
@@ -26,7 +33,7 @@ export async function createStaticColdFireRuntime(ids: readonly string[], origin
     externals.set(region.symbol, region.address)
   }
   const link = linkColdFireRuntime(units, base, externals)
-  for (const unit of units) if (requestedFacts.objects.some(p => p.label === unit.label)) {
+  for (const unit of units) if (requestedFacts.objects.some(p => p.label === unit.label) || (usbAudio && unit.label === 'usbmidi_rx')) {
     for (const symbol of unit.object.symbols) {
       if (!symbol.name || !symbol.section || symbol.section >= unit.object.sections.length) continue
       const placement = link.placements.get(unit.label)!.get(symbol.section)

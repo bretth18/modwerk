@@ -1,0 +1,688 @@
+{
+  "kind": "usb-audio-native-link-and-composition",
+  "revision": "7b2984c859732ae6c797ae49c7d61d250b1b6519",
+  "baseSha256": "34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad",
+  "proofs": [
+    {
+      "layout": "tracks-main-cue",
+      "moduleIds": [
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 166044,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 11300
+        },
+        {
+          "name": ".rodata",
+          "address": 1084850692,
+          "size": 267
+        },
+        {
+          "name": ".data",
+          "address": 1084859392,
+          "size": 146044
+        },
+        {
+          "name": ".bss",
+          "address": 1085005436,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "fbbfa25c1c7e7a6a241286f374e38a7ec4fc2d6253352530aca6c8546a59900f",
+      "imageSha256": "90162d554ff0ffe2446902b9221fdc1296437bd2f6dd73e5f7020bb1ee8afb7f",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass",
+      "workerBuild": "pass",
+      "workerImageSha256": "7e535c9290d6a6ef26f9b649170254089e0cf97d38b136c8d2f1df36bf47eb0a"
+    },
+    {
+      "layout": "tracks-main-cue",
+      "moduleIds": [
+        "quantizer",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 165020,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 14776
+        },
+        {
+          "name": ".rodata",
+          "address": 1084854168,
+          "size": 267
+        },
+        {
+          "name": ".data",
+          "address": 1084858368,
+          "size": 146044
+        },
+        {
+          "name": ".bss",
+          "address": 1085004412,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "618daf40a1f66f02a571d75e347d02014ce8130e286d36d2656e7a92b09d29f2",
+      "imageSha256": "f7d30b4c6d687b779788de92182985695b2b6d2eecaee7f4ad601005b1e8b357",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass"
+    },
+    {
+      "layout": "tracks-main-cue",
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 279708,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 25828
+        },
+        {
+          "name": ".rodata",
+          "address": 1084865220,
+          "size": 101687
+        },
+        {
+          "name": ".data",
+          "address": 1084973056,
+          "size": 146044
+        },
+        {
+          "name": ".bss",
+          "address": 1085119100,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "9daad5d1445330908a7715b0a4adc62ce2487dd0848a8ff6f7aded69d082eeb9",
+      "imageSha256": "35410bdb07ead9e1fd311b72c41a153c5ea37db6c55457eeda815b763d407134",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass"
+    },
+    {
+      "layout": "tracks",
+      "moduleIds": [
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 149148,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 11116
+        },
+        {
+          "name": ".rodata",
+          "address": 1084850508,
+          "size": 267
+        },
+        {
+          "name": ".data",
+          "address": 1084859392,
+          "size": 129148
+        },
+        {
+          "name": ".bss",
+          "address": 1084988540,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "dd439a4e331423601ed4bd9c9b0497b9af56cb00762a4e03b438c310902a126b",
+      "imageSha256": "468490c032753fab5de9de6e30265c367da09f846397e211fd72b63bc560ae1d",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass",
+      "workerBuild": "pass",
+      "workerImageSha256": "e2cad7c21b5501b6d3597d64bc1fbe6b5ba05c57d8efe771d9bbb3aba62d578c"
+    },
+    {
+      "layout": "tracks",
+      "moduleIds": [
+        "quantizer",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 148124,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 14592
+        },
+        {
+          "name": ".rodata",
+          "address": 1084853984,
+          "size": 267
+        },
+        {
+          "name": ".data",
+          "address": 1084858368,
+          "size": 129148
+        },
+        {
+          "name": ".bss",
+          "address": 1084987516,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "1a418a89c071e97cec08aca80b6be56ed3cfdc935eee662b670bb01451337cf7",
+      "imageSha256": "ec108c1a3455c433ff55b4867ab8537158c28f140727210ccca548ddc43edcbc",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass"
+    },
+    {
+      "layout": "tracks",
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 262812,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 25644
+        },
+        {
+          "name": ".rodata",
+          "address": 1084865036,
+          "size": 101687
+        },
+        {
+          "name": ".data",
+          "address": 1084973056,
+          "size": 129148
+        },
+        {
+          "name": ".bss",
+          "address": 1085102204,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "4039f38f512e766ea58d3d2eee3df3d12d3566b6fdb0ee18bcaaaf68960ac2cb",
+      "imageSha256": "3eb733826c744a4b62c50922f1e13f42cc88a437bdb1019b128141b896c66944",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass"
+    },
+    {
+      "layout": "tracks-post",
+      "moduleIds": [
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 151708,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 11544
+        },
+        {
+          "name": ".rodata",
+          "address": 1084850936,
+          "size": 267
+        },
+        {
+          "name": ".data",
+          "address": 1084859904,
+          "size": 131196
+        },
+        {
+          "name": ".bss",
+          "address": 1084991100,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "54cef1d5031f6e865e57c5c3a62dae4e00e1674c82dc37106bb583e40bf2b6c6",
+      "imageSha256": "6396210b98100e973f7253c4194ab7a94b9ea5aca5894dbb784fed8b6ae16f96",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass",
+      "workerBuild": "pass",
+      "workerImageSha256": "eac8356210c7cc142b72521afa886c2c34b2322aa06bb6da33c250116ccfd41c"
+    },
+    {
+      "layout": "tracks-post",
+      "moduleIds": [
+        "quantizer",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 154780,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 15020
+        },
+        {
+          "name": ".rodata",
+          "address": 1084854412,
+          "size": 267
+        },
+        {
+          "name": ".data",
+          "address": 1084862976,
+          "size": 131196
+        },
+        {
+          "name": ".bss",
+          "address": 1084994172,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "dce13daebc1cca63dcb1a4acd236eccbb960f1af9d47c04a0b990671eecb23a6",
+      "imageSha256": "2f6ec749aa63cbde29bc8bfb8608fcb3c7bb82d40af1159cb68837148476ae2e",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass"
+    },
+    {
+      "layout": "tracks-post",
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 267420,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 26072
+        },
+        {
+          "name": ".rodata",
+          "address": 1084865464,
+          "size": 101687
+        },
+        {
+          "name": ".data",
+          "address": 1084975616,
+          "size": 131196
+        },
+        {
+          "name": ".bss",
+          "address": 1085106812,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "0d93b18168e383e66747e3a29356c798a761967efeb5a62f89f7851cdbdf87fb",
+      "imageSha256": "98d99319b12d1a0f7472b226af7d6f1f8d4723802cbdf09feb1dcd1f90902310",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass"
+    },
+    {
+      "layout": "main-cue",
+      "moduleIds": [
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 98460,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 11012
+        },
+        {
+          "name": ".rodata",
+          "address": 1084850404,
+          "size": 267
+        },
+        {
+          "name": ".data",
+          "address": 1084858880,
+          "size": 78972
+        },
+        {
+          "name": ".bss",
+          "address": 1084937852,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "49af4c21c360ae889226a3000383cdb9df7cf34a7db950372694252b47f3716a",
+      "imageSha256": "b43ae257edd312d0c712bc497d5d35a10e76cd9a1137fc05a81acd2cab3d9c27",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass",
+      "workerBuild": "pass",
+      "workerImageSha256": "57226abaa194c7f5375f0a61e8fb0ce736a04329a485588da3ae3b68bedf63c1"
+    },
+    {
+      "layout": "main-cue",
+      "moduleIds": [
+        "quantizer",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 97948,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 14488
+        },
+        {
+          "name": ".rodata",
+          "address": 1084853880,
+          "size": 267
+        },
+        {
+          "name": ".data",
+          "address": 1084858368,
+          "size": 78972
+        },
+        {
+          "name": ".bss",
+          "address": 1084937340,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "f8116b55a0bd109f383a33d4051519cef9ca66f35c9fda5ac961ba632b661c6f",
+      "imageSha256": "40a56ead78a25816be5e8e6f906f4f9f747ad4ebbba359a3fb9e1bbd95cebd2f",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass"
+    },
+    {
+      "layout": "main-cue",
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 214684,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 25540
+        },
+        {
+          "name": ".rodata",
+          "address": 1084864932,
+          "size": 101687
+        },
+        {
+          "name": ".data",
+          "address": 1084975104,
+          "size": 78972
+        },
+        {
+          "name": ".bss",
+          "address": 1085054076,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "76f4b3f268bab82ce4cfd5aef51f66dd98b4b0719a4bc517ae7b34f683fc5235",
+      "imageSha256": "165c1c325348d7512c76e1de6c9b6e837a5e1da3e1a13337584983cd2f4767c9",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass"
+    },
+    {
+      "layout": "main",
+      "moduleIds": [
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 82076,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 10868
+        },
+        {
+          "name": ".rodata",
+          "address": 1084850260,
+          "size": 267
+        },
+        {
+          "name": ".data",
+          "address": 1084858880,
+          "size": 62588
+        },
+        {
+          "name": ".bss",
+          "address": 1084921468,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "009ef19db6e0a4d3012e8f08cac16882626726bc06469beaa9e3ae8a80f648d9",
+      "imageSha256": "d82c5cf8c035d9933648c087d0f81f5cff548b037c1242d67fdcbbcabc569ccf",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass",
+      "workerBuild": "pass",
+      "workerImageSha256": "e2670f98faba22897fb259905cc043eb0a3c013a7704d6ba6190a5ca4a2c81a9"
+    },
+    {
+      "layout": "main",
+      "moduleIds": [
+        "quantizer",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 81564,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 14344
+        },
+        {
+          "name": ".rodata",
+          "address": 1084853736,
+          "size": 267
+        },
+        {
+          "name": ".data",
+          "address": 1084858368,
+          "size": 62588
+        },
+        {
+          "name": ".bss",
+          "address": 1084920956,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "3129b7a3280fe2fa16b5e6e9a40d30be9813a03887361232af2d29cceaf295bc",
+      "imageSha256": "4334635725e404ed00869792a9923441dcbd5789df072064b9eb17cdc0cea337",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass"
+    },
+    {
+      "layout": "main",
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 198300,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 25396
+        },
+        {
+          "name": ".rodata",
+          "address": 1084864788,
+          "size": 101687
+        },
+        {
+          "name": ".data",
+          "address": 1084975104,
+          "size": 62588
+        },
+        {
+          "name": ".bss",
+          "address": 1085037692,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "372e576a064a0a5c9dd04c7ce5c9d0413d59b0424988155ff85cfc035624876a",
+      "imageSha256": "c22501be127f1b831f1c3d78021a9c0c32dcb90614721c070a81fa716040be3e",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass"
+    },
+    {
+      "layout": "master",
+      "moduleIds": [
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 82076,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 10904
+        },
+        {
+          "name": ".rodata",
+          "address": 1084850296,
+          "size": 267
+        },
+        {
+          "name": ".data",
+          "address": 1084858880,
+          "size": 62588
+        },
+        {
+          "name": ".bss",
+          "address": 1084921468,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "3ac678300022252636eeb0e1922271a8fadd18d5534fa90dd27b9bf4036cd995",
+      "imageSha256": "1e46bfd0ee23336625797904b3af28e92ac6268a0d2dfcb22489a2a0936459b9",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass",
+      "workerBuild": "pass",
+      "workerImageSha256": "bc7a2281d56c67f331a0b454793c7021a61fdbba28d5594a1b93361360101c48"
+    },
+    {
+      "layout": "master",
+      "moduleIds": [
+        "quantizer",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 81564,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 14380
+        },
+        {
+          "name": ".rodata",
+          "address": 1084853772,
+          "size": 267
+        },
+        {
+          "name": ".data",
+          "address": 1084858368,
+          "size": 62588
+        },
+        {
+          "name": ".bss",
+          "address": 1084920956,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "c86a446b6738c326ee5f96ee4e33f03e0bdcfa5a7bb0c1c45ac1d83f43bf80f2",
+      "imageSha256": "8b6444f2b48f2735493211c65ce6e06a92285aa98bb3eedab5738a5b9792493e",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass"
+    },
+    {
+      "layout": "master",
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "runtimeBytes": 198300,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 25432
+        },
+        {
+          "name": ".rodata",
+          "address": 1084864824,
+          "size": 101687
+        },
+        {
+          "name": ".data",
+          "address": 1084975104,
+          "size": 62588
+        },
+        {
+          "name": ".bss",
+          "address": 1085037692,
+          "size": 0
+        }
+      ],
+      "runtimeSha256": "943415831ac491326e9f7c160054f7de6fe46f1e03fe9022e2b0e17a92c8c5cd",
+      "imageSha256": "14fabcefb5671e8ce37c51f104734e9b13313efe7266ff31cc4f5b4167c5e6ed",
+      "nativeBytes": "pass",
+      "nativeSymbols": "pass",
+      "guardedHooks": "pass",
+      "packaging": "pass",
+      "publicBuilder": "pass"
+    }
+  ],
+  "alteredBaseRejected": true,
+  "hardware": "untested",
+  "limitations": "GNU linker parity and guarded browser composition, not full native octabam image parity, chip timing or hardware qualification."
+}

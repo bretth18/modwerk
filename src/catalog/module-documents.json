@@ -2454,7 +2454,7 @@
       "id": "usb-audio-out-tracks-main-cue",
       "key": "USB AUDIO OUT TRACKS MAIN CUE",
       "name": "USB Audio",
-      "version": "0.1.4-experimental",
+      "version": "0.2.0-experimental",
       "category": "midi-usb",
       "source": {
         "repository": "https://github.com/sambanks/octabam",
@@ -2464,10 +2464,9 @@
       "access": {
         "location": "The Octatrack USB port and your recording host’s audio input selector.",
         "steps": [
-          "Include USB Audio in the firmware configuration. This source import is still pending verification.",
-          "Connect the Octatrack’s USB port to your recording host using high-speed USB for all twenty channels.",
-          "Choose the Octatrack USB audio input in your recording software. Channels 1–16 are the eight track stereo pairs, 17–18 MAIN and 19–20 CUE.",
-          "Allow the stream to settle before recording; upstream reports reordered startup samples around 0.5–1.5 seconds after opening."
+          "Open USB Audio setup, choose Computer or Outbox 8, and select the audio to send. Read the signal-tap description and save the setup before adding it.",
+          "For Outbox 8, assign up to four stereo sources to the physical outputs. Match the shown USB pairs in Elektron’s Outbox app; Modwerk does not program the Outbox.",
+          "For Computer, select the Octatrack USB input in your recording software and use the shown stereo channel pairs. Full multichannel operation requires high-speed USB."
         ],
         "screenshots": [],
         "noUiReason": "This automatic USB output contribution adds no dedicated OT page, chooser entry or panel controls. Access is through the USB connection and the host’s audio input selector. The reviewer must verify this absence of OT UI against the pinned source before publication."
@@ -2478,24 +2477,26 @@
         "credits": [
           "Mark Roberts (markandrus/octemu): USB audio and MIDI implementation, MIT",
           "Bryan T (bryantysinger): MAIN/CUE channels and hardware alignment findings",
-          "Sam Banks: octabam port, layouts and stream alignment"
+          "Sam Banks: octabam port, layouts and stream alignment",
+          "allmyfriendsaresynths (@clickysteve): post-LEVEL USB track gain engine"
         ]
       },
       "nativeManifest": "manifest.py",
       "presentation": {
-        "label": "20 CHANNELS",
+        "label": "USB AUDIO",
         "family": "USB audio",
-        "summary": "Record eight stereo tracks, MAIN and CUE over USB at 44.1 kHz and 24 bits.",
-        "overview": "This is octabam’s 20-channel USB output implementation. At high speed it sends each track after its effects and before its fader, plus the final MAIN and CUE buses. At full speed it sends the tracks’ stereo sum. Required USB MIDI support is included in the SDK source.",
+        "summary": "Record stereo mixes or individual tracks over USB, or send them to Outbox 8 at 44.1 kHz and 24 bits.",
+        "overview": "Choose one USB output layout in Modwerk: Main, Main + Cue, Track 8 / Master, eight tracks before LEVEL, eight tracks following LEVEL, or eight tracks plus Main and Cue. The updated shared USB stack supports the Outbox 8 44.1 kHz handshake. Modwerk stores a routing plan; apply its USB channel pairs separately in Elektron’s Outbox app. Existing configurations without USB settings keep the classic twenty-channel implementation.",
         "highlights": [
-          "20 channels at high speed: eight tracks plus MAIN and CUE",
-          "44.1 kHz, 24-bit class-compliant UAC2 output",
-          "Recorded hardware evidence on both MKI and MKII"
+          "Six selectable stereo output layouts; 2 to 20 USB channels",
+          "Outbox 8 rate handshake and shared audio / MIDI reset handling",
+          "Saved four-pair Outbox routing plan and per-layout CPU estimates"
         ],
         "usage": [
-          "Connect the Octatrack’s USB port to your recording host and choose its USB audio input. Use high-speed USB for all twenty channels.",
-          "Channels 1–16 are track 1–8 stereo pairs, 17–18 MAIN, and 19–20 CUE. Track channels are post-effects and pre-fader; MAIN/CUE include the mixdown.",
-          "Allow the stream to settle before recording: upstream reports reordered startup samples around 0.5–1.5 seconds after opening. Full-speed USB carries a stereo track sum."
+          "Open USB Audio setup, choose Computer or Outbox 8, and select the audio to send. Read the signal-tap description and save the setup before adding it.",
+          "For Outbox 8, assign up to four stereo sources to the physical outputs. Match the shown USB pairs in Elektron’s Outbox app; Modwerk does not program the Outbox.",
+          "For Computer, select the Octatrack USB input in your recording software and use the shown stereo channel pairs. Full multichannel operation requires high-speed USB.",
+          "To return to the classic twenty-channel source, choose Computer and Use classic 20-channel setup. This removes the new settings; existing saved configurations without USB settings keep their prior code path."
         ]
       },
       "controls": [],
@@ -2510,22 +2511,23 @@
           "usb-audio-out-tracks"
         ],
         "limitations": [
-          "USB output only. Host-to-Octatrack USB input variants are outside this import.",
-          "Requires the included internal USB MIDI dependency. Only one USB output layout can be composed.",
-          "USB MIDI clock sets the tempo since 0.1.3. The high-speed USB MIDI receive transfer stays at 64 bytes; octabam's 512-byte transfer is not included.",
-          "Windows and Linux hosts have not been measured in this record.",
-          "A startup sample-reordering burst remains open. Master-on MAIN remains 32 samples behind track taps; toggling master can leave up to 32 stale CUE frames."
+          "Output only, fixed 44.1 kHz / 24-bit; USB input and Crossbar variants are excluded.",
+          "One audio layout per build; shared USB MIDI is included.",
+          "Outbox assignments are a plan and must be applied in Elektron’s Outbox app.",
+          "At full speed, track feeds fall back to a stereo sum and Main + Cue to Main.",
+          "Post-LEVEL tracks exclude MAIN LEVEL and master effects on tracks 1–7. With a master track, tracks 1–7 lead track 8 by 32 samples.",
+          "Current-build Octatrack / Outbox operation, chip timing, complete memory bounds, Windows and Linux host behavior are not tested."
         ]
       },
       "resources": {
         "recorded": "29 Sep 2026 (upstream record)",
         "storage": {
           "label": "Audio rings",
-          "display": "88 KB + DMA buffers",
-          "value": 90112,
+          "display": "Depends on USB layout",
+          "value": null,
           "unit": "bytes",
-          "method": "static",
-          "conditions": "Two rings: 1,024 × 80 bytes plus 1,024 × 8 bytes = 90,112 bytes (88 KiB). Four 32-byte dTDs and four 960-byte packet buffers add 3,968 bytes, before code and MIDI state.",
+          "method": "unmeasured",
+          "conditions": "Exact linked section sizes are recorded per layout in evidence/layouts.json; the historical 88 KiB figure applies to the classic twenty-channel path. Complete stack / DMA and hardware memory bounds have not been measured.",
           "source": "README.md"
         },
         "processing": {
@@ -2542,7 +2544,7 @@
           "cpu": {
             "level": "high",
             "basis": "source-estimate",
-            "rationale": "The CPU copies twenty audio channels and services USB packet/DMA completion while the host has opened the audio stream. With the stream closed, the producer is skipped. The high tier describes the active maximum-channel workload; current hardware headroom is not quantitatively established.",
+            "rationale": "Relative per-layout source estimates: Main, Main/Cue and Track 8 are low, eight pre-LEVEL tracks moderate, twenty-channel and post-LEVEL tracks high. Pinned upstream port instruction counts are not chip cycle or utilization measurements.",
             "source": "README.md"
           },
           "dsp": {
@@ -2554,20 +2556,32 @@
           "memory": {
             "level": "moderate",
             "basis": "source-estimate",
-            "rationale": "Audio rings occupy 88 KiB and DMA descriptors/packet buffers add 3,968 bytes before code and MIDI state. This is a moderate shared feature footprint relative to scalar/control modules and multi-instance reverb rings. Version 0.1.3 adds the 2,028-byte USB MIDI receive unit (usbmidi_rx). Version 0.1.4 adds two producer lifecycle state bytes.",
+            "rationale": "The selected source determines the static audio ring footprint. Linked sections are recorded for all six layouts in evidence/layouts.json. This tier describes source allocation sizes, not a complete hardware memory bound.",
             "source": "README.md"
           }
         }
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Lifecycle fixes ported from octabam 6f9e5bc9: USB reset/session end request alt 0, flush polling is bounded, and the audio producer sleeps while the stream is closed and zeroes its startup cushion on reopening. Current-build hardware and chip timing have not been measured; prior hardware evidence remains historical.",
+        "summary": "Software checks cover six source-only layouts, GNU runtime linking, guarded hooks, packaging and configuration persistence. Owner approved this experimental release without physical hardware testing. Hardware operation, real-chip timing and complete memory bounds remain unmeasured.",
         "hardwareStatus": "untested",
-        "evidenceRevision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
+        "evidenceRevision": "7b2984c859732ae6c797ae49c7d61d250b1b6519",
         "gates": [
           "tools/verify/verify_usb.py",
           "tools/verify/verify_usb_align.py"
-        ]
+        ],
+        "documentation": {
+          "tutorial": {
+            "title": "Record a mix or send Main + Cue to Outbox",
+            "steps": [
+              "Choose and save: open USB Audio setup, choose Outbox 8 and Main + Cue mixes, then Assign in order. Save the setup to the named configuration and build locally from your own OS 1.40C file.",
+              "Connect and route: connect the Octatrack USB port to Outbox 8. In Elektron's Outbox app, match Main / USB 1/2 to physical outputs 1/2 and Cue / USB 3/4 to physical outputs 3/4. Modwerk stores this plan; it does not program the Outbox hardware.",
+              "Use and reset: Main is the final stereo mix; Cue is the separate stereo Cue bus. Outputs 5/6 and 7/8 are off. To use different signals, change and save the source and assignments, rebuild, and update the external app. Stop the stream before changing cabling."
+            ]
+          },
+          "screenshots": [],
+          "screenshotStyle": "black-and-white"
+        }
       },
       "license": {
         "spdx": "MIT",

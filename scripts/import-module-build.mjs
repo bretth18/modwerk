@@ -75,6 +75,19 @@ for (const pkg of requested.objects) {
     if (pkg.label !== 'usbmidi_cfg' && !group?.detours.some(hook => hook.address === copy.source && hook.guardLength === copy.bytes && hook.guardSha256 === copy.sha256)) throw new Error('Inherited replay span must match its declared native detour guard')
   }
 }
+const usb = packages.get('usb-audio-packages.json')
+if (usb.schema !== 1 || usb.version !== versions['usb-audio-out-tracks-main-cue'] || usb.upstreamRevision !== '7b2984c859732ae6c797ae49c7d61d250b1b6519' || usb.layouts.length !== 6 || new Set(usb.layouts.map(row => row.id)).size !== 6 || usb.common.length !== 3) throw new Error('Invalid USB layout scope or release identity')
+for (const [path, hash] of Object.entries(usb.sources)) if (report.sources['modules/usb-audio-out-tracks-main-cue/layouts/' + path] !== hash) throw new Error('USB layout source differs from the complete inventory')
+for (const layout of usb.layouts) for (const pkg of [...usb.common, ...layout.objects]) {
+  if (!hash(pkg.sha256) || !Number.isSafeInteger(pkg.bytes) || pkg.bytes < 52 || pkg.bytes > 1024 * 1024 || !/^[a-f0-9]+$/.test(pkg.code) || pkg.code.length !== pkg.bytes * 2 || sha(Buffer.from(pkg.code, 'hex')) !== pkg.sha256 || !(pkg.source in usb.sources)) throw new Error('Invalid USB authored object')
+  const object = parseColdFireObject(new Uint8Array(Buffer.from(pkg.code, 'hex')))
+  validateStockCopies(object, pkg.stockCopies)
+  if (pkg.stockCopies.length !== (pkg.label === 'usbmidi_cfg' ? 4 : 0) || pkg.stockCopies.some(copy => copy.bytes !== 23)) throw new Error('Invalid masked USB descriptor inventory')
+  if (pkg.curve) {
+    const { section, offset, words, address } = pkg.curve
+    if (layout.id !== 'tracks-post' || words !== 256 || address !== 0x6c00 || !object.sections[section] || offset < 0 || offset + 1024 > object.sections[section].data.length || object.sections[section].data.slice(offset, offset + 1024).some(byte => byte)) throw new Error('USB post-level curve must remain a zero placeholder')
+  }
+}
 const utility = packages.get('utility-packages.json')
 if(utility.stockRead!==false||utility.kind!=='authored-utility-packages'||utility.compilerSha256!==sha(await readFile(resolve(root,'scripts/build-utility-packages.py')))||JSON.stringify(utility.packages.map(p=>p.id).sort())!==JSON.stringify(['cc-map','previewvol'])) throw new Error('Invalid utility source compiler or scope')
 for(const pkg of utility.packages) {

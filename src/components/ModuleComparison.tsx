@@ -8,6 +8,7 @@ import { moduleBuildPending } from '../catalog/build-support'
 import { DIGI_MODS, type DigiMod } from '../devices/digi-mods'
 import { DEVICES_BY_ID, deviceHref } from '../devices/registry'
 import { DIGI_DOWNLOADS_ENABLED } from '../engine/elekloader/protocol'
+import { USB_AUDIO_MODULE } from '../config/usb-audio'
 
 const ROWS = ['Machine', 'Version', 'Purpose', 'Location', 'Storage', 'Processing', 'Hardware record', 'Build status'] as const
 
@@ -51,7 +52,7 @@ export function ModuleComparison({ ids, onClose, onToggle, selected, digiSelecte
     <div className="comparison-scroll" tabIndex={0} role="region" aria-label="Module comparison table"><table>
       <thead><tr><th scope="col">Module</th>{modules.map(module => <th scope="col" key={module.key}><a href={module.href} onClick={onClose}>{module.name} ↗</a><small>by <a href={module.authorUrl} target="_blank" rel="noreferrer">{module.author}</a></small></th>)}</tr></thead>
       <tbody>{ROWS.map(label => <tr key={label}><th scope="row">{label}</th>{modules.map(module => <td key={module.key}>{module.values[label]}</td>)}</tr>)}
-        <tr><th scope="row">Configuration</th>{modules.map(module => <td key={module.key}><button className="button button-quiet" aria-pressed={module.selected} onClick={module.toggle}>{module.selected ? 'Added' : 'Add ' + module.name}</button></td>)}</tr>
+        <tr><th scope="row">Configuration</th>{modules.map(module => <td key={module.key}><button className="button button-quiet" aria-pressed={!module.selected && module.key === USB_AUDIO_MODULE ? undefined : module.selected} onClick={module.toggle}>{module.selected ? 'Added' : (module.key === USB_AUDIO_MODULE ? 'Configure ' : 'Add ') + module.name}</button></td>)}</tr>
       </tbody>
     </table></div>
     <p className="service-note">Storage and processing values use different measurement methods. Open each module for conditions and test evidence. Adding a module updates its machine’s configuration.</p>

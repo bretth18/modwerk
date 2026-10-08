@@ -19,12 +19,15 @@ function linkedTab(): DetailTab {
   return tabs.find(value => value.toLowerCase() === query.get('tab')) ?? 'Overview'
 }
 
-export function ModuleDetailLayout({ id, title, family, detail, author, authorUrl, description, selected, onToggle, backHref, backLabel, preview, resources, notice, guide, issueReport, browse, onBackToResults }: {
+export function ModuleDetailLayout({ id, title, family, detail, author, authorUrl, description, selected, onToggle, backHref, backLabel, preview, resources, notice, guide, issueReport, browse, onBackToResults, titleBadge, configureTarget, overviewIntro }: {
   browse?: CatalogBrowse | null; onBackToResults?: () => void
   id: string; title: string; family: string; detail: string; author: string; authorUrl: string; description: string
+  titleBadge?: string
+  configureTarget?: string
   selected: boolean; onToggle: () => void; backHref: string; backLabel: string
   preview: ReactNode; resources: ReactNode; notice?: ReactNode; guide: ReactNode
   issueReport: (openRequest: number) => ReactNode
+  overviewIntro?: ReactNode
 }) {
   const navigation = catalogNeighbors(browse, id)
   const [tab, setTab] = useState<DetailTab>(linkedTab)
@@ -32,6 +35,13 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
   const issues = useModuleIssues(id)
   const [discussionCount, setDiscussionCount] = useState<number | null>(null)
   useEffect(() => { const navigate = () => setTab(linkedTab()); window.addEventListener('hashchange', navigate); return () => window.removeEventListener('hashchange', navigate) }, [])
+  function showConfiguration() {
+    setTab('Overview')
+    requestAnimationFrame(() => {
+      document.getElementById(configureTarget!)?.scrollIntoView({ block: 'start' })
+      document.getElementById(configureTarget!)?.focus({ preventScroll: true })
+    })
+  }
   function showDiscussion() {
     setTab('Discussion')
     document.getElementById('tab-Discussion')?.focus()
@@ -48,12 +58,12 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
       {preview}
       <div className="detail-intro">
         <div className="detail-tags"><span className="pill">{family}</span><span className="subtle">{detail}</span></div>
-        <h1 id="module-title">{title}</h1>
+        <div className="detail-title"><h1 id="module-title">{title}</h1>{titleBadge && <span className="module-compatibility-badge">{titleBadge}</span>}</div>
         <div className="module-creator"><a className="author-link" href={authorUrl} target="_blank" rel="noreferrer">by {author} ↗</a><CreatorSupport key={id} id={id}/></div>
         <p>{description}</p>
         {notice}
         <div className="detail-rating"><button className="text-button" onClick={showDiscussion}>Reviews & discussion{discussionBadge}</button></div>
-        <button className={'button ' + (selected ? 'button-added' : 'button-primary')} onClick={onToggle} aria-pressed={selected}><Icon name={selected ? 'check' : 'plus'} size={16} />{selected ? 'Added to configuration' : 'Add to configuration'}</button>
+        <button className={'button ' + (selected ? 'button-added' : 'button-primary')} onClick={configureTarget && !selected ? showConfiguration : onToggle} aria-pressed={selected}><Icon name={selected ? 'check' : configureTarget ? 'sliders' : 'plus'} size={16} />{selected ? 'Added to configuration' : configureTarget ? 'Configure ' + title : 'Add to configuration'}</button>
         <ModuleUpdateButton id={id} />
       </div>
       {resources}
@@ -70,6 +80,7 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
     </div>
     <div id="detail-content" role="tabpanel" aria-labelledby={'tab-' + tab} tabIndex={0}>
       {tab === 'Overview' && <>
+        {overviewIntro}
         <ModuleCommunity id={id} mode="overview" onDiscuss={showDiscussion} onDiscussionCount={setDiscussionCount} />
         <div className="module-guide">{guide}</div>
       </>}

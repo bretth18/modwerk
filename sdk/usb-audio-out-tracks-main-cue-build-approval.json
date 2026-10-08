@@ -1,16 +1,15 @@
 {
   "kind": "owner-approved-update",
   "id": "usb-audio-out-tracks-main-cue",
-  "version": "0.1.4-experimental",
-  "sourceSha256": "f78954ee582cb3731945f7bf31a4ae9ec2305358bcb14e319ce7e7f7ea517dfe",
+  "version": "0.2.0-experimental",
+  "sourceSha256": "ef05f5f2f91a1402ccbdfaf80468b02677699b52c8c4796b8690a7f00f23858b",
   "approvedBy": "repeat98",
-  "approvedOn": "2026-10-07",
+  "approvedOn": "2026-10-08",
   "waived": [
     "current-build-hardware",
     "chip-worst-case-cycles",
-    "complete-memory-bounds",
-    "release-documentation"
+    "complete-memory-bounds"
   ],
-  "ownerStatement": "Approve the experimental updates after software checks",
-  "reason": "Owner approved the requested octabam USB Audio lifecycle and Euclid clock reset ports after software verification, without new hardware, chip-cycle or complete memory measurements, and retaining the existing UI documentation. This binds only this exact version and native source; hardware remains untested."
+  "ownerStatement": "ok let's push and release, I approve no hardware testing",
+  "reason": "Owner approved release of the reviewed experimental USB / Outbox configuration after software verification, without physical testing. Chip timing and complete hardware memory bounds remain unmeasured; source integrity, shared composition, packaging, provenance and documentation checks remain required. This approval covers only this version and exact native source."
 }

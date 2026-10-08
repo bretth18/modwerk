@@ -1,3 +1,78 @@
+# USB Audio 0.2 testing
+
+Version: `0.2.0-experimental`. Selected-layout source revision:
+`7b2984c859732ae6c797ae49c7d61d250b1b6519`.
+
+The owner requested: “ok let's push and release, I approve no hardware
+testing” on 8 October 2026. This experimental release has no physical
+Octatrack/Outbox test result. Real-chip worst-case cycles, complete hardware
+memory bounds and canaries remain unmeasured. The exact-source approval
+is in `sdk/usb-audio-out-tracks-main-cue-build-approval.json`.
+No historical or emulator result is relabelled as hardware evidence.
+
+## Software verification
+
+The selected layouts use the shared composer. Source-only packages include
+six mutually exclusive audio / descriptor pairs and common MIDI, MIDI RX,
+and clamp units. Descriptor MSC spans and the post-LEVEL sine table are
+zero placeholders, restored only from the verified original local OS.
+The isolated shared source build reproduces the packages; the importer
+validates source identities, ELF checksums and placeholders.
+
+Release-tree software commands:
+
+- `npm run check -- --base origin/main`
+- `npm run module:doctor -- usb-audio-out-tracks-main-cue`
+- `npm run module:verify -- usb-audio-out-tracks-main-cue --os <private original OS>`
+- `node scripts/verify-usb-audio-native.mjs <private original OS> <new private directory>`
+
+The classic implementation is compared with full native Octabam coverage.
+For each selected layout alone, with Quantizer and with Tape Echo + Euclid,
+the layout verifier compares complete GNU runtime bytes and symbols,
+checks guarded USB hooks and a single combined ISR, preserves stock input,
+round-trips complete update packaging and rejects changed stock. These
+layout checks do not claim complete native Octabam image parity, hardware
+operation or measured chip timing. Fingerprints / section sizes only are
+committed under evidence/layouts.json.
+
+Manual GUI checks cover labels, signal tap / CPU explanation, unavailable
+routing feedback, sequential assignments, computer input maps, save state,
+discard, and draft preservation across destinations and tabs. No new
+Octatrack panel UI is introduced. No hardware cable, rate, audio, load,
+startup, MIDI timing or recovery case was tested for this release.
+
+## Current software results — 8 October 2026
+
+- Isolated stock-free source build and guarded import: passed. Six layout
+  packages were assembled in the shared toolchain container with network
+  disabled. Public provenance uses the native SDK revision plus the exact
+  selected-layout upstream pin.
+- Eighteen selected-layout cases: passed (six layouts, each alone, with
+  Quantizer, and with Tape Echo + Euclid). Complete GNU runtime bytes and
+  symbols, guarded USB/reset hooks, one combined ISR, immutable stock,
+  full update round trips and changed-base refusal passed. Public builder
+  output matched all eighteen compositions. The public worker inspected
+  the original and produced packaged firmware for all six standalone
+  layouts, reporting USB Audio 0.2.0-experimental.
+- Analog BD compatibility: all 136 regenerated native identities and
+  refusals equal the previous results. Browser/native and GNU bootstrap
+  checks passed for 130 accepted selections and six refusals; five
+  complete update packaging round trips passed.
+- SDK source integrity: 49 tests passed. GUI labels, smaller-source routing
+  feedback, CPU tier updates, configure-first navigation, and compact
+  desktop/mobile layout were checked. Saved configurations were preserved.
+- Full classic USB module comparison and app release checks are recorded
+  with their final results in docs/VERIFICATION.md.
+
+Only hashes and linked section metadata are in evidence/layouts.json.
+Firmware and reconstructed stock remained private outside the repository.
+No physical test is claimed.
+
+## Historical classic implementation evidence
+
+The following record describes older versions and their actual source,
+conditions and limits. It does not qualify physical operation of 0.2.
+
 # USB Audio testing
 
 Version: `0.1.3-experimental`. Octabam evidence pin: `363861e31ee963c478fab2b190a0fabe1d7ce37b`; USB MIDI receive path from `4caa196594bb16ab0dc4710f1b8d2adf95010cdf`.

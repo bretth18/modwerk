@@ -26,6 +26,16 @@ class RequestedImports(unittest.TestCase):
                 self.assertNotIn(path.name, ['.git', 'out', 'downloads', 'vendor', '__pycache__'])
                 self.assertNotIn(path.suffix.lower(), ['.bin', '.syx', '.o', '.elf', '.exe', '.dll', '.so', '.dylib', '.zip', '.wav'])
 
+    def test_usb_layouts_match_the_separate_upstream_pin(self):
+        report = json.loads((APP / 'sdk/imports/usb-audio-outbox-7b2984c8.json').read_text())
+        self.assertEqual(report['revision'], '7b2984c859732ae6c797ae49c7d61d250b1b6519')
+        self.assertEqual(report['license'], 'MIT')
+        folder = SDK / 'modules/usb-audio-out-tracks-main-cue/layouts'
+        self.assertEqual(set(report['sources']), {p.name for p in folder.iterdir() if p.is_file()})
+        for name, digest in report['sources'].items():
+            self.assertEqual(hashlib.sha256((folder / name).read_bytes()).hexdigest(), digest, name)
+        self.assertIn('SET_CUR', (folder / 'usbaudio.s').read_text())
+
     def test_stock_expectations_are_lazy_fingerprints_not_copied_spans(self):
         declared = []
         for rel in sorted({guard['path'] for guard in REPORT['stockGuards']}):
@@ -57,8 +67,8 @@ class RequestedImports(unittest.TestCase):
                 self.assertNotIn('build', doc)
             else:
                 self.assertNotIn('build', doc)
-                # USB Audio 0.1.4 adds lifecycle fixes while retaining the 0.1.3 MIDI clock import.
-                self.assertEqual(doc['version'], '0.1.4-experimental' if id == 'usb-audio-out-tracks-main-cue' else '0.1.2-experimental')
+                # USB Audio 0.2 retains the classic lifecycle and MIDI clock sources beside selectable layouts.
+                self.assertEqual(doc['version'], '0.2.0-experimental' if id == 'usb-audio-out-tracks-main-cue' else '0.1.2-experimental')
         for id, pin in REPORT['authorPins'].items():
             sources = [item for item in REPORT['files'] if item['path'].startswith('modules/' + id + '/upstream/')]
             self.assertTrue(sources)

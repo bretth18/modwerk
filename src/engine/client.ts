@@ -1,3 +1,4 @@
+import type { UsbAudioConfiguration } from '../config/usb-audio'
 import { BASE_FIRMWARE, type FirmwareInspection } from './base'
 import type { BuildProgress, EngineRequest, EngineResponse } from './protocol'
 export function createFirmwareClient() {
@@ -45,15 +46,15 @@ export function createFirmwareClient() {
   }
   return {
     inspect,
-    async validate(moduleIds: string[], keepStockFx2: boolean) {
+    async validate(moduleIds: string[], keepStockFx2: boolean, usbAudio?: UsbAudioConfiguration) {
       await recovering
-      const response = await send({ id: ++nextId, type: 'validate', moduleIds, keepStockFx2 })
+      const response = await send({ id: ++nextId, type: 'validate', moduleIds, keepStockFx2, usbAudio })
       if (response.type !== 'validated') throw new Error('The local firmware worker returned an unexpected result.')
       return response.report
     },
-    async build(moduleIds: string[], keepStockFx2: boolean, progress: (phase: BuildProgress) => void) {
+    async build(moduleIds: string[], keepStockFx2: boolean, progress: (phase: BuildProgress) => void, usbAudio?: UsbAudioConfiguration) {
       await recovering
-      const response = await send({ id: ++nextId, type: 'build', moduleIds, keepStockFx2 }, [], progress)
+      const response = await send({ id: ++nextId, type: 'build', moduleIds, keepStockFx2, usbAudio }, [], progress)
       if (response.type !== 'built') throw new Error('The local firmware worker returned an unexpected result.')
       return response
     },

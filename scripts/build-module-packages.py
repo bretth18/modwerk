@@ -13,7 +13,7 @@ HOOKED = ['sidechain-compressor']
 REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer', 'synth', 'vector', 'playmodes', 'mute-modes', 'recorder-loop-fix']
 UTILITIES = ['previewvol', 'cc-map']
 ASSET_NAMES = ['dsp-packages.json', 'coldfire-packages.json', 'resident-dsp.json', 'rom-packages.json',
-               'bootstrap-package.json', 'menu-recipes.json', 'descriptor-recipes.json', 'platform-writes.json', 'requested-packages.json', 'utility-packages.json']
+               'bootstrap-package.json', 'menu-recipes.json', 'descriptor-recipes.json', 'platform-writes.json', 'requested-packages.json', 'utility-packages.json', 'usb-audio-packages.json']
 HASH = lambda data: hashlib.sha256(data).hexdigest()
 
 
@@ -529,6 +529,9 @@ def main():
         spec = importlib.util.spec_from_file_location('octamod_utility_compiler', APP / 'scripts/build-utility-packages.py')
         compiler = importlib.util.module_from_spec(spec); spec.loader.exec_module(compiler)
         products['utility-packages.json'] = compiler.compile_packages(APP, provenance=provenance)
+    spec = importlib.util.spec_from_file_location('modwerk_usb_compiler', APP / 'scripts/build-usb-audio-packages.py')
+    usb_compiler = importlib.util.module_from_spec(spec); spec.loader.exec_module(usb_compiler)
+    products['usb-audio-packages.json'] = dict(usb_compiler.build(), **provenance)
     destination.mkdir(parents=True)
     files = {}
     notice_name = 'THIRD_PARTY_NOTICES.txt'

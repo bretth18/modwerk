@@ -247,7 +247,7 @@
       "vendoredSha256": "387bc68fcd8293b291f6ccf89e2af27237934fee6122f381026bce44e5e3078f"
     },
     {
-      "path": "modules/usb-audio-out-tracks-main-cue/README.md",
+      "path": "modules/usb-audio-out-tracks-main-cue/LEGACY.md",
       "repository": "https://github.com/sambanks/octabam",
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/usb-audio-out-tracks-main-cue/README.md",
@@ -265,7 +265,8 @@
         "previousVendoredSha256": "049f7c4fc8fad138aa5f6e55b6bee22a500916d7359494856bfdd389be5236a0",
         "record": "imports/usb-audio-out-tracks-main-cue-6f9e5bc.json",
         "reason": "USB Audio reset/disconnect, bounded flush and closed-stream producer fixes; USB MIDI clock fix retained."
-      }
+      },
+      "transformation": " Historical classic documentation retained as LEGACY.md when the six-layout release was added."
     },
     {
       "path": "modules/usb-audio-out-tracks-main-cue/manifest.py",

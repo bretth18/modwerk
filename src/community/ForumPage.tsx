@@ -146,7 +146,7 @@ function NewThread({configuration:active,configurations,query}:{configuration?:C
       const values=Object.fromEntries(new FormData(form)),payload:Record<string,unknown>={title:values.title,body:values.body,category,machine,moduleId:values.moduleId,...(media.length?{attachments:readyAttachments(media)}:{})}
       if(category==='configs'){
         if(!configuration)throw new Error('Create a local configuration for this machine first.')
-        payload.configuration={name:configuration.name,...(machine!=='octatrack'?{device:machine}:{}),moduleIds:configuration.moduleIds,moduleVersions:configuration.moduleVersions,keepStockFx2:configuration.keepStockFx2}
+        payload.configuration={name:configuration.name,...(machine!=='octatrack'?{device:machine}:{}),moduleIds:configuration.moduleIds,moduleVersions:configuration.moduleVersions,keepStockFx2:configuration.keepStockFx2,...(configuration.usbAudio?{usbAudio:configuration.usbAudio}:{})}
       }
       const result=await post<{id:string}>('/forum/threads',payload);window.location.assign('#forum/thread/'+result.id)
     }catch(error){setError(errorText(error))}finally{setBusy(false)}
