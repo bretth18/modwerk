@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { applyStaticDispatch, overwrittenHelper, planStaticPlacement, staticModulePlan, stockFx2Donors, stockHelpers } from './static-dsp'
+import { applyStaticDispatch, overwrittenHelper, planSelectionDsp, planStaticPlacement, staticModulePlan, stockFx2Donors, stockHelpers } from './static-dsp'
 import { parseDspMemory, readDspWords } from './dsp-memory'
 import facts from './assets/static-dsp.json'
 import stockMetadata from './assets/stock-dsp-metadata.json'
@@ -17,6 +17,16 @@ describe('loader-free DSP placement (native static stock)', () => {
     expect(staticModulePlan(['euclid', 'miniverb', 'tapeecho', 'modulation', 'character', 'spectrum', 'repitch']).map(module => module.id))
       .toEqual(['spectrum', 'character', 'modulation', 'tapeecho', 'miniverb', 'euclid'])
     expect(() => staticModulePlan(['unknown'])).toThrow('Unknown module')
+  })
+  it('places Air Chorus including its sine table and refuses it beside Analog BD', () => {
+    const selected = plan(['airwindows-chorus'])
+    expect(selected).toHaveLength(1)
+    expect(selected[0].words).toBeGreaterThan(1026)
+    for (const tag of ['A', 'B']) {
+      expect(planSelectionDsp(tag, core(tag), fx2Off, selected, ['airwindows-chorus']).placed).toHaveLength(1)
+      expect(() => planSelectionDsp(tag, core(tag), fx2Off, selected, ['airwindows-chorus', 'analog-bassdrum'])).toThrow('ANALOG BD cannot share DSP memory with AIR CHORUS')
+      expect(() => planStaticPlacement(tag, core(tag), everyStock, selected)).toThrow('nowhere to place AIR CHORUS')
+    }
   })
   it('keeps listed stock dispatch entries and nulls every omitted custom id on both cores', () => {
     for (const stub of facts.payloads) {

@@ -8,7 +8,7 @@ from pathlib import Path
 import argparse, hashlib, importlib.util, json, os, re, shutil, struct, subprocess, sys, tempfile
 
 APP = Path(__file__).resolve().parents[1]
-ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead']
+ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', 'airwindows-chorus']
 HOOKED = ['sidechain-compressor']
 REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer', 'synth', 'vector', 'playmodes', 'mute-modes', 'recorder-loop-fix']
 UTILITIES = ['previewvol', 'cc-map']
@@ -442,7 +442,14 @@ def main():
         products['menu-recipes.json'] = dict(baseline['menu-recipes.json'], **provenance, recipes=recipes, repitchPatches=patches)
 
         descriptors = []
-        for old in baseline['descriptor-recipes.json']['recipes']:
+        descriptor_guards = list(baseline['descriptor-recipes.json']['recipes'])
+        if not any(row['id'] == 'airwindows-chorus' for row in descriptor_guards):
+            # Locally verified 1.40C: same donor and unused-slot fingerprint as
+            # Character. Only addresses/hashes are retained, never stock bytes.
+            donor = next(row for row in descriptor_guards if row['id'] == 'character')
+            descriptor_guards.append(dict(donor, id='airwindows-chorus', key='AIR CHORUS',
+                author='repeat98', fxId=0x1e, fx2Slot=0x400d6054))
+        for old in descriptor_guards:
             module = byid[old['id']]
             if module.menu.donor_desc + 0x38 != old['donorAddress'] or module.menu.fx2_id != old['fxId']:
                 raise ValueError(module.name + ': changed stock descriptor/ID needs locally verified guard metadata')

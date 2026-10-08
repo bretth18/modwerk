@@ -1,0 +1,115 @@
+{
+  "firmware": "1.40C",
+  "imageSha256": "8ecec31ef7511756e17aaba2cd569a32e4471bcebe0dd0738615327fb850a6df",
+  "emulatorSha256": "f521565f3866947788d7c45507576a4ed386d2e4ef57e9683ab65fa0acc6a166",
+  "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6.",
+  "palette": {
+    "on": [
+      240,
+      240,
+      240
+    ],
+    "off": [
+      24,
+      24,
+      24
+    ]
+  },
+  "keyMs": 150,
+  "plan": [
+    {
+      "wait": 3000
+    },
+    {
+      "press": [
+        "YES"
+      ]
+    },
+    {
+      "wait": 2000
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "press": [
+        "FUNC",
+        "FX2"
+      ]
+    },
+    {
+      "press": [
+        "DOWN"
+      ]
+    },
+    {
+      "capture": "ot-location.png"
+    },
+    {
+      "press": [
+        "YES"
+      ]
+    },
+    {
+      "wait": 1000
+    },
+    {
+      "press": [
+        "FX2"
+      ]
+    },
+    {
+      "encoder": {
+        "name": "A",
+        "delta": -127
+      }
+    },
+    {
+      "encoder": {
+        "name": "A",
+        "delta": 64
+      }
+    },
+    {
+      "encoder": {
+        "name": "B",
+        "delta": -127
+      }
+    },
+    {
+      "encoder": {
+        "name": "B",
+        "delta": 64
+      }
+    },
+    {
+      "capture": "ot-controls.png"
+    },
+    {
+      "encoder": {
+        "name": "F",
+        "delta": 64
+      }
+    },
+    {
+      "capture": "ot-example.png"
+    },
+    {
+      "encoder": {
+        "name": "F",
+        "delta": -127
+      }
+    },
+    {
+      "capture": "ot-dry.png"
+    }
+  ],
+  "screenshots": {
+    "ot-location.png": "114df86f2d682ce758a5009f4c6b51efe408cab541b7f0b5f48d309c45464eab",
+    "ot-controls.png": "b3fde2e4a9eaa3a349e9ea9e82857f6a24a29ea0dd7aca70b3887f5e3ba5f96c",
+    "ot-example.png": "9a605c7c9ba5729edef08dffc9f24807382f8aa5ea31fc2b581ed00f58caa773",
+    "ot-dry.png": "f1eb064c7d664fb6b3675d9ef20ceaa13ebe88e4b10db71fc917e391bfd30e4c"
+  }
+}

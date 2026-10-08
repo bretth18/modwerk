@@ -47,6 +47,12 @@
       "priority": 17
     },
     {
+      "id": "airwindows-chorus",
+      "key": "AIR CHORUS",
+      "fxId": 30,
+      "priority": 18
+    },
+    {
       "id": "sidechain-compressor",
       "key": "SIDECHAIN_COMPRESSOR",
       "fxId": 24,
@@ -64,6 +70,7 @@
     23,
     26,
     29,
+    30,
     31
   ],
   "payloads": [

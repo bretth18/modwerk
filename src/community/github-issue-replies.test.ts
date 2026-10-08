@@ -96,7 +96,7 @@ describe('GitHub reply presentation', () => {
     expect(collapsed).not.toContain('Loading replies')
     const expanded = renderToStaticMarkup(createElement(GithubIssueReplies, { ...props, initiallyOpen: true }))
     expect(expanded).toContain('Loading replies…')
-    expect(expanded).toContain('Reply on GitHub')
+    expect(expanded).toContain('Sign in to reply on Modwerk')
     expect(expanded).not.toContain('No GitHub replies yet')
   })
 })

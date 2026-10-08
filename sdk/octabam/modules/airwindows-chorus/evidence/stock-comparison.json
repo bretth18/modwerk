@@ -1,0 +1,375 @@
+{
+  "version": "0.1.0-experimental",
+  "units": "executed instructions/sample; not modeled cycles or measured chip timing",
+  "sampleRate": 44100,
+  "framesPerBlock": 16,
+  "blocksPerCase": 4096,
+  "audioBase": 0,
+  "instancesPerCore": 1,
+  "stockMainSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+  "moduleMainSha256": "8ecec31ef7511756e17aaba2cd569a32e4471bcebe0dd0738615327fb850a6df",
+  "dspHostSha256": "c83443548b0bcba884761566dd10b39575714f9823d4287ef46998f4d2f80552",
+  "conditions": "Identical two-core tone/transient input, X:0 stereo audio, null stub subtracted per split/core, complete control endpoint/turn/type schedule from benchmark_reverbs.knobs; finite observed maxima only. Excludes stock dispatcher, voice engines, ColdFire, DMA and stalls. Splits 0,1,8,15; not all 16 offsets.",
+  "rows": [
+    {
+      "effect": "SPRING REV",
+      "moving": false,
+      "split": 0,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 4186,
+          "nullBlockInstructions": 67,
+          "netWorstInstructionsPerSample": 257.4375
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 4186,
+          "nullBlockInstructions": 67,
+          "netWorstInstructionsPerSample": 257.4375
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "SPRING REV",
+      "moving": true,
+      "split": 0,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 4187,
+          "nullBlockInstructions": 67,
+          "netWorstInstructionsPerSample": 257.5
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 4187,
+          "nullBlockInstructions": 67,
+          "netWorstInstructionsPerSample": 257.5
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "CHORUS",
+      "moving": false,
+      "split": 0,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 4123,
+          "nullBlockInstructions": 67,
+          "netWorstInstructionsPerSample": 253.5
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 4123,
+          "nullBlockInstructions": 67,
+          "netWorstInstructionsPerSample": 253.5
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "CHORUS",
+      "moving": true,
+      "split": 0,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 4125,
+          "nullBlockInstructions": 67,
+          "netWorstInstructionsPerSample": 253.625
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 4125,
+          "nullBlockInstructions": 67,
+          "netWorstInstructionsPerSample": 253.625
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "AIR CHORUS",
+      "moving": false,
+      "split": 0,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 8397,
+          "nullBlockInstructions": 67,
+          "netWorstInstructionsPerSample": 520.625
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 8397,
+          "nullBlockInstructions": 67,
+          "netWorstInstructionsPerSample": 520.625
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "AIR CHORUS",
+      "moving": true,
+      "split": 0,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 8397,
+          "nullBlockInstructions": 67,
+          "netWorstInstructionsPerSample": 520.625
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 8397,
+          "nullBlockInstructions": 67,
+          "netWorstInstructionsPerSample": 520.625
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "SPRING REV",
+      "moving": false,
+      "split": 1,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 4524,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 278.375
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 4524,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 278.375
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "SPRING REV",
+      "moving": true,
+      "split": 1,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 4525,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 278.4375
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 4525,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 278.4375
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "AIR CHORUS",
+      "moving": false,
+      "split": 1,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 8462,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 524.5
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 8462,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 524.5
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "AIR CHORUS",
+      "moving": true,
+      "split": 1,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 8462,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 524.5
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 8462,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 524.5
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "SPRING REV",
+      "moving": false,
+      "split": 8,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 4966,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 306.0
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 4966,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 306.0
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "SPRING REV",
+      "moving": true,
+      "split": 8,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 4968,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 306.125
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 4968,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 306.125
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "AIR CHORUS",
+      "moving": false,
+      "split": 8,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 8462,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 524.5
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 8462,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 524.5
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "AIR CHORUS",
+      "moving": true,
+      "split": 8,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 8462,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 524.5
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 8462,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 524.5
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "SPRING REV",
+      "moving": false,
+      "split": 15,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 5092,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 313.875
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 5092,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 313.875
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "SPRING REV",
+      "moving": true,
+      "split": 15,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 5094,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 314.0
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 5094,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 314.0
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "AIR CHORUS",
+      "moving": false,
+      "split": 15,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 8462,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 524.5
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 8462,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 524.5
+        }
+      ],
+      "clippedSamples": 0
+    },
+    {
+      "effect": "AIR CHORUS",
+      "moving": true,
+      "split": 15,
+      "cores": [
+        {
+          "core": 0,
+          "peakBlockInstructions": 8462,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 524.5
+        },
+        {
+          "core": 1,
+          "peakBlockInstructions": 8462,
+          "nullBlockInstructions": 70,
+          "netWorstInstructionsPerSample": 524.5
+        }
+      ],
+      "clippedSamples": 0
+    }
+  ]
+}
