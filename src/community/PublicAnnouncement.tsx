@@ -5,13 +5,13 @@ import { SUPPORT_URL } from '../config/support'
 import { api, post } from './api'
 import { useCommunity } from './context'
 import type { BellItem } from './notification-contract'
-import { notificationLines, type NotificationLine } from './notification-text'
-import { dismissPublicAnnouncement, latestPublicAnnouncement, publicAnnouncementDismissed } from './public-announcement'
+import type { NotificationLine } from './notification-text'
+import { dismissPublicAnnouncement, latestPublicAnnouncement, publicAnnouncementDismissed, publicAnnouncementLine } from './public-announcement'
 import { trackUsage } from './usage'
 
 /** The same card is used in the public prompt and the operator's preview. It never takes focus. */
 export function PublicAnnouncementCard({ line, onDismiss, onOpen }: { line: NotificationLine; onDismiss: () => void; onOpen: () => void }) {
-  const titleId = useId(), moduleLink = /^#(?:module\/|(?:digitakt|digitone)\/module\/)/.test(line.href), external = /^https?:/.test(line.href)
+  const titleId = useId(), moduleLink = /^#(?:module\/|(?:digitakt|digitone)\/module\/)/.test(line.href), supportLink = !!SUPPORT_URL && line.href === SUPPORT_URL, external = /^https?:/.test(line.href)
   return <section className="public-announcement-card" aria-labelledby={titleId} onKeyDown={event => { if (event.key === 'Escape') { event.stopPropagation(); onDismiss() } }}>
     <header>
       <span className="public-announcement-brand"><img src={assetUrl('modwerk-mark.svg')} width={28} height={28} alt="" /><span>Modwerk news</span></span>
@@ -20,7 +20,8 @@ export function PublicAnnouncementCard({ line, onDismiss, onOpen }: { line: Noti
     {moduleLink && <span className="public-announcement-kicker">Module news</span>}
     <h2 id={titleId}>{line.text}</h2>
     {line.excerpt && <p>{line.excerpt}</p>}
-    <a className="public-announcement-action" href={line.href} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})} onClick={() => { if (line.href === SUPPORT_URL) trackUsage('support_link_opened'); onOpen() }}>{moduleLink ? 'Explore module' : 'Take a look'}<Icon name="arrow" size={16} />{external && <span className="sr-only"> (opens in a new tab)</span>}</a>
+    {supportLink && <a className="public-announcement-credits" href="#credits" onClick={onOpen}>Credits &amp; acknowledgements<Icon name="arrow" size={14} /></a>}
+    <a className="public-announcement-action" href={line.href} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})} onClick={() => { if (supportLink) trackUsage('support_link_opened'); onOpen() }}>{supportLink && <Icon name="heart" size={15} />}{supportLink ? 'Support on Ko-fi' : moduleLink ? 'Explore module' : 'Take a look'}<Icon name="arrow" size={16} />{external && <span className="sr-only"> (opens in a new tab)</span>}</a>
   </section>
 }
 
@@ -66,5 +67,5 @@ function PublicAnnouncementContent({ member, enabled }: { member: boolean; enabl
     if (member) void post('/announcements/mine', { ids: [item.id] }, 'PATCH').catch(() => {})
   }
   if (!enabled || !item || !visible) return null
-  return <aside className="public-announcement" aria-label="Public announcement"><PublicAnnouncementCard line={notificationLines([item])[0]} onDismiss={acknowledge} onOpen={acknowledge} /></aside>
+  return <aside className="public-announcement" aria-label="Public announcement"><PublicAnnouncementCard line={publicAnnouncementLine(item)} onDismiss={acknowledge} onOpen={acknowledge} /></aside>
 }

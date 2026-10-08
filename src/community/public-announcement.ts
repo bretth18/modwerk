@@ -1,5 +1,11 @@
 import { communityBase } from '../hosting'
 import type { BellItem } from './notification-contract'
+import { notificationLines } from './notification-text'
+
+/** Public cards show the complete operator-reviewed message, including its paragraph breaks. */
+export function publicAnnouncementLine(item: BellItem) {
+  return { ...notificationLines([item])[0], excerpt: item.excerpt }
+}
 
 const key = () => 'modwerk.public-announcements.dismissed:' + communityBase()
 const dismissedThisVisit = new Set<string>()

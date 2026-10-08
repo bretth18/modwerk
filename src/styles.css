@@ -964,6 +964,9 @@ h1 { font-size: 28px; }
 .public-announcement-kicker { display: inline-block; margin-bottom: 9px; padding: 4px 7px; border: 1px solid #d0b48e33; border-radius: 5px; background: #d0b48e0c; color: #ddc29e; font-size: 10px; font-weight: 600; }
 .public-announcement-card h2 { font-size: 19px; font-weight: 650; line-height: 1.35; letter-spacing: -.3px; color: #f2f2fa; overflow-wrap: anywhere; }
 .public-announcement-card > p { margin-top: 10px; color: #b8b8c8; font-size: 13px; line-height: 1.6; white-space: pre-line; overflow-wrap: anywhere; }
+.public-announcement-credits { display: flex; align-items: center; gap: 7px; width: fit-content; min-height: 44px; margin-top: 4px; color: #c4c4db; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.public-announcement-credits:hover { color: #fff; }
+.public-announcement-credits + .public-announcement-action { margin-top: 4px; }
 .public-announcement-action { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 40px; margin-top: 18px; padding: 8px 12px; border: 1px solid #929bff50; border-radius: 8px; background: #929bff18; color: #d0d4ff; font-size: 12px; font-weight: 600; }
 .public-announcement-action:hover { border-color: #929bff; background: #929bff28; color: #fff; }
 .public-announcement .public-announcement-card { max-height: calc(100dvh - 128px); overflow-y: auto; overscroll-behavior: contain; }

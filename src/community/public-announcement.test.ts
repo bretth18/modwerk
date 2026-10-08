@@ -4,6 +4,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { PublicAnnouncementCard } from './PublicAnnouncement'
 import type { BellItem } from './notification-contract'
 import type { NotificationLine } from './notification-text'
+import { SUPPORT_URL } from '../config/support'
 
 let storage: Map<string, string>, news: typeof import('./public-announcement')
 const id = (character: string) => 'announcement-' + character.repeat(32)
@@ -16,6 +17,13 @@ beforeEach(async () => {
 afterEach(() => vi.unstubAllGlobals())
 
 describe('quiet public announcements', () => {
+  it('keeps the complete public message and paragraph breaks so the hosting explanation is visible', () => {
+    const body = 'A'.repeat(180) + '\n\nOptional support helps cover hosting costs. Modwerk stays free.'
+    const line = news.publicAnnouncementLine({ ...item('a'), excerpt: body, url: SUPPORT_URL })
+    expect(line.excerpt).toBe(body)
+    const markup = renderToStaticMarkup(createElement(PublicAnnouncementCard, { line, onDismiss() {}, onOpen() {} }))
+    expect(markup).toContain('Optional support helps cover hosting costs. Modwerk stays free.')
+  })
   it('shows only the newest announcement and never replaces a dismissed card with the older backlog', async () => {
     expect(news.latestPublicAnnouncement([item('a'), item('b')])?.id).toBe(id('a'))
     news.dismissPublicAnnouncement(id('a'))
@@ -42,8 +50,15 @@ describe('quiet public announcements', () => {
     expect(module).toContain('modwerk-mark.svg'); expect(module).toContain('aria-label="Dismiss announcement"')
     expect(module).toContain('Explore module'); expect(module).toContain('&lt;script&gt;test&lt;/script&gt;')
     expect(module).not.toContain('target="_blank"')
+    expect(module).not.toContain('href="#credits"')
     const external = render({ ...line, href: 'https://modwerk.app/#library' })
     expect(external).toContain('target="_blank" rel="noreferrer"')
     expect(external).toContain('opens in a new tab')
+    const support = render({ ...line, href: SUPPORT_URL })
+    expect(support).toContain('Support on Ko-fi')
+    expect(support).toContain('href="#credits"')
+    expect(support).toContain('Credits &amp; acknowledgements')
+    expect(support).toContain('target="_blank" rel="noreferrer"')
+    expect(support).toContain('aria-label="Dismiss announcement"')
   })
 })
