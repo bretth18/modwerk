@@ -35,6 +35,7 @@ export function MobileMenu({ route, online, selectedCount, configurationHref, ad
     ],
     [
       { href: '#faq', label: 'FAQ & flashing guide', icon: 'help', current: route === 'faq' },
+      { href: '#credits', label: 'Credits & acknowledgements', icon: 'heart', current: route === 'credits' },
       { href: '#privacy', label: 'Privacy', icon: 'shield', current: route === 'privacy' },
     ],
   ]
