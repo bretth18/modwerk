@@ -2832,7 +2832,7 @@
       "id": "synth",
       "key": "SYNTH MACHINE",
       "name": "FM Synth",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "category": "machines",
       "source": {
         "repository": "https://github.com/sambanks/octabam",
@@ -2872,7 +2872,7 @@
         "label": "Two-operator FM",
         "family": "Synth machines",
         "summary": "Two-operator FM with a dedicated track machine, one to four voices, chords and glide.",
-        "overview": "Choose FM SYNTH alongside FLEX and STATIC. Tim Hastie’s two-operator FM engine generates audio on the ColdFire CPU, with one to four paraphonic voices feeding the existing track AMP, filters and effects. The dedicated machine keeps sample slots intact and needs no marker WAV. This experimental release has emulator playback and native/browser composition evidence; hardware and worst-case chip timing remain untested/unmeasured.",
+        "overview": "FM SYNTH provides one to four paraphonic FM voices through the stock AMP and effects. Version 0.1.2 preserves the MIDI chromatic drawer stack and adds 18.06 dB source headroom. Software regression and native/browser composition checks pass. The owner approved release without current hardware validation; chip timing and complete memory bounds remain unknown. The original static symptom remains unconfirmed on hardware.",
         "highlights": [
           "Dedicated machine chooser entry; no sample required.",
           "Pitch, ratio, index, fine tuning, feedback and index decay on SRC.",
@@ -3028,12 +3028,13 @@
           "LFO3 speed/depth become VOIC/CHRD; LFO3 depth is muted. ATK/HOLD/REL remain inherited stock AMP controls and drive the synth’s own envelope.",
           "The matching quantizer is bundled privately because the engine shares its mailbox and fixed scale accessor. Do not also select the public Scale Quantizer.",
           "Cannot combine with Analog BD or the public Scale Quantizer because their native hooks overlap. Compatible mixed builds have native/browser byte-parity evidence; mixed audio loads have not been stress-tested.",
-          "Saved project/Part reloads, MIDI, chords, legato, modulation, maximum simultaneous voices and hardware timing remain unqualified.",
-          "Historical upstream marker-FLEX activation remains for compatibility; the verified route is the dedicated FM SYNTH chooser."
+          "MIDI selector recovery and one-track mono/four-voice playback are emulator-tested. External MIDI note/CC traffic, saved project/Part reloads, legato, modulation, maximum simultaneous tracks and hardware timing remain unqualified.",
+          "Historical upstream marker-FLEX activation remains for compatibility; the verified route is the dedicated FM SYNTH chooser.",
+          "Source output is 18.06 dB quieter at identical mixer settings. Added headroom mitigates gain clipping; effects, resonant filtering and summed tracks can still clip. The hardware static report has not been reproduced."
         ]
       },
       "resources": {
-        "recorded": "Build extents and source estimates; chip timing and complete memory bounds owner-waived",
+        "recorded": "Build extents and source estimates; unknown chip timing/memory under owner release exception",
         "storage": {
           "label": "Shared audio arena reservation",
           "display": "10,487,808 bytes (1,707 pages)",
@@ -3076,42 +3077,34 @@
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Native panel/storage checks and sample-free playback passed. Shared native/browser comparison passed 94 cases (37 builds, 57 refusals); update packaging and changed-base refusals passed. Hardware is untested; worst-case chip cycles and complete stack/lifetime memory bounds are unmeasured under this exact owner-approved experimental release exception.",
+        "summary": "Owner-approved experimental 0.1.2: MIDI selector regression passes; mono and four-voice output have 18.06 dB more headroom. Current hardware remains untested; chip timing and complete memory bounds remain unmeasured. See TESTING.md and evidence/regressions.json.",
         "hardwareStatus": "untested",
-        "evidenceRevision": "5f3e27336c7e6bddfee88b6405e17c8f1fb8a7fd",
+        "evidenceRevision": "73490ef77f36bf523bc28f2b385d62e331ec7c5c",
         "gates": [
           "verify.py",
-          "verify-audio.py"
+          "verify-audio.py",
+          "verify-regressions.py"
         ],
-        "releaseWaiver": {
-          "moduleVersion": "0.1.1-experimental",
-          "sourceSha256": "bfa77029219a2d5deaa9dd1394662e18dfee01ade72b631e36fe3fab48054560",
-          "imageSha256": "c1fbc0b2eaf284e72692b7048d1dfd3693f3e3e90c71229159a619d585b52c95",
-          "approvedBy": "repeat98",
-          "approvedOn": "2026-10-06",
-          "reason": "Owner explicitly approved this experimental release without current hardware evidence, worst-case chip timing or complete stack/memory bounds. Those quantities remain unknown.",
-          "report": "evidence/software.json",
-          "documentation": {
-            "tutorial": {
-              "title": "Quick tutorial: play FM Synth",
-              "steps": [
-                "Open a disposable project with FM Synth firmware. Select an audio track, hold FUNC and press SRC, select FM SYNTH with UP/DOWN and press YES. No sample is required.",
-                "Press SRC. Set RATO to 1 and turn INDX from 0 upwards to hear a sine tone acquire FM harmonics. PTCH transposes it; FINE tunes it in cents; FDBK adds feedback; DEC shortens the modulation envelope.",
-                "Place a trig and press PLAY. Press LFO to set VOIC to 2–4 and CHRD to a chord if wanted. AMP ATK/HOLD/REL shape the gain envelope; FUNC+AMP exposes LEG.",
-                "Press STOP twice to silence the voice. To return to a sample machine, hold FUNC and press SRC, select FLEX or STATIC and press YES; assign the desired sample in the normal way."
-              ]
-            },
-            "screenshots": [
-              "media/ot-location.png",
-              "media/ot-controls.png",
-              "media/ot-voices.png",
-              "media/ot-legato.png",
-              "media/ot-scale.png",
-              "media/ot-root.png",
-              "media/ot-glide.png"
-            ],
-            "screenshotStyle": "black-and-white"
-          }
+        "documentation": {
+          "tutorial": {
+            "title": "Quick tutorial: play FM Synth",
+            "steps": [
+              "Open a disposable project with FM Synth firmware. Select an audio track, hold FUNC and press SRC, select FM SYNTH with UP/DOWN and press YES. No sample is required.",
+              "Press SRC. Set RATO to 1 and turn INDX from 0 upwards to hear a sine tone acquire FM harmonics. PTCH transposes it; FINE tunes it in cents; FDBK adds feedback; DEC shortens the modulation envelope.",
+              "Place a trig and press PLAY. Press LFO to set VOIC to 2–4 and CHRD to a chord if wanted. AMP ATK/HOLD/REL shape the gain envelope; FUNC+AMP exposes LEG.",
+              "Press STOP twice to silence the voice. To return to a sample machine, hold FUNC and press SRC, select FLEX or STATIC and press YES; assign the desired sample in the normal way."
+            ]
+          },
+          "screenshots": [
+            "media/ot-location.png",
+            "media/ot-controls.png",
+            "media/ot-voices.png",
+            "media/ot-legato.png",
+            "media/ot-scale.png",
+            "media/ot-root.png",
+            "media/ot-glide.png"
+          ],
+          "screenshotStyle": "black-and-white"
         }
       },
       "license": {
@@ -3132,8 +3125,8 @@
             "page": "SRC SETUP",
             "shows": "location",
             "firmware": "1.40C",
-            "moduleVersion": "0.1.1-experimental",
-            "imageSha256": "6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "d5464195fac0033852546fbbc8f809b64d16646309c21ab25e2f203fbf123157",
             "setup": "Headless ot_emu; MKII panel; empty 32 MiB disposable card; stopped transport; actual 128×64 LCD pixels at integer scale 6."
           }
         },
@@ -3149,8 +3142,8 @@
             "page": "FM SYNTH SRC",
             "shows": "controls",
             "firmware": "1.40C",
-            "moduleVersion": "0.1.1-experimental",
-            "imageSha256": "6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "d5464195fac0033852546fbbc8f809b64d16646309c21ab25e2f203fbf123157",
             "setup": "Headless ot_emu; MKII panel; empty 32 MiB disposable card; stopped transport; actual 128×64 LCD pixels at integer scale 6."
           }
         },
@@ -3166,8 +3159,8 @@
             "page": "FM SYNTH LFO",
             "shows": "controls",
             "firmware": "1.40C",
-            "moduleVersion": "0.1.1-experimental",
-            "imageSha256": "6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "d5464195fac0033852546fbbc8f809b64d16646309c21ab25e2f203fbf123157",
             "setup": "Headless ot_emu; MKII panel; empty 32 MiB disposable card; stopped transport; actual 128×64 LCD pixels at integer scale 6."
           }
         },
@@ -3183,8 +3176,8 @@
             "page": "AMP SETUP",
             "shows": "controls",
             "firmware": "1.40C",
-            "moduleVersion": "0.1.1-experimental",
-            "imageSha256": "6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "d5464195fac0033852546fbbc8f809b64d16646309c21ab25e2f203fbf123157",
             "setup": "Headless ot_emu; MKII panel; empty 32 MiB disposable card; stopped transport; actual 128×64 LCD pixels at integer scale 6."
           }
         },
@@ -3200,8 +3193,8 @@
             "page": "CONTROL SEQUENCER: SCALE",
             "shows": "controls",
             "firmware": "1.40C",
-            "moduleVersion": "0.1.1-experimental",
-            "imageSha256": "6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "d5464195fac0033852546fbbc8f809b64d16646309c21ab25e2f203fbf123157",
             "setup": "Headless ot_emu; MKII panel; empty 32 MiB disposable card; stopped transport; actual 128×64 LCD pixels at integer scale 6."
           }
         },
@@ -3217,8 +3210,8 @@
             "page": "CONTROL SEQUENCER: ROOT",
             "shows": "controls",
             "firmware": "1.40C",
-            "moduleVersion": "0.1.1-experimental",
-            "imageSha256": "6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "d5464195fac0033852546fbbc8f809b64d16646309c21ab25e2f203fbf123157",
             "setup": "Headless ot_emu; MKII panel; empty 32 MiB disposable card; stopped transport; actual 128×64 LCD pixels at integer scale 6."
           }
         },
@@ -3234,8 +3227,8 @@
             "page": "CONTROL SEQUENCER: GLIDE",
             "shows": "controls",
             "firmware": "1.40C",
-            "moduleVersion": "0.1.1-experimental",
-            "imageSha256": "6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a",
+            "moduleVersion": "0.1.2-experimental",
+            "imageSha256": "d5464195fac0033852546fbbc8f809b64d16646309c21ab25e2f203fbf123157",
             "setup": "Headless ot_emu; MKII panel; empty 32 MiB disposable card; stopped transport; actual 128×64 LCD pixels at integer scale 6."
           }
         }

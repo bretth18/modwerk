@@ -369,9 +369,9 @@
     },
     {
       "path": "upstream/quantizer/manifest.py",
-      "address": 1074022840,
+      "address": 1074022846,
       "length": 8,
-      "sha256": "ba228773be7f5a27bf35390c81bc6b1947b642d5fd23ea9b5153ad3b48b54ff6"
+      "sha256": "494435e3f72313a14453f642bdba5b064022c657c63c015752fe23092eabd19f"
     },
     {
       "path": "upstream/quantizer/manifest.py",

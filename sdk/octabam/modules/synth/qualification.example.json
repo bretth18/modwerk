@@ -1,7 +1,7 @@
 {
-  "moduleVersion": "0.1.1-experimental",
-  "sourceSha256": "4ec426639c94697f827853af687bbdb8e0524335bf9148622980612c907dfb6b",
-  "imageSha256": "6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a",
+  "moduleVersion": "0.1.2-experimental",
+  "sourceSha256": "8fa263bfcd30dca9aff4f83dbcb001d4ccf06286e31839c8e0afd61100a9315c",
+  "imageSha256": "64beb992dd65cad096d2c70f23bb3064c715464d651da22dd3ad9024901831e9",
   "cycles": [
     {
       "processor": "coldfire",

@@ -8,6 +8,8 @@ import source from '../../sdk/octabam/modules/synth/octamod.module.json'
 import template from '../../sdk/octabam/modules/synth/qualification.example.json'
 import capture from '../../sdk/octabam/modules/synth/media/capture.json'
 import baseline from '../../sdk/module-qualification-baseline.json'
+import approval from '../../sdk/synth-build-approval.json'
+import regressions from '../../sdk/octabam/modules/synth/evidence/regressions.json'
 import { parseModuleDocument, requireModuleUiForPublication, requireModuleQualificationForPublication } from './module-contract'
 import { moduleNativeSourceSha256, parseQualificationBaseline, requireFolderQualification } from '../../scripts/module-qualification.mjs'
 import { requireCompleteReadme, requireMonochromePng } from '../../scripts/module-documentation.mjs'
@@ -22,33 +24,36 @@ describe('FM Synth exact experimental release', () => {
     expect(document.resources.processing.value).toBeNull()
     expect(() => requireModuleUiForPublication(document)).not.toThrow()
     expect(() => requireModuleQualificationForPublication(document)).toThrow('worst-case cycles, exact memory and hardware')
-    expect(await requireFolderQualification(folder, document, parseQualificationBaseline(baseline))).toBe('owner-approved-experimental')
+    expect(await requireFolderQualification(folder, document, parseQualificationBaseline(baseline))).toBe('owner-approved-update')
+    expect(approval.version).toBe(document.version)
+    expect(approval.sourceSha256).toBe(await moduleNativeSourceSha256(folder, document))
+    expect(regressions.moduleVersion).toBe(document.version)
+    for (const regression of Object.values(regressions.releaseRegressions)) {
+      expect(regression.status).toBe('passed')
+      expect(regression.imageSha256).toBe(regressions.patchedBrowser.mainSha256)
+    }
     expect(resolveSelection([document.id]).map(module => module.id)).toEqual(['synth'])
     expect(MODULES.some(module => module.id === document.id)).toBe(true)
     for (const mutate of [
-      (d: typeof document) => { d.version = '0.1.2-experimental' },
-      (d: typeof document) => { delete d.tests.releaseWaiver },
-      (d: typeof document) => { d.tests.releaseWaiver!.sourceSha256 = 'f'.repeat(64) },
-      (d: typeof document) => { d.tests.releaseWaiver!.imageSha256 = 'f'.repeat(64) },
+      (d: typeof document) => { d.version = '0.1.3-experimental' },
       (d: typeof document) => { d.tests.hardwareStatus = 'verified' },
-      (d: typeof document) => { d.controls[0].default++ },
     ]) {
       const changed = structuredClone(document); mutate(changed)
       await expect(requireFolderQualification(folder, changed, parseQualificationBaseline(baseline))).rejects.toThrow()
     }
   })
 
-  it('refuses changed native source and failed common-worker evidence even under the waiver', async () => {
+  it('refuses changed native source or regression evidence under the exact source approval', async () => {
     const copy = mkdtempSync(resolve(tmpdir(), 'modwerk-synth-release-test.'))
     try {
       cpSync(folder, copy, { recursive: true })
-      const path = resolve(copy, 'evidence/software.json'), software = JSON.parse(readFileSync(path, 'utf8'))
-      software.worker.checks.changedBaseRefused = 'failed'
-      writeFileSync(path, JSON.stringify(software))
-      await expect(requireFolderQualification(copy, parseModuleDocument(source), parseQualificationBaseline(baseline))).rejects.toThrow('common-worker')
-      cpSync(resolve(folder, 'evidence/software.json'), path)
+      const path = resolve(copy, 'evidence/regressions.json'), report = JSON.parse(readFileSync(path, 'utf8'))
+      report.releaseRegressions.midi.status = 'failed'
+      writeFileSync(path, JSON.stringify(report))
+      await expect(requireFolderQualification(copy, parseModuleDocument(source), parseQualificationBaseline(baseline))).rejects.toThrow('exact native source')
+      cpSync(resolve(folder, 'evidence/regressions.json'), path)
       writeFileSync(resolve(copy, 'manifest.py'), 'raise AssertionError("changed submitted source must never execute")')
-      await expect(requireFolderQualification(copy, parseModuleDocument(source), parseQualificationBaseline(baseline))).rejects.toThrow('exact version, source')
+      await expect(requireFolderQualification(copy, parseModuleDocument(source), parseQualificationBaseline(baseline))).rejects.toThrow('exact native source')
     } finally { rmSync(copy, { recursive: true, force: true }) }
   })
 

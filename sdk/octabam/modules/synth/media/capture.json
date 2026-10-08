@@ -1,6 +1,6 @@
 {
   "firmware": "1.40C",
-  "imageSha256": "6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a",
+  "imageSha256": "d5464195fac0033852546fbbc8f809b64d16646309c21ab25e2f203fbf123157",
   "emulatorSha256": "f521565f3866947788d7c45507576a4ed386d2e4ef57e9683ab65fa0acc6a166",
   "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6.",
   "palette": {
@@ -189,40 +189,15 @@
   },
   "schemaVersion": 1,
   "moduleId": "synth",
-  "moduleVersion": "0.1.1-experimental",
-  "captured": "2026-10-06",
+  "moduleVersion": "0.1.2-experimental",
+  "captured": "2026-10-08",
   "imageProfile": {
     "modules": [
-      "FILTER",
-      "EQUALIZER",
-      "DJ EQ",
-      "PHASER",
-      "FLANGER",
-      "CHORUS",
-      "SPATIALIZER",
-      "COMB FILTER",
-      "COMPRESSOR",
-      "LO-FI",
-      "DELAY",
-      "PLATE REV",
-      "SPRING REV",
-      "DARK REV",
       "SYNTH MACHINE"
     ],
-    "fx1": [
-      "FILTER",
-      "EQUALIZER",
-      "DJ EQ",
-      "PHASER",
-      "FLANGER",
-      "CHORUS",
-      "SPATIALIZER",
-      "COMB FILTER",
-      "COMPRESSOR",
-      "LO-FI"
-    ],
+    "keepStockFx2": true,
     "staticStock": true
   },
-  "sourceSha256": "bfa77029219a2d5deaa9dd1394662e18dfee01ade72b631e36fe3fab48054560",
-  "releaseProvenance": "Original native captures retained: the 0.1.1 standalone native build reproduces the exact captured image after object-label namespacing. The common browser image is separately playback-tested."
+  "releaseProvenance": "Fresh 8 October captures from the native Synth 0.1.2 executable. Promotion must reproduce the exact emitted MAIN image fingerprint; existing software captures confer no hardware verification.",
+  "sourceSha256": "8fa263bfcd30dca9aff4f83dbcb001d4ccf06286e31839c8e0afd61100a9315c"
 }

@@ -1,3 +1,8 @@
+| Modwerk pending 0.1.2 (#264): the octave drawer detour is at the COMMON
+| push (0x400449be), reached by audio and MIDI. Stock MIDI branches directly
+| there and already carries d0. Keep its value and push the value and format
+| once each. Detouring only the audio load at 0x400449b8 removes the push
+| reached by MIDI and underflows the drawer's nine-argument stack.
 | SCALE QUANTIZER -- the DRAM unit (13 Sep 2026; a DRAM unit since 28 Sep 2026). GNU as.
 |
 | OCTATRICK 2.9 (28 Sep 2026): ROOT, and the move into DRAM.
@@ -738,6 +743,8 @@ qz_od_cmp:
 | 2026) the format is this unit's qz_ofmt, ROOT's name + " %d" ("A %d"), pushed
 | in place of stock's, the continuation at 0x400449c6: same nine arguments.
 qz_octnum:
+        tst.l   0x80000012              | MIDI: stock already loaded its octave into d0
+        jbne    qz_on_stockfmt           | never resolve the corresponding audio track or its scale
         jbsr    qz_ui_synth
         jbeq    qz_on_stock
         mvs.b   qz_oct,%d0              | the synth track's octave (keys.s, pinned)
@@ -773,8 +780,11 @@ qz_on_copied:
         clr.b   (%a0)
         pea     qz_ofmt(%pc)            | the format, in place of stock's pea "%d" at 0x400449c0
         jmp     0x400449c6
+qz_on_stockfmt:
+        move.l  %d0,-(%sp)              | common MIDI/audio push: never bypassed by stock's MIDI branch
 qz_on_fmt:
-        jmp     0x400449c0
+        pea     0x400b465d              | displaced stock "%d" format
+        jmp     0x400449c6
 
 | ---- GLIDE legato: two jmp detours in the same handler --------------------------
 | 0x4004fb94 keeps ONE held key per track (HELD + track = key + 1). Stock, a
