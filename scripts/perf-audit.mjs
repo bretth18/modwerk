@@ -7,7 +7,8 @@
 // Measure with the harness (docs/module-guides/README.md, "Performance"), write the numbers into <module>/evidence/performance.json
 // and check it. `module:doctor` runs the same judgement and refuses a new module whose record is missing or fails.
 //
-// options: --usable <cycles>  --ratio-note <x>  --ratio-fail <x>  --load-fail <share of a frame>
+// Diagnostic options: --usable <cycles>  --ratio-note <x>  --ratio-fail <x>  --load-fail <share of a frame>
+// These never waive the measured dearest-stock DSP cost ceiling.
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { LIMITS, judgeRecord, selfTest, templateRecord } from './perf-audit-analysis.mjs'

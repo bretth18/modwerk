@@ -137,6 +137,8 @@ For this command, fill all fields with actual results first, including a valid t
 
 ## Worst-case cycle counts
 
+New FX must fit within the measured most expensive stock effect's DSP cost. Plan that envelope before implementation and retain matched benchmarks against both the closest stock counterpart and the most expensive stock effect, including expensive modes, endpoints, modulation and trigger splits on both cores. The performance audit fails an FX above the stock ceiling even when `stock.justification` explains its features; fewer advertised instances or a clean stability render do not establish acceptable cost. Compare modeled cycles, executed instructions and hardware timing only with measurements in the same units and under the same conditions.
+
 `cycles` has one record for **each processor used** (`dsp` and/or `coldfire`). Record integer `worstCase` cycles for one instance, `maxConfiguration` cycles at the supported maximum load, `maxInstances`, the available real-time `budget`, `unit`, `method`, `conditions` and a local text `report`. A maximum configuration exceeding its budget fails. Units are `cycles/sample`, `cycles/block` or `cycles/event`; the report must state sample rate, block size or event period/deadline so counts and budget have the same basis. Record each core's load and the worst core, and include stock processing, scheduling, transport overhead and headroom in the budget calculation. Shared work need not scale linearly with the instance count; show how the maximum configuration was priced.
 
 The five required condition fields, separately for cycle measurements and hardware testing, describe:

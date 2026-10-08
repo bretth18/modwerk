@@ -6,6 +6,10 @@ Read [the module guides index](README.md) first. If your effect does anything in
 
 **Already follow it:** [Mini Verb](../../sdk/octabam/modules/miniverb/README.md), [Tape Echo](../../sdk/octabam/modules/tapeecho/README.md), [Euclid](../../sdk/octabam/modules/euclid/README.md), [TapeHead](../../sdk/octabam/modules/tapehead/README.md), [Sidechain Compressor](../../sdk/octabam/modules/sidechain-compressor/README.md), Spectrum, Modulation, Character. Copy the shape of the one closest to yours.
 
+## Plan the DSP budget first
+
+New FX must target the measured worst stock effect's cost or less. Choose the algorithm, filter order, interpolation and feedback topology around that budget before implementation, then measure and optimize as features are added. Compare the closest stock counterpart and the most expensive stock effect under matched worst-case conditions on both cores, including moving controls and trigger splits. A justification, a reduced instance limit or a passing stability render cannot excuse an FX that exceeds the stock ceiling. See [Performance](README.md#performance) for the audit and its units.
+
 ## Decide the kind first
 
 Octabam names three (`sdk/octabam/docs/remixer/MODULES.md`, "Decide first"). Choose an **insert** unless you need the shared bus.
@@ -79,7 +83,7 @@ done
 How much it costs and whether it survives being worked hard: see [Performance](README.md#performance) for the three measurements and the record. For an effect:
 
 - [ ] **Cycles.** `tools/build/cycle_count.py` for the static floor, `dsp_host` at the dearest knob and mode settings with the knobs moving for the measured cost. State `instancesPerCore`, the most you support.
-- [ ] **Stock.** Name the stock effect closest in function (a delay against COMPRESSOR is not a comparison; a reverb against PLATE REV is). Read the ratio from `benchmark_stock_dsp.py`. Anything that costs more than stock explains in TESTING.md what the extra cost buys, such as the oversampling that fixed aliasing.
+- [ ] **Stock.** Name the stock effect closest in function (a delay against COMPRESSOR is not a comparison; a reverb against PLATE REV is), and record the most expensive stock effect's measured cost. Read both comparisons from `benchmark_stock_dsp.py` under matched conditions. The FX must fit within the worst stock cost; if it exceeds that ceiling, optimize it before qualification. Explain additional cost over the closest counterpart in TESTING.md, while staying inside the ceiling.
 - [ ] **Stress.** `stress_project.py` and `pressure.py render` with `dsp_host -guard -dirty`: your instances on both cores, three LFOs per track, locked slots on every step.
 - [ ] `npm run perf:audit -- check <module>/evidence/performance.json` passes, and its table is in TESTING.md.
 
