@@ -10,6 +10,24 @@ beforeEach(async () => {
 afterEach(() => { vi.unstubAllGlobals() })
 
 describe('invitation delivery in the browser', () => {
+  it('claims a visitor card at first display and prevents another card after reload without a click', async () => {
+    const first = claims.claimDiscordInvite(null)
+    expect(claims.claimDiscordInvite(null)).toBe(first)
+    expect(await first).toEqual({ show: true })
+    expect(values.get(claims.VISITOR_DISCORD_INVITE_KEY)).toBe('1')
+    vi.resetModules()
+    const nextVisit = await import('./discord-invite')
+    expect(await nextVisit.claimDiscordInvite(null)).toEqual({ show: false })
+    expect(request).not.toHaveBeenCalled()
+    await nextVisit.claimDiscordInvite('signed-in')
+    expect(JSON.parse(request.mock.calls[0][1].body)).toEqual({ alreadyShown: true })
+  })
+  it('keeps a displayed visitor card quiet for this visit when storage is blocked', async () => {
+    vi.stubGlobal('localStorage', { getItem() { throw new Error('Blocked') }, setItem() { throw new Error('Blocked') } })
+    expect(await claims.claimDiscordInvite(null)).toEqual({ show: true })
+    expect(claims.discordInviteHandledHere()).toBe(true)
+    expect(request).not.toHaveBeenCalled()
+  })
   it('shares the member claim across effect replay without mixing accounts', async () => {
     const first = claims.claimDiscordInvite('first')
     expect(claims.claimDiscordInvite('first')).toBe(first)
