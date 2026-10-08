@@ -14,6 +14,6 @@ export function explainBuildFailure(detail: string, stockSwitch = false): string
   if (DSP_SPACE.test(detail)) return 'These modules do not fit together in the available effect memory. Remove one of them, then check again.'
   if (isMenuSpaceFailure(detail)) return stockSwitch
     ? 'These modules and stock FX2 effects do not fit together. Turn off Keep stock FX2 effects or remove a module, then check again.'
-    : 'These modules do not fit together. Remove one of them, then check again.'
+    : 'These modules do not fit together in the available menu and patch space. Remove a module, then check again.'
   return detail
 }
