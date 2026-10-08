@@ -40,14 +40,17 @@
     ]
   },
   "access": {
-    "location": "Stock LO-FI on FX1 or FX2: the AMF parameter on its main page. Automatic when included in the build.",
+    "location": "Stock LO-FI on FX1 or FX2 (chosen in FX1 SETUP / FX2 SETUP): the AMF parameter, top right of its main page. Automatic when included in the build.",
     "steps": [
-      "Select a track with [TRACK] + a track key, open the FX1 chooser with [FUNC] + [FX1] and pick LO-FI (FX2 works the same with [FUNC] + [FX2]).",
-      "Press [FX1] to open LO-FI's page, play a sustained sound on the track and set AMF to 7.",
+      "Select a track with its track key (T1-T8) and press [FUNC] + [FX1] to open FX1 SETUP; scroll to LO-FI in the list (FX2 works the same with [FUNC] + [FX2]).",
+      "Press [FX1] to open LO-FI's page, play a sustained sound on the track and set AMF (top right, knob C) to 7.",
       "Turn AMF to 8: the ring-modulator pitch now rises a little instead of dropping by about 63% as on stock.",
       "To compare with or return to stock behaviour, build the firmware without LOFI AMF FIX; there is no runtime switch."
     ],
-    "screenshots": []
+    "screenshots": [
+      "media/ot-fx1-setup-lofi.png",
+      "media/ot-lofi-amf.png"
+    ]
   },
   "controls": [],
   "compatibility": {
@@ -107,18 +110,69 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Declaration imports and resolves its two guarded pokes without firmware. Upstream disassembled both sites against stock; the native comparison, packages, performance record, captures and hardware tests are pending.",
+    "summary": "Declaration resolves its two guarded pokes; both guards and addresses confirmed against an original OS 1.40C. LCD captures from the headless emulator. Packages, native comparison, performance record and hardware tests pending.",
     "hardwareStatus": "untested",
     "evidenceRevision": "063a42626a40f863c0e1b056155b74f8b5666004",
     "gates": [
       "npm run module:verify -- lofi-amf-fix --os <original 1.40C> (pending)",
       "Hardware: AMF 0-60 sweep on tracks 1-4 and 5-8, FX1 and FX2 (pending)"
-    ]
+    ],
+    "documentation": {
+      "tutorial": {
+        "title": "Quick tutorial: hear AMF rise from 7 to 8",
+        "steps": [
+          "Select a track with its track key (T1-T8) and press [FUNC] + [FX1] to open FX1 SETUP; scroll to LO-FI in the list (FX2 works the same with [FUNC] + [FX2]).",
+          "Press [FX1] to open LO-FI's page, play a sustained sound on the track and set AMF (top right, knob C) to 7.",
+          "Turn AMF to 8: the ring-modulator pitch now rises a little instead of dropping by about 63% as on stock.",
+          "To compare with or return to stock behaviour, build the firmware without LOFI AMF FIX; there is no runtime switch."
+        ]
+      },
+      "screenshots": [
+        "media/ot-fx1-setup-lofi.png",
+        "media/ot-lofi-amf.png"
+      ],
+      "screenshotStyle": "black-and-white"
+    }
   },
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
     "declaration": "The fix is Bryan Tysinger's (bryantysinger/octa-bt-pt, MIT); the octabam declaration and README are Sam Banks's (sambanks/octabam, MIT). Both licence texts are retained in full in LICENSE. Only authored declarations, the replacement instruction word and a SHA-256 guard of the stock word are included; no firmware, extracted stock routine or table, image, card or dump."
   },
-  "media": []
+  "media": [
+    {
+      "path": "media/ot-fx1-setup-lofi.png",
+      "captureType": "emulator",
+      "caption": "[FUNC] + [FX1] opens FX1 SETUP. Scroll to LO-FI: this is the stock effect the fix applies to. The screen itself is unchanged by the module.",
+      "alt": "FX1 SETUP list with LO-FI highlighted at the bottom and the AMPH knob shown beside it.",
+      "credit": "Bryan Tysinger and Modwerk contributors; Elektron Octatrack UI",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "FX1 SETUP",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "175989699c705de1434e03b23cf0615329da9af7db85a8c57ea2aea0a667cbbe",
+        "setup": "Headless ot_emu built from this checkout's sdk/octabam/tools/emu/ot_emu (mc68k 4a6d0d1, dsp56300 8ccdd843); MKII panel; stopped transport; empty scratch card, date prompt dismissed; 128x64 LCD at integer scale 6. Image: original 1.40C MAIN OS with only this module's two guarded pokes applied (local standalone composition, not shared-builder output). Stock screens, unchanged by the module."
+      }
+    },
+    {
+      "path": "media/ot-lofi-amf.png",
+      "captureType": "emulator",
+      "caption": "[FX1] opens LO-FI's page. AMF is knob C, top right, here at 8: with the fix, every step up raises the ring-modulator pitch; stock drops it at this value.",
+      "alt": "LO-FI main page with DIST, AMF at 8, SRR, BRR and AMD knobs.",
+      "credit": "Bryan Tysinger and Modwerk contributors; Elektron Octatrack UI",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "FX1 LO-FI",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "175989699c705de1434e03b23cf0615329da9af7db85a8c57ea2aea0a667cbbe",
+        "setup": "Headless ot_emu built from this checkout's sdk/octabam/tools/emu/ot_emu (mc68k 4a6d0d1, dsp56300 8ccdd843); MKII panel; stopped transport; empty scratch card, date prompt dismissed; 128x64 LCD at integer scale 6. Image: original 1.40C MAIN OS with only this module's two guarded pokes applied (local standalone composition, not shared-builder output). Stock screens, unchanged by the module."
+      }
+    }
+  ]
 }

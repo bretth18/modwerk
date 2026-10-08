@@ -20,10 +20,14 @@ Include LOFI AMF FIX when you build your firmware, then use LO-FI exactly as bef
 
 ### Quick tutorial: hear AMF rise from 7 to 8
 
-1. Select a track with [TRACK] + a track key, open the FX1 chooser with [FUNC] + [FX1] and pick LO-FI (FX2 works the same with [FUNC] + [FX2]).
-2. Press [FX1] to open LO-FI's page, play a sustained sound on the track and set AMF to 7.
+1. Select a track with its track key (T1-T8) and press [FUNC] + [FX1] to open FX1 SETUP; scroll to LO-FI in the list (FX2 works the same with [FUNC] + [FX2]).
+2. Press [FX1] to open LO-FI's page, play a sustained sound on the track and set AMF (top right, knob C) to 7.
 3. Turn AMF to 8: the ring-modulator pitch now rises a little instead of dropping by about 63% as on stock.
 4. To compare with or return to stock behaviour, build the firmware without LOFI AMF FIX; there is no runtime switch.
+
+![FX1 SETUP with LO-FI highlighted](media/ot-fx1-setup-lofi.png)
+
+![LO-FI's page with AMF at 8](media/ot-lofi-amf.png)
 
 ## Compatibility and limitations
 
@@ -55,4 +59,9 @@ Both licence texts are in [LICENSE](LICENSE) in full. No Elektron firmware, extr
 
 ## Screens and audio
 
-The module has no screen of its own; it lives on stock LO-FI's main page. Black-and-white captures of the FX1 chooser with LO-FI selected and of LO-FI's page with AMF highlighted are pending (they need a local OS 1.40C and the headless emulator). No audio is included.
+The module has no screen of its own; both captures are stock pages, unchanged by it, showing where to hear the fix. They come from the headless emulator running an original OS 1.40C with only the module's two writes applied (`media/capture.json` has the image and emulator hashes and the panel plan).
+
+- [FX1 SETUP](media/ot-fx1-setup-lofi.png): [FUNC] + [FX1], LO-FI highlighted.
+- [LO-FI's page](media/ot-lofi-amf.png): [FX1], AMF (knob C, top right) at 8.
+
+No audio is included.

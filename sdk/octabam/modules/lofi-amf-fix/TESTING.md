@@ -16,7 +16,7 @@ Only results that were actually produced are recorded here. Anything not listed 
 
 ## Commands run in this repository
 
-8 October 2026, Linux sandbox, Node 22.22.0 (the repository asks for Node 24), no OS file present.
+8 October 2026: Linux sandbox (Node 22.22.0), and Bryan Tysinger's Mac (Node 24.21.0) for the doctor and check.
 
 | Command | Result |
 | --- | --- |
@@ -24,7 +24,20 @@ Only results that were actually produced are recorded here. Anything not listed 
 | `npm run licenses:generate`, `npm run licenses:check` | pass |
 | `npm run module:doctor -- lofi-amf-fix` | see the last section |
 
-The stock-guard identities (`0x400f4bbb` and `0x40107b0c`, 3 bytes, SHA-256 `7a4ab30f…3c9f10`) have **not** been checked against an original OS 1.40C here. The first build or `module:verify` with your own OS file does that check, and refuses on a mismatch.
+Confirmed 8 October 2026 against an original OS 1.40C update (MAIN OS 1,112,560 bytes, SHA-256 `164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e`), in the sandbox and again on Bryan Tysinger's Mac:
+
+| | payload A (tracks 5-8) | payload B (tracks 1-4) |
+| --- | --- | --- |
+| DSP address | P:0x1bef | P:0x19af |
+| Image address via `tools/build/dsp_modmap.py` | `0x400f4bbb` (matches manifest) | `0x40107b0c` (matches manifest) |
+| Stock word guard SHA-256 `7a4ab30f…3c9f10` | match | match |
+| Enclosing P record starts at | P:0x1b58 (LO-FI) | P:0x1918 (LO-FI) |
+
+Applying both pokes changes exactly two bytes of MAIN OS (one per payload); the result has SHA-256 `175989699c705de1434e03b23cf0615329da9af7db85a8c57ea2aea0a667cbbe` on both machines. Not confirmed here: that the stock word disassembles as `mpysu x0,y0,a` and the replacement as `mpyuu x0,y0,a` (upstream's and the author's disassembly; the DSP disassembler was not built for this check).
+
+## OT UI captures
+
+8 October 2026, Bryan Tysinger's Mac (Apple silicon). `ot_emu` built from this checkout's `sdk/octabam/tools/emu/ot_emu` (`bash scripts/vendor.sh mc68k dsp56300`, mc68k `4a6d0d1`, dsp56300 `8ccdd843`; `cmake -S tools/emu/ot_emu -B out/emu -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64`), emulator SHA-256 `1955bc62…37938d718`. Image: the original MAIN OS with only this module's two guarded pokes applied by a local script (`175989699c70…a667cbbe`); a standalone composition, not shared-builder output. `scripts/capture-module-ui.py` with the plan recorded in `media/capture.json`, MKII panel, empty scratch card. Both PNGs were reviewed (FX1 SETUP with LO-FI highlighted; LO-FI's page with AMF at 8) and their hashes match `media/capture.json`. They are stock screens and show nothing about the fix itself.
 
 ## Native comparison and packages
 

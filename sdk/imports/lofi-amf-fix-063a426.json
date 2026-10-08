@@ -70,5 +70,5 @@
     "Generated firmware, runtime images and memory dumps",
     "The rest of octa-bt-pt (per-user parameter defaults, FLEX/STATIC TSTR default, FX1/FX2 default NONE)"
   ],
-  "status": "Draft import; not listed in sdk/catalog.json. Packages, native octabam comparison, performance record, captures and hardware tests pending (need a local original OS 1.40C)."
+  "status": "Draft import; not listed in sdk/catalog.json. Stock guards confirmed against an original OS 1.40C (MAIN OS 164f3122...af0a84e); LCD captures added. Packages, native octabam comparison, performance record and hardware qualification pending."
 }
