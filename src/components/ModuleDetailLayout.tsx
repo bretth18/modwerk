@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { ModuleCommunity } from '../community/ModuleCommunity'
+import { CreatorSupport } from '../community/CreatorSupport'
 import { ModuleChangelog } from '../community/ModuleChangelog'
 import { IssueCount, ModuleIssues } from '../community/ModuleIssues'
 import { useModuleIssues } from '../community/issue-tracker'
@@ -32,6 +33,7 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
     document.getElementById('tab-Discussion')?.focus()
   }
   function showIssueReport() { setTab('Issues'); setIssueOpenRequest(request => request + 1) }
+  const discussionBadge = <span className="module-tab-count-slot"><span className="tab-count">{discussionCount ?? '—'}<span className="sr-only">{discussionCount === null ? ' comments loading' : discussionCount === 1 ? ' comment' : ' comments'}</span></span></span>
   return <div className="detail-page">
     <div className="module-page-actions">
       <a className="back-link" href={backHref}><Icon name="back" size={15} />{backLabel}</a>
@@ -42,10 +44,10 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
       <div className="detail-intro">
         <div className="detail-tags"><span className="pill">{family}</span><span className="subtle">{detail}</span></div>
         <h1 id="module-title">{title}</h1>
-        <a className="author-link" href={authorUrl} target="_blank" rel="noreferrer">by {author} ↗</a>
+        <div className="module-creator"><a className="author-link" href={authorUrl} target="_blank" rel="noreferrer">by {author} ↗</a><CreatorSupport key={id} id={id}/></div>
         <p>{description}</p>
         {notice}
-        <div className="detail-rating"><button className="text-button" onClick={showDiscussion}>Reviews & discussion{discussionCount !== null && <span className="tab-count">{discussionCount}<span className="sr-only">{discussionCount === 1 ? ' comment' : ' comments'}</span></span>}</button></div>
+        <div className="detail-rating"><button className="text-button" onClick={showDiscussion}>Reviews & discussion{discussionBadge}</button></div>
         <button className={'button ' + (selected ? 'button-added' : 'button-primary')} onClick={onToggle} aria-pressed={selected}><Icon name={selected ? 'check' : 'plus'} size={16} />{selected ? 'Added to configuration' : 'Add to configuration'}</button>
         <ModuleUpdateButton id={id} />
       </div>
@@ -59,7 +61,7 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
         if (event.key === 'Home') next = tabs[0]
         if (event.key === 'End') next = tabs[tabs.length - 1]
         if (next) { event.preventDefault(); setTab(next); document.getElementById('tab-' + next)?.focus() }
-      }}>{value}{value === 'Issues' && issues.data && <IssueCount count={issues.data.openCount}/>}{value === 'Discussion' && discussionCount !== null && <span className="tab-count">{discussionCount}<span className="sr-only">{discussionCount === 1 ? ' comment' : ' comments'}</span></span>}</button>)}
+      }}>{value}{value === 'Issues' && <span className="module-tab-count-slot">{issues.data ? <IssueCount count={issues.data.openCount}/> : <span className="tab-count" aria-label={issues.error ? 'Issue count unavailable' : 'Loading issue count'}>—</span>}</span>}{value === 'Discussion' && discussionBadge}</button>)}
     </div>
     <div id="detail-content" role="tabpanel" aria-labelledby={'tab-' + tab} tabIndex={0}>
       {tab === 'Overview' && <>

@@ -6,19 +6,23 @@ import { LoginPromptDialog } from './LoginPromptDialog'
 import { modulePageHref } from './modules'
 import type { ModuleUpdateSubscription } from './module-release-contract'
 
+function UpdateDeliveryNote({ id }: { id?: string }) {
+  return <p id={id} className="service-note">Get new releases in your bell. Choose email delivery in <a href="#account/notifications">notification settings</a>.</p>
+}
+
 export function ModuleUpdateButton({ id }: { id: string }) {
   const { session, loading } = useCommunity()
   // Every state renders the same block wrapper, so the button does not sit beside "Add to configuration" first and drop below it once the session arrives.
-  if (loading) return <div className="module-update-subscription"><button className="button button-quiet" disabled><Icon name="bell" size={16} />Get update notifications</button></div>
+  if (loading) return <div className="module-update-subscription"><button className="button button-quiet" disabled><Icon name="bell" size={16} />Get update notifications</button><UpdateDeliveryNote/></div>
   if (!session.user) return <VisitorInvitation id={id} />
-  if (!session.user.verified) return <div className="module-update-subscription"><a className="button button-quiet" href="#account"><Icon name="bell" size={16} />Verify email to follow updates</a></div>
+  if (!session.user.verified) return <div className="module-update-subscription"><a className="button button-quiet" href="#account"><Icon name="bell" size={16} />Verify email to follow</a><UpdateDeliveryNote/></div>
   return <Subscription key={id + ':' + session.user.id} id={id} />
 }
 
 /** The same button for visitors; pressing it opens the sign-in prompt and brings them back to this module. */
 function VisitorInvitation({ id }: { id: string }) {
   const [open, setOpen] = useState(false)
-  return <div className="module-update-subscription"><button type="button" className="button button-quiet" aria-haspopup="dialog" onClick={() => setOpen(true)}><Icon name="bell" size={16} />Get update notifications</button>{open && <LoginPromptDialog action="Sign in to get update notifications" next={modulePageHref(id).slice(1)} onClose={() => setOpen(false)} />}</div>
+  return <div className="module-update-subscription"><button type="button" className="button button-quiet" aria-haspopup="dialog" onClick={() => setOpen(true)}><Icon name="bell" size={16} />Get update notifications</button><UpdateDeliveryNote/>{open && <LoginPromptDialog action="Sign in to get update notifications" next={modulePageHref(id).slice(1)} onClose={() => setOpen(false)} />}</div>
 }
 
 function Subscription({ id }: { id: string }) {
@@ -45,8 +49,8 @@ function Subscription({ id }: { id: string }) {
     finally { mutating.current = false; setBusy(false) }
   }
   return <div className="module-update-subscription">
-    <button type="button" className={'button ' + (value?.enabled ? 'button-added' : 'button-quiet')} aria-pressed={!!value?.enabled} aria-describedby={description} disabled={busy || !value && !error} onClick={() => void change()}><Icon name="bell" size={16} />{busy ? 'Saving…' : value?.enabled ? 'Following updates · Unfollow' : 'Get update notifications'}</button>
-    <p id={description} className="service-note" role="status">{value?.enabled ? <>New releases appear in your bell. {value.emailEnabled && value.emailAvailable ? 'Unread updates are included in your activity emails.' : <>For email too, {value.emailAvailable ? 'enable module updates in' : 'check delivery availability in'} <a href="#account/notifications">email settings</a>.</>}</> : 'Get new releases in your bell and activity emails.'}</p>
+    <button type="button" className={'button ' + (value?.enabled ? 'button-added' : 'button-quiet')} aria-pressed={!!value?.enabled} aria-describedby={description} disabled={busy || !value && !error} onClick={() => void change()}><Icon name="bell" size={16} />{busy ? 'Saving…' : value?.enabled ? 'Unfollow updates' : 'Get update notifications'}</button>
+    <UpdateDeliveryNote id={description}/>
     {error && <p className="file-error" role="alert">{error}</p>}
   </div>
 }
