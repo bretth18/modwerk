@@ -1,0 +1,441 @@
+{
+  "schemaVersion": 1,
+  "id": "synth",
+  "moduleVersion": "0.1.1-experimental",
+  "sourceSha256": "bfa77029219a2d5deaa9dd1394662e18dfee01ade72b631e36fe3fab48054560",
+  "imageSha256": "c1fbc0b2eaf284e72692b7048d1dfd3693f3e3e90c71229159a619d585b52c95",
+  "hardwareStatus": "untested",
+  "chipWorstCaseCycles": null,
+  "completeMemoryBounds": null,
+  "nativeBrowserParity": {
+    "status": "passed",
+    "selections": 94,
+    "built": 37,
+    "refused": 57,
+    "mismatches": 0,
+    "report": "sdk/native-comparisons/synth.json"
+  },
+  "worker": {
+    "moduleVersion": "0.1.1-experimental",
+    "imageSha256": "c1fbc0b2eaf284e72692b7048d1dfd3693f3e3e90c71229159a619d585b52c95",
+    "imageBytes": 1129784,
+    "updateSha256": "831e7cd878398ee8d1e268e9fc2bcfd902f48e785965e8e510bff58abc1405a6",
+    "updateBytes": 465924,
+    "worker": {
+      "version": "OCTAMOD79",
+      "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+      "sourceCommit": null,
+      "sourceTreeSha256": "c2b909bd53d0be55d27725ac83426b15d3e8b334f724dbb13d8625edd521fa74",
+      "moduleIds": [
+        "synth"
+      ],
+      "moduleVersions": {
+        "synth": "0.1.1-experimental"
+      },
+      "keepStockFx2": true,
+      "osBytes": 1129784,
+      "runtimeBytes": 90268,
+      "reservedBytes": 10586112,
+      "fx1Rows": 10,
+      "fx2Rows": 14,
+      "omittedStockFx2": []
+    },
+    "checks": {
+      "sharedWorkerBuild": "passed",
+      "packagingRoundTrip": "passed",
+      "stockBootAndSeedPreserved": "passed",
+      "conflictingMachinesRefused": "passed",
+      "changedBaseRefused": "passed",
+      "changedBaseClearsSession": "passed"
+    },
+    "rejected": [
+      {
+        "companion": "analog-bassdrum",
+        "message": "FM Synth bundles Scale Quantizer and uses the machine chooser hooks. It cannot run alongside Analog BD."
+      },
+      {
+        "companion": "quantizer",
+        "message": "FM Synth bundles Scale Quantizer and uses the machine chooser hooks. It cannot run alongside Scale Quantizer."
+      },
+      {
+        "companion": "midi-scenes",
+        "message": "MIDI Scenes currently supports standalone firmware. Remove the other modules to build this configuration."
+      }
+    ],
+    "allocation": {
+      "runtimeBase": 1084839392,
+      "runtimeBytes": 90268,
+      "reserveBytes": 10586112,
+      "sections": [
+        {
+          "name": ".text",
+          "address": 1084839392,
+          "size": 29636
+        },
+        {
+          "name": ".rodata",
+          "address": 1084869028,
+          "size": 279
+        },
+        {
+          "name": ".data",
+          "address": 1084877824,
+          "size": 51836
+        },
+        {
+          "name": ".bss",
+          "address": 1084929660,
+          "size": 0
+        }
+      ],
+      "units": [
+        {
+          "label": "poly",
+          "dram": true,
+          "sections": [
+            {
+              "name": ".text",
+              "size": 18854,
+              "alignment": 4,
+              "address": 1084839392
+            }
+          ],
+          "symbols": [
+            {
+              "name": "sy_state",
+              "offset": 13556,
+              "section": 1
+            },
+            {
+              "name": "po_clock",
+              "offset": 17100,
+              "section": 1
+            },
+            {
+              "name": "po_chord",
+              "offset": 16632,
+              "section": 1
+            },
+            {
+              "name": "po_voices",
+              "offset": 14580,
+              "section": 1
+            },
+            {
+              "name": "po_seq",
+              "offset": 16628,
+              "section": 1
+            },
+            {
+              "name": "po_vbuf",
+              "offset": 16888,
+              "section": 1
+            },
+            {
+              "name": "po_mheld",
+              "offset": 16892,
+              "section": 1
+            },
+            {
+              "name": "po_lfodesc",
+              "offset": 17408,
+              "section": 1
+            },
+            {
+              "name": "po_lfo_built",
+              "offset": 17404,
+              "section": 1
+            },
+            {
+              "name": "po_pgdesc_buf",
+              "offset": 17812,
+              "section": 1
+            },
+            {
+              "name": "po_pg_built",
+              "offset": 17810,
+              "section": 1
+            },
+            {
+              "name": "po_mtail",
+              "offset": 17092,
+              "section": 1
+            },
+            {
+              "name": "po_mhead",
+              "offset": 17084,
+              "section": 1
+            },
+            {
+              "name": "po_mring",
+              "offset": 16956,
+              "section": 1
+            },
+            {
+              "name": "po_rtlog",
+              "offset": 17132,
+              "section": 1
+            },
+            {
+              "name": "po_ampdesc_buf",
+              "offset": 18216,
+              "section": 1
+            },
+            {
+              "name": "po_amp_built",
+              "offset": 18214,
+              "section": 1
+            },
+            {
+              "name": "po_end",
+              "offset": 18620,
+              "section": 1
+            }
+          ]
+        },
+        {
+          "label": "fm_qzk",
+          "dram": false,
+          "sections": [
+            {
+              "name": ".text",
+              "size": 45,
+              "alignment": 4,
+              "address": null
+            }
+          ],
+          "symbols": []
+        },
+        {
+          "label": "fm_qzc",
+          "dram": false,
+          "sections": [
+            {
+              "name": ".text",
+              "size": 192,
+              "alignment": 4,
+              "address": null
+            }
+          ],
+          "symbols": []
+        },
+        {
+          "label": "fm_qzs",
+          "dram": false,
+          "sections": [
+            {
+              "name": ".text",
+              "size": 6,
+              "alignment": 4,
+              "address": null
+            }
+          ],
+          "symbols": []
+        },
+        {
+          "label": "fm_qz",
+          "dram": true,
+          "sections": [
+            {
+              "name": ".text",
+              "size": 3516,
+              "alignment": 4,
+              "address": 1084858248
+            }
+          ],
+          "symbols": [
+            {
+              "name": "qz_ofmt",
+              "offset": 2736,
+              "section": 1
+            },
+            {
+              "name": "qz_press",
+              "offset": 2756,
+              "section": 1
+            },
+            {
+              "name": "qz_gbuf",
+              "offset": 2728,
+              "section": 1
+            }
+          ]
+        },
+        {
+          "label": "fmpage",
+          "dram": false,
+          "sections": [
+            {
+              "name": ".text",
+              "size": 1864,
+              "alignment": 4,
+              "address": null
+            }
+          ],
+          "symbols": []
+        },
+        {
+          "label": "fmmachine",
+          "dram": true,
+          "sections": [
+            {
+              "name": ".text",
+              "size": 874,
+              "alignment": 4,
+              "address": 1084861764
+            }
+          ],
+          "symbols": [
+            {
+              "name": "fm_defaults",
+              "offset": 0,
+              "section": 0
+            }
+          ]
+        },
+        {
+          "label": "fmregistration",
+          "dram": true,
+          "sections": [
+            {
+              "name": ".text",
+              "size": 480,
+              "alignment": 4,
+              "address": 1084862640
+            },
+            {
+              "name": ".rodata",
+              "size": 12,
+              "alignment": 1,
+              "address": 1084869028
+            }
+          ],
+          "symbols": [
+            {
+              "name": "fm_defaults",
+              "offset": 0,
+              "section": 5
+            }
+          ]
+        }
+      ],
+      "romWrites": [
+        {
+          "address": 1074605232,
+          "bytes": 45,
+          "note": "fm_qzk ROM unit"
+        },
+        {
+          "address": 1074621312,
+          "bytes": 192,
+          "note": "fm_qzc ROM unit"
+        },
+        {
+          "address": 1074605224,
+          "bytes": 6,
+          "note": "fm_qzs ROM unit"
+        },
+        {
+          "address": 1074603216,
+          "bytes": 1864,
+          "note": "fmpage ROM unit"
+        },
+        {
+          "address": 1074621568,
+          "bytes": 24,
+          "note": "SEQUENCER labels"
+        },
+        {
+          "address": 1074621696,
+          "bytes": 24,
+          "note": "SEQUENCER getters"
+        },
+        {
+          "address": 1074621824,
+          "bytes": 24,
+          "note": "SEQUENCER setters"
+        },
+        {
+          "address": 1074158552,
+          "bytes": 4,
+          "note": "SEQUENCER labels"
+        },
+        {
+          "address": 1074158558,
+          "bytes": 4,
+          "note": "SEQUENCER getters"
+        },
+        {
+          "address": 1074158788,
+          "bytes": 4,
+          "note": "SEQUENCER setters"
+        },
+        {
+          "address": 1074158910,
+          "bytes": 4,
+          "note": "SEQUENCER setters"
+        },
+        {
+          "address": 1074158936,
+          "bytes": 4,
+          "note": "SEQUENCER setters"
+        },
+        {
+          "address": 1074158962,
+          "bytes": 4,
+          "note": "SEQUENCER setters"
+        }
+      ]
+    },
+    "limits": {
+      "chipWorstCaseCycles": null,
+      "completeStackBounds": null,
+      "hardwareStatus": "untested"
+    }
+  },
+  "audio": {
+    "frames": 1271584,
+    "nonzeroValues": 376501,
+    "peak": 3715,
+    "pcmSha256": "0d2223488b7ed8fdcfc8fba75c4a96244d46adb580f6d010c79b750a6ca963cf",
+    "firstActiveFrame": 1046289,
+    "lastActiveFrame": 1234544,
+    "carrierPeriodFrames": 169,
+    "carrierFrequencyHz": 260.94674556213016,
+    "finalHalfSecondPeak": 0,
+    "checks": {
+      "generatedCarrier": "passed",
+      "doubleStopSilence": "passed"
+    },
+    "emulator": {
+      "repositoryRevision": "87000189418c8ca2026dc047bda220b66802809d",
+      "octemuSha256": "3ce6cebde0de2c61edc4228436338a1e115ce227373351a5ca84aefc9cf90acb",
+      "qemuSha256": "a7eecaeae877630879062afd6462b8b7b9f2ad4a0664e325c4edddc0a84950c0"
+    },
+    "fixture": {
+      "originalCardSha256": "71fb8df86211693cbb737cdd1712a71fdc27b8d192880cb6f39895c6cfd72180",
+      "privateCardSha256": "dbe748ed445db9305ac3245204464dd730ac0611a2efef75cbeb7ba02dced9f8",
+      "originalBatterySha256": "5bd8f41de2f41b2ad63707e05ccc6b3a5e91f32ca8330f421f8f7469cb430ece",
+      "recipe": "Private copy of Octemu out/fx2; delete AUDIO/SINE440.WAV. Firmware-created project and step-1 trig retained; track 1 FX1/FX2 NONE. No audio files or FM marker remain. Original fixture untouched."
+    },
+    "walkSha256": "7625d9d9047393924668b8fee9d6c032507c6087b14b48fcec01d81e5ba9bc3b",
+    "limitations": [
+      "One mono carrier and stopped tail in emulator only; not hardware, maximum-load, modulation, polyphony or persistence qualification."
+    ],
+    "imageSha256": "c1fbc0b2eaf284e72692b7048d1dfd3693f3e3e90c71229159a619d585b52c95"
+  },
+  "nativeImageSha256": "6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a",
+  "existingComparisonRegression": {
+    "status": "passed",
+    "moduleId": "sidechain-compressor",
+    "selections": 90,
+    "built": 62,
+    "refused": 28,
+    "mismatches": 0
+  },
+  "ownerApproval": {
+    "hardwareStatement": "I don't have any hardware evidence other than people use it on discord. it's fine, I approve",
+    "resourceStatement": "Approve this experimental release",
+    "resourceQuestion": "Do you also approve releasing FM Synth 0.1.1 as experimental with worst-case chip timing and complete stack/memory bounds explicitly unmeasured? This is the remaining exception required by docs/MODULE_QUALIFICATION.md; it would apply only to this exact FM Synth release."
+  }
+}

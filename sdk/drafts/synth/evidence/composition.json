@@ -1,0 +1,1615 @@
+{
+  "profiles": 110,
+  "built": 31,
+  "refused": 79,
+  "mismatches": [],
+  "inputUnchanged": true,
+  "changedStockGuard": {
+    "rejected": true,
+    "error": "native builds it but the browser refused: Stock DSP recovery needs the original, unmodified OS image.",
+    "inputUnchanged": true
+  },
+  "results": [
+    {
+      "moduleIds": [
+        "synth"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "synth"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "synth"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "synth"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "synth"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "synth"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "synth"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "synth"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "synth"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "synth"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "synth"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "synth"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "synth"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "synth"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "usb-audio-out-tracks-main-cue",
+        "synth"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "usb-audio-out-tracks-main-cue",
+        "synth"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "quantizer",
+        "synth"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "quantizer",
+        "synth"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "previewvol"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "previewvol"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "playmodes"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "playmodes"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "mute-modes"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "mute-modes"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "playmodes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "playmodes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "previewvol",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "synth",
+        "previewvol",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "synth",
+        "previewvol"
+      ],
+      "keepStockFx2": true,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "synth",
+        "previewvol"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "cc-map",
+        "vector",
+        "playmodes"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "cc-map",
+        "vector",
+        "playmodes"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "cc-map",
+        "sidechain-compressor",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "cc-map",
+        "sidechain-compressor",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "tapehead",
+        "synth",
+        "cc-map",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "tapehead",
+        "synth",
+        "cc-map",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "synth",
+        "cc-map",
+        "playmodes"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "menu space"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "synth",
+        "cc-map",
+        "playmodes"
+      ],
+      "keepStockFx2": false,
+      "verdict": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
+        "synth",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "menu space"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
+        "synth",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "menu space"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "synth",
+        "previewvol",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "synth",
+        "previewvol",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "mute-modes"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "mute-modes"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "playmodes",
+        "mute-modes"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "menu space"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "playmodes",
+        "mute-modes"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "menu space"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "vector",
+        "playmodes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "vector",
+        "playmodes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "quantizer",
+        "synth",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "quantizer",
+        "synth",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "tapehead",
+        "synth",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "menu space"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "tapehead",
+        "synth",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "menu space"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "sidechain-compressor",
+        "playmodes"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "sidechain-compressor",
+        "playmodes"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "verdict": "refused",
+      "reason": "declaration collision"
+    }
+  ]
+}

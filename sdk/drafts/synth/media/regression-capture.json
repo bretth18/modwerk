@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "synth",
+  "moduleVersion": "0.1.2-experimental",
+  "captured": "2026-10-08",
+  "firmware": "1.40C",
+  "imageSha256": "352e4fba676ed38c10631e8e56eb3f381084f7c3dde88effa5cb37ef43092a0e",
+  "emulatorSha256": "3ce6cebde0de2c61edc4228436338a1e115ce227373351a5ca84aefc9cf90acb",
+  "setup": "Actual Octemu 128x64 monochrome PGM exports converted losslessly to PNG at integer scale 6; visually reviewed. Fixture and panel walks are in evidence/regressions.json and adjacent JSONL files. Private draft-code development image, no release approval.",
+  "screenshots": {
+    "amp-max-fixed.png": "d776d287d403deffa07330350a33d4b2313db2c6d0710610ec46b4ba98b0fc1f",
+    "poly-controls.png": "376fcdc83ed4df158bf6cb747f6deb92e2518172f02f5f23ca9a946b6000911a",
+    "midi-synth-chromatic-fixed.png": "0b4a8a395c4e17f4fd4c675857e692716c7d0f9345b45680887fb25edd4f2468"
+  }
+}
