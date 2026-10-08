@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/sambanks/octabam",
+  "revision": "063a42626a40f863c0e1b056155b74f8b5666004",
+  "moduleVersion": "0.1.0-experimental",
+  "root": "sdk/octabam/modules/lofi-amf-fix",
+  "modules": [
+    "lofi-amf-fix"
+  ],
+  "authorPin": {
+    "repository": "https://github.com/bryantysinger/octa-bt-pt",
+    "revision": "e970dd0f9841ce5f648c2a257342cb8a3a05b54a"
+  },
+  "files": [
+    {
+      "path": "upstream/README.md",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "063a42626a40f863c0e1b056155b74f8b5666004",
+      "sourcePath": "modules/lofi-amf-fix/README.md",
+      "sourceBytes": 1599,
+      "sourceGitBlob": "56c8795889353af2dc6cf2ca0a9627207236ec03",
+      "sourceSha256": "4caa65dce4ac3dd3171fa34a20a247087a2aed2b8fa6965dfc96f56fec6b3e7d",
+      "vendoredSha256": "14eee3b79046e1db6d3bebaab8a87fda89a14ee614285b9dab411c36e11e4c3e",
+      "transforms": [
+        "Elide the stock instruction word's hex from the disassembly listing (mnemonic kept); no other change."
+      ]
+    },
+    {
+      "path": "manifest.py",
+      "repository": "https://github.com/sambanks/octabam",
+      "revision": "063a42626a40f863c0e1b056155b74f8b5666004",
+      "sourcePath": "modules/lofi-amf-fix/manifest.py",
+      "sourceBytes": 2654,
+      "sourceGitBlob": "81b96084ff2995e5815d52078dde9f3f51ddc7d8",
+      "sourceSha256": "920e0121e0656f8c223cf2e839865507c35583be92ca9f5257dfa9c4ef8ca415",
+      "vendoredSha256": "88b2b6738c08b9815e5d79a22c64a7b2cb7c432300acecad6d14b305a8507be4",
+      "transforms": [
+        "Replace the CavePatch whose emit() returned the two pokes (at a never-written cave address 0x400D2000) with the same two writes declared as plain Poke entries in Module.pokes, which the shared builder serialises; addresses and the written word are unchanged.",
+        "Replace the literal stock expectation bytes with lazy address/length/SHA-256 stock guards (stock_guard), read only from a verified local 1.40C at build time; remove the stock expectation constant.",
+        "Docstring: record the import pin, authorship and transform; drop the hex stock word."
+      ]
+    },
+    {
+      "path": "upstream/LICENSE",
+      "repository": "https://github.com/bryantysinger/octa-bt-pt",
+      "revision": "e970dd0f9841ce5f648c2a257342cb8a3a05b54a",
+      "sourcePath": "LICENSE",
+      "sourceBytes": 1071,
+      "sourceGitBlob": "3e222e6bb28a1e0d8c2d8e9bba92b470b737bf67",
+      "sourceSha256": "bd091014dcf7b64e7861e7d769e0bfc70bf2594ab5a43438a3e1edc33b3e554f",
+      "vendoredSha256": "bd091014dcf7b64e7861e7d769e0bfc70bf2594ab5a43438a3e1edc33b3e554f"
+    }
+  ],
+  "stockGuards": [
+    {
+      "address": "0x400f4bbb",
+      "bytes": 3,
+      "sha256": "7a4ab30f26d6c9ce57e2792642a3696ccdd8ffadb7b3542383da636d163c9f10",
+      "note": "LO-FI AMF coefficient multiply, payload A (tracks 5-8), DSP P:0x01bef."
+    },
+    {
+      "address": "0x40107b0c",
+      "bytes": 3,
+      "sha256": "7a4ab30f26d6c9ce57e2792642a3696ccdd8ffadb7b3542383da636d163c9f10",
+      "note": "LO-FI AMF coefficient multiply, payload B (tracks 1-4), DSP P:0x019af. Same stock word as payload A."
+    }
+  ],
+  "excluded": [
+    "Firmware and stock expectation bytes",
+    "Generated firmware, runtime images and memory dumps",
+    "The rest of octa-bt-pt (per-user parameter defaults, FLEX/STATIC TSTR default, FX1/FX2 default NONE)"
+  ],
+  "status": "Draft import; not listed in sdk/catalog.json. Stock guards confirmed against an original OS 1.40C (MAIN OS 164f3122...af0a84e); LCD captures added. Packages, native octabam comparison, performance record and hardware qualification pending."
+}

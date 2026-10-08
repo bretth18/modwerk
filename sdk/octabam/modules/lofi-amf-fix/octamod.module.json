@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 2,
+  "id": "lofi-amf-fix",
+  "key": "LOFI AMF FIX",
+  "name": "LO-FI AMF Fix",
+  "version": "0.1.0-experimental",
+  "category": "effects",
+  "source": {
+    "repository": "https://github.com/sambanks/octabam",
+    "revision": "063a42626a40f863c0e1b056155b74f8b5666004",
+    "path": "modules/lofi-amf-fix"
+  },
+  "build": {
+    "status": "pending",
+    "reason": "Packages, the native octabam comparison, the performance record and the LCD captures need a local original OS 1.40C and have not been run yet."
+  },
+  "author": {
+    "github": "bryantysinger",
+    "name": "Bryan Tysinger",
+    "credits": [
+      "Bryan Tysinger: found and root-caused the LO-FI AMF bug (mpysu where both operands are magnitudes) and wrote the mpysu -> mpyuu fix for both DSP payloads in bryantysinger/octa-bt-pt (MIT).",
+      "Sam Banks: the octabam module declaration and its README (sambanks/octabam, MIT).",
+      "Modwerk contributors: source import, Poke and stock-guard transform, documentation and SVG thumbnail."
+    ]
+  },
+  "nativeManifest": "manifest.py",
+  "presentation": {
+    "label": "LO-FI AMF fixed",
+    "family": "Stock effect fix",
+    "summary": "Stock LO-FI's AMF knob no longer drops the ring-modulator pitch when you turn it up; every AMF step now raises the frequency.",
+    "overview": "On stock OS 1.40C, LO-FI's AMF (ring-modulator frequency) runs one multiply in the wrong signedness, so at eleven AMF values (8, 17, 23, 28, 32, 35, 37, 40, 42, 45 and 48) the frequency falls instead of rising; AMF 7 to 8 drops by about 63%. This module rewrites that one DSP instruction to its unsigned form in both DSP payloads, so the AMF sweep rises monotonically. There is no knob, menu or new effect: stock LO-FI on FX1 and FX2 simply behaves as intended.",
+    "highlights": [
+      "Two single-instruction rewrites in stock LO-FI (both DSP payloads); no new code, cave, menu or effect id.",
+      "Applies to LO-FI on FX1 and FX2, on every track.",
+      "Saved projects that use AMF 8, 17, 23, 28, 32, 35, 37, 40, 42, 45 or 48 (or LFO/fine values between AMF 7 and 49) play at a different, correct, ring-mod pitch."
+    ],
+    "usage": [
+      "Select LO-FI on FX1 or FX2 of any track as usual and turn AMF; there is nothing to enable.",
+      "Build without the module to restore stock behaviour."
+    ]
+  },
+  "access": {
+    "location": "Stock LO-FI on FX1 or FX2 (chosen in FX1 SETUP / FX2 SETUP): the AMF parameter, top right of its main page. Automatic when included in the build.",
+    "steps": [
+      "Select a track with its track key (T1-T8) and press [FUNC] + [FX1] to open FX1 SETUP; scroll to LO-FI in the list (FX2 works the same with [FUNC] + [FX2]).",
+      "Press [FX1] to open LO-FI's page, play a sustained sound on the track and set AMF (top right, knob C) to 7.",
+      "Turn AMF to 8: the ring-modulator pitch now rises a little instead of dropping by about 63% as on stock.",
+      "To compare with or return to stock behaviour, build the firmware without LOFI AMF FIX; there is no runtime switch."
+    ],
+    "screenshots": [
+      "media/ot-fx1-setup-lofi.png",
+      "media/ot-lofi-amf.png"
+    ]
+  },
+  "controls": [],
+  "compatibility": {
+    "firmware": "1.40C",
+    "effectId": null,
+    "location": "FX1 / FX2",
+    "conflicts": [],
+    "limitations": [
+      "Automatic when included in the build; there is no menu, knob or switch. Build without the module to restore stock behaviour.",
+      "Changes how saved projects sound: any LO-FI with AMF at 8, 17, 23, 28, 32, 35, 37, 40, 42, 45 or 48, or with LFO-, scene- or lock-driven AMF between 7 and 49, plays at the corrected pitch, which differs from what stock played. This is deliberate: the stock pitch at those settings is the bug.",
+      "Two fixed DSP addresses (P:0x01bef in payload A, tracks 5-8; P:0x019af in payload B, tracks 1-4). Each write is guarded by the stock word's SHA-256, so a build refuses if anything has moved LO-FI's code.",
+      "Changes nothing outside LO-FI's AMF coefficient: DIST, SRR, BRR, AMD and AMPH are untouched.",
+      "Not yet run on hardware or compared with native octabam in this repository; see TESTING.md."
+    ]
+  },
+  "resources": {
+    "recorded": "Not measured; declaration only (8 October 2026)",
+    "storage": {
+      "label": "Firmware bytes rewritten",
+      "display": "6 bytes rewritten in place (two 3-byte DSP words); nothing added",
+      "value": 6,
+      "unit": "bytes",
+      "method": "static",
+      "conditions": "Counted from manifest.py: two Pokes of three bytes each over existing stock words. No cave, DRAM runtime, DSP state, table or buffer.",
+      "source": "manifest.py"
+    },
+    "processing": {
+      "label": "DSP load",
+      "display": "Not measured",
+      "value": null,
+      "unit": "unknown",
+      "method": "unmeasured",
+      "conditions": "One stock instruction is replaced by another single-word multiply of the same family; the cycle count of LO-FI before and after has not been measured. See TESTING.md.",
+      "source": "TESTING.md"
+    },
+    "impact": {
+      "conditions": "Source estimate: stock LO-FI with one multiply's operand signedness changed; no added instructions or memory.",
+      "cpu": {
+        "level": "minimal",
+        "basis": "source-estimate",
+        "rationale": "No ColdFire code; the two writes are applied when the image is built.",
+        "source": "manifest.py"
+      },
+      "dsp": {
+        "level": "minimal",
+        "basis": "source-estimate",
+        "rationale": "Same instruction count in LO-FI; the replacement is a one-word multiply like the stock one. Cycle equality is expected, not measured.",
+        "source": "TESTING.md"
+      },
+      "memory": {
+        "level": "minimal",
+        "basis": "source-estimate",
+        "rationale": "Six bytes rewritten in place; nothing allocated.",
+        "source": "manifest.py"
+      }
+    }
+  },
+  "tests": {
+    "report": "TESTING.md",
+    "summary": "Declaration resolves its two guarded pokes; both guards and addresses confirmed against an original OS 1.40C. LCD captures from the headless emulator. Packages, native comparison, performance record and hardware tests pending.",
+    "hardwareStatus": "untested",
+    "evidenceRevision": "063a42626a40f863c0e1b056155b74f8b5666004",
+    "gates": [
+      "npm run module:verify -- lofi-amf-fix --os <original 1.40C> (pending)",
+      "Hardware: AMF 0-60 sweep on tracks 1-4 and 5-8, FX1 and FX2 (pending)"
+    ],
+    "documentation": {
+      "tutorial": {
+        "title": "Quick tutorial: hear AMF rise from 7 to 8",
+        "steps": [
+          "Select a track with its track key (T1-T8) and press [FUNC] + [FX1] to open FX1 SETUP; scroll to LO-FI in the list (FX2 works the same with [FUNC] + [FX2]).",
+          "Press [FX1] to open LO-FI's page, play a sustained sound on the track and set AMF (top right, knob C) to 7.",
+          "Turn AMF to 8: the ring-modulator pitch now rises a little instead of dropping by about 63% as on stock.",
+          "To compare with or return to stock behaviour, build the firmware without LOFI AMF FIX; there is no runtime switch."
+        ]
+      },
+      "screenshots": [
+        "media/ot-fx1-setup-lofi.png",
+        "media/ot-lofi-amf.png"
+      ],
+      "screenshotStyle": "black-and-white"
+    }
+  },
+  "license": {
+    "spdx": "MIT",
+    "file": "LICENSE",
+    "declaration": "The fix is Bryan Tysinger's (bryantysinger/octa-bt-pt, MIT); the octabam declaration and README are Sam Banks's (sambanks/octabam, MIT). Both licence texts are retained in full in LICENSE. Only authored declarations, the replacement instruction word and a SHA-256 guard of the stock word are included; no firmware, extracted stock routine or table, image, card or dump."
+  },
+  "media": [
+    {
+      "path": "media/ot-fx1-setup-lofi.png",
+      "captureType": "emulator",
+      "caption": "[FUNC] + [FX1] opens FX1 SETUP. Scroll to LO-FI: this is the stock effect the fix applies to. The screen itself is unchanged by the module.",
+      "alt": "FX1 SETUP list with LO-FI highlighted at the bottom and the AMPH knob shown beside it.",
+      "credit": "Bryan Tysinger and Modwerk contributors; Elektron Octatrack UI",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "FX1 SETUP",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "175989699c705de1434e03b23cf0615329da9af7db85a8c57ea2aea0a667cbbe",
+        "setup": "Headless ot_emu built from this checkout's sdk/octabam/tools/emu/ot_emu (mc68k 4a6d0d1, dsp56300 8ccdd843); MKII panel; stopped transport; empty scratch card, date prompt dismissed; 128x64 LCD at integer scale 6. Image: original 1.40C MAIN OS with only this module's two guarded pokes applied (local standalone composition, not shared-builder output). Stock screens, unchanged by the module."
+      }
+    },
+    {
+      "path": "media/ot-lofi-amf.png",
+      "captureType": "emulator",
+      "caption": "[FX1] opens LO-FI's page. AMF is knob C, top right, here at 8: with the fix, every step up raises the ring-modulator pitch; stock drops it at this value.",
+      "alt": "LO-FI main page with DIST, AMF at 8, SRR, BRR and AMD knobs.",
+      "credit": "Bryan Tysinger and Modwerk contributors; Elektron Octatrack UI",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "FX1 LO-FI",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "175989699c705de1434e03b23cf0615329da9af7db85a8c57ea2aea0a667cbbe",
+        "setup": "Headless ot_emu built from this checkout's sdk/octabam/tools/emu/ot_emu (mc68k 4a6d0d1, dsp56300 8ccdd843); MKII panel; stopped transport; empty scratch card, date prompt dismissed; 128x64 LCD at integer scale 6. Image: original 1.40C MAIN OS with only this module's two guarded pokes applied (local standalone composition, not shared-builder output). Stock screens, unchanged by the module."
+      }
+    }
+  ]
+}

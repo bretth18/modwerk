@@ -1,0 +1,87 @@
+{
+  "firmware": "1.40C",
+  "imageSha256": "175989699c705de1434e03b23cf0615329da9af7db85a8c57ea2aea0a667cbbe",
+  "emulatorSha256": "1955bc62101451796570b4dde49da6acc90a495504cdb62fce78c8e37938d718",
+  "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6.",
+  "palette": {
+    "on": [
+      240,
+      240,
+      240
+    ],
+    "off": [
+      24,
+      24,
+      24
+    ]
+  },
+  "keyMs": 150,
+  "plan": [
+    {
+      "wait": 3000
+    },
+    {
+      "press": [
+        "YES"
+      ]
+    },
+    {
+      "wait": 2000
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "press": [
+        "FUNC",
+        "FX1"
+      ]
+    },
+    {
+      "encoder": {
+        "name": "LEVEL",
+        "delta": 20
+      }
+    },
+    {
+      "press": [
+        "YES"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "capture": "ot-fx1-setup-lofi.png"
+    },
+    {
+      "press": [
+        "FX1"
+      ]
+    },
+    {
+      "encoder": {
+        "name": "C",
+        "delta": -127
+      }
+    },
+    {
+      "encoder": {
+        "name": "C",
+        "delta": 8
+      }
+    },
+    {
+      "wait": 500
+    },
+    {
+      "capture": "ot-lofi-amf.png"
+    }
+  ],
+  "screenshots": {
+    "ot-fx1-setup-lofi.png": "b85d18bddd35e0585b96eff534a8816780d3f005ecf29821e4fd70b570651311",
+    "ot-lofi-amf.png": "55ccbe7bdd271991cd8da9ab9c46f49d4be75ce21aa905b913b2c9f944ee7ea9"
+  }
+}
