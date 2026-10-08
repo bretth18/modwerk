@@ -32,6 +32,7 @@ import { ADMIN_ACTOR, adminActor, authentication, currentUser, needMember, throt
 import { boundedBody, checkOrigin, HttpError, jsonBody, optional, required, response } from './security'
 import { MODULES } from '../src/catalog/modules'
 import { handleGithubWebhook, githubConfig, mirrorIssue, setGithubIssueState } from './github'
+import { publicIssueReplies } from './issue-replies'
 import { IssueInputError, validateIssueContext, validateLogMissing } from '../src/community/issue-context'
 import { OT_LOG_MAX_BYTES, OtLogError, parseOtLog } from '../src/community/ot-log'
 
@@ -65,6 +66,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if (/^\/api\/configurations(?:\/|$)/.test(path)) throw new HttpError(410,'Configurations are saved on your device. Use Export to copy one to another device.')
     const db = env.DB
     if (!db) throw new HttpError(503,'Community services are not connected yet. Your device workspace still works.')
+    const issueReplies = await publicIssueReplies(request,env,db)
+    if (issueReplies) return issueReplies
     if (path === '/api/usage/events' && request.method === 'POST') return await recordUsage(request,env,db)
     if (path === '/api/usage/module-downloads' && request.method === 'POST') return await recordModuleDownload(request,env,db)
     if (path === '/api/usage/count' && request.method === 'POST') return await recordAnonymousCount(request,env,db)

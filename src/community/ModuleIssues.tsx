@@ -2,12 +2,13 @@ import type { PublicModuleIssue, useModuleIssues } from './issue-tracker'
 import { ForumPostBody } from './ForumPostBody'
 import { ForumTime } from './ForumTime'
 import { Icon } from '../components/Icon'
+import { GithubIssueReplies } from './GithubIssueReplies'
 
 export function IssueCount({ count }: { count: number }) {
   return <span className="tab-count module-issue-count" data-open={count > 0} aria-label={count + (count === 1 ? ' open issue' : ' open issues')}>{count}</span>
 }
 
-export function ModuleIssueCard({ issue }: { issue: PublicModuleIssue }) {
+export function ModuleIssueCard({ issue, moduleId }: { issue: PublicModuleIssue; moduleId?: string }) {
   const github = issue.url.startsWith('https://github.com/')
   return <article className="module-issue-card" aria-labelledby={'issue-title-' + issue.id}>
     <header className="module-issue-header">
@@ -28,6 +29,7 @@ export function ModuleIssueCard({ issue }: { issue: PublicModuleIssue }) {
         <div className="module-issue-results"><section><h4>Expected result</h4><ForumPostBody body={issue.details.expected}/></section><section><h4>Actual result</h4><ForumPostBody body={issue.details.actual}/></section></div>
       </div>
     </> : <p className="service-note">The description for this older report is available {github ? 'on GitHub' : 'in its discussion'}.</p>}
+    {github && moduleId && issue.details && <GithubIssueReplies moduleId={moduleId} issueId={issue.id} githubUrl={issue.url}/>}
   </article>
 }
 
@@ -41,7 +43,7 @@ export function ModuleIssues({ id, issues, onReportIssue }: { id: string; issues
       <button type="button" aria-pressed={status === 'closed'} onClick={() => setStatus('closed')}><Icon name="check" size={14}/>Closed{data && <span className="tab-count">{data.closedCount}</span>}</button>
     </div>
     {error ? <><p className="file-error" role="alert">Issues could not load. {error}</p><button className="button button-quiet" onClick={retry}>Try again</button></> : loading ? <p role="status">Loading issues…</p> : data && <>
-      {data.issues.length ? <ul className="module-issue-list">{data.issues.map(issue => <li key={issue.id}><ModuleIssueCard issue={issue}/></li>)}</ul> : <div className="module-issues-empty" role="status"><Icon name={status === 'open' ? 'check' : 'message'} size={24}/><div><h3>{status === 'open' ? 'No open issues' : 'No closed issues yet'}</h3><p>{status === 'open' ? data.closedCount ? 'All reported issues have been closed. You can browse them in the Closed tab.' : 'No public bugs have been reported for this module.' : 'Resolved reports will appear here once they are closed.'}</p></div></div>}
+      {data.issues.length ? <ul className="module-issue-list">{data.issues.map(issue => <li key={issue.id}><ModuleIssueCard issue={issue} moduleId={id}/></li>)}</ul> : <div className="module-issues-empty" role="status"><Icon name={status === 'open' ? 'check' : 'message'} size={24}/><div><h3>{status === 'open' ? 'No open issues' : 'No closed issues yet'}</h3><p>{status === 'open' ? data.closedCount ? 'All reported issues have been closed. You can browse them in the Closed tab.' : 'No public bugs have been reported for this module.' : 'Resolved reports will appear here once they are closed.'}</p></div></div>}
       {(page > 0 || data.hasMore) && <nav className="module-issue-pagination" aria-label="Issue pages"><button className="button button-quiet" disabled={page === 0} onClick={() => setPage(page - 1)}>Previous</button><span>Page {page + 1}</span><button className="button button-quiet" disabled={!data.hasMore} onClick={() => setPage(page + 1)}>Next</button></nav>}
       <a className="text-button" href={data.allUrl ?? '#forum?category=issues&module=' + encodeURIComponent(id)} {...(data.allUrl ? { target: '_blank', rel: 'noreferrer' } : {})}>{data.allUrl ? 'View all ' + status + ' issues on GitHub' : 'Open bug reports in the forum'} ↗</a>
     </>}

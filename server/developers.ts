@@ -1,6 +1,7 @@
 import type { Database, Env, User } from './platform'
 import { requireRegisteredReleaseAuthor, completeModuleRelease } from './release-completion'
-import { githubConfig, setGithubIssueState } from './github'
+import { closeGithubReport, githubConfig, setGithubIssueState } from './github'
+import { isReportClosureReason } from '../src/community/report-closure'
 import { ADMIN_ACTOR, needMember, throttle } from './auth'
 import { issueStatusStatements } from './issue-notifications'
 import { ITEM_SQL, toItem, VISIBLE } from './notifications'
@@ -114,7 +115,8 @@ export async function developerApi(request:Request,db:Database,user:User|null,ad
       return response({ok:true},201)
     }
     if (!match[2] && request.method === 'PATCH') {
-      if (Object.keys(body).length !== 1) throw new HttpError(400,'Choose one report action.')
+      const closingWithoutRelease = body.closureReason !== undefined
+      if (closingWithoutRelease ? Object.keys(body).some(key=>!['status','closureReason','note'].includes(key)) : Object.keys(body).length !== 1) throw new HttpError(400,'Choose one report action.')
       if (typeof body.maintainerSharing === 'boolean') {
         if (!reporter || !user?.email_verified || issue.public_sharing) throw new HttpError(403,'Only the reporter can change private sharing.')
         await db.batch([
@@ -125,15 +127,20 @@ export async function developerApi(request:Request,db:Database,user:User|null,ad
       }
       if (!canManage) throw new HttpError(403,'Only an authorized maintainer or administrator can resolve this report.')
       if (body.status !== 'open' && body.status !== 'closed') throw new HttpError(400,'Choose open or closed.')
+      if (closingWithoutRelease && (body.status !== 'closed' || !isReportClosureReason(body.closureReason) || issue.github_number == null)) throw new HttpError(400,'Choose a closure reason for a GitHub report.')
+      const note = closingWithoutRelease ? required(body.note,'Public closure explanation',2000) : ''
       if(issue.github_number!=null){
-        if(!admin)requireRegisteredReleaseAuthor(member)
+        if(!admin && body.status==='closed' && !closingWithoutRelease)requireRegisteredReleaseAuthor(member)
         const config=githubConfig(env)
         if(!config)throw new HttpError(503,'GitHub report status synchronization is not configured.')
-        await setGithubIssueState(config,issue.github_number,body.status)
+        try {
+          if (isReportClosureReason(body.closureReason)) await closeGithubReport(config,issue.github_number,body.closureReason,note,member.github_login??member.display_name)
+          else await setGithubIssueState(config,issue.github_number,body.status)
+        } catch { throw new HttpError(502,'GitHub could not update this report. Its Modwerk status was not changed; try again.') }
       }
       await db.batch([
-        ...issueStatusStatements(db,issue.id,body.status,member.id),
-        db.prepare('INSERT INTO developer_events(id,actor_id,module_id,issue_id,action) VALUES(?,?,?,?,?)').bind(crypto.randomUUID(),member.id,issue.module_id,issue.id,'report-'+body.status),
+        ...issueStatusStatements(db,issue.id,body.status,member.id,null,null,!closingWithoutRelease),
+        db.prepare('INSERT INTO developer_events(id,actor_id,module_id,issue_id,action,note) VALUES(?,?,?,?,?,?)').bind(crypto.randomUUID(),member.id,issue.module_id,issue.id,'report-'+body.status,closingWithoutRelease?body.closureReason+': '+note:''),
       ])
       return response({ok:true})
     }

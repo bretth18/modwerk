@@ -3,6 +3,8 @@ import type { Database, Env } from './platform'
 import { HttpError } from './security'
 import { communityModule } from '../src/community/modules'
 import { profilePath } from '../src/community/forum-links'
+import { REPORT_CLOSURE_REASONS, type ReportClosureReason } from '../src/community/report-closure'
+import { digest } from './security'
 
 const API = 'https://api.github.com'
 const BODY_LIMIT = 60000
@@ -14,7 +16,7 @@ export function githubConfig(env: Env): GithubConfig | null {
   return token && /^[A-Za-z0-9-]{1,39}\/[A-Za-z0-9_.-]{1,100}$/.test(repository) ? { token, repository } : null
 }
 
-async function github<T>(config: GithubConfig, path: string, method: string, body: unknown): Promise<T> {
+async function githubResponse(config: GithubConfig, path: string, method: string, body: unknown): Promise<Response> {
   let result: Response
   try {
     result = await fetch(API + '/repos/' + config.repository + path, {
@@ -27,7 +29,25 @@ async function github<T>(config: GithubConfig, path: string, method: string, bod
     try { message = String(((await result.json()) as { message?: unknown }).message ?? '') } catch { /* status is enough */ }
     throw new Error('GitHub answered ' + result.status + (message ? ': ' + message.slice(0, 200) : '') + '.')
   }
-  return await result.json() as T
+  return result
+}
+
+async function github<T>(config: GithubConfig, path: string, method: string, body: unknown): Promise<T> {
+  return await (await githubResponse(config, path, method, body)).json() as T
+}
+
+/** Read the current public conversation, including replies posted before the site showed them. */
+export async function githubIssueReplies(config: GithubConfig, number: number, page: number) {
+  const result = await githubResponse(config, '/issues/' + number + '/comments?per_page=20&page=' + (page + 1), 'GET', undefined)
+  const rows: unknown = await result.json()
+  if (!Array.isArray(rows)) throw new Error('GitHub did not return issue comments.')
+  const replies = rows.map(row => {
+    if (!row || typeof row !== 'object') throw new Error('GitHub returned an unexpected comment.')
+    const { id, body, created_at, updated_at, user } = row
+    if (!Number.isSafeInteger(id) || id <= 0 || typeof body !== 'string' || body.length > 65536 || typeof created_at !== 'string' || !Number.isFinite(Date.parse(created_at)) || typeof updated_at !== 'string' || !Number.isFinite(Date.parse(updated_at))) throw new Error('GitHub returned an unexpected comment.')
+    return { id, body, created_at, updated_at, author: typeof user?.login === 'string' ? user.login : 'Deleted GitHub account', url: 'https://github.com/' + config.repository + '/issues/' + number + '#issuecomment-' + id }
+  })
+  return { replies, hasMore: /;\s*rel="next"/.test(result.headers.get('Link') ?? '') }
 }
 
 /**
@@ -65,23 +85,34 @@ export async function createGithubIssue(config: GithubConfig, issue: MirroredIss
   return { number: created.number, url: created.html_url }
 }
 
-export async function setGithubIssueState(config: GithubConfig, number: number, status: 'open' | 'closed') {
-  await github(config, '/issues/' + number, 'PATCH', status === 'closed' ? { state: 'closed', state_reason: 'completed' } : { state: 'open' })
+export async function setGithubIssueState(config: GithubConfig, number: number, status: 'open' | 'closed', reason: 'completed' | 'not_planned' = 'completed') {
+  await github(config, '/issues/' + number, 'PATCH', status === 'closed' ? { state: 'closed', state_reason: reason } : { state: 'open' })
 }
 
-/** Retry-safe release comment followed by issue closure, using only public release metadata. */
-export async function resolveGithubRelease(config: GithubConfig, number: number, moduleId: string, version: string, href: string, app: string) {
-  const marker = '<!-- modwerk-release:' + moduleId + ':' + version + ' -->'
+async function githubCommentOnce(config: GithubConfig, number: number, marker: string, body: string) {
   let found = false
   for (let page = 1; page <= 30; page++) {
     const comments = await github<{ body?: string; user?: { login?: string } }[]>(config, '/issues/' + number + '/comments?per_page=100&page=' + page, 'GET', undefined)
     if (!Array.isArray(comments)) throw new Error('GitHub did not return issue comments.')
     if (comments.some(comment => comment.body?.includes(marker))) { found = true; break }
     if (comments.length < 100) break
-    if (page === 30) throw new Error('Too many issue comments to verify a release retry safely.')
+    if (page === 30) throw new Error('Too many issue comments to verify a retry safely.')
   }
-  if (!found) await github(config, '/issues/' + number + '/comments', 'POST', { body: 'Released **' + inert(moduleId) + ' ' + inert(version) + '**: [module and download](' + new URL(href, app).href + '). The module maintainer confirmed that the published download fixes this report. If the problem remains with this version, please reply with reproduction steps.\n\n' + marker })
+  if (!found) await github(config, '/issues/' + number + '/comments', 'POST', { body: body + '\n\n' + marker })
+}
+
+/** Retry-safe release comment followed by issue closure, using only public release metadata. */
+export async function resolveGithubRelease(config: GithubConfig, number: number, moduleId: string, version: string, href: string, app: string) {
+  const marker = '<!-- modwerk-release:' + moduleId + ':' + version + ' -->'
+  await githubCommentOnce(config, number, marker, 'Released **' + inert(moduleId) + ' ' + inert(version) + '**: [module and download](' + new URL(href, app).href + '). The module maintainer confirmed that the published download fixes this report. If the problem remains with this version, please reply with reproduction steps.')
   await setGithubIssueState(config, number, 'closed')
+}
+
+/** A maintainer can close a duplicate or explained report without claiming a firmware release. */
+export async function closeGithubReport(config: GithubConfig, number: number, reason: ReportClosureReason, note: string, login: string) {
+  const marker = '<!-- modwerk-report-closure:' + await digest(reason + '\n' + note) + ' -->'
+  await githubCommentOnce(config, number, marker, 'Closed on Modwerk by **' + inert(login) + '**: **' + REPORT_CLOSURE_REASONS[reason] + '**.\n\n' + quote(note) + '\n\nNo new firmware fix is claimed by this closure. If the problem remains, reply here with reproduction details so the maintainer can reopen the report.')
+  await setGithubIssueState(config, number, 'closed', 'not_planned')
 }
 
 /** Everyone GitHub should notify: the module author and its declared maintainers. */
