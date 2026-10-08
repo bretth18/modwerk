@@ -137,6 +137,8 @@ For this command, fill all fields with actual results first, including a valid t
 
 ## Worst-case cycle counts
 
+New FX should aim for DSP cost in the same ballpark as stock SPRING REV at its worst settings. Plan around that reference before implementation and retain matched benchmarks covering expensive Spring types/settings, endpoints, moving controls and trigger splits on both cores. This is a design target without a fixed ratio or hard per-effect ceiling; substantially higher cost needs optimization and explicit review of the remaining headroom. The full supported configuration must still meet its actual real-time budget. Keep static modeled cycles, executed instruction counts and hardware timing distinct.
+
 `cycles` has one record for **each processor used** (`dsp` and/or `coldfire`). Record integer `worstCase` cycles for one instance, `maxConfiguration` cycles at the supported maximum load, `maxInstances`, the available real-time `budget`, `unit`, `method`, `conditions` and a local text `report`. A maximum configuration exceeding its budget fails. Units are `cycles/sample`, `cycles/block` or `cycles/event`; the report must state sample rate, block size or event period/deadline so counts and budget have the same basis. Record each core's load and the worst core, and include stock processing, scheduling, transport overhead and headroom in the budget calculation. Shared work need not scale linearly with the instance count; show how the maximum configuration was priced.
 
 The five required condition fields, separately for cycle measurements and hardware testing, describe:

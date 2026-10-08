@@ -6,6 +6,10 @@ Read [the module guides index](README.md) first. If your effect does anything in
 
 **Already follow it:** [Mini Verb](../../sdk/octabam/modules/miniverb/README.md), [Tape Echo](../../sdk/octabam/modules/tapeecho/README.md), [Euclid](../../sdk/octabam/modules/euclid/README.md), [TapeHead](../../sdk/octabam/modules/tapehead/README.md), [Sidechain Compressor](../../sdk/octabam/modules/sidechain-compressor/README.md), Spectrum, Modulation, Character. Copy the shape of the one closest to yours.
 
+## Plan the DSP budget first
+
+New FX should aim for DSP cost in the same ballpark as stock SPRING REV at its worst settings. Choose the algorithm, filter order, interpolation and feedback topology with that target in mind, then measure and optimize as features are added. Benchmark Spring's expensive types/settings, moving controls and trigger splits under matched conditions on both cores. This is a design target without a fixed ratio or hard per-effect ceiling. Substantially higher cost needs optimization and review of the remaining headroom. See [Performance](README.md#performance) for the evidence and audit.
+
 ## Decide the kind first
 
 Octabam names three (`sdk/octabam/docs/remixer/MODULES.md`, "Decide first"). Choose an **insert** unless you need the shared bus.
@@ -79,7 +83,7 @@ done
 How much it costs and whether it survives being worked hard: see [Performance](README.md#performance) for the three measurements and the record. For an effect:
 
 - [ ] **Cycles.** `tools/build/cycle_count.py` for the static floor, `dsp_host` at the dearest knob and mode settings with the knobs moving for the measured cost. State `instancesPerCore`, the most you support.
-- [ ] **Stock.** Name the stock effect closest in function (a delay against COMPRESSOR is not a comparison; a reverb against PLATE REV is). Read the ratio from `benchmark_stock_dsp.py`. Anything that costs more than stock explains in TESTING.md what the extra cost buys, such as the oversampling that fixed aliasing.
+- [ ] **Stock.** Name the stock effect closest in function (a delay against COMPRESSOR is not a comparison; a reverb against PLATE REV is), and benchmark worst-case stock SPRING REV as the cost target for new FX. Aim for the same ballpark under matched conditions, including expensive modes/settings, moving controls and trigger splits on both cores. Read the closest-counterpart ratio from `benchmark_stock_dsp.py`; explain additional cost and remaining headroom in TESTING.md, and revisit substantially heavier designs for optimization and review.
 - [ ] **Stress.** `stress_project.py` and `pressure.py render` with `dsp_host -guard -dirty`: your instances on both cores, three LFOs per track, locked slots on every step.
 - [ ] `npm run perf:audit -- check <module>/evidence/performance.json` passes, and its table is in TESTING.md.
 
