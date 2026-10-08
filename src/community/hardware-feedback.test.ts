@@ -17,8 +17,8 @@ describe('hardware feedback on a later visit', () => {
     expect(dueHardwareFeedback('alice', now + FEEDBACK_DELAY - 1)).toBeUndefined()
     const restored = dueHardwareFeedback('alice', now + FEEDBACK_DELAY)!
     expect(restored.modules).toEqual(build.modules)
-    expect(hardwareReportBody(restored.machine, restored.os, restored.modules[0], restored.modules, '')).toContain('0.0.1')
-    expect(hardwareReportBody(restored.machine, restored.os, restored.modules[0], restored.modules, '')).toContain('0.0.2')
+    expect(hardwareReportBody(restored.machine, restored.os, restored.modules[0], restored.modules)).toContain('0.0.1')
+    expect(hardwareReportBody(restored.machine, restored.os, restored.modules[0], restored.modules)).toContain('0.0.2')
     expect(dueHardwareFeedback('bob', now + FEEDBACK_DELAY)).toBeUndefined()
     expect(dueHardwareFeedback('', now + FEEDBACK_DELAY)).toBeUndefined()
   })
