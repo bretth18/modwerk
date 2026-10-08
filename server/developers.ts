@@ -1,4 +1,6 @@
-import type { Database, User } from './platform'
+import type { Database, Env, User } from './platform'
+import { requireRegisteredReleaseAuthor, completeModuleRelease } from './release-completion'
+import { githubConfig, setGithubIssueState } from './github'
 import { ADMIN_ACTOR, needMember, throttle } from './auth'
 import { issueStatusStatements } from './issue-notifications'
 import { ITEM_SQL, toItem, VISIBLE } from './notifications'
@@ -10,7 +12,7 @@ export async function maintainedModules(db: Database, user: User) {
   // Removed maintainers lose access immediately when the reviewed catalog changes.
   return COMMUNITY_MODULES.filter(module => rows.some(row => row.module_id === module.id && row.github_login.toLowerCase()===user.github_login?.toLowerCase() && module.maintainers.some(login => login.toLowerCase() === row.github_login.toLowerCase())))
 }
-type Issue = {id:string;module_id:string;reporter_id:string;title:string;body:string;status:string;context_json:string|null;maintainer_sharing:number;public_sharing:number;created_at:string;forum_thread_id:string|null;github_url:string|null}
+type Issue = {id:string;module_id:string;reporter_id:string;title:string;body:string;status:string;context_json:string|null;maintainer_sharing:number;public_sharing:number;created_at:string;forum_thread_id:string|null;github_url:string|null;github_number:number|null}
 async function accessIssue(db:Database,id:string,user:User|null,admin:boolean,developer:User|null) {
   const issue = await db.prepare('SELECT * FROM issues WHERE id=?').bind(id).first<Issue>()
   if (!issue) throw new HttpError(404,'Report not found.')
@@ -19,7 +21,7 @@ async function accessIssue(db:Database,id:string,user:User|null,admin:boolean,de
   if (!admin && !reporter && !maintainer) throw new HttpError(404,'Report not found.')
   return {issue,reporter,canManage:admin || maintainer,actor:admin?{id:ADMIN_ACTOR,display_name:'Administrator'}:reporter?user:developer}
 }
-export async function developerApi(request:Request,db:Database,user:User|null,admin:boolean,developer:User|null,adminId:string|null=admin?ADMIN_ACTOR:null):Promise<Response|null> {
+export async function developerApi(request:Request,db:Database,user:User|null,admin:boolean,developer:User|null,adminId:string|null=admin?ADMIN_ACTOR:null,env:Env={}):Promise<Response|null> {
   const url = new URL(request.url), path = url.pathname
   if (path === '/api/admin/maintainers') {
     if (!admin) throw new HttpError(403,'Administrator access is required.')
@@ -50,6 +52,12 @@ export async function developerApi(request:Request,db:Database,user:User|null,ad
       await throttle(db,'module-claim:'+member.id,30)
       await db.batch([db.prepare('INSERT INTO module_maintainers(module_id,user_id,github_login) VALUES(?,?,?) ON CONFLICT(module_id,user_id) DO NOTHING').bind(module.id,member.id,member.github_login),db.prepare('INSERT INTO developer_events(id,actor_id,module_id,action) VALUES(?,?,?,?)').bind(crypto.randomUUID(),member.id,module.id,'module-claimed'),db.prepare('INSERT INTO forum_follows(thread_id,user_id) SELECT id,? FROM forum_threads WHERE id=? ON CONFLICT DO NOTHING').bind(member.id,moduleThreadId(module.id))])
       return response({ok:true},201)
+    }
+    const release=path.match(/^\/api\/developer\/modules\/([a-z0-9-]+)\/releases\/complete$/)
+    if(release&&request.method==='POST'){
+      const module=modules.find(item=>item.id===release[1])
+      if(!module)throw new HttpError(403,'You do not maintain that module.')
+      return await completeModuleRelease(request,env,db,member,module)
     }
     const requested = url.searchParams.get('moduleId') ?? ''
     if (requested && !modules.some(module => module.id === requested)) throw new HttpError(403,'You do not maintain that module.')
@@ -117,6 +125,12 @@ export async function developerApi(request:Request,db:Database,user:User|null,ad
       }
       if (!canManage) throw new HttpError(403,'Only an authorized maintainer or administrator can resolve this report.')
       if (body.status !== 'open' && body.status !== 'closed') throw new HttpError(400,'Choose open or closed.')
+      if(issue.github_number!=null){
+        if(!admin)requireRegisteredReleaseAuthor(member)
+        const config=githubConfig(env)
+        if(!config)throw new HttpError(503,'GitHub report status synchronization is not configured.')
+        await setGithubIssueState(config,issue.github_number,body.status)
+      }
       await db.batch([
         ...issueStatusStatements(db,issue.id,body.status,member.id),
         db.prepare('INSERT INTO developer_events(id,actor_id,module_id,issue_id,action) VALUES(?,?,?,?,?)').bind(crypto.randomUUID(),member.id,issue.module_id,issue.id,'report-'+body.status),

@@ -5,7 +5,7 @@ import { execFileSync } from 'node:child_process'
 import { isDeepStrictEqual } from 'node:util'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { fetchOwnerApproval } from '../src/release/approval.ts'
+import { fetchReleaseApproval } from './release-approval.mjs'
 import { parseModuleDocument } from '../src/catalog/module-contract.ts'
 import { parseColdFireObject } from '../src/engine/coldfire-elf.ts'
 import { PACKAGE_FILES as expected, moduleSourcePaths, sourceEntryHash, compiledModuleVersions } from './module-source.mjs'
@@ -28,7 +28,7 @@ if (!development) {
   const head = execFileSync('git', ['rev-parse','HEAD'], { cwd: root, encoding: 'utf8' }).trim()
   if (head !== report.sourceCommit) throw new Error('Artifact source commit differs from this checkout')
   // The compiler output is untrusted. Fetch approval independently from GitHub.
-  approval = await fetchOwnerApproval(process.env.GITHUB_REPOSITORY ?? '', report.sourceCommit, Number(process.env.OCTAMOD_APPROVER_ID), process.env.GITHUB_TOKEN ?? '')
+  approval = await fetchReleaseApproval(process.env.GITHUB_REPOSITORY ?? '', report.sourceCommit, Number(process.env.OCTAMOD_APPROVER_ID), process.env.GITHUB_TOKEN ?? '')
 }
 const versions = await compiledModuleVersions(root, catalog)
 if (JSON.stringify(Object.keys(report.moduleVersions).sort()) !== JSON.stringify(Object.keys(versions).sort())) throw new Error('Compiled module scope differs from the catalog')
@@ -108,4 +108,4 @@ if(checkOnly){console.log('All source-package artifacts, complete source invento
 for (const name of expected) await copyFile(resolve(folder,name),resolve(root,'src/engine/assets',name))
 const frontend = { schemaVersion:1, kind:'source-packages', sourceCommit:report.sourceCommit, nativeRevision:report.nativeRevision, sourceTreeSha256:report.sourceTreeSha256, compilerSha256:report.compilerSha256, moduleVersions:report.moduleVersions, files:report.files, approval, qualification:report.qualification }
 await writeFile(resolve(root,'src/engine/assets/module-build.json'), JSON.stringify(frontend,null,2)+'\n')
-console.log('Imported source-built artifacts at exact module versions (' + (development ? 'local development; no release approval' : 'owner-approved PR #' + approval.pullRequest) + ').')
+console.log('Imported source-built artifacts at exact module versions (' + (development ? 'local development; no release approval' : 'authorized PR #' + approval.pullRequest) + ').')

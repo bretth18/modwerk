@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { fetchOwnerApproval } from '../src/release/approval.ts'
+import { fetchReleaseApproval } from './release-approval.mjs'
 import { PACKAGE_FILES, moduleSourceFingerprint, compiledModuleVersions } from './module-source.mjs'
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..'), assets = resolve(root, 'src/engine/assets')
 const sha = bytes => createHash('sha256').update(bytes).digest('hex')
@@ -23,6 +23,6 @@ for (const name of PACKAGE_FILES) {
   if (!entry || entry.bytes !== bytes.length || entry.sha256 !== sha(bytes)) throw new Error('Committed package ' + name + ' differs from its build record.')
 }
 const head = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim()
-const approval = await fetchOwnerApproval(process.env.GITHUB_REPOSITORY ?? '', head, Number(process.env.OCTAMOD_APPROVER_ID), process.env.GITHUB_TOKEN ?? '')
+const approval = await fetchReleaseApproval(process.env.GITHUB_REPOSITORY ?? '', head, Number(process.env.OCTAMOD_APPROVER_ID), process.env.GITHUB_TOKEN ?? '')
 await writeFile(resolve(assets, 'module-build.json'), JSON.stringify({ ...record, sourceCommit: head, approval }, null, 2) + '\n')
-console.log('Committed packages match module source ' + record.sourceTreeSha256.slice(0, 12) + '; owner-approved PR #' + approval.pullRequest + ' at ' + head + '.')
+console.log('Committed packages match module source ' + record.sourceTreeSha256.slice(0, 12) + '; authorized PR #' + approval.pullRequest + ' at ' + head + '.')

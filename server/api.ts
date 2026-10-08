@@ -82,7 +82,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     const signedDeveloper = await developerUser(request,env,db)
     const support = await moduleSupportRoutes(request,db,user,signedDeveloper)
     if(support)return support
-    const developer = await developerApi(request,db,user,admin,signedDeveloper,adminId)
+    const developer = await developerApi(request,db,user,admin,signedDeveloper,adminId,env)
     if(developer)return developer
     const avatar = await avatarRoutes(request,env,db,user)
     if(avatar)return avatar

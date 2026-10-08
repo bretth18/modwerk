@@ -20,6 +20,7 @@ on:
       - 'src/devices/**'
       - '!src/devices/**/*.test.ts'
       - '.github/workflows/worker.yml'
+      - '.github/module-authors.json'
   workflow_dispatch:
 permissions:
   contents: read

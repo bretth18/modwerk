@@ -50,6 +50,9 @@ describe('documentation and firmware scheduling', () => {
     expect(actual.elemod).toBe(true)
     expect(actual.documentation).toBe(false)
   })
+  it.each(['vendor/elekloader/catalog/catalog.json', 'vendor/elekloader/catalog/digihealth.elemod', 'vendor/elekloader/elekloader.lock.json'])('compiles and checks downloaded native package input %s', path => {
+    expect(scope(change(path))).toMatchObject({ elemod: true, documentation: false })
+  })
   it('compiles new/removed modules and refuses invalid manifest JSON', () => {
     for (const item of [change(modulePath, null, digi), change(modulePath, digi, null)]) expect(scope(item).elemod).toBe(true)
     expect(() => scope(change(modulePath, '{}', '{'))).toThrow()
@@ -64,6 +67,7 @@ describe('documentation and firmware scheduling', () => {
       expect(actual.elemod).toBe(false)
     }
     expect(scope(change('server/api.ts')).worker).toBe(true)
+    expect(scope(change('.github/module-authors.json')).worker).toBe(true)
     expect(scope(change('src/devices/DigiModDetail.tsx')).worker).toBe(false)
   })
   it('compares compiler job bodies while ignoring scheduling-only changes', () => {

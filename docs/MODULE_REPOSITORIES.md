@@ -1,5 +1,7 @@
 # Module folder and website contract
 
+Existing published module authors may use the [automatic author-update workflow](MODULE_AUTHOR_UPDATES.md): verified ownership, changes confined to their modules, explicit evidence review and successful checks on the exact source/base permit bot merge and publication. Other changes retain owner review. Existing qualification gates and exact-version owner exceptions are unchanged.
+
 A module is a folder under `sdk/octabam/modules/<id>/` containing native source, `manifest.py`, `octamod.module.json`, README, TESTING, licence and real OT UI screenshots (audio is optional). The steps are in [Add or port a module](ADD_A_MODULE.md); this page is the field reference for `octamod.module.json`. Submissions and all updates use PRs; merging the PR is owner approval. No direct module upload or separate website approval remains.
 
 ## Schema version 2
@@ -25,7 +27,7 @@ A module is a folder under `sdk/octabam/modules/<id>/` containing native source,
 
 A display string may report a range or several quantities while its scalar value stays null. `method: unmeasured` forbids a numeric claim. Static prices and emulator instruction counts are not hardware percentages. Historical hardware results do not qualify a later revision.
 
-These display fields retain existing-module evidence and may describe an incomplete draft. They cannot substitute for `tests.qualification` on a new submission or update. The [qualification template](../public/module-qualification.example.json) starts incomplete and deliberately fails validation until populated with actual results. Required counts are integers; memory words/bytes and allocation totals must agree; maximum cycle load must fit the declared budget; hardware must have owner-reviewed test evidence, labelled with actual coverage and limitations, with no minimum duration or track count. The tested-source hash is recomputed without executing source, and text reports must exist and contain evidence. The owner verifies the actual test results before merge.
+These display fields retain existing-module evidence and may describe an incomplete draft. They cannot substitute for `tests.qualification` on a new submission or update. The [qualification template](../public/module-qualification.example.json) starts incomplete and deliberately fails validation until populated with actual results. Required counts are integers; memory words/bytes and allocation totals must agree; maximum cycle load must fit the declared budget; hardware must have owner-reviewed test evidence, labelled with actual coverage and limitations, with no minimum duration or track count. The tested-source hash is recomputed without executing source, and text reports must exist and contain evidence. The reviewer verifies the actual test results before merge: the owner for first releases, the registered author for scoped updates.
 
 ## Build and version checks
 
@@ -41,4 +43,4 @@ As of 1 October 2026, Spectrum, Modulation and Character are temporarily hidden 
 
 ## Publication
 
-The owner merging a PR is the approval for the update. The subsequent release must compile original/licensed code in isolation, record the merged commit, module versions and checksums, and preserve the previous release if a build fails. Release packages must reproduce the locally verified source packages; generating web content alone does not install arbitrary third-party code. Stock firmware must never reach automation or the community API.
+An owner merge or independently verified scoped author merge is approval for the exact update. The subsequent release must compile original/licensed code in isolation, record the merged commit, module versions and checksums, and preserve the previous release if a build fails. Release packages must reproduce the locally verified source packages; generating web content alone does not install arbitrary third-party code. Stock firmware must never reach automation or the community API.

@@ -65,7 +65,7 @@ function nativeChange(change, machine) {
   if (machine === 'octatrack') return common || /^sdk\/octabam\/(modules|platform|tools|dsp|licenses)\//.test(path)
     || path === 'sdk/catalog.json' || /^src\/engine\/assets\/(?!elemod\/)/.test(path)
     || /^scripts\/(build-module-packages\.py|build-utility-packages\.py|build-usb-audio-packages\.py|build-modules-isolated\.sh|import-module-build\.mjs|module-source\.mjs)$/.test(path)
-  return common || /^sdk\/(digitakt|digitone|elemod|machines)\//.test(path)
+  return common || /^sdk\/(digitakt|digitone|elemod|machines)\//.test(path) || /^vendor\/elekloader\/(catalog\/|elekloader\.lock\.json$)/.test(path)
     || /^sdk\/octabam\/(scripts\/vendor\.sh|tools\/patches\/|tools\/harness\/dsp_host)/.test(path)
     || /^scripts\/(build-elemod[^/]*|elemod-elf\.mjs|verify-elemod-source-parity\.mjs)$/.test(path)
     || /^src\/engine\/assets\/elemod\//.test(path)
@@ -87,7 +87,7 @@ function workerChange({ path, before, after }) {
   if (catalogs.has(path) && before !== null && after !== null) return canonical(workerCatalog(json(before))) !== canonical(workerCatalog(json(after)))
   if (/\.test\.ts$/.test(path) || /\.tsx$/.test(path)) return false
   return /^(server\/|migrations\/|src\/legal\/|src\/catalog\/|src\/devices\/)/.test(path)
-    || ['worker.ts', 'wrangler.worker.jsonc', 'package-lock.json', 'src/community/modules.ts', 'src/community/creator-support.ts', 'src/config/support.ts', '.github/workflows/worker.yml'].includes(path)
+    || ['worker.ts', 'wrangler.worker.jsonc', 'package-lock.json', 'src/community/modules.ts', 'src/community/creator-support.ts', 'src/config/support.ts', '.github/workflows/worker.yml', '.github/module-authors.json'].includes(path)
 }
 
 export function classifyChanges(changes) {

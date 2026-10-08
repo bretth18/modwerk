@@ -2,6 +2,8 @@
 
 This page is for contributors and for the coding agents they point at this repository. Read it, then the section for your machine. The other module documents are field references; open one only when a step links to it.
 
+For an existing published module, start with [author updates](MODULE_AUTHOR_UPDATES.md). Telling a coding agent “fix issue <link>” in your fork starts the guided fix, version, hardware-test and release flow. The owner approves first releases; registered authors can publish their own later updates after checks pass.
+
 ## Read the guide for your category first
 
 Every module follows [the guide for its category](module-guides/README.md): effects, machines, playback, scenes, MIDI & USB, system or standalone. They say how a module must behave beside parameter locks, LFOs, scenes, saved projects and other modules, and anything that acts in time follows [sequencing.md](module-guides/sequencing.md): the instrument's own transport, tempo, track speed and swing, never a clock of your own. `npm run module:doctor -- <id>` checks the integration points a program can see.
@@ -19,8 +21,8 @@ Every module follows [the guide for its category](module-guides/README.md): effe
 
 - Never commit firmware, extracted stock code or tables, memory dumps, emulator cards or built images. Firmware stays on your computer. Stock code is referenced by address, length and SHA-256 and copied from each user's own OS file when they build.
 - Keep every author's credit and full licence text. Pin ported source to an exact commit.
-- Code or behaviour changes inside a module folder need a higher semantic `version` in its manifest, and the same version in `sdk/catalog.json` once listed. Documentation/media/prose-only edits do not need a version bump.
-- One module per pull request. The owner merging it approves that version.
+- Code or behaviour changes inside a module folder need a higher semantic `version` in its manifest, and the same version in `sdk/catalog.json` once listed. Documentation/media/prose-only edits need a version bump only when requesting automatic author publication.
+- One module per pull request. The owner approves the first release and changes beyond the registered author's scope. Later scoped updates can use automatic author publication after evidence verification and required checks.
 
 ## Persistence and multiple instances
 
@@ -100,7 +102,7 @@ Its folder, `sdk/<platform>/modules/<id>/`, holds:
 - `media/` with real black-and-white screenshots of where the module is selected and of its control pages, and their provenance in `capture.json`;
 - an original 320×192 SVG thumbnail: `presentation/thumbnail.svg` on the Octatrack, `media/thumbnail.svg` on Digitakt and Digitone.
 
-The checks reject missing sections, coloured screenshots and a version that did not increase. They cannot tell whether the documentation is true; the owner reviews that.
+The checks reject missing sections, coloured screenshots and a version that did not increase. They cannot tell whether the documentation is true; the owner reviews first releases and registered authors verify their scoped updates.
 
 ## Screenshot walkthroughs
 
