@@ -254,7 +254,7 @@ describe('operator announcements in the bell', () => {
       { ...base, id: 'announcement-2', module_id: null, url: 'https://modwerk.app/#library' },
       { ...base, id: 'announcement-3', module_id: null, url: null, title: null },
     ])
-    expect(lines.map(line => line.text)).toEqual(['Modwerk: Mini Verb has a new release', 'Modwerk: Mini Verb has a new release', 'Modwerk: News'])
+    expect(lines.map(line => line.text)).toEqual(['Mini Verb has a new release', 'Mini Verb has a new release', 'News'])
     expect(lines.map(line => line.href)).toEqual(['#module/miniverb', 'https://modwerk.app/#library', '#library'])
     expect(lines[0].excerpt).toBe('Plain words about what changed.')
   })
