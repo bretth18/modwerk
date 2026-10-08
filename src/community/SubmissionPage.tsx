@@ -12,11 +12,16 @@ export function SubmissionPage({moduleId=''}:{moduleId?:string}) {
   const moduleRepository=repository||'https://github.com/repeat98/modwerk'
   const [login,setLogin]=useState('')
   const clone=cloneCommands(moduleRepository,login)
+  const creatorSupport=<section className="configuration-section">
+    <h2>Get support for your modules</h2>
+    <p>Once your module is published, you can add your own Ko-fi support link. <a href="#account/developer">Verify your developer account with GitHub</a>, claim your module, then save your Ko-fi page in the Developer workspace. A small cup beside your name lets visitors open a tip panel. You can change or remove the link at any time.</p>
+  </section>
   if(module&&module.machine!=='octatrack')return <div className="community-page contribution-page"><BackLink href={moduleId?'#developer':'#library'}>{moduleId?'Developer workspace':'Module library'}</BackLink>
     <div className="page-heading"><div><p className="page-kicker">MODWERK / DEVELOPERS</p><h1>Update {module.name}</h1><p>{DEVICES_BY_ID[module.machine].name} · Current version {module.version}. Prepare source, documentation and media together in a GitHub pull request.</p></div><span className="pill">Owner review required</span></div>
     <section className="configuration-section"><h2>Start from the reviewed module</h2><p>Keep its licence, attribution and pinned source provenance. Increase the module’s semantic version for every code change (documentation and media edits need none), and keep the manifest, README, tutorial and test evidence synchronized.</p><div className="forum-actions"><a className="button button-primary" href={moduleRepository+'/tree/main/'+module.sourcePath} target="_blank" rel="noreferrer">Open module source ↗</a><a className="button button-quiet" href={moduleRepository+'/compare'} target="_blank" rel="noreferrer">Open a pull request ↗</a><a href={moduleRepository+'/blob/main/docs/SDK.md'} target="_blank" rel="noreferrer">Machine SDK & evidence rules ↗</a></div></section>
     <section className="configuration-section"><h2>Include the update evidence</h2><p>Use the machine’s v3 <code>modwerk.module.json</code> contract: source/build identity, compatibility, memory and load measurements, hardware coverage and actual UI captures where applicable. State the evidence tier and remaining limitations honestly. Documentation, tutorial, screenshots and credits must match this version.</p><p>Submit only original or properly licensed sources and reviewed media. Keep firmware, stock bytes, dumps and generated firmware builds local. Passing checks does not publish an update; owner merge approves that exact version. Pending or rejected updates keep the existing approved release available.</p><p>Questions about developing or submitting a module? <a href={DEVELOPMENT_DISCORD_URL} target="_blank" rel="noreferrer">Join the development Discord ↗</a></p></section>
 
+    {creatorSupport}
   </div>
   const guide=(path:string)=>moduleRepository+'/blob/main/'+path
   return <div className="community-page contribution-page start-developing"><BackLink href={moduleId?'#developer':'#library'}>{moduleId?'Developer workspace':'Module library'}</BackLink>
@@ -51,6 +56,7 @@ export function SubmissionPage({moduleId=''}:{moduleId?:string}) {
         <a className="button button-quiet" href={moduleRepository+'/compare'} target="_blank" rel="noreferrer">Open a pull request ↗</a>
       </li>
     </ol>
+    {creatorSupport}
     <section className="configuration-section">
       <h2>Starter prompts</h2>
       <p className="start-lead">Choose your machine and what you want to build. Add your idea and copy the prompt into your agent, opened in your fork.</p>

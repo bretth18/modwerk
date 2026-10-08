@@ -45,6 +45,10 @@ npm run modules:check -- --base origin/main   # version and publication rules fo
 - **Only a pull request that changes module source, the module build or the committed packages:** the Docker compile that must reproduce the committed packages. Changes to module folders or their path handling also run the Windows check. These are the same inputs the release uses to decide whether to rebuild the modules.
 - **After the merge:** the release verifies the merge approval, re-verifies the generated files, licences and module records, then type-checks and bundles what the pull request already tested. It rebuilds the modules only if module inputs changed.
 
+## Optional creator support
+
+Once your module is in the reviewed catalog, you can link your own Ko-fi page without changing its source or publishing a new module version. On Modwerk, open **Your account → Developer account**, verify the author/maintainer GitHub identity, claim the module, and save its HTTPS Ko-fi profile URL in **Developer workspace → Your Ko-fi page**. Visitors can then click the small cup beside your name to open an embedded tip dialog. You can replace or remove the link at any time. Support links are stored per module, including separate Digitakt and Digitone IDs. See [the developer workspace](DEVELOPER_WORKSPACE.md) for ownership rules.
+
 ## Release notes (required for every module version)
 
 Before publishing a new module or updating its version, add an entry under its community ID in `src/community/module-changelogs.json`. Octatrack IDs are the module ID (`euclid`); Digitakt and Digitone IDs include the machine (`digitakt-digihealth`, `digitone-digihealth`). Keep earlier entries. The module page’s Changelog tab shows these notes, including when live version history is unavailable.
