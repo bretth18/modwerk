@@ -835,8 +835,10 @@ absent: the two cores run lock-step or under a chosen `-skew`.
 
 ## Replacing a stock effect
 
-**No module in the library does this since 30 Sep 2026.** Every image
-loads the stock effects on demand (DSP DYNLOAD STOCK), so a module needs no
+**No module in the library does this since 30 Sep 2026.** An image built
+with the stock loader (DSP DYNLOAD STOCK, `OCTABAM_STATIC_STOCK=0`; emulator
+only, never flashed: see docs/remixer/FLASHING.md, and `make` builds without
+it) loads the stock effects on demand, so a module needs no
 stock effect's words, and an insert is itself loaded on demand
 (`build_bus.LOADABLE`): take a free id and every stock effect stays. The
 five that replaced one (Spectrum, Modulation, Tape Echo, Miniverb,
