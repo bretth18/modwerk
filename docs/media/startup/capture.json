@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-08",
+  "kind": "actual-firmware-lcd",
+  "display": {
+    "width": 128,
+    "height": 64,
+    "scale": 6,
+    "palette": "black-and-white"
+  },
+  "images": [
+    {
+      "model": "MKI",
+      "profile": "core only, compact FX2",
+      "imageSha256": "d921d2f8db082b0668b171251749febef136dc2cee5db6577a374a9d5cdc3870",
+      "completeFrames": 70
+    },
+    {
+      "model": "MKII",
+      "profile": "standalone MIDI Scenes",
+      "imageSha256": "bdfea6186121d24e3c227a86fb4648fd40a8f162382b20fb9313baa6ce5a8f82",
+      "completeFrames": 69
+    }
+  ],
+  "emulatorSha256": "8c64c8e80d66929da56be5e4de9950143cd3e2bff0da2225066a3d4b78cbd65f",
+  "recordingEmulatorSha256": "68f758a9fd4cd821a3ff77387b6352e8c221ac6a42ebf06addd72ceeb5f0a6c3",
+  "captureMethod": "--boot-logo --ms 50 --main-level off --interactive --rtc off; --mkii for MKII. Advance 40 ms, observe the next stock LCD submission at 0x40055aa2, then read the actual 1024-byte LCD plane and DTIM3. A temporary recorder adds only this observation command. No firmware pokes or replacement LCD labels.",
+  "assets": {
+    "modwerk-startup.gif": "90ce31486817af57f3a224af63b219e06fc5b0336b6af3c729a49abecae2b507",
+    "modwerk-startup.png": "016fccf18b43431d4e823222f10a0d777df52fa50b0a387175c610c3df741c8d"
+  },
+  "finalFrameEqualsAuthoredPixels": true,
+  "gifTiming": "Original DTIM3 intervals, plus a 600 ms review hold on the final frame; this hold is not a firmware timing change.",
+  "rights": "Original Modwerk artwork and lettering, GPL-3.0-or-later. Captures contain the authored boot graphics only. Underlying Elektron firmware rights reserved.",
+  "hardware": "untested",
+  "limitations": [
+    "No physical boot/reboot or chip wall-clock timing measured.",
+    "Boot to playback in the emulator is not battery-backed restart or project-load/save evidence.",
+    "Stateful-module persistence qualification was not repeated for this graphic-table-only patch."
+  ],
+  "motion": "Clockwise frame phase, center-first clockwise tile blocks, detached ninth tile with an 80 ms secondary landing.",
+  "verifiedBaseCommit": "8304186565dd53025e7fb7a575ff500756ad84fa"
+}

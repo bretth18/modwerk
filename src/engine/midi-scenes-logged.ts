@@ -1,3 +1,4 @@
+import { createStartupAnimationWrites } from './startup-animation.ts'
 // Keep the pinned standalone MIDI Scenes code and its 12-page reservation intact.
 // The core logger takes the top 16 pages, separated from the sample arena by
 // one guard page. All MIDI Scenes base pointers stay intact.
@@ -48,7 +49,7 @@ export async function composeLoggedMidiScenes(original: Uint8Array) {
   const logging = await installCoreLogger(runtime, original, ['midi-scenes'], { ...chooser, hidden: [] })
   const plan = createPlatformOsWrites(runtime, [], { loader: false, reserveBytes: reservedBytes, runtimeBase: runtime.base })
   const writes = await extendMidiScenesArena(author, plan)
-  const patched = await applyGuardedOsWrites(author, [...writes, ...logging.writes])
+  const patched = await applyGuardedOsWrites(author, [...writes, ...logging.writes, ...createStartupAnimationWrites()])
   const bootstrap = await createRuntimeBootstrap(runtime.bytes, runtime.reserveBytes - LOGGER_RETAINED_BYTES, runtime.base, runtime)
   const bytes = new Uint8Array(patched.length + bootstrap.append.length)
   bytes.set(patched); bytes.set(bootstrap.append, patched.length)
