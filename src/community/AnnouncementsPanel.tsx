@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api, post } from './api'
 import { COMMUNITY_MODULES } from './modules'
-import { ForumAvatar } from './ForumIdentity'
+import { NotificationList } from './NotificationList'
 import { SUPPORT_URL } from '../config/support'
 import type { AnnouncementVisibility } from './notification-contract'
 
@@ -69,10 +69,8 @@ export function AnnouncementsPanel() {
       </form>
       <aside className="announcement-preview" aria-label="Preview">
         <p className="announcement-preview-label">Preview in the bell</p>
-        <div className="announcement-preview-card" aria-hidden="true">
-          <ul className="notification-list"><li data-unread="true"><a href="#admin/announcements" tabIndex={-1} onClick={event => event.preventDefault()}>
-            <ForumAvatar username={null} official /><strong>Modwerk: {title.trim() || 'Your title'}</strong><span className="notification-excerpt">{body.trim() || 'Your message appears here.'}</span><time>Just now</time>
-          </a></li></ul>
+        <div className="announcement-preview-card" aria-hidden="true" inert>
+          <NotificationList lines={[{ kind: 'announcement', text: title.trim() || 'Your title', excerpt: body.trim() || 'Your message appears here.', href: '#admin/announcements', ids: ['preview'], seen: false, created_at: new Date().toISOString(), actor: null, official: true, avatar: null }]} onOpen={() => {}} />
         </div>
         <p className="announcement-hint">{visibility === 'public' ? 'Visible to everyone' : 'Visible to current signed-in members'} · Opens {destination(url || null, moduleId || null)}</p>
       </aside>
@@ -80,6 +78,7 @@ export function AnnouncementsPanel() {
     {error && <p className="file-error" role="alert">{error}</p>}
     {note && <p className="success-note" role="status">{note}</p>}
     <h3 className="announcement-sent-heading">Sent{items.length ? <span className="subtle"> {items.length}</span> : null}</h3>
+    <p className="announcement-read-note">Marked read counts members who opened the announcement or used “Mark all read.” Viewing the bell and signed-out visitors are not counted. The audience includes eligible members who have not visited since it was sent.</p>
     {loading ? <p className="service-note" role="status">Loading announcements…</p> : items.length ? <ul className="announcement-sent">{items.map(item => {
       const share = item.audience ? Math.min(100, Math.round(item.reads / item.audience * 100)) : 0
       return <li key={item.id}>
@@ -89,8 +88,8 @@ export function AnnouncementsPanel() {
           <label className="announcement-visibility">Visibility<select aria-label={'Visibility for ' + item.title} value={item.visibility} disabled={busy} onChange={event => void changeVisibility(item, event.target.value as AnnouncementVisibility)}><option value="public">Public — everyone</option><option value="signed-in">Signed-in users</option></select></label>
           <small><time>{sentAt(item.created_at)}</time><span>Opens {destination(item.url, item.module_id)}</span><code title="Key">{item.slug}</code></small>
         </div>
-        <div className="announcement-sent-reads" title="Signed-in members who opened it in the bell or used Mark all read. Signed-out readers are not tracked.">
-          <span><strong>{item.reads}</strong> of {item.audience} members read</span>
+        <div className="announcement-sent-reads">
+          <span><strong>{item.reads}</strong> of {item.audience} marked read</span>
           <span className="announcement-meter" aria-hidden="true"><span style={{ width: share + '%' }} /></span>
         </div>
         <button type="button" className="button button-quiet announcement-remove" disabled={busy} onClick={() => void retract(item)} aria-label={'Remove ' + item.title}>Remove</button>

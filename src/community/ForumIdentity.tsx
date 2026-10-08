@@ -1,6 +1,6 @@
 import { FORUM_CATEGORIES, type ForumCategory } from './forum-contract'
 import { DEVICES_BY_ID } from '../devices/registry'
-import { apiUrl } from '../hosting'
+import { apiUrl, assetUrl } from '../hosting'
 import { profileHref } from '../routing'
 import { ROLE_LABELS, type MemberRole } from './member-standing'
 
@@ -17,7 +17,7 @@ export function ForumMachineBadge({ machine }: { machine: string | null }) {
 export function ForumAvatar({ username, official, avatar }: { username: string | null; official?: unknown; avatar?: string | null }) {
   const tone = official ? 'official' : username ? [...username].reduce((sum, character) => sum + character.charCodeAt(0), 0) % 5 : 'neutral'
   const picture = !official && !!username && !!avatar
-  return <span className="forum-avatar" data-tone={tone} data-picture={picture || undefined} aria-hidden="true">{picture ? <img src={apiUrl('/forum/avatars/' + avatar)} alt="" loading="lazy" decoding="async" /> : official ? 'MW' : username?.slice(0, 2).toUpperCase() ?? '—'}</span>
+  return <span className="forum-avatar" data-tone={tone} data-picture={picture || undefined} aria-hidden="true">{official ? <img src={assetUrl('modwerk-mark.svg')} alt="" /> : picture ? <img src={apiUrl('/forum/avatars/' + avatar)} alt="" loading="lazy" decoding="async" /> : username?.slice(0, 2).toUpperCase() ?? '—'}</span>
 }
 
 // Official module threads have no public member profile.
