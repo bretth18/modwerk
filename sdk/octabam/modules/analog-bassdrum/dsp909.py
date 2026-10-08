@@ -45,6 +45,10 @@ STATE = ['EP', 'U', 'O', 'C', 'PULSE', 'R8', 'UPPREV', 'HP', 'BX1', 'BX2',
          'GDC', 'GP', 'GN', 'KLPF', 'LMH', 'LML', 'THH', 'THL',
          'TIN', 'PAD', 'GB', 'OB', 'GH', 'OH', 'LB', 'M2', 'KHP', 'HPH', 'HPL']
 OFF = {name: k for k, name in enumerate(STATE)}
+# Reuse the per-sample scratch words for depth history; scratch moves into
+# MODEL/hidden-control transport slots after the glue has consumed MODEL.
+OFF.update(SINCA=OFF['ACC'], SGDC=OFF['PT'], ACC=54, PT=59,
+           SSAT=61)
 SWORDS = len(STATE)
 
 
@@ -242,10 +246,25 @@ def horner_ok(cpoly):
     return worst
 
 
-def source(layout, *, output_gain=True):
+def source(layout, *, output_gain=True, shared_desk=False, include_desk=True):
     """bd909.asm with its placeholders filled. layout: table and list bases."""
     tab, con, lists, _ = tables()
     text = (HERE / 'bd909.asm').read_text()
+    if shared_desk:
+        # Both engines call the same unboosted desk. Gain stays at each output.
+        helpers = []
+        for tag, label in (('desk-decode', 'zd01'), ('desk', 'zd02')):
+            start, end = text.index(';<' + tag + '>'), text.index(';</' + tag + '>')
+            body = text[start:end]
+            if tag == 'desk':
+                body = body[:body.index('        move    a,x:(r0)+')]
+                call = '        bsr     >' + label + '\n' + '        move    a,x:(r0)+\n' * 2
+            else:
+                call = '        bsr     >' + label + '\n'
+            helpers.append(label + ':\n' + body + '        rts\n')
+            text = text[:start] + call + text[end:]
+        if include_desk:
+            text += '\n' + '\n'.join(helpers)
     if output_gain:
         assert OUTPUT_GAIN > 0 and OUTPUT_GAIN & (OUTPUT_GAIN - 1) == 0
         # Read the original limited 24-bit sample before applying gain. The
@@ -275,6 +294,12 @@ def source(layout, *, output_gain=True):
         for b in labels:
             assert a == b or not b.startswith(a), f'label {a} prefixes {b}'
     return out
+
+
+def shared_desk_source(layout):
+    """Place both shared routines after the engines (forward relative calls)."""
+    full = source(layout, output_gain=False, shared_desk=True)
+    return full[full.index('zd01:'):]
 
 
 def desk_source(layout):
@@ -370,6 +395,12 @@ def fl24(x):
     return math.floor(x * 8388608) / 8388608
 
 
+def slew24(current, target):
+    """The native signed 24-bit 1/64 slew; downward steps use arithmetic shift."""
+    value, dest = round(current * 8388608), round(target * 8388608)
+    return (value + ((dest - value) >> 6)) / 8388608
+
+
 class Voice:
     """Float reference with the engine's structure, block by block. The
     phase path (control products, ep, inc) is quantised as the DSP does it:
@@ -394,6 +425,7 @@ class Voice:
         self.e2 = self.e3 = 0.0
         self.yl = 0.0
         self.lb = self.m2 = self.hps = 0.0
+        self.sat_position = self.depth_values = None
 
     def block(self, k, trig=None, frames=16):
         t, c = self.t, self.c
@@ -408,6 +440,9 @@ class Voice:
         gp = va * t['T_ATP'][k[3]]
         gn = va * t['T_ATN'][k[3]]
         klpf = t['T_LPF'][k[8]]
+        targets = (inc_a, rnd24(gdc))
+        if self.depth_values is None:
+            self.depth_values = targets
         self.desk_knobs(k)
         b0, b1, b2, na1h, na2 = self.lists['CBIQ']
         cp = self.lists['CPOLY']
@@ -418,7 +453,9 @@ class Voice:
                 self.cnt = 0
                 self.r = 0.0
                 self.m = 1.0
-                self.u = fl24(c['U0'] - c['FRAC'] * (inc_b + inc_a))
+                self.u = fl24(c['U0'] - c['FRAC'] * (inc_b + self.depth_values[0]))
+            self.depth_values = tuple(slew24(v, target) for v, target in zip(self.depth_values, targets))
+            inc_a, gdc = self.depth_values
             inc = fl24(inc_b + inc_a * self.ep)
             self.ep = fl24(self.ep - self.ep * dkp)
             if self.cnt >= c['NREL']:
@@ -464,13 +501,24 @@ class Voice:
 
     def desk_knobs(self, k):
         t = self.t
+        self.sat_target = k[5] << 16
+        if self.sat_position is None:
+            self.sat_position = self.sat_target
         self.dk = (t['T_TIN'][k[5]], t['T_PAD'][k[5]], t['T_KHP'][k[5]],
                    t['T_GB'][k[9]], t['T_OB'][k[9]], t['T_GB'][k[10]], t['T_OB'][k[10]])
 
     def desk(self, y):
         """The Mackie stage, one sample; the scalings are bd909.asm step 12's."""
         c = self.c
-        tin, pad, khp, gb, ob, gh, oh = self.dk
+        self.sat_position += (self.sat_target - self.sat_position) >> 6
+        index, fraction = self.sat_position >> 16, (self.sat_position & 65535) / 65536
+        values = []
+        for table in ('T_TIN', 'T_PAD', 'T_KHP'):
+            lo = self.t[table][index]
+            hi = self.t[table][min(127, index + 1)]
+            values.append(fl24(lo + fraction * (hi - lo)))
+        tin, pad, khp = values
+        gb, ob, gh, oh = self.dk[3:]
         clip = lambda v: max(-1.0, min(1 - 2 ** -23, v))
         sat = lambda v: clip(v) - c['KSAT'] * clip(v) ** 5
         self.hps += khp * (y - self.hps)

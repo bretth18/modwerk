@@ -30,11 +30,14 @@ def layout(base):
     return {k:base+128*i for i,k in enumerate(tables())}
 def data_lines(lay):
     return ''.join('X %x '%lay[k]+' '.join('%06x'%dsp909.q24(v) for v in vs)+'\n' for k,vs in tables().items())
-def source(lay,shared,*,output_trim=True):
+def source(lay,shared,*,output_trim=True,shared_desk=False):
     text=(HERE/'bd808.asm').read_text()
     full=dsp909.source(shared,output_gain=False)
     for tag in ('desk-decode','desk'):
         block=full[full.index(';<' + tag + '>'):full.index(';</' + tag + '>')]
+        if shared_desk:
+            block=('        bsr     >zd01\n' if tag=='desk-decode' else
+                   '        bsr     >zd02\n' + '        move    a,x:(r0)+\n'*2)
         if tag=='desk' and output_trim:
             # Limit to the same 24-bit sample as the original output store first.
             # The oscillator, LPF and saturation states are untouched.

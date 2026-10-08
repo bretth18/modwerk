@@ -1,443 +1,142 @@
 {
-  "schemaVersion": 1,
-  "captured": "2026-10-01",
-  "moduleId": "analog-bassdrum",
-  "moduleVersion": "0.1.2-experimental",
   "firmware": "1.40C",
-  "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
-  "emulatorSha256": "93484e4b71c70f48f795825103146a36ef95ef9ac06ee627e28608ae3e3bb3eb",
-  "imageProfile": {
-    "modules": [
-      "FILTER",
-      "EQUALIZER",
-      "DJ EQ",
-      "PHASER",
-      "FLANGER",
-      "CHORUS",
-      "SPATIALIZER",
-      "COMB FILTER",
-      "COMPRESSOR",
-      "LO-FI",
-      "DELAY",
-      "PLATE REV",
-      "DARK REV",
-      "ANALOG BD",
-      "MIDI SCENES",
-      "SCALE QUANTIZER"
+  "imageSha256": "87e56b38fe45a5b10fda2129193f67946b078f4d84b07a0cb1afbc2ef0ebaa54",
+  "emulatorSha256": "89759d97c794f62b304dff1912a2ac1c7965289b4d019fbdbb0dbcf3c3d9f312",
+  "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6.",
+  "palette": {
+    "on": [
+      240,
+      240,
+      240
     ],
-    "fx1": [
-      "FILTER",
-      "EQUALIZER",
-      "DJ EQ",
-      "PHASER",
-      "FLANGER",
-      "CHORUS",
-      "SPATIALIZER",
-      "COMB FILTER",
-      "COMPRESSOR",
-      "LO-FI"
-    ],
-    "staticStock": true
+    "off": [
+      24,
+      24,
+      24
+    ]
   },
-  "sourcePins": {
-    "analog-bassdrum": {
-      "repository": "https://github.com/sambanks/octabam",
-      "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
-      "path": "modules/analog-bassdrum"
-    },
-    "midi-scenes": {
-      "repository": "https://github.com/sambanks/octabam",
-      "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
-      "path": "modules/midi-scenes"
-    },
-    "quantizer": {
-      "repository": "https://github.com/sambanks/octabam",
-      "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
-      "path": "modules/quantizer"
-    }
-  },
-  "nativeToolsRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
-  "sourceFiles": {
-    "ab_glue.asm": "c78dc31dfcfc7a0c6f10ae24b39744a88bed5211346bcae4f6931e2e6489223c",
-    "bd808.asm": "e7306bd284e9bca067cffc54dcbfb18ae7a0fc7b3a27253a246e58898ae9ee92",
-    "bd909.asm": "db1b2871957bb89bfd4184fc7556e5e46c44f3be1a889ba11fc1a679c4b1841e",
-    "control.c": "29f392c7e007aaa695076eff0c897729a941676ff582e4bb17957074d56ceac5",
-    "control.s": "644f10fbc534d8351424e55ee96c2d0ff2f39a1b691ad8a695422d1c05e37a3f",
-    "dsp808.py": "6500cfffad2be75c0be43f57bb91a5582b7406fe0bb36be120d412884d23da28",
-    "dsp909.py": "c45ef4357cd66369181523784de0f5b328b8b18a58f3c19c60983d1173dd3195",
-    "engine.c": "9ed63ee4348aa470eb592506d7bda1e36a48e4fa56d39b4ccad2223bd2e5fda0",
-    "engine.h": "61bc45ef955db23b8f25eb5b0c6bd3dd01d9f71df7933d466845bb30e7c67a2b",
-    "engine.s": "c86a6ac24326fb52f71dd766b1ccc25e5dfd8511028b162459447c279da48425",
-    "generate.py": "62c5e6eca1df9179229c1b1de419114e3162813f99724dc9b40fa29c84191b88",
-    "machine.s": "07dc37b1c0bd0f061aabe27782c67df9dcd22769e9c080efbfdf354530d83b8d",
-    "manifest.py": "20fa1f744630354b3986a3ad82ac6a41744345796dc783891a4c9f0bd81c787e",
-    "tables.inc": "baec565139910e89e12563272f9f8ef934845ddd98f90d8234be15873571e01d"
-  },
-  "localBuild": {
-    "scriptSha256": "894e09ad1672b5f018b5a2a1bf510d414ba7e6444692a3e4be5226807fc087b0",
-    "environment": {
-      "REMIX": "approved-ui",
-      "XBUS": "1",
-      "SPEC": "1",
-      "DEV": "0",
-      "NOROUNDTRIP": "0",
-      "OCTABAM_STATIC_STOCK": "1",
-      "OCTABAM_NO_CACHE": "1",
-      "BUILD": "79"
-    },
-    "isolation": "macOS sandbox: network denied; no user/shared-temp reads except staged source/image and reviewed toolchain; writes confined to temporary capture workspace; clean inherited environment.",
-    "authorization": "Owner explicitly authorized pending-source execution solely for local UI captures; this is not release approval."
-  },
-  "accessSteps": [
-    "Select an audio track with its TRACK key.",
-    "Hold FUNC and press SRC to open SRC SETUP. Use DOWN to reach ANALOG BD, then press YES to assign it.",
-    "Press SRC to close SETUP and edit the main controls. The 808 model uses PITCH, DECAY, TONE, ATK, SWEEP and SAT; the 909 uses TUNE and TDEP in place of TONE and SWEEP.",
-    "Double-tap the assigned track’s TRACK key to open the engine browser. Choose 808 or 909 with UP/DOWN or LEVEL, then press YES. Selecting a model retains the existing knob settings.",
-    "Hold FUNC and press SRC for the shared ACCNT, LPF, LOW and HIGH controls. AMP and the track FX pages remain available."
-  ],
-  "screenshots": [
+  "keyMs": 50,
+  "plan": [
     {
-      "path": "media/ot-location.png",
-      "sha256": "0a70b38387581500bc8193b96e30bb622fd871cddc72208d14fe35079944838e",
-      "page": "SRC SETUP"
+      "press": [
+        "NO"
+      ]
     },
     {
-      "path": "media/ot-engines.png",
-      "sha256": "28c979ad011f44095f3ccd632b2a091a6ec7500fd4f6f9122127b1229d711307",
-      "page": "Analog BD engine browser"
+      "wait": 2000
     },
     {
-      "path": "media/ot-808.png",
-      "sha256": "7e9b142ade933cba2e3cd5e44bb12f30bda9a24c48fda20ab938b3766f7ad903",
-      "page": "808 SRC main"
+      "press": [
+        "T1"
+      ]
     },
     {
-      "path": "media/ot-909.png",
-      "sha256": "44b5d2f2b41f6dbbdc6e9ce937278999d267013c37c051c0eebf89e218a89118",
-      "page": "909 SRC main"
+      "press": [
+        "SRC"
+      ]
     },
     {
-      "path": "media/ot-setup.png",
-      "sha256": "0a70b38387581500bc8193b96e30bb622fd871cddc72208d14fe35079944838e",
-      "page": "SRC SETUP"
+      "wait": 1000
+    },
+    {
+      "capture": "ot-808.png"
+    },
+    {
+      "press": [
+        "T5"
+      ]
+    },
+    {
+      "press": [
+        "SRC"
+      ]
+    },
+    {
+      "wait": 1000
+    },
+    {
+      "capture": "ot-909.png"
+    },
+    {
+      "hold": [
+        "FUNC"
+      ]
+    },
+    {
+      "press": [
+        "SRC"
+      ]
+    },
+    {
+      "release": [
+        "FUNC"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "capture": "ot-setup.png"
+    },
+    {
+      "press": [
+        "SRC"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "press": [
+        "T5"
+      ]
+    },
+    {
+      "press": [
+        "T5"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "capture": "ot-engines.png"
+    },
+    {
+      "press": [
+        "NO"
+      ]
     }
   ],
-  "reproduction": {
-    "script": "scripts/capture-module-ui.py",
-    "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6.",
-    "keyMs": 50,
-    "plan": [
-      {
-        "wait": 3000
-      },
-      {
-        "press": [
-          "YES"
-        ]
-      },
-      {
-        "wait": 2000
-      },
-      {
-        "press": [
-          "NO"
-        ]
-      },
-      {
-        "press": [
-          "FUNC",
-          "SRC"
-        ]
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "press": [
-          "YES"
-        ]
-      },
-      {
-        "capture": "analog-location.png"
-      },
-      {
-        "press": [
-          "SRC"
-        ]
-      },
-      {
-        "capture": "analog-808.png"
-      },
-      {
-        "press": [
-          "FUNC",
-          "SRC"
-        ]
-      },
-      {
-        "capture": "analog-setup.png"
-      },
-      {
-        "press": [
-          "SRC"
-        ]
-      },
-      {
-        "press": [
-          "T1"
-        ]
-      },
-      {
-        "press": [
-          "T1"
-        ]
-      },
-      {
-        "capture": "analog-engines.png"
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "press": [
-          "YES"
-        ]
-      },
-      {
-        "capture": "analog-909.png"
-      },
-      {
-        "press": [
-          "MENU"
-        ]
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "press": [
-          "RIGHT"
-        ]
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "capture": "quantizer-location.png"
-      },
-      {
-        "press": [
-          "RIGHT"
-        ]
-      },
-      {
-        "capture": "sequencer-top.png"
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "capture": "quantizer-scale-off.png"
-      },
-      {
-        "encoder": {
-          "name": "LEVEL",
-          "delta": 1
-        }
-      },
-      {
-        "capture": "quantizer-scale.png"
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "capture": "quantizer-root.png"
-      },
-      {
-        "press": [
-          "DOWN"
-        ]
-      },
-      {
-        "capture": "quantizer-glide.png"
-      },
-      {
-        "press": [
-          "NO"
-        ]
-      },
-      {
-        "press": [
-          "NO"
-        ]
-      },
-      {
-        "press": [
-          "NO"
-        ]
-      },
-      {
-        "press": [
-          "MIDI"
-        ]
-      },
-      {
-        "press": [
-          "FUNC",
-          "SRC"
-        ]
-      },
-      {
-        "encoder": {
-          "name": "A",
-          "delta": 1
-        }
-      },
-      {
-        "capture": "midi-channel.png"
-      },
-      {
-        "press": [
-          "SRC"
-        ]
-      },
-      {
-        "press": [
-          "FUNC",
-          "FX1"
-        ]
-      },
-      {
-        "encoder": {
-          "name": "C",
-          "delta": -127
-        }
-      },
-      {
-        "encoder": {
-          "name": "C",
-          "delta": 75
-        }
-      },
-      {
-        "capture": "midi-control-setup.png"
-      },
-      {
-        "press": [
-          "FX1"
-        ]
-      },
-      {
-        "hold": [
-          "SCENE A"
-        ]
-      },
-      {
-        "press": [
-          "TRIG1"
-        ]
-      },
-      {
-        "encoder": {
-          "name": "C",
-          "delta": 64
-        }
-      },
-      {
-        "capture": "midi-scene-lock.png"
-      },
-      {
-        "release": [
-          "SCENE A"
-        ]
-      }
-    ],
-    "captureFiles": {
-      "media/ot-location.png": "analog-location.png",
-      "media/ot-engines.png": "analog-engines.png",
-      "media/ot-808.png": "analog-808.png",
-      "media/ot-909.png": "analog-909.png",
-      "media/ot-setup.png": "analog-setup.png"
-    }
+  "screenshots": {
+    "ot-808.png": "67b1bd600bbb39b98b36bcb7c46d089178fbd11e962fcaca83657833643b956d",
+    "ot-909.png": "87a726146c4e8c59d24869e42d1519000e28895f791e7780d95de17dbcf0702a",
+    "ot-setup.png": "b4793f3308018995929947d1473e3c3aa385e665fe85903b726b4a4391e4f13a",
+    "ot-engines.png": "870dc55c4c595656a9483d8d6d0c925ef21db47f6bf9f2613b56f6e1cd5427f6"
   },
-  "limitations": [
-    "808/909 selection and displayed control pages only; no sound, DSP load, hardware, save/reload or firmware parity qualification.",
-    "MKII emulated panel; transport stopped; empty scratch card; no hardware connection."
+  "cardSha256": "c8e9d85449499c6d32195c662b9ea333493986b1df2c0e9c9e691be635c4d91c",
+  "project": {
+    "set": "OCTABAM",
+    "name": "RIG"
+  },
+  "moduleVersion": "0.1.3-experimental",
+  "date": "2026-10-08",
+  "candidateFiles": {
+    "bd909.asm": "66f1abde9715b49a145daa1868d00b1ea73989bee2a8e904b9c44149a4d4afc8",
+    "dsp909.py": "480a064a304380079019125eef98e9c68da26bd5408bbe38845563ccac94d2e4",
+    "dsp808.py": "3d61ba9c258c319d90d7beb47f6cbc7dafb7336c49d8386912478d284cef603d",
+    "build-ab_image.py": "d51e8face61e0642f24743cc8081b1d258943f5040a3b34d003cf34a4f797c14"
+  },
+  "dsp": "stand-in only; DSP-enabled full-emulator run failed SIGBUS before readiness",
+  "captureTool": "scripts/capture-module-ui.py",
+  "originalCaptureToolSha256": "8122aa8d33ef7e709f81b1f3d94f3aaff7560cf59038b5fdeeae891cf279d397",
+  "privateCaptureAdapterSha256": "4a79732a9097432147b283184434220216f2c310f5ad04a0544a46cb46e4bc0c",
+  "adapterChanges": [
+    "Remove forced --dsp to use the working controller/stand-in DSP path",
+    "Set source root to read-only mounted repository",
+    "Use --load-ms 20000 for the disposable fixture"
   ],
-  "capturedDraftVersion": "0.1.1-experimental",
-  "publicationBinding": {
-    "moduleVersion": "0.1.2-experimental",
-    "previousMainVersion": "0.1.1-experimental",
-    "baseCommit": "3ab925a",
-    "nativeSourceFiles": {
-      "control.s": "644f10fbc534d8351424e55ee96c2d0ff2f39a1b691ad8a695422d1c05e37a3f",
-      "engine.h": "61bc45ef955db23b8f25eb5b0c6bd3dd01d9f71df7933d466845bb30e7c67a2b",
-      "engine.s": "c86a6ac24326fb52f71dd766b1ccc25e5dfd8511028b162459447c279da48425",
-      "machine.s": "07dc37b1c0bd0f061aabe27782c67df9dcd22769e9c080efbfdf354530d83b8d",
-      "manifest.py": "20fa1f744630354b3986a3ad82ac6a41744345796dc783891a4c9f0bd81c787e",
-      "generate.py": "62c5e6eca1df9179229c1b1de419114e3162813f99724dc9b40fa29c84191b88",
-      "ab_glue.asm": "c78dc31dfcfc7a0c6f10ae24b39744a88bed5211346bcae4f6931e2e6489223c",
-      "dsp808.py": "6500cfffad2be75c0be43f57bb91a5582b7406fe0bb36be120d412884d23da28",
-      "dsp909.py": "c45ef4357cd66369181523784de0f5b328b8b18a58f3c19c60983d1173dd3195",
-      "control.c": "29f392c7e007aaa695076eff0c897729a941676ff582e4bb17957074d56ceac5",
-      "engine.c": "9ed63ee4348aa470eb592506d7bda1e36a48e4fa56d39b4ccad2223bd2e5fda0",
-      "bd909.asm": "db1b2871957bb89bfd4184fc7556e5e46c44f3be1a889ba11fc1a679c4b1841e",
-      "bd808.asm": "e7306bd284e9bca067cffc54dcbfb18ae7a0fc7b3a27253a246e58898ae9ee92",
-      "tables.inc": "baec565139910e89e12563272f9f8ef934845ddd98f90d8234be15873571e01d"
-    },
-    "reason": "Only documentation/media metadata changed. All native module source files are byte-identical to the source used for the actual LCD captures; original PNG pixels, capture date and local image hashes are preserved."
-  }
+  "visualReview": "All four screenshots opened and reviewed; no popup/error; 808/909 labels and setup/browser verified",
+  "license": "LicenseRef-OT-UI-Documentation",
+  "credit": "Octamod contributors (headless capture)"
 }

@@ -22,7 +22,8 @@
 ;
 ; zq01, one block:
 ;   r0  audio block: n7 frames written as interleaved L,R (the same value)
-;   r5  this voice's state block, X words 0..@SWORDS@-1 (X only: the
+;   r5  this voice's 64-word block: state 0..@SWORDS@-1, SSAT at 61,
+;       scratch at 54/59 after MODEL is consumed (X only: the
 ;       48-bit states are hi/lo word pairs, so the block can sit where
 ;       only X is free)
 ;   r6  knob block: x:(r6+k) = knob k, 0..127, k = 0..11; x:(r6+$c) = the
@@ -102,7 +103,24 @@ zq01:
         move    #>@T_LPF@,r1
         move    x:(r1+n1),x0
         move    x0,x:(r5+@KLPF@)
+ ; Seed depth on first use, before the shared desk marks the voice initialized.
+        move    x:(r5+@PAD@),a
+        tst     a
+        bne     zq09
+        move    x:(r5+@INCA@),x0
+        move    x0,x:(r5+@SINCA@)
+        move    x:(r5+@GDC@),x0
+        move    x0,x:(r5+@SGDC@)
+zq09:
 ;<desk-decode>
+; Seed the fractional SAT position before decoding PAD for the first time.
+        move    x:(r5+@PAD@),a
+        tst     a
+        bne     zd03
+        move    x:(r6+$5),a
+        asl     #$10,a,a
+        move    a,x:(r5+@SSAT@)
+zd03:
         move    x:(r6+$5),a             ; SAT
         move    a1,n1
         move    #>@T_TIN@,r1
@@ -153,9 +171,22 @@ zq04:
         tst     a
         beq     zq05
         do      a1,zq07
+; Per-sample 1/64 coefficient slew (~1.44 ms at 44.1 kHz).
+        move    x:(r5+@INCA@),a
+        move    x:(r5+@SINCA@),x0
+        sub     x0,a
+        asr     #$6,a,a
+        add     x0,a
+        move    a,x:(r5+@SINCA@)
+        move    x:(r5+@GDC@),a
+        move    x:(r5+@SGDC@),x0
+        sub     x0,a
+        asr     #$6,a,a
+        add     x0,a
+        move    a,x:(r5+@SGDC@)
 ; (1) inc = inc_b + inc_a*ep; ep -= ep*dkp, truncating, so it reaches 0
         move    x:(r5+@EP@),x0
-        move    x:(r5+@INCA@),y0
+        move    x:(r5+@SINCA@),y0
         move    x:(r5+@INCB@),a
         mac     y0,x0,a
         move    x0,b
@@ -252,7 +283,7 @@ zq04:
         move    b,x:(r5+@THH@)
         move    b0,x:(r5+@THL@)
         move    b,x0
-        move    x:(r5+@GDC@),y0
+        move    x:(r5+@SGDC@),y0
         mac     -y0,x0,a
         move    a,x:(r5+@ACC@)          ; the body
 ; (9) pulse at 8x: r8 += KR8 - KR*r8; up8 = -r8*PULSE
@@ -381,6 +412,53 @@ zq04:
 ;      and high bands driven into the curve by LOW and HIGH, the output
 ;      stage's curve, the make-up. SAT 0 with LOW and HIGH at 64 is flat.
 ;<desk>
+; Slew SAT in knob space so drive, makeup and coupling follow the same
+; table curve; separate coefficient slews can overshoot during large jumps.
+        move    a,x1
+        move    x:(r6+$5),a
+        asl     #$10,a,a
+        move    x:(r5+@SSAT@),x0
+        sub     x0,a
+        asr     #$6,a,a
+        add     x0,a
+        move    a,x:(r5+@SSAT@)
+        move    a,b
+        asr     #$10,a,a
+        move    a1,n1
+        and     #>$ffff,b
+        asl     #$7,b,b
+        move    b,y0
+        move    #>@T_TIN@,r1
+        lua     (r1)+n1,r1
+        move    x:(r1)+,b
+        move    b,y1
+        move    x:(r1),a
+        sub     y1,a
+        move    a,x0
+        move    y1,a
+        mac     y0,x0,a
+        move    a,x:(r5+@TIN@)
+        move    #>@T_PAD@,r1
+        lua     (r1)+n1,r1
+        move    x:(r1)+,b
+        move    b,y1
+        move    x:(r1),a
+        sub     y1,a
+        move    a,x0
+        move    y1,a
+        mac     y0,x0,a
+        move    a,x:(r5+@PAD@)
+        move    #>@T_KHP@,r1
+        lua     (r1)+n1,r1
+        move    x:(r1)+,b
+        move    b,y1
+        move    x:(r1),a
+        sub     y1,a
+        move    a,x0
+        move    y1,a
+        mac     y0,x0,a
+        move    a,x:(r5+@KHP@)
+        move    x1,a
         move    a,x0                    ; the desk's input coupling, 48-bit (a
         move    x:(r5+@HPH@),b          ; 24-bit state stalls short of the input
         move    x:(r5+@HPL@),b0         ; and SAT's drive makes that a DC floor):
@@ -511,7 +589,7 @@ zq06:
         move    #>$ffffff,x0
         move    x0,x:(r5+@LML@)
         move    x:(r5+@INCB@),a
-        move    x:(r5+@INCA@),x0
+        move    x:(r5+@SINCA@),x0
         add     x0,a
         move    a,x0
         move    #>@FRAC@,y0

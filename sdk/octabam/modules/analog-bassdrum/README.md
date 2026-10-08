@@ -1,144 +1,120 @@
 # Analog BD
 
-One native Octatrack track machine with **808 / 909** selection in its
-sample-pool-style engine browser. Both original fixed-point synthesis engines run on
-the DSP, upstream of stock AMP and both track FX slots. No recordings are
-embedded. Earlier image ANALOGBD1 was auditioned on an MK1; the current
-engine browser and eight-track changes still need hardware qualification.
+Version `0.1.3-experimental` smooths TDEP on 909 and SAT on both engines.
+The owner reports stable MKII operation on the exact private test build,
+including distinct 808/909 instances and Part/project/reboot persistence.
 
-| Model / page | A | B | C | D | E | F |
-|---|---|---|---|---|---|---|
-| 808 SRC | PITCH | DECAY | TONE | ATK | SWEEP | SAT |
-| 909 SRC | PITCH | DECAY | TUNE | ATK | TDEP | SAT |
-| Both SRC SETUP | — | ACCNT | LPF | LOW | HIGH | — |
+## Overview
 
-Both models use the same Mackie desk stage and output LPF. SAT controls
-drive; LOW/HIGH are neutral at 64. LPF is OFF at 0, 500 Hz at 1, **ORIG**
-(~6.57 kHz) at 64, and **18 kHz at the new-assignment default of 127**.
-Stored patches retain their bytes, including when changing engines. Volume
-remains on stock AMP. Old patches with both desk bands at zero need them
-raised to hear the source.
+The owner reported audible zipping when modulating TDEP and SAT. Version 0.1.2
+replaced their coefficients once per 16-sample block. TDEP also changes a
+128-bin thump lookup. These abrupt changes can add steps to the sounding voice.
 
-Both models have a fixed +12.04 dB output boost after the desk, before stock
-AMP and FX. The 808's balancing trim is now 0.86 of its original output;
-the 909 multiplies its original output by four. With the shared assignment
-defaults, peaks are −7.31/−1.59 dBFS and 500 ms RMS is −20.19/−20.21 dBFS
-for 808/909. Their first-100-ms RMS differs by 0.24 dB. Existing patches
-also become louder. Oscillator, envelope, filter and saturation states are
-unchanged; boosted 909 samples above full scale are limited at the source
-output. Stock AMP still controls track volume.
+This version slews the 909's pitch excursion and thump level every sample.
+Both engines slew a fractional SAT position, then interpolate the drive,
+makeup and coupling tables at that position. All three follow the same control
+curve, avoiding the gain overshoot of independent coefficient slews. Each slew
+uses 1/64 of the remaining difference per sample: approximately 1.44 ms time
+constant at 44.1 kHz, or 6.6 ms to cover 99% of a full step. First use seeds the
+current patch directly. Retriggers retain smoothing history.
 
-The 808 is calibrated against the user's 32 clean `_Orig.wav` recordings;
-Tape/TapeSat, X/X2 and unlabeled special effects are excluded. Its body
-starts near 49 Hz, with a falling pitch envelope and approximately
-16–340 ms exponential decay times. ATK sets the transient, TONE shapes it,
-and SWEEP controls the pitch excursion. See [DSP808.md](DSP808.md) for the
-model, measurements and limits.
+The 808 and 909 share their existing desk decode/render routines in a combined
+image. Output gain stays at each engine's output. The combined image occupies 946
+of the 1,028 available P words on each core, including glue. Constant-patch
+renders in the tested cases remain bit-identical to the approved engines.
 
-The user-approved 909 is calibrated against Drumazon 2 Init. PITCH maps
-30–100 Hz, TUNE sets pitch-envelope duration, and TDEP sets its amount.
-ATK controls the shaped pulse/noise transient. The release spans about
-9–454 ms after an approximately 60 ms initial body stage. See
-[DSP909.md](DSP909.md). The comparison patch is PITCH 64, DECAY 32,
-TUNE 64, ATK 32, TDEP 64, SAT 0, ACCNT 100, LPF OFF, LOW/HIGH 64.
-Selecting a model keeps the existing knobs rather than loading a preset.
+## Controls
 
-## Native integration
+All ranges are 0–127. Assignment defaults and stored control bytes are unchanged.
 
-The chooser and Part storage follow the measured Machinedrum registration
-seams. Parts store FLEX plus `AB\x01` in unused NEIGHBOR page bytes. All eight
-tracks can store and run independent patches; the two-instance admission
-ceiling has been removed. Stock Part save/copy/reload carries the twelve bytes.
-The engine id remains stored internally; its former page-2 control is hidden
-and its encoder is ignored. Double-tapping an
-Analog BD track opens a sample-pool-style engine browser with 808 and 909
-rows. UP/DOWN or LEVEL browses, YES selects, and NO cancels. LEFT returns
-to the machine chooser; RIGHT on ANALOG BD opens the engine pool. Both
-headers use the stock sample-pool chevrons to show the direction. Ordinary
-tracks keep the stock sample picker.
+| Control | Assignment default | Behavior |
+| --- | --- | --- |
+| PITCH | 64 | Body pitch; 909 spans approximately 30–100 Hz. |
+| DECAY | 80 | Body decay, with the original response for each model. |
+| TONE / TUNE | 80 | 808 transient tone / 909 pitch-envelope duration. |
+| ATK | 64 | Original transient strength and shape. |
+| SWEEP / TDEP | 64 | Original 808 sweep; 909 excursion and associated thump now slew. |
+| SAT | 0 | Original desk drive curve, now interpolated along a smoothed position. |
+| ACCNT | 64 | Accent in SRC SETUP. |
+| LPF | 127 | OFF at 0, ORIG at 64, 18 kHz at the assignment default. |
+| LOW / HIGH | 64 / 64 | Original desk bands; 64 is neutral. |
 
-ColdFire sends control records through the existing source transport; DSP
-glue recognizes the signature and renders either engine into the stock
-source audio block. Other FLEX tracks call their unmodified renderer. Each
-model retains separate state. Both payloads use the already harvested
-SPRING REV code region and private X tables/state. Both track FX slots are
-available; SPRING REV is excluded from this standalone remix. Its shared
-35-word DARK reverb routine is preserved, with stock/patched audio identity
-checked on both cores. The optimized kick engines are also held to exact
-pre-optimization internal-state hashes. Both models' audio is checked against
-the original with exact fixed-point output scaling and limiting.
-MACHINEDRUM, SYNTH MACHINE and POLY still conflict with the registration
-seams and require a shared registry before composition.
+The former MODEL knob and final SRC SETUP encoder stay inactive. Choose 808 or
+909 in the engine browser. AMP and both FX pages retain their original behavior.
+There is no extra smoothing control or stored parameter.
 
-Current load evidence and remaining hardware qualification are in [CPU.md](CPU.md).
-Generic DSP pressure acceptance is explicitly blocked until the pricer supports
-source engines; the standalone and full-chain benchmarks remain required.
+## Usage
 
-## Reproduce
+Use the existing SRC controls and modulation assignments. The smoothing adds
+no project setting; saved patches retain their original control values.
 
-```
-python3 modules/analog-bassdrum/generate.py --check
-python3 tools/harness/bd808.py --wav
-python3 tools/harness/bd909.py --wav
-OT_PROJECT=<stock-project> make check REMIX=analog-bassdrum
-OT_PROJECT=<stock-project> AB_SAMPLE808=1 python3 tools/verify/verify_analog_bassdrum_port.py
-```
+### Smooth a long 909 tail
 
-Repeat the port checks with `AB_REVERSE=1` for the opposite core assignment.
-WAVs, firmware and reference analysis remain under `out/`, never in commits.
-The retired ColdFire synthesis, its coefficient tables and audio gates
-have been removed. ColdFire retains only control transport and UI helpers. [CPU.md](CPU.md),
-[SCHEMATIC.md](SCHEMATIC.md) and [REFERENCE.md](REFERENCE.md) retain the earlier
-ColdFire research, not the current DSP algorithm specification.
+1. In a disposable project, select the track, hold FUNC and press SRC for SRC SETUP, choose ANALOG BD and press YES. Double-tap its TRACK key, choose 909 with UP/DOWN or LEVEL and confirm with YES. Set LOW and HIGH to 64.
+2. Press SRC to edit the main page. Set DECAY around 100, then trigger a hit and turn E (TDEP) and F (SAT) through the ranges that reproduced the report. Repeat with the existing modulation assignment. The update should reduce control steps while retaining the original endpoints and saturation character.
+3. Set modulation depth to zero, return SAT to 0 and TDEP to 64, then press STOP and let the tail finish. Select 808 in the same browser to compare SAT; its knob values are retained when switching engines.
 
-## Hardware report and compatibility
+The owner tested the private candidate and reported “works great and stable”.
+The follow-up confirms MKII, distinct 808/909 instances and settings/audio
+surviving Part/project reload and normal power-off/on.
+Preserve a separate project copy for stock firmware.
 
-mathgonzlez reported on 28 September 2026 that ANALOGBD1 worked on an MK1:
-all parameters worked, with no glitches or unexpected sounds while tweaking.
-They also noted labels close to the edge of the parameter area. The tested
-flash file SHA256 is
-`3672634dedb8ce0138d7cf4216bd051a47afac6601dcd2a3c1830def24f39704`.
-This report does not specify a save/reload test, eight voices, or every effect
-combination; it predates this review revision.
+## Compatibility and limitations
 
-Loading an AB project in pristine 1.40C succeeds under the port, but stock
-sees FLEX and clamps the setup controls to FLEX ranges. In the measured
-fixture, ACCNT/LPF/LOW/HIGH become 1/1/1/3; the AB signature remains. Saving
-that project on stock can therefore overwrite the synth settings. Keep a
-separate project copy for stock or remixes without ANALOG BD. No claim of
-transparent backward compatibility is made.
+The target remains Octatrack 1.40C with the existing Analog BD registration and
+SPRING REV reservation. SYNTH, MACHINEDRUM and POLY registration conflicts are
+unchanged. The existing stock-firmware project-clamping limitation still applies.
+The fix adds DSP instructions per sample; the previous FX/load acceptance cannot
+be carried forward. Eight-voice maximum FX load remains unqualified.
 
-Eight voices are selectable, but effects still share each core's budget.
-All eight 808s, all eight 909s and mixed models passed FILTER + DARK locally.
-Eight 909s with DJ EQ in both slots failed with silent output. See [CPU.md](CPU.md)
-for the measured envelope; eight voices does not guarantee every FX combination.
+## Tests and measurements
 
+[TESTING.md](TESTING.md) records the native DSP, emulator and owner-reported
+hardware results for this version. The source update is owner approved; worst-case
+chip timing, complete memory bounds and maximum FX load remain unmeasured.
 
-## Octamod import — 1 October 2026
+The focused checks cover constant audio, full-range steps in both directions,
+rapid retriggers, stepped automation, the assembled code at both core placements,
+and four simultaneous mixed voices per placement with distinct patches and reset
+isolation. They do not prove stock AMP/FX timing or physical reboot survival. The separate
+firmware control-state matrix passed. The full-emulator SIGBUS was traced to
+Docker's 64 MiB shared-memory default and resolved with `--shm-size 256m`; the
+unchanged candidate boots both cores and loads its project. The owner confirms usable audio after physical Part/project reload and
+normal power-off/on on an MKII. The full-emulator audio path remains unverified;
+see the bounded probes in the testing report.
 
-Module version: `0.1.1-experimental`. Imported from [sambanks/octabam at `363861e31ee9`](https://github.com/sambanks/octabam/tree/363861e31ee963c478fab2b190a0fabe1d7ce37b/modules/analog-bassdrum). Stock expectation bytes in manifests are converted to address/length/SHA-256 guards; they resolve only from the user’s own verified local OS. See [TESTING.md](TESTING.md) for composition verification and historical evidence. Native and actual-browser composition, packaging and rejection verification passed; no DSP execution or emulator suite was run. Owner merge of a reviewed PR remains required for publication.
+## Authorship and licences
 
-Octamod 0.1.1-experimental: browser composition uses reviewed source packages and derives inherited bytes from local 1.40C. The native matrix passed 156 byte identities and 132 refusals. The owner reported both combined native test images working on 1 October 2026; detailed feature/load qualification is not claimed.
+Original 808/909 engines and integration: repeat98 (Jannik Aßfalg). Composition
+infrastructure: Sam Banks. The approved import remains pinned to
+`sambanks/octabam` commit `363861e31ee963c478fab2b190a0fabe1d7ce37b`;
+[evidence/native.json](evidence/native.json) binds the tested base and candidate inputs. Original MIT notices
+are retained in [LICENSE](LICENSE). The new smoothing and qualification changes
+are supplied under the same MIT licence. No firmware or private project is included.
 
-## Access and actual OT UI captures
+## Screens and audio
 
-Audio track SRC SETUP: ANALOG BD; double-tap the track key for its 808 / 909 engine browser.
+These are actual candidate LCD pixels from the MKII controller emulator with a
+stand-in DSP and stopped transport. [Capture provenance](media/capture.json) binds
+them to the exact tested source/image and records the DSP limitation. The owner reports working, stable audio from the exact private test build; the
+images provide UI evidence. Full feature/load qualification remains incomplete.
 
-1. Select an audio track with its TRACK key.
-2. Hold FUNC and press SRC to open SRC SETUP. Use DOWN to reach ANALOG BD, then press YES to assign it.
-3. Press SRC to close SETUP and edit the main controls. The 808 model uses PITCH, DECAY, TONE, ATK, SWEEP and SAT; the 909 uses TUNE and TDEP in place of TONE and SWEEP.
-4. Double-tap the assigned track’s TRACK key to open the engine browser. Choose 808 or 909 with UP/DOWN or LEVEL, then press YES. Selecting a model retains the existing knob settings.
-5. Hold FUNC and press SRC for the shared ACCNT, LPF, LOW and HIGH controls. AMP and the track FX pages remain available.
+Hold FUNC and press SRC to open SRC SETUP. ANALOG BD is selected; LOW and HIGH
+are the shared desk bands. Set both to 64 for the neutral starting point.
 
-![ANALOG BD selected on SRC SETUP, with its shared ACCNT, LPF, LOW and HIGH controls.](media/ot-location.png)
+![ANALOG BD selected on SRC SETUP with ACCNT, LPF, LOW and HIGH controls.](media/ot-setup.png)
 
-![Analog BD’s engine browser: choose 808 or 909, then press YES.](media/ot-engines.png)
+Double-tap the assigned TRACK key to open the engine browser. Choose 909 with
+UP/DOWN or LEVEL and press YES; NO closes it without changing the engine.
 
-![Analog BD 808 main controls: PITCH, DECAY, TONE, ATK, SWEEP and SAT.](media/ot-808.png)
+![Analog BD engine browser with 909 highlighted below 808.](media/ot-engines.png)
 
-![Analog BD 909 main controls: PITCH, DECAY, TUNE, ATK, TDEP and SAT.](media/ot-909.png)
+Press SRC for the 909 controls. E changes TDEP and F changes SAT; use the long-tail
+example above, then remove modulation and return SAT to 0/TDEP to 64 before STOP.
 
-![Shared Analog BD setup controls: ACCNT, LPF, LOW and HIGH.](media/ot-setup.png)
+![909 SRC main controls with PITCH, DECAY, TUNE, ATK, TDEP and SAT.](media/ot-909.png)
 
-These are actual firmware-rendered emulator LCD captures. See [TESTING.md](TESTING.md),
-[capture provenance](media/capture.json) and [media rights](media/LICENSE.md).
+Choose 808 in the same browser to compare the shared SAT stage. The source page
+now shows TONE and SWEEP. Model selection retains the control bytes.
+
+![808 SRC main controls with PITCH, DECAY, TONE, ATK, SWEEP and SAT.](media/ot-808.png)

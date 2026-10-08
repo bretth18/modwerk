@@ -1,16 +1,17 @@
 # OT UI capture rights and attribution
 
 These original LCD framebuffer captures were produced locally for Octamod
-documentation at the owner's request on 1 October 2026. Credit: Octamod
-contributors (headless capture). The native emulator is octabam's ot_emu;
-its original MIT source attribution remains in the SDK.
+at the owner's request on 8 October 2026. Credit: Octamod contributors
+(headless capture). The native emulator is octabam's ot_emu; original MIT
+source attribution remains in the SDK. They show the candidate controller
+UI with a stand-in DSP, not physical operation or working emulator audio.
 
 LicenseRef-OT-UI-Documentation covers the original capture/documentation
 contribution for use in Octamod module documentation. Underlying Octatrack
 interface artwork, labels and other Elektron material retain their owners'
 rights; this declaration does not grant a licence to those underlying works
-or assert that they are MIT/CC licensed. Reviewer verification of reuse
-rights is required before publication and is not automatic legal clearance.
+or assert they are MIT/CC licensed. Reviewer verification of reuse rights
+is required before publication and is not automatic legal clearance.
 
-Only rendered PNG screenshots and capture metadata belong in this folder.
+Only rendered PNG screenshots and sanitized provenance are retained here.
 No firmware, raw LCD/RAM dump, card, recording or private log is included.

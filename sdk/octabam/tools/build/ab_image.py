@@ -82,6 +82,8 @@ def layout():
     end = max(a + n for a, n in ((lay[k], len(v)) for k, v in
                                   list(dsp909.tables()[0].items()) + list(dsp909.tables()[2].items())))
     vbase = (end + 0x3F) & ~0x3F
+    if max(*dsp909.OFF.values(), *dsp808.OFF.values()) >= VOICE_STRIDE:
+        die("Analog BD state or scratch exceeds the 64-word voice stride")
     if dsp909.SWORDS > KNOBS or KNOBS + 13 > VOICE_STRIDE:
         die(f"a voice block holds {dsp909.SWORDS} state words and 13 knob words: "
             f"stride {VOICE_STRIDE:#x} is too small")
@@ -117,7 +119,7 @@ def x_image(lay, vbase):
 def assemble(org, cont, lay, vbase, tag):
     glue = GLUE.read_text().replace("@VBASE@", f"${vbase:x}").replace("@CONT@", f"${cont:x}")
     glue = glue.replace("@V808@", f"${VOICES808:x}")
-    src = glue + "\n" + dsp909.source(lay) + "\n" + dsp808.source(dsp808.layout(TABLES808), lay)
+    src = glue + "\n" + dsp909.source(lay, shared_desk=True, include_desk=False) + "\n" + dsp808.source(dsp808.layout(TABLES808), lay, shared_desk=True) + "\n" + dsp909.shared_desk_source(lay)
     OUT.mkdir(parents=True, exist_ok=True)
     binf = OUT / f"ab_{tag}.bin"
     syms, _ = dsp909.assemble(org, lay, binf, src)

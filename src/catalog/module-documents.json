@@ -1875,7 +1875,7 @@
       "id": "analog-bassdrum",
       "key": "ANALOG BD",
       "name": "Analog BD",
-      "version": "0.1.2-experimental",
+      "version": "0.1.3-experimental",
       "category": "machines",
       "source": {
         "repository": "https://github.com/sambanks/octabam",
@@ -1892,11 +1892,10 @@
           "Hold FUNC and press SRC for the shared ACCNT, LPF, LOW and HIGH controls. AMP and the track FX pages remain available."
         ],
         "screenshots": [
-          "media/ot-location.png",
+          "media/ot-setup.png",
           "media/ot-engines.png",
-          "media/ot-808.png",
           "media/ot-909.png",
-          "media/ot-setup.png"
+          "media/ot-808.png"
         ]
       },
       "author": {
@@ -1912,7 +1911,7 @@
         "label": "808 / 909",
         "family": "Drum synthesis",
         "summary": "Play an original 808 or 909 bass drum as a track machine, with both effect slots available.",
-        "overview": "Analog BD adds a track machine with two circuit-informed bass drum engines. Choose 808 or 909 from its engine browser and shape the sound on the SRC page. Synthesis runs before the stock AMP stage and both track effects.",
+        "overview": "Analog BD adds a track machine with two circuit-informed bass drum engines. Choose 808 or 909 from its engine browser and shape the sound on the SRC page. Synthesis runs before the stock AMP stage and both track effects. TDEP in the 909 and SAT in both engines now smooth modulation changes while preserving fixed-control sound.",
         "highlights": [
           "808 and 909 engines without embedded recordings",
           "Independent patches on all eight tracks",
@@ -1957,14 +1956,14 @@
           "name": "SWEEP / TDEP",
           "default": 64,
           "count": 128,
-          "doc": "808 pitch excursion; 909 pitch-envelope amount.",
+          "doc": "808 pitch excursion; 909 pitch-envelope amount with sample-wise smoothing.",
           "labels": null
         },
         {
           "name": "SAT",
           "default": 0,
           "count": 128,
-          "doc": "Drive into the shared Mackie desk stage.",
+          "doc": "Drive into the shared Mackie desk stage, with smooth table interpolation during modulation.",
           "labels": null
         },
         {
@@ -2007,57 +2006,57 @@
         ],
         "limitations": [
           "SPRING REV is excluded from the upstream standalone remix; its shared DARK helper must be restored from local firmware.",
-          "The current browser and eight-track changes are not hardware-qualified. Eight 909s with DJ EQ in both slots failed with silent output.",
+          "Owner reports stable MKII 0.1.3 operation with distinct 808/909 instances and physical persistence. Maximum eight-voice FX load, worst-case chip timing and full memory bounds remain unqualified.",
           "Saving this project on stock firmware can overwrite synth settings."
         ]
       },
       "resources": {
-        "recorded": "30 Sep 2026 (upstream record)",
+        "recorded": "8 Oct 2026 (candidate source/software and owner report)",
         "storage": {
           "label": "DSP code",
-          "display": "1,000 P words",
-          "value": 1000,
+          "display": "946 P words",
+          "value": 946,
           "unit": "P words",
           "method": "static",
-          "conditions": "Original engine/glue uses 1,000 P words plus a 35-word stock helper recovered locally; this is not final firmware size.",
-          "source": "CPU.md"
+          "conditions": "Combined 808/909 glue and engines use 946 P words plus the separately preserved 35-word stock helper. Existing X allocation is unchanged; full lifetime/stack bounds remain unmeasured.",
+          "source": "TESTING.md"
         },
         "processing": {
           "label": "DSP execution",
-          "display": "808: 220.94 · 909: 326.13",
+          "display": "808: 268.38 · 909: 386.00",
           "value": null,
           "unit": "instructions/sample",
           "method": "emulator",
-          "conditions": "Standalone peak executed instructions per sample under the upstream host, not hardware cycles or utilization. Combined effects share the budget.",
-          "source": "CPU.md"
+          "conditions": "Peak executed instructions/sample in the focused modulation/retrigger workload; not worst-case chip cycles or full-chain utilization.",
+          "source": "TESTING.md"
         },
         "impact": {
-          "conditions": "Audio modules are rated for an active instance, including expensive modes and changing controls; MIDI/USB features are rated while enabled. More tracks or instances increase demand. Shared runtime reservations and reused stock buffers are not added again per module. These rough source-backed tiers do not establish hardware headroom or qualification.",
+          "conditions": "Per active Analog BD voice with both models and rapid TDEP/SAT changes considered; unchanged ColdFire control path and existing shared DSP upload/table reservations. Ratings describe relative demand, not processor utilization or whole-chip headroom.",
           "cpu": {
             "level": "low",
             "basis": "source-estimate",
-            "rationale": "ColdFire supports source selection, engine-browser controls and trigger publication while synthesis runs on the DSP. This is a rough estimate of control/dispatch work; CPU timing has not been quantified.",
-            "source": "README.md"
+            "rationale": "Existing guarded ColdFire machine/control glue publishes the same saved knob bytes; the smoothing runs entirely in DSP code and adds no ColdFire work.",
+            "source": "TESTING.md"
           },
           "dsp": {
             "level": "high",
             "basis": "measured-comparison",
-            "rationale": "The 909 peaks at 326.13 host instructions per sample and is costlier than the compared stock reverbs. Silent voices still execute most of that work, and eight-voice/effects limits are recorded. The high tier follows those comparisons rather than an exact core budget.",
+            "rationale": "Synthesis plus the desk stage and per-sample smoothing peaks at 268.375 executed instructions/sample for 808 and 386 for 909 in the focused workload, above the historical 220.9375/326.125 peaks. These are interpreter instruction counts, not chip timing.",
             "source": "CPU.md"
           },
           "memory": {
             "level": "low",
             "basis": "source-estimate",
-            "rationale": "The record lists 1,000 DSP program words plus a locally recovered shared helper. The synth uses oscillator/envelope state rather than long delay lines. Low is a rough added footprint tier, not a complete linked-code/state inventory.",
-            "source": "CPU.md"
+            "rationale": "946 P words per core and the separate 35-word helper reuse the existing donor. The 3776-word X upload per core includes tables and existing 64-word voice blocks; smoothing reuses scratch state and adds no X/Y/ColdFire allocation. Complete stack/lifetime bounds remain unmeasured.",
+            "source": "TESTING.md"
           }
         }
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Upstream records exact render/state and source/AMP/effects checks on both cores. ANALOGBD1 ran on an MKI; the current engine browser, louder output and eight-track revision still await hardware qualification. Octamod native and actual-browser composition/packaging parity and rejection checks passed on 1 October 2026. The owner reported both combined test images working; this is a smoke report, not full feature/load qualification.",
-        "hardwareStatus": "historical",
-        "evidenceRevision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
+        "summary": "TDEP/SAT smoothing passes constant-audio, modulation and native instance/core isolation tests. The owner reports stable MKII operation on the exact private build, with distinct 808/909 instances and settings/audio surviving Part/project reload and normal power-off/on. Emulator control-state persistence passes separately; worst-case chip timing, complete memory bounds and maximum FX load remain unmeasured.",
+        "hardwareStatus": "reported",
+        "evidenceRevision": "207964506864dec8a71ca0bc35ca19aca46a6f48",
         "gates": [
           "tools/verify/verify_analog_bassdrum.py",
           "tools/harness/bd808.py",
@@ -2067,7 +2066,24 @@
           "tools/verify/verify_analog_bassdrum_cf.py",
           "tools/verify/verify_analog_bassdrum_port.py",
           "tools/verify/verify_analog_bassdrum_ui.py"
-        ]
+        ],
+        "documentation": {
+          "tutorial": {
+            "title": "Smooth a long 909 tail",
+            "steps": [
+              "In a disposable project, select the track, hold FUNC and press SRC for SRC SETUP, choose ANALOG BD and press YES. Double-tap its TRACK key, choose 909 with UP/DOWN or LEVEL and confirm with YES. Set LOW and HIGH to 64.",
+              "Press SRC to edit the main page. Set DECAY around 100, then trigger a hit and turn E (TDEP) and F (SAT) through the ranges that reproduced the report. Repeat with the existing modulation assignment. The update should reduce control steps while retaining the original endpoints and saturation character.",
+              "Set modulation depth to zero, return SAT to 0 and TDEP to 64, then press STOP and let the tail finish. Select 808 in the same browser to compare SAT; its knob values are retained when switching engines."
+            ]
+          },
+          "screenshots": [
+            "media/ot-setup.png",
+            "media/ot-engines.png",
+            "media/ot-909.png",
+            "media/ot-808.png"
+          ],
+          "screenshotStyle": "black-and-white"
+        }
       },
       "license": {
         "spdx": "MIT",
@@ -2076,77 +2092,9 @@
       },
       "media": [
         {
-          "path": "media/ot-location.png",
-          "captureType": "emulator",
-          "caption": "ANALOG BD selected on SRC SETUP, with its shared ACCNT, LPF, LOW and HIGH controls.",
-          "alt": "ANALOG BD selected on SRC SETUP, with its shared ACCNT, LPF, LOW and HIGH controls.",
-          "credit": "Octamod contributors (headless capture)",
-          "license": "LicenseRef-OT-UI-Documentation",
-          "source": "original",
-          "otUi": {
-            "page": "SRC SETUP",
-            "shows": "location-and-controls",
-            "firmware": "1.40C",
-            "moduleVersion": "0.1.2-experimental",
-            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
-            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
-          }
-        },
-        {
-          "path": "media/ot-engines.png",
-          "captureType": "emulator",
-          "caption": "Analog BD’s engine browser: choose 808 or 909, then press YES.",
-          "alt": "Analog BD’s engine browser: choose 808 or 909, then press YES.",
-          "credit": "Octamod contributors (headless capture)",
-          "license": "LicenseRef-OT-UI-Documentation",
-          "source": "original",
-          "otUi": {
-            "page": "Analog BD engine browser",
-            "shows": "location",
-            "firmware": "1.40C",
-            "moduleVersion": "0.1.2-experimental",
-            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
-            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
-          }
-        },
-        {
-          "path": "media/ot-808.png",
-          "captureType": "emulator",
-          "caption": "Analog BD 808 main controls: PITCH, DECAY, TONE, ATK, SWEEP and SAT.",
-          "alt": "Analog BD 808 main controls: PITCH, DECAY, TONE, ATK, SWEEP and SAT.",
-          "credit": "Octamod contributors (headless capture)",
-          "license": "LicenseRef-OT-UI-Documentation",
-          "source": "original",
-          "otUi": {
-            "page": "808 SRC main",
-            "shows": "controls",
-            "firmware": "1.40C",
-            "moduleVersion": "0.1.2-experimental",
-            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
-            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
-          }
-        },
-        {
-          "path": "media/ot-909.png",
-          "captureType": "emulator",
-          "caption": "Analog BD 909 main controls: PITCH, DECAY, TUNE, ATK, TDEP and SAT.",
-          "alt": "Analog BD 909 main controls: PITCH, DECAY, TUNE, ATK, TDEP and SAT.",
-          "credit": "Octamod contributors (headless capture)",
-          "license": "LicenseRef-OT-UI-Documentation",
-          "source": "original",
-          "otUi": {
-            "page": "909 SRC main",
-            "shows": "controls",
-            "firmware": "1.40C",
-            "moduleVersion": "0.1.2-experimental",
-            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
-            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
-          }
-        },
-        {
           "path": "media/ot-setup.png",
           "captureType": "emulator",
-          "caption": "Shared Analog BD setup controls: ACCNT, LPF, LOW and HIGH.",
+          "caption": "Hold FUNC and press SRC for SRC SETUP, select ANALOG BD and confirm. LOW and HIGH at 64 give a neutral desk starting point.",
           "alt": "Shared Analog BD setup controls: ACCNT, LPF, LOW and HIGH.",
           "credit": "Octamod contributors (headless capture)",
           "license": "LicenseRef-OT-UI-Documentation",
@@ -2155,9 +2103,60 @@
             "page": "SRC SETUP",
             "shows": "controls",
             "firmware": "1.40C",
-            "moduleVersion": "0.1.2-experimental",
-            "imageSha256": "2e5abefa1484788a6953db45e111b266a1f31d810fb45fa7155104a9780e8d3e",
-            "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no samples or user projects."
+            "moduleVersion": "0.1.3-experimental",
+            "imageSha256": "87e56b38fe45a5b10fda2129193f67946b078f4d84b07a0cb1afbc2ef0ebaa54",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; controller with stand-in DSP; actual LCD at integer scale 6. Disposable OCTABAM/RIG fixture. Audio is not inferred from captures."
+          }
+        },
+        {
+          "path": "media/ot-engines.png",
+          "captureType": "emulator",
+          "caption": "Double-tap the assigned TRACK key, choose 808 or 909 with UP/DOWN or LEVEL and press YES. NO cancels.",
+          "alt": "Analog BD’s engine browser: choose 808 or 909, then press YES.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "Analog BD engine browser",
+            "shows": "location",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.3-experimental",
+            "imageSha256": "87e56b38fe45a5b10fda2129193f67946b078f4d84b07a0cb1afbc2ef0ebaa54",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; controller with stand-in DSP; actual LCD at integer scale 6. Disposable OCTABAM/RIG fixture. Audio is not inferred from captures."
+          }
+        },
+        {
+          "path": "media/ot-909.png",
+          "captureType": "emulator",
+          "caption": "Press SRC for 909 controls; E changes TDEP and F changes SAT. After auditioning modulation, return SAT to 0 and TDEP to 64, then press STOP.",
+          "alt": "Analog BD 909 main controls: PITCH, DECAY, TUNE, ATK, TDEP and SAT.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "909 SRC main",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.3-experimental",
+            "imageSha256": "87e56b38fe45a5b10fda2129193f67946b078f4d84b07a0cb1afbc2ef0ebaa54",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; controller with stand-in DSP; actual LCD at integer scale 6. Disposable OCTABAM/RIG fixture. Audio is not inferred from captures."
+          }
+        },
+        {
+          "path": "media/ot-808.png",
+          "captureType": "emulator",
+          "caption": "Choose 808 in the engine browser, then press SRC. Compare SAT on F; changing engines retains the knob settings.",
+          "alt": "Analog BD 808 main controls: PITCH, DECAY, TONE, ATK, SWEEP and SAT.",
+          "credit": "Octamod contributors (headless capture)",
+          "license": "LicenseRef-OT-UI-Documentation",
+          "source": "original",
+          "otUi": {
+            "page": "808 SRC main",
+            "shows": "controls",
+            "firmware": "1.40C",
+            "moduleVersion": "0.1.3-experimental",
+            "imageSha256": "87e56b38fe45a5b10fda2129193f67946b078f4d84b07a0cb1afbc2ef0ebaa54",
+            "setup": "Headless ot_emu; MKII panel; stopped transport; controller with stand-in DSP; actual LCD at integer scale 6. Disposable OCTABAM/RIG fixture. Audio is not inferred from captures."
           }
         }
       ]

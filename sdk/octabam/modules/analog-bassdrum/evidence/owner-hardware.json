@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "date": "2026-10-08",
+  "moduleVersion": "0.1.3-experimental",
+  "tester": {
+    "github": "repeat98",
+    "name": "Jannik Aßfalg"
+  },
+  "model": "MKII",
+  "kind": "functional",
+  "status": "reported",
+  "sourceRevision": "207964506864dec8a71ca0bc35ca19aca46a6f48",
+  "imageSha256": "87e56b38fe45a5b10fda2129193f67946b078f4d84b07a0cb1afbc2ef0ebaa54",
+  "updateSha256": "48217f8b1bf2b9284fc5831a79b94f020c70f1dafc94f6a72ff6857765a83a5a",
+  "ownerStatement": "works great and stable, let's release",
+  "summary": "Owner reports working and stable operation on the supplied private test firmware. Confirms MKII, distinct 808/909 instances, Part/project reload and normal power-off/on retaining settings and audible output.",
+  "limitations": [
+    "Duration and maximum FX load unreported",
+    "Worst-case chip cycles and full memory bounds unmeasured"
+  ],
+  "verification": "Direct owner statement in the same conversation after delivery of the hash-verified private build; no agent-performed physical test.",
+  "followupStatement": "MK2 yes all",
+  "physicalChecks": {
+    "distinct808909Instances": true,
+    "partSaveReload": true,
+    "projectSaveLoadReload": true,
+    "normalPowerOffOn": true,
+    "settingsAndAudibleOutputRetained": true
+  }
+}
