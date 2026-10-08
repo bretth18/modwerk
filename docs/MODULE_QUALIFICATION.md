@@ -15,6 +15,52 @@ From 2 October 2026, new modules and updates affecting runtime behavior, stabili
 
 Every release also requires populated CPU, DSP core and memory gauges. These use [source-backed relative estimates](MODULE_RESOURCE_GAUGES.md), do not need exact whole-chip capacity percentages, and do not replace the qualification evidence below.
 
+## Essential persistence and instance checks — 8 October 2026
+
+The owner requires project saving and reload/reboot survival for stateful
+modules, and multiple-instance checks for every instantiable FX, machine or
+similar module. Always run at least two simultaneous instances with distinct
+settings, across tracks, both supported FX slots and both DSP cores where
+applicable. Check assignments, sample/engine choice, parameters, working audio
+and isolation when one instance is edited, reset or replaced.
+
+Exercise Part save/reload, project save/load/reload and reboot with only saved
+card data and battery-backed RAM retained. Confirm that reload restores a saved
+baseline after later edits. A fresh emulator process followed by an explicit
+project load does not establish hardware power-cycle survival. Reports must
+distinguish those paths, bind results to tested source/image identities and keep
+untested or failed cases visible. Existing evidence is not retroactively upgraded
+to a persistence or multiple-instance pass.
+
+## Persistence audit — 8 October 2026
+
+[The control-state audit](persistence-check-2026-10-08.json) binds the results to
+exact firmware image hashes. The tested images include local development
+compositions; the results apply only to those hashes. Analog BD and eight FX
+modules (MiniVerb, Tape Echo, Euclid, Tapehead, Sidechain Compressor, Spectrum,
+Modulation and Character)
+passed native Part save/reload, panel-driven project save/reload, fresh project
+load and battery-RAM-only restart checks. Each profile used T1 and T5 with
+different settings and sample selections; Analog BD included both 808 and 909.
+Both FX slots were occupied, with four custom FX instances where supported.
+Editing one track or FX2 preserved the other tracks and FX1. The comparisons
+include assignments, source/sample/engine settings and both FX parameter pages.
+
+The private POLY32T01 image failed actual machine assignment followed by reboot:
+its live `PL/1` marker was copied one byte too far forward in battery RAM.
+PROJECT SAVE preserved the wrong battery marker. A [source correction](poly-marker-copy-2026-10-08.patch)
+reads all three bytes before writing the mirror. The corrected private build
+passed the same two-track assignment/reboot check and the full save/reload
+matrix. POLY is outside the current public module catalog; this patch records a
+private fix and does not publish or qualify a new module.
+
+These are **emulator control-state passes**. No physical device was rebooted or
+flashed, and usable audio after these transitions remains unverified: DSP-enabled
+runs failed with SIGBUS in the local emulator environment. Maximum audio load
+and instance reset/replacement were not exercised. The audit does not upgrade
+existing hardware qualification. Private firmware, cards, screenshots and raw
+memory dumps remain outside the repository.
+
 ## Existing modules
 
 The eleven module folders present when this policy was requested remain included at their current versions, with their existing measurements and historical/status labels intact. [The frozen baseline](../sdk/module-qualification-baseline.json) records each exact version and complete folder SHA-256. This preserves the owner's acceptance of the existing tests without inventing cycle counts or changing earlier qualification claims. Existing availability, build and download restrictions remain intact.
