@@ -10,9 +10,14 @@ import { usbAudioBuildError } from '../config/usb-audio'
 import { moduleBuildError } from '../catalog/build-support'
 import type { FirmwareInspection } from '../engine/base'
 import type { FirmwareClient } from '../engine/client'
+import { FirmwareBuildError } from '../engine/client'
+import type { SelectionConflict } from '../catalog/selection-conflicts'
 import { DSP_LOADER } from '../engine/protocol'
 import type { BuildProgress, BuildReport } from '../engine/protocol'
-export type BuildView = { key: string; state: 'empty' | 'validating' | 'valid' | 'building' | 'built' | 'error'; error?: string; report?: BuildReport; phase?: BuildProgress; result?: { buffer: ArrayBuffer; sha256: string } }
+export type BuildView = { key: string; state: 'empty' | 'validating' | 'valid' | 'building' | 'built' | 'error'; error?: string; conflict?: SelectionConflict; report?: BuildReport; phase?: BuildProgress; result?: { buffer: ArrayBuffer; sha256: string } }
+function failedBuild(key: string, error: unknown): BuildView {
+  return { key, state: 'error', error: error instanceof Error ? error.message : 'Could not prepare this firmware.', ...(error instanceof FirmwareBuildError && error.conflict ? { conflict: error.conflict } : {}) }
+}
 export function useFirmwareBuild(client: RefObject<FirmwareClient | null>, active: Configuration | undefined, firmware: FirmwareInspection | null) {
   const {session}=useCommunity(),memberId=session.user?.verified&&session.user.username?session.user.id:null
   const ids = active?.moduleIds ?? [], keepStock = DSP_LOADER && (active?.keepStockFx2 ?? true)
@@ -27,7 +32,7 @@ export function useFirmwareBuild(client: RefObject<FirmwareClient | null>, activ
     if (!firmware || !ids.length || configurationError) return
     void engine?.validate(ids, keepStock, active?.usbAudio).then(report => {
       if (operation.current === current) setView({ key, state: 'valid', report })
-    }).catch(error => { if (operation.current === current) setView({ key, state: 'error', error: error.message }) })
+    }).catch(error => { if (operation.current === current) setView(failedBuild(key, error)) })
     return () => { ++controller.current; if (building.current) { building.current = false; engine?.cancelBuild() } }
   // The key captures every firmware/configuration input, including chooser options.
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,7 +51,7 @@ export function useFirmwareBuild(client: RefObject<FirmwareClient | null>, activ
       if (operation.current === request) { setView({ key, state: 'built', report: result.report, result: { buffer: result.buffer, sha256: result.sha256 } }); trackUsage('build_succeeded', 'octatrack') }
     } catch (error) {
       if (operation.current !== request) return
-      setView({ key, state: 'error', error: error instanceof Error ? error.message : 'Could not prepare this firmware.' })
+      setView(failedBuild(key, error))
       // A refused sign-in is not a failed build, and a cancelled build never reaches this point.
       if (started) trackUsage('build_failed', 'octatrack')
     }
@@ -60,7 +65,7 @@ export function useFirmwareBuild(client: RefObject<FirmwareClient | null>, activ
     if(configurationError)return
     const request = ++operation.current
     setView({ key, state: 'validating' })
-    void client.current?.validate(ids, keepStock, active?.usbAudio).then(report => { if (operation.current === request) setView({ key, state: 'valid', report }) }).catch(error => { if (operation.current === request) setView({ key, state: 'error', error: error.message }) })
+    void client.current?.validate(ids, keepStock, active?.usbAudio).then(report => { if (operation.current === request) setView({ key, state: 'valid', report }) }).catch(error => { if (operation.current === request) setView(failedBuild(key, error)) })
   }
   return { ...current, build, cancel, retry, canRetry: !configurationError && !!firmware && !!ids.length }
 }

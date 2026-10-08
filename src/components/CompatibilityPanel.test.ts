@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { CompatibilityPanel } from './CompatibilityPanel'
 import { explainBuildFailure } from '../engine/build-errors'
 import type { BuildView } from '../hooks/useFirmwareBuild'
+import type { SelectionConflict } from '../catalog/selection-conflicts'
 
 const reportedSelection = ['euclid', 'vector', 'sidechain-compressor', 'tapehead', 'tapeecho', 'miniverb', 'previewvol', 'repitch']
 function render(state: BuildView['state'], error?: string, ids = reportedSelection) {
@@ -11,6 +12,18 @@ function render(state: BuildView['state'], error?: string, ids = reportedSelecti
 }
 
 describe('configuration placement status', () => {
+  it('renders named placement failures and complete verified removal choices', () => {
+    const conflict: SelectionConflict = { id: 'build-placement-space', title: 'This selection needs more menu and patch space', description: 'Mute Modes menu and patch code does not fit (208 bytes needed, 60 bytes available). Removing one module is insufficient.', moduleIds: ['mute-modes'], fixes: [{ label: 'Remove Euclid + Mute Modes', removeIds: ['euclid', 'mute-modes'] }] }
+    const ids = ['miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', 'analog-bassdrum', 'previewvol', 'sidechain-compressor', 'playmodes', 'mute-modes', 'recorder-loop-fix']
+    const props = { ids, keepStockFx2: false, buildState: 'error' as const, buildError: conflict.description, buildConflict: conflict, onFix: () => {} }
+    const html = renderToStaticMarkup(createElement(CompatibilityPanel, props))
+    expect(html).toContain('compatibility-conflict')
+    expect(html).toContain('208 bytes needed, 60 bytes available')
+    expect(html).toContain('Remove Euclid + Mute Modes')
+    expect(html).not.toContain('Choose your base firmware')
+    const changed = renderToStaticMarkup(createElement(CompatibilityPanel, { ...props, buildState: 'validating' }))
+    expect(changed).not.toContain('Remove Euclid + Mute Modes')
+  })
   it.each(['mute-modes', 'recorder-loop-fix'])('shows the placement refusal for the reported selection with %s', id => {
     const error = explainBuildFailure('A module menu cave exceeds its reserved region.')
     const html = render('error', error, [...reportedSelection, id])

@@ -1,5 +1,6 @@
 import type { FirmwareInspection } from './base'
 import type { UsbAudioConfiguration } from '../config/usb-audio'
+import type { SelectionConflict } from '../catalog/selection-conflicts'
 export type BuildReport = {
   version: string; revision: string; sourceCommit: string | null; sourceTreeSha256: string; moduleIds: string[]; moduleVersions: Record<string,string>; keepStockFx2: boolean
   osBytes: number; runtimeBytes: number; reservedBytes: number; fx1Rows: number; fx2Rows: number
@@ -17,7 +18,7 @@ export type EngineResponse =
   | { id: number; type: 'progress'; phase: BuildProgress }
   | { id: number; type: 'built'; buffer: ArrayBuffer; report: BuildReport; sha256: string }
   | { id: number; type: 'cleared' }
-  | { id: number; type: 'error'; message: string }
+  | { id: number; type: 'error'; message: string; conflict?: SelectionConflict }
 // The owner authorized the logger-enabled release on 3 October 2026.
 // The logger exception and remaining measurement limits are in docs/VERIFICATION.md.
 export const ENGINE_AVAILABLE = true
