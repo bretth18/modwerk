@@ -84,6 +84,7 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
 .support-heart { display: inline-flex; flex-shrink: 0; color: #c58a9c; }
 .workspace { min-width: 0; min-height: 0; overflow: hidden; display: grid; grid-template-rows: 64px minmax(0, 1fr) 36px; }
 .app-toolbar { display: flex; align-items: center; gap: 20px; background: #232326; border-bottom: 1px solid var(--line); padding: 0 27px; box-shadow: 0 1px 8px #00000010; }
+.toolbar-actions { display: contents; }
 .toolbar-title { display: flex; align-items: center; gap: 9px; flex: 0 1 auto; min-width: 0; color: #c2c2ce; font-size: 13px; white-space: nowrap; }
 .toolbar-title > :is(svg, .preview-badge, .breadcrumb-divider) { flex-shrink: 0; }
 .toolbar-title > span:not([class]), .toolbar-title strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
@@ -106,7 +107,7 @@ h2 { font-size: 16px; letter-spacing: -.15px; font-weight: 600; }
   .app-toolbar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .app-toolbar > .toolbar-title { grid-column: 1; }
   .app-toolbar > .search { grid-column: 2; justify-self: center; width: 100%; min-width: 0; margin-left: 0; }
-  .app-toolbar > .configuration-button { grid-column: 3; justify-self: end; margin-left: 0; }
+  .app-toolbar > .toolbar-actions { grid-column: 3; display: flex; align-items: center; justify-content: flex-end; gap: 12px; min-width: 0; }
 }
 .workspace-content { padding: 29px 30px; overflow-y: auto; min-width: 0; min-height: 0; scrollbar-color: #4a4a53 transparent; scrollbar-width: thin; }
 .workspace-content:focus { outline: none; }
@@ -1467,10 +1468,8 @@ h1 { font-size: 28px; }
 .sidebar-brand { position: relative; margin-bottom: 24px; }
 .sidebar-brand .app-brand { display: grid; grid-template-columns: 35px minmax(0, 1fr); gap: 2px 10px; margin: 0; }
 .sidebar-brand .app-brand > img { grid-row: 1 / 3; }
-.sidebar-brand .app-brand > span { padding-right: 40px; line-height: 24px; }
+.sidebar-brand .app-brand > span { line-height: 24px; }
 .sidebar-brand .app-brand > small { grid-column: 2; margin: 0; line-height: 16px; white-space: nowrap; }
-.sidebar-brand .notification-bell { position: absolute; top: 0; right: 3px; bottom: 0; display: flex; align-items: center; margin-left: 0; }
-.sidebar-brand .notification-panel { position: fixed; top: 72px; left: calc(var(--sidebar-width) - 24px); right: auto; width: min(380px, calc(100vw - var(--sidebar-width) + 8px)); }
 .notification-bell { position: relative; margin-left: auto; flex-shrink: 0; }
 .notification-bell ~ .configuration-button, .notification-bell ~ .mobile-menu { margin-left: 0; }
 .notification-bell-button { position: relative; display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 9px; background: transparent; color: #c7c7d2; cursor: pointer; }
@@ -1536,10 +1535,10 @@ h1 { font-size: 28px; }
   .workspace-content { flex: 1 0 auto; overflow: visible; padding: 16px 16px 36px; }
   .status-bar { display: none; }
 
-  /* App bar actions: search, configuration badge, notifications, menu. */
+  /* App bar actions: search, notifications, configuration badge, menu. */
   .search-toggle { order: 0; }
-  .configuration-button { order: 1; }
-  .notification-bell { order: 2; }
+  .notification-bell { order: 1; }
+  .configuration-button { order: 2; }
   .mobile-menu { order: 3; }
   .configuration-button { position: relative; display: grid; place-items: center; width: 44px; height: 44px; margin-left: 0; border-radius: 10px; color: #c7c7d2; }
   .configuration-button > svg { width: 20px; height: 20px; }
