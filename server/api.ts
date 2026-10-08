@@ -10,6 +10,7 @@ import { notificationRoutes, notifyModuleMaintainers, unsubscribe, withdrawModul
 import { notifyBugDevelopers, publicBugDetails } from './bug-reports'
 import { developerAuthentication, developerUser } from './developer-auth'
 import { developerApi } from './developers'
+import { moduleSupportRoutes } from './module-support'
 import { communityModule, moduleThreadId } from '../src/community/modules'
 import { ensureDiscussionThread } from './module-threads'
 import { validateDigiIssueContext } from '../src/community/digi-issue-context'
@@ -76,7 +77,10 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     const adminId = await adminActor(request,env,db), admin = !!adminId
     const push = await pushRoutes(request,env,db,user,admin)
     if(push)return push
-    const developer = await developerApi(request,db,user,admin,await developerUser(request,env,db),adminId)
+    const signedDeveloper = await developerUser(request,env,db)
+    const support = await moduleSupportRoutes(request,db,user,signedDeveloper)
+    if(support)return support
+    const developer = await developerApi(request,db,user,admin,signedDeveloper,adminId)
     if(developer)return developer
     const avatar = await avatarRoutes(request,env,db,user)
     if(avatar)return avatar
