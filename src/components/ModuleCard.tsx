@@ -10,6 +10,7 @@ import { Icon } from './Icon'
 import { ModulePreview } from './ModulePreview'
 import { ModuleRelease } from './ModuleRelease'
 import { USB_AUDIO_MODULE } from '../config/usb-audio'
+import { ModuleWorksCount } from '../community/ModuleWorksCount'
 
 export type ModuleCardProps = {
   module: FirmwareModule
@@ -36,6 +37,7 @@ export function CardStats({ statistics: stats, children }: { statistics?: Module
     {stats?.count && stats.average !== null ? <span className="card-stat is-rating" title={stats.count + (stats.count === 1 ? ' rating' : ' ratings')}><Icon name="star" size={12} />{stats.average.toFixed(1) + ' (' + stats.count + ')'}</span> : null}
     <span className="card-stat"><Icon name="heart" size={12} />{stats ? stats.likes.toLocaleString() : '—'}<span className="sr-only"> {stats?.likes === 1 ? 'like' : 'likes'}</span></span>
     <span className="card-stat" title={downloadCoverage(stats?.downloadsStarted)}><Icon name="download" size={12} />{stats?.downloads === undefined ? '—' : stats.downloads.toLocaleString()}<span className="sr-only"> {stats?.downloads === 1 ? 'download' : 'downloads'}</span></span>
+    <ModuleWorksCount count={stats?.worksReports} compact/>
     {children}
   </div>
 }

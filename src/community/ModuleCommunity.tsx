@@ -11,7 +11,8 @@ import { ModulePopularity } from './ModulePopularity'
 import { modulePageHref, moduleThreadId } from './modules'
 import { useLoginPrompt } from './LoginPromptDialog'
 import { ForumThreadView } from './ForumThreadView'
-type Data = {ratings:{average:number|null;count:number};ownRating:number;likes:number;liked:boolean;downloads?:number;downloadsStarted?:string|null;discussionCount?:number;sharedConfigurations?:number;media:PublicMedia[]}
+import { MODULE_STATISTICS_CHANGED } from './module-statistics'
+type Data = {ratings:{average:number|null;count:number};ownRating:number;likes:number;liked:boolean;downloads?:number;downloadsStarted?:string|null;discussionCount?:number;sharedConfigurations?:number;worksReports?:number;media:PublicMedia[]}
 function MediaPreview({item,privatePreview}:{item:PublicMedia;privatePreview:boolean}) {
   const [preview,setPreview]=useState<{id:string;url:string}|null>(null),[error,setError]=useState('')
   useEffect(()=>{
@@ -49,10 +50,16 @@ export function ModuleCommunity({id,mode='all',onDiscuss,onReportIssue,onDiscuss
   const mediaGuide=moduleMediaGuide<ModuleMedia>(id,document?.version??'',sourceMedia)
   const [data,setData] = useState<Data | null>(null), [rating,setRating] = useState(0), [error,setError] = useState(''), [busy,setBusy] = useState(false), [notice,setNotice] = useState('')
   useEffect(() => {
-    let cancelled=false
-    // A successful load clears an earlier failure, so a passing network blip does not leave a stale error.
-    if (session.available) void api<Data>('/modules/' + id).then(value => {if (!cancelled) {setData(value);setRating(value.ownRating);setError('')}}).catch(error => {if(!cancelled)setError(error.message)})
-    return () => {cancelled=true}
+    let cancelled=false, latest=0
+    // Also refresh when a feedback report is posted elsewhere on this page.
+    function load() {
+      if (!session.available) return
+      const request=++latest
+      void api<Data>('/modules/' + id).then(value => {if (!cancelled&&request===latest) {setData(value);setRating(value.ownRating);setError('')}}).catch(error => {if(!cancelled&&request===latest)setError(error.message)})
+    }
+    load()
+    window.addEventListener(MODULE_STATISTICS_CHANGED,load)
+    return () => {cancelled=true;window.removeEventListener(MODULE_STATISTICS_CHANGED,load)}
   },[id,session.available,session.user?.id])
   const discussionCount=data?.discussionCount
   useEffect(()=>{if(discussionCount!==undefined)onDiscussionCount?.(discussionCount)},[discussionCount,onDiscussionCount])

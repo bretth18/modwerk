@@ -1312,6 +1312,14 @@ h1 { font-size: 28px; }
 .module-popularity > a { color: #a8b0ff; }
 .module-popularity > a:hover { color: #d0d5ff; }
 .module-popularity svg { flex-shrink: 0; }
+.module-works-count { display: inline-flex; align-items: center; gap: 5px; color: #9cc6b1; font-size: 11px; font-weight: 500; line-height: 1.6; font-variant-numeric: tabular-nums; }
+.module-issue-dialog { width: min(640px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow-y: auto; }
+.module-issue-dialog > .section-title { gap: 12px; margin-bottom: 12px; }
+.module-issue-dialog > .section-title h2 { line-height: 1.5; }
+.module-issue-dialog > .issue-report { margin: 0; padding: 0; border: 0; }
+.module-issue-dialog > .issue-report > summary { display: none; }
+.module-issue-dialog .community-form { gap: 12px; }
+.module-issue-dialog .community-form .risk-accept { flex-direction: row; align-items: center; gap: 8px; margin-top: 0; }
 .popularity-note { color: #aaaab7; font-size: 12px; line-height: 1.6; margin: 16px 0; }
 .published-card .module-popularity { margin-bottom: 14px; }
 .project-notice { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #494650; font-size: 12px; line-height: 1.7; color: #b7b5c3; }

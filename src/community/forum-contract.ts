@@ -48,7 +48,7 @@ export function sharedConfiguration(value: unknown): SharedConfiguration {
   const usbAudio = item.usbAudio === undefined ? undefined : parseUsbAudioConfiguration(item.usbAudio)
   return { name: item.name.trim(), ...(item.device ? {device} : {}), moduleIds: [...item.moduleIds], moduleVersions: { ...item.moduleVersions }, keepStockFx2: item.keepStockFx2, ...(usbAudio ? { usbAudio } : {}) }
 }
-export type ForumThread = { id:string;title:string;category:ForumCategory;machine:string|null;module_id:string|null;username:string|null;avatar?:string|null;official?:number;status:'open'|'resolved';request_status:RequestStatus;votes:number;locked:number;pinned:number;hidden?:number;created_at:string;updated_at:string;replies:number;last_post_id?:string|null;last_username?:string|null;last_excerpt?:string|null;last_post_page?:number;media_kinds?:string|null;unread?:number;new_replies?:number }
+export type ForumThread = { worksReports?:number;id:string;title:string;category:ForumCategory;machine:string|null;module_id:string|null;username:string|null;avatar?:string|null;official?:number;status:'open'|'resolved';request_status:RequestStatus;votes:number;locked:number;pinned:number;hidden?:number;created_at:string;updated_at:string;replies:number;last_post_id?:string|null;last_username?:string|null;last_excerpt?:string|null;last_post_page?:number;media_kinds?:string|null;unread?:number;new_replies?:number }
 /** What happened since a member's previous forum visit; `since` is null on the first visit. */
 export type ForumVisit = { since: string | null; newThreads: number; newReplies: number; unreadFollowed: number }
 // Images and sound clips attached to a post. Sizes are checked again on the server after the file type is read from its bytes.
