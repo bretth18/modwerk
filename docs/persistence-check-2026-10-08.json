@@ -1,0 +1,614 @@
+{
+  "schemaVersion": 1,
+  "kind": "Octatrack multi-instance control-state persistence audit",
+  "date": "2026-10-08",
+  "qualification": "emulator control-state results; full hardware/audio qualification remains incomplete",
+  "environment": {
+    "stockMainImageSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+    "emulatorSha256": "89759d97c794f62b304dff1912a2ac1c7965289b4d019fbdbb0dbcf3c3d9f312",
+    "emulatorTestOnlyChange": "map all 1 MiB battery RAM and restore it before boot through OT_PERSIST_SRAM_IN",
+    "hardwareVariant": "MKII panel model",
+    "dspExecution": false,
+    "privateHarnessDirectory": "/private/tmp/modwerk-persistence-20261008",
+    "browserBuildMetadataSourceTreeSha256": "9b2b23f90ae83f002e45d6b6da0ef72e205c683f479af8dfa7ae393c336cef51"
+  },
+  "procedure": [
+    "Use two simultaneous tracks, T1 and T5, with distinct source/FX controls and sample slot selections. Analog BD uses 808 and 909 settings respectively. Both FX slots remain assigned; use four custom FX instances when supported.",
+    "Call native Part Save and Part Reload handlers on a loaded project; clear both marker/assignment/control values between calls and compare the restored state.",
+    "Use real panel keys and encoders to edit T1 independently, verify the other seven tracks and its other FX slot are unchanged, then edit T5 and verify the other tracks remain unchanged.",
+    "Use real PROJECT > SAVE and confirmation keys, check native card-write errors, compare saved live state and working/stored files.",
+    "Make later unsaved edits, then use real PROJECT > RELOAD and confirmation keys; compare all selected controls and assignments to the saved state.",
+    "Start a new emulator process with only the saved 1 MiB battery RAM and card retained. Do not mount or post LOAD PROJECT. Compare state at initial startup and after seven seconds of running with frame interrupts.",
+    "Separately start with empty battery RAM, mount the saved card and explicitly load the project. Compare every tested instance to the saved state."
+  ],
+  "comparedFields": [
+    "machine backing type and AB/1 or PL/1 identity marker",
+    "all five per-track sample selectors",
+    "all source main and setup pages, including Analog BD engine choice",
+    "both FX IDs, all 12 main and 12 setup bytes per track"
+  ],
+  "profiles": [
+    {
+      "profile": "analog",
+      "modules": [
+        "analog-bassdrum"
+      ],
+      "mainImageSha256": "3d9c37f98d41e42b3f9259592a6ed4dfc356393269c9e00452150eb4e04c7e6e",
+      "tracks": [
+        1,
+        5
+      ],
+      "machineInstances": 2,
+      "fxAssignments": [
+        [
+          4,
+          8
+        ],
+        [
+          4,
+          8
+        ]
+      ],
+      "customFxInstances": 0,
+      "checks": {
+        "partSaveReload": true,
+        "firstInstanceEdited": true,
+        "otherTracksUnaffected": true,
+        "sameTrackOtherFxSlotUnaffected": true,
+        "bothInstancesEdited": true,
+        "projectSaveRetainsEdits": true,
+        "laterEditsDiffer": true,
+        "projectReload": true,
+        "batteryRamOnlyRestart": true,
+        "freshProjectLoad": true,
+        "batteryMirrorMatchesSaved": true,
+        "retainedAfterSevenSeconds": true,
+        "secondInstanceEditLeavesOtherTracksUntouched": true,
+        "atLeastOneFxEditTookEffect": true
+      },
+      "matchingWorkStoredPairs": 26,
+      "savedCardMatchesLivePart": true,
+      "cardWriteErrors": 0,
+      "sectorsWrittenAcrossSaveReload": 43712,
+      "sourceFirstControlInitially": [
+        40,
+        56
+      ],
+      "sourceFirstControlSaved": [
+        43,
+        63
+      ]
+    },
+    {
+      "profile": "miniverb",
+      "modules": [
+        "analog-bassdrum",
+        "miniverb"
+      ],
+      "mainImageSha256": "860bd6695ab9508dde637ed707164560a92d6a8cd72835d516d0e9d1c4fa040f",
+      "tracks": [
+        1,
+        5
+      ],
+      "machineInstances": 2,
+      "fxAssignments": [
+        [
+          4,
+          23
+        ],
+        [
+          4,
+          23
+        ]
+      ],
+      "customFxInstances": 2,
+      "checks": {
+        "partSaveReload": true,
+        "firstInstanceEdited": true,
+        "otherTracksUnaffected": true,
+        "sameTrackOtherFxSlotUnaffected": true,
+        "bothInstancesEdited": true,
+        "projectSaveRetainsEdits": true,
+        "laterEditsDiffer": true,
+        "projectReload": true,
+        "batteryRamOnlyRestart": true,
+        "freshProjectLoad": true,
+        "batteryMirrorMatchesSaved": true,
+        "retainedAfterSevenSeconds": true,
+        "secondInstanceEditLeavesOtherTracksUntouched": true,
+        "atLeastOneFxEditTookEffect": true
+      },
+      "matchingWorkStoredPairs": 26,
+      "savedCardMatchesLivePart": true,
+      "cardWriteErrors": 0,
+      "sectorsWrittenAcrossSaveReload": 43750,
+      "sourceFirstControlInitially": [
+        40,
+        56
+      ],
+      "sourceFirstControlSaved": [
+        43,
+        63
+      ]
+    },
+    {
+      "profile": "tapeecho",
+      "modules": [
+        "analog-bassdrum",
+        "tapeecho"
+      ],
+      "mainImageSha256": "efaad099f469385da23b940844113fb677a49bf00b52c0fd3b133073cc6fe026",
+      "tracks": [
+        1,
+        5
+      ],
+      "machineInstances": 2,
+      "fxAssignments": [
+        [
+          4,
+          15
+        ],
+        [
+          4,
+          15
+        ]
+      ],
+      "customFxInstances": 2,
+      "checks": {
+        "partSaveReload": true,
+        "firstInstanceEdited": true,
+        "otherTracksUnaffected": true,
+        "sameTrackOtherFxSlotUnaffected": true,
+        "bothInstancesEdited": true,
+        "projectSaveRetainsEdits": true,
+        "laterEditsDiffer": true,
+        "projectReload": true,
+        "batteryRamOnlyRestart": true,
+        "freshProjectLoad": true,
+        "batteryMirrorMatchesSaved": true,
+        "retainedAfterSevenSeconds": true,
+        "secondInstanceEditLeavesOtherTracksUntouched": true,
+        "atLeastOneFxEditTookEffect": true
+      },
+      "matchingWorkStoredPairs": 26,
+      "savedCardMatchesLivePart": true,
+      "cardWriteErrors": 0,
+      "sectorsWrittenAcrossSaveReload": 43750,
+      "sourceFirstControlInitially": [
+        40,
+        56
+      ],
+      "sourceFirstControlSaved": [
+        43,
+        63
+      ]
+    },
+    {
+      "profile": "euclid",
+      "modules": [
+        "analog-bassdrum",
+        "euclid"
+      ],
+      "mainImageSha256": "b9f679ace104dcb304c2cf71ef1bd75d4c7ff8022bbeb4aaa1d22fd7af0d7b96",
+      "tracks": [
+        1,
+        5
+      ],
+      "machineInstances": 2,
+      "fxAssignments": [
+        [
+          29,
+          29
+        ],
+        [
+          29,
+          29
+        ]
+      ],
+      "customFxInstances": 4,
+      "checks": {
+        "partSaveReload": true,
+        "firstInstanceEdited": true,
+        "otherTracksUnaffected": true,
+        "sameTrackOtherFxSlotUnaffected": true,
+        "bothInstancesEdited": true,
+        "projectSaveRetainsEdits": true,
+        "laterEditsDiffer": true,
+        "projectReload": true,
+        "batteryRamOnlyRestart": true,
+        "freshProjectLoad": true,
+        "batteryMirrorMatchesSaved": true,
+        "retainedAfterSevenSeconds": true,
+        "secondInstanceEditLeavesOtherTracksUntouched": true,
+        "atLeastOneFxEditTookEffect": true
+      },
+      "matchingWorkStoredPairs": 26,
+      "savedCardMatchesLivePart": true,
+      "cardWriteErrors": 0,
+      "sectorsWrittenAcrossSaveReload": 43750,
+      "sourceFirstControlInitially": [
+        40,
+        56
+      ],
+      "sourceFirstControlSaved": [
+        43,
+        63
+      ]
+    },
+    {
+      "profile": "tapehead",
+      "modules": [
+        "analog-bassdrum",
+        "tapehead"
+      ],
+      "mainImageSha256": "0cfe3a82beacc453a714dc14a4e37095d00429d452b8999f0655c9af0f08546c",
+      "tracks": [
+        1,
+        5
+      ],
+      "machineInstances": 2,
+      "fxAssignments": [
+        [
+          31,
+          31
+        ],
+        [
+          31,
+          31
+        ]
+      ],
+      "customFxInstances": 4,
+      "checks": {
+        "partSaveReload": true,
+        "firstInstanceEdited": true,
+        "otherTracksUnaffected": true,
+        "sameTrackOtherFxSlotUnaffected": true,
+        "bothInstancesEdited": true,
+        "projectSaveRetainsEdits": true,
+        "laterEditsDiffer": true,
+        "projectReload": true,
+        "batteryRamOnlyRestart": true,
+        "freshProjectLoad": true,
+        "batteryMirrorMatchesSaved": true,
+        "retainedAfterSevenSeconds": true,
+        "secondInstanceEditLeavesOtherTracksUntouched": true,
+        "atLeastOneFxEditTookEffect": true
+      },
+      "matchingWorkStoredPairs": 26,
+      "savedCardMatchesLivePart": true,
+      "cardWriteErrors": 0,
+      "sectorsWrittenAcrossSaveReload": 43750,
+      "sourceFirstControlInitially": [
+        40,
+        56
+      ],
+      "sourceFirstControlSaved": [
+        43,
+        63
+      ]
+    },
+    {
+      "profile": "sidechain-compressor",
+      "modules": [
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "mainImageSha256": "2d62a21d3a6ac5a6526775f1445ad49c4cdd1646f144a45029bf50a4bad183e9",
+      "tracks": [
+        1,
+        5
+      ],
+      "machineInstances": 2,
+      "fxAssignments": [
+        [
+          24,
+          24
+        ],
+        [
+          24,
+          24
+        ]
+      ],
+      "customFxInstances": 4,
+      "checks": {
+        "partSaveReload": true,
+        "firstInstanceEdited": true,
+        "otherTracksUnaffected": true,
+        "sameTrackOtherFxSlotUnaffected": true,
+        "bothInstancesEdited": true,
+        "projectSaveRetainsEdits": true,
+        "laterEditsDiffer": true,
+        "projectReload": true,
+        "batteryRamOnlyRestart": true,
+        "freshProjectLoad": true,
+        "batteryMirrorMatchesSaved": true,
+        "retainedAfterSevenSeconds": true,
+        "secondInstanceEditLeavesOtherTracksUntouched": true,
+        "atLeastOneFxEditTookEffect": true
+      },
+      "matchingWorkStoredPairs": 26,
+      "savedCardMatchesLivePart": true,
+      "cardWriteErrors": 0,
+      "sectorsWrittenAcrossSaveReload": 43750,
+      "sourceFirstControlInitially": [
+        40,
+        56
+      ],
+      "sourceFirstControlSaved": [
+        43,
+        63
+      ]
+    },
+    {
+      "profile": "spectrum",
+      "modules": [
+        "spectrum"
+      ],
+      "mainImageSha256": "07bfd5512ced4178a94b8a583715828459cec7903a7fa5fec0141fae72a856b9",
+      "tracks": [
+        1,
+        5
+      ],
+      "machineInstances": 2,
+      "fxAssignments": [
+        [
+          10,
+          10
+        ],
+        [
+          10,
+          10
+        ]
+      ],
+      "customFxInstances": 4,
+      "checks": {
+        "partSaveReload": true,
+        "firstInstanceEdited": true,
+        "otherTracksUnaffected": true,
+        "sameTrackOtherFxSlotUnaffected": true,
+        "bothInstancesEdited": true,
+        "projectSaveRetainsEdits": true,
+        "laterEditsDiffer": true,
+        "projectReload": true,
+        "batteryRamOnlyRestart": true,
+        "freshProjectLoad": true,
+        "batteryMirrorMatchesSaved": true,
+        "retainedAfterSevenSeconds": true,
+        "secondInstanceEditLeavesOtherTracksUntouched": true,
+        "atLeastOneFxEditTookEffect": true
+      },
+      "matchingWorkStoredPairs": 26,
+      "savedCardMatchesLivePart": true,
+      "cardWriteErrors": 0,
+      "sectorsWrittenAcrossSaveReload": 43750,
+      "sourceFirstControlInitially": [
+        64,
+        64
+      ],
+      "sourceFirstControlSaved": [
+        66,
+        70
+      ]
+    },
+    {
+      "profile": "modulation",
+      "modules": [
+        "modulation"
+      ],
+      "mainImageSha256": "c3922af2039e951d7e3d02ca7403c981d4844cb6b4a21d2b04324616844deb61",
+      "tracks": [
+        1,
+        5
+      ],
+      "machineInstances": 2,
+      "fxAssignments": [
+        [
+          11,
+          11
+        ],
+        [
+          11,
+          11
+        ]
+      ],
+      "customFxInstances": 4,
+      "checks": {
+        "partSaveReload": true,
+        "firstInstanceEdited": true,
+        "otherTracksUnaffected": true,
+        "sameTrackOtherFxSlotUnaffected": true,
+        "bothInstancesEdited": true,
+        "projectSaveRetainsEdits": true,
+        "laterEditsDiffer": true,
+        "projectReload": true,
+        "batteryRamOnlyRestart": true,
+        "freshProjectLoad": true,
+        "batteryMirrorMatchesSaved": true,
+        "retainedAfterSevenSeconds": true,
+        "secondInstanceEditLeavesOtherTracksUntouched": true,
+        "atLeastOneFxEditTookEffect": true
+      },
+      "matchingWorkStoredPairs": 26,
+      "savedCardMatchesLivePart": true,
+      "cardWriteErrors": 0,
+      "sectorsWrittenAcrossSaveReload": 43750,
+      "sourceFirstControlInitially": [
+        64,
+        64
+      ],
+      "sourceFirstControlSaved": [
+        66,
+        70
+      ]
+    },
+    {
+      "profile": "character",
+      "modules": [
+        "character"
+      ],
+      "mainImageSha256": "30bc2475ad591bc90407599ab74359ab02a6efc2058397b181f50cafaf3225ed",
+      "tracks": [
+        1,
+        5
+      ],
+      "machineInstances": 2,
+      "fxAssignments": [
+        [
+          26,
+          26
+        ],
+        [
+          26,
+          26
+        ]
+      ],
+      "customFxInstances": 4,
+      "checks": {
+        "partSaveReload": true,
+        "firstInstanceEdited": true,
+        "otherTracksUnaffected": true,
+        "sameTrackOtherFxSlotUnaffected": true,
+        "bothInstancesEdited": true,
+        "projectSaveRetainsEdits": true,
+        "laterEditsDiffer": true,
+        "projectReload": true,
+        "batteryRamOnlyRestart": true,
+        "freshProjectLoad": true,
+        "batteryMirrorMatchesSaved": true,
+        "retainedAfterSevenSeconds": true,
+        "secondInstanceEditLeavesOtherTracksUntouched": true,
+        "atLeastOneFxEditTookEffect": true
+      },
+      "matchingWorkStoredPairs": 26,
+      "savedCardMatchesLivePart": true,
+      "cardWriteErrors": 0,
+      "sectorsWrittenAcrossSaveReload": 43750,
+      "sourceFirstControlInitially": [
+        64,
+        64
+      ],
+      "sourceFirstControlSaved": [
+        66,
+        70
+      ]
+    },
+    {
+      "profile": "poly-fixed",
+      "modules": [
+        "poly-machine-private-correction"
+      ],
+      "mainImageSha256": "12f0e70d29a69e1fd594b2604d506d40409ef6406d9628860f86eda279295575",
+      "tracks": [
+        1,
+        5
+      ],
+      "machineInstances": 2,
+      "fxAssignments": [
+        [
+          4,
+          8
+        ],
+        [
+          4,
+          8
+        ]
+      ],
+      "customFxInstances": 0,
+      "checks": {
+        "partSaveReload": true,
+        "firstInstanceEdited": true,
+        "otherTracksUnaffected": true,
+        "sameTrackOtherFxSlotUnaffected": true,
+        "bothInstancesEdited": true,
+        "projectSaveRetainsEdits": true,
+        "laterEditsDiffer": true,
+        "projectReload": true,
+        "batteryRamOnlyRestart": true,
+        "freshProjectLoad": true,
+        "batteryMirrorMatchesSaved": true,
+        "retainedAfterSevenSeconds": true,
+        "secondInstanceEditLeavesOtherTracksUntouched": true,
+        "atLeastOneFxEditTookEffect": true
+      },
+      "matchingWorkStoredPairs": 26,
+      "savedCardMatchesLivePart": true,
+      "cardWriteErrors": 0,
+      "sectorsWrittenAcrossSaveReload": 43649,
+      "sourceFirstControlInitially": [
+        64,
+        64
+      ],
+      "sourceFirstControlSaved": [
+        66,
+        70
+      ]
+    }
+  ],
+  "polyAssignmentRegression": {
+    "method": "actual SRC machine chooser assignment on T1 and T5, followed by battery-RAM-only reboot without project load",
+    "originalImageSha256": "f50074440b98ca4d52735223bbf56945bcfbd8ee8660347293dfa79a91344d2d",
+    "originalRegistrationSourceSha256": "fbe3e703a078f1cfa97c74b5fc3c549688d3adf4d33bb29c6c73481696eb9b16",
+    "originalLiveMarkers": [
+      "504c01",
+      "504c01"
+    ],
+    "originalBatteryMarkers": [
+      "00504c",
+      "00504c"
+    ],
+    "originalRebootMarkers": [
+      "00504c",
+      "00504c"
+    ],
+    "originalPass": false,
+    "correctedImageSha256": "12f0e70d29a69e1fd594b2604d506d40409ef6406d9628860f86eda279295575",
+    "correctedRegistrationSourceSha256": "28fd166fbea90e97028ec771a33aafd89c8559e0af246e45306f269fbefbb86b",
+    "correctedAssignmentMirrorPass": true,
+    "correctedAssignmentRebootPass": true,
+    "rootCause": "pm_assign compiles its marker-copy loop to MOVE.B (a0)+,(a0,delta). The battery destination is shifted one byte, so PL/1 is absent at the recognized offset on reboot. Read all three marker bytes before writing the mirror.",
+    "sourcePatch": "poly-marker-copy-2026-10-08.patch",
+    "afterProjectSave": {
+      "poly-assigned-save": {
+        "liveAssignmentAndControlsPreserved": true,
+        "batteryMirrorMatchesLive": false,
+        "sevenSecondBatteryOnlyRebootMatchesLive": false,
+        "liveMarkers": [
+          "504c01",
+          "504c01"
+        ],
+        "batteryMarkers": [
+          "00504c",
+          "00504c"
+        ],
+        "rebootMarkers": [
+          "00504c",
+          "00504c"
+        ]
+      },
+      "poly-fixed-assigned-save": {
+        "liveAssignmentAndControlsPreserved": true,
+        "batteryMirrorMatchesLive": true,
+        "sevenSecondBatteryOnlyRebootMatchesLive": true,
+        "liveMarkers": [
+          "504c01",
+          "504c01"
+        ],
+        "batteryMarkers": [
+          "504c01",
+          "504c01"
+        ],
+        "rebootMarkers": [
+          "504c01",
+          "504c01"
+        ]
+      }
+    }
+  },
+  "limitations": [
+    "No physical device was rebooted or flashed in this audit. The user reports that the original POLY build fails on physical reboot.",
+    "DSP-enabled emulator runs terminated with SIGBUS, including an existing emulator executable. Audio after save/reload/reboot is unverified; ColdFire runs use the stand-in DSP. This is a test-environment limitation, not established evidence of a firmware audio defect.",
+    "No maximum-load or all-instance audio stress qualification is claimed. Instance reset/replacement and changing firmware/composition are outside the exercised control-state matrix.",
+    "Early exploratory runs calling an internal project-writer address did not return and were discarded as project-save evidence. The final project results use real panel SAVE/RELOAD actions and verify card contents.",
+    "Private firmware images, projects, cards, screenshots and memory dumps remain outside the repository. This record contains hashes and aggregate comparisons only."
+  ]
+}

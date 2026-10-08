@@ -1,0 +1,66 @@
+POLY battery-RAM marker-copy correction
+
+Source: private POLY registration adapted from Modwerk VECTOR (repeat98).
+Upstream POLY runtime: Sam Banks, MIT. Original registration.c SHA-256:
+fbe3e703a078f1cfa97c74b5fc3c549688d3adf4d33bb29c6c73481696eb9b16
+
+The source licence and attribution are retained below. This patch contains
+module source only, with no Elektron firmware or extracted stock code.
+
+MIT License
+
+Copyright (c) 2026 Sam Banks
+
+Portions of the firmware analysis tooling originate from the octamax project
+(https://github.com/mxldyn/octamax), Copyright (c) 2025-2026 Maxolydian,
+also under the MIT License.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+This license covers this repository's own source code and documentation only.
+Transcribed third-party DSP sources, the community modifications carried as
+submodules and the tools fetched by `make setup` are listed with their own
+licences in THIRD_PARTY.md.
+
+It does not extend to any Elektron Music Machines firmware, which is not
+distributed here and remains the property of its copyright holder. Users
+supply their own copy of the official OS. The container-format tooling in
+this repository re-implements Elektron's firmware-update packaging solely for
+interoperability: so that an owner can build and flash a modified image for
+their own unit. Nothing in this project is endorsed by, supported by, or
+affiliated with Elektron. Octatrack and Elektron are trademarks of Elektron
+Music Machines MAV AB, used only to identify the hardware this project
+targets.
+
+--- a/modules/poly-machine/registration.c
++++ b/modules/poly-machine/registration.c
+@@ -86,7 +86,10 @@
+     } else if(signed_track(part,t)) {
+         part[sig]=part[sig+1]=part[sig+2]=0;
+     }
+-    for(unsigned k=0;k<3;++k) mirror[sig+k]=part[sig+k];
++    /* Read the complete marker before writing it. The m68k backend otherwise
++     * emits MOVE.B (a0)+,(a0,delta), shifting the mirror by one byte. */
++    uint8_t sig0=part[sig], sig1=part[sig+1], sig2=part[sig+2];
++    mirror[sig]=sig0; mirror[sig+1]=sig1; mirror[sig+2]=sig2;
+     if(enabled==1) {
+         pool_bank=U32(BANK_PTR); pool_part=offset/PART_STRIDE; pool_track=t;
+         pool_pending=1;

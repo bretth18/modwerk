@@ -22,6 +22,23 @@ Every module follows [the guide for its category](module-guides/README.md): effe
 - Code or behaviour changes inside a module folder need a higher semantic `version` in its manifest, and the same version in `sdk/catalog.json` once listed. Documentation/media/prose-only edits do not need a version bump.
 - One module per pull request. The owner merging it approves that version.
 
+## Persistence and multiple instances
+
+For every stateful module, project saving and reload/reboot survival are
+essential acceptance checks. Always exercise multiple simultaneous instances
+with different settings: different tracks, both FX slots when supported and
+both DSP cores when applicable. Verify that editing, replacing or resetting one
+instance does not change another. Single-instance operation is insufficient.
+
+Check Part save/reload, project save/load/reload and a restart with volatile RAM
+discarded, retaining only the card and battery-backed RAM. After each operation,
+verify every instance's machine/FX assignment, sample or engine selection,
+parameters and usable audio. Include a saved baseline followed by unsaved edits
+so reload must restore the expected baseline. An emulator that explicitly loads
+the project after a fresh boot proves project loading, not power-cycle survival.
+Bind results to the exact source/image and record physical reboot evidence
+separately; failures or unavailable paths remain explicit qualification gaps.
+
 ## Setup
 
 - Node 24 (see `.nvmrc`), then `npm ci`. This is all you need for documentation, metadata and the website.
