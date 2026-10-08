@@ -18,7 +18,7 @@ async function github<T>(config: GithubConfig, path: string, method: string, bod
   let result: Response
   try {
     result = await fetch(API + '/repos/' + config.repository + path, {
-      method, body: JSON.stringify(body), signal: AbortSignal.timeout(8000),
+      method, ...(body === undefined ? {} : { body: JSON.stringify(body) }), redirect: 'manual', signal: AbortSignal.timeout(8000),
       headers: { Authorization: 'Bearer ' + config.token, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json', 'User-Agent': 'octamod-community', 'X-GitHub-Api-Version': '2022-11-28' },
     })
   } catch { throw new Error('GitHub did not respond.') }
@@ -67,6 +67,21 @@ export async function createGithubIssue(config: GithubConfig, issue: MirroredIss
 
 export async function setGithubIssueState(config: GithubConfig, number: number, status: 'open' | 'closed') {
   await github(config, '/issues/' + number, 'PATCH', status === 'closed' ? { state: 'closed', state_reason: 'completed' } : { state: 'open' })
+}
+
+/** Retry-safe release comment followed by issue closure, using only public release metadata. */
+export async function resolveGithubRelease(config: GithubConfig, number: number, moduleId: string, version: string, href: string, app: string) {
+  const marker = '<!-- modwerk-release:' + moduleId + ':' + version + ' -->'
+  let found = false
+  for (let page = 1; page <= 30; page++) {
+    const comments = await github<{ body?: string; user?: { login?: string } }[]>(config, '/issues/' + number + '/comments?per_page=100&page=' + page, 'GET', undefined)
+    if (!Array.isArray(comments)) throw new Error('GitHub did not return issue comments.')
+    if (comments.some(comment => comment.body?.includes(marker))) { found = true; break }
+    if (comments.length < 100) break
+    if (page === 30) throw new Error('Too many issue comments to verify a release retry safely.')
+  }
+  if (!found) await github(config, '/issues/' + number + '/comments', 'POST', { body: 'Released **' + inert(moduleId) + ' ' + inert(version) + '**: [module and download](' + new URL(href, app).href + '). The module maintainer confirmed that the published download fixes this report. If the problem remains with this version, please reply with reproduction steps.\n\n' + marker })
+  await setGithubIssueState(config, number, 'closed')
 }
 
 /** Everyone GitHub should notify: the module author and its declared maintainers. */

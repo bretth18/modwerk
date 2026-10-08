@@ -4,7 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    # Prerender forum thread pages opened since the last release; the head commit of main is still the owner-merged one.
+    # Prerender new forum pages; the current main commit still needs independent release authorization.
     - cron: '23 4 * * *'
 permissions:
   contents: read
@@ -29,7 +29,7 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
-      - name: Verify the owner merged this exact source commit
+      - name: Verify owner or scoped module-author approval for this exact source commit
         run: node scripts/verify-merge-approval.mjs "$RUNNER_TEMP/octamod-approval.json"
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -98,6 +98,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: read
+      actions: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -114,7 +115,7 @@ jobs:
         with:
           name: octamod-source-${{ github.sha }}
           path: ${{ runner.temp }}/octamod-packages
-      - name: Independently verify owner merge, versions, sources and artifact hashes
+      - name: Independently verify release authorization, versions, sources and artifact hashes
         if: needs.approval.outputs.modules == 'true'
         run: node scripts/import-module-build.mjs "$RUNNER_TEMP/octamod-packages"
         env:

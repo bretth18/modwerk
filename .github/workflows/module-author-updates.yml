@@ -1,0 +1,35 @@
+name: Publish module author updates
+on:
+  workflow_run:
+    workflows: [Module PR checks]
+    types: [completed]
+permissions:
+  contents: read
+concurrency:
+  # Serialize merges so one author cannot advance main during another author's check.
+  group: module-author-updates
+  cancel-in-progress: false
+jobs:
+  author-release:
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    steps:
+      # Only trusted main is checked out. Fork source is inspected as Git objects;
+      # no PR script, dependency, cache or build artifact is executed or restored here.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - name: Verify author scope and checks, merge the exact head, and start publication
+        run: node scripts/auto-merge-author-update.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

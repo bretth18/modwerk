@@ -63,7 +63,7 @@ export async function moduleChangelogRoute(db: Database, moduleId: string) {
 }
 
 /** Monotonic versions and per-recipient release keys keep retries/concurrent cron runs quiet. */
-export async function recordModuleReleases(db: Database, releases: ModuleRelease[]) {
+export async function recordModuleReleases(db: Database, releases: ModuleRelease[], initializeInventory = true) {
   let notified = 0
   // The first live inventory establishes a baseline; it must not announce the whole existing library.
   const initialized = !!await db.prepare('SELECT 1 AS initialized FROM module_release_inventory WHERE singleton=1').first()
@@ -89,21 +89,25 @@ export async function recordModuleReleases(db: Database, releases: ModuleRelease
     } else await db.batch(statements)
     notified += recipients.length
   }
-  if (releases.length) await db.prepare('INSERT INTO module_release_inventory(singleton) VALUES(1) ON CONFLICT DO NOTHING').run()
+  if (initializeInventory && releases.length) await db.prepare('INSERT INTO module_release_inventory(singleton) VALUES(1) ON CONFLICT DO NOTHING').run()
   return { checked: releases.length, notified }
 }
 
 /** Read the live site's published inventory, rather than the Worker's independently deployed source catalog. */
-export async function syncModuleReleases(env: Env, db: Database) {
-  if (!env.APP_URL) return { checked: 0, notified: 0 }
+export async function publishedModuleReleases(env: Env) {
+  if (!env.APP_URL) return []
   const app = new URL(env.APP_URL)
   app.pathname = app.pathname.replace(/\/?$/, '/'); app.search = ''; app.hash = ''
   const url = new URL('module-releases.json', app)
   // Workers supports only follow/manual; a redirect remains a failed check through result.ok below.
   const result = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(10000), headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' } })
-  if (result.status === 404) return { checked: 0, notified: 0 } // The previous site can still be live during rollout.
+  if (result.status === 404) return [] // The previous site can still be live during rollout.
   if (!result.ok) throw new Error('Published module versions could not be checked.')
   const body = await result.text()
   if (body.length > 256 * 1024) throw new Error('Module release inventory is too large.')
-  return recordModuleReleases(db, parseModuleReleases(JSON.parse(body)))
+  return parseModuleReleases(JSON.parse(body))
+}
+
+export async function syncModuleReleases(env: Env, db: Database) {
+  return recordModuleReleases(db, await publishedModuleReleases(env))
 }

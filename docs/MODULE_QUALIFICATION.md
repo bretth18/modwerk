@@ -1,5 +1,7 @@
 # Module qualification gates
 
+Existing published module authors may use the [automatic author-update workflow](MODULE_AUTHOR_UPDATES.md): verified ownership, changes confined to their modules, explicit evidence review and successful checks on the exact source/base permit bot merge and publication. Other changes retain owner review. Existing qualification gates and exact-version owner exceptions are unchanged.
+
 **In short.** A new Octatrack module, or a change to how one runs, records the following in `tests.qualification`:
 
 - the worst-case cycles for each processor it uses;
@@ -11,7 +13,7 @@ All of it is bound to the module version, its native-source SHA-256 and the SHA-
 
 From 2 October 2026, new modules and updates affecting runtime behavior, stability, cycles, memory or load must provide **worst-case cycle counts, exact memory accounting, attributed real-hardware test evidence and complete documentation**. These are publication requirements. Missing measurements, nominal/average CPU percentages, emulator-only evidence, historical evidence for another source and failed detailed hardware checks cannot qualify a submission. On 2 October 2026 the owner removed the mandatory 60-minute, eight-track stress run. A clearly labelled functional hardware report is accepted alongside the cycle, memory, source, UI and integration evidence below.
 
-`npm run modules:check`, `npm run modules:generate`, PR CI and release validation enforce the record. PR CI also checks version increases against the exact base commit. Configure `module-contract` as a required status check on protected main. The owner verifies the actual reports and merges the PR to approve the version; there is no extra website approval. Metadata checks do not run submitted source or perform physical hardware tests. A contributor declaration cannot replace reviewer verification.
+`npm run modules:check`, `npm run modules:generate`, PR CI and release validation enforce the record. PR CI also checks version increases against the exact base commit. Configure `module-contract` as a required status check on protected main. The reviewer verifies the actual reports: the owner for a first release or changes beyond author scope, the registered module author for a scoped automatic update. Owner merge or the verified author-release workflow approves the version; there is no extra website approval. Metadata checks do not run submitted source or perform physical hardware tests. An unchecked contributor declaration cannot replace actual evidence verification; automatic author releases require the registered author to verify the reports and explicitly attest to the required acceptance checks.
 
 Every release also requires populated CPU, DSP core and memory gauges. These use [source-backed relative estimates](MODULE_RESOURCE_GAUGES.md), do not need exact whole-chip capacity percentages, and do not replace the qualification evidence below.
 
@@ -19,7 +21,7 @@ Every release also requires populated CPU, DSP core and memory gauges. These use
 
 The eleven module folders present when this policy was requested remain included at their current versions, with their existing measurements and historical/status labels intact. [The frozen baseline](../sdk/module-qualification-baseline.json) records each exact version and complete folder SHA-256. This preserves the owner's acceptance of the existing tests without inventing cycle counts or changing earlier qualification claims. Existing availability, build and download restrictions remain intact.
 
-The original baseline exemption applies only while **every file in that module folder and its version are unchanged**. Runtime-impacting updates require a new qualification record. Editorial updates can retain the original evidence through the separate, checked path below; they still need a semantic version increase, complete documentation, actual UI/media provenance and owner PR approval. New IDs cannot inherit an exemption. PR checks reject changes to the baseline once it exists on the base branch. Do not add modules to it or regenerate it as a way of making a failed gate pass.
+The original baseline exemption applies only while **every file in that module folder and its version are unchanged**. Runtime-impacting updates require a new qualification record. Editorial updates can retain the original evidence through the separate, checked path below; they still need a semantic version increase, complete documentation, actual UI/media provenance and owner or scoped registered-author approval. New IDs cannot inherit an exemption. PR checks reject changes to the baseline once it exists on the base branch. Do not add modules to it or regenerate it as a way of making a failed gate pass.
 
 ## Risk-based update checks — 3 October 2026
 
@@ -53,11 +55,11 @@ PR validation anchors approval to the exact `--base` commit. Local generation/re
 
 ## Complete documentation and screenshot style
 
-Release validation also requires a complete README, TESTING report, licence/attribution, descriptions of every control, compatibility/limitations, a short practical tutorial and real documentation screenshots. Draft placeholders do not qualify; the owner verifies factual completeness and usability alongside the source. The release build runs the same gate as PR/local validation, including OT UI access/capture validation even without a Git base.
+Release validation also requires a complete README, TESTING report, licence/attribution, descriptions of every control, compatibility/limitations, a short practical tutorial and real documentation screenshots. Draft placeholders do not qualify; the reviewer verifies factual completeness and usability alongside the source. The release build runs the same gate as PR/local validation, including OT UI access/capture validation even without a Git base.
 
 Record `documentation` inside `tests.qualification`: `tutorial.title`, at least three ordered `tutorial.steps`, nonempty `screenshots` paths and `screenshotStyle: "black-and-white"`. The tutorial covers setup and selection/enable, a useful control example, and the expected result plus stop/reset/bypass. Its heading and steps must appear in the same order in README. Module pages display these steps under the access instructions.
 
-README must have populated Overview, Controls, Usage, Compatibility and limitations, Tests and measurements, Authorship and licences, and Screens and audio sections. Link or embed each declared documentation screenshot. Explain inactive controls and known limitations explicitly; cross-reference the measured costs and TESTING results. Synchronize the public manifest, README, tutorial, native controls, captions and version/build provenance. The owner verifies that the complete documentation covers the real behavior, including all relevant pages and controls.
+README must have populated Overview, Controls, Usage, Compatibility and limitations, Tests and measurements, Authorship and licences, and Screens and audio sections. Link or embed each declared documentation screenshot. Explain inactive controls and known limitations explicitly; cross-reference the measured costs and TESTING results. Synchronize the public manifest, README, tutorial, native controls, captions and version/build provenance. The reviewer verifies that the complete documentation covers the real behavior, including all relevant pages and controls.
 
 Use the same **black-and-white/gray style as the online modules**, with readable integer scaling. Release validation decodes the actual PNG pixels and rejects yellow or colored captures; it accepts ordinary noninterlaced PNGs up to 2048×2048. Preserve real captured LCD content. Capture with a monochrome display/renderer rather than drawing replacement labels or substituting illustrations. Every referenced OT UI capture must still show the actual selection/enable location and relevant controls with exact button/menu steps and version/build/setup provenance. Screenshots must be declared hardware/emulator PNG media with captions, alt text, credits and rights.
 
@@ -115,7 +117,7 @@ sharedBytes      = sum(shared regions)
 totalBytes       = perInstanceBytes × maxInstances + sharedBytes
 ```
 
-The report must reconcile the inventory with native allocation/build maps, exact ranges and claims, build options, lifetime/peak overlap and supported instance limits. Explain zero or absent allocation classes and reused stock memory. Show stack/heap upper bounds and applicable memory-bound/guard evidence; state explicitly when hardware canaries were not measured. Estimates, an assembly-file length alone, unbounded dynamic allocation or a percentage of firmware size cannot substitute for exact memory. The owner checks for omitted allocations, unsafe overlaps and capacity overruns; a mathematically consistent table alone does not prove completeness.
+The report must reconcile the inventory with native allocation/build maps, exact ranges and claims, build options, lifetime/peak overlap and supported instance limits. Explain zero or absent allocation classes and reused stock memory. Show stack/heap upper bounds and applicable memory-bound/guard evidence; state explicitly when hardware canaries were not measured. Estimates, an assembly-file length alone, unbounded dynamic allocation or a percentage of firmware size cannot substitute for exact memory. The reviewer checks for omitted allocations, unsafe overlaps and capacity overruns; a mathematically consistent table alone does not prove completeness.
 
 ## Hardware evidence
 
@@ -131,7 +133,7 @@ null when unreported), `testedOn`, credited `tester`, exact `sourceRevision`,
 `imageSha256`, `summary`, nonempty `limitations`, and a local `report` path.
 Set `tests.hardwareStatus: "reported"`. Source and image must agree with the
 qualification identities; retain the actual contributor statement and how the
-owner verified it. Describe unreported duration, track/instance counts, model
+reviewer verified it (the owner on first release, the registered author on a scoped update). Describe unreported duration, track/instance counts, model
 and untested cases explicitly. Do not fill them with guesses or upgrade an
 author report to a measured stress pass. A reproduced image must match the
 reported hardware image hash; packaging-only version changes are separate.
@@ -140,8 +142,8 @@ Detailed hardware records remain supported. Their project fingerprint, actual
 duration, track counts, maximum instance count, conditions and continuity,
 transport, controls, memory-integrity and recovery checks must describe the
 test actually performed. Pending/failed checks still block that form. There is
-no minimum duration or eight-active-track requirement. The owner reviews the
-evidence and approves publication by merging the PR.
+no minimum duration or eight-active-track requirement. The owner reviews first releases and exceptions. For a scoped update the registered author verifies the
+evidence, explicitly requests publication and passes the author-release checks.
 
 DSP static counts must include expensive branches, parameter updates, trigger
 splits and initialization. State explicitly which counts model instruction

@@ -1,6 +1,7 @@
 name: Module PR checks
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
     branches: [main, 'modwerk/**', 'codex/modwerk-*']
 permissions:
   contents: read
@@ -11,6 +12,7 @@ jobs:
   # Documentation uses metadata/provenance checks. Firmware compilation follows actual
   # source/build inputs; app changes retain lint, tests, types and the bundle.
   scope:
+    name: scope / ${{ github.event.pull_request.base.sha }} / ${{ github.event.pull_request.head.sha }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
@@ -52,7 +54,8 @@ jobs:
           OCTAMOD_PR_BASE: ${{ github.event.pull_request.base.sha }}
         run: npm run check -- --base "$OCTAMOD_PR_BASE"
       # Qualification records, complete docs/tutorials and monochrome screenshots are mandatory.
-      # The owner verifies actual measurement/hardware evidence before merge.
+      # First release: owner reviews actual evidence. Later releases: registered author
+      # verifies it and explicitly requests automatic publication within the trusted scope.
       # Metadata checks never execute submitted Python or run firmware gates.
   module-paths-windows:
     needs: scope

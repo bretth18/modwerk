@@ -1,6 +1,8 @@
 # Contributing to Modwerk
 
-Contribute modules, fixes, documentation, screenshots and audio as pull requests to this repository. The owner merging your pull request approves it; the website has no second approval step. Guest comments and author issue reports on the site need no registration.
+Existing published module authors may use the [automatic author-update workflow](docs/MODULE_AUTHOR_UPDATES.md): verified ownership, changes confined to their modules, explicit evidence review and successful checks on the exact source/base permit bot merge and publication. Other changes retain owner review. Existing qualification gates and exact-version owner exceptions are unchanged.
+
+Contribute modules, fixes, documentation, screenshots and audio as pull requests to this repository. The owner approves first releases and changes beyond registered-author scope; later scoped author updates can publish automatically after evidence verification and required checks; the website has no second approval step. Guest comments and author issue reports on the site need no registration.
 
 ## Modules
 
@@ -37,7 +39,7 @@ Limits: up to eight assets; images (PNG, JPEG or WebP) up to 5 MB; audio (WAV, M
 
 ## Review and release
 
-The owner reviews behaviour, tests, resource claims, provenance and compatibility, and merges when the checks pass on the latest commit.
+The reviewer verifies behaviour, tests, resource claims, provenance and compatibility. The owner merges first releases and changes beyond registered-author scope; scoped authors can request automatic merge after all checks pass on the exact latest base and head.
 
 After the merge, release automation:
 
