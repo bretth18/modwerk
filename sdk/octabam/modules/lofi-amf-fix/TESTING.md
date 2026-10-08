@@ -71,7 +71,17 @@ Not run. The one intended change (LO-FI's AMF pitch at the affected values; see 
 
 ## Hardware
 
-Untested.
+### Functional check, 8 October 2026 (reported by Bryan Tysinger)
+
+- Unit: Octatrack MKII (Bryan Tysinger's).
+- Image: `LOFIAMF01.bin`, update-file SHA-256 `c568588155bb56e21ee3ef32b48ae20c2b16fad495586d6ebb9da6446b19ea43`, MAIN OS SHA-256 `175989699c705de1434e03b23cf0615329da9af7db85a8c57ea2aea0a667cbbe` (original 1.40C with only this module's two guarded pokes; packaged with Modwerk's `encodeFirmware`). Same hashes on the sandbox and on Bryan's Mac.
+- Procedure: LO-FI with AMD high and DIST, SRR, BRR at 0 on a sustained source; AMF stepped one value at a time from 0 to 60 on T1 FX1 (payload B), T5 FX1 (payload A) and T1 FX2.
+- Result, as reported: passed. The ring-modulator pitch rose at every step in all three cases, including 7→8, 16→17, 22→23 and 47→48.
+- Not covered by this check: AMF above 60, modulation, persistence and load (see the stress run below).
+
+### Stress run
+
+Not yet run.
 
 ## Release notes to add when the module is listed
 
