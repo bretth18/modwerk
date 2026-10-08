@@ -1,0 +1,131 @@
+# Analog BD modulation fix — testing
+
+Candidate: `0.1.3-experimental`; approved base: `0.1.2-experimental`.
+Owner report, 8 October 2026: modulating TDEP and SAT produces audible zipping.
+The report did not identify the device, image hash or modulation settings.
+This is a report of the problem, not candidate hardware acceptance.
+
+## Native evidence — 8 October 2026
+
+The isolated Linux DSP interpreter assembled and disassembled the exact candidate.
+[evidence/native.json](evidence/native.json) binds source, base, tool and test
+identities to the results. No stock firmware was used in these tests.
+
+- Ten constant renders (808/909, SAT 0/64/127 and all-controls minimum/maximum) are bit-identical to the approved
+  sources: 13,216 stereo samples each, all trigger offsets and rapid retriggers.
+- Stepped TDEP, SAT and combined automation match the independent sample-wise
+  reference with residuals from −92.39 to −106.31 dB. Actual native state checks
+  verify upward/downward slews and continuity through retriggers.
+- Full-range first-sample parameter-change deltas fall by 36.07–36.26 dB for
+  909 TDEP, 28.02–58.35 dB for 909 SAT and 39.08–43.49 dB for 808 SAT. The probes
+  compare a changed control to a held control with the same preceding state;
+  these are deterministic jump measurements, not listening scores or a guarantee
+  about every patch/modulation rate.
+- The compact combined image renders exactly like the standalone engines at
+  both native P origins (A `0x1252`, B `0x1012`). It uses 946 P words per core
+  against a 1,028-word region, preserving the separate stock-helper reservation.
+- Four interleaved instances per core placement use distinct patches and two
+  808s/two 909s. Every audio stream is bit-identical to that voice alone. Editing
+  their controls and resetting one 909 does not change the other voices. The host
+  uses the native 64-word voice stride and stores knobs at voice +48, exercising
+  the reused scratch slots. These are DSP-core placement/instance tests, not
+  full-machine or physical-device tests.
+
+The initial approach slewed SAT's three coefficients independently. The 808
+full-range jump probe exposed gain overshoot and insufficient step reduction.
+The delivered candidate slews SAT position before table interpolation; all probes
+above then pass. The macOS execution sandbox failed before Python started, so
+only the isolated Linux results are claimed.
+
+## Resource accounting and limits
+
+Combined peak executed instructions in the focused modulation/retrigger workload
+are 6,176 per 16-frame 909 block (386/sample) and 4,294 per 808 block (268.375/sample).
+These are measured executed instructions, **not worst-case chip cycles**. They
+exceed the approved standalone harness's old instruction-growth guards, so that
+old timing evidence must not be used to release this update. Full-chain budgets
+and maximum audio/FX load remain untested.
+
+P allocation: 946 words / 2,838 packed bytes per core; the 35-word stock helper
+stays in its separate reservation. The existing X upload region remains
+`[0x2840,0x3700)`: 3,776 words / 11,328 packed bytes per core, including tables,
+voice blocks and alignment gaps. Both engine banks keep four 64-word blocks per
+core, 512 words / 1,536 packed bytes in total. No X, Y or ColdFire allocation is
+added. Per voice, SAT history uses previously unused X word +61. The 909's depth
+histories reuse +21/+22; temporary body/pulse scratch moves to consumed MODEL
+and unused-control slots +54/+59. Controls are recopied before each block. Init
+clears PAD, so first-use seeding also resets the SAT history without clearing
+another voice. ColdFire assignment, transport and saved control layouts are
+byte-identical to the approved base (bound in `draft.json`).
+
+Relative resource estimates: ColdFire demand unchanged; DSP remains high per
+active voice because synthesis plus desk now also performs per-sample smoothing
+and table interpolation; memory demand is unchanged. These estimates do not
+replace the missing full qualification accounting/timing.
+
+## Reproduction
+
+Use an existing reviewed native-toolchain image with Python, a C++ compiler,
+DSP assembler/disassembler and emulator static libraries at `/opt/toolchain`.
+The local run used `octamod-tapehead-qualification-tools:local`, image ID
+`3a5861370c0f`. The exact assembler/disassembler hashes are in the evidence.
+Keep the source mount read-only, disable network, drop capabilities, and allow
+writes only to a new temporary workspace and container tmpfs:
+
+```sh
+docker run --rm --network none --read-only --cap-drop ALL \
+  --security-opt no-new-privileges --pids-limit 128 --memory 2g --cpus 2 \
+  --mount type=bind,source=<repository>,target=/source,readonly \
+  --mount type=bind,source=<new-private-workspace>,target=/work \
+  --tmpfs /tmp -w /work -e PYTHONDONTWRITEBYTECODE=1 \
+  octamod-tapehead-qualification-tools:local \
+  python3 /source/sdk/drafts/analog-bassdrum/qualification/run.py --output /work
+```
+
+The runner verifies input identities before creating the disposable SDK overlay,
+compiles the two test hosts, then runs baseline, static/modulation, jump and
+multiple-instance gates. Only sanitized `evidence.json` may be retained publicly;
+compiled payloads, raw audio/state, firmware, projects and cards remain private.
+
+## Firmware persistence and actual LCD — 8 October 2026
+
+[evidence/persistence.json](evidence/persistence.json) binds the private candidate
+image (`87e56b38…`) and emulator to the tested source. The existing disposable
+fixture was copied, not edited in place. T1 runs 808 and T5 runs 909, with different
+patches and both stock FX slots populated. Part save/reload restores a saved
+baseline after unsaved edits. Panel-driven PROJECT SAVE/RELOAD restores both
+tracks after later edits. A fresh explicit project load also matches.
+
+A new emulator process retaining only the saved card and 1 MiB battery RAM
+restores both tracks without posting LOAD PROJECT, including seven seconds with
+frame interrupts. Machine/FX assignments, source/engine/sample settings and
+source/FX main/setup controls match throughout. Editing T1 preserves T5 and
+editing FX2 preserves FX1. These are **control-state passes**, separate from the
+DSP instance/audio tests above. No physical device was rebooted.
+
+The DSP-enabled candidate emulator probe exits with SIGBUS (exit −7), before
+usable audio or capture readiness. Full-chain audio after these transitions
+therefore remains unverified. The actual controller LCD captures use the working
+stand-in DSP path. A private copy of `scripts/capture-module-ui.py` removes its
+forced `--dsp` argument and sets a 20-second project-load budget; the source LCD
+renderer and actual panel actions are unchanged. Both tool hashes, exact actions,
+source/image/emulator identities and visually reviewed PNG hashes are retained
+in [media/capture.json](media/capture.json). An initial plan left a DISARM popup
+on two captures; those were rejected and recaptured after it expired.
+
+## Open acceptance paths
+
+- Usable full-chain audio after Part/project reload and battery-only restart:
+  **unverified**, because the candidate's DSP-enabled full-emulator run failed
+  with SIGBUS. Control-state persistence passes above do not upgrade this path.
+- Full machine reset/model-replacement isolation and maximum audio/FX load:
+  **untested**. Native voice reset/isolation tests do not replace these checks.
+- Worst-case chip cycles, complete final-image memory accounting, native/browser
+  composition/packaging parity and owner-attributed physical operation/reboot/audio
+  reports: **pending**.
+
+No physical device was flashed or rebooted. The private candidate image, cards,
+raw audio/LCD/memory traces and logs are not published. The draft stays outside
+native discovery/catalog/packages and requires the repository's full runtime-update
+qualification before promotion. The existing approved thumbnail is retained;
+this update changes modulation behavior without changing the control design.

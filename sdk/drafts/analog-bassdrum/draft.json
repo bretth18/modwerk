@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "id": "analog-bassdrum",
+  "version": "0.1.3-experimental",
+  "status": "pending-qualification",
+  "approvedVersion": "0.1.2-experimental",
+  "upstreamRevision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
+  "baseFiles": {
+    "modules/analog-bassdrum/bd909.asm": "db1b2871957bb89bfd4184fc7556e5e46c44f3be1a889ba11fc1a679c4b1841e",
+    "modules/analog-bassdrum/bd808.asm": "e7306bd284e9bca067cffc54dcbfb18ae7a0fc7b3a27253a246e58898ae9ee92",
+    "modules/analog-bassdrum/dsp909.py": "c45ef4357cd66369181523784de0f5b328b8b18a58f3c19c60983d1173dd3195",
+    "modules/analog-bassdrum/dsp808.py": "6500cfffad2be75c0be43f57bb91a5582b7406fe0bb36be120d412884d23da28",
+    "modules/analog-bassdrum/fit909.json": "e1e97b493b6c232bf6602ca224212e19f2aef3cff65fff404e7876648d228390",
+    "modules/analog-bassdrum/ab_glue.asm": "c78dc31dfcfc7a0c6f10ae24b39744a88bed5211346bcae4f6931e2e6489223c",
+    "modules/analog-bassdrum/control.c": "29f392c7e007aaa695076eff0c897729a941676ff582e4bb17957074d56ceac5",
+    "modules/analog-bassdrum/control.s": "644f10fbc534d8351424e55ee96c2d0ff2f39a1b691ad8a695422d1c05e37a3f",
+    "modules/analog-bassdrum/machine.s": "07dc37b1c0bd0f061aabe27782c67df9dcd22769e9c080efbfdf354530d83b8d",
+    "modules/analog-bassdrum/engine.s": "c86a6ac24326fb52f71dd766b1ccc25e5dfd8511028b162459447c279da48425",
+    "modules/analog-bassdrum/manifest.py": "20fa1f744630354b3986a3ad82ac6a41744345796dc783891a4c9f0bd81c787e",
+    "tools/build/ab_image.py": "89e10b0e8db282d39d1e33bbef396658c7c74a9ab69fb8513dacde745fa6c159",
+    "tools/harness/bd909.py": "2e98bfca6c047e58c223bc61bce436f4eb60a03924400dc189a4301c76ca6e5d",
+    "tools/harness/bd808.py": "540f2ee7c4d79bca0970abe2937ffd294c695aa623e711875778295252017598",
+    "tools/harness/bd909_host/bd909_host.cpp": "1c25ff9be510d6941efe504a6eae7ebbcd9028a555a2b8c160290fcf02ad3195",
+    "modules/analog-bassdrum/octamod.module.json": "3f361dea67e2521055daff22093a4f0c60ee993a4e52c3967ec4c220838fbf07"
+  },
+  "candidateFiles": {
+    "bd909.asm": "66f1abde9715b49a145daa1868d00b1ea73989bee2a8e904b9c44149a4d4afc8",
+    "dsp909.py": "480a064a304380079019125eef98e9c68da26bd5408bbe38845563ccac94d2e4",
+    "dsp808.py": "3d61ba9c258c319d90d7beb47f6cbc7dafb7336c49d8386912478d284cef603d",
+    "build-ab_image.py": "d51e8face61e0642f24743cc8081b1d258943f5040a3b34d003cf34a4f797c14"
+  },
+  "publication": "Excluded from native discovery, catalog and downloadable packages until qualification and owner review."
+}

@@ -1,0 +1,284 @@
+{
+  "schema": 1,
+  "moduleId": "analog-bassdrum",
+  "candidateVersion": "0.1.3-experimental",
+  "date": "2026-10-08",
+  "baseFiles": {
+    "modules/analog-bassdrum/bd909.asm": "db1b2871957bb89bfd4184fc7556e5e46c44f3be1a889ba11fc1a679c4b1841e",
+    "modules/analog-bassdrum/bd808.asm": "e7306bd284e9bca067cffc54dcbfb18ae7a0fc7b3a27253a246e58898ae9ee92",
+    "modules/analog-bassdrum/dsp909.py": "c45ef4357cd66369181523784de0f5b328b8b18a58f3c19c60983d1173dd3195",
+    "modules/analog-bassdrum/dsp808.py": "6500cfffad2be75c0be43f57bb91a5582b7406fe0bb36be120d412884d23da28",
+    "modules/analog-bassdrum/fit909.json": "e1e97b493b6c232bf6602ca224212e19f2aef3cff65fff404e7876648d228390",
+    "modules/analog-bassdrum/ab_glue.asm": "c78dc31dfcfc7a0c6f10ae24b39744a88bed5211346bcae4f6931e2e6489223c",
+    "modules/analog-bassdrum/control.c": "29f392c7e007aaa695076eff0c897729a941676ff582e4bb17957074d56ceac5",
+    "modules/analog-bassdrum/control.s": "644f10fbc534d8351424e55ee96c2d0ff2f39a1b691ad8a695422d1c05e37a3f",
+    "modules/analog-bassdrum/machine.s": "07dc37b1c0bd0f061aabe27782c67df9dcd22769e9c080efbfdf354530d83b8d",
+    "modules/analog-bassdrum/engine.s": "c86a6ac24326fb52f71dd766b1ccc25e5dfd8511028b162459447c279da48425",
+    "modules/analog-bassdrum/manifest.py": "20fa1f744630354b3986a3ad82ac6a41744345796dc783891a4c9f0bd81c787e",
+    "tools/build/ab_image.py": "89e10b0e8db282d39d1e33bbef396658c7c74a9ab69fb8513dacde745fa6c159",
+    "tools/harness/bd909.py": "2e98bfca6c047e58c223bc61bce436f4eb60a03924400dc189a4301c76ca6e5d",
+    "tools/harness/bd808.py": "540f2ee7c4d79bca0970abe2937ffd294c695aa623e711875778295252017598",
+    "tools/harness/bd909_host/bd909_host.cpp": "1c25ff9be510d6941efe504a6eae7ebbcd9028a555a2b8c160290fcf02ad3195",
+    "modules/analog-bassdrum/octamod.module.json": "3f361dea67e2521055daff22093a4f0c60ee993a4e52c3967ec4c220838fbf07"
+  },
+  "candidateFiles": {
+    "bd909.asm": "66f1abde9715b49a145daa1868d00b1ea73989bee2a8e904b9c44149a4d4afc8",
+    "dsp909.py": "480a064a304380079019125eef98e9c68da26bd5408bbe38845563ccac94d2e4",
+    "dsp808.py": "3d61ba9c258c319d90d7beb47f6cbc7dafb7336c49d8386912478d284cef603d",
+    "build-ab_image.py": "d51e8face61e0642f24743cc8081b1d258943f5040a3b34d003cf34a4f797c14"
+  },
+  "qualificationFiles": {
+    "build-baseline.py": "d0d3c68205b6283a4044bcbc018056f54c6f2bb14b88e2a55600ff3ae42c3e82",
+    "multi-test.py": "e209ed619bfc1ff9e2c44a2914ed59e2d96ebb144aca677886b658cb9065cfd9",
+    "multi_host.cpp": "c49d11ead0705bd9b3f92f8e22735f1ff22fdd430ab3cbe1e03355641cb71888",
+    "probe.py": "1eaca7fcd0f41eea2fd0edf7599eac504c58a5b688e4c4db44dfd7c5b03b1c24",
+    "run.py": "e52ae0ae62cfed62d63160efb77af62c3270a9b87c8aeff7ec897c7401c310a0",
+    "test.py": "e16f1187a215449c04844dc895063e29a6009ad11e2f160931439b579c641274"
+  },
+  "toolchainFiles": {
+    "build/source/dsp_host/dsp_asm": "cea81ed254112d49743ec9f25d753308e11e4011fd158a4612cf1e3db70b3fec",
+    "build/source/disassemble/dsp56kDisassemble": "c8d95fc5cf57a7fd3e46bb69b6386e0f6d9e33aa3e078c291ce98c89ad43cbed",
+    "build/source/dsp56kEmu/libdsp56kEmu.a": "e46b6c5b44176551de5ef3107050656dc43cbeb8310187523d4e20a3e000c307",
+    "build/source/dsp56kBase/libdsp56kBase.a": "966edcf2c050212ec7bb74475be20e8293b8d7f8b5137d32e42a188bcee7fa0e",
+    "build/source/asmjit/libasmjit.a": "60dde65301d2ff470c63d5ce3e386b8de411d2fff3d41d4e88d9976c791fc982",
+    "build/source/vtuneSdk/libvtuneSdk.a": "114aa283bfa998560503cdc7247a23df8f35e8b1978d2f071c3520f131f4f888"
+  },
+  "native": {
+    "static": [
+      {
+        "engine": "909",
+        "patch": "sat0",
+        "samples": 13216,
+        "maxInstructionsPerBlock": 6136
+      },
+      {
+        "engine": "909",
+        "patch": "sat64",
+        "samples": 13216,
+        "maxInstructionsPerBlock": 6136
+      },
+      {
+        "engine": "909",
+        "patch": "sat127",
+        "samples": 13216,
+        "maxInstructionsPerBlock": 6136
+      },
+      {
+        "engine": "909",
+        "patch": "minimum",
+        "samples": 13216,
+        "maxInstructionsPerBlock": 6136
+      },
+      {
+        "engine": "909",
+        "patch": "maximum",
+        "samples": 13216,
+        "maxInstructionsPerBlock": 6136
+      },
+      {
+        "engine": "808",
+        "patch": "sat0",
+        "samples": 13216,
+        "maxInstructionsPerBlock": 4258
+      },
+      {
+        "engine": "808",
+        "patch": "sat64",
+        "samples": 13216,
+        "maxInstructionsPerBlock": 4258
+      },
+      {
+        "engine": "808",
+        "patch": "sat127",
+        "samples": 13216,
+        "maxInstructionsPerBlock": 4258
+      },
+      {
+        "engine": "808",
+        "patch": "minimum",
+        "samples": 13216,
+        "maxInstructionsPerBlock": 4258
+      },
+      {
+        "engine": "808",
+        "patch": "maximum",
+        "samples": 13216,
+        "maxInstructionsPerBlock": 4258
+      }
+    ],
+    "automation": [
+      {
+        "engine": "909",
+        "controls": [
+          4
+        ],
+        "referenceErrorDb": -92.39287357782965,
+        "maxInstructionsPerBlock": 6142
+      },
+      {
+        "engine": "909",
+        "controls": [
+          5
+        ],
+        "referenceErrorDb": -102.92077837279017,
+        "maxInstructionsPerBlock": 6142
+      },
+      {
+        "engine": "909",
+        "controls": [
+          4,
+          5
+        ],
+        "referenceErrorDb": -103.42977601172907,
+        "maxInstructionsPerBlock": 6142
+      },
+      {
+        "engine": "808",
+        "controls": [
+          5
+        ],
+        "referenceErrorDb": -106.30751358116696,
+        "maxInstructionsPerBlock": 4260
+      }
+    ],
+    "coefficientSteps": [
+      {
+        "engine": "909",
+        "coefficients": [
+          [
+            21,
+            25
+          ],
+          [
+            22,
+            29
+          ]
+        ],
+        "pass": true
+      },
+      {
+        "engine": "808",
+        "coefficients": [],
+        "pass": true
+      }
+    ],
+    "combined": [
+      {
+        "core": "A",
+        "engine": "909",
+        "codeWords": 946,
+        "maxInstructionsPerBlock": 6176,
+        "audioIdenticalToStandalone": true
+      },
+      {
+        "core": "A",
+        "engine": "808",
+        "codeWords": 946,
+        "maxInstructionsPerBlock": 4294,
+        "audioIdenticalToStandalone": true
+      },
+      {
+        "core": "B",
+        "engine": "909",
+        "codeWords": 946,
+        "maxInstructionsPerBlock": 6176,
+        "audioIdenticalToStandalone": true
+      },
+      {
+        "core": "B",
+        "engine": "808",
+        "codeWords": 946,
+        "maxInstructionsPerBlock": 4294,
+        "audioIdenticalToStandalone": true
+      }
+    ]
+  },
+  "stepProbe": [
+    {
+      "engine": "909",
+      "control": "TDEP",
+      "from": 0,
+      "to": 127,
+      "firstSampleParameterDeltaBefore": 125108,
+      "firstSampleParameterDeltaAfter": 1924,
+      "reductionDb": 36.261600274647776
+    },
+    {
+      "engine": "909",
+      "control": "TDEP",
+      "from": 127,
+      "to": 0,
+      "firstSampleParameterDeltaBefore": 128792,
+      "firstSampleParameterDeltaAfter": 2024,
+      "reductionDb": 36.073567584114585
+    },
+    {
+      "engine": "909",
+      "control": "SAT",
+      "from": 0,
+      "to": 127,
+      "firstSampleParameterDeltaBefore": 4674852,
+      "firstSampleParameterDeltaAfter": 5656,
+      "reductionDb": 58.3451693082837
+    },
+    {
+      "engine": "909",
+      "control": "SAT",
+      "from": 127,
+      "to": 0,
+      "firstSampleParameterDeltaBefore": 4679944,
+      "firstSampleParameterDeltaAfter": 185872,
+      "reductionDb": 28.020533686876945
+    },
+    {
+      "engine": "808",
+      "control": "SAT",
+      "from": 0,
+      "to": 127,
+      "firstSampleParameterDeltaBefore": 591379,
+      "firstSampleParameterDeltaAfter": 6573,
+      "reductionDb": 39.0820453257953
+    },
+    {
+      "engine": "808",
+      "control": "SAT",
+      "from": 127,
+      "to": 0,
+      "firstSampleParameterDeltaBefore": 1390715,
+      "firstSampleParameterDeltaAfter": 9309,
+      "reductionDb": 43.486702171923866
+    }
+  ],
+  "instanceIsolation": [
+    {
+      "core": "A",
+      "simultaneousVoices": 4,
+      "engines": [
+        "909",
+        "808",
+        "909",
+        "808"
+      ],
+      "differentPatches": true,
+      "editingAndResetIsolation": true,
+      "audioBitIdenticalToEachVoiceAlone": true
+    },
+    {
+      "core": "B",
+      "simultaneousVoices": 4,
+      "engines": [
+        "909",
+        "808",
+        "909",
+        "808"
+      ],
+      "differentPatches": true,
+      "editingAndResetIsolation": true,
+      "audioBitIdenticalToEachVoiceAlone": true
+    }
+  ],
+  "firmwarePersistence": "untested for candidate",
+  "physicalHardware": "untested",
+  "worstCaseChipCycles": "unmeasured",
+  "fullChainAndMaximumFxLoad": "untested"
+}

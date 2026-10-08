@@ -1,0 +1,142 @@
+{
+  "firmware": "1.40C",
+  "imageSha256": "87e56b38fe45a5b10fda2129193f67946b078f4d84b07a0cb1afbc2ef0ebaa54",
+  "emulatorSha256": "89759d97c794f62b304dff1912a2ac1c7965289b4d019fbdbb0dbcf3c3d9f312",
+  "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6.",
+  "palette": {
+    "on": [
+      240,
+      240,
+      240
+    ],
+    "off": [
+      24,
+      24,
+      24
+    ]
+  },
+  "keyMs": 50,
+  "plan": [
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "wait": 2000
+    },
+    {
+      "press": [
+        "T1"
+      ]
+    },
+    {
+      "press": [
+        "SRC"
+      ]
+    },
+    {
+      "wait": 1000
+    },
+    {
+      "capture": "ot-808.png"
+    },
+    {
+      "press": [
+        "T5"
+      ]
+    },
+    {
+      "press": [
+        "SRC"
+      ]
+    },
+    {
+      "wait": 1000
+    },
+    {
+      "capture": "ot-909.png"
+    },
+    {
+      "hold": [
+        "FUNC"
+      ]
+    },
+    {
+      "press": [
+        "SRC"
+      ]
+    },
+    {
+      "release": [
+        "FUNC"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "capture": "ot-setup.png"
+    },
+    {
+      "press": [
+        "SRC"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "press": [
+        "T5"
+      ]
+    },
+    {
+      "press": [
+        "T5"
+      ]
+    },
+    {
+      "wait": 500
+    },
+    {
+      "capture": "ot-engines.png"
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    }
+  ],
+  "screenshots": {
+    "ot-808.png": "67b1bd600bbb39b98b36bcb7c46d089178fbd11e962fcaca83657833643b956d",
+    "ot-909.png": "87a726146c4e8c59d24869e42d1519000e28895f791e7780d95de17dbcf0702a",
+    "ot-setup.png": "b4793f3308018995929947d1473e3c3aa385e665fe85903b726b4a4391e4f13a",
+    "ot-engines.png": "870dc55c4c595656a9483d8d6d0c925ef21db47f6bf9f2613b56f6e1cd5427f6"
+  },
+  "cardSha256": "c8e9d85449499c6d32195c662b9ea333493986b1df2c0e9c9e691be635c4d91c",
+  "project": {
+    "set": "OCTABAM",
+    "name": "RIG"
+  },
+  "moduleVersion": "0.1.3-experimental",
+  "date": "2026-10-08",
+  "candidateFiles": {
+    "bd909.asm": "66f1abde9715b49a145daa1868d00b1ea73989bee2a8e904b9c44149a4d4afc8",
+    "dsp909.py": "480a064a304380079019125eef98e9c68da26bd5408bbe38845563ccac94d2e4",
+    "dsp808.py": "3d61ba9c258c319d90d7beb47f6cbc7dafb7336c49d8386912478d284cef603d",
+    "build-ab_image.py": "d51e8face61e0642f24743cc8081b1d258943f5040a3b34d003cf34a4f797c14"
+  },
+  "dsp": "stand-in only; DSP-enabled full-emulator run failed SIGBUS before readiness",
+  "captureTool": "scripts/capture-module-ui.py",
+  "originalCaptureToolSha256": "8122aa8d33ef7e709f81b1f3d94f3aaff7560cf59038b5fdeeae891cf279d397",
+  "privateCaptureAdapterSha256": "4a79732a9097432147b283184434220216f2c310f5ad04a0544a46cb46e4bc0c",
+  "adapterChanges": [
+    "Remove forced --dsp to use the working controller/stand-in DSP path",
+    "Set source root to read-only mounted repository",
+    "Use --load-ms 20000 for the disposable fixture"
+  ],
+  "visualReview": "All four screenshots opened and reviewed; no popup/error; 808/909 labels and setup/browser verified",
+  "license": "LicenseRef-OT-UI-Documentation",
+  "credit": "Octamod contributors (headless capture)"
+}
