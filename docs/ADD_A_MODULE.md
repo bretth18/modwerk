@@ -81,6 +81,16 @@ Its folder, `sdk/<platform>/modules/<id>/`, holds:
 
 The checks reject missing sections, coloured screenshots and a version that did not increase. They cannot tell whether the documentation is true; the owner reviews that.
 
+## Screenshot walkthroughs
+
+Make the gallery a short usage tutorial for every machine: two to five
+essential images in find/enable → control example → expected result and
+stop/reset/bypass order. Captions explain the actual buttons or encoders and
+what they do; label inventories and fixture descriptions are insufficient.
+Keep alt text about the visible screen and reserve extra pages for supplementary
+screenshots. Read the complete gallery as a first-time user and follow the
+[screenshot caption standard](MODULE_UI_CAPTURES.md#write-a-short-screenshot-walkthrough).
+
 ## Octatrack
 
 1. **Create the folder.**

@@ -6,6 +6,10 @@ The React frontend, community API, Octamod SDK, module sources, developer docume
 
 Module page content comes from `sdk/octabam/modules/<id>/octamod.module.json`, generated through `scripts/modules.mjs`. Keep the strict schema, README, TESTING, licences and version pins synchronized.
 
+On 8 October 2026, the owner required screenshot galleries across all modules and machines to explain basic usage in a few images. Lead with two to five essential screenshots in task order: find/enable the module, make a useful control change, then understand the expected result and how to stop/reset/bypass. Captions must name the action, the relevant button/encoder and its effect in plain language; lists of labels and emulator-fixture descriptions are insufficient. Keep alt text descriptive of the visible screen. Put alternate routes and extra reference pages under More screenshots, and preserve honest capture provenance and limitations. Review the whole gallery as a small tutorial whenever adding or updating a module. See [the caption standard](MODULE_UI_CAPTURES.md#write-a-short-screenshot-walkthrough).
+
+Website-only teaching captions and gallery ordering for retained module versions live in `src/catalog/module-media-guides.ts`, bound to the exact module version and declared media paths. This site copy can improve without changing a module release or its qualification identity. Original module manifests, README, PNGs, capture credits/licences and evidence remain the release authority; changes inside module folders still follow the version and qualification rules below. New releases should supply useful captions directly in their manifests, and any retained website guide must be reviewed against the new version before reuse.
+
 ## Hosting and API boundary
 
 GitHub Pages serves the static frontend, supporting project URLs and root/custom-domain URLs. Hash routes work without server-side rewrites. Releases must come from an exact owner-merged PR commit; manual runs must prove the same approval.
