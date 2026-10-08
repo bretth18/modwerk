@@ -61,7 +61,7 @@ export function AnnouncementsPanel() {
         <label><span className="announcement-label">Message<small aria-live="polite">{body.length} / {BODY_LIMIT}</small></span><textarea value={body} maxLength={BODY_LIMIT} required rows={4} onChange={event => setBody(event.target.value)} placeholder="One or two plain sentences." /></label>
         <div className="form-two-columns">
           <label>Module page<select value={moduleId} onChange={event => setModuleId(event.target.value)}><option value="">No module</option>{COMMUNITY_MODULES.map(module => <option key={module.id} value={module.id}>{module.name}</option>)}</select></label>
-          <label>Link<input value={url} maxLength={200} onChange={event => setUrl(event.target.value)} placeholder="#library or https://modwerk.app/…" /></label>
+          <label>Link<input value={url} maxLength={200} onChange={event => setUrl(event.target.value)} placeholder="#library, modwerk.app or your Ko-fi page" /></label>
         </div>
         <p className="announcement-hint">Both are optional. A link replaces the module page; without either, the entry opens the library.</p>
         <label>Key<input className="announcement-key" value={slug} maxLength={64} required minLength={3} pattern="[a-z0-9][a-z0-9-]*" onChange={event => { setSlug(event.target.value); setSlugEdited(true) }} /></label>

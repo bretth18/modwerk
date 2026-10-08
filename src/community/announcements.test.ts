@@ -5,6 +5,7 @@ import { DatabaseSync } from 'node:sqlite'
 import { testServer } from './test-server'
 import { sendActivityDigests } from '../../server/activity-mail'
 import { announcementLink } from '../../server/announcements'
+import { SUPPORT_URL } from '../config/support'
 import { notificationLines } from './notification-text'
 import type { BellItem } from './notification-contract'
 import { DEVELOPMENT_DISCORD_URL } from '../config/development-discord'
@@ -166,6 +167,19 @@ describe('operator announcements in the bell', () => {
     expect(db.prepare('SELECT id,visibility FROM announcements ORDER BY id').all()).toEqual([{ id: 'manual', visibility: 'signed-in' }, { id: 'release', visibility: 'public' }])
     expect(db.prepare('SELECT * FROM announcement_reads').all()).toEqual(reads)
     expect(() => db.prepare("UPDATE announcements SET visibility='invalid'").run()).toThrow()
+  })
+
+  it('keeps the Ko-fi review draft unsent and accepts only the exact configured support destination', async () => {
+    const { announce, call } = await fixture()
+    const draft = JSON.parse(readFileSync(new URL('../../docs/announcements/kofi-hosting-2026-10-08.draft.json', import.meta.url), 'utf8'))
+    expect((await (await call('/announcements')).json()).items).toEqual([])
+    expect(draft.url).toBe(SUPPORT_URL)
+    expect((await announce(draft)).status).toBe(201)
+    expect((await (await call('/announcements')).json()).items).toEqual([expect.objectContaining({ title: draft.title, excerpt: draft.body, url: SUPPORT_URL })])
+    for (const url of ['https://ko-fi.com/another-profile', SUPPORT_URL + '/', SUPPORT_URL + '?redirect=elsewhere', SUPPORT_URL + '#other', 'http://ko-fi.com/jannikassfalg', 'https://ko-fi.com.evil.example/jannikassfalg']) {
+      expect(() => announcementLink(url)).toThrow()
+      expect((await announce({ ...draft, slug: 'bad-kofi-destination', url })).status).toBe(400)
+    }
   })
 
   it('refuses what a bell entry may not contain', async () => {

@@ -5,6 +5,7 @@ import { communityModule } from '../src/community/modules'
 import type { AnnouncementVisibility, BellItem } from '../src/community/notification-contract'
 import type { ModuleRelease } from '../src/community/module-release-contract'
 import { DEVELOPMENT_DISCORD_URL } from '../src/config/development-discord'
+import { SUPPORT_URL } from '../src/config/support'
 
 /** Announcement ids stay distinct from personal activity ids. */
 export const ANNOUNCEMENT_PREFIX = 'announcement-'
@@ -75,14 +76,14 @@ export const adminText = (value: unknown, label: string, minimum: number, maximu
   if ([...trimmed].some(character => { const code = character.charCodeAt(0); return (code < 32 && code !== 9 && code !== 10 && code !== 13) || code === 127 })) throw new HttpError(400, `${label} contains characters that cannot be shown.`)
   return trimmed
 }
-/** Bell links use the app, modwerk.app or the exact development Discord invite. */
+/** Announcement links use the app or the exact configured community/support destinations. */
 export function announcementLink(value: unknown) {
   if (value === undefined || value === null || value === '') return null
   if (typeof value !== 'string' || value.length > 200) throw new HttpError(400, 'The link is too long.')
-  if (value === DEVELOPMENT_DISCORD_URL) return value
+  if (value === DEVELOPMENT_DISCORD_URL || (SUPPORT_URL && value === SUPPORT_URL)) return value
   if (/^#[A-Za-z0-9][A-Za-z0-9/_.=&?-]*$/.test(value)) return value
   if (/^https:\/\/modwerk\.app\/[A-Za-z0-9/_.=&?#%-]*$/.test(value)) return value
-  throw new HttpError(400, 'Link to a page in the app (#...), https://modwerk.app/ or the development Discord invite.')
+  throw new HttpError(400, 'Link to a page in the app (#...), https://modwerk.app/, the development Discord invite or the configured Ko-fi page.')
 }
 
 /** One public announcement per newly published module; follower version updates remain in the bell. */
