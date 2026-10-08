@@ -11,7 +11,7 @@ describe('build refusal wording', () => {
   })
   it('does not offer the stock FX2 switch when it is off or absent', () => {
     expect(explainBuildFailure('wide dial hook (116 B) does not fit', false)).not.toContain('Keep stock FX2')
-    expect(explainBuildFailure('A module menu cave exceeds its reserved region.')).toBe('These modules do not fit together. Remove one of them, then check again.')
+    expect(explainBuildFailure('A module menu cave exceeds its reserved region.')).toBe('These modules do not fit together in the available menu and patch space. Remove a module, then check again.')
     expect(explainBuildFailure('A module menu cave exceeds its reserved region.', true)).toContain('Turn off Keep stock FX2')
   })
   it('tells menu space apart from DSP placement', () => {
