@@ -1,5 +1,39 @@
 # OT UI screenshots for module publication
 
+## Write a short screenshot walkthrough
+
+Every module gallery, on every machine, should teach a first useful task in
+two to five essential screenshots. Order them as the user would work: find or
+enable the module, adjust its controls, then check the expected result and
+stop, reset or bypass it. Use extra screenshots only when needed for a
+different route or control page; keep those under **More screenshots** on the
+site so the main walkthrough stays short. All required capture evidence must
+still be supplied, even when some pages are supplementary in the gallery.
+
+Write two or three short sentences per caption, naming the button/menu/encoder
+to use and what the change does. Include a small concrete example when it
+helps, such as “Try STEPS 16 and PULSE 5 for five evenly spaced pulses per
+cycle.” A list such as “FREQ, RES, DEPTH, DEC, STEPS and PULSE” does not teach
+usage. Neither does a description of the capture fixture. Keep capture
+metadata in its evidence record and provenance line; mention a limitation in
+the caption when it affects how the pictured step should be understood.
+
+Describe only what the actual screen shows in alt text. Check visible labels
+against the image, and distinguish a suggested control change from a value
+already pictured. Explain OFF/inactive controls when users need to enable
+them. Do not claim a stopped emulator image proves the resulting audio or
+hardware behavior. The caption may explain the source-documented expected
+result without presenting it as a new test result.
+
+Before finishing, read the captions in gallery order with the screenshots
+open. A first-time user should understand where to start, what to change and
+what to expect without opening the README. Synchronize new release captions
+with the module tutorial and control documentation. For website-only copy
+improvements to retained releases, edit `src/catalog/module-media-guides.ts`;
+bind each guide to the exact version and real declared paths, preserve media
+credits/licences and evidence, and review the guide when that version changes.
+
+
 The steps for a whole module are in [Add or port a module](ADD_A_MODULE.md); this document defines the capture contract.
 
 Every new module and update needs actual OT UI captures that explain where it

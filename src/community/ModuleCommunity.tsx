@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { api, apiFetch, post } from './api'
 import { apiUrl, assetUrl } from '../hosting'
 import { moduleMediaDocument } from './module-media'
+import { moduleMediaGuide } from '../catalog/module-media-guides'
 import type { PublicMedia } from './api'
 import { useCommunity } from './context'
 import { Icon } from '../components/Icon'
@@ -30,11 +31,22 @@ function MediaPreview({item,privatePreview}:{item:PublicMedia;privatePreview:boo
 export function MediaGallery({media,privatePreview=false}:{media:PublicMedia[];privatePreview?:boolean}) {
   return <div className="media-gallery">{media.map(item=><MediaPreview key={item.id} item={item} privatePreview={privatePreview}/>)}</div>
 }
+type ModuleMedia = NonNullable<ReturnType<typeof moduleMediaDocument>>['media'][number]
+function ModuleMediaGallery({id,version,media}:{id:string;version:string;media:readonly ModuleMedia[]}) {
+  return <div className="media-gallery">{media.map(item=>{
+    const url=assetUrl('module-media/'+id+'/'+version+'/'+item.path)
+    return <figure key={item.path}>
+      {item.captureType==='audio'?<audio controls preload="none" src={url}>Audio preview</audio>:<a href={url} target="_blank" rel="noreferrer"><img className={item.lcd ? 'ot-ui-capture' : undefined} src={url} alt={item.alt} loading="lazy"/></a>}
+      <figcaption>{item.caption}<span>{item.captureType==='hardware'?'Hardware capture':item.captureType==='emulator'?'Emulator capture':item.captureType==='audio'?'Audio preview':'LCD capture'} · {item.credit} · {item.license}</span>{item.source!=='original'&&<a href={item.source} target="_blank" rel="noreferrer">Original source ↗</a>}</figcaption>
+    </figure>
+  })}</div>
+}
 export function ModuleCommunity({id,mode='all',onDiscuss,onReportIssue,onDiscussionCount}:{id:string;mode?:'all'|'media'|'discussion'|'overview'|'ratings';onDiscuss?:()=>void;onReportIssue?:()=>void;onDiscussionCount?:(count:number)=>void}) {
   const {session,refresh} = useCommunity()
   // Visitors see live buttons; pressing one opens the sign-in prompt and brings them back to this page.
   const {dialog,gate}=useLoginPrompt(modulePageHref(id).slice(1))
   const document=moduleMediaDocument(id),sourceMedia=document?.media??[]
+  const mediaGuide=moduleMediaGuide<ModuleMedia>(id,document?.version??'',sourceMedia)
   const [data,setData] = useState<Data | null>(null), [rating,setRating] = useState(0), [error,setError] = useState(''), [busy,setBusy] = useState(false), [notice,setNotice] = useState('')
   useEffect(() => {
     let cancelled=false
@@ -52,7 +64,16 @@ export function ModuleCommunity({id,mode='all',onDiscuss,onReportIssue,onDiscuss
       setNotice(kind==='like'?(data?.liked?'Like removed.':'Liked.'):'Rating saved.')
     } catch(error){setError(error instanceof Error?error.message:'Unable to save.')} finally{setBusy(false)}
   }
-  const mediaSection = <section className="detail-section"><div className="section-title"><h2>Screenshots & audio</h2><a className="text-button" href={'#submit/' + id}>Add media <Icon name="plus" size={15}/></a></div>{sourceMedia.length ? <div className="media-gallery">{sourceMedia.map(item=>{const url=assetUrl('module-media/'+id+'/'+document!.version+'/'+item.path);return <figure key={item.path}>{item.captureType==='audio'?<audio controls preload="none" src={url}>Audio preview</audio>:<a href={url} target="_blank" rel="noreferrer"><img className={item.lcd ? 'ot-ui-capture' : undefined} src={url} alt={item.alt} loading="lazy"/></a>}<figcaption>{item.caption}<span>{item.captureType==='hardware'?'Hardware capture':item.captureType==='emulator'?'Emulator capture':item.captureType==='audio'?'Audio preview':'LCD capture'} · {item.credit} · {item.license}</span>{item.source!=='original'&&<a href={item.source} target="_blank" rel="noreferrer">Original source ↗</a>}</figcaption></figure>})}</div> : null}{!!data?.media.length && <MediaGallery media={data.media}/>} {!sourceMedia.length && !data?.media.length && <div className="media-empty"><Icon name="file" size={24}/><div><strong>No media yet</strong><p>Share a screenshot or audio preview via PR.</p></div></div>}</section>
+  const mediaSection = <section className="detail-section">
+    <div className="section-title"><h2>Screenshots & audio</h2><a className="text-button" href={'#submit/' + id}>Add media <Icon name="plus" size={15}/></a></div>
+    {!!mediaGuide.primary.length && <ModuleMediaGallery id={id} version={document!.version} media={mediaGuide.primary}/>}
+    {!!mediaGuide.additional.length && <details key={id} className="module-disclosure">
+      <summary><span>More screenshots<small>{mediaGuide.additional.length} additional {mediaGuide.additional.length===1?'page':'pages'}</small></span><Icon name="plus" size={16}/></summary>
+      <div className="disclosure-content"><ModuleMediaGallery id={id} version={document!.version} media={mediaGuide.additional}/></div>
+    </details>}
+    {!!data?.media.length && <MediaGallery media={data.media}/>}
+    {!sourceMedia.length && !data?.media.length && <div className="media-empty"><Icon name="file" size={24}/><div><strong>No media yet</strong><p>Share a screenshot or audio preview via PR.</p></div></div>}
+  </section>
   if(mode==='overview')return <>
     <div className="module-showcase">
       {mediaSection}
