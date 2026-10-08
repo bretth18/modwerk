@@ -14,6 +14,31 @@ type CreditSection = {
 
 const repo = (path: string) => ({ label: path, href: 'https://github.com/' + path })
 
+// Contributions in the pinned Octabam source for USB Audio 0.2.
+const usbSource = (path: string) => ({ label: 'Octabam source & credits', href: 'https://github.com/sambanks/octabam/blob/7b2984c859732ae6c797ae49c7d61d250b1b6519/' + path })
+export const USB_AUDIO_MIDI_CREDITS: readonly Credit[] = [
+  {
+    name: 'USB Audio & MIDI · octemu', author: 'Mark Roberts (@markandrus)',
+    description: 'The original USB MIDI and USB audio implementation, including descriptors, audio production, packet building and rate control, on which Octabam’s shared USB stack is based.',
+    links: [repo('markandrus/octemu'), usbSource('modules/usb-audio-out-tracks-main-cue/README.md')],
+  },
+  {
+    name: 'USB Audio · MAIN / CUE', author: 'Bryan Tysinger (@bryantysinger)',
+    description: 'MAIN/CUE channel layouts, stream latency and alignment work, including CUE alignment with a master track, plus hardware measurements of the shared USB audio stack.',
+    links: [repo('bryantysinger'), usbSource('modules/usb-audio-out-tracks-main-cue/README.md')],
+  },
+  {
+    name: 'USB Audio & MIDI · Octabam integration', author: 'Sam Banks (@sambanks)',
+    description: 'The Octabam port and output layouts, USB MIDI receive FIFO and clock timestamp fixes, and shared audio/MIDI interrupt, bus reset and session-end handling.',
+    links: [repo('sambanks/octabam'), usbSource('modules/usb-midi/README.md')],
+  },
+  {
+    name: 'USB Audio · Outbox 8 & post-fader stems', author: 'allmyfriendsaresynths (@clickysteve)',
+    description: 'The fixed 44.1 kHz clock SET_CUR handshake that enables Outbox 8 compatibility, and the post-fader track layout that follows LEVEL, mute, solo and the crossfader, with upstream hardware measurements.',
+    links: [repo('clickysteve'), usbSource('modules/usb-audio-out-tracks-post/README.md'), { label: 'Outbox 8 fix', href: 'https://github.com/sambanks/octabam/pull/597' }],
+  },
+]
+
 // Attribution follows sdk/octabam/THIRD_PARTY.md, the retained licence manifest,
 // sdk/imports/, vendor/elekloader/kit/NOTICE and each module's author/source record.
 // Describe the retained contribution, rather than implying every linked project
@@ -98,11 +123,7 @@ export const CREDIT_SECTIONS: readonly CreditSection[] = [
         description: 'The original Sidechain Compressor ColdFire/DSP source and coefficient generator, plus the Mute Modes runtime and PERSONALIZE menu from OT Kyoti FW, with octabam integration by Sam Banks.',
         links: [repo('Zac-Kyoti/octatrack-kyoti-fw')],
       },
-      {
-        name: 'USB Audio · MAIN / CUE', author: 'Bryan T (@bryantysinger), Mark Roberts and Sam Banks',
-        description: 'Bryan’s MAIN/CUE channel work and hardware alignment findings, Mark’s USB implementation, and Sam’s octabam port and stream alignment.',
-        links: [{ label: 'octabam / USB Audio', href: 'https://github.com/sambanks/octabam/tree/main/modules/usb-audio-out-tracks-main-cue' }],
-      },
+      ...USB_AUDIO_MIDI_CREDITS,
       {
         name: 'Play Modes', author: 'devilfish707',
         description: 'The Octaplay engine, firmware integration, investigation and documentation behind the Octatrack Play Modes module.',

@@ -7,7 +7,10 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const write = process.argv.includes('--write')
 const notices = await renderLicenseNotices(root)
 // The site also ships the vendored Digitakt/Digitone builder; the Octatrack SDK copy stays its own.
+// Website acknowledgements stay outside the native source inventory.
+const usbCredits = await readFile(resolve(root, 'docs/USB_AUDIO_ATTRIBUTION.txt'), 'utf8')
 const site = notices + '\n' + '='.repeat(72) + '\n\n' + await renderVendorNotices(root)
+  + '\n' + '='.repeat(72) + '\n\n' + usbCredits
 for (const [relativePath, content] of [
   ['sdk/octabam/licenses/' + NOTICE_NAME, notices],
   ['public/licenses/' + NOTICE_NAME, site],

@@ -55,6 +55,28 @@ the Solina ensemble, removed 16 Sep 2026).
 ports, with the sources that were read for laws only (GPL code was never
 transcribed).
 
+## USB audio and MIDI contributions
+
+USB Audio 0.2 in `modules/usb-audio-out-tracks-main-cue/` retains Octabam
+source at `7b2984c859732ae6c797ae49c7d61d250b1b6519`, under the full MIT
+notices in that folder's `LICENSE`. Its original audio, MIDI and descriptor
+implementation is Mark Roberts's (@markandrus / octemu). Bryan Tysinger
+(@bryantysinger) contributed MAIN/CUE layouts, latency and alignment work,
+including master-track CUE alignment, and hardware measurements. Sam Banks
+(@sambanks) contributed the Octabam port, output layouts, MIDI receive FIFO
+and clock timestamp fixes, shared audio/MIDI interrupt integration, and
+bus reset/session-end handling. allmyfriendsaresynths (@clickysteve)
+contributed the Outbox 8 fixed-rate `SET_CUR` handshake and the post-fader
+track layout, with upstream hardware measurements.
+
+See the pinned
+[audio credits](https://github.com/sambanks/octabam/blob/7b2984c859732ae6c797ae49c7d61d250b1b6519/modules/usb-audio-out-tracks-main-cue/README.md),
+[post-fader credits](https://github.com/sambanks/octabam/blob/7b2984c859732ae6c797ae49c7d61d250b1b6519/modules/usb-audio-out-tracks-post/README.md)
+and [MIDI source record](https://github.com/sambanks/octabam/blob/7b2984c859732ae6c797ae49c7d61d250b1b6519/modules/usb-midi/README.md).
+These contributions are also acknowledged in the website's generated
+notices. Upstream hardware reports retain their original build identities;
+local qualification evidence and limits are recorded in the module's `TESTING.md`.
+
 ## Firmware modifications built from their authors' repositories (git submodules)
 
 | module | upstream | licence |
