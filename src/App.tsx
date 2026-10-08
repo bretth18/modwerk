@@ -1,6 +1,7 @@
 import { AccountPage } from './community/AccountPage'
 import { SignupWelcome } from './community/SignupWelcome'
 import { HardwareFeedbackReminder } from './community/HardwareFeedbackReminder'
+import { HardwareFeedbackCheckIn } from './community/HardwareFeedbackCheckIn'
 import { NotificationBell } from './community/NotificationBell'
 import { PublicAnnouncement } from './community/PublicAnnouncement'
 import { useMembersOnline } from './community/useMembersOnline'
@@ -27,7 +28,7 @@ import { useCommunity } from './community/context'
 import { SubmissionPage } from './community/SubmissionPage'
 import { AdminPage } from './community/AdminPage'
 import { PublishedModulePage } from './community/PublishedModulePage'
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import type { ChangeEvent, DragEvent } from 'react'
 import { flushSync } from 'react-dom'
 import { LIBRARY_CATEGORIES, LIBRARY_CATEGORY_LABELS, MODULES, resolveSelection, type ModuleCategory } from './catalog/modules'
@@ -64,6 +65,8 @@ import { usePhoneToolbar } from './hooks/usePhoneToolbar'
 import { ConfigurationBrowser } from './components/ConfigurationBrowser'
 import { ConfigurationDialog } from './components/ConfigurationDialog'
 import { ConfigurationEffects } from './components/ConfigurationEffects'
+const FirmwareFeedbackPreview = import.meta.env.DEV ? lazy(() => import('./components/FirmwareFeedbackPreview')) : () => null
+const firmwareFeedbackPreview = import.meta.env.DEV && typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('preview') === 'firmware-feedback'
 function subscribeRoute(callback: () => void) {
   window.addEventListener('hashchange', callback)
   return () => window.removeEventListener('hashchange', callback)
@@ -306,6 +309,7 @@ export default function App() {
       {configDialog && <ConfigurationDialog mode={configDialog} initialName={configDialog === 'create' ? '' : configDialog === 'duplicate' ? (machineActive?.name ?? '') + ' copy' : machineActive?.name ?? ''} onSubmit={submitConfigurationDialog} onClose={() => { setConfigDialog(null); setCreateDevice(null) }} />}
       <PublicAnnouncement next={route} enabled={!accountRoute && !developerRoute && !configuration && machineView !== 'configuration' && !route.startsWith('submit') && !['admin', 'review', 'privacy', 'impressum', 'community-rules', 'report-content'].includes(route)} />
       {supportOpen && <SupportDialog url={SUPPORT_URL} onClose={() => setSupportOpen(false)} />}
+      <HardwareFeedbackCheckIn enabled={!accountRoute && !developerRoute && !['admin', 'review', 'privacy', 'impressum', 'community-rules', 'report-content', 'submit'].includes(route.split('/')[0]) && !firmwareFeedbackPreview}/>
       <div className="workspace">
         <header className="app-toolbar" ref={toolbarRef}>
           <a className="toolbar-brand" href={'#' + ALL_MACHINES}><img src={import.meta.env.BASE_URL + 'modwerk-mark.svg'} width="30" height="30" alt="" /><span>Modwerk</span></a>
@@ -318,6 +322,7 @@ export default function App() {
           </div>
         </header>
         <main className="workspace-content" id="main-content" ref={mainRef} tabIndex={-1}>
+          {firmwareFeedbackPreview && <Suspense fallback={null}><FirmwareFeedbackPreview/></Suspense>}
           {!accountRoute && <SignupWelcome key={route} />}
           {!accountRoute && !developerRoute && !configuration && machineView !== 'configuration' && !['admin', 'privacy', 'impressum', 'community-rules', 'report-content'].includes(route) && <HardwareFeedbackReminder />}
           {!phoneLayout && projectNotice}

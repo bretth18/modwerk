@@ -18,8 +18,8 @@ import { defaultConfigurationChoice, resolveReportConfiguration, type Configurat
 import recipes from '../catalog/module-sets.json'
 import { ReportMoreDetails } from './ReportMoreDetails'
 
-export function IssueReport({id,author,openRequest=0,embedded=false,workspaceContext,baseOs=REPORT_OS}:{id:string;author:string;openRequest?:number;embedded?:boolean;workspaceContext?:WorkspaceReportContext;baseOs?:string}){
- const {session}=useCommunity()
+export function IssueReport({id,author,openRequest=0,embedded=false,workspaceContext,baseOs=REPORT_OS,preview=false,onReported}:{id:string;author:string;openRequest?:number;embedded?:boolean;workspaceContext?:WorkspaceReportContext;baseOs?:string;preview?:boolean;onReported?:()=>void}){
+ const {session,preview:contextPreview}=useCommunity(),isPreview=import.meta.env.DEV&&(preview||contextPreview)
  const report=useRef<HTMLDetailsElement>(null),title=useRef<HTMLInputElement>(null),success=useRef<HTMLDivElement>(null)
  const fileInput=useRef<HTMLInputElement>(null),readRequest=useRef(0),helpId=useId()
  useOpenIssueReport(report,title,openRequest)
@@ -71,12 +71,14 @@ export function IssueReport({id,author,openRequest=0,embedded=false,workspaceCon
   if(!model||reading||busy)return
   setBusy(true);setError('')
   const fields=Object.fromEntries(new FormData(form)) as Record<string,string>
+  if(isPreview){setSent({id:'local-preview',author,github:'none',githubUrl:null,forumThreadId:null});setBusy(false);onReported?.();return}
   if(fields.actual.length>2000){setError('Keep the description under 2,000 characters. Your complete discussion draft is available above for reference.');setBusy(false);return}
   if(!log&&!resolved.modules.length){setError(CONFIGURATION_REQUIRED);setBusy(false);return}
   // With a log the Worker reads the configuration from the log itself; this mirrors what the form showed.
   const context:IssueContext={model,flash,os:log?.summary.os??baseOs,modules:resolved.modules,keepStockFx2:resolved.keepStockFx2,build:resolved.build}
   try{
    const result=await post<BugReportResult>('/modules/'+id+'/issues',{title:fields.title,steps:fields.steps,expected:fields.expected,actual:fields.actual,context,visibility:'forum',notifyUpdates:fields.notifyUpdates==='on',...(log?{log:log.text}:{})})
+   onReported?.()
    refreshModuleIssues(id)
    setSent(result)
    setFollow(fields.notifyUpdates==='on')
@@ -123,7 +125,7 @@ export function IssueReport({id,author,openRequest=0,embedded=false,workspaceCon
    </details>
    {embedded&&!log?<details className="issue-report-more"><summary>Downloaded build <span>{workspace.modules.length} modules attached</span></summary><ReportConfiguration machine="octatrack" moduleId={reportedModule} workspace={workspace} log={null} value={configuration} onChange={setConfiguration} disabled={busy} os={baseOs}/></details>:<ReportConfiguration machine="octatrack" moduleId={reportedModule} workspace={workspace} log={log?.summary??null} value={configuration} onChange={setConfiguration} disabled={busy} os={baseOs}/>}
    </ReportMoreDetails>
-   {embedded?<p className="service-note">Your report is public and notifies the module’s developers. The configuration and any log stay private to you, the maintainers and the administrator.</p>:<BugReportNotice tracker={tracker}/>}
+   {isPreview?<p className="service-note">Local preview — nothing is sent.</p>:embedded?<p className="service-note">Your report is public and notifies the module’s developers. The configuration and any log stay private to you, the maintainers and the administrator.</p>:<BugReportNotice tracker={tracker}/>}
    <ReportNotifications id={id} defaultChecked={follow}/>
    <button className="button button-primary" disabled={busy||reading}>{busy?'Posting…':'Post report'}</button>
   </form>}
