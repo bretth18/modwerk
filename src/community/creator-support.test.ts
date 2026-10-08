@@ -5,10 +5,11 @@ import type { DatabaseSync } from 'node:sqlite'
 import { testServer } from './test-server'
 import { handleCommunity } from '../../server/transport'
 import { digest } from '../../server/security'
-import { communityModule } from './modules'
-import { koFiUrl } from './creator-support'
+import { COMMUNITY_MODULES, communityModule } from './modules'
+import { defaultCreatorSupport, koFiEmbedUrl, koFiUrl } from './creator-support'
 import { CreatorSupport, CreatorSupportButton } from './CreatorSupport'
 import { apiFetch } from './api'
+import { CreatorSupportDialog } from './CreatorSupportDialog'
 
 const databases: DatabaseSync[] = []
 afterEach(() => { for (const db of databases.splice(0)) db.close(); vi.unstubAllGlobals() })
@@ -81,6 +82,38 @@ describe('creator support links', () => {
     expect(await (await f.call('/modules/' + id + '/support')).json()).toEqual({ koFiUrl: 'https://ko-fi.com/ot_creator', canEdit: false })
   })
 
+
+  it('already links the owner’s Ko-fi on every reviewed repeat98 module, without requiring a claim', async () => {
+    const f = await fixture(), modules = COMMUNITY_MODULES.filter(module => module.author.toLowerCase() === 'repeat98')
+    expect(modules.length).toBeGreaterThan(0)
+    for (const module of modules) expect(await (await f.call('/modules/' + module.id + '/support')).json()).toEqual({ koFiUrl: 'https://ko-fi.com/jannikassfalg', canEdit: false })
+    expect(await (await f.call('/modules/digitakt-digihealth/support')).json()).toEqual({ koFiUrl: '', canEdit: false })
+    expect(defaultCreatorSupport('REPEAT98')).toBe('https://ko-fi.com/jannikassfalg')
+    expect(defaultCreatorSupport('Jannik Aßfalg')).toBe('')
+  })
+
+  it('persists removal of an owner default and lets its current maintainer replace it', async () => {
+    const f = await fixture(), id = 'analog-bassdrum'
+    f.db.prepare('UPDATE users SET github_login=? WHERE id=?').run('repeat98', 'developer')
+    await f.claim(id)
+    expect((await f.save(id, '')).status).toBe(200)
+    expect(await (await f.call('/modules/' + id + '/support')).json()).toEqual({ koFiUrl: '', canEdit: false })
+    expect(f.db.prepare('SELECT ko_fi_url FROM module_creator_support WHERE module_id=?').get(id)).toEqual({ ko_fi_url: '' })
+    await f.save(id, 'https://ko-fi.com/new_page')
+    expect(await (await f.call('/modules/' + id + '/support')).json()).toEqual({ koFiUrl: 'https://ko-fi.com/new_page', canEdit: false })
+  })
+
+  it('constructs only a validated Ko-fi embed and discards profile query overrides', () => {
+    expect(koFiEmbedUrl('https://www.ko-fi.com/creator?redirect=elsewhere#fragment')).toBe('https://ko-fi.com/creator/?hidefeed=true&widget=true&embed=true')
+    expect(koFiEmbedUrl('')).toBe('')
+    expect(() => koFiEmbedUrl('https://evil.test/creator')).toThrow()
+    const html = renderToStaticMarkup(createElement(CreatorSupportDialog, { url: 'https://ko-fi.com/creator', onClose: () => {} }))
+    expect(html).toContain('src="https://ko-fi.com/creator/?hidefeed=true&amp;widget=true&amp;embed=true"')
+    expect(html).toContain('title="Ko-fi tip panel"')
+    expect(html).toContain('href="https://ko-fi.com/creator" target="_blank" rel="noopener noreferrer"')
+    expect(html).toContain('allow-forms allow-popups')
+  })
+
   it('sends developer credentials only to the dedicated support route when accessing public modules', async () => {
     const token = 'd'.repeat(64), headers: Headers[] = []
     vi.stubGlobal('localStorage', { getItem: (key: string) => key.startsWith('modwerk.developer.session:') ? token : '' })
@@ -120,12 +153,15 @@ describe('creator support links', () => {
     expect((await f.call('/modules/' + id + '/support')).status).toBe(404)
   })
 
-  it('renders safe external buttons and reserves a loading slot before community data arrives', () => {
+  it('renders accessible cup buttons without loading an embed, and reserves the support slot', () => {
     const html = renderToStaticMarkup(createElement(CreatorSupportButton, { url: 'https://ko-fi.com/creator' }))
     expect(html).toContain('Support the creator')
-    expect(html).toContain('href="https://ko-fi.com/creator"')
-    expect(html).toContain('target="_blank" rel="noopener noreferrer"')
+    expect(html).toContain('aria-haspopup="dialog"')
+    expect(html).toContain('class="ko-fi-heart"')
+    expect(html).not.toContain('<iframe')
+    expect(html).not.toContain('<script')
     expect(renderToStaticMarkup(createElement(CreatorSupportButton, { url: 'javascript:alert(1)' }))).toBe('')
-    expect(renderToStaticMarkup(createElement(CreatorSupport, { id: 'miniverb' }))).toBe('<div class="creator-support-slot"> </div>')
+    expect(renderToStaticMarkup(createElement(CreatorSupport, { id: 'digitakt-digihealth' }))).toBe('<div class="creator-support-slot"> </div>')
+    expect(renderToStaticMarkup(createElement(CreatorSupport, { id: 'analog-bassdrum' }))).toContain('Support the creator on Ko-fi')
   })
 })

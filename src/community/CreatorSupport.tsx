@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react'
 import { Icon } from '../components/Icon'
+import { CreatorSupportDialog } from './CreatorSupportDialog'
 import { api, post } from './api'
 import { useCommunity } from './context'
-import { koFiUrl, type CreatorSupportData } from './creator-support'
+import { communityModule } from './modules'
+import { defaultCreatorSupport, koFiUrl, type CreatorSupportData } from './creator-support'
 
 export function CreatorSupportButton({ url }: { url: string }) {
+  const [open, setOpen] = useState(false)
   let href: string
   try { href = koFiUrl(url) } catch { return null }
   if (!href) return null
-  return <a className="button button-quiet creator-support-button" href={href} target="_blank" rel="noopener noreferrer" title="Support the creator on Ko-fi (opens in a new tab)"><Icon name="heart" size={15}/>Support the creator <span aria-hidden="true">↗</span></a>
+  return <><button type="button" className="creator-support-link" aria-haspopup="dialog" aria-expanded={open} aria-label="Support the creator on Ko-fi" title="Support the creator on Ko-fi" onClick={() => setOpen(true)}>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h13v8a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V7ZM17 8h2a3 3 0 0 1 0 6h-2M3 22h16"/><path className="ko-fi-heart" d="m10.5 16.2-3.3-3.3a2 2 0 0 1 2.9-2.8l.4.4.4-.4a2 2 0 0 1 2.9 2.8Z"/></svg>
+  </button>{open && <CreatorSupportDialog url={href} onClose={() => setOpen(false)}/>}</>
 }
 
 export function CreatorSupport({ id, editor = false }: { id: string; editor?: boolean }) {
@@ -23,6 +28,7 @@ export function CreatorSupport({ id, editor = false }: { id: string; editor?: bo
     return () => controller.abort()
   }, [id, session.available, session.user?.id, session.user?.verified, developer?.user?.login, revision])
   const current = data?.id === id ? data : null
+  const url = current ? current.koFiUrl : defaultCreatorSupport(communityModule(id)?.author)
   async function save(link: string) {
     setBusy(true); setError(''); setNotice('')
     try {
@@ -39,5 +45,5 @@ export function CreatorSupport({ id, editor = false }: { id: string; editor?: bo
     {error && <p className="file-error" role="alert">{error}</p>}{notice && <p className="success-note" role="status">{notice}</p>}
   </form>
   if (editor) return form || null
-  return <div className="creator-support-slot">{current?.koFiUrl && <CreatorSupportButton url={current.koFiUrl}/>} {form && <details className="creator-support-settings"><summary className="text-button">{current?.koFiUrl ? 'Edit' : 'Add Ko-fi link'}</summary>{form}</details>}</div>
+  return <div className="creator-support-slot">{url && <CreatorSupportButton url={url}/>} {form && <details className="creator-support-settings"><summary title={current?.koFiUrl ? 'Edit Ko-fi link' : 'Add Ko-fi link'}><Icon name="sliders" size={13}/><span className="sr-only">{current?.koFiUrl ? 'Edit Ko-fi link' : 'Add Ko-fi link'}</span></summary>{form}</details>}</div>
 }

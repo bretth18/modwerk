@@ -37,14 +37,14 @@ export function ModuleDetailLayout({ id, title, family, detail, author, authorUr
   return <div className="detail-page">
     <div className="module-page-actions">
       <a className="back-link" href={backHref}><Icon name="back" size={15} />{backLabel}</a>
-      <div className="module-page-buttons module-secondary-actions"><ShareModuleButton id={id} title={title} /><button type="button" className="button button-danger module-issue-action" onClick={showIssueReport}><Icon name="message" size={15} />Report an issue</button><CreatorSupport key={id} id={id}/></div>
+      <div className="module-page-buttons"><ShareModuleButton id={id} title={title} /><button type="button" className="button button-danger module-issue-action" onClick={showIssueReport}><Icon name="message" size={15} />Report an issue</button></div>
     </div>
     <section className="detail-hero detail-hero-with-resources" aria-labelledby="module-title">
       {preview}
       <div className="detail-intro">
         <div className="detail-tags"><span className="pill">{family}</span><span className="subtle">{detail}</span></div>
         <h1 id="module-title">{title}</h1>
-        <a className="author-link" href={authorUrl} target="_blank" rel="noreferrer">by {author} ↗</a>
+        <div className="module-creator"><a className="author-link" href={authorUrl} target="_blank" rel="noreferrer">by {author} ↗</a><CreatorSupport key={id} id={id}/></div>
         <p>{description}</p>
         {notice}
         <div className="detail-rating"><button className="text-button" onClick={showDiscussion}>Reviews & discussion{discussionBadge}</button></div>

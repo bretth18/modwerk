@@ -3,7 +3,7 @@ import { maintainedModules } from './developers'
 import { throttle } from './auth'
 import { HttpError, jsonBody, response } from './security'
 import { communityModule } from '../src/community/modules'
-import { koFiUrl } from '../src/community/creator-support'
+import { defaultCreatorSupport, koFiUrl } from '../src/community/creator-support'
 
 export async function moduleSupportRoutes(request: Request, db: Database, user: User | null, developer: User | null): Promise<Response | null> {
   const match = new URL(request.url).pathname.match(/^\/api\/modules\/([a-z0-9-]+)\/support$/)
@@ -20,7 +20,7 @@ export async function moduleSupportRoutes(request: Request, db: Database, user: 
     const active = saved && !saved.suspended && (module
       ? saved.github_id && (await maintainedModules(db, saved)).some(item => item.id === id)
       : saved.id === publication?.owner_id)
-    let url = ''
+    let url = saved ? '' : defaultCreatorSupport(module?.author)
     if (active) { try { url = koFiUrl(saved.ko_fi_url) } catch { /* Hide invalid legacy data. */ } }
     return response({ koFiUrl: url, canEdit: !!actor })
   }
@@ -32,7 +32,7 @@ export async function moduleSupportRoutes(request: Request, db: Database, user: 
   try { url = koFiUrl(body.koFiUrl) } catch (error) { throw new HttpError(400, (error as Error).message) }
   await throttle(db, 'creator-support:' + actor.id, 30)
   await db.batch([
-    url
+    url || defaultCreatorSupport(module?.author)
       ? db.prepare('INSERT INTO module_creator_support(module_id,user_id,ko_fi_url) VALUES(?,?,?) ON CONFLICT(module_id) DO UPDATE SET user_id=excluded.user_id,ko_fi_url=excluded.ko_fi_url,updated_at=CURRENT_TIMESTAMP').bind(id, actor.id, url)
       : db.prepare('DELETE FROM module_creator_support WHERE module_id=?').bind(id),
     db.prepare('INSERT INTO developer_events(id,actor_id,module_id,action) VALUES(?,?,?,?)').bind(crypto.randomUUID(), actor.id, id, url ? 'support-link-updated' : 'support-link-removed'),
