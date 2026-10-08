@@ -1,0 +1,9 @@
+{
+  "version": "0.1.0-experimental",
+  "modules": [
+    "AIR CHORUS"
+  ],
+  "bytes": 1112560,
+  "mainOsSha256": "8ecec31ef7511756e17aaba2cd569a32e4471bcebe0dd0738615327fb850a6df",
+  "hardwareStatus": "untested"
+}

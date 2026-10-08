@@ -1,0 +1,22 @@
+signal                  out dBFS  harmonics  aliasing  residual   DC dBFS   rails  verdict
+tone-1100hz-12db           -39.2        8.4      13.8      26.9     -63.7       0  FAIL
+tone-1100hz-1db            -28.2        8.4      13.8      26.9     -52.7       0  FAIL
+tone-2701hz-12db           -42.3       10.3      17.6      29.8     -70.0       0  FAIL
+tone-2701hz-1db            -31.3       10.3      17.6      29.8     -59.0       0  FAIL
+tone-5301hz-12db           -49.4        9.5     <-140      36.7     -62.0       0  ok
+tone-5301hz-1db            -38.4        9.5     <-140      36.7     -51.0       0  FAIL
+tone-9102hz-12db           -47.6        5.2     <-140      34.2    -111.3       0  ok
+tone-9102hz-1db            -36.6        5.2     <-140      34.2    -104.6       0  ok
+idle                    after the input stops: digital silence  OK
+  tone-1100hz-12db aliasing: 13.8 dBc (limit -60)
+  tone-1100hz-1db aliasing: 13.8 dBc (limit -60)
+  tone-1100hz-1db DC: -52.7 dBFS (limit -60)
+  tone-2701hz-12db aliasing: 17.6 dBc (limit -60)
+  tone-2701hz-1db aliasing: 17.6 dBc (limit -60)
+  tone-2701hz-1db DC: -59.0 dBFS (limit -60)
+  tone-5301hz-1db DC: -51.0 dBFS (limit -60)
+
+levels: harmonics, aliasing and residual are dBc to the fundamental. Aliasing is the energy where harmonics above Nyquist fold back; the residual is
+everything else (noise, modulation sidebands, folds beyond the 128th harmonic). A time-varying effect leaves sidebands in the residual: turn its modulation off.
+
+5 check(s) failed. The limits are audit defaults (aliasing -60 dBc, DC -60 dBFS, idle -90 dBFS); say in TESTING.md what you changed and why.

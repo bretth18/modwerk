@@ -85,7 +85,7 @@
     },
     {
       "id": "airwindows",
-      "name": "Airwindows Capacitor2 (and historical Pockey transcription)",
+      "name": "Airwindows Chorus, Capacitor2 (and historical Pockey transcription)",
       "spdx": "MIT",
       "noticeFile": "airwindows.txt",
       "sources": [
@@ -93,11 +93,17 @@
           "url": "https://raw.githubusercontent.com/airwindows/airwindows/d22a25b7f7c0c8c05e9f3ae480e7f1da9769f49d/LICENSE",
           "revision": "d22a25b7f7c0c8c05e9f3ae480e7f1da9769f49d",
           "path": "LICENSE"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/airwindows/airwindows/e718c9bcfcdd736deeddb08bffe6bce2aa8e0eea/LICENSE",
+          "revision": "e718c9bcfcdd736deeddb08bffe6bce2aa8e0eea",
+          "path": "LICENSE"
         }
       ],
       "usedIn": [
         "modules/spectrum: capacitor2_ref.py",
-        "modules/character: retired Pockey attribution"
+        "modules/character: retired Pockey attribution",
+        "modules/airwindows-chorus: Chorus"
       ]
     },
     {
@@ -300,6 +306,9 @@
     ],
     "synth": [
       "octa-panel"
+    ],
+    "airwindows-chorus": [
+      "airwindows"
     ]
   }
 }

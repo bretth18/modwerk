@@ -991,3 +991,40 @@ Applies only to Play Modes 0.1.1-experimental and native source
 Waives fresh physical reboot, Part/project restore after unsaved edits,
 distinct-track isolation and stock/flood performance tests. Retain the
 author's MKII functional report; missing checks stay unverified.
+
+
+## Air Chorus 0.1.0 — 9 October 2026
+
+Chris Johnson’s MIT-licensed Airwindows Chorus is ported from pinned published
+source to Octatrack FX2. Current native/browser coverage: 114 selections,
+46 matching builds (16 identical outright, 30 outside shared platform writes),
+68 matching refusals and zero mismatches. The native declaration exporter
+records all 28,672 clean selections containing Air Chorus; 36,864 collide and
+remain refused. Immutable source scans were memoized after comparing 128
+complete uncached/cached ledger results exactly; no checks were omitted.
+The browser now charges the module’s sine table and rejects Analog BD with the
+same native reason. Verified descriptor fingerprints reference the owner’s
+original 1.40C file; stock bytes remain private.
+
+The exact AIRC0R1 image boots in Octemu, accepts four differently configured
+track assignments and passes a separate two-track Part/control isolation
+readback. Native moving-control checks pass all six cases/eighteen windows;
+a guarded eight-instance replay passes for 31 seconds. Conservative modeled
+cycles, executed instruction counts and unmeasured hardware deadlines are
+reported separately. See [Air Chorus testing](../sdk/octabam/modules/airwindows-chorus/TESTING.md).
+
+The owner’s successful 50-minute MKII report covers the earlier candidate,
+several instances and full knob sweeps. Fresh physical testing of bounded
+initialization is waived for the exact current source/image in
+`sdk/airwindows-chorus-build-approval.json`; eight-track hardware timing,
+locks/scenes/LFOs and Part/project/physical reboot remain unverified.
+
+
+Adding the module changes the shared compiled source inventory. The existing
+136-profile Analog BD matrix was rebuilt: all 130 build identities and six
+refusals are unchanged, as are its three native builder-source fingerprints.
+The broader browser-only check of the ten retained module comparison records
+still reports 111 stale mismatch rows after earlier module updates; running the
+same check on untouched current main produces exactly the same rows and result
+summaries. Air Chorus adds no mismatch to those historical records; its new
+114-profile record matches current source independently.
