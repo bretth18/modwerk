@@ -66,7 +66,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if (/^\/api\/configurations(?:\/|$)/.test(path)) throw new HttpError(410,'Configurations are saved on your device. Use Export to copy one to another device.')
     const db = env.DB
     if (!db) throw new HttpError(503,'Community services are not connected yet. Your device workspace still works.')
-    const issueReplies = await publicIssueReplies(request,env,db)
+    const issueReplies = request.method === 'GET' ? await publicIssueReplies(request,env,db) : null
     if (issueReplies) return issueReplies
     if (path === '/api/usage/events' && request.method === 'POST') return await recordUsage(request,env,db)
     if (path === '/api/usage/module-downloads' && request.method === 'POST') return await recordModuleDownload(request,env,db)
@@ -78,6 +78,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     const developerAuth = await developerAuthentication(request,env,db)
     if(developerAuth)return developerAuth
     const user = await currentUser(request,db,env)
+    const publicReply = request.method === 'POST' ? await publicIssueReplies(request,env,db,user) : null
+    if (publicReply) return publicReply
     if (path === '/api/working-reports') return await workingReportRoute(request,db,user)
     const announcements = await publicAnnouncementRoutes(request,db,user)
     if(announcements)return announcements

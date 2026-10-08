@@ -1,4 +1,5 @@
 import { issueStatusStatements } from './issue-notifications'
+import { handleGithubCommand } from './github-commands'
 import type { Database, Env } from './platform'
 import { HttpError } from './security'
 import { communityModule } from '../src/community/modules'
@@ -75,7 +76,13 @@ export function issueMarkdown(issue: MirroredIssue, app?: string) {
   return ['Reported on [Modwerk](' + site + ') for **`' + issue.module_id + '`** by ' + (profile ? '[' + reporter + '](' + profile + ')' : reporter) + (owners.length ? ' · ' + owners.join(' ') : ''), '',
     '| | |', '| --- | --- |', '| Device | ' + inert(device).replace(/\|/g, '\\|') + ' |', '| Module version | ' + inert(version).replace(/\|/g, '\\|') + ' |', '',
     ...([['Steps to reproduce', steps], ['Expected', expected], ['Actual', actual]] as const).filter(([, text]) => text).flatMap(([heading, text]) => ['### ' + heading, '', quote(text), '']), '---',
-    '_The reporter’s configuration, build fingerprint and device log are private' + (details ? '. Verified maintainers can [open them on Modwerk](' + details + ')' : '') + '. Comments and status changes here are sent to the reporter on Modwerk._',
+    '_The reporter’s configuration, build fingerprint and device log are private' + (details ? '. Verified maintainers can [open them on Modwerk](' + details + ')' : '') + '. Comments and status changes here are sent to the reporter on Modwerk._', '',
+    '### Module maintainer actions', '',
+    'Reply here normally. Registered module maintainers can post these commands without a fork or repository write access:', '',
+    '- `/modwerk close configuration <explanation>` (also: `duplicate`, `not_reproducible`, `withdrawn`)',
+    '- `/modwerk reopen <explanation>`',
+    '- `/modwerk resolve <version> verified-download` — only after verifying that exact published download fixes this report on your unit.', '',
+    'A merged PR alone does not resolve a report. [Author release steps](https://github.com/repeat98/modwerk/blob/main/docs/MODULE_AUTHOR_UPDATES.md).',
   ].join('\n').slice(0, BODY_LIMIT)
 }
 
@@ -89,7 +96,7 @@ export async function setGithubIssueState(config: GithubConfig, number: number, 
   await github(config, '/issues/' + number, 'PATCH', status === 'closed' ? { state: 'closed', state_reason: reason } : { state: 'open' })
 }
 
-async function githubCommentOnce(config: GithubConfig, number: number, marker: string, body: string) {
+export async function githubCommentOnce(config: GithubConfig, number: number, marker: string, body: string) {
   let found = false
   for (let page = 1; page <= 30; page++) {
     const comments = await github<{ body?: string; user?: { login?: string } }[]>(config, '/issues/' + number + '/comments?per_page=100&page=' + page, 'GET', undefined)
@@ -111,7 +118,7 @@ export async function resolveGithubRelease(config: GithubConfig, number: number,
 /** A maintainer can close a duplicate or explained report without claiming a firmware release. */
 export async function closeGithubReport(config: GithubConfig, number: number, reason: ReportClosureReason, note: string, login: string) {
   const marker = '<!-- modwerk-report-closure:' + await digest(reason + '\n' + note) + ' -->'
-  await githubCommentOnce(config, number, marker, 'Closed on Modwerk by **' + inert(login) + '**: **' + REPORT_CLOSURE_REASONS[reason] + '**.\n\n' + quote(note) + '\n\nNo new firmware fix is claimed by this closure. If the problem remains, reply here with reproduction details so the maintainer can reopen the report.')
+  await githubCommentOnce(config, number, marker, 'Closed by module maintainer **' + inert(login) + '**: **' + REPORT_CLOSURE_REASONS[reason] + '**.\n\n' + quote(note) + '\n\nNo new firmware fix is claimed by this closure. If the problem remains, reply here with reproduction details so the maintainer can reopen the report.')
   await setGithubIssueState(config, number, 'closed', 'not_planned')
 }
 
@@ -155,7 +162,7 @@ export async function signGithubPayload(secret: string, body: ArrayBuffer) {
   return 'sha256=' + hex(await crypto.subtle.sign('HMAC', key, body))
 }
 
-type WebhookPayload = { action?: unknown; issue?: { number?: unknown; state_reason?: unknown }; comment?: { body?: unknown; user?: { login?: unknown; type?: unknown } }; sender?: { login?: unknown }; repository?: { full_name?: unknown } }
+export type WebhookPayload = { action?: unknown; issue?: { number?: unknown; state_reason?: unknown; pull_request?: unknown }; comment?: { id?: unknown; body?: unknown; user?: { id?: unknown; login?: unknown; type?: unknown } }; sender?: { id?: unknown; login?: unknown }; repository?: { full_name?: unknown } }
 
 /**
  * GitHub "issues" and "issue_comment" webhooks. Closing or reopening a mirrored issue updates the report's
@@ -171,7 +178,7 @@ export async function handleGithubWebhook(request: Request, env: Env, db: Databa
   let payload: WebhookPayload
   try { payload = JSON.parse(new TextDecoder().decode(body)) } catch { throw new HttpError(400, 'Invalid payload.') }
   const number = payload.issue?.number
-  if (!Number.isInteger(number) || String(payload.repository?.full_name ?? '').toLowerCase() !== config.repository.toLowerCase()) return { ok: true, handled: false }
+  if (!Number.isSafeInteger(number) || Number(number) <= 0 || payload.issue?.pull_request || String(payload.repository?.full_name ?? '').toLowerCase() !== config.repository.toLowerCase()) return { ok: true, handled: false }
   // Most issues and comments on the repository did not start on Modwerk.
   const issue=await db.prepare('SELECT id FROM issues WHERE github_number=?').bind(number).first<{id:string}>()
   if (!issue) return { ok: true, handled: false }
@@ -183,6 +190,18 @@ export async function handleGithubWebhook(request: Request, env: Env, db: Databa
     const comment = payload.comment
     // Bots (CI, release tooling) talk to developers, not reporters.
     if (payload.action !== 'created' || typeof comment?.body !== 'string' || comment.user?.type === 'Bot') return { ok: true, handled: false }
+    if (/^\s*\/modwerk(?:\s|$)/.test(comment.body)) {
+      const result = await handleGithubCommand(env, db, config, issue.id, Number(number), payload)
+      await db.prepare('INSERT INTO github_webhook_deliveries(id,issue_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(delivery, issue.id).run()
+      return { ok: true, handled: true, ...result }
+    }
+    // The authenticated frontend post is already attributed in the conversation. Do not
+    // turn the reporter's own relayed reply into an apparent reply from the service account.
+    const relayed = comment.body.includes('<!-- modwerk-reply:') && await db.prepare("SELECT actor FROM github_actions WHERE issue_id=? AND published_hash=? AND id LIKE 'reply:%'").bind(issue.id, await digest(comment.body)).first<{ actor: string }>()
+    if (relayed) {
+      await db.prepare('INSERT INTO github_webhook_deliveries(id,issue_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(delivery, issue.id).run()
+      return { ok: true, handled: true }
+    }
     await db.batch([notify('issue_comment', comment.user?.login, comment.body.slice(0, 400)),db.prepare('INSERT INTO github_webhook_deliveries(id,issue_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(delivery,issue.id)])
     return { ok: true, handled: true }
   }

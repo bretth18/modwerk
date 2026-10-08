@@ -252,3 +252,9 @@ Since the log became optional, a report could leave with no configuration at all
 - **Without a log,** the configuration is required and named in the form: a dropdown of the configurations saved in this browser with the active one preselected, or the modules picked one by one, as removable chips plus a search box that scales with the catalog, at current catalog versions, with the reported module already in the list. The workspace's empty "My first configuration" is not offered. Nothing leaves the form, and the workspace's active configuration is not changed by the choice.
 - **The Worker refuses** a report with neither a log nor at least one module. Digitakt and Digitone have no device log, so their reports always name a configuration.
 - **Not done:** asking for exact module versions by hand. The log is the precise source; a hand-picked list says which modules, at the versions the catalog offers today.
+
+## 8 October 2026 — GitHub is the developer home
+
+The owner requested all day-to-day developer work in GitHub and users in the frontend. Public replies go into one GitHub thread from either surface; signed GitHub status events update Modwerk. Registered authors can close/reopen their own shared public reports and complete verified published fixes through scoped GitHub comment commands, without a fork, website claim or repository-wide permissions. Existing numeric ownership, suspension/revocation, privacy consent and exact live-release gates remain enforced. A merged PR is not a resolved report.
+
+The former developer workspace becomes Creator settings for claims, support links and direct private diagnostic access. The duplicate public report/activity inbox and frontend public closure controls are removed. Existing member module notifications, private reports and compatibility APIs remain.

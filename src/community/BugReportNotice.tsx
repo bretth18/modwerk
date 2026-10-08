@@ -1,6 +1,7 @@
 import type { BugReportResult, IssueTracker } from './issue-tracker'
 import { threadHref } from '../routing'
 import { Icon } from '../components/Icon'
+import { modulePageHref } from './modules'
 
 export function BugReportNotice({ tracker }: { tracker: IssueTracker | null }) {
   const where = tracker?.tracker === 'github' ? <>opens a public GitHub issue for the module’s developers (no GitHub account needed)</> : <>notifies the module’s developers and opens a public thread in <a href="#forum?category=issues">Bug reports</a></>
@@ -11,8 +12,8 @@ export function ExistingIssues({ id, tracker }: { id: string; tracker: IssueTrac
   if (tracker?.tracker !== 'github') return <a href={'#forum?category=issues&module=' + encodeURIComponent(id)}>Check existing reports →</a>
   return <div className="issue-report-existing">
     {tracker.issues.length > 0 && <><p className="service-note">Already reported? Comment on the open issue instead:</p>
-      <ul>{tracker.issues.map(issue => <li key={issue.url}><a href={issue.url} target="_blank" rel="noreferrer">{issue.title} ↗</a></li>)}</ul></>}
-    {tracker.allUrl && <a href={tracker.allUrl} target="_blank" rel="noreferrer">All open issues for this module on GitHub ↗</a>}
+      <ul>{tracker.issues.map(issue => <li key={issue.url}><a href={modulePageHref(id) + '?tab=issues'}>{issue.title} →</a></li>)}</ul></>}
+    <a href={modulePageHref(id) + '?tab=issues'}>Read and reply to open reports on Modwerk →</a>
   </div>
 }
 
@@ -20,7 +21,7 @@ export function BugReportSuccess({ report, onReportAnother }: { report: BugRepor
   const account = <>Manage the private details under <a href={'#account/report/' + report.id}>Your account</a>. Status changes reach your bell and unread activity emails, following your <a href="#account/notifications">notification settings</a>.</>
   const another = onReportAnother && <button type="button" className="button button-quiet module-issue-action" onClick={onReportAnother}><Icon name="message" size={16}/>Report another issue</button>
   if (import.meta.env.DEV && report.id === 'local-preview') return <><strong>Local preview completed</strong><p>Nothing was sent or saved.</p>{another}</>
-  if (report.githubUrl) return <><strong>Your bug report is on GitHub</strong><p>The module developers have been notified. <a href={report.githubUrl} target="_blank" rel="noreferrer">Open the issue ↗</a> to follow public replies. {account}</p>{another}</>
+  if (report.githubUrl) return <><strong>Your bug report is posted</strong><p>The module developers have been notified on GitHub. <a href={'#account/report/' + report.id}>Read and reply on Modwerk</a> to follow the same conversation. <a href={report.githubUrl} target="_blank" rel="noreferrer">View on GitHub ↗</a> {account}</p>{another}</>
   if (report.forumThreadId) return <><strong>Your bug report is posted</strong><p>It is in the Bug Reports forum and the module developers’ inbox. <a href={threadHref(report.forumThreadId)}>Open the discussion</a> to follow public replies. {account}</p>{another}</>
   return <><strong>Your bug report is saved</strong><p>It reached the module developers’ inbox and will be posted to GitHub shortly. {account}</p>{another}</>
 }
