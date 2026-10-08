@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "moduleId": "synth",
   "moduleVersion": "0.1.2-experimental",
-  "moduleSourceSha256": "8fa263bfcd30dca9aff4f83dbcb001d4ccf06286e31839c8e0afd61100a9315c",
   "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
   "originalOsSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
   "pool": [

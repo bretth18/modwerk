@@ -1,25 +1,15 @@
 {
+  "kind": "owner-approved-update",
   "id": "synth",
-  "version": "0.1.1-experimental",
-  "sourceSha256": "bfa77029219a2d5deaa9dd1394662e18dfee01ade72b631e36fe3fab48054560",
-  "runtimeSha256": "1e820906d02ed67efc870f57c67eaaff4eb34c990f0cf49b39bacf7997ce18bd",
-  "imageSha256": "c1fbc0b2eaf284e72692b7048d1dfd3693f3e3e90c71229159a619d585b52c95",
+  "version": "0.1.2-experimental",
+  "sourceSha256": "8fa263bfcd30dca9aff4f83dbcb001d4ccf06286e31839c8e0afd61100a9315c",
   "approvedBy": "repeat98",
-  "approvedOn": "2026-10-06",
+  "approvedOn": "2026-10-08",
   "waived": [
     "current-build-hardware",
     "chip-worst-case-cycles",
-    "complete-stack-and-memory-bounds"
+    "complete-memory-bounds"
   ],
-  "ownerHardwareStatement": "I don't have any hardware evidence other than people use it on discord. it's fine, I approve",
-  "ownerResourceStatement": "Approve this experimental release",
-  "ownerResourceQuestion": "Do you also approve releasing FM Synth 0.1.1 as experimental with worst-case chip timing and complete stack/memory bounds explicitly unmeasured? This is the remaining exception required by docs/MODULE_QUALIFICATION.md; it would apply only to this exact FM Synth release.",
-  "integration": {
-    "retainedModule": "euclid@0.1.3-experimental",
-    "evidenceCommit": "cb1f0a16a41902fe874b8f307dd3d9065daf6eff",
-    "packageBase": "1c008deb8edef2fa6b158daab5553615d60fe72f",
-    "previousInfrastructureSha256": "9d70803fb38a2e5b3848427d111251bfcbf7172922c9c0b8915b6a1f720e05c7",
-    "currentInfrastructureSha256": "7265210161ac1b4aef5e811d842296beaa9c64bcf9e56035f111a87ba85e9c3f",
-    "reason": "Reviewed additive FM support preserves every existing payload, address and recipe. Existing composition comparisons reproduced with zero mismatches. Euclid native folder, declarations, resources and original evidence remain byte-identical to its approved original; future protected changes fail closed."
-  }
+  "ownerStatement": "please release them and close. I green light no hardware validation for now",
+  "reason": "The owner authorized release of the experimental 0.1.2 fixes after being told that current hardware, chip timing and complete memory qualification remain missing. Software MIDI and mono/four-voice regressions and native/browser parity are retained; all unknown quantities stay unmeasured. This exception covers only the exact current source."
 }

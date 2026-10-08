@@ -6,17 +6,24 @@ from pathlib import Path
 import unittest
 
 APP = Path(__file__).resolve().parents[2]
-RECORD = json.loads((APP/'sdk/imports/synth-949f3be.json').read_text())
-FOLDER = APP/RECORD['root']
+ORIGINAL = json.loads((APP/'sdk/imports/synth-949f3be.json').read_text())
+RECORD = json.loads((APP/'sdk/imports/synth-fixes-273-264.json').read_text())
+FOLDER = APP/RECORD['folder']
 sha = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 class SynthRelease(unittest.TestCase):
     def test_source_identities_and_complete_notices(self):
-        files = RECORD['files'] + RECORD['localFiles']
+        files = ORIGINAL['files'] + ORIGINAL['localFiles']
+        updates = {item['path']: item for item in RECORD['files']}
+        self.assertEqual(RECORD['originalImport'], 'synth-949f3be.json')
+        self.assertEqual(RECORD['status'], 'released')
         self.assertEqual(len(files), len({item['path'] for item in files}))
         for item in files:
-            self.assertEqual(sha(FOLDER/item['path']), item['vendoredSha256'], item['path'])
+            update = updates.get(item['path'])
+            if update:
+                self.assertEqual(update['previousSha256'], item['vendoredSha256'])
+            self.assertEqual(sha(FOLDER/item['path']), update['draftSha256'] if update else item['vendoredSha256'], item['path'])
             if 'revision' in item:
                 self.assertRegex(item['revision'], r'^[a-f0-9]{40}$')
                 self.assertRegex(item['sourceSha256'], r'^[a-f0-9]{64}$')
@@ -45,7 +52,7 @@ class SynthRelease(unittest.TestCase):
 
     def test_experimental_release_does_not_claim_hardware_or_timing(self):
         doc = json.loads((FOLDER/'octamod.module.json').read_text())
-        self.assertEqual(doc['version'], RECORD['moduleVersion'])
+        self.assertEqual(doc['version'], RECORD['version'])
         self.assertNotIn('build', doc)
         self.assertEqual(doc['tests']['hardwareStatus'], 'untested')
         self.assertNotIn('qualification', doc['tests'])
@@ -53,26 +60,34 @@ class SynthRelease(unittest.TestCase):
         for name in ['sdk/catalog.json','src/catalog/module-documents.json']:
             self.assertIn('synth', {item['id'] for item in json.loads((APP/name).read_text())['modules']})
         self.assertNotIn('synth', {item['id'] for item in json.loads((APP/'sdk/module-qualification-baseline.json').read_text())['modules']})
-        software = json.loads((FOLDER/'evidence/software.json').read_text())
-        self.assertIsNone(software['chipWorstCaseCycles'])
-        self.assertIsNone(software['completeMemoryBounds'])
-        self.assertEqual(software['hardwareStatus'], 'untested')
-        self.assertEqual(software['audio']['checks'], {'generatedCarrier':'passed', 'doubleStopSilence':'passed'})
+        approval = json.loads((APP/'sdk/synth-build-approval.json').read_text())
+        self.assertEqual(approval['kind'], 'owner-approved-update')
+        self.assertEqual(approval['version'], doc['version'])
+        self.assertEqual(set(approval['waived']), {'current-build-hardware', 'chip-worst-case-cycles', 'complete-memory-bounds'})
+        self.assertIsNone(doc['resources']['processing']['value'])
+        report = json.loads((FOLDER/'evidence/regressions.json').read_text())
+        self.assertEqual(report['moduleVersion'], doc['version'])
+        for regression in report['releaseRegressions'].values():
+            self.assertEqual(regression['status'], 'passed')
+            self.assertEqual(regression['imageSha256'], report['patchedBrowser']['mainSha256'])
+            self.assertRegex(regression['emulatorSha256'], r'^[a-f0-9]{64}$')
+        for file, fingerprint in report['compiledCode'].items():
+            self.assertEqual(sha(FOLDER/file), fingerprint)
+        self.assertEqual(report['audio']['mono']['patched']['finalHalfSecondPeak'], 0)
+        self.assertLessEqual(report['audio']['fourVoices']['patched']['finalHalfSecondPeak'], 2)
         capture = json.loads((FOLDER/'media/capture.json').read_text())
         image = capture['imageSha256']
         self.assertEqual(len(doc['media']), 7)
         for media in doc['media']:
             self.assertEqual(media['otUi']['imageSha256'], image)
             self.assertEqual(sha(FOLDER/media['path']), capture['screenshots'][Path(media['path']).name])
-        for report_name in ['storage.json', 'audio.json', 'native-build.json']:
-            report = json.loads((FOLDER/'evidence'/report_name).read_text())
-            self.assertEqual(report['imageSha256'], image)
-            for status in report.get('checks', {}).values():
-                self.assertEqual(status, 'passed')
-        audio = json.loads((FOLDER/'evidence/audio.json').read_text())
-        self.assertEqual(audio['walkSha256'], sha(FOLDER/'evidence/octemu-walk.jsonl'))
-        self.assertGreater(audio['nonzeroValues'], 0)
-        self.assertEqual(audio['finalHalfSecondPeak'], 0)
+        self.assertEqual(image, report['patchedNativeMainSha256'])
+        self.assertEqual(capture['moduleVersion'], doc['version'])
+        self.assertEqual(capture['sourceSha256'], approval['sourceSha256'])
+        composition = json.loads((APP/'sdk/native-comparisons/synth.json').read_text())
+        self.assertEqual(composition['moduleVersion'], doc['version'])
+        self.assertEqual(composition['moduleSourceSha256'], approval['sourceSha256'])
+        self.assertEqual(composition['summary']['mismatches'], 0)
         for path in FOLDER.rglob('*'):
             self.assertFalse(path.is_symlink())
             self.assertNotIn(path.name, ['out','vendor','downloads','__pycache__'])

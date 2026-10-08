@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "synth",
+  "moduleVersion": "0.1.2-experimental",
+  "testedOn": "2026-10-08",
+  "status": "owner-approved-experimental",
+  "issues": [
+    264,
+    273
+  ],
+  "baselineMainSha256": "c1fbc0b2eaf284e72692b7048d1dfd3693f3e3e90c71229159a619d585b52c95",
+  "patchedBrowser": {
+    "mainSha256": "352e4fba676ed38c10631e8e56eb3f381084f7c3dde88effa5cb37ef43092a0e",
+    "updateSha256": "3851ca28f1f329bacb5d512c29ba20d0078c317bd68dbdcaae072256f758a771",
+    "bytes": 1129803,
+    "runtime": {
+      "reservedBytes": 10586112,
+      "bytes": 90268,
+      "stage": 1084932096,
+      "stageEnd": 1084949107
+    }
+  },
+  "patchedNativeMainSha256": "d5464195fac0033852546fbbc8f809b64d16646309c21ab25e2f203fbf123157",
+  "midi": {
+    "case": "midi",
+    "imageSha256": "352e4fba676ed38c10631e8e56eb3f381084f7c3dde88effa5cb37ef43092a0e",
+    "fixtureCardSha256": "dbe748ed445db9305ac3245204464dd730ac0611a2efef75cbeb7ba02dced9f8",
+    "fixtureBatterySha256": "57515f0b96b8763cb1c2a73e1bf130c47e6b109b12c93845f67262be3f632fe3",
+    "emulatorSha256": "3ce6cebde0de2c61edc4228436338a1e115ce227373351a5ca84aefc9cf90acb",
+    "walkSha256": "a755ea8eaf205ab4c3a0f5639dcaee4019d5602aeb6dec5bc026d0bb4272b4ba",
+    "status": "passed",
+    "limitations": [
+      "Software emulator only; no physical hardware, chip timing, all-track load or complete memory qualification."
+    ]
+  },
+  "audio": {
+    "mono": {
+      "baseline": {
+        "frames": 1270192,
+        "nonzeroValues": 307204,
+        "peak": 14630,
+        "pcmSha256": "de9cb19a70392ffe0ed521e4d6404da9d74a29b45d82c2ed2f9a5f7bd940cef6",
+        "firstActiveFrame": 1045201,
+        "lastActiveFrame": 1198784,
+        "carrierPeriodFrames": 169,
+        "carrierFrequencyHz": 260.94674556213016,
+        "finalHalfSecondPeak": 0,
+        "checks": {
+          "generatedCarrier": "passed",
+          "doubleStopSilence": "passed"
+        }
+      },
+      "patched": {
+        "frames": 1319136,
+        "nonzeroValues": 382067,
+        "peak": 1827,
+        "pcmSha256": "a889cffd1fd6e5b862da2edb1813cf2c5729da411d875affeb57fed37b32b30a",
+        "firstActiveFrame": 1092689,
+        "lastActiveFrame": 1283776,
+        "carrierPeriodFrames": 169,
+        "carrierFrequencyHz": 260.94674556213016,
+        "finalHalfSecondPeak": 0,
+        "checks": {
+          "generatedCarrier": "passed",
+          "doubleStopSilence": "passed"
+        }
+      },
+      "peakChangeDb": -18.07011557545546
+    },
+    "fourVoices": {
+      "baseline": {
+        "frames": 1437344,
+        "peak": 21912,
+        "pcmSha256": "890bca0e60504a771dcda4a1b4877930693357e21b1a3a6c95beca45732b61f1",
+        "carrierPeriodFrames": 149,
+        "finalHalfSecondPeak": 1
+      },
+      "patched": {
+        "frames": 1431408,
+        "peak": 2740,
+        "pcmSha256": "93f2d98355f323e19d56320d3706fa945e771cdfa5b176fe1cc6b4909f0218a7",
+        "carrierPeriodFrames": 149,
+        "finalHalfSecondPeak": 1
+      },
+      "peakChangeDb": -18.05862912851034
+    }
+  },
+  "audioConditions": "Sample-free saved project, step-1 T1 trig, FX1/FX2 NONE, INDX=0, AMP REL raw 40, AMP VOL maximum (+63 display). Four-voice case uses VOIC=4 and CHRD raw 127 (M7S2 display). Fresh fixture battery for every image/case. Recorded through actual firmware panel and transport.",
+  "limitations": [
+    "Baseline MIDI selector freezes; patched selector traverses modes and returns to audio SRC.",
+    "Baseline mono and four-voice recordings did not clip or reproduce the reported hardware static. Output attenuation is measured; resolving that hardware symptom remains unverified.",
+    "Autocorrelation yields a coarse carrier-period estimate, not a precision tuning measurement.",
+    "Host emulator scheduling is not chip performance evidence. No hardware, all-track load, complete stack/memory bounds or external MIDI traffic tested."
+  ],
+  "compiledCode": {
+    "upstream/synth/poly.s": "ce21f5f7cddcd7268d27e25c500f1403cc59a9dff28044b1832cf2b45592d34c",
+    "upstream/quantizer/quantizer.s": "d1737168a1750f540b3dfbefdd2a64b11084013b9f7b71b31aa4f189d33a24c5",
+    "upstream/quantizer/manifest.py": "e637e3718e4b65320b847ef0758e0d46800f8be6b8020290f89192c798c535ef",
+    "stock-guards.json": "3a197afbd8994e969a9d431b5b3ba4b2c4f0a82d390e9c787199c3610ba93aaf"
+  },
+  "sourceCommit": "73490ef77f36bf523bc28f2b385d62e331ec7c5c",
+  "compiledSourceSha256": {
+    "upstream/synth/poly.s": "76118486cb929d140475a7b4122e874c0680bf3dbdd9e508c20e729a69e576a8",
+    "upstream/quantizer/quantizer.s": "dd78b1bb215bf296f1bf887f3acc4d3a5a8b2828e360c8722c11bea72664f2fd",
+    "upstream/quantizer/manifest.py": "e637e3718e4b65320b847ef0758e0d46800f8be6b8020290f89192c798c535ef",
+    "stock-guards.json": "3a197afbd8994e969a9d431b5b3ba4b2c4f0a82d390e9c787199c3610ba93aaf"
+  },
+  "stagingDifferences": "Two new five-line comment headers only; assembly bodies and quantizer declaration/stock guard inventory match exactly. Private manifest retains original release proof prose and 0.1.1 packaging metadata; runtime changes are the pending draft code."
+}

@@ -1,65 +1,68 @@
-# FM Synth testing
+# FM Synth 0.1.2 regression testing
 
-This report covers version 0.1.1-experimental. Publication uses the exact owner exception recorded in evidence/owner-hardware.md and sdk/synth-build-approval.json. Current hardware: **untested**. Historical author MKI reports predate the dedicated chooser and sample-free transport and are not current evidence.
+This is the experimental 0.1.2 update for [#264](https://github.com/repeat98/modwerk/issues/264) and [#273](https://github.com/repeat98/modwerk/issues/273), tested on 8 October 2026. It is included in the catalog. Current hardware, chip worst-case timing and complete stack/memory bounds remain unknown. The owner explicitly authorized this new release and issue closure without current hardware validation: “please release them and close. I green light no hardware validation for now”. This is a new exact-source update approval; the 0.1.1 approval is historical.
 
-## Exact sources and build
+## Changes and reproduced failure
 
-octabam `949f3be15eae5d3d16a7682b9e3218d42f6c1284`, author octatrick `525f4b19b04dc3ba3f3bae3b25abbf48df34a10a` (v2.9). The reviewed quantizer import supplies the matching mailbox/accessor, adapted to recognize the Part tag. See the import inventory for original and adapted file hashes. The chooser derives from Modwerk’s Analog BD registration at `cb1f0a16a41902fe874b8f307dd3d9065daf6eff`; the Analog BD audio engine is not included.
+The privately bundled quantizer's octave-number hook originally replaced eight bytes at `0x400449b8`. The stock MIDI branch targets `0x400449be`, inside that replacement, and skips the required octave argument push. The drawer then consumes one more argument than was pushed and corrupts its caller's stack. On the released browser image, selecting a MIDI trig mode freezes the UI; the debugger finds the stock HALT diagnostic after a bad return into a data address. The baseline does not reach the post-selector SRC gate.
 
-Native declaration/source execution used a private staged SDK tree. Only `modules/synth` was added; the regular shared `build_bus.py` remained unchanged. The preview Remix selected the fourteen stock effects plus SYNTH MACHINE; FX1 was FILTER, EQUALIZER, DJ EQ, PHASER, FLANGER, CHORUS, SPATIALIZER, COMB FILTER, COMPRESSOR, LO-FI. `fallback=NO_FALLBACK`, `static_stock=True`; platform USB/dynloader modules were omitted from this private capture profile. No module-specific public builder was added.
+The replacement starts at the common argument push, `0x400449be`, with a fresh eight-byte stock hash guard. MIDI uses the octave already in d0, pushes it once, preserves the stock format argument and resumes at `0x400449c6`. Audio retains the scale/root rendering. Normal MIDI/audio paths no longer branch into detour padding. The patched browser image passes repeated selector DOWN/UP navigation and returns to the Synth SRC controls. The repeatable `verify-regressions.py --case midi` runner also passes, including both pre- and post-selector display gates.
 
-The build ran in local `octamod-tapehead-qualification-tools:local` with no network, read-only container root, all capabilities dropped, no-new-privileges, 128-process limit, a private source/output bind mount and a temporary filesystem. Environment: XBUS=1, SPEC=1, DEV=0, NOROUNDTRIP=0, OCTABAM_STATIC_STOCK=1, OCTABAM_NO_CACHE=1, BUILD=79, REMIX=fm-synth-ui. The local OS stayed outside Git. GNU ColdFire/DSP source assembly and native build passed.
+FM source output now shifts right three bits: mono after its output conversion, and each paraphonic contribution before accumulation. This leaves 18.06 dB more headroom before the stock AMP path and voice sum. Existing envelope gains, relative voice normalization and crossfade state are preserved. Every existing sound is quieter at the same mixer settings. Effects, resonant filtering and multiple tracks can still clip.
 
-The included `registration.s` reproduces exactly from `registration.c` with GCC 16.2.0:
+**The reported hardware static has not been reproduced.** Both baseline audio configurations below remain below signed 16-bit full scale. The measurements verify attenuation and continued playback/STOP recovery, not resolution of every artifact in #273. A physical MKI/MKII retest with the reporter's sound/settings is still needed.
+
+## Private software builds
+
+The current 0.1.2 source and metadata are compiled together with the ordinary shared compiler. The earlier development-image report is retained separately in `evidence/development-regressions.json`. Current-main builder inputs produce a slightly different browser image, so MIDI, mono and four-voice regressions were all rerun on that exact release image. The standalone native image reproduces the freshly captured LCD image byte for byte. The compiler/exporter run in the isolated stock-free toolchain container with network disabled, a read-only root and private tracked-source/output mounts. No firmware enters Git.
+Compilation passes. Only the private Synth `poly`/`fm_qz` objects and their linked group change in requested-packages; unrelated packages remain identical. Build identities are recorded in `evidence/regressions.json`:
+
+- Patched browser MAIN: `64beb992dd65cad096d2c70f23bb3064c715464d651da22dd3ad9024901831e9`.
+- Patched upgrade: `c1a57f818998923e27ee9ae36061f2c1fe050788619ccceec6d0c24dac04d392`.
+- Patched standalone native MAIN: `d5464195fac0033852546fbbc8f809b64d16646309c21ab25e2f203fbf123157`.
+- Released 0.1.1 browser MAIN baseline: `c1fbc0b2eaf284e72692b7048d1dfd3693f3e3e90c71229159a619d585b52c95`.
+
+The native proof's `osSha256` is the module-owned image before platform writes; it is not the emitted MAIN's file hash. Capture/replay checks use the actual emitted file hash.
+
+All **110 current coverage selections** pass the existing `compareSelection` native/browser comparator: **31 built** (module-owned bytes equal outside the established platform/logger spans), **79 matching refusals**, **zero mismatches**. This covers standalone Synth, pairings, fuller selections and both stock-FX2 policies. The input stock image remains unchanged. An altered stock byte is rejected and that input also remains unchanged. See `evidence/composition.json`. Mixed images have composition evidence only, not audio stress qualification.
+
+## Panel and audio regressions
+
+Octemu binary SHA-256: `3ce6cebde0de2c61edc4228436338a1e115ce227373351a5ca84aefc9cf90acb`. The local source checkout is dirty, so its HEAD alone is not claimed as the tested executable identity. A private copied, sample-free firmware-created project has a step-1 T1 trig and FX1/FX2 NONE. Card/battery identities are recorded in `evidence/regressions.json`. Every image/case starts with a fresh copy of the battery state. Native UI capture uses the separately fingerprinted headless `ot_emu` in `media/capture.json`. The extra Octemu regression screenshots retain their original development-image bindings in `media/regression-capture.json`; they are not relabelled as new browser-image captures.
+
+Actual panel input selects FM SYNTH, sets INDX=0, AMP REL raw 40 and AMP VOL maximum (display +63), starts PLAY, then sends STOP twice. The four-voice case additionally sets VOIC=4 and CHRD raw 127 (display M7S2). The retained LCD exports confirm these controls. Recordings are stereo 44.1 kHz signed 16-bit PCM, including boot/settle silence. Peak comparisons therefore measure the full captured take rather than time-aligned samples.
+
+| Configuration | Released peak | Patched peak | Peak change | Final half-second peak, patched |
+| --- | ---: | ---: | ---: | ---: |
+| One voice, INDX=0 | 14,630 | 1,827 | −18.07 dB | 0 |
+| Four voices, CHRD=127 | 21,912 | 2,740 | −18.06 dB | 1 |
+
+Both mono takes have an autocorrelation period of 169 frames, about 261 Hz. This is a coarse period estimate, not a precision tuning claim. Both four-voice takes sound and stop; their 149-frame autocorrelation minimum is not interpreted as a single-note pitch. Host scheduling and audio delivery behavior are not measurements of real chip timing.
+
+Sanitized measurements, fixture hashes and PCM fingerprints are in `evidence/regressions.json`; panel walks are the adjacent JSONL files. Raw logs, WAVs, card images, battery files, firmware and debugger memory stay private.
+
+Reproduce with a reviewed local Octemu checkout and the sample-free fixture above, inside a restricted local sandbox with reads limited to tool/runtime, emulator and private fixture/image folders, writes limited to a fresh private output folder, and only local emulator IPC:
 
 ```sh
-m68k-elf-gcc -mcpu=5475 -O2 -ffreestanding -fno-builtin -fno-common -fno-pic -S registration.c -o registration.s
+python3 -B verify-regressions.py \
+  --octemu /path/to/octemu --image /private/patched-main.bin \
+  --image-sha256 64beb992dd65cad096d2c70f23bb3064c715464d651da22dd3ad9024901831e9 \
+  --card /private/sample-free/card.img --battery /private/sample-free/nvram.bin \
+  --output /private/new-midi-run --case midi --timeout 300
 ```
 
-Firmware identity, source builder identity, image size and private arena layout are in `evidence/native-build.json`. The image SHA-256 is `6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a`. No output binary is retained in the module.
+Use `--case mono` or `--case poly` and a fresh output path to record audio. The runner verifies its supplied image hash, copies the fixture, gates on firmware displays/transport, checks sustained audio and double-STOP silence, and checks the mono carrier period. Run the same audio walks against the baseline image for a paired gain comparison. All three runner cases were executed against the exact 0.1.2 browser image. The earlier screenshot walks are retained separately as development evidence; their LCD controls are unchanged.
 
-## UI and Part storage — passed
+## LCD captures and remaining qualification
 
-The trusted headless `ot_emu` and `scripts/capture-module-ui.py` drove normal MKII panel UART events. A private empty 32 MiB card was used. Container shared memory was 512 MiB (the emulator cannot start with Docker’s default 64 MiB). All seven kept screenshots were opened and visually reviewed: dedicated SRC SETUP machine row, six SRC controls, VOIC/CHRD, LEG, SCALE, ROOT and GLIDE. `media/capture.json` contains the exact panel plan and image/emulator hashes.
+All seven control/chooser LCD images were captured again from the patched standalone native MAIN, then opened and visually reviewed. Their pixels are unchanged from 0.1.1, while their provenance binds the new emitted image. `media/capture.json` records the emulator, image, plan and screenshots. The maximum-AMP, four-voice and MIDI-selector screenshots have separate Octemu regression provenance.
 
-Reproduction, inside a reviewed private SDK staging tree containing this source as `modules/synth`, with the ordinary native toolchain and local OS:
+Browser runtime reservation remains 10,586,112 bytes (native shared arena plus logger reservation), with a reported runtime extent of 90,268 bytes. These are shared build extents, not complete Synth ownership or worst-case stack/lifetime bounds. Worst-case ColdFire cycles and DSP transport overhead are unmeasured. Hardware on both models, maximum simultaneous tracks, external MIDI note/CC traffic, modulation, p-locks, scene sweeps, effects, saved project/Part reloads, non-default speed/length, swing, loop/restart transitions and neighbouring sample playback remain untested.
 
-```sh
-python3 -B verify.py --emulator /path/to/ot_emu --sdk /path/to/staged/sdk/octabam --image /private/path/mainos_bus.bin --image-sha256 6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a --output /private/path/storage-report.json
-python3 -B scripts/capture-module-ui.py --emulator /path/to/ot_emu --image /private/path/mainos_bus.bin --image-sha256 6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a --plan /private/path/plan.json --output /private/path/new-capture-folder
-```
+`evidence/release-0.1.1/` retains the previous reports and approval as historical context. They do not qualify 0.1.2. `qualification.example.json` remains an incomplete worksheet. The owner authorized this experimental release despite the disclosed qualification limits. The current source-bound approval is in `sdk/synth-build-approval.json`; version-matched release notes, catalog and compiled packages are updated together. Hardware, timing and memory quantities remain unknown.
 
-Use `media/capture.json`’s plan as plan.json. `verify.py` asserts selection and defaults on T1–T8, FM/1 in the current Part and SRAM shadow, all forty sample-slot bytes unchanged, edited INDX preserved on reselection, and full signature clearing when returning to FLEX. All five checks passed; sanitized results are in `evidence/storage.json`. This reads current Part storage; it does not prove a saved project reload.
+## Repository validation
 
-## Octemu sample-free audio and recovery — passed
+The fixes originated at `73490ef77f36bf523bc28f2b385d62e331ec7c5c`; current compiled code and exact release-image identities are recorded in `evidence/regressions.json`. The earlier draft's 167-file / 1,077-test result remains in `evidence/software-checks.json` as historical evidence. The 0.1.2 release runs `npm run check -- --base origin/main` and `module:doctor -- synth` against the promoted source and current compiled packages.
 
-The owner authorized the local `coding/octemu` setup. Its cached `out/fx2` card and battery file were copied privately; the original files were not modified. The private card’s only WAV was deleted before boot. It retained a firmware-created saved project and a step-1 trig, with track 1 FX1/FX2 NONE. No FMSYNTH marker exists. Binary identities and fixture fingerprints are in `evidence/audio.json`.
-
-Octemu ran headless/read-only with this image, the copied card/battery, `evidence/octemu-walk.jsonl`, a private WAV recording and a 150-second timeout. The walk gates on PTCH, RATO and PLAY/STOP lamp states, selects FM SYNTH with five DOWN taps, sets INDX=0 and AMP REL=40, starts the pattern and stops twice. It verifies actual firmware panel behavior, not a direct DSP test tone.
-
-```sh
-./octemu --headless --read-only --cf-card /private/fixture/card.img --nvram /private/fixture/nvram.bin --os /private/mainos_bus.bin --script /path/to/evidence/octemu-walk.jsonl --recording /private/audio.wav --timeout 150
-python3 -B verify-audio.py /private/audio.wav --output /private/audio-report.json
-```
-
-Run Octemu from its own checkout root. Copy `out/fx2` first, remove its AUDIO WAV using the reviewed `scripts/card.py`/mtools setup, and copy the battery again before each run. The walk’s waits use guest time. The recording includes boot/settle silence; analysis checks nonzero generated audio, a carrier period near 169 frames (about 261 Hz, rather than the deleted fixture’s 440 Hz sine), and a silent final half-second. All passed. A first attempt without an active CF voice lifecycle kept sounding after STOP; the final START callback marks the native voice active so stock kill/transport ends it.
-
-## Resource and sequencing limits
-
-Native arena reservation: 10,487,808 bytes; current runtime extent and staging extent are recorded exactly in `evidence/native-build.json`. These are platform extents, not exact FM ownership or complete worst-case memory. Stack peaks, temporary clones, stock reuse, shared lifetimes, incremental per-track state and padding require a reviewed full inventory. Worst-case ColdFire cycles and DSP transport overhead are **not measured**. Eight-track selection is not eight-track audio stress.
-
-The engine uses stock note/trig starts, releases and stops. Its oscillators run at sample rate for live playing; envelopes/glide follow stock clock data. At the guide checklist level: SRC SETUP selection, highlight/reselection, main name, SRC edit/page drawing, full stock guards, Part/shadow writes, sample-slot preservation, one-voice pattern PLAY and double-STOP are observed. Main chooser commit variants, neighbouring FLEX/STATIC audio, each p-lock, each LFO destination, scene sweeps, MIDI, chord/voice switching, save/reload, Part/pattern switching, non-1x speed/length, swing, tempo changes, loop transitions and restart behavior are **not tested**. The single engine has no model list.
-
-## Release software integration — 6 October 2026
-
-Version 0.1.1-experimental lives in sdk/octabam/modules/synth. Private quantizer object labels are prefixed to avoid collisions in the shared source packages. This packaging change reproduces the existing native image exactly: 6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a. The executable bytes behind the seven kept native LCD captures and native audio test are unchanged.
-
-The ordinary source compiler assembles FM Synth with the public modules. The shared browser/native coverage comparison passed all 94 profiles: 37 matching built images outside the existing platform/logger writes, 57 matching refusals, zero mismatches. Native declaration checks found 512 clean sets containing FM Synth and 1,536 overlapping sets refused by the ledger. All overlapping Analog BD/public Scale Quantizer selections are refused before browser linking. The comparison includes Repitch; the earlier draft's guessed Repitch exclusion is removed. Accepted mixed builds have composition evidence only, not maximum-load audio qualification.
-
-The shared firmware worker builds FM Synth, round-trips the complete upgrade, preserves the stock header prefix, tail and seed, rejects Analog BD, public Scale Quantizer and MIDI Scenes companions, and rejects changed stock firmware while clearing its previous inspected session. The generated MAIN/update remain private. Browser-image playback is recorded separately.
-
-The common worker’s MAIN SHA-256 is c1fbc0b2eaf284e72692b7048d1dfd3693f3e3e90c71229159a619d585b52c95, and its update is 831e7cd878398ee8d1e268e9fc2bcfd902f48e785965e8e510bff58abc1405a6. That exact MAIN passed the same sample-free Octemu panel walk: peak 3715, carrier period 169 frames (260.9467 Hz), final half-second peak zero. See evidence/browser-audio.json and evidence/software.json. The runtime extent is 90,268 bytes including the existing logger, with a 10,586,112-byte total reservation (native arena plus 98,304-byte logger reservation). Section extents and authored ROM writes are inventoried; stack, lifetimes and temporary peaks remain unknown. These extents are not complete memory qualification.
-
-The owner explicitly approved missing current hardware, worst-case chip timing and complete stack/memory bounds for this exact experimental release on 6 October 2026. See evidence/owner-hardware.md. Hardware remains untested and those quantities remain null. The frozen baseline and earlier module exceptions are unchanged. The incomplete qualification.example.json remains a worksheet; it is not attached as tests.qualification.
-
-The seven native LCD captures are retained because the ordinary native standalone builder reproduced their exact image byte for byte after object-label namespacing. Their original image and capture plan remain recorded; they are not captures of the logger-enabled browser image. Eight-track Part storage and native audio reports retain that native image identity. No generated firmware, WAV, card or battery state is committed.
+The release preserves every non-Synth package payload and recipe against the main-branch baseline. The retained Analog BD native matrix is checked against the current packages: 130 native OS and GNU bootloader comparisons, six matching refusals and five complete firmware round trips. Its global source-inventory binding changes only after those checks; Analog BD source and package bytes are unchanged. These software comparisons do not qualify hardware.

@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "id": "synth",
   "version": "0.1.2-experimental",
-  "status": "pending",
+  "status": "released",
   "basedOn": "3238863f2635f8db840b4d42ab9f0d3bea48c006",
   "originalImport": "synth-949f3be.json",
-  "folder": "sdk/drafts/synth",
+  "folder": "sdk/octabam/modules/synth",
   "issues": [
     273,
     264
@@ -14,7 +14,7 @@
     {
       "path": "manifest.py",
       "previousSha256": "780dbb5617d20167a5e3e67d49af7f9525021b89657a559ca678b95c5ae88f79",
-      "draftSha256": "0e9cfe6cd4b11adcdf01068907b5208e88234c7667dea4c900987bfd5af087e6"
+      "draftSha256": "7854330aca001d2841de2fb384f0ca8adb7497db49dacc56da2815c1f444c0e6"
     },
     {
       "path": "stock-guards.json",
@@ -41,5 +41,5 @@
     "18.06 dB source headroom before mono output and every paraphonic sum contribution.",
     "Move the private quantizer octave drawer detour to the common MIDI/audio argument push and preserve stock MIDI octave formatting."
   ],
-  "publication": "The 0.1.1 source/image exception is unchanged and does not cover this draft."
+  "publication": "Owner explicitly authorized release and issue closure on 8 October 2026: please release them and close. I green light no hardware validation for now. Current hardware remains untested; previously disclosed timing/memory bounds remain unknown."
 }

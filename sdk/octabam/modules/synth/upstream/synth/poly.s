@@ -1,3 +1,8 @@
+| Modwerk pending 0.1.2 (#273): OUTPUT_SHIFT applies 18.06 dB headroom to
+| mono samples and EACH paraphonic product before summing. Envelope gains,
+| equal-power voice ratios and crossfade state stay unchanged. Old comments
+| below describe the author's unattenuated format; output now scales by 1/8.
+| This prevents high-level source peaks reaching AMP; effects/mix may still clip.
 | SYNTH MACHINE -- the FM voice engine as a DRAM unit, phase 5: paraphonic
 | chords (24 Sep 2026). GNU as, -mcpu=5475. Linked by the build into the
 | platform runtime at the base of the arena reserve (docs/remixer/
@@ -146,6 +151,7 @@
         .set    SETTINGS_SPAN, 0x24640    | 136 * 0x448
         .set    SETTINGS_STRIDE, 0x448
         .set    PITCH_TAB, 0x400aa294    | the stock 2^(x/12) curve, longs Q26 (index = PTCH word >> 5)
+        .set    OUTPUT_SHIFT, 3         | 18.06 dB source headroom before stock AMP VOL, including chord/fade peaks
         .set    C4_INC, 25480119         | C4: 261.6256 / 44100 * 2^32
         .set    ENV_ONE, 0x01000000      | the index envelope's 1.0 (Q24)
         .set    ENV_FLOOR, 0x00100000    | it decays toward 1/16
@@ -839,7 +845,8 @@ sy_loop:
         move.l  %a5,%d2
         swap    %d2                      | gain / 2, Q14
         muls.w  %d2,%d1                  | c * gain / 2 (16 x 16)
-        lsl.l   #2,%d1                   | = (c * g) << 1: the high word is (c * g) >> 15 -- at full gain c itself, as before
+        lsl.l   #2,%d1                   | = (c * g) << 1: mono source format
+        asr.l   #OUTPUT_SHIFT,%d1        | headroom before AMP, matched by each paraphonic contribution
         clr.w   %d1                      | sample << 16: the DSP's 24-bit word is the top 24 bits
         move.l  %d1,(%a1)+               | L
         move.l  %d1,(%a1)+               | R
@@ -2516,6 +2523,7 @@ po_fi_loop:
         move.l  %a5,%d2
         swap    %d2                      | its integer part, Q15
         muls.w  %d2,%d1                  | c * gain (16 x 16: c is +-0x4000, the gain at most 23170)
+        asr.l   #OUTPUT_SHIFT,%d1        | headroom BEFORE summing: coincident voices cannot overflow the mix
         add.l   %d1,(%a1)                | into the sum
         addq.l  #8,%a1
         add.l   %d5,%d0

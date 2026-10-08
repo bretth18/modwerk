@@ -28,7 +28,7 @@ _REG_POKES=(Poke(1074238024, stock_guard(1074238024, 4, '8fbd3190028fe564c11b56e
 MODULE=dataclasses.replace(_SY,
     category=Category.MACHINES, author='timhastie', author_url='https://github.com/timhastie',
     doc='Dedicated FM SYNTH machine: two-operator FM, one to four voices, chords, MIDI and glide.',
-    proof=Proof.UNTESTED, proof_note='Hardware untested; owner approved the hardware waiver on 6 October 2026',
+    proof=Proof.UNTESTED, proof_note='0.1.2 software regressions pass; owner-approved experimental release, current hardware and chip timing untested',
     requires=(), cf_patches=(),
     symbol_refs=_SY.symbol_refs+(SymbolRef(0x400d6458,0x4000f450,"poly","fm_start",note="Signed FM starts without sample resources; ordinary FLEX keeps stock start"),),
     linked=_SY.linked+_QZ.linked+(
