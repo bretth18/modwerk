@@ -1,4 +1,4 @@
-export type IconName = 'share' | 'bell' | 'grid' | 'wave' | 'sliders' | 'search' | 'plus' | 'check' | 'arrow' | 'back' | 'download' | 'file' | 'shield' | 'star' | 'close' | 'message' | 'help' | 'heart' | 'bookmark' | 'pin' | 'lock' | 'quote' | 'play' | 'pause' | 'image' | 'mail'
+export type IconName = 'share' | 'bell' | 'grid' | 'wave' | 'sliders' | 'search' | 'plus' | 'check' | 'arrow' | 'back' | 'download' | 'file' | 'shield' | 'star' | 'close' | 'message' | 'help' | 'heart' | 'bookmark' | 'pin' | 'lock' | 'quote' | 'play' | 'pause' | 'image' | 'mail' | 'sort' | 'filter'
 const paths: Record<IconName, string> = {
   share: 'M12 3v12m-4-8 4-4 4 4M5 12v8h14v-8',
   bell: 'M6 9a6 6 0 1 1 12 0c0 6 3 8 3 8H3s3-2 3-8M10.3 21a2 2 0 0 0 3.4 0',
@@ -25,6 +25,8 @@ const paths: Record<IconName, string> = {
   image: 'M3 5h18v14H3zm0 10 5-5 4 4 3-3 6 6M15.5 9.5h.01',
   play: 'M7 4.5v15L19.5 12z',
   pause: 'M8 5v14M16 5v14',
+  sort: 'M7 4v16m-4-4 4 4 4-4M17 20V4m-4 4 4-4 4 4',
+  filter: 'M4 6h16M7 12h10M10 18h4',
   help: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20ZM9 9a3 3 0 1 1 5 2.2c-1.2.8-2 1.1-2 2.8m0 3h.01',
 }
 export function Icon({ name, size = 18 }: { name: IconName; size?: number }) {
