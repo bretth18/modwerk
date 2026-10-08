@@ -1,3 +1,5 @@
+import { bayesianRating, ratingPrior } from './rating-ranking'
+
 // openIssues, lastIssueAt and firstDownloadAt feed the stability grade; an older response without them grades as untried.
 export type ModuleStatistics = { module_id: string; average: number | null; count: number; likes: number; downloads: number; downloadsStarted: string | null; firstDownloadAt?: string | null; openIssues?: number; lastIssueAt?: string | null }
 type SortableModule = { id: string; name: string; authorName: string; addedAt?: string }
@@ -9,6 +11,12 @@ export function compareModules(a: SortableModule, b: SortableModule, sort: strin
   }
   if (sort === 'name') return a.name.localeCompare(b.name)
   if (sort === 'author') return a.authorName.localeCompare(b.authorName) || a.name.localeCompare(b.name)
+  if (sort === 'rated') {
+    const prior = ratingPrior(statistics ?? [])
+    const aStats = statistics?.find(item => item.module_id === a.id), bStats = statistics?.find(item => item.module_id === b.id)
+    return (bayesianRating(bStats, prior) ?? 0) - (bayesianRating(aStats, prior) ?? 0)
+      || (bStats?.count ?? 0) - (aStats?.count ?? 0) || a.name.localeCompare(b.name) || a.id.localeCompare(b.id)
+  }
   const metric = sort === 'liked' ? 'likes' : sort === 'downloaded' ? 'downloads' : 'average'
   const difference = (statistics?.find(item => item.module_id === b.id)?.[metric] ?? 0) - (statistics?.find(item => item.module_id === a.id)?.[metric] ?? 0)
   return difference || a.name.localeCompare(b.name)

@@ -1,5 +1,6 @@
 import type { UsageDay, UsageHour, UsageStatistics } from './usage-contract'
 import type { AdminAccounts, AdminAccountsDay, AdminModuleInsight } from './admin-insights-contract'
+import { bayesianRating, ratingPrior } from './rating-ranking'
 
 export const usageMetrics = [
   ['visitors', 'Daily visitors'], ['page_views', 'Page views'], ['configurations', 'Configurations started'],
@@ -52,8 +53,14 @@ export function usageInsights(data: UsageStatistics) {
 export type ModuleInsightSort = 'downloads' | 'downloadsWeek' | 'likes' | 'ratingAverage' | 'comments' | 'openIssues'
 export function rankedModules(modules: readonly AdminModuleInsight[], sort: ModuleInsightSort, search: string) {
   const query = search.trim().toLowerCase()
+  const rating = (module: AdminModuleInsight) => ({ average: module.ratingAverage, count: module.ratings })
+  const prior = sort === 'ratingAverage' ? ratingPrior(modules.map(rating)) : 3
   return modules.filter(module => (module.title+' '+module.moduleId).toLowerCase().includes(query))
-    .sort((a,b) => (b[sort]??-1)-(a[sort]??-1) || (sort==='ratingAverage' ? b.ratings-a.ratings : sort==='downloadsWeek' ? b.downloadsWeek-b.downloadsPreviousWeek-(a.downloadsWeek-a.downloadsPreviousWeek) : 0) || a.title.localeCompare(b.title))
+    .sort((a,b) => {
+      if (sort === 'ratingAverage') return (bayesianRating(rating(b), prior) ?? 0) - (bayesianRating(rating(a), prior) ?? 0)
+        || b.ratings - a.ratings || a.title.localeCompare(b.title) || a.moduleId.localeCompare(b.moduleId)
+      return (b[sort]??-1)-(a[sort]??-1) || (sort==='downloadsWeek' ? b.downloadsWeek-b.downloadsPreviousWeek-(a.downloadsWeek-a.downloadsPreviousWeek) : 0) || a.title.localeCompare(b.title)
+    })
 }
 
 export function usageCsv(data: UsageStatistics) {

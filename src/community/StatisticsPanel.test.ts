@@ -52,6 +52,14 @@ const insights: AdminInsights = { generatedAt: '2026-10-06T12:00:00Z', downloads
     { moduleId: 'tapeecho', title: 'Tape Echo', available: true, downloads: 10, downloadsWeek: 0, downloadsPreviousWeek: 0, likes: 0, ratings: 0, ratingAverage: null, comments: 0, openIssues: 0 }] }
 
 describe('module engagement trends', () => {
+  it('explains Bayesian ranking while showing the observed rating and sample size', () => {
+    const data = { ...insights, modules: [{ ...insights.modules[0], ratingAverage: 5, ratings: 1 }] }
+    const html = renderToStaticMarkup(createElement(CommunityInsights, { data, onNavigate: () => {} }))
+    expect(html).toContain('<option value="ratingAverage">Rating (Bayesian)</option>')
+    expect(html).toContain('<td>5.0 / 5<small>1 rating</small></td>')
+    expect(html).toContain('Ratings with fewer votes stay closer to the community average')
+    expect(html).not.toContain('ratings are not weighted by sample size')
+  })
   it('shows this week\'s download requests against the week before', () => {
     const html = renderToStaticMarkup(createElement(CommunityInsights, { data: insights, onNavigate: () => {} }))
     expect(html).toContain('<th scope="col">This week</th>')

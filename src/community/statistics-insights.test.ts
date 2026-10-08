@@ -61,6 +61,16 @@ describe('admin statistics interpretation',() => {
     const module = (title: string, week: number, previous: number): AdminModuleInsight => ({moduleId:title.toLowerCase(),title,available:true,ratingAverage:null,ratings:0,downloads:50,downloadsWeek:week,downloadsPreviousWeek:previous,likes:0,comments:0,openIssues:0})
     expect(rankedModules([module('Steady',4,4),module('Rising',4,0),module('Top',9,20),module('Quiet',0,3)],'downloadsWeek','').map(module => module.title)).toEqual(['Top','Rising','Steady','Quiet'])
   })
+  it('uses Bayesian scores before search filtering and preserves displayed averages', () => {
+    const module = (title: string, ratingAverage: number | null, ratings: number): AdminModuleInsight => ({moduleId:title.toLowerCase(),title,available:true,ratingAverage,ratings,downloads:0,downloadsWeek:0,downloadsPreviousWeek:0,likes:0,comments:0,openIssues:0})
+    const modules = [module('Visible Alpha',5,1),module('Visible Beta',4.5,20),module('Background',1,20),module('Unrated',null,0)]
+    expect(rankedModules(modules,'ratingAverage','').map(module => module.title)).toEqual(['Visible Beta','Visible Alpha','Background','Unrated'])
+    expect(rankedModules(modules,'ratingAverage','visible').map(module => module.title)).toEqual(['Visible Beta','Visible Alpha'])
+    expect(modules.map(module => module.ratingAverage)).toEqual([5,4.5,1,null])
+    const tied = modules.slice(0,2).map(module => ({...module,title:'Same',ratingAverage:5,ratings:20})).reverse()
+    expect(rankedModules(tied,'ratingAverage','').map(module => module.moduleId)).toEqual(['visible alpha','visible beta'])
+    expect(rankedModules([],'ratingAverage','')).toEqual([])
+  })
 })
 
 const accountDay = (day: string, signups: number, completed: number, visitors: number | null, active: number | null = null) => ({day,signups,completed,visitors,active})
