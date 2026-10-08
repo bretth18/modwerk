@@ -1,0 +1,29 @@
+{"record": 0}
+{"wait_text": "PTCH", "timeout_ms": 60000}
+{"wait_guest_ms": 16000}
+{"tap": "NO"}
+{"tap": "T1"}
+{"press": "FUNC"}
+{"tap": "SRC"}
+{"release": "FUNC"}
+{"wait_guest_ms": 300}
+{"tap": "DOWN"}
+{"tap": "DOWN"}
+{"tap": "DOWN"}
+{"tap": "DOWN"}
+{"tap": "DOWN"}
+{"tap": "YES"}
+{"tap": "SRC", "until": "RAT0"}
+{"encoder": 2, "delta": -1, "times": 32, "over_ms": 1200}
+{"tap": "AMP"}
+{"encoder": 2, "delta": -1, "times": 87, "over_ms": 1600}
+{"tap": "SRC"}
+{"record": 1}
+{"mark": "FM_START"}
+{"tap": "PLAY", "until_lamp": 1, "lit": 1}
+{"wait_guest_ms": 1000}
+{"tap": "STOP", "until_lamp": 1, "lit": 0}
+{"tap": "STOP", "until_lamp": 1, "lit": 0}
+{"wait_guest_ms": 1000}
+{"mark": "FM_END"}
+{"record": 0}

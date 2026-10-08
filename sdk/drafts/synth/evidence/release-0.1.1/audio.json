@@ -1,0 +1,31 @@
+{
+  "frames": 1285216,
+  "nonzeroValues": 379861,
+  "peak": 3715,
+  "pcmSha256": "767fa5c62a1e647c4d0c7666ba3dab81c3caaaccc5744959722bf081d86ebec3",
+  "firstActiveFrame": 1059489,
+  "lastActiveFrame": 1249424,
+  "carrierPeriodFrames": 169,
+  "carrierFrequencyHz": 260.94674556213016,
+  "finalHalfSecondPeak": 0,
+  "checks": {
+    "generatedCarrier": "passed",
+    "doubleStopSilence": "passed"
+  },
+  "imageSha256": "6b6d0ef7b076e0096a9a930c4ec65992d5eda3b9bb18865b925ed1b49e29548a",
+  "emulator": {
+    "repositoryRevision": "87000189418c8ca2026dc047bda220b66802809d",
+    "octemuSha256": "3ce6cebde0de2c61edc4228436338a1e115ce227373351a5ca84aefc9cf90acb",
+    "qemuSha256": "a7eecaeae877630879062afd6462b8b7b9f2ad4a0664e325c4edddc0a84950c0"
+  },
+  "fixture": {
+    "originalCardSha256": "71fb8df86211693cbb737cdd1712a71fdc27b8d192880cb6f39895c6cfd72180",
+    "privateCardSha256": "dbe748ed445db9305ac3245204464dd730ac0611a2efef75cbeb7ba02dced9f8",
+    "originalBatterySha256": "5bd8f41de2f41b2ad63707e05ccc6b3a5e91f32ca8330f421f8f7469cb430ece",
+    "recipe": "Private copy of Octemu out/fx2; delete AUDIO/SINE440.WAV. Firmware-created project and step-1 trig retained; track 1 FX1/FX2 NONE. No audio files or FM marker remain. Original fixture untouched."
+  },
+  "walkSha256": "7625d9d9047393924668b8fee9d6c032507c6087b14b48fcec01d81e5ba9bc3b",
+  "limitations": [
+    "One mono carrier and stopped tail in emulator only; not hardware, maximum-load, modulation, polyphony or persistence qualification."
+  ]
+}
