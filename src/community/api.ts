@@ -59,4 +59,4 @@ export type CommunityUser = { id: string; displayName: string; username: string 
 export type Session = { available: boolean; emailAvailable?: boolean; registrationAvailable?: boolean; forumMedia?: boolean; ssoProviders?: ('google' | 'github' | 'discord')[]; admin: boolean; user: CommunityUser | null }
 export type DeveloperSession = { available: boolean; user: { login: string } | null }
 export type PublicMedia = { id: string; kind: 'image' | 'audio'; caption: string; capture_type: string }
-export type PublishedModule = { module_id: string; title: string; repository_url: string; description: string; usage: string; resource_notes: string; test_report_url: string; reviewed_at: string; added_at?: string | null; author: string }
+export type PublishedModule = { module_id: string; title: string; repository_url: string; description: string; usage: string; resource_notes: string; test_report_url: string; reviewed_at: string; added_at?: string | null; updated_at?: string | null; author: string }
