@@ -13,6 +13,30 @@ describe('module discovery ordering',()=>{
   expect([...filtered].sort((a,b)=>compareModules(a,b,'liked',null)).map(module=>module.id)).toEqual(['a','c'])
   expect(filtered.map(module=>module.id)).toEqual(['c','a'])
  })
+ it('ranks by Bayesian score using the full statistics even when the catalog is filtered', () => {
+  const stats: ModuleStatistics[] = [
+   { ...statistics[0], average: 5, count: 1 },
+   { ...statistics[1], average: 4.5, count: 20 },
+   { ...statistics[2], average: 1, count: 20 },
+  ]
+  const missing = { id: 'missing', name: 'A missing module', authorName: 'Amy' }
+  const unrated = { id: 'unrated', name: 'An unrated module', authorName: 'Amy' }
+  stats.push({ ...statistics[0], module_id: unrated.id, average: 5, count: 0 })
+  const order = (items: typeof modules) => [...items].sort((a,b) => compareModules(a,b,'rated',stats)).map(module => module.id)
+  expect(order([...modules, unrated, missing])).toEqual(['b','a','c','missing','unrated'])
+  expect(order(modules.slice(0,2))).toEqual(['b','a'])
+  expect(stats[0]).toMatchObject({ average: 5, count: 1 })
+  expect(modules.map(module => module.id)).toEqual(['a','b','c'])
+  expect([...modules].sort((a,b) => compareModules(a,b,'rated',null)).map(module => module.id)).toEqual(['a','b','c'])
+ })
+ it('breaks equal Bayesian scores by vote count, then name and ID, without rounding scores', () => {
+  const stats = statistics.map((item,index) => ({ ...item, average: 5, count: index === 0 ? 1 : 20 }))
+  expect([...modules].sort((a,b) => compareModules(a,b,'rated',stats)).map(module => module.id)).toEqual(['b','c','a'])
+  const sameNames = modules.map(module => ({ ...module, name: 'Same' })).reverse()
+  expect(sameNames.sort((a,b) => compareModules(a,b,'rated',stats)).map(module => module.id)).toEqual(['b','c','a'])
+  const close = [{ ...stats[0], average: 4.99, count: 20 }, { ...stats[1], average: 5, count: 20 }]
+  expect(modules.slice(0,2).sort((a,b) => compareModules(a,b,'rated',close)).map(module => module.id)).toEqual(['b','a'])
+ })
 })
 
 

@@ -15,6 +15,7 @@ import { AddButton, CardProof, CardStats, ModuleCard } from '../components/Modul
 import { SelectionWarning } from '../components/SelectionWarning'
 import { LibraryTools } from '../components/LibraryTools'
 import { compareModules, downloadCoverage, type ModuleStatistics } from '../community/module-statistics'
+import { RATING_RANKING_NOTE } from '../community/rating-ranking'
 import { DeviceImage, PhotoCredit } from './DeviceImage'
 import { ALL_MACHINES, DEVICES, DEVICES_BY_ID, DEVICE_STEPS, STATUS_LABELS, deviceHref, deviceTitle, stepsDone, type DeviceProfile } from './registry'
 import { DIGI_CORES, DIGI_MODS, estimateCombination, type DigiMod } from './digi-mods'
@@ -106,7 +107,7 @@ export function MachineLibrary({ device, query, category, octatrackModules: octa
       <div className="module-grid">{group.cards}</div>
     </section>)}
     {hasMods ? <>
-      <p className="popularity-note">{statistics ? downloadCoverage(statistics[0]?.downloadsStarted) : 'Popularity counts are currently unavailable.'}{' ' + STABILITY_NOTE}{device && sort === 'recent' && device.id !== 'octatrack' && ' Addition dates are not available yet; this sort uses name order.'}</p>
+      <p className="popularity-note">{statistics ? downloadCoverage(statistics[0]?.downloadsStarted) : 'Popularity counts are currently unavailable.'}{sort === 'rated' && ' ' + RATING_RANKING_NOTE}{' ' + STABILITY_NOTE}{device && sort === 'recent' && device.id !== 'octatrack' && ' Addition dates are not available yet; this sort uses name order.'}</p>
       {!total && <div className="no-results"><Icon name={term || libraryFamily !== 'all' ? 'search' : category === 'standalone' ? 'lock' : 'grid'} size={30} /><h2>{term || libraryFamily !== 'all' ? 'No modules found' : 'No ' + (category ? LIBRARY_CATEGORY_LABELS[category].toLowerCase() : 'modules') + ' here yet'}</h2><p>{term || libraryFamily !== 'all' ? 'Try another name, type or author.' : 'Be the first to publish one: every machine follows the same SDK.'}</p>{onClearSearch && (term || libraryFamily !== 'all') ? <button className="button button-quiet" onClick={onClearSearch}>Clear search</button> : <a className="button button-quiet" href={term || libraryFamily !== 'all' ? deviceHref(device?.id ?? ALL_MACHINES) : issueRepository() + '/blob/main/docs/SDK.md'}>Browse modules</a>}</div>}
       {children}
       {device && <div className="library-note"><span className="status-dot" /><p>{device.id === 'octatrack' ? 'This catalog follows an experimental build. Review each module before preparing a configuration.' : 'Built from each author’s pinned public release, with credit and licence.'}</p></div>}
