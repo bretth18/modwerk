@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 2,
+  "id": "euclid-seq",
+  "key": "EUCLID SEQ",
+  "name": "Euclid Seq",
+  "version": "0.1.0",
+  "category": "playback",
+  "author": {
+    "github": "bretth18",
+    "credits": [
+      "bretth18"
+    ]
+  },
+  "nativeManifest": "manifest.py",
+  "presentation": {
+    "label": "FILTER",
+    "family": "Filter",
+    "summary": "Describe the module and its sound.",
+    "overview": "Explain its signal path and practical uses.",
+    "highlights": [
+      "Describe an actual feature."
+    ],
+    "usage": [
+      "Explain where to find it and a useful starting point."
+    ]
+  },
+  "controls": [],
+  "compatibility": {
+    "firmware": "1.40C",
+    "location": "Flex / Static",
+    "conflicts": [],
+    "limitations": [
+      "Scaffold only; audio behavior and hardware operation have not been tested."
+    ],
+    "effectId": null
+  },
+  "resources": {
+    "recorded": "Not measured",
+    "storage": {
+      "label": "Storage",
+      "display": "Not measured",
+      "value": null,
+      "unit": "unknown",
+      "method": "unmeasured",
+      "conditions": "No measurements exist yet. Add exact conditions and source evidence when available.",
+      "source": "TESTING.md"
+    },
+    "processing": {
+      "label": "CPU / DSP load",
+      "display": "Not measured",
+      "value": null,
+      "unit": "unknown",
+      "method": "unmeasured",
+      "conditions": "No measurements exist yet. Add exact conditions and source evidence when available.",
+      "source": "TESTING.md"
+    }
+  },
+  "tests": {
+    "report": "TESTING.md",
+    "summary": "No tests have been run. Add tests.qualification with worst-case cycles, exact memory and attributed owner-reviewed hardware evidence before submitting. This scaffold cannot pass publication checks.",
+    "hardwareStatus": "untested",
+    "evidenceRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+    "gates": [
+      "Worst-case cycles under parameter modulation and maximum load",
+      "Exact memory region and maximum-instance totals",
+      "Owner-reviewed real-hardware evidence with actual coverage and limitations"
+    ]
+  },
+  "license": {
+    "spdx": "MIT",
+    "file": "LICENSE",
+    "declaration": "Replace with accurate authorship, attribution and original/licensed source and media rights. Never include Elektron firmware, extracted routines or tables."
+  },
+  "media": [],
+  "access": {
+    "location": "Describe the exact OT page or menu where the module is selected or enabled.",
+    "steps": [
+      "Describe prerequisites, track/machine selection and the exact button/menu sequence."
+    ],
+    "screenshots": []
+  }
+}
