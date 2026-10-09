@@ -5,9 +5,9 @@ sequencer plays the result with its own tempo, track speed, swing, locks and
 conditions; no clock is added. Seven guarded sites:
 
 - TRACK TRIG EDIT's key layer is pushed and popped through one operand each
-  (0x4007c0a8, 0x4007b48c). Both name a module copy of that layer: the five
-  stock key records (copied from the local OS) plus RIGHT, which has no
-  stock binding there and opens the EUCLID page from the TRIGS row.
+  (0x4007c0a8, 0x4007b48c). Both name a module copy of that layer: the
+  window's five key bindings by stock handler address plus RIGHT, which has
+  no stock binding there and opens the EUCLID page from the TRIGS row.
 - PATTERN SCALE's length setter (0x4004c912) regenerates EUC tracks after
   a pattern or track length change.
 - The LED-row sender (0x40013634) first keeps the MKII trig-key palette in
@@ -21,7 +21,7 @@ Settings are runtime state in DRAM; the trigs they produce are ordinary
 pattern data. Measured and inferred facts: README.md and TESTING.md.
 """
 
-from remix.schema import Category, Proof, Gate, Detour, Kind, Linked, Module, StockCopy
+from remix.schema import Category, Proof, Gate, Detour, Kind, Linked, Module
 from remix.stock_guard import stock_guard
 
 TTE_LAYER_PUSH = stock_guard(0x4007c0a8, 6, "204e9dcd1cc14b442a0cf5aeeed02c8a93a2a246085e2417c8a2b14213193899")
@@ -34,9 +34,7 @@ MODULE = Module(
     doc="Euclidean trig generator with its own page; writes real trigs.",
     category=Category.MACHINES, author="bretth18", author_url="https://github.com/bretth18",
     proof=Proof.UNTESTED, proof_note="Development build; emulator checks in progress, no hardware run.",
-    linked=(Linked("euclid-seq", "modules/euclid-seq/control.s", cpu="5475", dram=True, stock_copies=(
-        StockCopy("es_tte_keys", stock_guard(0x400d0154, 130, "52881cb3a2a898fe691550b21f48a86f2f3f4236603e864961fa0b90e5924584")),
-    )),),
+    linked=(Linked("euclid-seq", "modules/euclid-seq/control.s", cpu="5475", dram=True),),
     detours=(
         Detour(0x4007c0a8, TTE_LAYER_PUSH, "euclid-seq", "es_tte_layer",
                "TRACK TRIG EDIT pushes its layer with RIGHT added", kind="lea"),

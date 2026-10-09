@@ -1197,13 +1197,27 @@ es_led_stub:
         .balign 4
         .global es_tte_layer, es_page_layer
 
-| TRACK TRIG EDIT's own layer, with one added RIGHT record. The five stock
-| key records are copied from the local OS at build time (StockCopy) and the
-| stock encoder table is used as is.
+| TRACK TRIG EDIT's own layer: the window's five key bindings (stock handler
+| addresses, 1.40C 0x400d0154: UP and DOWN repeat after 15 then every 5
+| ticks), one added RIGHT record, and the stock encoder table as is.
 es_tte_layer:
         .long 0,es_tte_keys,0x400d01f0,0,0
 es_tte_keys:
-        .space 130
+        .byte 0x33,0
+        .long 0x4007bff8,0,0x4007bff8,0,0
+        .word 15,5
+        .byte 0x20,0
+        .long 0x4007bfa0,0,0x4007bfa0,0,0
+        .word 15,5
+        .byte 0x31,0
+        .long 0x4007b4d8,0,0,0,0
+        .word 0,0
+        .byte 0x32,0
+        .long 0x4007b4d4,0,0,0,0
+        .word 0,0
+        .byte 0x2d,0
+        .long 0x4007bf6c,0x4007bf6c,0,0,0
+        .word 0,0
         .byte 0x21,0
         .long es_tte_right,0,0,0,0
         .word 0,0
