@@ -117,6 +117,41 @@ void es_length_changed(void) {
     for (unsigned t = 0; t < 8; t++) apply(t);
 }
 
+/* ---- purple trigs (MKII) ----------------------------------------------- */
+
+#define PANEL_MKII 0x46c8d18cu    /* nonzero with the MKII panel's RGB LEDs */
+#define LED_BRIGHTNESS 0x800000d0u
+#define PANEL_TX_USED 0x400b96ccu /* bytes queued in the 2,048-byte panel ring */
+
+static uint32_t led_shown = 0, led_level = 0;
+
+/* Lookup without creating a settings entry. */
+static unsigned euc_on(unsigned t) {
+    int b = bank_index();
+    unsigned p = U8(PATTERN_IDX);
+    if (b < 0 || p >= 16 || t >= 8 || U32(MIDI_MODE)) return 0;
+    return settings[((unsigned)b * 16 + p) * 8 + t][E_FLAGS] & F_EUC;
+}
+
+/* Runs before each stock LED-row update. The MKII palette holds one colour
+ * per key and state; state 1 is a trig. In grid recording on an EUC track
+ * the 16 trig keys show it purple, elsewhere stock red at the same stock
+ * brightness level. Messages go out only on a change, and only when the
+ * panel ring has room, so this never waits on the UART. */
+void es_led_sync(void) {
+    if (!U32(PANEL_MKII)) return;
+    static const uint8_t levels[3] = { 0x0c, 0x30, 0x44 };
+    uint32_t b = U32(LED_BRIGHTNESS);
+    uint32_t level = levels[b > 2 ? 2 : b];
+    uint32_t want = U32(GRID_REC) && euc_on(U8(TRACK_IDX));
+    if (want == led_shown && level == led_level) return;
+    if (U32(PANEL_TX_USED) > 2048 - 16 * 6 - 64) return;
+    for (unsigned k = 0; k < 16; k++)
+        ((void (*)(unsigned, unsigned, unsigned, unsigned, unsigned))0x40013368u)
+            (2 * k, 1, level, 0, want ? level : 0);
+    led_shown = want; led_level = level;
+}
+
 /* Called from the two grid-editor stubs: nonzero leaves the step alone. */
 unsigned es_blocked(void) {
     if (!U32(GRID_REC)) return 0;

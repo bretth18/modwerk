@@ -51,6 +51,20 @@ es_length_stub:
         lea 16(%sp),%sp
         rts
 
+| 0x40013634: the stock LED-row sender. Keep the MKII trig colour in step
+| first, then replay its three displaced instructions.
+        .global es_led_stub
+es_led_stub:
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        jsr es_led_sync
+        movem.l (%sp),%d0-%d1/%a0-%a1
+        lea 16(%sp),%sp
+        move.l %d3,-(%sp)
+        move.l %d2,-(%sp)
+        move.l 12(%sp),%d2
+        jmp 0x4001363c
+
         .data
         .balign 4
         .global es_tte_layer, es_page_layer

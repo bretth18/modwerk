@@ -2,7 +2,7 @@
 
 The generator writes the current pattern's real trig mask, so the stock
 sequencer plays the result with its own tempo, track speed, swing, locks and
-conditions; no clock is added. Five guarded sites:
+conditions; no clock is added. Six guarded sites:
 
 - TRACK TRIG EDIT's key layer is pushed and popped through one operand each
   (0x4007c0a8, 0x4007b48c). Both name a module copy of that layer: the five
@@ -10,6 +10,8 @@ conditions; no clock is added. Five guarded sites:
   stock binding there and opens the EUCLID page from the TRIGS row.
 - PATTERN SCALE's length setter (0x4004c912) regenerates EUC tracks after
   a pattern or track length change.
+- The LED-row sender (0x40013634) first keeps the MKII trig-key palette in
+  step: purple trigs on an EUC track in grid recording, stock red otherwise.
 - The grid editor's place-a-trig path (0x40051970) and remove-on-release
   path (0x400601aa) are skipped while EUC is on for the selected track.
   Holding an existing trig for parameter locks is unchanged.
@@ -45,6 +47,8 @@ MODULE = Module(
                "euclid-seq", "es_release_stub", "EUC on: a TRIG release does not remove a trig"),
         Detour(0x4004c912, stock_guard(0x4004c912, 6, "1887108eb085baabadc2f1b319f4c3e1fa521fe65b60b029eb1e78a07962fa5c"),
                "euclid-seq", "es_length_stub", "A length change regenerates EUC tracks", kind="jsr"),
+        Detour(0x40013634, stock_guard(0x40013634, 8, "8ebe9e663e436dc339732fe95700e7791844e66c248c86d56fdd3fc0800ee7ec"),
+               "euclid-seq", "es_led_stub", "MKII: trig keys purple on an EUC track in grid recording", pad_to=8),
     ),
     gates=(Gate("modules/euclid-seq/verify.py", remix_arg=False),),
 )
