@@ -39,6 +39,18 @@ es_release_stub:
         jmp 0x400601b0
 1:      jmp 0x4006066c
 
+| 0x4004c912: PATTERN SCALE's length setter, after storing a pattern or track
+| length. Replays the displaced call; the stock track rebuild follows.
+        .global es_length_stub
+es_length_stub:
+        jsr 0x400339d8
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        jsr es_length_changed
+        movem.l (%sp),%d0-%d1/%a0-%a1
+        lea 16(%sp),%sp
+        rts
+
         .data
         .balign 4
         .global es_tte_layer, es_page_layer

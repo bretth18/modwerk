@@ -66,7 +66,7 @@ static void put(volatile uint8_t *rec, uint32_t mirror, unsigned off, uint8_t va
     if (rec[off] != value) { rec[off] = value; U8(mirror + off) = value; }
 }
 
-/* Make mask 0 match the generator within the track's length, editing each
+/* Make mask 0 match the generator (no trigs past the length), editing each
  * step exactly as the stock grid editor does: a placed trig clears the
  * step's other trig types and condition word; a removed trig also clears
  * its 32 lock bytes. Runs on the UI task (key/encoder handlers) only. */
@@ -83,7 +83,7 @@ static int apply(unsigned t) {
     uint8_t mask[8];
     es_mask(&p, mask);
     int changed = 0;
-    for (s = 0; s < len; s++) {
+    for (s = 0; s < ES_MAX_STEPS; s++) {
         unsigned byte = 7 - s / 8;
         uint8_t bit = (uint8_t)(1u << (s % 8));
         unsigned want = mask[byte] & bit, have = rec[byte] & bit;
@@ -109,6 +109,12 @@ static int apply(unsigned t) {
         U32(SCREEN_DIRTY) = 1;
     }
     return changed;
+}
+
+/* PATTERN SCALE changed a length (pattern or track): follow it on every EUC
+ * track of the pattern. Called from the length setter's stub, UI task. */
+void es_length_changed(void) {
+    for (unsigned t = 0; t < 8; t++) apply(t);
 }
 
 /* Called from the two grid-editor stubs: nonzero leaves the step alone. */
