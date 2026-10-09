@@ -3,79 +3,112 @@
   "id": "euclid-seq",
   "key": "EUCLID SEQ",
   "name": "Euclid Seq",
-  "version": "0.1.0",
-  "category": "playback",
+  "version": "0.1.0-experimental",
+  "category": "machines",
   "author": {
     "github": "bretth18",
     "credits": [
-      "bretth18"
+      "bretth18: generator, firmware glue, investigation and documentation.",
+      "Pattern-write, window and key-layer idioms follow VECTOR and Analog BD (repeat98) and Sam Banks' MIT octabam editor tooling; firmware addresses cited from octabam and Play Modes (devilfish707)."
     ]
   },
   "nativeManifest": "manifest.py",
   "presentation": {
-    "label": "FILTER",
-    "family": "Filter",
-    "summary": "Describe the module and its sound.",
-    "overview": "Explain its signal path and practical uses.",
+    "label": "EUCLIDEAN TRIGS",
+    "family": "Sequencer",
+    "summary": "Analog Rytm-style Euclidean sequencer: two pulse generators, rotations and a logic operator write real trigs on an audio track.",
+    "overview": "Euclid Seq turns an audio track's trigs into a Euclidean rhythm, as the Analog Rytm's Euclidean mode does. Two generators (PL1, PL2) spread their pulses evenly over the track's length; RO1 and RO2 rotate each, OP combines them (OR, XOR, AND, SUB) and TRO rotates the result. The module writes ordinary trigs into the pattern, so the stock sequencer plays them with its own tempo, track speed, swing, locks and conditions; it keeps no clock. While EUC is on, the TRIG keys cannot add or remove trigs on that track; holding a trig still edits its parameter locks.",
     "highlights": [
-      "Describe an actual feature."
+      "PL1/PL2 pulses, RO1/RO2/TRO rotations and OR/XOR/AND/SUB, per track and pattern",
+      "Writes real trigs: stock playback, swing, locks, conditions and bank save",
+      "Its own page from TRACK TRIG EDIT: RIGHT on the TRIGS row",
+      "Follows PATTERN SCALE length changes; no clock of its own"
     ],
     "usage": [
-      "Explain where to find it and a useful starting point."
+      "Select an audio track, press REC for grid recording, then FUNC+BANK for TRACK TRIG EDIT. On the TRIGS row press RIGHT to open EUCLID.",
+      "Press YES to turn EUC on. A sets PL1, B PL2, D RO1, E RO2, F TRO and LEVEL the operator; C shows the track length.",
+      "Press NO to return to TRACK TRIG EDIT. Press YES on the page again to turn EUC off; the trigs remain as ordinary trigs."
     ]
   },
   "controls": [],
   "compatibility": {
     "firmware": "1.40C",
-    "location": "Flex / Static",
+    "location": "Audio tracks",
     "conflicts": [],
     "limitations": [
-      "Scaffold only; audio behavior and hardware operation have not been tested."
+      "Deliberate stock-flow change: RIGHT on TRACK TRIG EDIT's TRIGS row opens the EUCLID page (RIGHT has no stock binding there); with EUC on, the TRIG keys and live recording do not place or remove trigs on that track; on MKII in grid recording the trig keys show those trigs purple.",
+      "EUC settings are runtime state: a reboot or project reload turns EUC off and forgets PL/RO/OP; the generated trigs are ordinary pattern data and stay.",
+      "Purple trigs need the MKII panel; MKI trig LEDs stay stock.",
+      "Audio tracks only; MIDI tracks are not supported.",
+      "Not yet run on hardware; worst-case chip timing is unmeasured.",
+      "Like every DRAM module, the build gives up about 10 MB of sample memory to the platform reserve."
     ],
     "effectId": null
   },
   "resources": {
     "recorded": "Not measured",
     "storage": {
-      "label": "Storage",
+      "label": "DRAM data",
       "display": "Not measured",
       "value": null,
       "unit": "unknown",
       "method": "unmeasured",
-      "conditions": "No measurements exist yet. Add exact conditions and source evidence when available.",
+      "conditions": "One 16,384-byte settings table for 16 banks x 16 patterns x 8 tracks plus the unit's code, in the platform reserve. Exact totals not yet recorded.",
       "source": "TESTING.md"
     },
     "processing": {
-      "label": "CPU / DSP load",
+      "label": "ColdFire processing",
       "display": "Not measured",
       "value": null,
       "unit": "unknown",
       "method": "unmeasured",
-      "conditions": "No measurements exist yet. Add exact conditions and source evidence when available.",
+      "conditions": "Runs only on key and knob events on the UI task, never per step or per sample. Not yet measured.",
       "source": "TESTING.md"
+    },
+    "impact": {
+      "conditions": "Knob turns on the EUCLID page with EUC on: one 64-step regeneration per event.",
+      "cpu": {
+        "level": "minimal",
+        "basis": "source-estimate",
+        "rationale": "Work happens only on key, knob and length-change events: one pass over at most 64 steps. Nothing runs per step or per sample.",
+        "source": "TESTING.md"
+      },
+      "dsp": {
+        "level": "minimal",
+        "basis": "source-estimate",
+        "rationale": "No DSP code, tables or buffers; stock DSP processing is unchanged.",
+        "source": "TESTING.md"
+      },
+      "memory": {
+        "level": "low",
+        "basis": "source-estimate",
+        "rationale": "A 16 KB settings table and a few KB of code in the shared platform reserve; no per-instance copies.",
+        "source": "TESTING.md"
+      }
     }
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "No tests have been run. Add tests.qualification with worst-case cycles, exact memory and attributed owner-reviewed hardware evidence before submitting. This scaffold cannot pass publication checks.",
+    "summary": "Host gate: the generator matches an independent formulation on 633,984 settings. Emulator: 17 scripted checks pass on MKII and MKI panels (page, EUC, blocking, locks, length follow, playback timing at 120 BPM). Not run on hardware.",
     "hardwareStatus": "untested",
     "evidenceRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
     "gates": [
-      "Worst-case cycles under parameter modulation and maximum load",
-      "Exact memory region and maximum-instance totals",
-      "Owner-reviewed real-hardware evidence with actual coverage and limitations"
+      "modules/euclid-seq/verify.py"
     ]
   },
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "Replace with accurate authorship, attribution and original/licensed source and media rights. Never include Elektron firmware, extracted routines or tables."
+    "declaration": "Original code and thumbnail by bretth18, MIT. Firmware addresses are cited from public module sources and read from the author's own OS; five stock key records are copied from the user's own OS at build time and never stored in this source. No Elektron firmware, extracted routines, tables or images are included."
   },
   "media": [],
   "access": {
-    "location": "Describe the exact OT page or menu where the module is selected or enabled.",
+    "location": "Audio track, grid recording: FUNC+BANK opens TRACK TRIG EDIT; RIGHT on the TRIGS row opens EUCLID.",
     "steps": [
-      "Describe prerequisites, track/machine selection and the exact button/menu sequence."
+      "Include Euclid Seq in your build and select an audio track.",
+      "Press REC for grid recording, then hold FUNC and press BANK to open TRACK TRIG EDIT.",
+      "With the TRIGS row selected, press RIGHT to open the EUCLID page; press YES to turn EUC on.",
+      "Press NO to return to TRACK TRIG EDIT."
     ],
     "screenshots": []
   }

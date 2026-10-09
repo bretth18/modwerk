@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="576" viewBox="0 0 320 192" role="img" aria-labelledby="title description">
+  <title id="title">EUCLID SEQ — Euclidean trigs</title>
+  <desc id="description">Original illustration: two 16-step Euclidean generators, 5 and 3 pulses, and their XOR written as trigs on a track. This is an illustration, not an Octatrack screenshot.</desc>
+  <rect width="320" height="192" rx="14" fill="#202025"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="8" fill="#a5a2b4">
+    <text x="24" y="24" fill="#ece8f6" font-size="10" letter-spacing="1.4">EUCLID SEQ</text>
+    <text x="190" y="24">TRIG EDIT ▸ RIGHT</text>
+    <text x="24" y="176">PL · RO · TRO · OR XOR AND SUB</text>
+    <text x="24" y="64">PL1 5</text>
+    <text x="24" y="98">PL2 3</text>
+    <text x="24" y="132">XOR</text>
+  </g>
+  <rect x="78.0" y="58" width="11" height="9" rx="1.5" fill="#ece8f6"/>
+  <rect x="92.2" y="58" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="106.4" y="58" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="120.6" y="58" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="134.8" y="58" width="11" height="9" rx="1.5" fill="#ece8f6"/>
+  <rect x="149.0" y="58" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="163.2" y="58" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="177.4" y="58" width="11" height="9" rx="1.5" fill="#ece8f6"/>
+  <rect x="191.6" y="58" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="205.8" y="58" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="220.0" y="58" width="11" height="9" rx="1.5" fill="#ece8f6"/>
+  <rect x="234.2" y="58" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="248.4" y="58" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="262.6" y="58" width="11" height="9" rx="1.5" fill="#ece8f6"/>
+  <rect x="276.8" y="58" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="291.0" y="58" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="78.0" y="92" width="11" height="9" rx="1.5" fill="#ece8f6"/>
+  <rect x="92.2" y="92" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="106.4" y="92" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="120.6" y="92" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="134.8" y="92" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="149.0" y="92" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="163.2" y="92" width="11" height="9" rx="1.5" fill="#ece8f6"/>
+  <rect x="177.4" y="92" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="191.6" y="92" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="205.8" y="92" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="220.0" y="92" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="234.2" y="92" width="11" height="9" rx="1.5" fill="#ece8f6"/>
+  <rect x="248.4" y="92" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="262.6" y="92" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="276.8" y="92" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="291.0" y="92" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="78.0" y="126" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="92.2" y="126" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="106.4" y="126" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="120.6" y="126" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="134.8" y="126" width="11" height="9" rx="1.5" fill="#b27cf2"/>
+  <rect x="149.0" y="126" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="163.2" y="126" width="11" height="9" rx="1.5" fill="#b27cf2"/>
+  <rect x="177.4" y="126" width="11" height="9" rx="1.5" fill="#b27cf2"/>
+  <rect x="191.6" y="126" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="205.8" y="126" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="220.0" y="126" width="11" height="9" rx="1.5" fill="#b27cf2"/>
+  <rect x="234.2" y="126" width="11" height="9" rx="1.5" fill="#b27cf2"/>
+  <rect x="248.4" y="126" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="262.6" y="126" width="11" height="9" rx="1.5" fill="#b27cf2"/>
+  <rect x="276.8" y="126" width="11" height="9" rx="1.5" fill="#36343f"/>
+  <rect x="291.0" y="126" width="11" height="9" rx="1.5" fill="#36343f"/>
+</svg>

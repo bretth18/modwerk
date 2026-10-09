@@ -627,30 +627,193 @@ es_length_changed:
 	rts
 	.size	es_length_changed, .-es_length_changed
 	.align	2
+	.globl	es_led_sync
+	.type	es_led_sync, @function
+es_led_sync:
+	lea (-16,%sp),%sp
+	movem.l #60,(%sp)
+	tst.l 1187565964
+	jeq .L121
+	move.l -2147483440,%d0
+	mov3q.l #2,%d1
+	cmp.l %d0,%d1
+	jcs .L141
+	lea (levels.1),%a0
+	move.l 1175263030,%d5
+	mvz.b (%a0,%d0.l),%d3
+	tst.l %d5
+	jne .L142
+.L134:
+	clr.l %d0
+	cmp.l led_shown.l,%d5
+	jeq .L143
+.L129:
+	mvz.w #1888,%d1
+	cmp.l 1074501324.l,%d1
+	jcs .L121
+.L144:
+	tst.l %d0
+	jeq .L130
+	move.l %d3,%d4
+	clr.l %d2
+.L132:
+	move.l %d4,-(%sp)
+	clr.l -(%sp)
+	move.l %d3,-(%sp)
+	mov3q.l #1,-(%sp)
+	move.l %d2,-(%sp)
+	jsr 1073820520
+	addq.l #2,%d2
+	lea (20,%sp),%sp
+	moveq #32,%d0
+	cmp.l %d2,%d0
+	jne .L132
+	move.l %d5,led_shown
+	move.l %d3,led_level
+.L121:
+	movem.l (%sp),#60
+	lea (16,%sp),%sp
+	rts
+.L141:
+	mov3q.l #2,%d0
+	lea (levels.1),%a0
+	move.l 1175263030,%d5
+	mvz.b (%a0,%d0.l),%d3
+	tst.l %d5
+	jeq .L134
+	jra .L142
+.L143:
+	cmp.l led_level.l,%d3
+	jeq .L121
+	mvz.w #1888,%d1
+	cmp.l 1074501324.l,%d1
+	jcc .L144
+	jra .L121
+.L142:
+	move.b 269161676,%d2
+	move.l 1187521622,%d0
+	cmp.l #1074667999,%d0
+	jls .L126
+	add.l #-1074668000,%d0
+	move.l %d0,%d1
+	move.l #635712,%d4
+	remu.l %d4,%d5:%d1
+	divu.l %d4,%d1
+	tst.l %d5
+	jne .L126
+	cmp.l #10171391,%d0
+	jhi .L126
+	mvz.b 269161680,%d0
+	moveq #15,%d4
+	cmp.l %d0,%d4
+	jcs .L134
+	mvz.b %d2,%d2
+	mov3q.l #7,%d4
+	cmp.l %d2,%d4
+	jcs .L134
+	tst.l -2147483630
+	jne .L134
+	lsl.l #4,%d1
+	lea settings,%a0
+	add.l %d1,%d0
+	mvz.w %d0,%d0
+	lsl.l #3,%d0
+	add.l %d2,%d0
+	lsl.l #3,%d0
+	move.b (%a0,%d0.l),%d5
+	mov3q.l #1,%d0
+	and.l %d0,%d5
+	move.l %d5,%d0
+	cmp.l led_shown.l,%d5
+	jne .L129
+	jra .L143
+.L130:
+	clr.l %d4
+	clr.l %d2
+	jra .L132
+.L126:
+	move.b 269161680,%d0
+	clr.l %d5
+	clr.l %d0
+	cmp.l led_shown.l,%d5
+	jne .L129
+	jra .L143
+	.size	es_led_sync, .-es_led_sync
+	.align	2
+	.globl	es_rec_blocked
+	.type	es_rec_blocked, @function
+es_rec_blocked:
+	move.l 1187521622,%d1
+	move.l %d3,-(%sp)
+	move.l %d2,-(%sp)
+	cmp.l #1074667999,%d1
+	jls .L148
+	add.l #-1074668000,%d1
+	move.l %d1,%d2
+	move.l #635712,%d3
+	remu.l %d3,%d0:%d2
+	divu.l %d3,%d2
+	move.l %d2,%a0
+	tst.l %d0
+	jne .L148
+	cmp.l #10171391,%d1
+	jhi .L148
+	mvz.b 269161680,%d1
+	moveq #15,%d2
+	cmp.l %d1,%d2
+	jcs .L145
+	mov3q.l #7,%d3
+	cmp.l 12(%sp),%d3
+	jcs .L145
+	tst.l -2147483630
+	jne .L145
+	move.l %a0,%d0
+	lsl.l #4,%d0
+	lea settings,%a0
+	add.l %d1,%d0
+	mvz.w %d0,%d0
+	mov3q.l #1,%d1
+	lsl.l #3,%d0
+	add.l 12(%sp),%d0
+	lsl.l #3,%d0
+	move.b (%a0,%d0.l),%d0
+	and.l %d1,%d0
+.L145:
+	move.l (%sp)+,%d2
+	move.l (%sp)+,%d3
+	rts
+.L148:
+	move.b 269161680,%d0
+	move.l (%sp)+,%d2
+	move.l (%sp)+,%d3
+	clr.l %d0
+	rts
+	.size	es_rec_blocked, .-es_rec_blocked
+	.align	2
 	.globl	es_blocked
 	.type	es_blocked, @function
 es_blocked:
 	move.l 1175263030,%d0
 	tst.l %d0
-	jeq .L121
+	jeq .L153
 	tst.l 1175352268
-	jeq .L123
+	jeq .L155
 	tst.l 1175352292
-	jne .L124
-.L123:
+	jne .L156
+.L155:
 	mvz.b 269161676,%d0
 	move.l %d0,-(%sp)
 	jsr entry
 	addq.l #4,%sp
 	tst.l %d0
-	jeq .L124
+	jeq .L156
 	move.l %d0,%a0
 	mov3q.l #1,%d1
 	move.b (%a0),%d0
 	and.l %d1,%d0
-.L121:
+.L153:
 	rts
-.L124:
+.L156:
 	clr.l %d0
 	rts
 	.size	es_blocked, .-es_blocked
@@ -664,21 +827,21 @@ es_blocked:
 es_tte_right:
 	mov3q.l #1,%d0
 	cmp.l 8(%sp),%d0
-	jeq .L152
-.L139:
+	jeq .L184
+.L171:
 	rts
-.L152:
+.L184:
 	tst.l 1175352268
-	jeq .L139
+	jeq .L171
 	move.l 1175352292,%d0
 	or.l es_window,%d0
-	jne .L139
+	jne .L171
 	mvz.b 269161676,%d0
 	move.l %d0,-(%sp)
 	jsr entry
 	addq.l #4,%sp
 	tst.l %d0
-	jeq .L139
+	jeq .L171
 	pea es_close_cb
 	mov3q.l #1,-(%sp)
 	clr.l -(%sp)
@@ -688,7 +851,7 @@ es_tte_right:
 	jsr 1074102940
 	lea (24,%sp),%sp
 	tst.l %d0
-	jeq .L139
+	jeq .L171
 	clr.l -(%sp)
 	pea .LC3
 	move.l %d0,-(%sp)
@@ -707,26 +870,26 @@ es_key:
 	move.l %d2,-(%sp)
 	move.l 12(%sp),%d0
 	tst.l es_window
-	jeq .L153
+	jeq .L185
 	moveq #50,%d1
 	cmp.l 8(%sp),%d1
-	jeq .L161
+	jeq .L193
 	mov3q.l #1,%d2
 	cmp.l %d0,%d2
-	jeq .L162
-.L153:
+	jeq .L194
+.L185:
 	move.l (%sp)+,%d2
 	rts
-.L162:
+.L194:
 	moveq #49,%d0
 	cmp.l 8(%sp),%d0
-	jne .L153
+	jne .L185
 	mvz.b 269161676,%d0
 	move.l %d0,-(%sp)
 	jsr entry
 	addq.l #4,%sp
 	tst.l %d0
-	jeq .L153
+	jeq .L185
 	move.l %d0,%a0
 	move.b (%a0),%d1
 	eor.l %d2,%d1
@@ -737,9 +900,9 @@ es_key:
 	addq.l #4,%sp
 	move.l (%sp)+,%d2
 	jra draw
-.L161:
+.L193:
 	tst.l %d0
-	jne .L153
+	jne .L185
 	pea es_window
 	jsr 1074093492
 	pea es_page_layer
@@ -762,13 +925,13 @@ es_knob:
 	move.l 28(%sp),%a0
 	move.l 32(%sp),%d1
 	tst.l es_window
-	jeq .L163
+	jeq .L195
 	mov3q.l #6,%d0
 	cmp.l %a0,%d0
-	jcs .L163
+	jcs .L195
 	mov3q.l #2,%d2
 	cmp.l %a0,%d2
-	jeq .L163
+	jeq .L195
 	mvz.b 269161676,%d2
 	move.l %d2,20(%sp)
 	move.l %d2,-(%sp)
@@ -779,7 +942,7 @@ es_knob:
 	move.l 8(%sp),%d1
 	move.l 12(%sp),%a0
 	tst.l %d0
-	jeq .L163
+	jeq .L195
 	move.l 1187521622,%a1
 	move.l #36437,%a2
 	mvz.b 269161680,%d2
@@ -787,30 +950,30 @@ es_knob:
 	mulu.w #36568,%d2
 	add.l %d2,%a1
 	tst.b (%a1,%a2.l)
-	jeq .L165
+	jeq .L197
 	move.w 22(%sp),%d2
 	mulu.w #2330,%d2
 	move.b 80(%a1,%d2.l),%d2
 	move.w %d2,%a1
-.L166:
+.L198:
 	mov3q.l #6,%d2
 	cmp.l %a0,%d2
-	jeq .L172
+	jeq .L204
 	move.w %a1,%d2
 	mvz.b %d2,%d2
 	move.l %d2,%a1
 	moveq #64,%d2
 	cmp.l %a1,%d2
-	jcc .L168
+	jcc .L200
 	move.w #64,%a1
-.L168:
+.L200:
 	mov3q.l #1,%d2
 	cmp.l %a0,%d2
-	jcc .L167
+	jcc .L199
 	subq.l #1,%a1
 	tst.l %a1
-	jlt .L181
-.L167:
+	jlt .L213
+.L199:
 	lea (field.0),%a2
 	mvz.b (%a2,%a0.l),%d2
 	move.l %d2,%a0
@@ -818,15 +981,15 @@ es_knob:
 	mvz.b (%a0),%d0
 	add.l %d0,%d1
 	tst.l %d1
-	jlt .L182
-.L170:
+	jlt .L214
+.L202:
 	cmp.l %d1,%a1
-	jge .L171
+	jge .L203
 	move.l %a1,%d1
-.L171:
+.L203:
 	mvz.b %d1,%d2
 	cmp.l %d0,%d2
-	jeq .L163
+	jeq .L195
 	move.b %d1,(%a0)
 	move.l 20(%sp),-(%sp)
 	jsr (apply.isra.0)
@@ -835,20 +998,20 @@ es_knob:
 	move.l (%sp)+,%a2
 	lea (16,%sp),%sp
 	jra draw
-.L163:
+.L195:
 	move.l (%sp)+,%d2
 	move.l (%sp)+,%a2
 	lea (16,%sp),%sp
 	rts
-.L182:
+.L214:
 	clr.l %d1
-	jra .L170
-.L165:
+	jra .L202
+.L197:
 	mvz.w #36435,%d2
 	move.b (%a1,%d2.l),%d2
 	move.w %d2,%a1
-	jra .L166
-.L172:
+	jra .L198
+.L204:
 	lea (field.0),%a2
 	mov3q.l #3,%a1
 	mvz.b (%a2,%a0.l),%d2
@@ -857,9 +1020,9 @@ es_knob:
 	mvz.b (%a0),%d0
 	add.l %d0,%d1
 	tst.l %d1
-	jge .L170
-	jra .L182
-.L181:
+	jge .L202
+	jra .L214
+.L213:
 	lea (field.0),%a2
 	sub.l %a1,%a1
 	mvz.b (%a2,%a0.l),%d2
@@ -868,14 +1031,18 @@ es_knob:
 	mvz.b (%a0),%d0
 	add.l %d0,%d1
 	tst.l %d1
-	jge .L170
-	jra .L182
+	jge .L202
+	jra .L214
 	.size	es_knob, .-es_knob
 	.section	.rodata
 	.type	field.0, @object
 	.size	field.0, 7
 field.0:
 	.base64	"AQIAAwQFBg=="
+	.type	levels.1, @object
+	.size	levels.1, 3
+levels.1:
+	.ascii	"\f0D"
 	.section	.rodata.str1.1
 .LC4:
 	.string	"PL1"
@@ -919,6 +1086,16 @@ ops:
 	.long	.LC12
 	.long	.LC13
 	.data
+	.align	2
+	.type	led_level, @object
+	.size	led_level, 4
+led_level:
+	.zero	4
+	.align	2
+	.type	led_shown, @object
+	.size	led_shown, 4
+led_shown:
+	.zero	4
 	.align	2
 	.type	es_window, @object
 	.size	es_window, 4
@@ -983,17 +1160,64 @@ es_length_stub:
         lea 16(%sp),%sp
         rts
 
+| 0x40042d1c: REC_TRIG(track, context), the live recorder. On an EUC track
+| it returns -1 (no step recorded), as when recording is off.
+        .global es_rec_stub
+es_rec_stub:
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        move.l 20(%sp),-(%sp)
+        jsr es_rec_blocked
+        addq.l #4,%sp
+        tst.l %d0
+        movem.l (%sp),%d0-%d1/%a0-%a1
+        lea 16(%sp),%sp
+        beq.s 1f
+        moveq #-1,%d0
+        rts
+1:      link.w %fp,#-56
+        movem.l %d2-%d7/%a2-%a5,(%sp)
+        jmp 0x40042d24
+
+| 0x40013634: the stock LED-row sender. Keep the MKII trig colour in step
+| first, then replay its three displaced instructions.
+        .global es_led_stub
+es_led_stub:
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        jsr es_led_sync
+        movem.l (%sp),%d0-%d1/%a0-%a1
+        lea 16(%sp),%sp
+        move.l %d3,-(%sp)
+        move.l %d2,-(%sp)
+        move.l 12(%sp),%d2
+        jmp 0x4001363c
+
         .data
         .balign 4
         .global es_tte_layer, es_page_layer
 
-| TRACK TRIG EDIT's own layer, with one added RIGHT record. The five stock
-| key records are copied from the local OS at build time (StockCopy) and the
-| stock encoder table is used as is.
+| TRACK TRIG EDIT's own layer: the window's five key bindings (stock handler
+| addresses, 1.40C 0x400d0154: UP and DOWN repeat after 15 then every 5
+| ticks), one added RIGHT record, and the stock encoder table as is.
 es_tte_layer:
         .long 0,es_tte_keys,0x400d01f0,0,0
 es_tte_keys:
-        .space 130
+        .byte 0x33,0
+        .long 0x4007bff8,0,0x4007bff8,0,0
+        .word 15,5
+        .byte 0x20,0
+        .long 0x4007bfa0,0,0x4007bfa0,0,0
+        .word 15,5
+        .byte 0x31,0
+        .long 0x4007b4d8,0,0,0,0
+        .word 0,0
+        .byte 0x32,0
+        .long 0x4007b4d4,0,0,0,0
+        .word 0,0
+        .byte 0x2d,0
+        .long 0x4007bf6c,0x4007bf6c,0,0,0
+        .word 0,0
         .byte 0x21,0
         .long es_tte_right,0,0,0,0
         .word 0,0

@@ -1,29 +1,68 @@
 # Euclid Seq testing
 
-## Commands and exact revision
+Proof level: **PORT** for the behaviours listed under Emulator; **untested**
+on hardware. Nothing below is a hardware result.
 
-No checks have been run. Record the tested source commit and every command/result after implementation.
+## Host gate
 
-## Hardware and audio quality
+`python3 modules/euclid-seq/verify.py`: `gen.c` compiled with the host C
+compiler matches an independent Python formulation on 633,984 settings
+(lengths 1–64, all pulse counts, sampled rotations, all four operators) and
+13 hand-checked patterns, including E(3,8) `x..x..x.`, E(5,8) `x.x.xx.x` and
+`XOR` of E(4,8) and E(3,8) `..xxx...`. Passed 9 October 2026.
 
-Test on a real MKI or MKII. There is no minimum duration or track count: record what you actually ran. Exercise parameter extremes, LFO/p-lock/MIDI/scene modulation, mode/Part/bypass changes and the most instances you support; say why any case does not apply. Record tester, date, model, local firmware build SHA-256, native-source SHA-256, workload, duration, results and limitations. Keep emulator evidence separate from hardware results.
+## Emulator
 
-## Stock flows
+Headless `ot_emu` (built from this checkout) on a `make bus` image
+(`OCTABAM_STATIC_STOCK=1`) containing only Euclid Seq, empty scratch card,
+pattern A01, track 1, 120 BPM, stopped transport unless stated. Scripted
+panel input; RAM and battery-mirror bytes read back. Passed with both the
+MKII and the MKI panel on 9 October 2026 (17/17 each):
 
-Not run. List the stock flows you compared with and without the module (menus and pages it does not own, button shortcuts, saving and loading, Parts and patterns, scenes, recording, MIDI, USB, timing) and what you saw; a flow you did not run is "not tested". List every deliberate change to a stock flow here and in the README (what, why, what a musician sees, how to turn it off). Guide: docs/module-guides/README.md, Leave stock flows alone.
+- RIGHT on TRACK TRIG EDIT's TRIGS row opens EUCLID (TRACK TRIG EDIT closes).
+- YES: EUC ON writes E(4,16) `0x1111` to mask 0 and the battery mirror.
+- A to PL1 5 gives E(5,16) `0x2491`; PL2 3 with XOR gives `0x2cd0`; TRO 2
+  rotates the result two steps later.
+- NO returns to TRACK TRIG EDIT; a second NO closes it as stock.
+- EUC on: TRIG on an empty step does nothing on the TRIGS row and in the grid;
+  tapping a Euclid trig keeps it.
+- Holding a Euclid trig and turning A writes a lock and keeps the trig.
+- PATTERN SCALE length 16 → 32 regenerates E(5,32) `0x04102081`; back to 16
+  restores E(5,16); trigs past the length are cleared.
+- Playing: track 1 fires 0, 500, 875, 1,250 and 1,625 ms after step 1
+  (steps 1, 5, 8, 11, 14 at 120 BPM, within 3 ms of the emulator clock).
+- EUC off: TRIG3 adds a trig and TRIG5 removes one with its locks (stock).
 
-## Performance
+Also observed: with EUC on, the SLIDE row still edits the slide mask.
 
-Not run. New modules need evidence/performance.json: worst-case cycles, a benchmark against the closest stock effect (a MIDI module: against the stock image under the same flood) and a stress run. Start from npm run perf:audit -- template coldfire, measure, then npm run perf:audit -- check <file> and paste the table here with the commands. Guide: docs/module-guides/README.md, Performance.
+Live recording (REC+PLAY, TRIG9 three times on track 1): stock and the
+module with EUC off both record `0x1120`; with EUC on the trigs stay
+`0x1111`.
 
-## Resources
+Purple trigs (MKII panel): with EUC on in grid recording, 16 palette
+messages set trig-key indices 1, 5, 9 … 61 to `44 00 44`; selecting track 2,
+leaving grid recording or EUC off sends `44 00 00` (stock red at brightness
+2). The emulator does not render colour: the physical colour is not
+verified.
 
-Unmeasured: publication is blocked. Record worst-case cycles for every processor used, per-instance and maximum configuration, units and real-time budget, including branch/mode changes and modulation. Inventory exact code/state/table/buffer/stack/heap/padding memory by address space, word width, words, bytes and instance/shared scope. Include per-instance, shared and maximum-instance totals; compare against the native allocation/build report. Attach local text reports, never firmware or project/card dumps. Fill tests.qualification only with actual results.
+**Not verified in the emulator:** swing and track speed applied to generated
+trigs (they are stock trigs played by the stock sequencer, but the
+measurement attempted was unreliable), tempo changes during playback, pattern and
+bank changes, Part/project save and reload, power cycle, MIDI tracks.
+
+## Stock flows compared
+
+With and without EUC on, in the emulator: TRACK TRIG EDIT UP/DOWN, YES, NO,
+PAGE, the SLIDE and SWING rows, grid TRIG press/hold/release, PATTERN SCALE
+length. RIGHT and LEFT in a stock TRACK TRIG EDIT changed nothing on 16- and
+64-step patterns (stock image). Not compared: live recording, chromatic,
+slots and slices trig modes.
 
 ## Hardware
 
-Untested. Never infer hardware safety from assembly or a green metadata check.
+Not tested.
 
-## OT UI capture evidence
+## Performance
 
-Pending: capture the actual location and relevant control pages. Record the local image SHA-256, module version, emulator source/binary identity or hardware model, prerequisites, panel sequence and exact capture commands. Retain only screenshots and metadata; never firmware, memory dumps, cards or private logs. UI captures do not establish audio or hardware qualification.
+Not measured. The module runs only on key, knob and length-setter events
+(one pass over at most 64 steps); nothing runs per step or per sample.

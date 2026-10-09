@@ -1,10 +1,10 @@
 MIT License
 
-Copyright (c) 2026 Sam Banks
+Copyright (c) 2026 Brett Henderson (bretth18)
 
-Portions of the firmware analysis tooling originate from the octamax project
-(https://github.com/mxldyn/octamax), Copyright (c) 2025-2026 Maxolydian,
-also under the MIT License.
+Built on the octabam remixer platform, Copyright (c) 2026 Sam Banks, MIT,
+whose firmware analysis tooling includes portions of the octamax project
+(https://github.com/mxldyn/octamax), Copyright (c) 2025-2026 Maxolydian, MIT.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

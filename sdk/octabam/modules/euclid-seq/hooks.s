@@ -51,17 +51,64 @@ es_length_stub:
         lea 16(%sp),%sp
         rts
 
+| 0x40042d1c: REC_TRIG(track, context), the live recorder. On an EUC track
+| it returns -1 (no step recorded), as when recording is off.
+        .global es_rec_stub
+es_rec_stub:
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        move.l 20(%sp),-(%sp)
+        jsr es_rec_blocked
+        addq.l #4,%sp
+        tst.l %d0
+        movem.l (%sp),%d0-%d1/%a0-%a1
+        lea 16(%sp),%sp
+        beq.s 1f
+        moveq #-1,%d0
+        rts
+1:      link.w %fp,#-56
+        movem.l %d2-%d7/%a2-%a5,(%sp)
+        jmp 0x40042d24
+
+| 0x40013634: the stock LED-row sender. Keep the MKII trig colour in step
+| first, then replay its three displaced instructions.
+        .global es_led_stub
+es_led_stub:
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        jsr es_led_sync
+        movem.l (%sp),%d0-%d1/%a0-%a1
+        lea 16(%sp),%sp
+        move.l %d3,-(%sp)
+        move.l %d2,-(%sp)
+        move.l 12(%sp),%d2
+        jmp 0x4001363c
+
         .data
         .balign 4
         .global es_tte_layer, es_page_layer
 
-| TRACK TRIG EDIT's own layer, with one added RIGHT record. The five stock
-| key records are copied from the local OS at build time (StockCopy) and the
-| stock encoder table is used as is.
+| TRACK TRIG EDIT's own layer: the window's five key bindings (stock handler
+| addresses, 1.40C 0x400d0154: UP and DOWN repeat after 15 then every 5
+| ticks), one added RIGHT record, and the stock encoder table as is.
 es_tte_layer:
         .long 0,es_tte_keys,0x400d01f0,0,0
 es_tte_keys:
-        .space 130
+        .byte 0x33,0
+        .long 0x4007bff8,0,0x4007bff8,0,0
+        .word 15,5
+        .byte 0x20,0
+        .long 0x4007bfa0,0,0x4007bfa0,0,0
+        .word 15,5
+        .byte 0x31,0
+        .long 0x4007b4d8,0,0,0,0
+        .word 0,0
+        .byte 0x32,0
+        .long 0x4007b4d4,0,0,0,0
+        .word 0,0
+        .byte 0x2d,0
+        .long 0x4007bf6c,0x4007bf6c,0,0,0
+        .word 0,0
         .byte 0x21,0
         .long es_tte_right,0,0,0,0
         .word 0,0
