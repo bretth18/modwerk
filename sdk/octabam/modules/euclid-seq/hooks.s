@@ -51,6 +51,25 @@ es_length_stub:
         lea 16(%sp),%sp
         rts
 
+| 0x40042d1c: REC_TRIG(track, context), the live recorder. On an EUC track
+| it returns -1 (no step recorded), as when recording is off.
+        .global es_rec_stub
+es_rec_stub:
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        move.l 20(%sp),-(%sp)
+        jsr es_rec_blocked
+        addq.l #4,%sp
+        tst.l %d0
+        movem.l (%sp),%d0-%d1/%a0-%a1
+        lea 16(%sp),%sp
+        beq.s 1f
+        moveq #-1,%d0
+        rts
+1:      link.w %fp,#-56
+        movem.l %d2-%d7/%a2-%a5,(%sp)
+        jmp 0x40042d24
+
 | 0x40013634: the stock LED-row sender. Keep the MKII trig colour in step
 | first, then replay its three displaced instructions.
         .global es_led_stub

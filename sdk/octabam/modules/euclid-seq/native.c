@@ -152,6 +152,11 @@ void es_led_sync(void) {
     led_shown = want; led_level = level;
 }
 
+/* The live recorder's stub: nonzero means it records nothing on track t. */
+unsigned es_rec_blocked(unsigned t) {
+    return euc_on(t);
+}
+
 /* Called from the two grid-editor stubs: nonzero leaves the step alone. */
 unsigned es_blocked(void) {
     if (!U32(GRID_REC)) return 0;
