@@ -715,6 +715,17 @@
           "Delay precision is approximately 16 bits; extreme modulation retains pitch and aliasing artifacts."
         ]
       }
+    ],
+    "euclid-seq": [
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-09",
+        "changes": [
+          "First version: an Analog Rytm-style Euclidean sequencer for audio tracks with PL1, PL2, RO1, RO2, TRO and an OR/XOR/AND/SUB operator, written as ordinary trigs that the stock sequencer plays.",
+          "Opens from TRACK TRIG EDIT with RIGHT on the TRIGS row; NO returns. While EUC is on, the TRIG keys do not add or remove trigs on that track; holding a trig still edits its locks. PATTERN SCALE length changes regenerate EUC tracks.",
+          "Settings are runtime state and reset after a reboot or project reload; live recording is not blocked. Emulator-tested on MKII and MKI panels; not yet run on hardware."
+        ]
+      }
     ]
   }
 }
