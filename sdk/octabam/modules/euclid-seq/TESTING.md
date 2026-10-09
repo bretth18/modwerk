@@ -35,10 +35,19 @@ MKII and the MKI panel on 9 October 2026 (17/17 each):
 
 Also observed: with EUC on, the SLIDE row still edits the slide mask.
 
+Live recording (REC+PLAY, TRIG9 three times on track 1): stock and the
+module with EUC off both record `0x1120`; with EUC on the trigs stay
+`0x1111`.
+
+Purple trigs (MKII panel): with EUC on in grid recording, 16 palette
+messages set trig-key indices 1, 5, 9 … 61 to `44 00 44`; selecting track 2,
+leaving grid recording or EUC off sends `44 00 00` (stock red at brightness
+2). The emulator does not render colour: the physical colour is not
+verified.
+
 **Not verified in the emulator:** swing and track speed applied to generated
 trigs (they are stock trigs played by the stock sequencer, but the
-measurement attempted was unreliable), live recording (REC+PLAY reached the
-emulator's SET DATE/TIME prompt), tempo changes during playback, pattern and
+measurement attempted was unreliable), tempo changes during playback, pattern and
 bank changes, Part/project save and reload, power cycle, MIDI tracks.
 
 ## Stock flows compared

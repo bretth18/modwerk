@@ -36,9 +36,9 @@
     "location": "Audio tracks",
     "conflicts": [],
     "limitations": [
-      "Deliberate stock-flow change: RIGHT on TRACK TRIG EDIT's TRIGS row opens the EUCLID page (RIGHT has no stock binding there); with EUC on, the TRIG keys do not place or remove trigs on that track.",
+      "Deliberate stock-flow change: RIGHT on TRACK TRIG EDIT's TRIGS row opens the EUCLID page (RIGHT has no stock binding there); with EUC on, the TRIG keys and live recording do not place or remove trigs on that track; on MKII in grid recording the trig keys show those trigs purple.",
       "EUC settings are runtime state: a reboot or project reload turns EUC off and forgets PL/RO/OP; the generated trigs are ordinary pattern data and stay.",
-      "Live recording is not blocked while EUC is on and has not been tested; recorded trigs are replaced at the next regeneration.",
+      "Purple trigs need the MKII panel; MKI trig LEDs stay stock.",
       "Audio tracks only; MIDI tracks are not supported.",
       "Not yet run on hardware; worst-case chip timing is unmeasured.",
       "Like every DRAM module, the build gives up about 10 MB of sample memory to the platform reserve."

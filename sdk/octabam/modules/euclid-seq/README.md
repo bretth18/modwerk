@@ -13,8 +13,9 @@ swing, parameter locks, trig conditions, micro-timing and bank saving all
 behave as they do for any other trig. Euclid Seq keeps no clock of its own.
 
 While EUC is on for a track, its trigs belong to the generator: the TRIG keys
-cannot add or remove them. Holding a trig to edit its parameter locks works
-as usual.
+and live recording cannot add or remove them. Holding a trig to edit its
+parameter locks works as usual. On an MKII, the trig keys show the Euclid
+trigs purple in grid recording.
 
 ## Controls
 
@@ -56,6 +57,12 @@ track length on PATTERN SCALE regenerates every EUC track of the pattern.
 Settings are kept per bank, pattern and audio track. Turning EUC off leaves
 the last generated trigs as ordinary trigs that can be edited as usual.
 
+**Purple trigs (MKII).** The MKII panel keeps one colour per key and state.
+While grid recording on an audio track with EUC on, the 16 trig keys show a
+trig in purple instead of red, at the stock LED brightness; selecting another
+track, turning EUC off or leaving grid recording restores the stock red. The
+MKI's trig LEDs mix only red and green, so they stay stock.
+
 ### Quick tutorial
 
 1. Select track 1 with a sample, press REC, hold FUNC and press BANK.
@@ -78,11 +85,16 @@ it, and the second only while EUC is on.
   time) and NO returns to it. Checked neighbours: UP/DOWN row selection,
   YES (QUANTIZE 50%), NO (close), FUNC+YES (ARM TRK), the SLIDE, SWING and
   REC.TRG rows, PAGE (step page).
-- **With EUC on, the TRIG keys do not add or remove trigs on that track,** as
-  in the Analog Rytm's Euclidean mode. Holding a trig still opens its locks,
-  and the SLIDE, SWING and REC.TRG rows edit as usual. To turn it off, open
-  EUCLID and press YES. Checked neighbours: hold-for-lock, the other trig
-  rows, other tracks, EUC off.
+- **With EUC on, the TRIG keys and live recording do not add or remove trigs
+  on that track,** as in the Analog Rytm's Euclidean mode. Holding a trig
+  still opens its locks, and the SLIDE, SWING and REC.TRG rows edit as usual.
+  To turn it off, open EUCLID and press YES. Checked neighbours:
+  hold-for-lock, the other trig rows, other tracks, live recording on other
+  tracks, EUC off.
+- **On an MKII in grid recording, the trig keys' trig colour is purple while
+  the selected track has EUC on.** Only the palette entry for a trig on the
+  16 trig keys changes; trigless trigs, other keys and other views keep their
+  stock colours.
 
 ## Compatibility and limitations
 
@@ -92,8 +104,6 @@ are declared.
 - EUC settings are runtime state, not project data: a reboot or project
   reload turns EUC off and returns PL/RO/OP to their defaults. The trigs they
   produced are ordinary pattern data and stay.
-- Live recording is not blocked while EUC is on and was not tested; recorded
-  trigs are replaced at the next regeneration.
 - Copying, pasting or clearing a track or pattern moves trigs as usual; EUC
   settings stay with their bank, pattern and track and do not follow.
 - MIDI tracks are not supported.
@@ -105,15 +115,17 @@ are declared.
 
 `gen.c` is the pure-integer generator. `native.c` holds the settings table,
 the pattern writer and the page; `hooks.s` the stubs and key layers.
-`prepare.py` compiles both into the checked-in `control.s`. Five guarded
+`prepare.py` compiles both into the checked-in `control.s`. Seven guarded
 sites in OS 1.40C:
 
 | Site | Stock role | Change |
 |---|---|---|
-| `0x4007c0a8`, `0x4007b48c` | push and pop TRACK TRIG EDIT's key layer `0x400d0140` | the operand names a module copy: the five stock records (copied from the local OS at build time) plus RIGHT |
+| `0x4007c0a8`, `0x4007b48c` | push and pop TRACK TRIG EDIT's key layer `0x400d0140` | the operand names a module copy: the window's five bindings by stock handler address plus RIGHT |
 | `0x40051970` | grid editor places a trig on an empty step (press) | skipped while EUC is on |
 | `0x400601aa` | grid editor removes a held trig on release | skipped while EUC is on |
 | `0x4004c912` | PATTERN SCALE length setter, after the store | replays its call, then regenerates EUC tracks |
+| `0x40042d1c` | `REC_TRIG`, the live recorder | returns no step on an EUC track |
+| `0x40013634` | LED-row sender | first keeps the MKII trig-key palette (`0x40013368`) purple or red |
 
 The writer edits the RAM bank and the battery mirror `0x1001614e`, sets the
 stock dirty flags and calls the stock lock-index rebuild `0x400339d8` and
@@ -137,6 +149,5 @@ first release.
 Original code by bretth18 under the MIT licence ([LICENSE](LICENSE)). Window,
 key-layer and pattern-write idioms follow VECTOR and Analog BD (repeat98) and
 Sam Banks' MIT octabam editor tooling; firmware facts are cited from octabam
-and Play Modes (devilfish707). The five stock key records are copied from the
-user's own OS at build time and are never stored in this source. No Elektron
-firmware, routines, tables or images are included.
+and Play Modes (devilfish707). No Elektron firmware, routines, tables or
+images are included.
