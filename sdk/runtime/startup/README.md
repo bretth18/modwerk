@@ -1,15 +1,15 @@
-# Modwerk startup animation
+# VAC startup animation
 
-Original monochrome artwork for the Octatrack's 128×64 LCD: an open rounded
-frame that traces clockwise, eight tiles that lock in from the center around
-the ring, a detached ninth tile with a short comet tail, and a geometric
-MODWERK wordmark. The mark adapts `public/modwerk-mark.svg`; the lettering is
-original pixel artwork, with the stock title's scale and line weight.
+Personal-fork artwork for the Octatrack's 128×64 LCD: the Virtuous Audio
+Corporation **VAC** pixel logo, drawn as a 16×7 grid of 4×4-pixel cells
+(64×28 pixels, 832 lit). The stock particle animation brings each cell in as
+one block, sweeping left to right across V, A and C. Below it, a two-line
+5×7 strip reads VIRTUOUS AUDIO / CORPORATION™.
 
-The stock particle convergence, horizontal title reveal, 2.8-second timer and
-MKI/MKII LED choreography remain in place. No stock image, bitmap, instruction
-bytes or LED tables are included here. `artwork.json` contains only authored
-pixel rows, layout facts and SHA-256 guards for the two original graphic tables.
+This replaces the upstream Modwerk artwork on the `personal` branch only.
+The stock 2.8-second timer, renderer and MKI/MKII LED choreography are
+unchanged. `artwork.json` holds only authored pixel rows, layout facts and
+SHA-256 guards for the two original graphic tables.
 
 ## Integration
 
@@ -39,11 +39,11 @@ the existing firmware packaging tools; keep all firmware local.
 | Wordmark ink | `0x400c3c32` | 440 |
 
 The 843 particle records each hold three signed big-endian 16-bit values. The
-483 distinct mark pixels repeat at identical final positions to retain the
-original record count and loop bound. Frame delays form a clockwise phase;
-each tile shares a delay so it lands as a coherent block. Repeated ninth-tile
-points land 80 ms after the first pass, creating a short comet tail. All delays
-stay in the original 0–255 range. The renderer's smallest 7×7 sprite places its ink at (3,3), and the
+832 distinct mark pixels fill the first records; the remaining 11 repeat
+points at identical final positions and delays, retaining the original record
+count and loop bound. Every pixel of a logo cell shares one delay,
+`250 − 10·column − 2·row` (cell units), so cells land as blocks from left to
+right. All delays stay in the original 0–255 range. The renderer's smallest 7×7 sprite places its ink at (3,3), and the
 renderer subtracts ten from the particle Y coordinate; final display coordinates
 are therefore `(63 + X, 21 - Y)`.
 
@@ -72,13 +72,13 @@ repeat-application refusal and original-input immutability. Temporary firmware
 is removed; only a sanitized text report is retained.
 
 Unit tests check exact table extents, bitmap orientation/padding, every final
-mark pixel, bounded particle coordinates, the clockwise tile sequence and the
-ninth tile's later arrival/echo.
-See [the verification record](../../../docs/STARTUP_ANIMATION.md) for actual
-LCD capture results and remaining checks.
+mark pixel, bounded particle coordinates, per-cell delays and the V → A → C
+order. The upstream [verification record](../../../docs/STARTUP_ANIMATION.md)
+describes the Modwerk artwork; the VAC artwork has not yet been captured in
+the emulator or run on a unit.
 
 ## Authorship and licence
 
-Original Modwerk artwork and encoders © 2026 Modwerk contributors, under the
-repository's GPL-3.0-or-later licence. Underlying Octatrack firmware and renderer
+VAC logo and wordmark © Virtuous Audio Corporation. Encoders © 2026 Modwerk
+contributors, under the repository's GPL-3.0-or-later licence. Underlying Octatrack firmware and renderer
 remain Elektron's property and are never distributed with this source.
