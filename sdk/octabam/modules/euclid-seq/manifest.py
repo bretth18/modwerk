@@ -1,76 +1,46 @@
-"""<Module name> -- one line on what it changes in the firmware.
+"""EUCLID SEQ: Analog Rytm-style Euclidean trig generator for audio tracks.
 
-THE SKELETON OF A COLDFIRE MODULE: code the build links and places for
-you, reached from stock code by detours you name by SYMBOL. Copy this
-directory to modules/<yourname>/ and edit. Directories starting with `_`
-are skipped by the registry, so this file is never built.
+The generator writes the current pattern's real trig mask, so the stock
+sequencer plays the result with its own tempo, track speed, swing, locks and
+conditions; no clock is added. Four guarded sites:
 
-modules/repitch/ is a finished one (one linked unit, detours, pokes);
-modules/midi-scenes/ another (units built from the author's repository as
-a submodule). docs/remixer/MODULES.md "Declaring a ColdFire
-module" is the guide; docs/remixer/PLACEMENT.md says where the bytes go.
+- TRACK TRIG EDIT's key layer is pushed and popped through one operand each
+  (0x4007c0a8, 0x4007b48c). Both name a module copy of that layer: the five
+  stock key records (copied from the local OS) plus RIGHT, which has no
+  stock binding there and opens the EUCLID page from the TRIGS row.
+- The grid editor's place-a-trig path (0x40051970) and remove-on-release
+  path (0x400601aa) are skipped while EUC is on for the selected track.
+  Holding an existing trig for parameter locks is unchanged.
 
-Say what the module is, which stock routines it changes, what is measured
-and what is inferred. Delete every comment below once answered.
+Settings are runtime state in DRAM; the trigs they produce are ordinary
+pattern data. Measured and inferred facts: README.md and TESTING.md.
 """
 
-from remix.schema import Category, Proof, Gate, Detour, Kind, Linked, Module, Poke
+from remix.schema import Category, Proof, Gate, Detour, Kind, Linked, Module, StockCopy
 from remix.stock_guard import stock_guard
 
+TTE_LAYER_PUSH = stock_guard(0x4007c0a8, 6, "204e9dcd1cc14b442a0cf5aeeed02c8a93a2a246085e2417c8a2b14213193899")
+TTE_LAYER_POP = stock_guard(0x4007b48c, 6, "204e9dcd1cc14b442a0cf5aeeed02c8a93a2a246085e2417c8a2b14213193899")
+
 MODULE = Module(
-    # `name` MUST equal the directory name. `key` is the build identifier and
-    # appears in the build report, which other tools parse -- so it is API.
     name="euclid-seq",
     key="EUCLID SEQ",
-    kind=Kind.CF_PATCH,             # no DSP code, no chooser row
-    doc="One line, shown by `make modules`.",
-    category=Category.TRACK, author="bretth18", author_url="https://github.com/bretth18",
-    proof=Proof.UNTESTED, proof_note="Development scaffold; no module behavior has been verified.",
-
-    # ---- the code: GNU-as units, linked by the build ----------------------
-    # ORDER IS LINK ORDER: a unit may reference symbols of units before it.
-    # `dram=True` puts the unit in the platform runtime (linked with every
-    # other DRAM unit in the remix, appended behind the loader, depacked at
-    # boot into the platform's 10 MB reserve at the bottom of the audio
-    # page arena -- where anything bigger than a few hundred bytes
-    # belongs; the unit gives up 10 MB of sample memory). `dram=False` places
-    # it in one of the OS image's free zero runs (~8 KB, shared by everyone)
-    # for code that must be ROM-resident. Sources are `.s` for m68k-elf-as;
-    # `cpu="5407"` and "5475" encode this ISA subset identically.
-    linked=(
-        Linked("unit", "modules/euclid-seq/unit.s", dram=True),
-        # Building from someone else's repository? Add it as a submodule
-        # under modules/<name>/upstream and point `source` into it; the
-        # sources stay theirs and an update is a submodule bump.
-        # `reference=(addr, sha256)` re-links the unit at the AUTHOR'S own
-        # address on every build and compares, so a drift from the bytes
-        # they ratified fails loudly.
-    ),
-
-    # ---- how stock code reaches it: detours, wired by symbol --------------
-    # `site` is a stock instruction; `expect` its bytes (whole instructions,
-    # asserted before anything is written -- a site that has moved stops
-    # the build). `kind`: "jmp" for a stub that replays what it displaced
-    # and jumps on (the common case), "jsr" for a callable that returns,
-    # "lea" to rewrite a six-byte `lea abs.l,An`'s operand. `pad_to` nops
-    # the rest of a displaced span longer than six bytes.
+    kind=Kind.CF_PATCH,
+    doc="Euclidean trig generator with its own page; writes real trigs.",
+    category=Category.MACHINES, author="bretth18", author_url="https://github.com/bretth18",
+    proof=Proof.UNTESTED, proof_note="Development build; emulator checks in progress, no hardware run.",
+    linked=(Linked("euclid-seq", "modules/euclid-seq/control.s", cpu="5475", dram=True, stock_copies=(
+        StockCopy("es_tte_keys", stock_guard(0x400d0154, 130, "52881cb3a2a898fe691550b21f48a86f2f3f4236603e864961fa0b90e5924584")),
+    )),),
     detours=(
-        # Detour(0x400xxxxx, stock_guard(0x400xxxxx, 8, "<sha256>"), "unit", "my_hook",
-        #        "what this hook is for", kind="jsr", pad_to=None),
+        Detour(0x4007c0a8, TTE_LAYER_PUSH, "euclid-seq", "es_tte_layer",
+               "TRACK TRIG EDIT pushes its layer with RIGHT added", kind="lea"),
+        Detour(0x4007b48c, TTE_LAYER_POP, "euclid-seq", "es_tte_layer",
+               "TRACK TRIG EDIT pops the same layer", kind="lea"),
+        Detour(0x40051970, stock_guard(0x40051970, 8, "1fd2db3629cb25fe689a166acc85db231dfdc6ebc095c7d3c7a77bccfb0d2b8c"),
+               "euclid-seq", "es_press_stub", "EUC on: a TRIG press does not place a trig", pad_to=8),
+        Detour(0x400601aa, stock_guard(0x400601aa, 6, "49a3883a931e935c64b433487887fa5c6d92134f7fe6b4cf3a164629d86eae40"),
+               "euclid-seq", "es_release_stub", "EUC on: a TRIG release does not remove a trig"),
     ),
-
-    # ---- plain asserted rewrites ------------------------------------------
-    pokes=(
-        # Poke(0x400xxxxx, expect=stock_guard(0x400xxxxx, 2, "<sha256>"),
-        #      write=bytes.fromhex("6012"), note="bne -> bra: never re-apply"),
-    ),
-
     gates=(Gate("modules/euclid-seq/verify.py", remix_arg=False),),
-
-    # A stock pointer array that needs more entries: TableGrow relocates it
-    # into free space with your symbols appended and repoints every
-    # reference.
-    # tables=(TableGrow("...", old=0x400xxxxx, count=16,
-    #                   symbols=(("unit", "my_row"),),
-    #                   refs=((0x400xxxxx, 0x400xxxxx),)),),
 )
