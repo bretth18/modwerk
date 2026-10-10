@@ -205,12 +205,54 @@ playing in grid recording, 2 s; interrupts taken inside a stub count too):
 These are executed-instruction counts, not modelled or hardware cycles; no
 chip timing was measured.
 
+### Look-ahead at upcoming trigs (10 October 2026)
+
+Static scan of the 1.40C image (local disassembly, never committed): the
+86 routines that index the track record (stride `0x91a`) were grouped by
+caller. On the sequencer's own path, everything reached from the tick
+`0x400a1e10`, three touch the record: the tick itself (length, scale and
+playback fields only, no trig masks), the track publication `0x4009da20`
+(calls the step evaluation) and the step evaluation `0x4009d1e8`. The
+evaluation reads mask 0 in three places:
+
+| Reader | Address | Looks ahead | Result |
+| --- | --- | --- | --- |
+| Any-trig test | `0x4009d37c` / `0x4009d382` | no (this step) | live pulse since VACEUCLID6 |
+| Sample-trig test | `0x4009d418` / `0x4009d41c` | no (this step) | live pulse since VACEUCLID6 |
+| Slide search, first candidate and loop | `0x4009d576`, `0x4009d5dc` | yes: the next step with a trig in masks 0-3, wrapping at the track length | live pulse from this source on |
+
+The other routines are the grid editor, copy and paste, PATTERN SCALE, the
+trig LED painter and the project and bank code, on the UI task; they work on
+the stored pattern by design. No STATIC preload reader of the trig masks was
+found on the sequencer's path; STATIC playback of an added pulse was not
+tested.
+
+**Defect found and fixed:** on VACEUCLID6 the slide search read the stored
+mask 0. Stock enters it only from a step that has a trig in masks 0-3, so
+the wrap-around search always ends at that step at the latest; a live pulse
+need not be stored, so on a modulated EUC track with stored masks 0-3 empty
+and a slide on a live pulse the search never ended and the sequencer task
+stopped. Emulator, `slidehang.py` (EUC on, LFO 1 on EUC PL1 at DEP 127,
+masks 0-3 cleared, every slide bit set): on the VACEUCLID6 image no step of
+any track was evaluated in 4 s (with the slide bits left clear, 32 per
+track and 11 pulses). With the two new sites the search takes the live
+pulse and always counts the current step as found: 32 steps per track evaluated in
+4 s and 11 pulses fired, as without the slides. On an unmodulated track
+both sites read the stored masks exactly as stock (the forced current step
+already has a stored trig there); slide timing on such a track was not
+compared with the stock image.
+
+Same `make bus` development build with the fix, 10 October 2026: 34/34
+regression checks on the MKII and the MKI panel, live recording holds
+`0x1111`, 10/10 LFO checks, 9/9 LFO saving and stock-safety checks, 15/15
+saving checks, 3/3 slide checks.
+
 **Not verified in the emulator:** swing and track speed applied to generated
 trigs (they are stock trigs played by the stock sequencer, but the
 measurement attempted was unreliable), tempo changes during playback, bank
 changes, Part save and reload (no Part code is hooked; the settings are not
 Part data), MIDI tracks; for LFO modulation: firmware look-ahead on the
-live pulses (STATIC sample preload, slide and trigless searches), Parts
+live pulses by STATIC sample preload, Parts
 other than Part 1, Part reload, copy and paste, scenes and locks on DEP,
 the LFO trig modes other than FREE, tempo changes.
 
