@@ -27,8 +27,14 @@ conditions; no clock is added. Nineteen guarded sites:
 - The grid recording trig shift (0x400502f8, FUNC+LEFT/RIGHT) leaves an
   EUC track's trigs alone.
 
-Settings are runtime state in DRAM; the trigs they produce are ordinary
-pattern data. Measured and inferred facts: README.md and TESTING.md.
+Settings live in battery RAM 0x100f9000..0x100fd010 (a power cycle reads
+no project file) and in the project file's "#EUCLID_SEQ=" lines:
+0x400866e2 (loader head: a storing pass starts from the defaults),
+0x40088224 (the loader's next-line point: read our lines), 0x400888d2
+(writer: our lines). Play Modes and the quantizer hook the loader and the
+writer at other sites (0x400866cc/d4, 0x400867a2/aa, 0x400888aa/b2), so
+the three compose. The trigs the settings produce are ordinary pattern
+data. Measured and inferred facts: README.md and TESTING.md.
 """
 
 from remix.schema import Category, Proof, Gate, Detour, Kind, Linked, Module
@@ -82,6 +88,12 @@ MODULE = Module(
                "euclid-seq", "es_body_stub", "Mode panel body: settings and the trig page", pad_to=10),
         Detour(0x4004d95c, stock_guard(0x4004d95c, 8, "b0dad4ce7d9e1579f078e4fe10abb10399bd4d41d595426a1e92c3c577e981c7"),
                "euclid-seq", "es_compact_stub", "Compact parameter page beside the EUCLID panel", pad_to=8),
+        Detour(0x400866e2, stock_guard(0x400866e2, 8, "6b5f250f244620fe2acc97ddca8e7e1fa03b3b7a174ef7dc7bada335f1777378"),
+               "euclid-seq", "es_proj_begin_stub", "project load: a storing pass starts from the defaults", pad_to=8),
+        Detour(0x40088224, stock_guard(0x40088224, 6, "5cf9e6109ce8cb58a9bf4dc66339e546dd063412195eeb9d8290218748e8fdd2"),
+               "euclid-seq", "es_proj_line_stub", "project load: read the #EUCLID_SEQ= lines", kind="jmp"),
+        Detour(0x400888d2, stock_guard(0x400888d2, 8, "c93f3a2c7188693aeda0ad3c695584bdf927b5c8ce67892c744d1fe7040dd274"),
+               "euclid-seq", "es_proj_write_stub", "project write: the #EUCLID_SEQ= lines", pad_to=8),
         Detour(0x400502f8, stock_guard(0x400502f8, 8, "46b27fc228d5cf396d75ebd685f6bd7f537d281b36cb8db06a5f14c8281b6b80"),
                "euclid-seq", "es_shift_stub", "EUC on: the grid recording trig shift leaves that track alone", pad_to=8),
         Detour(0x400503c4, stock_guard(0x400503c4, 8, "91fea154aed7ca7f7aed1e03380f8eba791542d2f01b3f4a9b173e2dec9df118"),

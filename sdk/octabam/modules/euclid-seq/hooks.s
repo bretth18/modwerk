@@ -191,6 +191,52 @@ es_shift_stub:
         movea.l 12(%sp),%a1
         jmp 0x40050300
 
+| ---- the project file (README "Saving") ------------------------------------
+| 0x400866e2, the loader's head after it stored its parse-only flag at
+| 58(sp) (nonzero on the parse-only pass). Displaced: clrl 50(sp);
+| clrl 54(sp) (8). Play Modes and the quantizer hook 0x400866cc/0x400866d4
+| before this site, so the three compose.
+        .global es_proj_begin_stub, es_proj_line_stub, es_proj_write_stub
+es_proj_begin_stub:
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        move.l 74(%sp),-(%sp)
+        jsr es_project_begin
+        addq.l #4,%sp
+        movem.l (%sp),%d0-%d1/%a0-%a1
+        lea 16(%sp),%sp
+        clr.l 50(%sp)
+        clr.l 54(%sp)
+        jmp 0x400866ea
+
+| 0x40088224, the loader's next-line point: d3 is the finished line (NUL
+| ended, no CR LF), about to be cleared; '#' lines arrive here from the
+| comment check (0x400867aa, or Play Modes' stub there). Displaced: pea
+| 0x400b44b5 (6).
+es_proj_line_stub:
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        move.l 74(%sp),-(%sp)
+        move.l %d3,-(%sp)
+        jsr es_project_line
+        addq.l #8,%sp
+        movem.l (%sp),%d0-%d1/%a0-%a1
+        lea 16(%sp),%sp
+        pea 0x400b44b5
+        jmp 0x4008822a
+
+| 0x400888d2, the writer, before the setting stored at 0x80000050: d3 is
+| the file. Our lines first, then the displaced mvs.b 0x80000050,%d0;
+| move.l %d0,-(%sp) (8). d1/a0/a1 are dead here (the stock line calls
+| sprintf next); d2 is recomputed by the stock line.
+es_proj_write_stub:
+        move.l %d3,-(%sp)
+        jsr es_project_write
+        addq.l #4,%sp
+        mvs.b 0x80000050,%d0
+        move.l %d0,-(%sp)
+        jmp 0x400888da
+
         .global es_fright_stub
 es_fright_stub:
         move.l 8(%sp),-(%sp)

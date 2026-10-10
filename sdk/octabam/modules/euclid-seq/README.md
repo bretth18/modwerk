@@ -80,6 +80,15 @@ track length on PATTERN SCALE regenerates every EUC track of the pattern.
 Settings are kept per bank, pattern and audio track. Turning EUC off leaves
 the last generated trigs as ordinary trigs that can be edited as usual.
 
+**Saving.** The settings (EUC on or off, PL1, PL2, RO1, RO2, TRO, OP) are
+saved with the project, like the stock project settings: every write of
+the project file (PROJECT > SAVE, SYNC TO CARD) includes them, RELOAD and
+loading the project bring them back, and over a power cycle they stay in
+battery RAM, as the unit keeps its current bank. They follow banks and
+patterns, not Parts: saving or reloading a Part leaves them alone. A project
+saved without them (on stock firmware, or before this version) loads with
+EUC off on every track.
+
 **Purple trigs (MKII).** The MKII panel keeps one colour per key and state.
 While grid recording on an audio track with EUC on, the 16 trig keys show a
 trig in purple instead of red, at the stock LED brightness; selecting another
@@ -136,6 +145,15 @@ Euclid Seq changes these stock flows, only in a build that includes it.
   the selected track has EUC on.** Only the palette entry for a trig on the
   16 trig keys changes; trigless trigs, other keys and other views keep their
   stock colours.
+- **The project file gets `#EUCLID_SEQ=` lines.** One line per bank,
+  pattern and track whose Euclid settings differ from the defaults, among
+  the project settings, so the settings save and load with the project. The
+  stock loader skips every line that starts with `#` (as it does Play Modes'
+  and the quantizer's lines), so the file still loads on stock firmware,
+  which ignores the lines and drops them at its next save. Nothing else in
+  the file changes. Checked neighbours: PROJECT > SAVE and RELOAD, loading
+  the project on stock firmware, a stock project on this build, the power
+  cycle (battery RAM only).
 
 ## Compatibility and limitations
 
@@ -146,11 +164,14 @@ are declared.
   starts as TRACKS after a reboot. Its panel refreshes when the screen is
   redrawn (track or page change, closing the page), not after every trig
   edit in grid recording.
-- EUC settings are runtime state, not project data: a reboot or project
-  reload turns EUC off and returns PL/RO/OP to their defaults. The trigs they
-  produced are ordinary pattern data and stay.
+- EUC settings are saved with the project, not in the bank files: copying
+  a project's banks to another project without its project file loses them
+  (the trigs stay).
 - Copying, pasting or clearing a track or pattern moves trigs as usual; EUC
   settings stay with their bank, pattern and track and do not follow.
+- Battery RAM `0x100f9000..0x100fd010` holds the settings. Stock references
+  nothing there; Play Modes uses `0x100f8600..0x100f8f06`, so the two fit
+  together. A future module using this range would conflict.
 - MIDI tracks are not supported.
 - One functional MKII report so far (TESTING.md); worst-case chip timing is
   unmeasured.
@@ -161,8 +182,8 @@ are declared.
 
 `gen.c` is the pure-integer generator. `native.c` holds the settings table,
 the pattern writer and the page; `hooks.s` the stubs and key layers.
-`prepare.py` compiles both into the checked-in `control.s`. Nineteen
-guarded sites in OS 1.40C:
+`proj.c` formats and parses the project file's lines. `prepare.py` compiles
+them into the checked-in `control.s`. Twenty-three guarded sites in OS 1.40C:
 
 | Site | Stock role | Change |
 |---|---|---|
@@ -172,6 +193,9 @@ guarded sites in OS 1.40C:
 | `0x4004c912` | PATTERN SCALE length setter, after the store | replays its call, then regenerates EUC tracks |
 | `0x40042d1c` | `REC_TRIG`, the live recorder | returns no step on an EUC track |
 | `0x40013634` | LED-row sender | first keeps the MKII trig-key palette (`0x40013368`) purple or red |
+| `0x400866e2` | project loader head, after it stores its parse-only flag | a storing pass first resets every setting to the defaults |
+| `0x40088224` | project loader's next-line point (every line, `#` lines included) | reads `#EUCLID_SEQ=` lines on a storing pass |
+| `0x400888d2` | project writer, before one stock setting's line | writes one `#EUCLID_SEQ=` line per non-default track first |
 | `0x40058722` | TRIG MODE window: list of 6 rows (3 on MIDI), current row | 7 rows on audio tracks; row 6 selected in the EUCLID mode |
 | `0x40051f18`, `0x40051f88` | UP/DOWN store the row's mode in `0x460d16f0` | row 6 stores TRACKS and sets the module's EUCLID flag |
 | `0x40035a30`, `0x40035a44`, `0x400359fa` | the row painter's mode, icon and name tables | seven-entry module tables (stock entries by address, plus EUCLID and an original icon) |
@@ -197,7 +221,8 @@ and length-setter events on the UI task.
 
 `verify.py` (host gate) compiles `gen.c` and compares 633,984 settings with an
 independent formulation (pulse *j* of *k* over *n* steps at ⌈j·n/k⌉), plus
-hand-checked patterns. Emulator checks and their limits are in
+hand-checked patterns, and round-trips the project-file lines (`proj.c`).
+Emulator checks and their limits are in
 [TESTING.md](TESTING.md), with the first functional MKII report.
 
 ## Screens and audio
