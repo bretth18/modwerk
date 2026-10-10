@@ -44,7 +44,7 @@
       "A modulated EUC track's pulses are decided per step; added pulses play without locks (unless on a trigless lock trig) and firmware look-ahead (sample preload, slide searches) reads the stored pattern, not the live pulses.",
       "Purple trigs need the MKII panel; MKI trig LEDs stay stock.",
       "Audio tracks only; MIDI tracks are not supported.",
-      "Functional MKII reports for the page, purple trigs, blocking and the EUCLID trig mode (VACEUCLID2, VACEUCLID4); saving with the project, RELOAD and a power cycle were reported working on MKII with VACEUCLID5; worst-case chip timing is unmeasured.",
+      "Functional MKII reports for the page, purple trigs, blocking, the EUCLID trig mode (VACEUCLID2, VACEUCLID4) and saving with the project and a power cycle (VACEUCLID5); LFO destinations and live pulses are emulator-tested only; worst-case chip timing is unmeasured.",
       "Like every DRAM module, the build gives up about 10 MB of sample memory to the platform reserve."
     ],
     "effectId": null
@@ -57,7 +57,7 @@
       "value": null,
       "unit": "unknown",
       "method": "unmeasured",
-      "conditions": "One 16,384-byte settings table for 16 banks x 16 patterns x 8 tracks in battery RAM (0x100f9000..0x100fd010), plus the unit's code in the platform reserve. Exact code totals not yet recorded.",
+      "conditions": "Linked unit 13,085 bytes in the platform reserve (code 11,984, read-only 197, data 760, zeroed 144; source a178bfe build); battery RAM 16,400 bytes of settings (0x100f9000..0x100fd010) and 1,552 bytes of LFO destinations (0x100fd100..0x100fd710). One copy for every track, pattern and Part.",
       "source": "TESTING.md"
     },
     "processing": {

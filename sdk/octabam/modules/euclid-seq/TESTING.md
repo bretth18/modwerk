@@ -266,11 +266,19 @@ slots and slices trig modes.
 
 ## Hardware
 
+VACEUCLID7 (the slide look-ahead fix; source `a178bfe`, built from
+`personal` with the VAC startup artwork; main image SHA-256
+`66c011ea176afd05cf2f917ab02c36e80a200d17f1778bf35834722bbbccf168`,
+`.bin` `e8a7a3f13bb804c0548f96fcc105e87dd4da6fb17229d34e085f485fd3a4aba7`,
+`.syx` `5097eb965943ec8a48de784f66eeaba73c712f60f8ccd71ca79848b322454ca8`)
+has not run on hardware yet. In the emulator that exact image passed 34/34
+on the MKII and the MKI panel, the live-recording check, 10/10 LFO checks,
+9/9 LFO saving and stock-safety checks, 15/15 saving checks and 3/3
+slide checks. The `.syx` main section decodes back to the image.
+
 VACEUCLID6 (LFO destinations and live pulses; source `9bbac30`, main image
 SHA-256 `98de271410f821f006a5e4bd2cdfe4af9b92ac7c417f68e3390aa573e7e1bcc5`)
-has not run on hardware yet. In the emulator that exact image passed
-34/34 on the MKII and the MKI panel, the live-recording check, 10/10 LFO
-checks, 9/9 LFO saving and stock-safety checks and 15/15 saving checks.
+did not run on hardware. It has the slide look-ahead defect above.
 
 ### 9 October 2026, MKII, bretth18 (functional report, VACEUCLID5)
 
@@ -345,7 +353,28 @@ Limitations: one unit and one session; duration and project contents were not
 recorded; live recording, MIDI tracks, Parts and bank changes were not
 exercised. The tester found the EUCLID page hard to read.
 
+## Memory
+
+From the linked unit of the source `a178bfe` build (`make bus REMIX=es-dev`,
+`out/platform/runtime/runtime.elf`, `m68k-elf-size -A`), 10 October 2026:
+
+| Region | Bytes |
+| --- | --- |
+| Code (`.text`: C, stubs, layers) in the platform reserve | 11,984 |
+| Read-only data (`.rodata`) | 197 |
+| Initialised data (`.data`: key layers, mode tables, icon) | 760 |
+| Zeroed state (`.bss`: LFO buffers, page state) | 144 |
+| **Unit total (DRAM, platform reserve)** | **13,085** |
+| Battery RAM settings table `0x100f9000..0x100fd010` | 16,400 |
+| Battery RAM LFO destination table `0x100fd100..0x100fd710` | 1,552 |
+
+One copy for all tracks, patterns and Parts; no heap, no DSP memory. The
+shared octabam loader the platform appends (7,842 B at `0x4010fdf0` in this
+build) and the platform's 10 MB DRAM reserve are not the module's own.
+
 ## Performance
 
-Not measured. The module runs only on key, knob and length-setter events
-(one pass over at most 64 steps); nothing runs per step or per sample.
+Executed instructions on the emulator are listed under the LFO section
+above; they are instruction counts, not cycles. Outside LFO modulation the
+module runs only on key, knob and length-setter events (one pass over at
+most 64 steps). No chip timing was measured.
