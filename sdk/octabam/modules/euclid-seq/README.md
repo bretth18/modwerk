@@ -12,6 +12,11 @@ the current pattern. The stock sequencer plays them, so tempo, track speed,
 swing, parameter locks, trig conditions, micro-timing and bank saving all
 behave as they do for any other trig. Euclid Seq keeps no clock of its own.
 
+The module adds an **EUCLID trig mode** to the TRIG MODE list. In it the
+main screen shows a EUCLID panel, like CHROMATIC's or SLICES', with the
+selected track's settings and trig page, and FUNC+RIGHT opens the EUCLID
+page.
+
 While EUC is on for a track, its trigs belong to the generator: the TRIG keys
 and live recording cannot add or remove them. Holding a trig to edit its
 parameter locks works as usual. On an MKII, the trig keys show the Euclid
@@ -19,7 +24,9 @@ trigs purple in grid recording.
 
 ## Controls
 
-The EUCLID page has the Analog Rytm's eight settings on the Octatrack's knobs.
+The EUCLID page has the Analog Rytm's eight settings on the Octatrack's
+knobs, drawn in the stock setup-page style: six dials (PL1, PL2, LEN on top,
+RO1, RO2, TRO below) beside a panel with EUC, the operator and the trig page.
 
 | Knob | Setting | Range | What it does |
 |---|---|---|---|
@@ -39,14 +46,30 @@ start at PL1 4, PL2 0, rotations 0 and OR.
 
 ## Usage
 
-The page lives where the Octatrack keeps per-track trig settings:
+**The EUCLID trig mode.** Hold **FUNC** and press **DOWN** (or **UP**) to
+open TRIG MODE, as for CHROMATIC or SLICES; on audio tracks the list has a
+seventh row, **EUCLID**. In this mode:
+
+- the main screen's lower right shows the EUCLID panel: the title with
+  PL1:PL2 while EUC is on, the operator and EUC state, and the trig page on
+  screen as a bar (a block per trig);
+- **FUNC+RIGHT** opens the EUCLID page, in grid recording or not; **NO**
+  closes it;
+- the TRIG keys, LEDs, knobs and everything else behave as in TRACKS.
+
+Choosing another row leaves the mode. MIDI tracks keep their three stock
+rows. The mode is not saved, like the stock trig mode.
+
+**From TRACK TRIG EDIT.** The page is also where the Octatrack keeps
+per-track trig settings:
 
 1. Select an audio track and press **REC** for grid recording.
 2. Hold **FUNC** and press **BANK** to open TRACK TRIG EDIT.
 3. With the **TRIGS** row selected, press **RIGHT** to open EUCLID.
 
 The firmware keeps one menu window at a time, so EUCLID takes TRACK TRIG
-EDIT's place; **NO** brings it back with the TRIGS row selected.
+EDIT's place; **NO** brings it back with the TRIGS row selected. Opened with
+FUNC+RIGHT, NO returns to the main screen.
 
 With EUC on, every change regenerates the track at once: steps that gain a
 pulse get a fresh trig (no locks, no condition), and steps that lose one are
@@ -65,15 +88,14 @@ MKI's trig LEDs mix only red and green, so they stay stock.
 
 ### Quick tutorial
 
-1. Select track 1 with a sample, press REC, hold FUNC and press BANK.
-2. With the TRIGS row selected, press RIGHT to open EUCLID, then press YES: EUC:ON writes four trigs on steps 1, 5, 9 and 13.
+1. Select track 1 with a sample. Hold FUNC and press DOWN until TRIG MODE shows EUCLID, then release FUNC.
+2. Press FUNC+RIGHT to open EUCLID, then press YES: EUC ON writes four trigs on steps 1, 5, 9 and 13.
 3. Turn A to PL1 5 and B to PL2 3, then turn LEVEL to XOR: steps where only one generator pulses keep a trig. Press PLAY to hear it.
-4. Turn F to rotate the whole rhythm. Press NO to return to TRACK TRIG EDIT, or YES on the page to turn EUC off and keep the trigs.
+4. Turn F to rotate the whole rhythm, then press NO: the EUCLID panel shows 5:3, XOR and the new trigs. Press YES on the page to turn EUC off and keep the trigs.
 
 ### Changes to stock flows
 
-Euclid Seq changes two stock flows. Both apply only in a build that includes
-it, and the second only while EUC is on.
+Euclid Seq changes these stock flows, only in a build that includes it.
 
 - **RIGHT on TRACK TRIG EDIT's TRIGS row opens EUCLID.** RIGHT has no stock
   binding in that window: the window's key layer handles UP, DOWN, YES, NO
@@ -91,6 +113,21 @@ it, and the second only while EUC is on.
   To turn it off, open EUCLID and press YES. Checked neighbours:
   hold-for-lock, the other trig rows, other tracks, live recording on other
   tracks, EUC off.
+- **TRIG MODE lists a seventh row, EUCLID, on audio tracks.** The list
+  already scrolls three rows at a time, so the window is unchanged; rows 1
+  to 6 and the MIDI tracks' three rows are stock. While EUCLID is chosen
+  the stock mode is TRACKS for everything except the mode panel, the
+  compact parameter page beside it and the status-bar icon. A seventh mode
+  value was rejected: six stock tables are indexed by the mode without a
+  range check. Checked neighbours: UP/DOWN through all rows and back, the
+  MIDI tracks' list, TRIG keys playing tracks, trig LEDs, the parameter
+  page. To leave the mode, choose another row.
+- **In the EUCLID mode, FUNC+RIGHT opens the EUCLID page.** Stock
+  FUNC+RIGHT shifts the track's trigs one step later in grid recording and
+  changes nothing on the main screen otherwise (measured in the emulator);
+  in the EUCLID mode that shift is replaced, and FUNC+LEFT still shifts
+  trigs earlier. FUNC+RIGHT was chosen over YES, which arms tracks. In
+  every other trig mode FUNC+RIGHT is stock.
 - **On an MKII in grid recording, the trig keys' trig colour is purple while
   the selected track has EUC on.** Only the palette entry for a trig on the
   16 trig keys changes; trigless trigs, other keys and other views keep their
@@ -101,6 +138,12 @@ it, and the second only while EUC is on.
 Octatrack MKI or MKII with base OS 1.40C; audio tracks. No module conflicts
 are declared.
 
+- FUNC+LEFT (and FUNC+RIGHT outside the EUCLID mode) still shifts an EUC
+  track's trigs; the shifted trigs stay until the next regeneration.
+- The EUCLID trig mode is runtime state, like the stock trig mode, and
+  starts as TRACKS after a reboot. Its panel refreshes when the screen is
+  redrawn (track or page change, closing the page), not after every trig
+  edit in grid recording.
 - EUC settings are runtime state, not project data: a reboot or project
   reload turns EUC off and returns PL/RO/OP to their defaults. The trigs they
   produced are ordinary pattern data and stay.
@@ -116,8 +159,8 @@ are declared.
 
 `gen.c` is the pure-integer generator. `native.c` holds the settings table,
 the pattern writer and the page; `hooks.s` the stubs and key layers.
-`prepare.py` compiles both into the checked-in `control.s`. Seven guarded
-sites in OS 1.40C:
+`prepare.py` compiles both into the checked-in `control.s`. Nineteen
+guarded sites in OS 1.40C:
 
 | Site | Stock role | Change |
 |---|---|---|
@@ -127,6 +170,20 @@ sites in OS 1.40C:
 | `0x4004c912` | PATTERN SCALE length setter, after the store | replays its call, then regenerates EUC tracks |
 | `0x40042d1c` | `REC_TRIG`, the live recorder | returns no step on an EUC track |
 | `0x40013634` | LED-row sender | first keeps the MKII trig-key palette (`0x40013368`) purple or red |
+| `0x40058722` | TRIG MODE window: list of 6 rows (3 on MIDI), current row | 7 rows on audio tracks; row 6 selected in the EUCLID mode |
+| `0x40051f18`, `0x40051f88` | UP/DOWN store the row's mode in `0x460d16f0` | row 6 stores TRACKS and sets the module's EUCLID flag |
+| `0x40035a30`, `0x40035a44`, `0x400359fa` | the row painter's mode, icon and name tables | seven-entry module tables (stock entries by address, plus EUCLID and an original icon) |
+| `0x40035854` | status-bar trig-mode icon | the EUCLID icon in its mode |
+| `0x40045826`, `0x40035f84`, `0x40044932` | mode panel frame, title and body (not in TRACKS) | drawn in the EUCLID mode with the module's title and body |
+| `0x4004d95c` | compact parameter page beside the panel | also in the EUCLID mode |
+| `0x400503c4` | FUNC layer's RIGHT handler (trig shift in grid recording) | opens the EUCLID page in the EUCLID mode |
+
+The stock mode word `0x460d16f0` is never set to a seventh value: its 30
+references in 1.40C include unchecked table lookups, and none copies it into
+battery RAM or a saved file (the only other store swaps it with
+`0x400c0aec` when switching between audio and MIDI tracks). The page draws
+with the stock dial widget `0x400479b4`, text `0x40013904` and the AMP
+SETUP frame calls.
 
 The writer edits the RAM bank and the battery mirror `0x1001614e`, sets the
 stock dirty flags and calls the stock lock-index rebuild `0x400339d8` and
