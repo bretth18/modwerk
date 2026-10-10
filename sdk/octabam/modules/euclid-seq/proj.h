@@ -25,4 +25,16 @@ unsigned es_line_format(char *out, unsigned index, const uint8_t e[E_SIZE]);
  * with *index and v[] set. `line` is NUL ended, without CR LF. */
 unsigned es_line_parse(const char *line, unsigned *index, uint8_t v[E_SIZE]);
 
+/* LFO destinations: one byte per bank, Part, audio track and LFO; 0 = none,
+ * 1..6 = PL1, PL2, RO1, RO2, TRO, OP. Index ((bank * 4 + part) * 8 + track)
+ * * 3 + lfo. */
+#define ES_LFO_ENTRIES (16u * 4u * 8u * 3u)
+#define ES_LFO_TARGETS 6u
+
+/* "#EUCLID_LFO=A1:3:2:4\r\n": bank A, Part 1, track 3, LFO 2, target 4
+ * (RO2). Returns the length. */
+unsigned es_lfo_line_format(char *out, unsigned index, unsigned target);
+/* 0: not our line. 1: ours but malformed. 2: valid, *index and *target set. */
+unsigned es_lfo_line_parse(const char *line, unsigned *index, unsigned *target);
+
 #endif

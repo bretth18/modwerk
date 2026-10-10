@@ -106,6 +106,8 @@ def main():
         raise SystemExit(f"[FAIL] euclid-seq generator: {failures} mismatches")
     print(f"[OK] euclid-seq generator: {checked} settings match the reference; hand patterns match")
     project(lib)
+    modulation(lib)
+    lfo_lines(lib)
 
 
 Entry = ctypes.c_uint8 * 8
@@ -162,6 +164,84 @@ def project(lib):
     if failures:
         raise SystemExit(f"[FAIL] euclid-seq project lines: {failures} mismatches")
     print(f"[OK] euclid-seq project lines: {lines} entries round-trip; defaults and malformed lines handled")
+
+
+Offsets = ctypes.c_int * 6
+
+
+def modulation(lib):
+    """es_modulate against an independent formulation; es_step against es_mask."""
+    lib.es_modulate.argtypes = (ctypes.POINTER(EsParams), Offsets)
+    lib.es_step.argtypes = (ctypes.POINTER(EsParams), ctypes.c_uint)
+    full = 0x4000
+    failures = checked = 0
+
+    def ref_scale(off, rng):
+        v = off * rng
+        return (v + full // 2) // full if v >= 0 else -((-v + full // 2) // full)
+
+    rng = random.Random(2)
+    for _ in range(40000):
+        n = rng.randint(1, 64)
+        base = [n, rng.randint(0, n), rng.randint(0, n), rng.randint(0, n - 1), rng.randint(0, n - 1),
+                rng.randint(0, n - 1), rng.randint(0, 3)]
+        off = [rng.choice((0, rng.randint(-3 * full, 3 * full), full, -full, full // 2)) for _ in range(6)]
+        p = EsParams(*base)
+        lib.es_modulate(ctypes.byref(p), Offsets(*off))
+        got = (p.len, p.pl1, p.pl2, p.ro1, p.ro2, p.tro, p.op)
+        cl = lambda v, hi: max(0, min(hi, v))
+        want = (n, cl(base[1] + ref_scale(off[0], n), n), cl(base[2] + ref_scale(off[1], n), n),
+                cl(base[3] + ref_scale(off[2], n), n - 1), cl(base[4] + ref_scale(off[3], n), n - 1),
+                cl(base[5] + ref_scale(off[4], n), n - 1), cl(base[6] + ref_scale(off[5], 4), 3))
+        checked += 1
+        if got != want:
+            failures += 1
+            if failures < 10: print(f"[FAIL] modulate {base} {off}: {got} want {want}")
+        steps = [bool(lib.es_step(ctypes.byref(p), i)) for i in range(64)]
+        if steps != c_steps(lib, *got):
+            failures += 1
+            if failures < 10: print(f"[FAIL] es_step {got}")
+    p = EsParams(16, 4, 0, 0, 0, 0, 0)
+    lib.es_modulate(ctypes.byref(p), Offsets(0, 0, 0, 0, 0, 0))
+    if (p.pl1, p.op) != (4, 0):
+        failures += 1; print("[FAIL] zero offset changes settings")
+    if failures:
+        raise SystemExit(f"[FAIL] euclid-seq modulation: {failures} mismatches")
+    print(f"[OK] euclid-seq modulation: {checked} settings match the reference; es_step equals es_mask")
+
+
+def lfo_lines(lib):
+    lib.es_lfo_line_format.argtypes = (ctypes.c_char_p, ctypes.c_uint, ctypes.c_uint)
+    lib.es_lfo_line_parse.argtypes = (ctypes.c_char_p, ctypes.POINTER(ctypes.c_uint), ctypes.POINTER(ctypes.c_uint))
+    failures = lines = 0
+
+    def parse(text):
+        index, target = ctypes.c_uint(0), ctypes.c_uint(0)
+        r = lib.es_lfo_line_parse(text.encode(), ctypes.byref(index), ctypes.byref(target))
+        return r, index.value, target.value
+
+    for index in range(16 * 4 * 8 * 3):
+        for target in range(1, 7):
+            buf = ctypes.create_string_buffer(32)
+            n = lib.es_lfo_line_format(buf, index, target)
+            text = buf.value.decode()
+            lines += 1
+            if n != len(text) or not text.endswith("\r\n") or parse(text[:-2]) != (2, index, target):
+                failures += 1
+                if failures < 10: print(f"[FAIL] lfo line {index} {target}: {text!r}")
+    buf = ctypes.create_string_buffer(32)
+    lib.es_lfo_line_format(buf, ((0 * 4 + 0) * 8 + 2) * 3 + 1, 4)
+    if buf.value != b"#EUCLID_LFO=A1:3:2:4\r\n":
+        failures += 1; print(f"[FAIL] sample lfo line {buf.value!r}")
+    for text, want in (("#EUCLID_SEQ=A01:1:1,5,0,0,0,0,1", 0), ("#EUCLID_LFO=", 1), ("#EUCLID_LFO=Q1:1:1:1", 1),
+                       ("#EUCLID_LFO=A5:1:1:1", 1), ("#EUCLID_LFO=A1:9:1:1", 1), ("#EUCLID_LFO=A1:1:4:1", 1),
+                       ("#EUCLID_LFO=A1:1:1:0", 1), ("#EUCLID_LFO=A1:1:1:7", 1), ("#EUCLID_LFO=A1:1:1:1 ", 1),
+                       ("#EUCLID_LFO=P4:8:3:6", 2)):
+        if parse(text)[0] != want:
+            failures += 1; print(f"[FAIL] lfo parse {text!r}")
+    if failures:
+        raise SystemExit(f"[FAIL] euclid-seq LFO lines: {failures} mismatches")
+    print(f"[OK] euclid-seq LFO lines: {lines} lines round-trip; malformed lines handled")
 
 
 if __name__ == "__main__":

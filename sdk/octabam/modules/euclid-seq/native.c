@@ -144,6 +144,156 @@ void es_length_changed(void) {
     for (unsigned t = 0; t < 8; t++) apply(t);
 }
 
+/* ---- LFO destinations ---------------------------------------------------
+ * LFO SETUP's PMTR knob continues past FX2 into six EUCLID destinations:
+ * PL1, PL2, RO1, RO2, TRO and OP. Stock-safety: the Part never stores a
+ * code the stock engine does not know. A EUCLID destination is kept in the
+ * module's own battery table (and project lines); the Part byte holds the
+ * LFO's own speed (code 6 + lfo), so stock firmware, or a build without
+ * this module, lets that LFO modulate only its own speed, which reaches no
+ * sound because the LFO has no other destination. The module routes such
+ * an LFO's output to es_lfo_buf instead (the engine stubs in hooks.s).
+ * Table: 'E' 'S' 'L' '1', 12 bytes reserved, then 1,536 bytes
+ * (bank x Part x track x LFO), 0x100fd100..0x100fd710. */
+#define PART_IDX 0x100b14cfu      /* the active Part */
+#define LFO_SELECTED 0x460d1a32u  /* LFO SETUP's selected LFO (3 = DESIGN) */
+#define TRANSPORT 0x800065b8u     /* 0 stopped, 1 playing (Play Modes) */
+#define NL_BASE 0x100fd100u
+#define NL_TABLE (NL_BASE + 16u)
+static const char nl_magic[4] = { 'E', 'S', 'L', '1' };
+
+static void nl_clear(void) {
+    volatile uint8_t *p = (volatile uint8_t *)(uintptr_t)NL_TABLE;
+    for (unsigned k = 0; k < ES_LFO_ENTRIES; ++k) p[k] = 0;
+    for (unsigned k = 0; k < 4; ++k) U8(NL_BASE + k) = (uint8_t)nl_magic[k];
+}
+
+static unsigned nl_ok(void) {
+    for (unsigned k = 0; k < 4; ++k)
+        if (U8(NL_BASE + k) != (uint8_t)nl_magic[k]) return 0;
+    return 1;
+}
+
+/* The current bank and Part's entry for (track, LFO), or 0. */
+static volatile uint8_t *nl_entry(unsigned t, unsigned l) {
+    int b = bank_index();
+    unsigned part = U8(PART_IDX);
+    if (b < 0 || part >= 4 || t >= 8 || l >= 3) return 0;
+    return (volatile uint8_t *)(uintptr_t)(NL_TABLE + (((unsigned)b * 4 + part) * 8 + t) * 3 + l);
+}
+
+/* 0 none, 1..6 a EUCLID destination; read-only (no table repair here, it
+ * runs on the frame path). */
+static unsigned lfo_target(unsigned t, unsigned l) {
+    volatile uint8_t *e;
+    if (!nl_ok() || !(e = nl_entry(t, l))) return 0;
+    return *e <= ES_LFO_TARGETS ? *e : 0;
+}
+
+/* Per track and LFO: the routed output (stock parameter scale, centre
+ * ES_MOD_FULL) and its destination (0 none). Written by the engine stubs
+ * each frame, read by the step evaluation. */
+int16_t es_lfo_buf[24];
+uint8_t es_lfo_tgt[24];
+
+/* Engine stubs (0x40003c98, 0x4000d032): LFO l of track t has its own speed
+ * as destination. If the module's table names a EUCLID destination, return
+ * the halfword the stock engine should modulate instead, preset to the
+ * centre so it ends up holding centre + depth x output. */
+int16_t *es_lfo_route(unsigned t, unsigned l) {
+    unsigned i = t * 3 + l, k = lfo_target(t, l);
+    if (i >= 24) return 0;
+    es_lfo_tgt[i] = (uint8_t)k;
+    if (!k) return 0;
+    es_lfo_buf[i] = ES_MOD_FULL;
+    return &es_lfo_buf[i];
+}
+
+static unsigned length_at(volatile uint8_t *pat, unsigned t) {
+    unsigned len = pat[0x8e55] ? pat[t * TRACK_STRIDE + 0x50] : pat[0x8e53];
+    return len > ES_MAX_STEPS ? ES_MAX_STEPS : len;
+}
+
+/* The modulated settings of an EUC track; 0 when nothing modulates it (the
+ * stored pattern is then exactly the generator's). */
+static unsigned live_params(unsigned t, unsigned bank, unsigned pattern, EsParams *p) {
+    int off[6] = { 0, 0, 0, 0, 0, 0 };
+    unsigned any = 0, l;
+    if (t >= 8 || bank >= 16 || pattern >= 16) return 0;
+    for (l = 0; l < 3; l++) {
+        unsigned k = es_lfo_tgt[t * 3 + l];
+        if (k && k <= ES_LFO_TARGETS) { off[k - 1] += es_lfo_buf[t * 3 + l] - ES_MOD_FULL; any = 1; }
+    }
+    if (!any) return 0;
+    const uint8_t *e = slot((bank * 16 + pattern) * 8 + t);
+    if (!es_entry_valid(e) || !(e[E_FLAGS] & F_INIT) || !(e[E_FLAGS] & F_EUC)) return 0;
+    volatile uint8_t *pat = (volatile uint8_t *)(uintptr_t)(BANK0 + bank * BANK_STRIDE + pattern * PATTERN_STRIDE);
+    unsigned len = length_at(pat, t);
+    if (!len) return 0;
+    p->len = (uint8_t)len; p->pl1 = e[E_PL1]; p->pl2 = e[E_PL2];
+    p->ro1 = e[E_RO1]; p->ro2 = e[E_RO2]; p->tro = e[E_TRO]; p->op = e[E_OP];
+    es_modulate(p, off);
+    return 1;
+}
+
+/* The sequencer's step evaluation 0x4009d1e8(track, bank, pattern, step,
+ * ...) reads mask 0 twice (hooks.s es_eva_stub, es_evb_stub): -1 keeps the
+ * stored bit, else the modulated pulse (0/1). Runs on the sequencer task and,
+ * for the first step on PLAY, on the UI task: no shared scratch state. */
+int es_live_bit(unsigned t, unsigned bank, unsigned pattern, unsigned step) {
+    EsParams p;
+    if (!live_params(t, bank, pattern, &p)) return -1;
+    return (int)es_step(&p, step);
+}
+
+/* The grid LED painter's mask-0 word for trig page 3 - widx (0x40034df4):
+ * while playing, an EUC track shows its live pulses. */
+unsigned es_led_word(unsigned word, unsigned widx, unsigned key) {
+    int b;
+    if (!U32(TRANSPORT) || widx > 3 || key > 15 || (b = bank_index()) < 0) return word;
+    int bit = es_live_bit(U8(TRACK_IDX), (unsigned)b, U8(PATTERN_IDX), 16 * (3 - widx) + key);
+    if (bit < 0) return word;
+    return bit ? word | (1u << key) : word & ~(1u << key);
+}
+
+/* LFO SETUP's PMTR knob on an audio track (0x400392cc): the stock list order
+ * (machine, LFO, AMP, FX1, FX2 pages) with six EUCLID positions after FX2.
+ * Returns the byte to store. */
+static const uint8_t page_order[5] = { 0, 2, 1, 3, 4 };
+
+unsigned es_pmtr_knob(unsigned l, int current, unsigned arg) {
+    unsigned t = U8(TRACK_IDX), own = 6 + l, k = 0;
+    volatile uint8_t *e = nl_entry(t, l);
+    if (e && !nl_ok()) nl_clear();
+    if (e && *e <= ES_LFO_TARGETS) k = *e;
+    int v = current == (int)own && k ? 29 + (int)k : current;
+    if (v < 0) v = 0;
+    int pos = v < 30 ? page_order[v / 6] * 6 + v % 6 : v;
+    pos += ((int (*)(int, unsigned))0x4003249cu)(0, arg);
+    if (pos < 0) pos = 0;
+    if (pos > 29 + (int)ES_LFO_TARGETS) pos = 29 + (int)ES_LFO_TARGETS;
+    int nv = pos < 30 ? page_order[pos / 6] * 6 + pos % 6 : pos;
+    if (!e || l > 2) return nv > 29 ? 29u : (unsigned)nv;
+    if (nv >= 30) { *e = (uint8_t)(nv - 29); return own; }
+    if (nv == (int)own) *e = 0;
+    return (unsigned)nv;
+}
+
+/* The PMTR formatter (0x4003bf64, LFO SETUP): the selected LFO's EUCLID
+ * destination as "EUC" over its name. Nonzero = printed. */
+static const char *const lfo_names[ES_LFO_TARGETS] = { "PL1", "PL2", "RO1", "RO2", "TRO", "OP" };
+
+unsigned es_pmtr_fmt(char *buf, int value) {
+    unsigned l = U32(LFO_SELECTED), k, i;
+    if (U32(MIDI_MODE) || l > 2 || value != (int)(6 + l)) return 0;
+    if (!(k = lfo_target(U8(TRACK_IDX), l))) return 0;
+    const char *n = lfo_names[k - 1];
+    for (i = 0; n[i]; i++) buf[i] = n[i];
+    buf[i] = 0;
+    buf[5] = 'E'; buf[6] = 'U'; buf[7] = 'C'; buf[8] = 0;
+    return 1;
+}
+
 /* ---- purple trigs (MKII) ----------------------------------------------- */
 
 #define PANEL_MKII 0x46c8d18cu    /* nonzero with the MKII panel's RGB LEDs */
@@ -233,8 +383,12 @@ static unsigned page_trigs(unsigned t, unsigned *first, unsigned *count) {
     unsigned len = track_length(t), start = U32(0x460d174cu), s, bits = 0;
     if (start >= ES_MAX_STEPS) start = 0;
     volatile uint8_t *rec = pattern() + t * TRACK_STRIDE;
+    EsParams p;
+    int b = bank_index();
+    unsigned live = U32(TRANSPORT) && b >= 0 && live_params(t, (unsigned)b, U8(PATTERN_IDX), &p);
     for (s = 0; s < 16 && start + s < len; s++)
-        if (rec[7 - (start + s) / 8] & (1u << ((start + s) % 8))) bits |= 1u << s;
+        if (live ? es_step(&p, start + s)
+                 : rec[7 - (start + s) / 8] & (1u << ((start + s) % 8))) bits |= 1u << s;
     *first = start; *count = s;
     return bits;
 }
@@ -475,22 +629,35 @@ void es_project_write(unsigned file) {
         unsigned n = es_line_format(line, i, e);
         ((int (*)(unsigned, const char *, unsigned))WRITE)(file, line, n);
     }
+    if (!nl_ok()) return;
+    for (unsigned i = 0; i < ES_LFO_ENTRIES; ++i) {
+        unsigned k = U8(NL_TABLE + i);
+        if (!k || k > ES_LFO_TARGETS) continue;
+        unsigned n = es_lfo_line_format(line, i, k);
+        ((int (*)(unsigned, const char *, unsigned))WRITE)(file, line, n);
+    }
 }
 
 /* The loader's head (0x400866e2): a storing pass (parse_only 0) starts from
  * the defaults, so a project saved without the lines, or on stock
  * firmware, loads with EUC off everywhere. */
 void es_project_begin(unsigned parse_only) {
-    if (!parse_only) nv_clear();
+    if (!parse_only) { nv_clear(); nl_clear(); }
 }
 
 /* Every line the loader finishes (0x40088224, the loop's next-line point,
  * reached by stock lines and by '#' lines alike). Ours set one entry on a
  * storing pass; a malformed line is ignored. */
 void es_project_line(const char *line, unsigned parse_only) {
-    unsigned index;
+    unsigned index, target;
     uint8_t v[E_SIZE];
-    if (parse_only || es_line_parse(line, &index, v) != 2) return;
+    if (parse_only) return;
+    if (es_lfo_line_parse(line, &index, &target) == 2) {
+        if (!nl_ok()) nl_clear();
+        U8(NL_TABLE + index) = (uint8_t)target;
+        return;
+    }
+    if (es_line_parse(line, &index, v) != 2) return;
     nv_ensure();
     /* Field by field: m68k-elf-gcc compiled a copy loop here to
        move.b (%a0)+,(%a0,%d0.l), whose destination the emulator computes

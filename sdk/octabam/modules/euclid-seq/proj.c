@@ -72,3 +72,37 @@ unsigned es_line_parse(const char *line, unsigned *index, uint8_t v[E_SIZE]) {
     *index = ((unsigned)(line[KEY_LEN] - 'A') * 16 + pattern - 1) * 8 + track;
     return 2;
 }
+
+static const char lkey[] = "#EUCLID_LFO=";
+#define LKEY_LEN (sizeof lkey - 1)
+
+unsigned es_lfo_line_format(char *out, unsigned index, unsigned target) {
+    unsigned n = 0, lfo = index % 3, track = index / 3 % 8, part = index / 24 % 4, bank = index / 96 % 16;
+    for (; n < LKEY_LEN; ++n) out[n] = lkey[n];
+    out[n++] = (char)('A' + bank);
+    out[n++] = (char)('1' + part);
+    out[n++] = ':';
+    out[n++] = (char)('1' + track);
+    out[n++] = ':';
+    out[n++] = (char)('1' + lfo);
+    out[n++] = ':';
+    out[n++] = (char)('0' + target % 10);
+    out[n++] = '\r';
+    out[n++] = '\n';
+    out[n] = 0;
+    return n;
+}
+
+unsigned es_lfo_line_parse(const char *line, unsigned *index, unsigned *target) {
+    for (unsigned k = 0; k < LKEY_LEN; ++k)
+        if (line[k] != lkey[k]) return 0;
+    const char *p = line + LKEY_LEN;
+    if (p[0] < 'A' || p[0] > 'P' || p[1] < '1' || p[1] > '4' || p[2] != ':'
+        || p[3] < '1' || p[3] > '8' || p[4] != ':' || p[5] < '1' || p[5] > '3'
+        || p[6] != ':' || p[7] < '1' || p[7] > '0' + (char)ES_LFO_TARGETS || p[8])
+        return 1;
+    *index = (((unsigned)(p[0] - 'A') * 4 + (unsigned)(p[1] - '1')) * 8 + (unsigned)(p[3] - '1')) * 3
+        + (unsigned)(p[5] - '1');
+    *target = (unsigned)(p[7] - '0');
+    return 2;
+}

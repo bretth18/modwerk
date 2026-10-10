@@ -18,6 +18,14 @@ line; 17 malformed or foreign lines (bad bank, pattern, track, EUC flag,
 range, field count, trailing characters, Play Modes' key) are ignored.
 Passed 9 October 2026.
 
+The same gate checks the LFO arithmetic: `es_modulate` (`gen.c`) against
+an independent formulation on 40,000 random settings and offsets (lengths
+1–64, offsets up to three full swings either way, the clamps at both ends),
+and `es_step` against `es_mask` for every one of them; 9,216
+`#EUCLID_LFO=` lines (every bank, Part, track, LFO and destination) round-
+trip, one sample line matches byte for byte and 9 malformed lines are
+ignored. Passed 9 October 2026.
+
 ## Emulator
 
 Headless `ot_emu` (built from this checkout) on a `make bus` image
@@ -122,11 +130,89 @@ remains in `control.s`.
 An emulator power cycle is not a hardware power cycle: the unit's own
 battery RAM retention has not been tested (see Hardware).
 
+### LFO destinations and live pulses (emulator)
+
+Same `make bus` build (Euclid Seq alone), MKII panel unless stated, 120
+BPM, track 1 EUC on (E(4,16), mask 0 `0x1111`), the LFO at its defaults
+(SPD 32, triangle, FREE) and DEP 127 unless stated. Steps were read from
+the sequencer itself: each call of the step evaluation `0x4009d1e8` for
+track 1 (its step argument) and whether it reached the sample-trig store
+(`0x4009d42a`) or the trigless store (`0x4009d4b6`). 9 October 2026:
+
+- LFO SETUP: turning PMTR past FX2 reaches EUC PL1 … EUC OP (the screen
+  shows EUC over the name); the Part byte reads `06` (LFO 1's own speed)
+  and the module's table the destination; turning back below stores the
+  stock codes again.
+- EUC PL1, DEP 127, 64 steps: the track fired every step near the LFO's top
+  and none near its bottom (the clamps at LEN and 0), 28 of 64 steps
+  differing from the stored E(4,16); mask 0 stayed `0x1111` throughout.
+- Each destination changes what plays (64 steps each): PL2 15 steps
+  differ, RO1 16, RO2 6 (with PL2 3), TRO 16, OP 2 (AND empties the steps
+  while the LFO holds OP there). DEP 0 on PL1: all 64 steps equal the
+  stored pattern.
+- A trigless lock trig on step 3 of the modulated track (FUNC+TRIG3, a lock
+  on A): over 64 steps step 3 fired every time, as a trigless lock trig
+  (`0x4009d4b6`) where the modulation left it free and as a sample trig
+  where a pulse landed on it. Unmodulated, it fired as a trigless trig each
+  bar, as stock.
+- Live LEDs: in grid recording while playing, 72 different trig-row LED
+  messages over 8 s (the live pulses and the playhead); after STOP the rows
+  return to `01 01 01 01` (the stored pattern). The EUCLID panel's bar in
+  the EUCLID mode showed the live pulses (captures at 2 s and 5 s differ).
+- Stock destinations unchanged: track 2 (EUC off) with LFO 1 on PTCH (code
+  0), FX1's first parameter (code 18) and its own speed (code 6), DEP 127:
+  on the stock image and on this build the same single field moves over the
+  same range (the CF or DSP record's halfword for that code, 0 … 32,512),
+  sampled every 50 ms for 8 s. The two images' LFO phase differs (different
+  boot timing), so the raw samples are not compared.
+
+Saving the LFO destinations (64 MB card image, as above): LFO 1 → EUC PL1
+and LFO 2 → EUC OP on track 1; the Part bytes read `06 07` (the LFOs' own
+speeds). PROJECT > SAVE writes exactly `#EUCLID_LFO=A1:1:1:1` and
+`#EUCLID_LFO=A1:1:2:6`; a later change (LFO 1 → EUC RO1) is undone by
+PROJECT > RELOAD; the destinations survive the emulator power cycle
+(battery RAM only) and load from the file with empty battery RAM. **Stock
+safety:** the stock 1.40C image loads the project with Part bytes `06 07`;
+over 6 s of sampling, only track 1's CF halfwords 6 and 7 (LFO 1 and 2
+speed) move, nothing in its DSP record. 9/9 passed.
+
+Composition: `make bus` builds with Euclid Seq + FM Synth (`SYNTH MACHINE`,
+whose LFO hooks sit at `0x40003ca4` and `0x4000d03e`, right after ours) +
+Play Modes, and with Euclid Seq + Play Modes + Scale Quantizer, link. In
+the FM Synth build EUC PL1 modulation fired exactly the same 64 steps as
+the Euclid-only build, and PTCH, FX1 and own-speed destinations on track 2
+moved the same field over the same range. In the Play Modes + Scale
+Quantizer build EUC PL1 modulation fired the same 64 steps and FX1 on
+track 2 moved the same field over the same range.
+
+The earlier checks on this build: 34/34 on the MKII and the MKI panel, the
+live-recording check holds `0x1111`, and the saving-with-the-project script
+15/15 (its last case, a stock-saved project, timed out once in wall-clock
+terms while seven emulators ran at once and passed when run alone; the
+VACEUCLID5 build takes the same 193 s there).
+
+Executed instructions added (emulator instruction counter between the site
+and the stub's return, three LFOs on EUCLID destinations of track 1,
+playing in grid recording, 2 s; interrupts taken inside a stub count too):
+
+| Path | Runs | Added instructions |
+|---|---|---|
+| LFO engine, per LFO per frame (24 per frame, about 2,760 frames/s) | 132,432 | 19–28 typical, 96 at most (a routed LFO) |
+| Step evaluation, any-trig test, per track per step | 128 | 103–138 typical, 382 at most |
+| Step evaluation, sample-trig test (event steps only) | 16 | 373 |
+| Grid LED painter, per trig key per paint, while playing | 624 | 401–404 typical, 1,992 at most |
+
+These are executed-instruction counts, not modelled or hardware cycles; no
+chip timing was measured.
+
 **Not verified in the emulator:** swing and track speed applied to generated
 trigs (they are stock trigs played by the stock sequencer, but the
 measurement attempted was unreliable), tempo changes during playback, bank
 changes, Part save and reload (no Part code is hooked; the settings are not
-Part data), MIDI tracks.
+Part data), MIDI tracks; for LFO modulation: firmware look-ahead on the
+live pulses (STATIC sample preload, slide and trigless searches), Parts
+other than Part 1, Part reload, copy and paste, scenes and locks on DEP,
+the LFO trig modes other than FREE, tempo changes.
 
 ## Stock flows compared
 
@@ -138,7 +224,28 @@ slots and slices trig modes.
 
 ## Hardware
 
-VACEUCLID5 (saving with the project) has not run on hardware yet.
+VACEUCLID6 (LFO destinations and live pulses) has not run on hardware yet.
+
+### 9 October 2026, MKII, bretth18 (functional report, VACEUCLID5)
+
+Private image VACEUCLID5 (personal boot logo plus Euclid Seq, source
+`3dd9ad9`, main image SHA-256
+`921f7a9214f70dee7407a83d0c1b886d67b5b62ffdd84e2f40fba87d34b82fe9`), OS
+1.40C, Octatrack MKII. The tester reported that every step of the
+persistence checklist passed ("everything is working"):
+
+- Settings on A01 track 1 (EUC on, PL1 5, XOR), A01 track 2 (EUC off, PL2 3,
+  RO2 2) and A02 track 1 (EUC on, PL1 3), then PROJECT > SAVE.
+- Later edits (track 1 PL1 7, EUC on for track 3), then PROJECT > RELOAD:
+  the saved settings and their trigs came back, track 3 EUC off.
+- A real power cycle (off about 10 s, on with the same project): the
+  settings were restored without a project load, and knob A on track 1's
+  page still regenerated the pattern.
+- Loading another project and coming back: the settings came back.
+- A project saved on stock firmware loaded with EUC off on every track.
+
+Limitations: one unit and one session; Parts, bank changes, SAVE TO NEW,
+copy and paste, MIDI tracks and the MKI were not exercised.
 
 ### 9 October 2026, MKII, bretth18 (functional report, VACEUCLID4)
 
