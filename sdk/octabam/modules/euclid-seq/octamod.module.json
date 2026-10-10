@@ -17,17 +17,19 @@
     "label": "EUCLIDEAN TRIGS",
     "family": "Sequencer",
     "summary": "Analog Rytm-style Euclidean sequencer: two pulse generators, rotations and a logic operator write real trigs on an audio track.",
-    "overview": "Euclid Seq adds an EUCLID trig mode and turns an audio track's trigs into a Euclidean rhythm, as the Analog Rytm's Euclidean mode does. Two generators (PL1, PL2) spread their pulses evenly over the track's length; RO1 and RO2 rotate each, OP combines them (OR, XOR, AND, SUB) and TRO rotates the result. The module writes ordinary trigs into the pattern, so the stock sequencer plays them with its own tempo, track speed, swing, locks and conditions; it keeps no clock. While EUC is on, the TRIG keys cannot add or remove trigs on that track; holding a trig still edits its parameter locks.",
+    "overview": "Euclid Seq adds an EUCLID trig mode and turns an audio track's trigs into a Euclidean rhythm, as the Analog Rytm's Euclidean mode does. Two generators (PL1, PL2) spread their pulses evenly over the track's length; RO1 and RO2 rotate each, OP combines them (OR, XOR, AND, SUB) and TRO rotates the result. The module writes ordinary trigs into the pattern, so the stock sequencer plays them with its own tempo, track speed, swing, locks and conditions; it keeps no clock. While EUC is on, the TRIG keys cannot add or remove trigs on that track; holding a trig still edits its parameter locks. The track's LFOs can modulate every setting from LFO SETUP's PMTR list; a modulated track plays the generator's pulses live while its stored trigs stay as set.",
     "highlights": [
       "PL1/PL2 pulses, RO1/RO2/TRO rotations and OR/XOR/AND/SUB, per track and pattern",
       "Writes real trigs: stock playback, swing, locks, conditions and bank save",
+      "LFO destinations: any track LFO can modulate PL1, PL2, RO1, RO2, TRO or OP; the rhythm moves live",
       "An EUCLID trig mode with its own main-screen panel; FUNC+RIGHT opens the six-dial EUCLID page",
       "Follows PATTERN SCALE length changes; no clock of its own"
     ],
     "usage": [
       "Hold FUNC and press DOWN until TRIG MODE shows EUCLID (audio tracks). The main screen shows the EUCLID panel.",
       "Press FUNC+RIGHT to open the EUCLID page and YES to turn EUC on. A sets PL1, B PL2, D RO1, E RO2, F TRO and LEVEL the operator; C shows the track length.",
-      "Press NO to close the page. The page also opens with RIGHT on TRACK TRIG EDIT's TRIGS row. Press YES on the page again to turn EUC off; the trigs remain as ordinary trigs."
+      "Press NO to close the page. The page also opens with RIGHT on TRACK TRIG EDIT's TRIGS row. Press YES on the page again to turn EUC off; the trigs remain as ordinary trigs.",
+      "For modulation, open LFO SETUP (FUNC+LFO) and turn PMTR past FX2 to EUC PL1, PL2, RO1, RO2, TRO or OP; DEP sets how far the LFO moves it."
     ]
   },
   "controls": [],
@@ -38,6 +40,8 @@
     "limitations": [
       "Deliberate stock-flow changes: TRIG MODE gets a seventh row, EUCLID, on audio tracks; in that mode FUNC+RIGHT opens the EUCLID page instead of shifting trigs in grid recording; RIGHT on TRACK TRIG EDIT's TRIGS row opens the page; with EUC on, the TRIG keys, live recording and the FUNC+LEFT/RIGHT trig shift do not place, remove or move trigs on that track; on MKII in grid recording the trig keys show those trigs purple; the project file gets #EUCLID_SEQ= lines (comments the stock loader skips).",
       "EUC settings are saved with the project (#EUCLID_SEQ= lines) and kept over a power cycle in battery RAM 0x100f9000..0x100fd010; they follow banks and patterns, not Parts, and do not follow pattern or track copy/paste. The EUCLID trig mode is runtime state like the stock trig mode and starts as TRACKS after a reboot.",
+      "LFO destinations: LFO SETUP's PMTR continues past FX2 into six EUCLID destinations; the Part stores the LFO's own speed as a stock-safe placeholder and the module keeps the destination in battery RAM 0x100fd100..0x100fd710 and #EUCLID_LFO= project lines. Part reload, copy and paste do not carry it.",
+      "A modulated EUC track's pulses are decided per step; added pulses play without locks (unless on a trigless lock trig) and firmware look-ahead (sample preload, slide searches) reads the stored pattern, not the live pulses.",
       "Purple trigs need the MKII panel; MKI trig LEDs stay stock.",
       "Audio tracks only; MIDI tracks are not supported.",
       "Functional MKII reports for the page, purple trigs, blocking and the EUCLID trig mode (VACEUCLID2, VACEUCLID4); saving with the project, RELOAD and a power cycle were reported working on MKII with VACEUCLID5; worst-case chip timing is unmeasured.",
@@ -89,7 +93,7 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Host gates: the generator matches an independent formulation on 633,984 settings; project-file lines round-trip and malformed lines are ignored. Emulator: 34 scripted checks pass on MKII and MKI panels (page, EUC, blocking, locks, length follow, playback timing, the EUCLID trig mode, FUNC+RIGHT, trig shift) plus project save, reload, battery-RAM power cycle and stock compatibility checks. Functional MKII reports on VACEUCLID2, VACEUCLID4 and VACEUCLID5 (saving with the project and a power cycle).",
+    "summary": "Host gates: the generator matches an independent formulation on 633,984 settings; LFO modulation on 40,000 settings; project-file lines round-trip and malformed lines are ignored. Emulator: 34 scripted checks pass on MKII and MKI panels (page, EUC, blocking, locks, length follow, playback timing, the EUCLID trig mode, FUNC+RIGHT, trig shift) plus project save, reload, battery-RAM power cycle and stock compatibility checks, and LFO destinations, live pulses and stock-safety. Functional MKII reports on VACEUCLID2, VACEUCLID4 and VACEUCLID5 (saving with the project and a power cycle).",
     "hardwareStatus": "untested",
     "evidenceRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
     "gates": [

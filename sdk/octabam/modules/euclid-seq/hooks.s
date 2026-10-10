@@ -237,6 +237,168 @@ es_proj_write_stub:
         move.l %d0,-(%sp)
         jmp 0x400888da
 
+| ---- LFO destinations and live pulses -----------------------------------
+| The LFO engine, per track and LFO (two stock copies: 0x40003b90 and the
+| one inlined in the frame builder): d2 = LFO, a4 = 0x80004858 + 8 x track,
+| a2 = the frame record, a5 = the DSP record minus 24. The displaced code
+| loads the destination code into d4 and points a0 at the record it indexes.
+| A code equal to the LFO's own speed (6 + LFO) is the module's EUCLID
+| placeholder when its table names a destination: a0 then points so that
+| (a0, d4 x 2) is the module's halfword. d0, d1 and a1 are dead here.
+        .macro es_lfo_stub resume
+        mvs.b (30,%a2,%d2.l),%d4
+        moveq #6,%d1
+        add.l %d2,%d1
+        cmp.l %d1,%d4
+        beq.s 3f
+        move.l %a4,%d0
+        sub.l #0x80004858,%d0
+        lsr.l #3,%d0
+        move.l %d0,%d1
+        add.l %d1,%d1
+        add.l %d0,%d1
+        add.l %d2,%d1
+        lea es_lfo_tgt,%a1
+        clr.b (0,%a1,%d1.l)
+2:      moveq #12,%d1
+        cmp.l %d1,%d4
+        blt.s 1f
+        move.l %a5,%a0
+1:      jmp \resume
+3:      move.l %a0,-(%sp)
+        move.l %d2,-(%sp)
+        move.l %a4,%d0
+        sub.l #0x80004858,%d0
+        lsr.l #3,%d0
+        move.l %d0,-(%sp)
+        jsr es_lfo_route
+        addq.l #8,%sp
+        move.l (%sp)+,%a0
+        tst.l %d0
+        beq.s 2b
+        move.l %d0,%a0
+        sub.l %d4,%a0
+        sub.l %d4,%a0
+        jmp \resume
+        .endm
+
+        .global es_lfo_a_stub, es_lfo_b_stub
+es_lfo_a_stub:
+        es_lfo_stub 0x40003ca4
+es_lfo_b_stub:
+        es_lfo_stub 0x4000d03e
+
+| The step evaluation 0x4009d1e8: arguments at 108 (track), 112 (bank),
+| 116 (pattern), 120 (step) above sp at both sites; a5 = the step's bit in
+| its long word, (a0, a3) the mask-0 long word. es_live_bit returns -1 to
+| keep the stored bit.
+| 0x4009d37c: d0 = mask 1 | mask 0 (the "any trig" chain; masks 2 and 3
+| follow). Displaced: a0 = a2 + a4 x 4 + d1; d0 = (a1, a3); d0 |= (a0, a3).
+        .global es_eva_stub, es_evb_stub
+es_eva_stub:
+        lea (0,%a2,%a4.l*4),%a0
+        adda.l %d1,%a0
+        move.l (0,%a1,%a3.l),%d0
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        move.l 136(%sp),-(%sp)          | step, pattern, bank, track
+        move.l 136(%sp),-(%sp)
+        move.l 136(%sp),-(%sp)
+        move.l 136(%sp),-(%sp)
+        jsr es_live_bit
+        lea 16(%sp),%sp
+        move.l %d0,%a1                  | a1 is dead until 0x4009d40a
+        movem.l (%sp),%d0-%d1/%a0
+        lea 16(%sp),%sp
+        move.l %a1,-(%sp)
+        tst.l (%sp)+
+        bmi.s 1f
+        move.l %d1,-(%sp)               | stored long without this step's bit
+        move.l %a5,%d1
+        not.l %d1
+        and.l (0,%a0,%a3.l),%d1
+        or.l %d1,%d0
+        move.l (%sp)+,%d1
+        move.l %a1,-(%sp)
+        tst.l (%sp)+
+        beq.s 2f
+        move.l %a5,-(%sp)               | the live pulse
+        or.l (%sp)+,%d0
+2:      jmp 0x4009d38a
+1:      or.l (0,%a0,%a3.l),%d0
+        jmp 0x4009d38a
+
+| 0x4009d418: d0 = a5 & mask 0 decides a sample trig (beq 0x4009d420 skips
+| it). Displaced: a0 += d1; d0 = a5; d0 &= (a0, a3).
+es_evb_stub:
+        adda.l %d1,%a0
+        move.l %a5,%d0
+        and.l (0,%a0,%a3.l),%d0
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        move.l 136(%sp),-(%sp)
+        move.l 136(%sp),-(%sp)
+        move.l 136(%sp),-(%sp)
+        move.l 136(%sp),-(%sp)
+        jsr es_live_bit
+        lea 16(%sp),%sp
+        tst.l %d0
+        bmi.s 1f
+        beq.s 2f
+        move.l %a5,(%sp)                | a pulse: this step's bit
+        bra.s 1f
+2:      clr.l (%sp)
+1:      movem.l (%sp),%d0-%d1/%a0-%a1
+        lea 16(%sp),%sp
+        tst.l %d0
+        jmp 0x4009d420
+
+| 0x40034df4, the grid LED painter's TRIGS state: the mask-0 word of trig
+| page 3 - d4 is tested at bit d3 (the key). While playing, an EUC track's
+| live pulses replace it. d1, a0, a1 stay live below.
+        .global es_ledw_stub
+es_ledw_stub:
+        mvz.w (0,%a0,%d1.l*2),%d0
+        lea -12(%sp),%sp
+        movem.l %d1/%a0-%a1,(%sp)
+        move.l %d3,-(%sp)
+        move.l %d4,-(%sp)
+        move.l %d0,-(%sp)
+        jsr es_led_word
+        lea 12(%sp),%sp
+        movem.l (%sp),%d1/%a0-%a1
+        lea 12(%sp),%sp
+        btst %d3,%d0
+        jmp 0x40034dfa
+
+| 0x400392cc: LFO SETUP's PMTR knob on an audio track (d4 = 0, d6 = 0).
+| d3 = the current byte, d5 = the knob argument, a4 = the LFO. The stock
+| span to 0x4003932c only computes the new d3; es_pmtr_knob replaces it
+| with the EUCLID positions after FX2. d0-d2, d7, a0, a1 are dead after.
+        .global es_pmtr_stub
+es_pmtr_stub:
+        move.l %d5,-(%sp)
+        move.l %d3,-(%sp)
+        move.l %a4,-(%sp)
+        jsr es_pmtr_knob
+        lea 12(%sp),%sp
+        move.l %d0,%d3
+        jmp 0x4003932c
+
+| 0x4003bf64: the PMTR formatter fmt(buffer, value). A EUCLID destination is
+| printed by the module; anything else runs the stock formatter.
+        .global es_fmt_stub
+es_fmt_stub:
+        move.l 8(%sp),-(%sp)
+        move.l 8(%sp),-(%sp)
+        jsr es_pmtr_fmt
+        addq.l #8,%sp
+        tst.l %d0
+        beq.s 1f
+        rts
+1:      lea -20(%sp),%sp
+        movem.l %d2-%d3/%a2-%a4,(%sp)
+        jmp 0x4003bf6c
         .global es_fright_stub
 es_fright_stub:
         move.l 8(%sp),-(%sp)

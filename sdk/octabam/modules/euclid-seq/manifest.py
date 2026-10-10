@@ -2,7 +2,7 @@
 
 The generator writes the current pattern's real trig mask, so the stock
 sequencer plays the result with its own tempo, track speed, swing, locks and
-conditions; no clock is added. Nineteen guarded sites:
+conditions; no clock is added. Thirty guarded sites:
 
 - TRACK TRIG EDIT's key layer is pushed and popped through one operand each
   (0x4007c0a8, 0x4007b48c). Both name a module copy of that layer: the
@@ -26,6 +26,17 @@ conditions; no clock is added. Nineteen guarded sites:
   the EUCLID page.
 - The grid recording trig shift (0x400502f8, FUNC+LEFT/RIGHT) leaves an
   EUC track's trigs alone.
+
+- LFO destinations: LFO SETUP's PMTR knob (0x400392cc) continues past FX2
+  into PL1, PL2, RO1, RO2, TRO and OP, and its formatter (0x4003bf64)
+  prints them. The Part stores the LFO's own speed as a stock-safe
+  placeholder; the module's table holds the destination. Both copies of
+  the LFO engine (0x40003c98, 0x4000d032) route such an LFO to a module
+  buffer instead of the speed.
+- Live pulses: the sequencer's step evaluation reads mask 0 twice
+  (0x4009d37c, 0x4009d418); on a modulated EUC track both take the
+  modulated generator's pulse instead of the stored trig. The grid LED
+  painter's TRIGS word (0x40034df4) shows the live pulses while playing.
 
 Settings live in battery RAM 0x100f9000..0x100fd010 (a power cycle reads
 no project file) and in the project file's "#EUCLID_SEQ=" lines:
@@ -96,6 +107,20 @@ MODULE = Module(
                "euclid-seq", "es_proj_write_stub", "project write: the #EUCLID_SEQ= lines", pad_to=8),
         Detour(0x400502f8, stock_guard(0x400502f8, 8, "46b27fc228d5cf396d75ebd685f6bd7f537d281b36cb8db06a5f14c8281b6b80"),
                "euclid-seq", "es_shift_stub", "EUC on: the grid recording trig shift leaves that track alone", pad_to=8),
+        Detour(0x40003c98, stock_guard(0x40003c98, 12, "572dcfb8560305392d68a8beade8e979de6795f715e766bd789e1cd1bdc355e9"),
+               "euclid-seq", "es_lfo_a_stub", "LFO engine: a EUCLID destination modulates the module's buffer", pad_to=12),
+        Detour(0x4000d032, stock_guard(0x4000d032, 12, "572dcfb8560305392d68a8beade8e979de6795f715e766bd789e1cd1bdc355e9"),
+               "euclid-seq", "es_lfo_b_stub", "Frame builder's LFO engine copy: the same routing", pad_to=12),
+        Detour(0x4009d37c, stock_guard(0x4009d37c, 14, "febf267cb010307615e7d5344e958a4d1ee386d978d0e820d308fe357ab76363"),
+               "euclid-seq", "es_eva_stub", "Step evaluation, any-trig test: the modulated pulse on an EUC track", pad_to=14),
+        Detour(0x4009d418, stock_guard(0x4009d418, 8, "cfc43a06b2af06380c9720d9c5b48d5ed9f2d30b0a07a6f66b491f9ff40a676d"),
+               "euclid-seq", "es_evb_stub", "Step evaluation, sample-trig test: the modulated pulse on an EUC track", pad_to=8),
+        Detour(0x40034df4, stock_guard(0x40034df4, 6, "258c7e0d64525403dca91e7332e02ca7e06cec6d02bd989b5c585d374f6d6455"),
+               "euclid-seq", "es_ledw_stub", "Grid trig LEDs show an EUC track's live pulses while playing"),
+        Detour(0x400392cc, stock_guard(0x400392cc, 8, "a57855f641d419b81f08ce2f502a1bf18363df142106b0b0ab926fc65b1c0948"),
+               "euclid-seq", "es_pmtr_stub", "LFO SETUP PMTR: six EUCLID destinations after FX2", pad_to=8),
+        Detour(0x4003bf64, stock_guard(0x4003bf64, 8, "88c3015bea265af524001c19cb4e3b9743131f26f46f5d0e58dfb2f8622283c1"),
+               "euclid-seq", "es_fmt_stub", "PMTR formatter: EUC PL1..OP", pad_to=8),
         Detour(0x400503c4, stock_guard(0x400503c4, 8, "91fea154aed7ca7f7aed1e03380f8eba791542d2f01b3f4a9b173e2dec9df118"),
                "euclid-seq", "es_fright_stub", "EUCLID mode: FUNC+RIGHT opens the EUCLID page", pad_to=8),
     ),

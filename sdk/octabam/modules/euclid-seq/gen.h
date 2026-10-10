@@ -18,4 +18,15 @@ typedef struct {
  * are left clear. */
 void es_mask(const EsParams *p, uint8_t mask[8]);
 
+/* One step of the same result: nonzero when step i (0-based) has a pulse.
+ * Constant time, for the sequencer's per-step evaluation. */
+unsigned es_step(const EsParams *p, unsigned i);
+
+/* LFO modulation. off[] holds the summed LFO offsets for PL1, PL2, RO1,
+ * RO2, TRO and OP in the stock parameter scale, where ES_MOD_FULL is a full
+ * swing. A full swing moves PL/RO/TRO by the track length and OP by four
+ * operators; results are clamped (PL 0..len, rotations 0..len-1, OP 0..3). */
+#define ES_MOD_FULL 0x4000
+void es_modulate(EsParams *p, const int off[6]);
+
 #endif
