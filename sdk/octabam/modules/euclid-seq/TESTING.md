@@ -91,8 +91,28 @@ slots and slices trig modes.
 
 ## Hardware
 
-The EUCLID trig mode and restyled page (from VACEUCLID3 on) have not run on
-hardware. The report below is for VACEUCLID2.
+### 9 October 2026, MKII, bretth18 (functional report, VACEUCLID4)
+
+Private image VACEUCLID4 (personal boot logo plus Euclid Seq, source
+`d37b648`, main image SHA-256
+`0087f078ff24b2ef61ce3e26f1757d4f1623f10e7e5971418ec0344ceb3b13ff`), OS
+1.40C, Octatrack MKII. Results as reported by the tester, all passed:
+
+- TRIG MODE (FUNC+UP/DOWN) lists EUCLID last and scrolls back to TRACKS.
+- In the EUCLID mode the main-screen panel shows the track's settings and
+  step bar.
+- FUNC+RIGHT opens the EUCLID page on the main screen and in grid
+  recording; the page is readable; NO closes it.
+- EUC on lights the new trigs at once, without PLAY (the VACEUCLID2 defect
+  is fixed on hardware).
+- FUNC+LEFT/RIGHT in grid recording do not move an EUC track's trigs; an
+  EUC-off track shifts as stock.
+- Purple trigs, parameter locks on held trigs and playback as before.
+- Live recording leaves an EUC track alone while another track records.
+
+Limitations: one unit and one session; duration and project contents were not
+recorded; MIDI tracks, Parts, bank changes and the MKI were not exercised.
+EUC settings are not yet saved with the project.
 
 ### 9 October 2026, MKII, bretth18 (functional report, VACEUCLID2)
 
