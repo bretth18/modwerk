@@ -125,9 +125,13 @@ Euclid Seq changes these stock flows, only in a build that includes it.
 - **In the EUCLID mode, FUNC+RIGHT opens the EUCLID page.** Stock
   FUNC+RIGHT shifts the track's trigs one step later in grid recording and
   changes nothing on the main screen otherwise (measured in the emulator);
-  in the EUCLID mode that shift is replaced, and FUNC+LEFT still shifts
-  trigs earlier. FUNC+RIGHT was chosen over YES, which arms tracks. In
-  every other trig mode FUNC+RIGHT is stock.
+  in the EUCLID mode that shift is replaced. FUNC+RIGHT was chosen over
+  YES, which arms tracks. In every other trig mode FUNC+RIGHT is stock.
+- **With EUC on, FUNC+LEFT and FUNC+RIGHT do not shift that track's trigs**
+  in grid recording, in any trig mode, so the generator's pattern stays in
+  place; TRO rotates it instead. Tracks with EUC off, and shifts from
+  TRACK TRIG EDIT's SLIDE, SWING and REC.TRG rows, shift as stock. Checked
+  neighbours: FUNC+LEFT/RIGHT on an EUC-off track, the EUCLID page.
 - **On an MKII in grid recording, the trig keys' trig colour is purple while
   the selected track has EUC on.** Only the palette entry for a trig on the
   16 trig keys changes; trigless trigs, other keys and other views keep their
@@ -138,8 +142,6 @@ Euclid Seq changes these stock flows, only in a build that includes it.
 Octatrack MKI or MKII with base OS 1.40C; audio tracks. No module conflicts
 are declared.
 
-- FUNC+LEFT (and FUNC+RIGHT outside the EUCLID mode) still shifts an EUC
-  track's trigs; the shifted trigs stay until the next regeneration.
 - The EUCLID trig mode is runtime state, like the stock trig mode, and
   starts as TRACKS after a reboot. Its panel refreshes when the screen is
   redrawn (track or page change, closing the page), not after every trig
@@ -176,6 +178,7 @@ guarded sites in OS 1.40C:
 | `0x40035854` | status-bar trig-mode icon | the EUCLID icon in its mode |
 | `0x40045826`, `0x40035f84`, `0x40044932` | mode panel frame, title and body (not in TRACKS) | drawn in the EUCLID mode with the module's title and body |
 | `0x4004d95c` | compact parameter page beside the panel | also in the EUCLID mode |
+| `0x400502f8` | grid recording trig shift (FUNC+LEFT/RIGHT) | skipped on an EUC track (TRIGS row or no TRACK TRIG EDIT) |
 | `0x400503c4` | FUNC layer's RIGHT handler (trig shift in grid recording) | opens the EUCLID page in the EUCLID mode |
 
 The stock mode word `0x460d16f0` is never set to a seventh value: its 30

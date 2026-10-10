@@ -46,9 +46,10 @@ MKI panels, 15 further checks, 32/32 in all):
   the trig LED rows equal TRACKS'.
 - FUNC+RIGHT opens the EUCLID page on the main screen and in grid
   recording, where it does not shift trigs; NO closes it (knob A no longer
-  edits PL1). FUNC+LEFT still shifts trigs earlier.
-- Back in TRACKS, FUNC+RIGHT in grid recording shifts the trigs one step
-  later, as stock.
+  edits PL1).
+- With EUC on, FUNC+LEFT (EUCLID mode) and FUNC+RIGHT (TRACKS) leave the
+  track's trigs at `0x1111`. On track 2 with EUC off, FUNC+RIGHT shifts a
+  trig `0x0001` → `0x0002` and FUNC+LEFT shifts it back, as stock.
 - MIDI tracks: TRIG MODE still has three rows (modes 0, 1, 4).
 
 Stock FUNC+RIGHT (stock image, emulator): on the main screen outside grid

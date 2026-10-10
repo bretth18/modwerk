@@ -178,6 +178,19 @@ es_compact_stub:
 | 0x400503c4 (8 bytes): the FUNC layer's RIGHT handler (code, edge). In the
 | EUCLID mode it opens the page; otherwise stock (in grid recording it
 | shifts the track's trigs).
+| Trig shift entry 0x400502f8 (FUNC+LEFT/RIGHT in grid recording; args on
+| the stack, nothing live in scratch registers): skip on an EUC track.
+        .global es_shift_stub
+es_shift_stub:
+        jsr es_shift_blocked
+        tst.l %d0
+        beq.s 1f
+        rts
+1:      move.l %d3,-(%sp)
+        move.l %d2,-(%sp)
+        movea.l 12(%sp),%a1
+        jmp 0x40050300
+
         .global es_fright_stub
 es_fright_stub:
         move.l 8(%sp),-(%sp)

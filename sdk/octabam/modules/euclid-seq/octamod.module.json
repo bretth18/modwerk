@@ -36,7 +36,7 @@
     "location": "Audio tracks",
     "conflicts": [],
     "limitations": [
-      "Deliberate stock-flow changes: TRIG MODE gets a seventh row, EUCLID, on audio tracks; in that mode FUNC+RIGHT opens the EUCLID page instead of shifting trigs in grid recording; RIGHT on TRACK TRIG EDIT's TRIGS row opens the page; with EUC on, the TRIG keys and live recording do not place or remove trigs on that track; on MKII in grid recording the trig keys show those trigs purple.",
+      "Deliberate stock-flow changes: TRIG MODE gets a seventh row, EUCLID, on audio tracks; in that mode FUNC+RIGHT opens the EUCLID page instead of shifting trigs in grid recording; RIGHT on TRACK TRIG EDIT's TRIGS row opens the page; with EUC on, the TRIG keys, live recording and the FUNC+LEFT/RIGHT trig shift do not place, remove or move trigs on that track; on MKII in grid recording the trig keys show those trigs purple.",
       "EUC settings and the EUCLID trig mode are runtime state: a reboot or project reload turns EUC off, forgets PL/RO/OP and returns to TRACKS; the generated trigs are ordinary pattern data and stay.",
       "Purple trigs need the MKII panel; MKI trig LEDs stay stock.",
       "Audio tracks only; MIDI tracks are not supported.",
@@ -89,7 +89,7 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Host gate: the generator matches an independent formulation on 633,984 settings. Emulator: 32 scripted checks pass on MKII and MKI panels (page, EUC, blocking, locks, length follow, playback timing, the EUCLID trig mode and FUNC+RIGHT). One functional MKII report on an earlier image.",
+    "summary": "Host gate: the generator matches an independent formulation on 633,984 settings. Emulator: 34 scripted checks pass on MKII and MKI panels (page, EUC, blocking, locks, length follow, playback timing, the EUCLID trig mode and FUNC+RIGHT). One functional MKII report on an earlier image.",
     "hardwareStatus": "untested",
     "evidenceRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
     "gates": [

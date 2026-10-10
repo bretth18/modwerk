@@ -169,6 +169,14 @@ unsigned es_blocked(void) {
     return e && (e[E_FLAGS] & F_EUC);
 }
 
+/* The grid recording trig shift (FUNC+LEFT/RIGHT, 0x400502f8): nonzero
+   leaves an EUC track's trigs where the generator put them. Shifting the
+   SLIDE, SWING or REC.TRG rows from TRACK TRIG EDIT is unchanged. */
+unsigned es_shift_blocked(void) {
+    if (U32(MIDI_MODE)) return 0;
+    if (U32(TTE_WINDOW) && U32(TTE_ROW) != 0) return 0;
+    return euc_on(U8(TRACK_IDX));
+}
 
 /* ---- drawing helpers (stock routines) ----------------------------------- */
 
