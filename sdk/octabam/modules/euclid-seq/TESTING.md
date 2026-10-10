@@ -224,7 +224,11 @@ slots and slices trig modes.
 
 ## Hardware
 
-VACEUCLID6 (LFO destinations and live pulses) has not run on hardware yet.
+VACEUCLID6 (LFO destinations and live pulses; source `9bbac30`, main image
+SHA-256 `98de271410f821f006a5e4bd2cdfe4af9b92ac7c417f68e3390aa573e7e1bcc5`)
+has not run on hardware yet. In the emulator that exact image passed
+34/34 on the MKII and the MKI panel, the live-recording check, 10/10 LFO
+checks, 9/9 LFO saving and stock-safety checks and 15/15 saving checks.
 
 ### 9 October 2026, MKII, bretth18 (functional report, VACEUCLID5)
 
