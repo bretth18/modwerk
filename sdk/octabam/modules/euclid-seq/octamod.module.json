@@ -17,17 +17,17 @@
     "label": "EUCLIDEAN TRIGS",
     "family": "Sequencer",
     "summary": "Analog Rytm-style Euclidean sequencer: two pulse generators, rotations and a logic operator write real trigs on an audio track.",
-    "overview": "Euclid Seq turns an audio track's trigs into a Euclidean rhythm, as the Analog Rytm's Euclidean mode does. Two generators (PL1, PL2) spread their pulses evenly over the track's length; RO1 and RO2 rotate each, OP combines them (OR, XOR, AND, SUB) and TRO rotates the result. The module writes ordinary trigs into the pattern, so the stock sequencer plays them with its own tempo, track speed, swing, locks and conditions; it keeps no clock. While EUC is on, the TRIG keys cannot add or remove trigs on that track; holding a trig still edits its parameter locks.",
+    "overview": "Euclid Seq adds an EUCLID trig mode and turns an audio track's trigs into a Euclidean rhythm, as the Analog Rytm's Euclidean mode does. Two generators (PL1, PL2) spread their pulses evenly over the track's length; RO1 and RO2 rotate each, OP combines them (OR, XOR, AND, SUB) and TRO rotates the result. The module writes ordinary trigs into the pattern, so the stock sequencer plays them with its own tempo, track speed, swing, locks and conditions; it keeps no clock. While EUC is on, the TRIG keys cannot add or remove trigs on that track; holding a trig still edits its parameter locks.",
     "highlights": [
       "PL1/PL2 pulses, RO1/RO2/TRO rotations and OR/XOR/AND/SUB, per track and pattern",
       "Writes real trigs: stock playback, swing, locks, conditions and bank save",
-      "Its own page from TRACK TRIG EDIT: RIGHT on the TRIGS row",
+      "An EUCLID trig mode with its own main-screen panel; FUNC+RIGHT opens the six-dial EUCLID page",
       "Follows PATTERN SCALE length changes; no clock of its own"
     ],
     "usage": [
-      "Select an audio track, press REC for grid recording, then FUNC+BANK for TRACK TRIG EDIT. On the TRIGS row press RIGHT to open EUCLID.",
-      "Press YES to turn EUC on. A sets PL1, B PL2, D RO1, E RO2, F TRO and LEVEL the operator; C shows the track length.",
-      "Press NO to return to TRACK TRIG EDIT. Press YES on the page again to turn EUC off; the trigs remain as ordinary trigs."
+      "Hold FUNC and press DOWN until TRIG MODE shows EUCLID (audio tracks). The main screen shows the EUCLID panel.",
+      "Press FUNC+RIGHT to open the EUCLID page and YES to turn EUC on. A sets PL1, B PL2, D RO1, E RO2, F TRO and LEVEL the operator; C shows the track length.",
+      "Press NO to close the page. The page also opens with RIGHT on TRACK TRIG EDIT's TRIGS row. Press YES on the page again to turn EUC off; the trigs remain as ordinary trigs."
     ]
   },
   "controls": [],
@@ -36,11 +36,11 @@
     "location": "Audio tracks",
     "conflicts": [],
     "limitations": [
-      "Deliberate stock-flow change: RIGHT on TRACK TRIG EDIT's TRIGS row opens the EUCLID page (RIGHT has no stock binding there); with EUC on, the TRIG keys and live recording do not place or remove trigs on that track; on MKII in grid recording the trig keys show those trigs purple.",
-      "EUC settings are runtime state: a reboot or project reload turns EUC off and forgets PL/RO/OP; the generated trigs are ordinary pattern data and stay.",
+      "Deliberate stock-flow changes: TRIG MODE gets a seventh row, EUCLID, on audio tracks; in that mode FUNC+RIGHT opens the EUCLID page instead of shifting trigs in grid recording; RIGHT on TRACK TRIG EDIT's TRIGS row opens the page; with EUC on, the TRIG keys and live recording do not place or remove trigs on that track; on MKII in grid recording the trig keys show those trigs purple.",
+      "EUC settings and the EUCLID trig mode are runtime state: a reboot or project reload turns EUC off, forgets PL/RO/OP and returns to TRACKS; the generated trigs are ordinary pattern data and stay.",
       "Purple trigs need the MKII panel; MKI trig LEDs stay stock.",
       "Audio tracks only; MIDI tracks are not supported.",
-      "Not yet run on hardware; worst-case chip timing is unmeasured.",
+      "One functional MKII report on an earlier image; the EUCLID trig mode is emulator-tested only; worst-case chip timing is unmeasured.",
       "Like every DRAM module, the build gives up about 10 MB of sample memory to the platform reserve."
     ],
     "effectId": null
@@ -89,7 +89,7 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Host gate: the generator matches an independent formulation on 633,984 settings. Emulator: 17 scripted checks pass on MKII and MKI panels (page, EUC, blocking, locks, length follow, playback timing at 120 BPM). Not run on hardware.",
+    "summary": "Host gate: the generator matches an independent formulation on 633,984 settings. Emulator: 32 scripted checks pass on MKII and MKI panels (page, EUC, blocking, locks, length follow, playback timing, the EUCLID trig mode and FUNC+RIGHT). One functional MKII report on an earlier image.",
     "hardwareStatus": "untested",
     "evidenceRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
     "gates": [
@@ -99,16 +99,16 @@
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "Original code and thumbnail by bretth18, MIT. Firmware addresses are cited from public module sources and read from the author's own OS; five stock key records are copied from the user's own OS at build time and never stored in this source. No Elektron firmware, extracted routines, tables or images are included."
+    "declaration": "Original code, icon and thumbnail by bretth18, MIT. Firmware addresses are cited from public module sources and read from the author's own OS; stock key handlers, strings and icon records are referenced by address, never copied. No Elektron firmware, extracted routines, tables or images are included."
   },
   "media": [],
   "access": {
-    "location": "Audio track, grid recording: FUNC+BANK opens TRACK TRIG EDIT; RIGHT on the TRIGS row opens EUCLID.",
+    "location": "Audio track: FUNC+UP/DOWN (TRIG MODE) chooses EUCLID; FUNC+RIGHT then opens the EUCLID page. Also RIGHT on TRACK TRIG EDIT's TRIGS row.",
     "steps": [
       "Include Euclid Seq in your build and select an audio track.",
-      "Press REC for grid recording, then hold FUNC and press BANK to open TRACK TRIG EDIT.",
-      "With the TRIGS row selected, press RIGHT to open the EUCLID page; press YES to turn EUC on.",
-      "Press NO to return to TRACK TRIG EDIT."
+      "Hold FUNC and press DOWN until TRIG MODE shows EUCLID; release FUNC.",
+      "Press FUNC+RIGHT to open the EUCLID page; press YES to turn EUC on.",
+      "Press NO to close the page. In grid recording, FUNC+BANK then RIGHT on the TRIGS row opens it too."
     ],
     "screenshots": []
   }

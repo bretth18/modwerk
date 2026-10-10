@@ -35,6 +35,36 @@ MKII and the MKI panel on 9 October 2026 (17/17 each):
 
 Also observed: with EUC on, the SLIDE row still edits the slide mask.
 
+EUCLID trig mode and restyled page (same harness, 9 October 2026, MKII and
+MKI panels, 15 further checks, 32/32 in all):
+
+- FUNC+DOWN steps TRIG MODE to a seventh row, EUCLID; the stock mode word
+  `0x460d16f0` stays 0 (TRACKS); DOWN on EUCLID stays there; UP returns to
+  DELAY CTRL (mode 5) and on to TRACKS.
+- In the EUCLID mode the main screen differs from TRACKS (the EUCLID panel);
+  TRIG1 outside grid recording plays track 1 exactly as often as in TRACKS;
+  the trig LED rows equal TRACKS'.
+- FUNC+RIGHT opens the EUCLID page on the main screen and in grid
+  recording, where it does not shift trigs; NO closes it (knob A no longer
+  edits PL1). FUNC+LEFT still shifts trigs earlier.
+- Back in TRACKS, FUNC+RIGHT in grid recording shifts the trigs one step
+  later, as stock.
+- MIDI tracks: TRIG MODE still has three rows (modes 0, 1, 4).
+
+Stock FUNC+RIGHT (stock image, emulator): on the main screen outside grid
+recording nothing changed (identical LCD, unchanged trigs); in grid
+recording it shifted the track's trigs one step later (`0x0005` →
+`0x000a`) and FUNC+LEFT shifted them back.
+
+Trig mode persistence (static reading of the 1.40C image): all 30
+references to `0x460d16f0` were listed; the only stores are the TRIG MODE
+window and the audio/MIDI swap with `0x400c0aec`, so the mode is not
+written to battery RAM or the card. The module never stores a value above
+5 there.
+
+LCD captures of the selector, the main screen in the EUCLID mode and the
+page were checked by eye; they are not yet published.
+
 Live recording (REC+PLAY, TRIG9 three times on track 1): stock and the
 module with EUC off both record `0x1120`; with EUC on the trigs stay
 `0x1111`.
@@ -59,6 +89,9 @@ length. RIGHT and LEFT in a stock TRACK TRIG EDIT changed nothing on 16- and
 slots and slices trig modes.
 
 ## Hardware
+
+The EUCLID trig mode and restyled page (from VACEUCLID3 on) have not run on
+hardware. The report below is for VACEUCLID2.
 
 ### 9 October 2026, MKII, bretth18 (functional report, VACEUCLID2)
 
