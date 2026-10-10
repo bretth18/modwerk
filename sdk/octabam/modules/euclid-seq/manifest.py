@@ -24,6 +24,8 @@ conditions; no clock is added. Nineteen guarded sites:
   0x40035f84, 0x40044932), the compact parameter page (0x4004d95c) and the
   status icon (0x40035854) show EUCLID, and FUNC+RIGHT (0x400503c4) opens
   the EUCLID page.
+- The grid recording trig shift (0x400502f8, FUNC+LEFT/RIGHT) leaves an
+  EUC track's trigs alone.
 
 Settings are runtime state in DRAM; the trigs they produce are ordinary
 pattern data. Measured and inferred facts: README.md and TESTING.md.
@@ -80,6 +82,8 @@ MODULE = Module(
                "euclid-seq", "es_body_stub", "Mode panel body: settings and the trig page", pad_to=10),
         Detour(0x4004d95c, stock_guard(0x4004d95c, 8, "b0dad4ce7d9e1579f078e4fe10abb10399bd4d41d595426a1e92c3c577e981c7"),
                "euclid-seq", "es_compact_stub", "Compact parameter page beside the EUCLID panel", pad_to=8),
+        Detour(0x400502f8, stock_guard(0x400502f8, 8, "46b27fc228d5cf396d75ebd685f6bd7f537d281b36cb8db06a5f14c8281b6b80"),
+               "euclid-seq", "es_shift_stub", "EUC on: the grid recording trig shift leaves that track alone", pad_to=8),
         Detour(0x400503c4, stock_guard(0x400503c4, 8, "91fea154aed7ca7f7aed1e03380f8eba791542d2f01b3f4a9b173e2dec9df118"),
                "euclid-seq", "es_fright_stub", "EUCLID mode: FUNC+RIGHT opens the EUCLID page", pad_to=8),
     ),
