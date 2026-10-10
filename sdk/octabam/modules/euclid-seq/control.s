@@ -4470,7 +4470,10 @@ es_fright_stub:
         move.l 8(%sp),%d0
         jmp 0x400503cc
 
-        .data
+| Constant tables, kept in .text: stock code names some of them through
+| lea operands, and .text links at the same address in every runtime,
+| with or without the browser's core logger.
+        .text
         .balign 4
         .global es_tte_layer, es_page_layer
 
