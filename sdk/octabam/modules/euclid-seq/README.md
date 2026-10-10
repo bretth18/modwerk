@@ -197,7 +197,8 @@ Euclid Seq changes these stock flows, only in a build that includes it.
 - **On a modulated EUC track the sequencer plays the live pulses.** The
   step evaluation's two mask-0 tests take the modulated generator's pulse
   instead of the stored trig; masks 1 to 3 (trigless locks, slides and the
-  rest), conditions, micro-timing and swing are read as stock. Unmodulated
+  rest), conditions, micro-timing and swing are read as stock. A slide
+  searches the live pulses for its next step. Unmodulated
   tracks (no LFO on a EUCLID destination, or EUC off) play exactly the
   stored trigs. While playing, grid recording's trig LEDs show the live
   pulses. Checked neighbours: trigless lock trigs on the modulated track,
@@ -224,11 +225,14 @@ are declared.
   destination last chosen in that Part, and a pasted Part's placeholder
   shows as the LFO's own speed. Part reload, copy and paste were not
   tested; only Part 1 was exercised in the emulator.
-- Modulation is decided per step on the sequencer task. Firmware that looks
-  ahead at upcoming trigs (sample streaming preload for STATIC machines,
-  slide and trigless searches) reads the stored pattern, not the live
-  pulses; this was not measured. The EUCLID page's dials and the panel
-  title show the settings as set, not the modulated values.
+- Modulation is decided per step on the sequencer task. The only look-ahead
+  at upcoming trigs found on the sequencer's path is the slide search in the
+  step evaluation; it takes the live pulses (see TESTING.md for the reader
+  list). Readers off that path (the grid editor, copy and paste, the trig
+  LED painter when stopped) see the stored pattern, as intended. STATIC
+  sample preload ahead of an added pulse was not found and not tested. The
+  EUCLID page's dials and the panel title show the settings as set, not the
+  modulated values.
 - Battery RAM `0x100fd100..0x100fd710` holds the LFO destinations.
 - The EUCLID trig mode is runtime state, like the stock trig mode, and
   starts as TRACKS after a reboot. Its panel refreshes when the screen is
@@ -253,7 +257,7 @@ are declared.
 `gen.c` is the pure-integer generator. `native.c` holds the settings table,
 the pattern writer and the page; `hooks.s` the stubs and key layers.
 `proj.c` formats and parses the project file's lines. `prepare.py` compiles
-them into the checked-in `control.s`. Thirty guarded sites in OS 1.40C:
+them into the checked-in `control.s`. Thirty-two guarded sites in OS 1.40C:
 
 | Site | Stock role | Change |
 |---|---|---|
@@ -278,6 +282,7 @@ them into the checked-in `control.s`. Thirty guarded sites in OS 1.40C:
 | `0x4003bf64` | PMTR formatter | prints EUC and the destination for the selected LFO's placeholder |
 | `0x40003c98`, `0x4000d032` | LFO engine (and its copy in the frame builder): load the destination code | the placeholder with a table entry modulates the module's buffer, not the speed |
 | `0x4009d37c`, `0x4009d418` | step evaluation `0x4009d1e8`: mask 0 in the any-trig test and the sample-trig test | the modulated pulse on a modulated EUC track |
+| `0x4009d576`, `0x4009d5dc` | the step evaluation's slide search: masks 0 and 1 of the next candidate step | the live pulse on a modulated EUC track; the search always ends at the current step |
 | `0x40034df4` | grid LED painter, TRIGS state, mask-0 word | the live pulses while playing |
 
 The stock mode word `0x460d16f0` is never set to a seventh value: its 30

@@ -2,7 +2,7 @@
 
 The generator writes the current pattern's real trig mask, so the stock
 sequencer plays the result with its own tempo, track speed, swing, locks and
-conditions; no clock is added. Thirty guarded sites:
+conditions; no clock is added. Thirty-two guarded sites:
 
 - TRACK TRIG EDIT's key layer is pushed and popped through one operand each
   (0x4007c0a8, 0x4007b48c). Both name a module copy of that layer: the
@@ -115,6 +115,10 @@ MODULE = Module(
                "euclid-seq", "es_eva_stub", "Step evaluation, any-trig test: the modulated pulse on an EUC track", pad_to=14),
         Detour(0x4009d418, stock_guard(0x4009d418, 8, "cfc43a06b2af06380c9720d9c5b48d5ed9f2d30b0a07a6f66b491f9ff40a676d"),
                "euclid-seq", "es_evb_stub", "Step evaluation, sample-trig test: the modulated pulse on an EUC track", pad_to=8),
+        Detour(0x4009d576, stock_guard(0x4009d576, 8, "d2413a44017fc1d879fcda30e5152cf64c09afc43a9f82ca5676e3d44521f16a"),
+               "euclid-seq", "es_slide_a_stub", "Slide look-ahead: the next live pulse; the search always ends", pad_to=8),
+        Detour(0x4009d5dc, stock_guard(0x4009d5dc, 8, "d2413a44017fc1d879fcda30e5152cf64c09afc43a9f82ca5676e3d44521f16a"),
+               "euclid-seq", "es_slide_b_stub", "Slide look-ahead loop: the same", pad_to=8),
         Detour(0x40034df4, stock_guard(0x40034df4, 6, "258c7e0d64525403dca91e7332e02ca7e06cec6d02bd989b5c585d374f6d6455"),
                "euclid-seq", "es_ledw_stub", "Grid trig LEDs show an EUC track's live pulses while playing"),
         Detour(0x400392cc, stock_guard(0x400392cc, 8, "a57855f641d419b81f08ce2f502a1bf18363df142106b0b0ab926fc65b1c0948"),

@@ -4370,6 +4370,48 @@ es_evb_stub:
         tst.l %d0
         jmp 0x4009d420
 
+| A step with a slide searches forward from the next step, wrapping at the
+| track length, for the next step with any trig in masks 0-3 (0x4009d576,
+| and the loop's 0x4009d5dc): d3 = the candidate step, fp = its bit, a1 / a0
+| its mask-1 / mask-0 long words. Stock reaches the search only for a step
+| with a trig there, so it always ends at the latest on the step itself; a
+| live pulse may have no stored trig, so the candidate takes the live pulse
+| and the current step (120 above sp) always counts as found.
+| Displaced: d1 = (a1, a3) | (a0, a3). a1 is reloaded before its next use.
+        .macro es_slide_stub resume
+        move.l (0,%a1,%a3.l),%d1
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        move.l %d3,-(%sp)               | candidate, pattern, bank, track
+        move.l 136(%sp),-(%sp)
+        move.l 136(%sp),-(%sp)
+        move.l 136(%sp),-(%sp)
+        jsr es_live_bit
+        lea 16(%sp),%sp
+        move.l %d0,%a1
+        movem.l (%sp),%d0-%d1/%a0
+        lea 16(%sp),%sp
+        move.l %a1,-(%sp)
+        tst.l (%sp)+
+        bmi.s 1f
+        beq.s 2f
+        move.l %fp,-(%sp)
+        or.l (%sp)+,%d1
+        bra.s 2f
+1:      or.l (0,%a0,%a3.l),%d1
+2:      cmp.l 120(%sp),%d3
+        bne.s 3f
+        move.l %fp,-(%sp)
+        or.l (%sp)+,%d1
+3:      jmp \resume
+        .endm
+
+        .global es_slide_a_stub, es_slide_b_stub
+es_slide_a_stub:
+        es_slide_stub 0x4009d57e
+es_slide_b_stub:
+        es_slide_stub 0x4009d5e4
+
 | 0x40034df4, the grid LED painter's TRIGS state: the mask-0 word of trig
 | page 3 - d4 is tested at bit d3 (the key). While playing, an EUC track's
 | live pulses replace it. d1, a0, a1 stay live below.
