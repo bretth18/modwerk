@@ -60,7 +60,34 @@ slots and slices trig modes.
 
 ## Hardware
 
-Not tested.
+### 9 October 2026, MKII, bretth18 (functional report, VACEUCLID2)
+
+Private image VACEUCLID2 (personal boot logo plus Euclid Seq, source
+`a2b7a85`), OS 1.40C, Octatrack MKII. Results as reported by the tester:
+
+- The EUCLID page opens from TRACK TRIG EDIT's TRIGS row with RIGHT; NO
+  returns to TRACK TRIG EDIT and a second NO closes it. Passed.
+- EUC on generates the pattern and the knobs change it as on the Analog
+  Rytm. **Defect:** the trig LEDs did not show the new trigs until PLAY was
+  pressed. Cause found in the emulator: while the EUCLID window is open the
+  firmware's grid LED painter (`0x40043fdc`) does not run, so the trig rows
+  were not repainted. Fixed after this image by calling the stock trig LED
+  painter `0x40034bd4` after each regeneration; the emulator now sends the
+  trig rows at once (EUC on: `20 01 21 01 22 01 23 01`). Not yet re-run on
+  hardware.
+- Purple trigs on the MKII; red again on another track, outside grid
+  recording and with EUC off. Passed.
+- With EUC on, an empty step cannot be set; holding a step and turning a knob
+  still sets a parameter lock. Passed.
+- Live recording on an EUC track: not tested.
+- Playback with swing, another track speed and a tempo change. Passed.
+- PATTERN SCALE 16 → 32 → 16 regenerates. Passed.
+- Project save and power cycle: the trigs remained and EUC came back OFF, as
+  documented. Passed.
+
+Limitations: one unit and one session; duration and project contents were not
+recorded; live recording, MIDI tracks, Parts and bank changes were not
+exercised. The tester found the EUCLID page hard to read.
 
 ## Performance
 

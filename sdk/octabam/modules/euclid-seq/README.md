@@ -107,7 +107,8 @@ are declared.
 - Copying, pasting or clearing a track or pattern moves trigs as usual; EUC
   settings stay with their bank, pattern and track and do not follow.
 - MIDI tracks are not supported.
-- Not yet run on hardware; worst-case chip timing is unmeasured.
+- One functional MKII report so far (TESTING.md); worst-case chip timing is
+  unmeasured.
 - Like every DRAM module, the build gives up about 10 MB of sample memory to
   the platform reserve.
 
@@ -137,7 +138,7 @@ and length-setter events on the UI task.
 `verify.py` (host gate) compiles `gen.c` and compares 633,984 settings with an
 independent formulation (pulse *j* of *k* over *n* steps at ⌈j·n/k⌉), plus
 hand-checked patterns. Emulator checks and their limits are in
-[TESTING.md](TESTING.md). Nothing has run on hardware yet.
+[TESTING.md](TESTING.md), with the first functional MKII report.
 
 ## Screens and audio
 

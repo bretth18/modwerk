@@ -107,6 +107,11 @@ static int apply(unsigned t) {
         ((void (*)(void))0x400339d8u)();
         ((void (*)(unsigned))0x4009da20u)(t);
         U32(SCREEN_DIRTY) = 1;
+        /* The grid LED painter runs only while no window owns the panel;
+           repaint the trig keys now, as the stock painter 0x40043fdc does
+           in grid recording. */
+        if (U32(GRID_REC) && t == U8(TRACK_IDX))
+            ((void (*)(unsigned))0x40034bd4u)(0);
     }
     return changed;
 }
