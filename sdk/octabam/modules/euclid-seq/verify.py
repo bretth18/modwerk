@@ -2,8 +2,11 @@
 
 Host gate: compiles gen.c with the host C compiler and compares every
 reachable setting against an independent Python formulation (pulse j of k
-over n steps sits at ceil(j*n/k)), plus hand-checked patterns.
+over n steps sits at ceil(j*n/k)), plus hand-checked patterns. Project
+gate: compiles proj.c and checks that every saved line reads back as the
+entry it came from, defaults write no line, and malformed lines are ignored.
 """
+import random
 import ctypes
 import itertools
 import shutil
@@ -26,7 +29,7 @@ def build():
         raise SystemExit("[FAIL] no host C compiler")
     out = Path(tempfile.mkdtemp()) / "libgen.so"
     subprocess.run([cc, "-std=c99", "-O2", "-Wall", "-Wextra", "-Werror", "-shared", "-fPIC",
-                    str(HERE / "gen.c"), "-o", str(out)], check=True)
+                    str(HERE / "gen.c"), str(HERE / "proj.c"), "-o", str(out)], check=True)
     lib = ctypes.CDLL(str(out))
     lib.es_mask.argtypes = (ctypes.POINTER(EsParams), ctypes.c_uint8 * 8)
     lib.es_mask.restype = None
@@ -102,6 +105,63 @@ def main():
     if failures:
         raise SystemExit(f"[FAIL] euclid-seq generator: {failures} mismatches")
     print(f"[OK] euclid-seq generator: {checked} settings match the reference; hand patterns match")
+    project(lib)
+
+
+Entry = ctypes.c_uint8 * 8
+
+
+def project(lib):
+    lib.es_line_format.argtypes = (ctypes.c_char_p, ctypes.c_uint, Entry)
+    lib.es_line_parse.argtypes = (ctypes.c_char_p, ctypes.POINTER(ctypes.c_uint), Entry)
+    lib.es_entry_default.argtypes = (Entry,)
+    failures = 0
+
+    def parse(text):
+        index, v = ctypes.c_uint(0), Entry()
+        r = lib.es_line_parse(text.encode(), ctypes.byref(index), v)
+        return r, index.value, bytes(v)
+
+    rng = random.Random(1)
+    lines = 0
+    for index in list(range(0, 2048, 7)) + [0, 7, 8, 127, 128, 2047]:
+        for _ in range(40):
+            e = bytes([0x80 | rng.randint(0, 1), rng.randint(0, 64), rng.randint(0, 64), rng.randint(0, 63),
+                       rng.randint(0, 63), rng.randint(0, 63), rng.randint(0, 3), 0])
+            buf = ctypes.create_string_buffer(48)
+            n = lib.es_line_format(buf, index, Entry(*e))
+            text = buf.value.decode()
+            lines += 1
+            if n != len(text) or not text.endswith("\r\n") or n >= 48:
+                failures += 1; print(f"[FAIL] format {index} {e.hex()}: {text!r}")
+            got = parse(text[:-2])
+            if got != (2, index, e):
+                failures += 1; print(f"[FAIL] round trip {index} {e.hex()}: {text!r} -> {got}")
+    buf = ctypes.create_string_buffer(48)
+    lib.es_line_format(buf, 0, Entry(0x81, 5, 0, 0, 0, 0, 1, 0))
+    if buf.value != b"#EUCLID_SEQ=A01:1:1,5,0,0,0,0,1\r\n":
+        failures += 1; print(f"[FAIL] sample line {buf.value!r}")
+    lib.es_line_format(buf, 2047, Entry(0x80, 64, 3, 63, 2, 1, 3, 0))
+    if buf.value != b"#EUCLID_SEQ=P16:8:0,64,3,63,2,1,3\r\n":
+        failures += 1; print(f"[FAIL] sample line {buf.value!r}")
+    for e, want in ((bytes(8), 1), (bytes([0x80, 4, 0, 0, 0, 0, 0, 0]), 1), (bytes([0x81, 4, 0, 0, 0, 0, 0, 0]), 0),
+                    (bytes([0x80, 5, 0, 0, 0, 0, 0, 0]), 0), (bytes([0x80, 65, 0, 0, 0, 0, 0, 0]), 1)):
+        if bool(lib.es_entry_default(Entry(*e))) != bool(want):
+            failures += 1; print(f"[FAIL] default {e.hex()}")
+    for text, want in (("PATTERN=1", 0), ("#PLAY_MODES=A01:00000000000000000", 0), ("#EUCLID_SEQ", 0),
+                       ("#EUCLID_SEQ=Q01:1:1,5,0,0,0,0,1", 1), ("#EUCLID_SEQ=A00:1:1,5,0,0,0,0,1", 1),
+                       ("#EUCLID_SEQ=A17:1:1,5,0,0,0,0,1", 1), ("#EUCLID_SEQ=A01:9:1,5,0,0,0,0,1", 1),
+                       ("#EUCLID_SEQ=A01:1:2,5,0,0,0,0,1", 1), ("#EUCLID_SEQ=A01:1:1,65,0,0,0,0,1", 1),
+                       ("#EUCLID_SEQ=A01:1:1,5,0,64,0,0,1", 1), ("#EUCLID_SEQ=A01:1:1,5,0,0,0,0,4", 1),
+                       ("#EUCLID_SEQ=A01:1:1,5,0,0,0,0", 1), ("#EUCLID_SEQ=A01:1:1,5,0,0,0,0,1,2", 1),
+                       ("#EUCLID_SEQ=A01:1:1,5,,0,0,0,1", 1), ("#EUCLID_SEQ=A01:1:1,5,0,0,0,0,1 ", 1),
+                       ("#EUCLID_SEQ=A01:1:1,1000,0,0,0,0,1", 1), ("#EUCLID_SEQ=", 1)):
+        r = parse(text)[0]
+        if r != want:
+            failures += 1; print(f"[FAIL] parse {text!r}: {r} want {want}")
+    if failures:
+        raise SystemExit(f"[FAIL] euclid-seq project lines: {failures} mismatches")
+    print(f"[OK] euclid-seq project lines: {lines} entries round-trip; defaults and malformed lines handled")
 
 
 if __name__ == "__main__":

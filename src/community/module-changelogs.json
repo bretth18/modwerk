@@ -724,7 +724,7 @@
           "First version: an Analog Rytm-style Euclidean sequencer for audio tracks with PL1, PL2, RO1, RO2, TRO and an OR/XOR/AND/SUB operator, written as ordinary trigs that the stock sequencer plays.",
           "Adds an EUCLID trig mode to the TRIG MODE list (FUNC+UP/DOWN, audio tracks). In it the main screen shows a EUCLID panel with the selected track's settings and trig page, and FUNC+RIGHT opens the EUCLID page in the stock six-dial style; RIGHT on TRACK TRIG EDIT's TRIGS row also opens it. In the EUCLID mode FUNC+RIGHT no longer shifts trigs in grid recording, and FUNC+LEFT/RIGHT never shift the trigs of a track with EUC on.",
           "While EUC is on, the TRIG keys and live recording do not add or remove trigs on that track; holding a trig still edits its locks. PATTERN SCALE length changes regenerate EUC tracks. On an MKII the trig keys show Euclid trigs purple in grid recording.",
-          "Settings and the EUCLID trig mode are runtime state and reset after a reboot or project reload. One functional MKII report on an earlier development image; this version's image is emulator-tested on MKII and MKI panels only."
+          "Settings are saved with the project as #EUCLID_SEQ= lines (which stock firmware skips) and kept in battery RAM over a power cycle; a project without them loads with EUC off. The EUCLID trig mode is runtime state like the stock trig mode. Functional MKII reports on development images cover the page, purple trigs, blocking and the trig mode; saving with the project is emulator-tested only."
         ]
       }
     ]

@@ -23,7 +23,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix='euclid-seq-cf.') as directory:
         work = Path(directory)
         unity = work / 'euclid_seq.c'
-        unity.write_text('#include "gen.c"\n#include "native.c"\n')
+        unity.write_text('#include "gen.c"\n#include "proj.c"\n#include "native.c"\n')
         assembly = work / 'euclid_seq.s'
         subprocess.run(['m68k-elf-gcc', *FLAGS, '-I', str(here), '-S', str(unity), '-o', str(assembly)], check=True)
         args.output.write_text(assembly.read_text() + '\n#APP\n' + (here / 'hooks.s').read_text())

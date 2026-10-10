@@ -1,7 +1,7 @@
 # Euclid Seq testing
 
-Proof level: **PORT** for the behaviours listed under Emulator; **untested**
-on hardware. Nothing below is a hardware result.
+Proof level: **PORT** for the behaviours listed under Emulator; functional
+MKII reports for earlier images are under Hardware, recorded as reported.
 
 ## Host gate
 
@@ -10,6 +10,13 @@ compiler matches an independent Python formulation on 633,984 settings
 (lengths 1–64, all pulse counts, sampled rotations, all four operators) and
 13 hand-checked patterns, including E(3,8) `x..x..x.`, E(5,8) `x.x.xx.x` and
 `XOR` of E(4,8) and E(3,8) `..xxx...`. Passed 9 October 2026.
+
+The same gate compiles `proj.c`: 11,960 random entries at 305 bank, pattern
+and track positions format to a `#EUCLID_SEQ=` line and parse back to the
+same bytes; two sample lines match byte for byte; default entries write no
+line; 17 malformed or foreign lines (bad bank, pattern, track, EUC flag,
+range, field count, trailing characters, Play Modes' key) are ignored.
+Passed 9 October 2026.
 
 ## Emulator
 
@@ -76,10 +83,50 @@ leaving grid recording or EUC off sends `44 00 00` (stock red at brightness
 2). The emulator does not render colour: the physical colour is not
 verified.
 
+### Saving with the project (emulator)
+
+Same `make bus` build, MKII panel, a 64 MB card image with an empty set
+OCTABAM, driven through the panel; battery RAM read back through the
+emulator. 15/15 passed on 9 October 2026:
+
+- Settings on A01 T1 (EUC on, PL1 5, XOR), A01 T2 (EUC off, PL2 3, RO2 2)
+  and A02 T1 (EUC on, PL1 3); FUNC+PROJECT saves the new project, PROJECT >
+  SAVE writes `project.strd` with exactly three `#EUCLID_SEQ=` lines
+  (`A01:1:1,5,0,0,0,0,1`, `A01:2:0,4,3,0,2,0,0`, `A02:1:1,3,0,0,0,0,0`).
+- Later edits (T1 PL1 7, which regenerates T1; T3 EUC on), then PROJECT >
+  RELOAD: settings and trigs equal the saved ones again.
+- Power cycle in the emulator: a new process with the saved card and the
+  1 MB battery RAM (`--cs1-in`), no LOAD PROJECT posted (`--no-post`):
+  the settings equal the saved ones at start and 7 s later, the trigs too,
+  and knob A on the page still regenerates T1 (PL1 6, `0x4949`).
+- A new process with empty battery RAM and an explicit LOAD PROJECT: the
+  settings come from the file, the trigs from the banks.
+- The stock 1.40C image loads the same project: its trigs load and the
+  card log shows no project error (it ignores the lines).
+- A project saved by stock firmware (no lines), loaded on this build with
+  the earlier battery RAM: every setting reads as the default (EUC off).
+
+Composition: a `make bus` build with Euclid Seq, Play Modes and Scale
+Quantizer links (the loader and writer sites differ). In it, a saved project
+holds the quantizer's `#SEQUENCER_SCALE=`, `#SEQUENCER_ROOT=`,
+`#SYNTH_GLIDE=` lines and ours, and reloads our setting on a fresh battery
+RAM. No Play Modes line was written (no play mode was changed), so its
+line was not read back.
+
+Found and fixed during these runs: `m68k-elf-gcc` compiled the entry copy
+in `es_project_line` to `move.b (%a0)+,(%a0,%d0.l)`, which the emulator
+executes with the incremented `a0`, writing each loaded entry one byte late.
+The copy is now written field by field; no other instruction of that shape
+remains in `control.s`.
+
+An emulator power cycle is not a hardware power cycle: the unit's own
+battery RAM retention has not been tested (see Hardware).
+
 **Not verified in the emulator:** swing and track speed applied to generated
 trigs (they are stock trigs played by the stock sequencer, but the
-measurement attempted was unreliable), tempo changes during playback, pattern and
-bank changes, Part/project save and reload, power cycle, MIDI tracks.
+measurement attempted was unreliable), tempo changes during playback, bank
+changes, Part save and reload (no Part code is hooked; the settings are not
+Part data), MIDI tracks.
 
 ## Stock flows compared
 
@@ -90,6 +137,8 @@ length. RIGHT and LEFT in a stock TRACK TRIG EDIT changed nothing on 16- and
 slots and slices trig modes.
 
 ## Hardware
+
+VACEUCLID5 (saving with the project) has not run on hardware yet.
 
 ### 9 October 2026, MKII, bretth18 (functional report, VACEUCLID4)
 

@@ -4,6 +4,7 @@
  * Pattern-write, window and layer idioms follow VECTOR and Analog BD
  * (Sam Banks' MIT octabam editor tooling). Addresses: see README.md. */
 #include "gen.h"
+#include "proj.h"
 
 #define U8(a) (*(volatile uint8_t *)(uintptr_t)(a))
 #define U32(a) (*(volatile uint32_t *)(uintptr_t)(a))
@@ -22,12 +23,36 @@
 #define TTE_ROW 0x460e73e4u       /* its selected row; 0 = TRIGS */
 #define SCREEN_DIRTY 0x46c7c72cu
 
-#define F_EUC 0x01u
-#define F_INIT 0x80u
-enum { E_FLAGS, E_PL1, E_PL2, E_RO1, E_RO2, E_TRO, E_OP, E_SIZE = 8 };
 
-/* Runtime settings per bank, pattern and audio track. Not project data. */
-static uint8_t settings[16 * 16 * 8][E_SIZE] = {{0}};
+/* Settings per bank, pattern and audio track, kept in battery RAM so they
+ * survive a power cycle (which reads no project file), and in the project
+ * file's "#EUCLID_SEQ=" lines (es_project_*). Stock references nothing in
+ * battery RAM 0x100f859c..0x100fff00 (Play Modes INVESTIGATION.md); Play
+ * Modes owns 0x100f8600..0x100f8f06. This table: 'E' 'S' 'N' '1', 12 bytes
+ * reserved, then 2,048 entries of 8 bytes, 0x100f9000..0x100fd010. */
+#define NV_BASE 0x100f9000u
+#define NV_TABLE (NV_BASE + 16u)
+#define NV_ENTRIES ES_ENTRIES
+static const char nv_magic[4] = { 'E', 'S', 'N', '1' };
+
+static uint8_t *slot(unsigned index) {
+    return (uint8_t *)(uintptr_t)(NV_TABLE + index * E_SIZE);
+}
+
+/* Every entry back to "never set" (the defaults). */
+static void nv_clear(void) {
+    volatile uint8_t *p = (volatile uint8_t *)(uintptr_t)NV_TABLE;
+    for (unsigned k = 0; k < NV_ENTRIES * E_SIZE; ++k) p[k] = 0;
+    for (unsigned k = 0; k < 4; ++k) U8(NV_BASE + k) = (uint8_t)nv_magic[k];
+}
+
+/* A missing copy (first boot, cleared battery RAM, another firmware's data
+ * there) starts empty. */
+static void nv_ensure(void) {
+    for (unsigned k = 0; k < 4; ++k)
+        if (U8(NV_BASE + k) != (uint8_t)nv_magic[k]) { nv_clear(); return; }
+}
+
 static uint32_t es_window = 0;
 extern uint32_t es_page_layer[];
 static int bank_index(void) {
@@ -41,11 +66,9 @@ static uint8_t *entry(unsigned t) {
     int b = bank_index();
     unsigned p = U8(PATTERN_IDX);
     if (b < 0 || p >= 16 || t >= 8 || U32(MIDI_MODE)) return 0;
-    uint8_t *e = settings[((unsigned)b * 16 + p) * 8 + t];
-    if (!(e[E_FLAGS] & F_INIT)) {
-        e[E_FLAGS] = F_INIT; e[E_PL1] = 4; e[E_PL2] = 0;
-        e[E_RO1] = e[E_RO2] = e[E_TRO] = 0; e[E_OP] = ES_OP_OR;
-    }
+    nv_ensure();
+    uint8_t *e = slot(((unsigned)b * 16 + p) * 8 + t);
+    if (!(e[E_FLAGS] & F_INIT) || !es_entry_valid(e)) es_entry_defaults(e);
     return e;
 }
 
@@ -134,7 +157,9 @@ static unsigned euc_on(unsigned t) {
     int b = bank_index();
     unsigned p = U8(PATTERN_IDX);
     if (b < 0 || p >= 16 || t >= 8 || U32(MIDI_MODE)) return 0;
-    return settings[((unsigned)b * 16 + p) * 8 + t][E_FLAGS] & F_EUC;
+    nv_ensure();
+    const uint8_t *e = slot(((unsigned)b * 16 + p) * 8 + t);
+    return es_entry_valid(e) && (e[E_FLAGS] & F_INIT) && (e[E_FLAGS] & F_EUC);
 }
 
 /* Runs before each stock LED-row update. The MKII palette holds one colour
@@ -430,4 +455,47 @@ void es_knob(unsigned index, int delta) {
     e[field[index]] = (uint8_t)v;
     apply(t);
     draw();
+}
+
+/* ---- the project file ----------------------------------------------------
+ * One "#EUCLID_SEQ=" line per bank, pattern and track whose settings differ
+ * from the defaults (proj.c). The stock loader skips every line starting
+ * with '#' (0x400867aa), so the file still loads on stock firmware. */
+#define WRITE 0x400166b8u               /* write(file, buffer, length), the writer's a2 */
+
+/* The writer's stub (0x400888d2): every non-default entry to `file`. A
+ * failed write is not checked here; the stock line that follows checks its
+ * own. */
+void es_project_write(unsigned file) {
+    static char line[ES_LINE_MAX];
+    nv_ensure();
+    for (unsigned i = 0; i < NV_ENTRIES; ++i) {
+        const uint8_t *e = slot(i);
+        if (es_entry_default(e)) continue;
+        unsigned n = es_line_format(line, i, e);
+        ((int (*)(unsigned, const char *, unsigned))WRITE)(file, line, n);
+    }
+}
+
+/* The loader's head (0x400866e2): a storing pass (parse_only 0) starts from
+ * the defaults, so a project saved without the lines, or on stock
+ * firmware, loads with EUC off everywhere. */
+void es_project_begin(unsigned parse_only) {
+    if (!parse_only) nv_clear();
+}
+
+/* Every line the loader finishes (0x40088224, the loop's next-line point,
+ * reached by stock lines and by '#' lines alike). Ours set one entry on a
+ * storing pass; a malformed line is ignored. */
+void es_project_line(const char *line, unsigned parse_only) {
+    unsigned index;
+    uint8_t v[E_SIZE];
+    if (parse_only || es_line_parse(line, &index, v) != 2) return;
+    nv_ensure();
+    /* Field by field: m68k-elf-gcc compiled a copy loop here to
+       move.b (%a0)+,(%a0,%d0.l), whose destination the emulator computes
+       with the incremented a0, one byte off. */
+    uint8_t *e = slot(index);
+    e[0] = v[0]; e[1] = v[1]; e[2] = v[2]; e[3] = v[3];
+    e[4] = v[4]; e[5] = v[5]; e[6] = v[6]; e[7] = v[7];
 }
