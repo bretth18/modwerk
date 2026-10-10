@@ -138,7 +138,26 @@ slots and slices trig modes.
 
 ## Hardware
 
-VACEUCLID5 (saving with the project) has not run on hardware yet.
+### 9 October 2026, MKII, bretth18 (functional report, VACEUCLID5)
+
+Private image VACEUCLID5 (personal boot logo plus Euclid Seq, source
+`3dd9ad9`, main image SHA-256
+`921f7a9214f70dee7407a83d0c1b886d67b5b62ffdd84e2f40fba87d34b82fe9`), OS
+1.40C, Octatrack MKII. The tester reported that every step of the
+persistence checklist passed ("everything is working"):
+
+- Settings on A01 track 1 (EUC on, PL1 5, XOR), A01 track 2 (EUC off, PL2 3,
+  RO2 2) and A02 track 1 (EUC on, PL1 3), then PROJECT > SAVE.
+- Later edits (track 1 PL1 7, EUC on for track 3), then PROJECT > RELOAD:
+  the saved settings and their trigs came back, track 3 EUC off.
+- A real power cycle (off about 10 s, on with the same project): the
+  settings were restored without a project load, and knob A on track 1's
+  page still regenerated the pattern.
+- Loading another project and coming back: the settings came back.
+- A project saved on stock firmware loaded with EUC off on every track.
+
+Limitations: one unit and one session; Parts, bank changes, SAVE TO NEW,
+copy and paste, MIDI tracks and the MKI were not exercised.
 
 ### 9 October 2026, MKII, bretth18 (functional report, VACEUCLID4)
 

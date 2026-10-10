@@ -40,7 +40,7 @@
       "EUC settings are saved with the project (#EUCLID_SEQ= lines) and kept over a power cycle in battery RAM 0x100f9000..0x100fd010; they follow banks and patterns, not Parts, and do not follow pattern or track copy/paste. The EUCLID trig mode is runtime state like the stock trig mode and starts as TRACKS after a reboot.",
       "Purple trigs need the MKII panel; MKI trig LEDs stay stock.",
       "Audio tracks only; MIDI tracks are not supported.",
-      "Functional MKII reports for the page, purple trigs, blocking and the EUCLID trig mode (VACEUCLID2, VACEUCLID4); saving with the project is emulator-tested only; worst-case chip timing is unmeasured.",
+      "Functional MKII reports for the page, purple trigs, blocking and the EUCLID trig mode (VACEUCLID2, VACEUCLID4); saving with the project, RELOAD and a power cycle were reported working on MKII with VACEUCLID5; worst-case chip timing is unmeasured.",
       "Like every DRAM module, the build gives up about 10 MB of sample memory to the platform reserve."
     ],
     "effectId": null
@@ -89,7 +89,7 @@
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Host gates: the generator matches an independent formulation on 633,984 settings; project-file lines round-trip and malformed lines are ignored. Emulator: 34 scripted checks pass on MKII and MKI panels (page, EUC, blocking, locks, length follow, playback timing, the EUCLID trig mode, FUNC+RIGHT, trig shift) plus project save, reload, battery-RAM power cycle and stock compatibility checks. Functional MKII reports on VACEUCLID2 and VACEUCLID4.",
+    "summary": "Host gates: the generator matches an independent formulation on 633,984 settings; project-file lines round-trip and malformed lines are ignored. Emulator: 34 scripted checks pass on MKII and MKI panels (page, EUC, blocking, locks, length follow, playback timing, the EUCLID trig mode, FUNC+RIGHT, trig shift) plus project save, reload, battery-RAM power cycle and stock compatibility checks. Functional MKII reports on VACEUCLID2, VACEUCLID4 and VACEUCLID5 (saving with the project and a power cycle).",
     "hardwareStatus": "untested",
     "evidenceRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
     "gates": [
