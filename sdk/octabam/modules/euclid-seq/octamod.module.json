@@ -39,12 +39,12 @@
     "conflicts": [],
     "limitations": [
       "Deliberate stock-flow changes: TRIG MODE gets a seventh row, EUCLID, on audio tracks; in that mode FUNC+RIGHT opens the EUCLID page instead of shifting trigs in grid recording; RIGHT on TRACK TRIG EDIT's TRIGS row opens the page; with EUC on, the TRIG keys, live recording and the FUNC+LEFT/RIGHT trig shift do not place, remove or move trigs on that track; on MKII in grid recording the trig keys show those trigs purple; the project file gets #EUCLID_SEQ= lines (comments the stock loader skips).",
-      "EUC settings are saved with the project (#EUCLID_SEQ= lines) and kept over a power cycle in battery RAM 0x100f9000..0x100fd010; they follow banks and patterns, not Parts, and do not follow pattern or track copy/paste. The EUCLID trig mode is runtime state like the stock trig mode and starts as TRACKS after a reboot.",
-      "LFO destinations: LFO SETUP's PMTR continues past FX2 into six EUCLID destinations; the Part stores the LFO's own speed as a stock-safe placeholder and the module keeps the destination in battery RAM 0x100fd100..0x100fd710 and #EUCLID_LFO= project lines. Part reload, copy and paste do not carry it.",
+      "EUC settings are saved with the project (#EUCLID_SEQ= lines) and kept over a power cycle in battery RAM 0x100f9000..0x100fd010. They belong to their bank, pattern and track: track, pattern and TRACK TRIG EDIT TRIGS-row copy, paste, clear and undo carry or reset them. The EUCLID trig mode is runtime state like the stock trig mode and starts as TRACKS after a reboot.",
+      "LFO destinations: LFO SETUP's PMTR continues past FX2 into six EUCLID destinations; the Part stores the LFO's own speed as a stock-safe placeholder and the module keeps the destination in battery RAM 0x100fd100..0x100fd710 (saved Part copies 0x100fd800..0x100fde10) and #EUCLID_LFO= / #EUCLID_LFS= project lines. Track copy and paste, Part copy, paste, clear, undo, SAVE PART and RELOAD PART carry them; a project saved before the saved table existed loads with saved destinations equal to the working ones.",
       "A modulated EUC track's pulses are decided per step; added pulses play without locks (unless on a trigless lock trig) and firmware look-ahead (sample preload, slide searches) reads the stored pattern, not the live pulses.",
       "Purple trigs need the MKII panel; MKI trig LEDs stay stock.",
       "Audio tracks only; MIDI tracks are not supported.",
-      "Functional MKII reports for the page, purple trigs, blocking, the EUCLID trig mode (VACEUCLID2, VACEUCLID4) and saving with the project and a power cycle (VACEUCLID5); LFO destinations and live pulses are emulator-tested only; worst-case chip timing is unmeasured.",
+      "Functional MKII reports for the page, purple trigs, blocking, the EUCLID trig mode (VACEUCLID2, VACEUCLID4) and saving with the project and a power cycle (VACEUCLID5); LFO destinations and live pulses are emulator-tested only; worst-case chip timing is unmeasured; copy, paste, clear, undo, Part save and reload of the settings and destinations are emulator-tested only.",
       "Like every DRAM module, the build gives up about 10 MB of sample memory to the platform reserve."
     ],
     "effectId": null
@@ -57,7 +57,7 @@
       "value": null,
       "unit": "unknown",
       "method": "unmeasured",
-      "conditions": "Linked unit 13,085 bytes in the platform reserve (code 11,984, read-only 197, data 760, zeroed 144; source a178bfe build); battery RAM 16,400 bytes of settings (0x100f9000..0x100fd010) and 1,552 bytes of LFO destinations (0x100fd100..0x100fd710). One copy for every track, pattern and Part.",
+      "conditions": "Linked unit 13,085 bytes in the platform reserve (code 11,984, read-only 197, data 760, zeroed 144; source a178bfe build); battery RAM 16,400 bytes of settings (0x100f9000..0x100fd010) 1,552 bytes of LFO destinations (0x100fd100..0x100fd710) and 1,552 bytes of saved Part destinations (0x100fd800..0x100fde10). One copy for every track, pattern and Part.",
       "source": "TESTING.md"
     },
     "processing": {

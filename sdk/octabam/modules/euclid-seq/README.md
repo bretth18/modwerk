@@ -110,6 +110,26 @@ patterns, not Parts: saving or reloading a Part leaves them alone. A project
 saved without them (on stock firmware, or before this version) loads with
 EUC off on every track.
 
+**Copying.** The settings belong to their track and pattern, and the LFO
+destinations to their Part, as on the Analog Rytm, so they travel with the
+stock copy, paste and clear:
+
+- Track copy and paste (grid recording, FUNC+REC / FUNC+STOP) takes the
+  track's settings, and its Part's LFO destinations with the track's other
+  Part settings. If the pasted track has EUC on and its new length differs,
+  it is regenerated for that length. Track clear (FUNC+PLAY) turns EUC off
+  and resets the settings.
+- TRACK TRIG EDIT's TRIGS row copy, paste and clear do the same for the
+  settings (no Part data travels on that row).
+- Pattern copy, paste and clear move or reset all eight tracks' settings,
+  also across banks.
+- Part copy, paste and clear move or remove the Part's LFO destinations.
+  SAVE PART keeps them with the Part's saved copy, and RELOAD PART (menu or
+  FUNC+CUE) brings that copy back. Clearing a Part also clears its saved
+  copy, as stock does.
+- Pressing the paste or clear combination again (stock undo) brings the
+  previous settings and destinations back with the trigs.
+
 **LFO modulation.** With an LFO on a EUCLID destination, the sequencer
 asks the generator for each step as it plays, with the LFO's current value
 added to the setting: the rhythm moves in time with the LFO, at the
@@ -219,12 +239,10 @@ Euclid Seq changes these stock flows, only in a build that includes it.
 Octatrack MKI or MKII with base OS 1.40C; audio tracks. No module conflicts
 are declared.
 
-- LFO destinations follow bank, Part, track and LFO in the module's table.
-  RELOAD PART, Part copy and paste restore or copy the Part's placeholder
-  but not the table: by design, after a Part reload the LFO keeps the
-  destination last chosen in that Part, and a pasted Part's placeholder
-  shows as the LFO's own speed. Part reload, copy and paste were not
-  tested; only Part 1 was exercised in the emulator.
+- LFO destinations follow bank, Part, track and LFO in the module's table,
+  and the Part's saved copy has a second table. A project saved before the
+  saved table existed loads with each Part's saved destinations equal to
+  its working ones.
 - Modulation is decided per step on the sequencer task. The only look-ahead
   at upcoming trigs found on the sequencer's path is the slide search in the
   step evaluation; it takes the live pulses (see TESTING.md for the reader
@@ -233,7 +251,8 @@ are declared.
   sample preload ahead of an added pulse was not found and not tested. The
   EUCLID page's dials and the panel title show the settings as set, not the
   modulated values.
-- Battery RAM `0x100fd100..0x100fd710` holds the LFO destinations.
+- Battery RAM `0x100fd100..0x100fd710` holds the LFO destinations and
+  `0x100fd800..0x100fde10` their saved Part copies.
 - The EUCLID trig mode is runtime state, like the stock trig mode, and
   starts as TRACKS after a reboot. Its panel refreshes when the screen is
   redrawn (track or page change, closing the page), not after every trig
@@ -241,8 +260,9 @@ are declared.
 - EUC settings are saved with the project, not in the bank files: copying
   a project's banks to another project without its project file loses them
   (the trigs stay).
-- Copying, pasting or clearing a track or pattern moves trigs as usual; EUC
-  settings stay with their bank, pattern and track and do not follow.
+- Copy and paste follow stock's own clipboard and undo buffer, which hold
+  one thing at a time and do not survive a reboot; the module's copies are
+  the same.
 - Battery RAM `0x100f9000..0x100fd010` holds the settings. Stock references
   nothing there; Play Modes uses `0x100f8600..0x100f8f06`, so the two fit
   together. A future module using this range would conflict.
@@ -257,7 +277,7 @@ are declared.
 `gen.c` is the pure-integer generator. `native.c` holds the settings table,
 the pattern writer and the page; `hooks.s` the stubs and key layers.
 `proj.c` formats and parses the project file's lines. `prepare.py` compiles
-them into the checked-in `control.s`. Thirty-two guarded sites in OS 1.40C:
+them into the checked-in `control.s`. Forty-eight guarded sites in OS 1.40C:
 
 | Site | Stock role | Change |
 |---|---|---|
@@ -284,6 +304,14 @@ them into the checked-in `control.s`. Thirty-two guarded sites in OS 1.40C:
 | `0x4009d37c`, `0x4009d418` | step evaluation `0x4009d1e8`: mask 0 in the any-trig test and the sample-trig test | the modulated pulse on a modulated EUC track |
 | `0x4009d576`, `0x4009d5dc` | the step evaluation's slide search: masks 0 and 1 of the next candidate step | the live pulse on a modulated EUC track; the search always ends at the current step |
 | `0x40034df4` | grid LED painter, TRIGS state, mask-0 word | the live pulses while playing |
+| `0x40026ed4`, `0x40026f64`, `0x4002b9e2` | after the memcpy of a pattern into the clipboard, into the undo buffer, and from either into the pattern (copy, paste, clear, undo) | the eight tracks' settings follow (es_copied) |
+| `0x40029796`, `0x4002b69a`, `0x4002b436` | after the memcpy of an audio track into the clipboard or undo buffer, from either into the track, and from the undo buffer after a clear | the track's settings, and with a copy or paste its Part's three LFO destinations, follow |
+| `0x4002b6a8` | after a track paste's memcpy into the battery copy | an EUC track is regenerated for its new length |
+| `0x40029558`, `0x4002a42e` | after TRACK TRIG EDIT's trig-data memcpy (`0x800` lock bytes) into and out of the clipboard or undo buffer | the track's settings follow |
+| `0x40029358`, `0x4002931c`, `0x40029a84` | after the memcpy of a Part into the clipboard, into the undo buffer, and from either into the Part | the Part's LFO destinations follow |
+| `0x4004a946`, `0x4004ab36` | after Part save's and Part reload's memcpy between the Part and its saved copy | the saved destination table follows |
+| `0x40039df4` | audio track clear (pattern, track, what), entry | keeps the settings for undo; with the trigs cleared (bit 0) resets them |
+| `0x4004a9d0` | Part clear, entry | removes the Part's LFO destinations |
 
 The stock mode word `0x460d16f0` is never set to a seventh value: its 30
 references in 1.40C include unchecked table lookups, and none copies it into
@@ -299,6 +327,17 @@ its halfword to the centre (0x4000) and lets the stock arithmetic add depth
 × output; the step evaluation reads the offset from the centre. The page draws
 with the stock dial widget `0x400479b4`, text `0x40013904` and the AMP
 SETUP frame calls.
+
+The copy sites sit one instruction after each stock `memcpy` (`0x40020898`)
+returns, where its three arguments are still on the stack, so they compose
+with Play Modes, which detours several of those `memcpy` calls themselves.
+`memcpy` itself is not hooked: the boot code calls it before the platform
+loader has placed the module. `es_copied` recognises the bank RAM patterns,
+tracks, trig data and Parts, the clipboard `0x460c8122` and the undo buffer
+`0x460bf218` by address and size, and ignores every other copy. The module's
+own clipboard and undo copy are indexed by track. Observed in the emulator:
+after a track paste that regenerated an EUC track for a new length, pressing
+paste again pasted (and regenerated) again instead of undoing.
 
 The writer edits the RAM bank and the battery mirror `0x1001614e`, sets the
 stock dirty flags and calls the stock lock-index rebuild `0x400339d8` and

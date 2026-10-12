@@ -250,11 +250,77 @@ saving checks, 3/3 slide checks.
 **Not verified in the emulator:** swing and track speed applied to generated
 trigs (they are stock trigs played by the stock sequencer, but the
 measurement attempted was unreliable), tempo changes during playback, bank
-changes, Part save and reload (no Part code is hooked; the settings are not
-Part data), MIDI tracks; for LFO modulation: firmware look-ahead on the
-live pulses by STATIC sample preload, Parts
-other than Part 1, Part reload, copy and paste, scenes and locks on DEP,
+changes, MIDI tracks; for LFO modulation: firmware look-ahead on the
+live pulses by STATIC sample preload, scenes and locks on DEP,
 the LFO trig modes other than FREE, tempo changes.
+
+### Copy, paste, clear, undo, Part save and reload (emulator, 11 October 2026)
+
+Same harness, `make bus` development build of the sixteen copy sites
+(empty scratch card, project mounted). `t_copy` (54 checks, scratch
+script, never committed) drives the panel and reads the module's battery
+tables, the bank RAM, the battery mirror and the Part bytes:
+
+- Track copy and paste in grid recording (T1 with EUC on, PL1 7, LFO 1 on
+  EUC PL2, onto T2): T2 gets the settings, the trigs, the LFO destination
+  and the Part placeholder; pasting again undoes all four; pasting once more
+  restores them. Track clear turns EUC off and clears the trigs; clearing
+  again restores both and leaves the LFO destination and T1 alone.
+- TRACK TRIG EDIT TRIGS row: clear resets the settings, clearing again
+  restores them; copy T2 and paste onto T4 carries the settings and trigs,
+  pasting again undoes.
+- Pattern copy A01, paste on A02: all eight entries, the trigs and the
+  battery mirror; pattern clear resets the eight entries and leaves A01
+  alone; clearing again restores them. Copy A02, paste on B01 (another
+  bank): entries and trigs; clear B01 resets it.
+- Parts (bank B): SAVE PART copies the destination to the saved table;
+  after an unsaved change, FUNC+CUE and the menu's RELOAD bring the saved
+  destination back with its placeholder byte. Part copy B1, paste on B2:
+  destination and placeholder; pasting again undoes both; Part clear
+  removes the destination from B2 and its saved copy (stock clear saves);
+  clearing again restores it; B1 stays as it was.
+- PROJECT > SAVE writes `#EUCLID_LFO=` lines, the `#EUCLID_LFS=-` marker
+  and the saved line; a later change, then RELOAD, restores the working and
+  saved tables and every setting; a power cycle (battery RAM only) and a
+  fresh battery with LOAD PROJECT restore both tables.
+
+Results on the final image: 54/54 with the MKII panel; 54/54 on a build
+with Play Modes and the scale quantizer beside it (Play Modes detours some
+of the same `memcpy` calls one instruction earlier). With the MKI panel the
+first 50 checks pass (the Part window is FUNC+MIDI there and the Part menu
+FUNC+BANK inside it, `0x40058a64`); the four project checks were not run on
+the MKI because the harness's save path uses the MKII MENU key. `t_len`
+(5/5): a track pasted into a pattern of length 32 is regenerated over 32
+steps in RAM and in the battery mirror; pressing paste again then pastes
+again (observed) instead of undoing. The existing suites on the same image:
+34/34 regression checks on the MKII and the MKI panel, live recording holds
+`0x1111`, 10/10 LFO checks, 15/15 saving checks, 3/3 slide checks.
+
+**An emulator card stall, and what it was.** The LFO saving suite's first
+SAVE AS NEW stopped on this image (the screen stays on "SAVING AS NEW",
+frames stop). The emulator is deterministic, so the stall repeats at that
+exact input timing and goes away with a different one: it reproduced in 1
+of 6 timings on this image and 2 of 12 on an earlier build of this source,
+never in 16 timings of a development build without the copy sites or in 36 of the stock image. At
+the stall the ColdFire spins in stock's ATA interrupt handler at
+`0x4001551e`, waiting for DRQ with the firmware's sector count
+`0x46c8c592` at 1 while the card model has received every sector of the
+WRITE. Stock's WRITE path (`0x40014c48`) streams the first sector from
+the task and decrements the count only afterwards (`0x40014d4a`); the
+emulator raises the per-sector interrupt 8 samples (about 180 µs) after a
+sector is absorbed, so when the task is held off between the two (by the
+frame interrupt) the handler streams one sector early and then waits for a
+DRQ that never comes. No Euclid Seq routine runs in the half second before
+the stall (the bank file is being written). With `--ata-latency 40` the
+stalling timings complete, and the LFO saving suite passes 9/9 with
+`--ata-latency 16` and longer waits. On hardware this depends on the card's
+per-sector busy time; it was not seen there and was not tested there. Why the builds with the copy sites hit
+the timing in these samples and the others did not is not established;
+the copy sites are not on the frame or card path.
+
+The development build briefly kept its new clipboard in `.bss`, which a
+DRAM unit's loader never clears; every piece of module state is now an
+explicitly initialised variable.
 
 ## Stock flows compared
 
