@@ -211,37 +211,45 @@ def modulation(lib):
 
 
 def lfo_lines(lib):
-    lib.es_lfo_line_format.argtypes = (ctypes.c_char_p, ctypes.c_uint, ctypes.c_uint)
-    lib.es_lfo_line_parse.argtypes = (ctypes.c_char_p, ctypes.POINTER(ctypes.c_uint), ctypes.POINTER(ctypes.c_uint))
+    U = ctypes.POINTER(ctypes.c_uint)
+    lib.es_lfo_line_format.argtypes = (ctypes.c_char_p, ctypes.c_uint, ctypes.c_uint, ctypes.c_uint)
+    lib.es_lfo_line_parse.argtypes = (ctypes.c_char_p, U, U, U)
     failures = lines = 0
 
     def parse(text):
-        index, target = ctypes.c_uint(0), ctypes.c_uint(0)
-        r = lib.es_lfo_line_parse(text.encode(), ctypes.byref(index), ctypes.byref(target))
-        return r, index.value, target.value
+        index, target, saved = ctypes.c_uint(0), ctypes.c_uint(0), ctypes.c_uint(9)
+        r = lib.es_lfo_line_parse(text.encode(), ctypes.byref(index), ctypes.byref(target), ctypes.byref(saved))
+        return r, index.value, target.value, saved.value
 
-    for index in range(16 * 4 * 8 * 3):
-        for target in range(1, 7):
-            buf = ctypes.create_string_buffer(32)
-            n = lib.es_lfo_line_format(buf, index, target)
-            text = buf.value.decode()
-            lines += 1
-            if n != len(text) or not text.endswith("\r\n") or parse(text[:-2]) != (2, index, target):
-                failures += 1
-                if failures < 10: print(f"[FAIL] lfo line {index} {target}: {text!r}")
+    for saved in (0, 1):
+        for index in range(16 * 4 * 8 * 3):
+            for target in range(1, 7):
+                buf = ctypes.create_string_buffer(32)
+                n = lib.es_lfo_line_format(buf, index, target, saved)
+                text = buf.value.decode()
+                lines += 1
+                if n != len(text) or not text.endswith("\r\n") or parse(text[:-2]) != (2, index, target, saved):
+                    failures += 1
+                    if failures < 10: print(f"[FAIL] lfo line {index} {target} {saved}: {text!r}")
     buf = ctypes.create_string_buffer(32)
-    lib.es_lfo_line_format(buf, ((0 * 4 + 0) * 8 + 2) * 3 + 1, 4)
-    if buf.value != b"#EUCLID_LFO=A1:3:2:4\r\n":
-        failures += 1; print(f"[FAIL] sample lfo line {buf.value!r}")
+    for saved, want in ((0, b"#EUCLID_LFO=A1:3:2:4\r\n"), (1, b"#EUCLID_LFS=A1:3:2:4\r\n")):
+        lib.es_lfo_line_format(buf, ((0 * 4 + 0) * 8 + 2) * 3 + 1, 4, saved)
+        if buf.value != want:
+            failures += 1; print(f"[FAIL] sample lfo line {buf.value!r}")
     for text, want in (("#EUCLID_SEQ=A01:1:1,5,0,0,0,0,1", 0), ("#EUCLID_LFO=", 1), ("#EUCLID_LFO=Q1:1:1:1", 1),
                        ("#EUCLID_LFO=A5:1:1:1", 1), ("#EUCLID_LFO=A1:9:1:1", 1), ("#EUCLID_LFO=A1:1:4:1", 1),
                        ("#EUCLID_LFO=A1:1:1:0", 1), ("#EUCLID_LFO=A1:1:1:7", 1), ("#EUCLID_LFO=A1:1:1:1 ", 1),
-                       ("#EUCLID_LFO=P4:8:3:6", 2)):
+                       ("#EUCLID_LFO=P4:8:3:6", 2), ("#EUCLID_LFS=P4:8:3:6", 2), ("#EUCLID_LFS=-", 3),
+                       ("#EUCLID_LFO=-", 1), ("#EUCLID_LFS=-x", 1), ("#EUCLID_LFS=", 1), ("#EUCLID_LF", 0),
+                       ("#EUCLID_LFX=A1:1:1:1", 0)):
         if parse(text)[0] != want:
             failures += 1; print(f"[FAIL] lfo parse {text!r}")
+    m = (ctypes.c_char * 16).in_dll(lib, "es_lfs_marker").value
+    if m != b"#EUCLID_LFS=-\r\n" or len(m) != 15 or parse(m.decode()[:-2])[0] != 3:
+        failures += 1; print(f"[FAIL] saved-table marker {m!r}")
     if failures:
         raise SystemExit(f"[FAIL] euclid-seq LFO lines: {failures} mismatches")
-    print(f"[OK] euclid-seq LFO lines: {lines} lines round-trip; malformed lines handled")
+    print(f"[OK] euclid-seq LFO lines: {lines} lines round-trip (working and saved Part copy); marker and malformed lines handled")
 
 
 if __name__ == "__main__":

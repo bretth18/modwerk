@@ -73,12 +73,14 @@ unsigned es_line_parse(const char *line, unsigned *index, uint8_t v[E_SIZE]) {
     return 2;
 }
 
-static const char lkey[] = "#EUCLID_LFO=";
+static const char lkey[] = "#EUCLID_LFO=", skey[] = "#EUCLID_LFS=";
 #define LKEY_LEN (sizeof lkey - 1)
+const char es_lfs_marker[] = "#EUCLID_LFS=-\r\n";
 
-unsigned es_lfo_line_format(char *out, unsigned index, unsigned target) {
+unsigned es_lfo_line_format(char *out, unsigned index, unsigned target, unsigned saved) {
     unsigned n = 0, lfo = index % 3, track = index / 3 % 8, part = index / 24 % 4, bank = index / 96 % 16;
-    for (; n < LKEY_LEN; ++n) out[n] = lkey[n];
+    const char *key = saved ? skey : lkey;
+    for (; n < LKEY_LEN; ++n) out[n] = key[n];
     out[n++] = (char)('A' + bank);
     out[n++] = (char)('1' + part);
     out[n++] = ':';
@@ -93,10 +95,16 @@ unsigned es_lfo_line_format(char *out, unsigned index, unsigned target) {
     return n;
 }
 
-unsigned es_lfo_line_parse(const char *line, unsigned *index, unsigned *target) {
-    for (unsigned k = 0; k < LKEY_LEN; ++k)
-        if (line[k] != lkey[k]) return 0;
+unsigned es_lfo_line_parse(const char *line, unsigned *index, unsigned *target, unsigned *saved) {
+    unsigned k, s = 1;
+    for (k = 0; k < LKEY_LEN && line[k] == skey[k]; ++k) {}
+    if (k < LKEY_LEN) {
+        s = 0;
+        for (k = 0; k < LKEY_LEN; ++k)
+            if (line[k] != lkey[k]) return 0;
+    }
     const char *p = line + LKEY_LEN;
+    if (s && p[0] == '-' && !p[1]) return 3;
     if (p[0] < 'A' || p[0] > 'P' || p[1] < '1' || p[1] > '4' || p[2] != ':'
         || p[3] < '1' || p[3] > '8' || p[4] != ':' || p[5] < '1' || p[5] > '3'
         || p[6] != ':' || p[7] < '1' || p[7] > '0' + (char)ES_LFO_TARGETS || p[8])
@@ -104,5 +112,6 @@ unsigned es_lfo_line_parse(const char *line, unsigned *index, unsigned *target) 
     *index = (((unsigned)(p[0] - 'A') * 4 + (unsigned)(p[1] - '1')) * 8 + (unsigned)(p[3] - '1')) * 3
         + (unsigned)(p[5] - '1');
     *target = (unsigned)(p[7] - '0');
+    *saved = s;
     return 2;
 }

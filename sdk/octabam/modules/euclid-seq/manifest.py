@@ -2,7 +2,7 @@
 
 The generator writes the current pattern's real trig mask, so the stock
 sequencer plays the result with its own tempo, track speed, swing, locks and
-conditions; no clock is added. Thirty-two guarded sites:
+conditions; no clock is added. Forty-eight guarded sites:
 
 - TRACK TRIG EDIT's key layer is pushed and popped through one operand each
   (0x4007c0a8, 0x4007b48c). Both name a module copy of that layer: the
@@ -37,6 +37,17 @@ conditions; no clock is added. Thirty-two guarded sites:
   (0x4009d37c, 0x4009d418); on a modulated EUC track both take the
   modulated generator's pulse instead of the stored trig. The grid LED
   painter's TRIGS word (0x40034df4) shows the live pulses while playing.
+
+- Copies: the settings follow their track, pattern and Part through stock
+  copy, paste, clear and undo, and LFO destinations through Part save and
+  reload. Fourteen sites sit on the instruction after a stock memcpy of a
+  pattern, track, TRACK TRIG EDIT trig data or Part returns (0x40026ed4,
+  0x40026f64, 0x4002b9e2, 0x40029796, 0x4002b69a, 0x4002b6a8, 0x4002b436,
+  0x40029558, 0x4002a42e, 0x40029358, 0x4002931c, 0x40029a84, 0x4004a946,
+  0x4004ab36): its (dst, src, n) are still on the stack. Play Modes
+  detours some of those memcpy calls themselves, just before, so the two
+  compose. The audio track clear (0x40039df4) and the Part clear
+  (0x4004a9d0) reset what they clear at their entries.
 
 Settings live in battery RAM 0x100f9000..0x100fd010 (a power cycle reads
 no project file) and in the project file's "#EUCLID_SEQ=" lines:
@@ -127,6 +138,38 @@ MODULE = Module(
                "euclid-seq", "es_fmt_stub", "PMTR formatter: EUC PL1..OP", pad_to=8),
         Detour(0x400503c4, stock_guard(0x400503c4, 8, "91fea154aed7ca7f7aed1e03380f8eba791542d2f01b3f4a9b173e2dec9df118"),
                "euclid-seq", "es_fright_stub", "EUCLID mode: FUNC+RIGHT opens the EUCLID page", pad_to=8),
+        Detour(0x40026ed4, stock_guard(0x40026ed4, 8, "da2cb4d6518b5f01824c67892e93d73a3918c265b990c5b52754303ce22d1d29"),
+               "euclid-seq", "es_cp_pattern_out", "Pattern copy: the settings go to the module clipboard", pad_to=8),
+        Detour(0x40026f64, stock_guard(0x40026f64, 8, "06bd76523083bbbe6d37711d11ec7670e4108a5d73719ac40a26e1e92996545a"),
+               "euclid-seq", "es_cp_pattern_undo", "Pattern paste or clear: the settings go to the module undo copy", pad_to=8),
+        Detour(0x4002b9e2, stock_guard(0x4002b9e2, 10, "b47fd979c549207cae7620b7bda5f65d3c8ff242cb8fae12a44798328e2f77f4"),
+               "euclid-seq", "es_cp_pattern_in", "Pattern paste or undo: the settings come from the clipboard or undo copy", pad_to=10),
+        Detour(0x40029796, stock_guard(0x40029796, 10, "c7c30e8031c99deb5cf89200288de243d62231694a859bc5c58482162144ca4c"),
+               "euclid-seq", "es_cp_track_out", "Track copy, or a paste undo copy: the settings and LFO destinations go along", pad_to=10),
+        Detour(0x4002b69a, stock_guard(0x4002b69a, 10, "906440efd69f8005264f873a69807ec5042becb03f70c3ca66c6a973983ef4b2"),
+               "euclid-seq", "es_cp_track_in", "Track paste or undo: the settings and LFO destinations come along", pad_to=10),
+        Detour(0x4002b6a8, stock_guard(0x4002b6a8, 10, "a4c5733cc540969a33b55259af4910d57b5a90afdd9de9d32993324873ac9f65"),
+               "euclid-seq", "es_cp_track_mirror", "Track paste: an EUC track follows its new length", pad_to=10),
+        Detour(0x4002b436, stock_guard(0x4002b436, 10, "b05e5d2436ea16e5b51fcafa34041f61e74c669bb2b443f65c7189b68fa88d61"),
+               "euclid-seq", "es_cp_track_restore", "Track clear undo: the settings come back", pad_to=10),
+        Detour(0x40029558, stock_guard(0x40029558, 10, "bca3271d6668b92a4399607424cd6970b2d876a808b80e755d93e6e3b9338d08"),
+               "euclid-seq", "es_cp_trigs_out", "TRACK TRIG EDIT TRIGS row copy or undo copy: the settings go along", pad_to=10),
+        Detour(0x4002a42e, stock_guard(0x4002a42e, 8, "3e92663a56c056ccae33bad469a93fc735acd134dc93b6f3d4556dc8944560e4"),
+               "euclid-seq", "es_cp_trigs_in", "TRACK TRIG EDIT TRIGS row paste or undo: the settings come along", pad_to=8),
+        Detour(0x40029358, stock_guard(0x40029358, 8, "8de83e61d47cd63b65f41b4b803fbbfb4d033b94096ebdb9914ad230521da366"),
+               "euclid-seq", "es_cp_part_out", "Part copy: its LFO destinations go to the module clipboard", pad_to=8),
+        Detour(0x4002931c, stock_guard(0x4002931c, 8, "594eb185d92c4cae36e617dc47d5e68ff7e47f52e735a6625c0dfe9c01ed63b9"),
+               "euclid-seq", "es_cp_part_undo", "Part paste or clear: its LFO destinations go to the undo copy", pad_to=8),
+        Detour(0x40029a84, stock_guard(0x40029a84, 6, "49a3883a931e935c64b433487887fa5c6d92134f7fe6b4cf3a164629d86eae40"),
+               "euclid-seq", "es_cp_part_in", "Part paste or undo: its LFO destinations come along"),
+        Detour(0x4004a946, stock_guard(0x4004a946, 6, "f199e89e6f28f48a9645cec4e37965815ba767bcb59c9c3411b6829a87900446"),
+               "euclid-seq", "es_cp_part_save", "Part save: its LFO destinations go to the saved table"),
+        Detour(0x4004ab36, stock_guard(0x4004ab36, 6, "f199e89e6f28f48a9645cec4e37965815ba767bcb59c9c3411b6829a87900446"),
+               "euclid-seq", "es_cp_part_reload", "Part reload: its LFO destinations come back from the saved table"),
+        Detour(0x40039df4, stock_guard(0x40039df4, 8, "0c6d3f0bfd198ddc78800e6503eccdc6cbc5c442209d882244584eda864e93ca"),
+               "euclid-seq", "es_clear_stub", "Track clear: the settings back to the defaults (EUC off)", pad_to=8),
+        Detour(0x4004a9d0, stock_guard(0x4004a9d0, 8, "9b78b6778f56449ca9429e734d2140df96316ae0e9eea0b9d6eea089f82ddbd0"),
+               "euclid-seq", "es_part_clear_stub", "Part clear: its LFO destinations cleared", pad_to=8),
     ),
     gates=(Gate("modules/euclid-seq/verify.py", remix_arg=False),),
 )

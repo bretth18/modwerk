@@ -62,15 +62,18 @@ static int bank_index(void) {
     return b < 16 ? (int)b : -1;
 }
 
-static uint8_t *entry(unsigned t) {
+/* The edited bank's entry for pattern p, track t; repaired to the
+ * defaults when it was never set. */
+static uint8_t *entry_at(unsigned p, unsigned t) {
     int b = bank_index();
-    unsigned p = U8(PATTERN_IDX);
     if (b < 0 || p >= 16 || t >= 8 || U32(MIDI_MODE)) return 0;
     nv_ensure();
     uint8_t *e = slot(((unsigned)b * 16 + p) * 8 + t);
     if (!(e[E_FLAGS] & F_INIT) || !es_entry_valid(e)) es_entry_defaults(e);
     return e;
 }
+
+static uint8_t *entry(unsigned t) { return entry_at(U8(PATTERN_IDX), t); }
 
 static volatile uint8_t *pattern(void) {
     return (volatile uint8_t *)(uintptr_t)(U32(BANK_PTR) + U8(PATTERN_IDX) * PATTERN_STRIDE);
@@ -92,14 +95,16 @@ static void put(volatile uint8_t *rec, uint32_t mirror, unsigned off, uint8_t va
  * step exactly as the stock grid editor does: a placed trig clears the
  * step's other trig types and condition word; a removed trig also clears
  * its 32 lock bytes. Runs on the UI task (key/encoder handlers) only. */
-static int apply(unsigned t) {
-    uint8_t *e = entry(t);
+static unsigned length_at(volatile uint8_t *pat, unsigned t);
+
+static int apply_at(unsigned pattern_index, unsigned t) {
+    uint8_t *e = entry_at(pattern_index, t);
     if (!e || !(e[E_FLAGS] & F_EUC)) return 0;
     uint32_t bank = U32(BANK_PTR);
-    uint32_t off = U8(PATTERN_IDX) * PATTERN_STRIDE + t * TRACK_STRIDE;
+    uint32_t off = pattern_index * PATTERN_STRIDE + t * TRACK_STRIDE;
     volatile uint8_t *rec = (volatile uint8_t *)(uintptr_t)(bank + off);
     uint32_t mirror = SRAM_PATTERNS + off;
-    unsigned len = track_length(t), s, k;
+    unsigned len = length_at((volatile uint8_t *)(uintptr_t)(bank + pattern_index * PATTERN_STRIDE), t), s, k;
     if (!len) return 0;
     EsParams p = { (uint8_t)len, e[E_PL1], e[E_PL2], e[E_RO1], e[E_RO2], e[E_TRO], e[E_OP] };
     uint8_t mask[8];
@@ -137,6 +142,8 @@ static int apply(unsigned t) {
     }
     return changed;
 }
+
+static int apply(unsigned t) { return apply_at(U8(PATTERN_IDX), t); }
 
 /* PATTERN SCALE changed a length (pattern or track): follow it on every EUC
  * track of the pattern. Called from the length setter's stub, UI task. */
@@ -193,8 +200,8 @@ static unsigned lfo_target(unsigned t, unsigned l) {
 /* Per track and LFO: the routed output (stock parameter scale, centre
  * ES_MOD_FULL) and its destination (0 none). Written by the engine stubs
  * each frame, read by the step evaluation. */
-int16_t es_lfo_buf[24];
-uint8_t es_lfo_tgt[24];
+int16_t es_lfo_buf[24] = { 0 };
+uint8_t es_lfo_tgt[24] = { 0 };
 
 /* Engine stubs (0x40003c98, 0x4000d032): LFO l of track t has its own speed
  * as destination. If the module's table names a EUCLID destination, return
@@ -292,6 +299,193 @@ unsigned es_pmtr_fmt(char *buf, int value) {
     buf[i] = 0;
     buf[5] = 'E'; buf[6] = 'U'; buf[7] = 'C'; buf[8] = 0;
     return 1;
+}
+
+/* ---- copy, paste, clear, undo, Part save and reload ---------------------
+ * The settings belong to the track, pattern and Part they are on, as on the
+ * Analog Rytm: they follow every stock copy of the data they describe. Stock
+ * moves patterns (0x8ed8 bytes), audio tracks (0x91a, plus the track's Part
+ * settings, its LFO bytes among them), a track's trig data (0x800 lock bytes
+ * at +0x59, TRACK TRIG EDIT's TRIGS row) and Parts (0x18b2) with memcpy
+ * between the banks, the clipboard 0x460c8122 and the undo buffer
+ * 0x460bf218. hooks.s calls es_copied right after each of those copies
+ * returns, with its (dst, src, n). The module keeps a clipboard and an undo
+ * copy of its own, indexed by track, beside stock's. Clears reset through
+ * es_track_clear and es_part_clear. Part save copies a Part's destinations
+ * to a saved table and reload copies them back: 'E' 'S' 'S' '1', 12 bytes
+ * reserved, then 1,536 bytes, battery RAM 0x100fd800..0x100fde10. */
+#define CLIPBOARD 0x460c8122u
+#define UNDO_BUFFER 0x460bf218u
+#define TRIG_BUFFER_OFF 0x28u    /* the 0x800 lock bytes inside either buffer */
+#define TRIG_REC_OFF 0x59u       /* ... and inside a track */
+#define PART_STRIDE 0x18b2u
+#define PARTS_OFF 0x8ed80u       /* the bank's four Parts */
+#define SAVED_PARTS_OFF 0x9504au /* their saved copies */
+#define PART_OF_PATTERN 0x8e57u
+#define NS_BASE 0x100fd800u
+#define NS_TABLE (NS_BASE + 16u)
+static const char ns_magic[4] = { 'E', 'S', 'S', '1' };
+
+static void ns_clear(void) {
+    volatile uint8_t *p = (volatile uint8_t *)(uintptr_t)NS_TABLE;
+    for (unsigned k = 0; k < ES_LFO_ENTRIES; ++k) p[k] = 0;
+    for (unsigned k = 0; k < 4; ++k) U8(NS_BASE + k) = (uint8_t)ns_magic[k];
+}
+
+static void ns_ensure(void) {
+    for (unsigned k = 0; k < 4; ++k)
+        if (U8(NS_BASE + k) != (uint8_t)ns_magic[k]) { ns_clear(); return; }
+}
+
+/* (bank, Part, track) to the first of its three LFO bytes, working or saved. */
+static volatile uint8_t *lfo_row(unsigned saved, unsigned b, unsigned part, unsigned t) {
+    if (saved) ns_ensure(); else if (!nl_ok()) nl_clear();
+    return (volatile uint8_t *)(uintptr_t)((saved ? NS_TABLE : NL_TABLE) + ((b * 4 + part) * 8 + t) * 3);
+}
+
+/* Explicitly initialised: a DRAM unit's .bss is never loaded or cleared. */
+static uint8_t clip_e[8][E_SIZE] = { { 0 } }, undo_e[8][E_SIZE] = { { 0 } };
+static uint8_t clip_l[8][3] = { { 0 } }, undo_l[8][3] = { { 0 } };
+static uint8_t clip_t = 0, undo_t = 0;  /* the track a track-sized copy came from */
+
+enum { W_NONE, W_CLIP, W_UNDO, W_BANK, W_MIRROR };
+
+/* Where a copy of n bytes at a points. In the bank RAM: bank *b, pattern
+ * *p, track *t (patterns: 0), or Part *t with *p = 1 for a saved copy. */
+static unsigned where(uint32_t a, uint32_t n, unsigned *b, unsigned *p, unsigned *t) {
+    uint32_t buf = n == 0x800u ? TRIG_BUFFER_OFF : 0;
+    *b = *p = *t = 0;
+    if (a == CLIPBOARD + buf) return W_CLIP;
+    if (a == UNDO_BUFFER + buf) return W_UNDO;
+    if (n == TRACK_STRIDE && a >= SRAM_PATTERNS && a < SRAM_PATTERNS + 16u * PATTERN_STRIDE) {
+        uint32_t r = a - SRAM_PATTERNS, q = r % PATTERN_STRIDE;
+        if (q % TRACK_STRIDE || q / TRACK_STRIDE >= 8) return W_NONE;
+        *p = r / PATTERN_STRIDE; *t = q / TRACK_STRIDE;
+        return W_MIRROR;
+    }
+    if (a < BANK0 || a >= BANK0 + 16u * BANK_STRIDE) return W_NONE;
+    uint32_t r = a - BANK0, q;
+    *b = r / BANK_STRIDE; r %= BANK_STRIDE;
+    if (n == PART_STRIDE) {
+        unsigned saved = r >= SAVED_PARTS_OFF;
+        if (r < PARTS_OFF) return W_NONE;
+        r -= saved ? SAVED_PARTS_OFF : PARTS_OFF;
+        if (r % PART_STRIDE || r / PART_STRIDE >= 4) return W_NONE;
+        *p = saved; *t = r / PART_STRIDE;
+        return W_BANK;
+    }
+    if (r >= PARTS_OFF) return W_NONE;
+    *p = r / PATTERN_STRIDE; q = r % PATTERN_STRIDE;
+    if (n == PATTERN_STRIDE) return q ? W_NONE : W_BANK;
+    if (n == 0x800u) { if (q < TRIG_REC_OFF) return W_NONE; q -= TRIG_REC_OFF; }
+    if (q % TRACK_STRIDE || q / TRACK_STRIDE >= 8) return W_NONE;
+    *t = q / TRACK_STRIDE;
+    return W_BANK;
+}
+
+static uint8_t *slot_at(unsigned b, unsigned p, unsigned t) {
+    nv_ensure();
+    return slot((b * 16 + p) * 8 + t);
+}
+
+static void copy8(uint8_t *to, const uint8_t *from) {
+    /* Field by field, as es_project_line (the emulator's move.b (a0)+ quirk). */
+    to[0] = from[0]; to[1] = from[1]; to[2] = from[2]; to[3] = from[3];
+    to[4] = from[4]; to[5] = from[5]; to[6] = from[6]; to[7] = from[7];
+}
+
+static void copy3(volatile uint8_t *to, const volatile uint8_t *from) {
+    to[0] = from[0]; to[1] = from[1]; to[2] = from[2];
+}
+
+static unsigned part_of(unsigned b, unsigned p) {
+    return U8(BANK0 + b * BANK_STRIDE + p * PATTERN_STRIDE + PART_OF_PATTERN) & 3u;
+}
+
+/* The track's settings (and with lfo, its Part's LFO destinations) into the
+ * module's clipboard or undo copy, or back. */
+static void track_out(unsigned to, unsigned b, unsigned p, unsigned t, unsigned lfo) {
+    uint8_t (*e)[E_SIZE] = to == W_CLIP ? clip_e : undo_e;
+    uint8_t (*l)[3] = to == W_CLIP ? clip_l : undo_l;
+    copy8(e[t], slot_at(b, p, t));
+    if (lfo) copy3(l[t], lfo_row(0, b, part_of(b, p), t));
+    if (to == W_CLIP) clip_t = (uint8_t)t; else undo_t = (uint8_t)t;
+}
+
+static void track_in(unsigned from, unsigned b, unsigned p, unsigned t, unsigned lfo) {
+    unsigned k = (from == W_CLIP ? clip_t : undo_t) & 7u;
+    copy8(slot_at(b, p, t), (from == W_CLIP ? clip_e : undo_e)[k]);
+    if (lfo) copy3(lfo_row(0, b, part_of(b, p), t), (from == W_CLIP ? clip_l : undo_l)[k]);
+}
+
+void es_copied(uint32_t dst, uint32_t src, uint32_t n) {
+    unsigned db = 0, dp = 0, dt = 0, sb = 0, sp = 0, st = 0, t;
+    if (n != PATTERN_STRIDE && n != TRACK_STRIDE && n != PART_STRIDE && n != 0x800u) return;
+    unsigned to = where(dst, n, &db, &dp, &dt), from = where(src, n, &sb, &sp, &st);
+    if (to == W_NONE || from == W_NONE || (to == from && to != W_BANK)) return;
+    if (n == PART_STRIDE) {
+        /* Part copy, paste, undo, save (working to saved), reload (back). */
+        if (to == W_BANK && from == W_BANK) {
+            for (t = 0; t < 8; t++) copy3(lfo_row(dp, db, dt, t), lfo_row(sp, sb, st, t));
+        } else if (from == W_BANK && !sp) {
+            for (t = 0; t < 8; t++) copy3((to == W_CLIP ? clip_l : undo_l)[t], lfo_row(0, sb, st, t));
+        } else if (to == W_BANK && !dp && from != W_MIRROR) {
+            for (t = 0; t < 8; t++) copy3(lfo_row(0, db, dt, t), (from == W_CLIP ? clip_l : undo_l)[t]);
+        }
+        return;
+    }
+    if (to == W_MIRROR) {
+        /* A track paste or undo has reached the battery copy too: an EUC
+           track follows its new length, as after PATTERN SCALE. */
+        if (n == TRACK_STRIDE && from != W_BANK && bank_index() >= 0) apply_at(dp, dt);
+        return;
+    }
+    if (from == W_MIRROR) return;
+    if (n == PATTERN_STRIDE) {
+        for (t = 0; t < 8; t++) {
+            if (from == W_BANK && to == W_BANK) copy8(slot_at(db, dp, t), slot_at(sb, sp, t));
+            else if (from == W_BANK) track_out(to, sb, sp, t, 0);
+            else copy8(slot_at(db, dp, t), (from == W_CLIP ? clip_e : undo_e)[t]);
+        }
+        return;
+    }
+    /* A track (with its Part's LFO bytes) or TRACK TRIG EDIT's trig data. */
+    unsigned lfo = n == TRACK_STRIDE;
+    if (from == W_BANK && to == W_BANK) {
+        copy8(slot_at(db, dp, dt), slot_at(sb, sp, st));
+        if (lfo) copy3(lfo_row(0, db, part_of(db, dp), dt), lfo_row(0, sb, part_of(sb, sp), st));
+    } else if (from == W_BANK) track_out(to, sb, sp, st, lfo);
+    else track_in(from, db, dp, dt, lfo);
+}
+
+/* The audio track clear 0x40039df4(pattern, track, what) of the edited bank:
+ * a clear that takes the trigs (bit 0: CLEAR TRACK, CLEAR PATTERN, TRACK
+ * TRIG EDIT's TRIGS row) resets the settings to the defaults (EUC off).
+ * Each clear first keeps the settings as the undo copy, as stock keeps the
+ * track in its undo buffer. */
+void es_track_clear(unsigned p, unsigned t, unsigned what) {
+    int b = bank_index();
+    if (b < 0 || p >= 16 || t >= 8) return;
+    uint8_t *e = slot_at((unsigned)b, p, t);
+    copy8(undo_e[t], e);
+    /* The clear's undo goes through the same track restore as a paste's,
+       which also restores the LFO destinations: keep the current ones. */
+    copy3(undo_l[t], lfo_row(0, (unsigned)b, part_of((unsigned)b, p), t));
+    undo_t = (uint8_t)t;
+    if (!(what & 1)) return;
+    for (unsigned k = 0; k < E_SIZE; k++) e[k] = 0;
+}
+
+/* Part clear 0x4004a9d0(part): the edited bank's Part loses its EUCLID
+ * destinations; the save that ends the clear copies that to the saved
+ * table. */
+void es_part_clear(unsigned part) {
+    int b = bank_index();
+    if (b < 0 || part >= 4) return;
+    for (unsigned t = 0; t < 8; t++) {
+        volatile uint8_t *r = lfo_row(0, (unsigned)b, part, t);
+        r[0] = r[1] = r[2] = 0;
+    }
 }
 
 /* ---- purple trigs (MKII) ----------------------------------------------- */
@@ -476,7 +670,7 @@ void es_body(void) {
  * stock dial widget 0x400479b4(x, y, slot, value 0..127, flags, formatter,
  * surface) draws the box, the dial and the value (flags 8 = value shown). */
 static const char *const names[6] = { "PL1", "PL2", "LEN", "RO1", "RO2", "TRO" };
-static unsigned shown[6];
+static unsigned shown[6] = { 0 };
 static uint8_t es_from_tte = 0;
 
 static void fmt_value(char *buf, unsigned i) { number(buf, shown[i] > 99 ? 99 : shown[i]); }
@@ -621,7 +815,7 @@ void es_knob(unsigned index, int delta) {
  * failed write is not checked here; the stock line that follows checks its
  * own. */
 void es_project_write(unsigned file) {
-    static char line[ES_LINE_MAX];
+    static char line[ES_LINE_MAX] = { 0 };
     nv_ensure();
     for (unsigned i = 0; i < NV_ENTRIES; ++i) {
         const uint8_t *e = slot(i);
@@ -629,32 +823,45 @@ void es_project_write(unsigned file) {
         unsigned n = es_line_format(line, i, e);
         ((int (*)(unsigned, const char *, unsigned))WRITE)(file, line, n);
     }
-    if (!nl_ok()) return;
-    for (unsigned i = 0; i < ES_LFO_ENTRIES; ++i) {
-        unsigned k = U8(NL_TABLE + i);
-        if (!k || k > ES_LFO_TARGETS) continue;
-        unsigned n = es_lfo_line_format(line, i, k);
-        ((int (*)(unsigned, const char *, unsigned))WRITE)(file, line, n);
+    if (!nl_ok()) nl_clear();
+    ns_ensure();
+    for (unsigned saved = 0; saved < 2; ++saved) {
+        uint32_t table = saved ? NS_TABLE : NL_TABLE;
+        if (saved) ((int (*)(unsigned, const char *, unsigned))WRITE)(file, es_lfs_marker, ES_LFS_MARKER_LEN);
+        for (unsigned i = 0; i < ES_LFO_ENTRIES; ++i) {
+            unsigned k = U8(table + i);
+            if (!k || k > ES_LFO_TARGETS) continue;
+            unsigned n = es_lfo_line_format(line, i, k, saved);
+            ((int (*)(unsigned, const char *, unsigned))WRITE)(file, line, n);
+        }
     }
 }
 
 /* The loader's head (0x400866e2): a storing pass (parse_only 0) starts from
  * the defaults, so a project saved without the lines, or on stock
  * firmware, loads with EUC off everywhere. */
+static uint8_t lfs_seen = 0;
+
 void es_project_begin(unsigned parse_only) {
-    if (!parse_only) { nv_clear(); nl_clear(); }
+    if (!parse_only) { nv_clear(); nl_clear(); ns_clear(); lfs_seen = 0; }
 }
 
 /* Every line the loader finishes (0x40088224, the loop's next-line point,
  * reached by stock lines and by '#' lines alike). Ours set one entry on a
  * storing pass; a malformed line is ignored. */
 void es_project_line(const char *line, unsigned parse_only) {
-    unsigned index, target;
+    unsigned index, target, saved, r;
     uint8_t v[E_SIZE];
     if (parse_only) return;
-    if (es_lfo_line_parse(line, &index, &target) == 2) {
+    /* A project written before the saved table existed has no marker: its
+       Parts' saved copies take the working destinations. */
+    if ((r = es_lfo_line_parse(line, &index, &target, &saved)) >= 2) {
         if (!nl_ok()) nl_clear();
-        U8(NL_TABLE + index) = (uint8_t)target;
+        ns_ensure();
+        if (r == 3 || (saved && !lfs_seen)) { if (!lfs_seen) ns_clear(); lfs_seen = 1; }
+        if (r == 3) return;
+        if (!saved) U8(NL_TABLE + index) = (uint8_t)target;
+        if (saved || !lfs_seen) U8(NS_TABLE + index) = (uint8_t)target;
         return;
     }
     if (es_line_parse(line, &index, v) != 2) return;

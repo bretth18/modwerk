@@ -453,6 +453,146 @@ es_fright_stub:
         move.l 8(%sp),%d0
         jmp 0x400503cc
 
+| ---- copies, clears, Part save and reload (native.c es_copied) ------------
+| Each site is the instruction after a stock memcpy(dst, src, n) returns:
+| its three arguments are still at (sp), 4(sp), 8(sp). es_copy_args hands
+| them to es_copied; the site's stub then replays the displaced instructions.
+| Play Modes detours some of the memcpy calls themselves, just before these
+| sites, so the two compose.
+es_copy_args:
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        move.l 28(%sp),-(%sp)           | n
+        move.l 28(%sp),-(%sp)           | src
+        move.l 28(%sp),-(%sp)           | dst
+        jsr es_copied
+        lea 12(%sp),%sp
+        movem.l (%sp),%d0-%d1/%a0-%a1
+        lea 16(%sp),%sp
+        rts
+
+        .global es_cp_pattern_out, es_cp_pattern_undo, es_cp_pattern_in
+        .global es_cp_track_out, es_cp_track_in, es_cp_track_mirror, es_cp_track_restore
+        .global es_cp_trigs_out, es_cp_trigs_in
+        .global es_cp_part_out, es_cp_part_undo, es_cp_part_in, es_cp_part_save, es_cp_part_reload
+
+| 0x40026ed4: pattern copy, the pattern into the clipboard.
+es_cp_pattern_out:
+        jsr es_copy_args
+        moveq #14,%d0
+        move.l %d0,0x460d0ffa
+        jmp 0x40026edc
+| 0x40026f64: before a pattern paste or clear, the pattern into the undo buffer.
+es_cp_pattern_undo:
+        jsr es_copy_args
+        moveq #14,%d0
+        move.l %d0,0x460c80f0
+        jmp 0x40026f6c
+| 0x4002b9e2: pattern paste or undo, the clipboard or undo buffer into the pattern.
+es_cp_pattern_in:
+        jsr es_copy_args
+        move.l %d2,-(%sp)
+        move.l %d3,-(%sp)
+        addi.l #0x1001614e,%d4
+        jmp 0x4002b9ec
+| 0x40029796: track copy and a paste's undo copy, the track into either buffer.
+es_cp_track_out:
+        jsr es_copy_args
+        add.l %a2,%d2
+        movea.l %d2,%a0
+        adda.l #0x8e56,%a0
+        jmp 0x400297a0
+| 0x4002b69a: track paste or its undo, either buffer into the track.
+es_cp_track_in:
+        jsr es_copy_args
+        move.l %d4,-(%sp)
+        move.l %a3,-(%sp)
+        addi.l #0x1001614e,%d2
+        jmp 0x4002b6a4
+| 0x4002b6a8: ... and into its battery copy.
+es_cp_track_mirror:
+        jsr es_copy_args
+        add.l %a2,%d3
+        movea.l %d3,%a0
+        adda.l #0x8e56,%a0
+        jmp 0x4002b6b2
+| 0x4002b436: undo of a track clear, the undo buffer into the track.
+es_cp_track_restore:
+        jsr es_copy_args
+        pea 0x91a
+        pea 0x460bf218
+        jmp 0x4002b440
+| 0x40029558: TRACK TRIG EDIT's TRIGS row (copy, and the undo copy before a
+| paste or clear), the track's lock bytes into either buffer.
+es_cp_trigs_out:
+        jsr es_copy_args
+        pea 0x80
+        addi.l #0x89a,%d2
+        jmp 0x40029562
+| 0x4002a42e: its paste or undo, either buffer into the track.
+es_cp_trigs_in:
+        jsr es_copy_args
+        move.l %a2,%d5
+        addi.l #0x828,%d5
+        jmp 0x4002a436
+| 0x40029358: Part copy, the Part into the clipboard.
+es_cp_part_out:
+        jsr es_copy_args
+        moveq #17,%d0
+        move.l %d0,0x460d0ffa
+        jmp 0x40029360
+| 0x4002931c: before a Part paste or clear, the Part into the undo buffer.
+es_cp_part_undo:
+        jsr es_copy_args
+        moveq #17,%d0
+        move.l %d0,0x460c80f0
+        jmp 0x40029324
+| 0x40029a84: Part paste or undo, either buffer into the Part.
+es_cp_part_in:
+        jsr es_copy_args
+        movea.l 0x46c82456,%a0
+        jmp 0x40029a8a
+| 0x4004a946: Part save, the Part into its saved copy.
+es_cp_part_save:
+        jsr es_copy_args
+        pea 0x18b2
+        move.l %d2,-(%sp)
+        jmp 0x4004a94c
+| 0x4004ab36: Part reload, the saved copy into the Part.
+es_cp_part_reload:
+        jsr es_copy_args
+        pea 0x18b2
+        move.l %d2,-(%sp)
+        jmp 0x4004ab3c
+
+| 0x40039df4: the audio track clear (pattern, track, what), entry.
+        .global es_clear_stub, es_part_clear_stub
+es_clear_stub:
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        move.l 28(%sp),-(%sp)           | what
+        move.l 28(%sp),-(%sp)           | track
+        move.l 28(%sp),-(%sp)           | pattern
+        jsr es_track_clear
+        lea 12(%sp),%sp
+        movem.l (%sp),%d0-%d1/%a0-%a1
+        lea 16(%sp),%sp
+        lea -60(%sp),%sp
+        movem.l %d2-%d7/%a2-%a6,(%sp)
+        jmp 0x40039dfc
+| 0x4004a9d0: Part clear (part), entry; its save follows.
+es_part_clear_stub:
+        lea -16(%sp),%sp
+        movem.l %d0-%d1/%a0-%a1,(%sp)
+        move.l 20(%sp),-(%sp)           | part
+        jsr es_part_clear
+        addq.l #4,%sp
+        movem.l (%sp),%d0-%d1/%a0-%a1
+        lea 16(%sp),%sp
+        lea -16(%sp),%sp
+        movem.l %d2-%d3/%a2-%a3,(%sp)
+        jmp 0x4004a9d8
+
 | Constant tables, kept in .text: stock code names some of them through
 | lea operands, and .text links at the same address in every runtime,
 | with or without the browser's core logger.
