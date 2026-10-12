@@ -32,9 +32,15 @@ unsigned es_line_parse(const char *line, unsigned *index, uint8_t v[E_SIZE]);
 #define ES_LFO_TARGETS 6u
 
 /* "#EUCLID_LFO=A1:3:2:4\r\n": bank A, Part 1, track 3, LFO 2, target 4
- * (RO2). Returns the length. */
-unsigned es_lfo_line_format(char *out, unsigned index, unsigned target);
-/* 0: not our line. 1: ours but malformed. 2: valid, *index and *target set. */
-unsigned es_lfo_line_parse(const char *line, unsigned *index, unsigned *target);
+ * (RO2); with `saved` nonzero the same for the Part's saved copy, key
+ * "#EUCLID_LFS=". Returns the length. */
+unsigned es_lfo_line_format(char *out, unsigned index, unsigned target, unsigned saved);
+/* "#EUCLID_LFS=-\r\n": written before the saved copy's lines, so a project
+ * that has it holds the whole saved table. */
+extern const char es_lfs_marker[];
+#define ES_LFS_MARKER_LEN 15u
+/* 0: not our line. 1: ours but malformed. 2: valid, *index, *target and
+ * *saved set. 3: the saved table's marker. */
+unsigned es_lfo_line_parse(const char *line, unsigned *index, unsigned *target, unsigned *saved);
 
 #endif
