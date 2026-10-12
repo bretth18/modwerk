@@ -332,6 +332,16 @@ slots and slices trig modes.
 
 ## Hardware
 
+VACEUCLID8 (copy, paste, clear, undo, Part save and reload; source
+`5524fd1`, built from `personal` with the VAC startup artwork; main image
+SHA-256 `0ed556591dc2d081b43bc3608ac28d7800a2316588d1ffdd981c844761605384`,
+`.bin` `7315c9499ab35a6a3ebab3120f6e4c5758612c4acd39bae68514840029360bce`,
+`.syx` `0158e5eca9f877ee0d0e12145eb1344cc3e44d4d4d56c1978058e53e8aaf7e39`)
+has not run on hardware yet. In the emulator that exact image passed 34/34
+on the MKII and the MKI panel and 54/54 copy checks (MKII); it differs from
+the development image measured above only in the startup artwork. The
+`.syx` main section decodes back to the image.
+
 VACEUCLID7 (the slide look-ahead fix; source `a178bfe`, built from
 `personal` with the VAC startup artwork; main image SHA-256
 `66c011ea176afd05cf2f917ab02c36e80a200d17f1778bf35834722bbbccf168`,
