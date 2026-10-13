@@ -349,13 +349,40 @@ and length-setter events on the UI task.
 `verify.py` (host gate) compiles `gen.c` and compares 633,984 settings with an
 independent formulation (pulse *j* of *k* over *n* steps at ⌈j·n/k⌉), plus
 hand-checked patterns, and round-trips the project-file lines (`proj.c`).
-Emulator checks and their limits are in
-[TESTING.md](TESTING.md), with the first functional MKII report.
+In the emulator, scripted suites cover the page, the trig mode, blocking,
+locks, length changes, playback timing, saving with the project, a battery
+power cycle, LFO destinations, live pulses and copy, paste, clear, undo and
+Part save and reload, on the MKII and the MKI panel. Functional MKII reports
+cover VACEUCLID2, VACEUCLID4, VACEUCLID5 and VACEUCLID8; no stress run and no
+chip timing. Memory (38,888 bytes, all shared) and executed-instruction
+counts (at most 2,304 a frame with all 24 LFOs on EUCLID destinations) are in
+[TESTING.md](TESTING.md) and `evidence/performance.json`, with every limit.
 
 ## Screens and audio
 
-No captures are published yet; emulator captures will be added with the
-first release.
+Emulator LCD captures from the VACEUCLID8 image (MKII panel, stopped
+transport; `media/capture.json` has the plan and hashes). No audio is
+published.
+
+![TRIG MODE list with EUCLID selected](media/ot-trig-mode-euclid.png)
+
+Hold FUNC and press DOWN until TRIG MODE reaches EUCLID.
+
+![EUCLID mode panel, EUC off](media/ot-euclid-panel.png)
+
+The main screen's EUCLID panel before EUC is turned on.
+
+![EUCLID page with EUC on](media/ot-euclid-page.png)
+
+FUNC+RIGHT opens the EUCLID page; here EUC ON, PL1 5, PL2 3, RO2 2, XOR.
+
+![EUCLID mode panel, EUC on](media/ot-euclid-panel-on.png)
+
+After NO the panel shows 5:3, XOR, EUC ON and the generated trigs.
+
+![LFO SETUP with PMTR on EUC PL1](media/ot-lfo-setup-euc.png)
+
+LFO SETUP: PMTR turned past FX2 to EUC PL1, DEP 40.
 
 ## Authorship and licences
 

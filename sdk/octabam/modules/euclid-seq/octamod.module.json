@@ -44,37 +44,37 @@
       "A modulated EUC track's pulses are decided per step; added pulses play without locks (unless on a trigless lock trig) and firmware look-ahead (sample preload, slide searches) reads the stored pattern, not the live pulses.",
       "Purple trigs need the MKII panel; MKI trig LEDs stay stock.",
       "Audio tracks only; MIDI tracks are not supported.",
-      "Functional MKII reports for the page, purple trigs, blocking, the EUCLID trig mode (VACEUCLID2, VACEUCLID4) and saving with the project and a power cycle (VACEUCLID5); LFO destinations and live pulses are emulator-tested only; worst-case chip timing is unmeasured; copy, paste, clear, undo, Part save and reload of the settings and destinations are emulator-tested only.",
+      "Functional MKII reports for the page, purple trigs, blocking, the EUCLID trig mode (VACEUCLID2, VACEUCLID4), saving with the project and a power cycle (VACEUCLID5), and a short summary of card saves, copies and a power cycle (VACEUCLID8); LFO modulation, Part reload, undo and the MKI are emulator-tested only; worst-case chip timing is unmeasured.",
       "Like every DRAM module, the build gives up about 10 MB of sample memory to the platform reserve."
     ],
     "effectId": null
   },
   "resources": {
-    "recorded": "Not measured",
+    "recorded": "13 October 2026: emulator instruction counts and build memory; chip timing unmeasured",
     "storage": {
-      "label": "DRAM data",
-      "display": "Not measured",
-      "value": null,
-      "unit": "unknown",
-      "method": "unmeasured",
-      "conditions": "Linked unit 13,085 bytes in the platform reserve (code 11,984, read-only 197, data 760, zeroed 144; source a178bfe build); battery RAM 16,400 bytes of settings (0x100f9000..0x100fd010) 1,552 bytes of LFO destinations (0x100fd100..0x100fd710) and 1,552 bytes of saved Part destinations (0x100fd800..0x100fde10). One copy for every track, pattern and Part.",
+      "label": "DRAM data + battery RAM",
+      "display": "38,888 B: 19,384 B unit in DRAM + 19,504 B battery RAM",
+      "value": 38888,
+      "unit": "bytes",
+      "method": "static",
+      "conditions": "Code 18,820, read-only data 226, state 338 (SDRAM platform reserve); battery RAM settings 16,400, LFO destinations 1,552 and saved Part copies 1,552. All shared; no per-track copies. See TESTING.md, Memory.",
       "source": "TESTING.md"
     },
     "processing": {
       "label": "ColdFire processing",
-      "display": "Not measured",
-      "value": null,
-      "unit": "unknown",
-      "method": "unmeasured",
-      "conditions": "Runs only on key and knob events on the UI task, never per step or per sample. Not yet measured.",
+      "display": "≤ 2,304 instructions per audio frame (24 routed LFOs)",
+      "value": 2304,
+      "unit": "instructions/event",
+      "method": "emulator",
+      "conditions": "ot_emu instruction counts on VACEUCLID8 with all 24 LFOs on EUCLID destinations; equal to the static longest path. The sequencer step path adds up to 5,775 instructions a step for eight modulated tracks. Chip cycles not measured. See TESTING.md, Performance.",
       "source": "TESTING.md"
     },
     "impact": {
-      "conditions": "Knob turns on the EUCLID page with EUC on: one 64-step regeneration per event.",
+      "conditions": "Eight EUC tracks with all 24 LFOs on EUCLID destinations, playing in grid recording; knob turns on the EUCLID page regenerate one track.",
       "cpu": {
         "level": "minimal",
         "basis": "source-estimate",
-        "rationale": "Work happens only on key, knob and length-change events: one pass over at most 64 steps. Nothing runs per step or per sample.",
+        "rationale": "Every frame each LFO passes a short check (about 20 instructions, 96 when routed to a EUCLID destination); each step adds up to a few hundred instructions per modulated EUC track. Knob, copy and project events run on the UI task.",
         "source": "TESTING.md"
       },
       "dsp": {
@@ -86,26 +86,231 @@
       "memory": {
         "level": "low",
         "basis": "source-estimate",
-        "rationale": "A 16 KB settings table in free battery RAM and a few KB of code in the shared platform reserve; no per-instance copies.",
+        "rationale": "About 19 KB of code and state in the shared platform reserve and 19.5 KB of free battery RAM for the settings and LFO tables; no per-instance copies.",
         "source": "TESTING.md"
       }
     }
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Host gates: the generator matches an independent formulation on 633,984 settings; LFO modulation on 40,000 settings; project-file lines round-trip and malformed lines are ignored. Emulator: 34 scripted checks pass on MKII and MKI panels (page, EUC, blocking, locks, length follow, playback timing, the EUCLID trig mode, FUNC+RIGHT, trig shift) plus project save, reload, battery-RAM power cycle and stock compatibility checks, and LFO destinations, live pulses and stock-safety. Functional MKII reports on VACEUCLID2, VACEUCLID4 and VACEUCLID5 (saving with the project and a power cycle).",
-    "hardwareStatus": "untested",
-    "evidenceRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+    "summary": "Host gates: the generator matches an independent formulation on 633,984 settings; LFO modulation on 40,000 settings; project-file lines (settings, LFO destinations, saved Part copies) round-trip and malformed lines are ignored. Emulator on the VACEUCLID8 image and a byte-identical build of the merged source: 34/34 scripted checks on the MKII and the MKI panel, 54/54 copy, paste, clear, undo, Part save and reload checks on both panels, 15/15 saving checks on both, plus LFO destinations, live pulses, slide look-ahead and stock-safety checks. Functional MKII reports on VACEUCLID2, VACEUCLID4, VACEUCLID5 and VACEUCLID8 (card saves, a power cycle with copied tracks, patterns and Parts, playback and display). No stress run, no chip timing.",
+    "hardwareStatus": "reported",
+    "evidenceRevision": "5524fd1dd11c250b4caf47c803d2120bce87db48",
     "gates": [
       "modules/euclid-seq/verify.py"
-    ]
+    ],
+    "qualification": {
+      "moduleVersion": "0.1.0-experimental",
+      "sourceSha256": "f1185452b80a0a1d27f1dde9736f26cdb84cd766dc92ac7e8d5183784a1f5910",
+      "imageSha256": "0ed556591dc2d081b43bc3608ac28d7800a2316588d1ffdd981c844761605384",
+      "cycles": [
+        {
+          "processor": "coldfire",
+          "worstCase": 9216,
+          "maxConfiguration": 73728,
+          "maxInstances": 8,
+          "budget": 95779,
+          "unit": "cycles/event",
+          "method": "emulator",
+          "conditions": {
+            "parameterExtremes": "Every LFO on a EUCLID destination takes the module's routed path, the dearest one (96 executed instructions, equal to its static longest path); settings PL1 5-10, PL2 3, RO1 2 on all eight tracks, EUC on.",
+            "parameterModulation": "All 24 LFOs (3 per audio track) on EUCLID destinations PL1, RO1 and TRO with DEP raised, playing; LFOs on stock destinations take the cheaper unrouted path. Scenes and parameter locks do not reach this path.",
+            "modeSwitching": "Grid recording on while playing (the LED painter's live-pulse path also runs); EUCLID trig mode and page open and closed during setup. Part changes were exercised in the copy suite, not under this measurement.",
+            "maxLoad": "Eight audio tracks x three LFOs = 24 routed calls in every frame, measured over 8,276 frames (3 s). Cycles = executed instructions x 32 (allowance; chip cycles unmeasured); budget one 362.8 us frame at 264 MHz. The sequencer's step path (up to 5,775 instructions a step, another context) is measured separately in TESTING.md.",
+            "inputConditions": "No audio path: the module adds no DSP code and reads no audio. MIDI tracks are not supported and take no module path."
+          },
+          "report": "evidence/performance.json"
+        }
+      ],
+      "memory": {
+        "regions": [
+          {
+            "name": "Code (.text): C, stubs, key layers and constant tables",
+            "space": "sdram",
+            "words": 18820,
+            "wordBits": 8,
+            "bytes": 18820,
+            "scope": "shared"
+          },
+          {
+            "name": "Read-only data (.rodata): strings and small tables",
+            "space": "sdram",
+            "words": 226,
+            "wordBits": 8,
+            "bytes": 226,
+            "scope": "shared"
+          },
+          {
+            "name": "Initialised state (.data): page, clipboard, undo and LFO buffers",
+            "space": "sdram",
+            "words": 338,
+            "wordBits": 8,
+            "bytes": 338,
+            "scope": "shared"
+          },
+          {
+            "name": "Battery RAM settings table 0x100f9000..0x100fd010",
+            "space": "cpu-ram",
+            "words": 16400,
+            "wordBits": 8,
+            "bytes": 16400,
+            "scope": "shared"
+          },
+          {
+            "name": "Battery RAM LFO destinations 0x100fd100..0x100fd710",
+            "space": "cpu-ram",
+            "words": 1552,
+            "wordBits": 8,
+            "bytes": 1552,
+            "scope": "shared"
+          },
+          {
+            "name": "Battery RAM saved Part LFO destinations 0x100fd800..0x100fde10",
+            "space": "cpu-ram",
+            "words": 1552,
+            "wordBits": 8,
+            "bytes": 1552,
+            "scope": "shared"
+          }
+        ],
+        "perInstanceBytes": 0,
+        "sharedBytes": 38888,
+        "maxInstances": 8,
+        "totalBytes": 38888,
+        "conditions": "From the linked unit of the merged source build (m68k-elf-size -A out/platform/runtime/runtime.elf; .bss 0, every piece of state is explicitly initialised) and the module's battery-RAM layout; one table for every bank, pattern, Part and track, no per-track copies; no heap, DSP memory or cave space. The shared octabam loader and the platform's 10 MB DRAM reserve are not the module's own.",
+        "report": "TESTING.md"
+      },
+      "hardware": {
+        "kind": "functional",
+        "status": "reported",
+        "model": "MKII",
+        "testedOn": "2026-10-13",
+        "tester": "bretth18",
+        "sourceRevision": "5524fd1dd11c250b4caf47c803d2120bce87db48",
+        "imageSha256": "0ed556591dc2d081b43bc3608ac28d7800a2316588d1ffdd981c844761605384",
+        "summary": "On an Octatrack MKII the author loaded VACEUCLID8 and reported that three checks “seem correct”: project saves to the card including SAVE AS NEW (no save reported hanging); a copied Euclid track, a copied pattern and a copied Part with an EUC LFO destination came back after a save and a power cycle; pasted tracks played in time, the trig keys showed purple and the EUCLID page showed the pasted settings. Earlier images: page, purple trigs, blocking and the EUCLID trig mode (VACEUCLID2, VACEUCLID4), saving with the project and a power cycle (VACEUCLID5).",
+        "limitations": [
+          "A short summary report, not step-by-step results or a timed stress run; no audio or timing measurement.",
+          "One MKII; no MKI (MKI behaviour is emulator-only).",
+          "LFO modulation and live pulses were not separately reported on hardware beyond the VACEUCLID8 summary.",
+          "Number of saves, the exact copies made, Part reload, undo and cross-bank pattern copies were not reported.",
+          "No combination with other modules on the unit for this image; the emulator-only card-write stall in TESTING.md was not seen, which does not show it cannot occur."
+        ],
+        "report": "TESTING.md"
+      },
+      "documentation": {
+        "tutorial": {
+          "title": "Quick tutorial",
+          "steps": [
+            "Select track 1 with a sample. Hold FUNC and press DOWN until TRIG MODE shows EUCLID, then release FUNC.",
+            "Press FUNC+RIGHT to open EUCLID, then press YES: EUC ON writes four trigs on steps 1, 5, 9 and 13.",
+            "Turn A to PL1 5 and B to PL2 3, then turn LEVEL to XOR: steps where only one generator pulses keep a trig. Press PLAY to hear it.",
+            "Turn F to rotate the whole rhythm, then press NO: the EUCLID panel shows 5:3, XOR and the new trigs.",
+            "Hold FUNC and press LFO for LFO SETUP. With LFO 1 selected, turn A (PMTR) all the way right, then back until it shows EUC PL1; turn F (DEP) up and press NO. Press PLAY: the pulse count rises and falls with the LFO, and the trig LEDs follow it in grid recording. Turn DEP to 0 or YES on the EUCLID page (EUC off) to stop it."
+          ]
+        },
+        "screenshots": [
+          "media/ot-trig-mode-euclid.png",
+          "media/ot-euclid-page.png",
+          "media/ot-euclid-panel-on.png",
+          "media/ot-lfo-setup-euc.png"
+        ],
+        "screenshotStyle": "black-and-white"
+      }
+    }
   },
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
     "declaration": "Original code, icon and thumbnail by bretth18, MIT. Firmware addresses are cited from public module sources and read from the author's own OS; stock key handlers, strings and icon records are referenced by address, never copied. No Elektron firmware, extracted routines, tables or images are included."
   },
-  "media": [],
+  "media": [
+    {
+      "path": "media/ot-trig-mode-euclid.png",
+      "captureType": "emulator",
+      "caption": "On an audio track, hold FUNC and press DOWN until the TRIG MODE list reaches EUCLID, the seventh row after DELAY CTRL. Release FUNC to keep it.",
+      "alt": "TRIG MODE list over the main screen showing QUICK MUTE, DELAY CTRL and a highlighted EUCLID row with its icon.",
+      "credit": "Modwerk (headless capture); Euclid Seq by bretth18",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "Main screen, TRIG MODE list (FUNC + DOWN)",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "0ed556591dc2d081b43bc3608ac28d7800a2316588d1ffdd981c844761605384",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card, pattern A01, track 1, VACEUCLID8 image (Euclid Seq 0.1.0-experimental, source 5524fd1, with the author’s startup artwork)."
+      }
+    },
+    {
+      "path": "media/ot-euclid-panel.png",
+      "captureType": "emulator",
+      "caption": "In the EUCLID trig mode the main screen shows the EUCLID panel. Here EUC is still OFF: the track plays its trigs as usual. Press FUNC+RIGHT to open the EUCLID page.",
+      "alt": "Main screen of pattern A01 with a panel titled EUCLID reading EUC OFF above an empty step bar.",
+      "credit": "Modwerk (headless capture); Euclid Seq by bretth18",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "Main screen, EUCLID mode panel",
+        "shows": "location",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "0ed556591dc2d081b43bc3608ac28d7800a2316588d1ffdd981c844761605384",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card, pattern A01, track 1, VACEUCLID8 image (Euclid Seq 0.1.0-experimental, source 5524fd1, with the author’s startup artwork)."
+      }
+    },
+    {
+      "path": "media/ot-euclid-page.png",
+      "captureType": "emulator",
+      "caption": "On the EUCLID page, YES turns EUC on and the knobs set the rhythm: A PL1, B PL2, D RO1, E RO2, F TRO, LEVEL the operator; C shows the track length. Try PL1 5, PL2 3, RO2 2 with XOR for an uneven 16-step groove.",
+      "alt": "EUCLID page: EUC ON, OP XOR, step bar, and dials PL1 5, PL2 3, LEN 16, RO1 0, RO2 2, TRO 0.",
+      "credit": "Modwerk (headless capture); Euclid Seq by bretth18",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "EUCLID page (FUNC + RIGHT)",
+        "shows": "location-and-controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "0ed556591dc2d081b43bc3608ac28d7800a2316588d1ffdd981c844761605384",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card, pattern A01, track 1, VACEUCLID8 image (Euclid Seq 0.1.0-experimental, source 5524fd1, with the author’s startup artwork)."
+      }
+    },
+    {
+      "path": "media/ot-euclid-panel-on.png",
+      "captureType": "emulator",
+      "caption": "Press NO to close the page. The panel shows the pulse counts (5:3), the operator and EUC ON, and its bar shows the generated trigs, which the stock sequencer plays.",
+      "alt": "Main screen with the EUCLID panel reading 5:3, XOR and EUC ON above a step bar of generated trigs.",
+      "credit": "Modwerk (headless capture); Euclid Seq by bretth18",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "Main screen, EUCLID mode panel",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "0ed556591dc2d081b43bc3608ac28d7800a2316588d1ffdd981c844761605384",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card, pattern A01, track 1, VACEUCLID8 image (Euclid Seq 0.1.0-experimental, source 5524fd1, with the author’s startup artwork)."
+      }
+    },
+    {
+      "path": "media/ot-lfo-setup-euc.png",
+      "captureType": "emulator",
+      "caption": "To move the rhythm, open LFO SETUP with FUNC+LFO, turn PMTR past the FX2 parameters to EUC PL1 and raise DEP. The pulse count then follows the LFO while the pattern plays; DEP 0 stops it.",
+      "alt": "LFO SETUP with LFO 1 selected, PMTR reading EUC PL1, a triangle wave, TRIG FREE and DEP 40.",
+      "credit": "Modwerk (headless capture); Euclid Seq by bretth18",
+      "license": "LicenseRef-OT-UI-Documentation",
+      "source": "original",
+      "otUi": {
+        "page": "LFO SETUP (FUNC + LFO), PMTR",
+        "shows": "controls",
+        "firmware": "1.40C",
+        "moduleVersion": "0.1.0-experimental",
+        "imageSha256": "0ed556591dc2d081b43bc3608ac28d7800a2316588d1ffdd981c844761605384",
+        "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card, pattern A01, track 1, VACEUCLID8 image (Euclid Seq 0.1.0-experimental, source 5524fd1, with the author’s startup artwork)."
+      }
+    }
+  ],
   "access": {
     "location": "Audio track: FUNC+UP/DOWN (TRIG MODE) chooses EUCLID; FUNC+RIGHT then opens the EUCLID page. Also RIGHT on TRACK TRIG EDIT's TRIGS row.",
     "steps": [
@@ -114,6 +319,11 @@
       "Press FUNC+RIGHT to open the EUCLID page; press YES to turn EUC on.",
       "Press NO to close the page. In grid recording, FUNC+BANK then RIGHT on the TRIGS row opens it too."
     ],
-    "screenshots": []
+    "screenshots": [
+      "media/ot-trig-mode-euclid.png",
+      "media/ot-euclid-page.png",
+      "media/ot-euclid-panel-on.png",
+      "media/ot-lfo-setup-euc.png"
+    ]
   }
 }

@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "module": "euclid-seq",
+  "version": "0.1.0-experimental",
+  "kind": "coldfire",
+  "cycles": {
+    "unit": "cycles/event",
+    "static": 73728,
+    "measured": 73728,
+    "budget": 95779,
+    "method": "Event: one 362.8 us audio frame's LFO-engine work, the module's only per-frame path (the frame builder's engine copy at 0x4000d032 runs 24 times a frame, one per audio track and LFO). Static: the stub's longest path is 96 executed instructions including es_lfo_route (longest path over the linked unit's control-flow graph, m68k-elf-objdump of out/platform/runtime/runtime.elf, scratch tool), so 24 x 96 = 2,304 instructions a frame. Measured: ot_emu instruction counter between the site and its resume address on the VACEUCLID8 image (0ed55659...1605384), all 8 audio tracks EUC on with all 24 LFOs on EUCLID destinations, playing in grid recording for 3 s (8,276 frames): every call 96, worst 24 consecutive calls 2,304. Cycles = instructions x 32, the per-instruction allowance Play Modes uses; chip cycles are not measured. Budget: one frame at 264 MHz. Not in this event: the sequencer's step path (another stack; up to 5,775 executed instructions a step measured for 8 modulated tracks, static bound not established because the stock slide search's iteration count is not bounded here) and UI-task events (knob, copy, project lines); see TESTING.md, Performance."
+  },
+  "load": {
+    "frameUs": 362.8,
+    "stockLongestUs": null,
+    "moduleLongestUs": null,
+    "stockIdlePercent": null,
+    "moduleIdlePercent": null,
+    "method": "Not measured. cfmeter.py decodes the CF METER insert's readout from a capture of track 8; that insert (modules/cfmeter) is not in this repository and no hardware capture exists, so no stock or module interrupt and idle figures were taken. No model values substituted."
+  },
+  "stress": {
+    "floodMessagesPerSecond": null,
+    "clockBpm": null,
+    "seconds": null,
+    "stuckNotes": null,
+    "hangs": null,
+    "dropped": null,
+    "droppedExplanation": "Not run. No wire-rate MIDI flood with stop, Part change and counting was made on hardware or in the emulator for this module; Euclid Seq handles no MIDI messages itself. The emulator runs listed in TESTING.md (8 tracks, 24 LFOs on EUCLID destinations, playing) found no hang, but they are not this stress run."
+  }
+}
