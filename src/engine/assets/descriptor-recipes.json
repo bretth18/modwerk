@@ -3385,7 +3385,7 @@
       ]
     }
   ],
-  "sourceCommit": null,
+  "sourceCommit": "7bcbafc28e91843667e03f99c91e839f690c8eb9",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
@@ -3410,6 +3410,7 @@
     "mute-modes": "0.1.0-experimental",
     "recorder-loop-fix": "0.1.0-experimental",
     "poly8": "0.2.7-experimental",
-    "output-matrix": "0.1.0-experimental"
+    "output-matrix": "0.1.0-experimental",
+    "euclid-seq": "0.1.0-experimental"
   }
 }
