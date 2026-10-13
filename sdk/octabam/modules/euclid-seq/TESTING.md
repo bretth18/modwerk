@@ -287,9 +287,16 @@ tables, the bank RAM, the battery mirror and the Part bytes:
 Results on the final image: 54/54 with the MKII panel; 54/54 on a build
 with Play Modes and the scale quantizer beside it (Play Modes detours some
 of the same `memcpy` calls one instruction earlier). With the MKI panel the
-first 50 checks pass (the Part window is FUNC+MIDI there and the Part menu
-FUNC+BANK inside it, `0x40058a64`); the four project checks were not run on
-the MKI because the harness's save path uses the MKII MENU key. `t_len`
+Part window is FUNC+MIDI and the Part menu FUNC+BANK inside it
+(`0x40058a64`); the project menu is FUNC with key `0x30` (the MKI FUNC
+table's record at `0x400bf43a` names `0x40064d78`, the handler of the
+MKII's MENU key, record `0x400c07d8`), and the MKII's quick save
+(FUNC+MENU) has no MKI binding, so the first save goes through PROJECT >
+SAVE. On the VACEUCLID8 image with the MKI panel, 12 October 2026:
+`t_copy` 54/54, including the project save, RELOAD, power cycle and fresh
+load, and the saving suite 15/15; the MKII saving suite on the same
+harness change, 15/15. No card stall occurred in these runs. MKI evidence
+is emulator-only; no MKI unit has been tested. `t_len`
 (5/5): a track pasted into a pattern of length 32 is regenerated over 32
 steps in RAM and in the battery mirror; pressing paste again then pastes
 again (observed) instead of undoing. The existing suites on the same image:
