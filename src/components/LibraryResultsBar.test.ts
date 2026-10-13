@@ -32,7 +32,7 @@ describe('phone library results bar', () => {
 
   it('replaces the desktop filter row on phones', () => {
     const props = {
-      query: '', octatrackModules: AVAILABLE_MODULES, octatrackSelected: [], onToggleOctatrack: noop, digiSelected: { digitakt: [], digitone: [] }, onToggleDigi: noop,
+      query: '', octatrackModules: AVAILABLE_MODULES, octatrackSelected: [], onToggleOctatrack: noop, digiSelected: { digitakt: [], 'digitakt-ii': [], digitone: [] }, onToggleDigi: noop,
       family: 'all', onFamilyChange: noop, sort: 'updated', onSortChange: noop, statistics: null, octatrackConflicts: [], comparison: [], onCompare: noop, onOpenComparison: noop,
       viewedModuleVersions: {}, moduleBaseline: null, device: DEVICES_BY_ID.octatrack,
     }

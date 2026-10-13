@@ -11,6 +11,8 @@ import { digest } from '../../server/security'
 import type { SocialProvider } from '../../server/social-config'
 
 const databases: DatabaseSync[] = []
+// RSA key generation is slow; one synthetic provider key serves every test.
+const keys = generateKeyPairSync('rsa',{modulusLength:2048}), jwk = {...keys.publicKey.export({format:'jwk'}),kid:'synthetic',alg:'RS256',use:'sig'}
 afterEach(() => { vi.unstubAllGlobals(); for(const db of databases.splice(0)) db.close() })
 async function fixture() {
   const server = await testServer(); databases.push(server.db)
@@ -20,7 +22,6 @@ async function fixture() {
   env.SSO_GITHUB_CLIENT_ID = 'synthetic-github'; env.SSO_GITHUB_CLIENT_SECRET = 'synthetic-secret'
   env.SSO_DISCORD_CLIENT_ID = 'synthetic-discord'; env.SSO_DISCORD_CLIENT_SECRET = 'synthetic-secret'
   let email = 'member@example.test', verified = true, identity = '42', nonce = '', googleClaims:Record<string,unknown> = {}, corruptSignature = false
-  const keys = generateKeyPairSync('rsa',{modulusLength:2048}), jwk = {...keys.publicKey.export({format:'jwk'}),kid:'synthetic',alg:'RS256',use:'sig'}
   vi.stubGlobal('fetch',vi.fn(async (input: string | URL | Request) => {
     const url = String(input instanceof Request ? input.url : input)
     if(url.includes('oauth2/v3/certs')) return Response.json({keys:[jwk]})
@@ -348,12 +349,19 @@ describe('profile editing and self-service account deletion',()=>{
   it('exports only the social member’s data and requires fresh sign-in for privacy actions',async()=>{
     const f=await fixture(),session=await f.member('github','first')
     f.setIdentity('43','second@example.test');await f.member('discord','second')
+    const members=f.db.prepare('SELECT id,username FROM users WHERE username IN (?,?)').all('first','second'),first=members.find(row=>row.username==='first')!,second=members.find(row=>row.username==='second')!
+    f.db.prepare("INSERT INTO issues(id,module_id,author_login,reporter_id,title,body) VALUES('triage-export','miniverb','author',?,'Title','Body')").run(second.id)
+    for(const [actor,note] of [[first.id,'Own triage note'],[second.id,'Other private triage note']])f.db.prepare("INSERT INTO issue_triage_events(id,issue_id,actor,triage_state,report_kind,note) VALUES(?,'triage-export',?,'needs_info','bug',?)").run(String(actor),actor,note)
+    for(const member of [first,second])f.db.prepare('INSERT INTO octatrack_diagnostic_events(user_id,event_id,consent_version,data_json,created_at) VALUES(?,?,?,?,?)').run(member.id,String(member.id),'test',JSON.stringify({event:'sync_failed',refusal:3}),new Date().toISOString())
     expect((await f.call('/working-reports','POST',{testedModuleIds:['miniverb']},session)).status).toBe(200)
     const exported=await f.call('/auth/data-export','POST',{},session)
     expect(exported.status).toBe(200)
     const text=await exported.text()
     expect(JSON.parse(text).data.workingReports).toEqual([expect.objectContaining({module_id:'miniverb',module_version:null,build_json:null})])
     expect(text).toContain('member@example.test')
+    expect(JSON.parse(text).data.issueTriageActions).toEqual([expect.objectContaining({note:'Own triage note'})])
+    expect(JSON.parse(text).data.octatrackDiagnostics).toEqual([expect.objectContaining({event_id:first.id})])
+    expect(text).not.toContain('Other private triage note')
     expect(text).not.toMatch(/second@example|synthetic-access|password|session_token/)
     expect((await f.call('/auth/account-removal','POST',{confirm:'REQUEST'},session)).status).toBe(202)
     f.db.exec('UPDATE auth_sessions SET createdAt=0')
@@ -374,10 +382,15 @@ describe('profile editing and self-service account deletion',()=>{
   it('deletes private data and all sessions while keeping anonymized discussions and other members',async()=>{
     const f=await fixture(),first=await f.member('github','first'),profile=await(await f.call('/auth/profile','GET',undefined,first)).json()
     const own=await(await f.call('/auth/session','GET',undefined,first)).json(),id=own.user.id
+    f.db.prepare('INSERT INTO octatrack_diagnostic_consent(user_id,enabled,version,changed_at) VALUES(?,1,?,?)').run(id,'test',new Date().toISOString())
+    f.db.prepare('INSERT INTO octatrack_diagnostic_events(user_id,event_id,consent_version,data_json,created_at) VALUES(?,?,?,?,?)').run(id,'delete-test','test','{}',new Date().toISOString())
     const created=await f.call('/forum/threads','POST',{title:'A shared discussion',body:'Keep the conversation',category:'general'},first),thread=(await created.json()).id
     expect(created.status).toBe(201)
     f.setIdentity('43','second@example.test');const second=await f.member('github','second')
     await f.call('/modules/miniverb/rating','POST',{value:5},first)
+    const other=f.db.prepare("SELECT id FROM users WHERE username='second'").get()!
+    f.db.prepare("INSERT INTO issues(id,module_id,author_login,reporter_id,title,body) VALUES('triage-delete','miniverb','author',?,'Title','Body')").run(other.id)
+    f.db.prepare("INSERT INTO issue_triage_events(id,issue_id,actor,triage_state,report_kind,note) VALUES('owned-action','triage-delete',?,'needs_info','bug','Private maintainer note')").run(id)
     await f.call('/working-reports','POST',{testedModuleIds:['miniverb']},first)
     expect((await f.call('/auth/account','DELETE',{confirm:'no'},first)).status).toBe(400)
     expect(profile.passwordRequired).toBe(false)
@@ -385,9 +398,13 @@ describe('profile editing and self-service account deletion',()=>{
     expect(f.db.prepare('SELECT id FROM auth_users WHERE id=?').get(id)).toBeUndefined()
     expect(f.db.prepare('SELECT id FROM auth_sessions WHERE userId=?').get(id)).toBeUndefined()
     expect(f.db.prepare('SELECT * FROM ratings WHERE user_id=?').get(id)).toBeUndefined()
+    expect(f.db.prepare("SELECT id FROM issue_triage_events WHERE id='owned-action'").get()).toBeUndefined()
+    expect(f.db.prepare("SELECT id FROM issues WHERE id='triage-delete'").get()).toBeDefined()
     expect(f.db.prepare('SELECT * FROM module_working_reports WHERE user_id=?').get(id)).toBeUndefined()
     expect(f.db.prepare('SELECT * FROM account_policy_acceptances WHERE user_id=?').get(id)).toBeUndefined()
     expect(f.db.prepare('SELECT * FROM account_news_preferences WHERE user_id=?').get(id)).toBeUndefined()
+    expect(f.db.prepare('SELECT * FROM octatrack_diagnostic_events WHERE user_id=?').get(id)).toBeUndefined()
+    expect(f.db.prepare('SELECT * FROM octatrack_diagnostic_consent WHERE user_id=?').get(id)).toBeUndefined()
     expect(f.db.prepare('SELECT username,display_name,suspended FROM users WHERE id=?').get(id)).toEqual({username:null,display_name:'Deleted member',suspended:1})
     expect((await f.call('/auth/build-access','POST',{},first)).status).toBe(401)
     expect((await f.call('/auth/profile','GET',undefined,first)).status).toBe(401)

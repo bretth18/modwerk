@@ -6,7 +6,7 @@ import { ModError, applyWholeBuilds, linkMods, parseElemod, type LinkDevice } fr
 const image = Uint8Array.from({ length: 4096 }, (_, i) => (i % 2 ? 0x71 : 0x4e))
 const sha = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex')
 const device: LinkDevice = {
-  key: 'test-machine', machine: 'digitakt', name: 'Test machine', mainLoad: 0x40000000,
+  key: 'test-machine', machine: 'digitakt', name: 'Test machine', sysexId: 0x0a, mainLoad: 0x40000000,
   releases: [{ version: '1.0', syxSha256: 'a'.repeat(64), mainSha256: sha(image), mainLength: image.length }],
   areas: { ddr: [0x41000000, 0x41001000] }, ddr: [0x41000000, 0x41001000], sramCode: [0, 0], fastTable: '', protected: [],
 }

@@ -63,6 +63,8 @@ No firmware, extracted stock byte blobs/tables, cards, RAM dumps or compiled ima
 
 ## Screens and audio
 
+
+**Audio preview.** [Listen](media/audio-preview.mp3). A Vector-generated minor synth phrase at 128 BPM, entered as FM note locks. INDX sweeps 44→92 and FDBK 0→28, with Mini Verb in FX2 (DECAY 96, DAMP 58, MIX 36). One common gain, no added gaps or external samples. Captured from FM Synth 0.1.2 and Mini Verb 0.2.1 running in Octemu on a computer; no physical-hardware recording. VECTOR’s generator supplies the notes offline; the instrument sequencer plays the FM locks. Exact sequence, settings, image identity, panel walk and render details are in [audio-preview.json](media/audio-preview.json); [media rights](media/LICENSE.md) covers the generated audio.
 These seven fresh current-code captures show the controls. They are actual monochrome emulator LCD exports, visually reviewed, bound to the byte-identical current native image in [media/capture.json](media/capture.json). They are emulator evidence; no hardware capture is claimed. See [media/LICENSE.md](media/LICENSE.md) for the interface rights declaration and [presentation/thumbnail.svg](presentation/thumbnail.svg) for original art.
 
 ![FM SYNTH is the dedicated sixth machine row in SRC SETUP.](media/ot-location.png)

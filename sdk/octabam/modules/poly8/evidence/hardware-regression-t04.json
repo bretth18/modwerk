@@ -1,0 +1,72 @@
+{
+  "build": "POLY8T04",
+  "moduleVersion": "0.2.3-experimental",
+  "model": "Octatrack MKII",
+  "reportedDate": "2026-10-08",
+  "ownerReport": {
+    "action": "Loaded POLY, pressed PLAY.",
+    "result": "Sequencer stuck.",
+    "earlierCueFailure": "Earlier could not cue samples; exact build/timing unspecified."
+  },
+  "configuration": "c15e43283887b90c30672d23afeee0b2d5ffcc0a88db94ba4762dbb7bf62d303",
+  "source": "10fb299f2abbd67cd799406e10d6f8a51c77d0887e0c69c06682574f563b813d",
+  "checkpoints": [
+    {
+      "name": "OCTAMOD.LOG",
+      "sha256": "b59d8ab23d961339a410636b724833eadab9693604096eac8449e51097be974e",
+      "bytes": 32768,
+      "records": 70,
+      "boots": [
+        1,
+        2
+      ],
+      "recovered": true
+    },
+    {
+      "name": "OCTAMOD1.LOG",
+      "sha256": "0763c194aeacb932d60c312c290a9cdbe119d30423fe1c8097558141565507a8",
+      "bytes": 32768,
+      "records": 33,
+      "boots": [
+        1
+      ],
+      "recovered": false
+    }
+  ],
+  "validation": {
+    "parser": "src/community/ot-log.ts parseOtLog",
+    "completionCrc": "valid in both checkpoints",
+    "sourceAndConfiguration": "match exact shipped T04 report",
+    "droppedRecords": 0,
+    "errorsOrFaults": 0
+  },
+  "observedSnapshots": [
+    {
+      "boot": 1,
+      "uiTick": 480,
+      "transport": 1,
+      "liveRecord": 0,
+      "gridRecord": 0,
+      "modal": false,
+      "renderEntries": 0,
+      "renderCompletions": 0,
+      "fetchCalls": 0,
+      "panelRecordCallbacks": 0,
+      "successfulRecords": 0
+    },
+    {
+      "boot": 1,
+      "uiTick": 540,
+      "transport": 0,
+      "renderEntries": 0,
+      "renderCompletions": 0,
+      "fetchCalls": 0,
+      "panelRecordCallbacks": 0,
+      "successfulRecords": 0
+    }
+  ],
+  "interpretation": "The saved capture never reaches POLY sample mixing. UI activity continues. No exception is stored; this does not prove the DSP/ISR path is healthy or identify a hardware root cause. No sample trigger/chromatic recording attempt is captured.",
+  "dependencyCandidate": "Exact native builds contain an implicit stock-effect DSP dynamic loader. T05 restores original resident DSP payloads as an isolation candidate, not a confirmed fix.",
+  "fixedOnHardware": false,
+  "rawLogs": "Remain private on the developer computer; not included here."
+}

@@ -402,6 +402,15 @@
         "imageSha256": "d5464195fac0033852546fbbc8f809b64d16646309c21ab25e2f203fbf123157",
         "setup": "Headless ot_emu; MKII panel; empty 32 MiB disposable card; stopped transport; actual 128×64 LCD pixels at integer scale 6."
       }
+    },
+    {
+      "path": "media/audio-preview.mp3",
+      "captureType": "audio",
+      "caption": "A Vector-generated minor synth phrase at 128 BPM, entered as FM note locks. INDX sweeps 44→92 and FDBK 0→28, with Mini Verb in FX2 (DECAY 96, DAMP 58, MIX 36). One common gain, no added gaps or external samples. Captured from FM Synth 0.1.2 and Mini Verb 0.2.1 running in Octemu on a computer; no physical-hardware recording.",
+      "alt": "A melodic FM phrase grows brighter and grittier through index and feedback sweeps, with Mini Verb tails.",
+      "credit": "Modwerk contributors (module-generated sound; no samples).",
+      "license": "MIT (original audio; see media/LICENSE.md)",
+      "source": "original"
     }
   ]
 }

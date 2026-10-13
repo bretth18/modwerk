@@ -65,6 +65,13 @@
           "stockSha256": "a7ed4caec4f7af99c7f67b9d28e06c1bbac104ee7998e6ba3f77e2b844bb63fe",
           "op": "ptr",
           "target": "digieq_menc_thunk"
+        },
+        {
+          "addr": "0x40184698",
+          "len": 4,
+          "stockSha256": "ea48defa918a57fe9e315bc57a3cbacaad53117e58427d16835b9c7e9fa901af",
+          "op": "ptr",
+          "target": "digieq_mclear"
         }
       ]
     },
@@ -110,6 +117,13 @@
           "stockSha256": "a7ed4caec4f7af99c7f67b9d28e06c1bbac104ee7998e6ba3f77e2b844bb63fe",
           "op": "ptr",
           "target": "digieq_menc_thunk"
+        },
+        {
+          "addr": "0x40184998",
+          "len": 4,
+          "stockSha256": "ea48defa918a57fe9e315bc57a3cbacaad53117e58427d16835b9c7e9fa901af",
+          "op": "ptr",
+          "target": "digieq_mclear"
         }
       ]
     }

@@ -5,6 +5,7 @@ import type { WorkingReportBuild } from '../src/community/working-report-contrac
 import type { Database, User } from './platform'
 import { needMember, throttle } from './auth'
 import { digest, HttpError, jsonBody, optional, required, response } from './security'
+import { WORKING_REPORT_JOINS, WORKING_REPORT_VISIBLE } from './hardware-reports'
 
 const versionPattern = /^\d+\.\d+\.\d+(?:-[\w.-]+)?(?:\+[\w.-]+)?$/
 function moduleFor(id: unknown) {
@@ -50,16 +51,27 @@ export async function backfillWorkingReports(db: Database, moduleId?: string) {
 }
 
 export async function workingReportRoute(request: Request, db: Database, user: User | null) {
+  const member = needMember(user)
+  if (request.method === 'GET') {
+    const module = moduleFor(new URL(request.url).searchParams.get('module'))
+    await backfillWorkingReports(db, module.id)
+    const { results } = await db.prepare(`SELECT DISTINCT COALESCE(r.module_version,r.catalog_version) AS version
+      ${WORKING_REPORT_JOINS} WHERE r.user_id=? AND r.module_id=? AND ${WORKING_REPORT_VISIBLE}
+      AND COALESCE(r.module_version,r.catalog_version) IS NOT NULL`).bind(member.id, module.id).all<{ version: string }>()
+    return response({ versions: results.map(item => item.version) })
+  }
   if (request.method !== 'POST') throw new HttpError(405, 'Use the working report button.')
-  const member = needMember(user), body = await jsonBody(request)
+  const body = await jsonBody(request)
   if (!Array.isArray(body.testedModuleIds) || !body.testedModuleIds.length || body.testedModuleIds.length > 64 || new Set(body.testedModuleIds).size !== body.testedModuleIds.length) throw new HttpError(400, 'Select the modules you tested.')
   const tested = body.testedModuleIds.map(moduleFor), machineId = tested[0].machine
   if (tested.some(module => module.machine !== machineId)) throw new HttpError(400, 'Tested modules must use the same instrument.')
   const build = buildContext(body.build, machineId)
   if (!build && tested.length !== 1 || build && tested.some(module => !build.modules.some(item => item.id === module.id))) throw new HttpError(400, 'Tested modules must belong to the downloaded build.')
+  const catalogVersion = build ? null : body.catalogVersion === undefined ? tested[0].version : required(body.catalogVersion, 'Catalog version', 64)
+  if (catalogVersion !== null && !versionPattern.test(catalogVersion)) throw new HttpError(400, 'Choose a valid catalog version.')
   await throttle(db, 'working-report-ip:' + (request.headers.get('CF-Connecting-IP') ?? 'local'), 60)
   await throttle(db, 'working-report:' + member.id, 60)
-  const context = build ? JSON.stringify(build) : null, contextKey = build ? await digest(context!) : 'unknown'
-  await db.batch(tested.map(module => db.prepare('INSERT INTO module_working_reports(id,user_id,module_id,context_key,machine,os,module_version,build_json) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(user_id,module_id,context_key) DO NOTHING').bind(crypto.randomUUID(), member.id, module.id, contextKey, build?.machine ?? DEVICES_BY_ID[machineId].name, build?.os || null, build?.modules.find(item => item.id === module.id)?.version ?? null, context)))
+  const context = build ? JSON.stringify(build) : null, contextKey = build ? await digest(context!) : 'unknown:' + catalogVersion
+  await db.batch(tested.map(module => db.prepare('INSERT INTO module_working_reports(id,user_id,module_id,context_key,machine,os,module_version,build_json,catalog_version) VALUES(?,?,?,?,?,?,?,?,?) ON CONFLICT(user_id,module_id,context_key) DO NOTHING').bind(crypto.randomUUID(), member.id, module.id, contextKey, build?.machine ?? DEVICES_BY_ID[machineId].name, build?.os || null, build?.modules.find(item => item.id === module.id)?.version ?? null, context, catalogVersion)))
   return response({ ok: true, testedModuleIds: tested.map(module => module.id) })
 }

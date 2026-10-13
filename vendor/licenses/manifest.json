@@ -14,8 +14,8 @@
           "path": "vendor/elekloader/kit/LICENSE"
         },
         {
-          "url": "https://github.com/irpina/elekloader/tree/a1be3ce0c006ea0c46fa82c6f254c11a05d42beb/js",
-          "revision": "a1be3ce0c006ea0c46fa82c6f254c11a05d42beb"
+          "url": "https://github.com/irpina/elekloader/tree/3acac10ea86882a2ea51c9377ac6bd58fc4fec57/js",
+          "revision": "3acac10ea86882a2ea51c9377ac6bd58fc4fec57"
         }
       ],
       "usedIn": [
@@ -67,16 +67,20 @@
       "usedIn": [
         "vendor/elekloader/catalog/digichain-1.6.elemod",
         "vendor/elekloader/catalog/digichain-1.6-os1.54.elemod",
-        "vendor/elekloader/catalog/digieq-1.0b.elemod",
-        "vendor/elekloader/catalog/digieq-1.0b-os1.54.elemod",
+        "vendor/elekloader/catalog/digieq-1.0.2-experimental-os1.53.elemod",
+        "vendor/elekloader/catalog/digieq-1.0.2-experimental-os1.54.elemod",
         "vendor/elekloader/catalog/digimatrix-1.0b.elemod",
         "vendor/elekloader/catalog/digimatrix-1.0b-os1.54.elemod",
-        "vendor/elekloader/catalog/digimono-0.13b.elemod",
-        "vendor/elekloader/catalog/digimono-0.13b-os1.54.elemod",
+        "vendor/elekloader/catalog/digimono-0.13.3-experimental-os1.53.elemod",
+        "vendor/elekloader/catalog/digimono-0.13.3-experimental-os1.54.elemod",
         "vendor/elekloader/catalog/digipoly-2.0.elemod",
         "vendor/elekloader/catalog/digipoly-2.0-os1.54.elemod",
         "vendor/elekloader/catalog/digiutils-1.9a.elemod",
-        "vendor/elekloader/catalog/digiutils-1.9a-os1.54.elemod"
+        "vendor/elekloader/catalog/digiutils-1.9a-os1.54.elemod",
+        "sdk/imports/packages/digimono/digimono-0.13.2-experimental-os1.53.elemod",
+        "sdk/imports/packages/digimono/digimono-0.13.2-experimental-os1.54.elemod",
+        "sdk/imports/packages/digimono/digimono-0.13.3-experimental-os1.53.elemod",
+        "sdk/imports/packages/digimono/digimono-0.13.3-experimental-os1.54.elemod"
       ]
     }
   ]

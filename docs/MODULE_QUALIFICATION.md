@@ -95,7 +95,7 @@ For an editorial update, add `tests.retainedEvidence`:
 
 Keep the original `tests.qualification` or `tests.releaseWaiver`, reports, hardware status, source/image hashes and tested version unchanged; do not relabel them as new measurements. Current tutorial text can be recorded in `retainedEvidence.documentation`. Existing real UI captures can keep their original version/build provenance when the checked runtime is identical. Changed/new images still require authenticity/rights review and media validation. Baseline resource gauges may retain their original version under this same checked path, with no change to the estimates or limits.
 
-The validator reads the original module from the named approved Git commit, verifies that it was already in the catalog, revalidates its original qualification/baseline/owner exception, and compares protected inputs with the update. It also compares shared DSP/platform/build code and browser engine source/payloads. Rebuilt package commit/version labels and derived inventory hashes may change; code bytes, addresses, recipes, limits and test verdicts must remain identical. Refer directly to the original evidence commit rather than chaining retained-evidence updates. Any protected addition, deletion or byte change blocks reuse. The eleven-module baseline and exact owner exceptions are never expanded or rewritten; untested, historical, waived or suspended status stays honest.
+The validator reads the original module from the named approved Git commit, verifies that it was already in the catalog, revalidates its original qualification/baseline/owner exception, and compares protected inputs with the update. It also compares shared DSP/platform/build code and browser engine source/payloads. Rebuilt package commit/version labels and derived inventory hashes may change; code bytes, addresses, recipes, limits and test verdicts must remain identical. Refer directly to the original evidence commit rather than chaining retained-evidence updates. Any protected addition, deletion or byte change blocks reuse. When a legacy README itself holds resource measurements, new documentation may be appended only after the entire byte-identical approved record; edits to that record and all other measured reports still block reuse. Exact approved infrastructure is compared before a historical builder-extension exception is consulted. Derived source-inventory fingerprints may change with editorial version labels; actual native proof hashes, placements and verdicts remain exact. The eleven-module baseline and exact owner exceptions are never expanded or rewritten; untested, historical, waived or suspended status stays honest.
 
 PR validation anchors approval to the exact `--base` commit. Local generation/release validation uses `origin/main`; fetch full approved history before validation. Missing history or a commit only on a submitted branch fails closed. No firmware, emulator state or hardware result enters CI or this comparison.
 
@@ -213,12 +213,23 @@ complete memory bounds for the measured MIDISC2.0 release. The exception is
 restricted to `midi-scenes` `0.2.4-experimental`, author MAIN SHA-256
 `debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87`,
 and the complete source/folder fingerprints in
-`../sdk/midi-scenes-build-approval.json`. It requires matching shared-worker
-MAIN/full-update parity, changed-base rejection and rejection of all thirteen
-companions. No mixed compositions or future versions inherit it. Unknown
-hardware timing and memory bounds remain explicitly unknown. UI, provenance,
-licence, documentation, stock isolation and owner-merged PR review still apply.
-The frozen eleven-module baseline and two utility waivers are unchanged.
+the exact-folder record that was in `../sdk/midi-scenes-build-approval.json` (now
+in git history). It requires matching shared-worker MAIN/full-update parity,
+changed-base rejection and rejection of all thirteen companions. No mixed
+compositions or future versions inherit it. Unknown hardware timing and memory
+bounds remain explicitly unknown. UI, provenance, licence, documentation, stock
+isolation and owner-merged PR review still apply. The frozen eleven-module
+baseline and two utility waivers are unchanged.
+
+## MIDI Scenes 0.2.5 owner-approved update, 10 October 2026
+
+The owner approved `midi-scenes` `0.2.5-experimental` (Scene A/B mute) "without
+concrete hardware evidence". `../sdk/midi-scenes-build-approval.json` is an
+`owner-approved-update` that waives only current-build hardware evidence, bound to
+this version and its native source. The contributor's MKII report ran on the
+pre-#392 shared runtime, so hardware stays `reported`, not verified, and timing
+and complete memory bounds stay unknown. It is the ordinary approval path: a later
+version needs its own record.
 
 ## Sidechain Compressor hardware-only exception
 
@@ -231,3 +242,15 @@ On 6 October 2026 the owner explicitly approved synth@0.1.1-experimental without
 Publication still requires the 94-case native/browser comparison (37 builds, 57 refusals, zero mismatches), the common worker’s packaging and changed-base/refusal checks, sample-free playback and double-STOP silence on that exact image, source/stock isolation, licensing and actual monochrome LCD documentation. scripts/synth-release.mjs checks these records without executing submitted code. The frozen baseline and existing exceptions remain unchanged.
 
 The additive compiler/engine integration has a separate exact infrastructure binding for Euclid’s existing 0.1.3 editorial release. Euclid’s own runtime fields, protected folder and original evidence must remain identical to its approved 0.1.2 evidence commit. Every existing package byte, address and recipe is compared with the approved pre-FM main commit, omitting only global provenance labels and new synth rows. The reviewed shared infrastructure is fingerprinted before/after; another protected change fails closed. This preserves the original evidence/status for unchanged Euclid behavior; it does not declare new timing, memory or hardware results.
+
+## VECTOR 0.2.4 hardware-only exception — 9 October 2026
+
+For issue #349, the owner explicitly approved: “Approve release and closure with hardware reboot/audio unverified”, after receiving the exact private 0.2.4 firmware and source patch. The new `sdk/vector-build-approval.json` binds only this version/native source and tested image; it does not extend the 0.2.3 exception to new source. Fresh sanitizer, native resource, UI, composition and two-instance Part/project/battery-RAM restart evidence are in [the reboot regression report](vector-reboot-2026-10-09.json) and the module TESTING.md. Hardware status stays untested. Physical reboot, working audio after transitions and maximum audio load remain unverified; closure must state those limits and how to reopen.
+
+## POLY8 exact experimental release exception — 8 October 2026
+
+The owner approved POLY8@0.2.5-experimental with current-build physical hardware, chip worst-case timing and complete memory-bound qualification explicitly waived, and subsequently verified a Modwerk-builder launch in Octemu. `sdk/poly8-build-approval.json` binds the exception to the exact native source. Missing measurements remain null and hardware remains untested. The 114-selection native/browser comparison, stock-free package replay/rejection guards, stock DSP preservation, documentation, actual LCD captures and owner-reviewed publication remain required. Historical T03/T04 physical failures and T06 native results keep their original image identities. This exception grants no approval to another source or version.
+
+## POLY8 0.2.6 exact experimental release exception — 9 October 2026
+
+The owner reported “works like a charm” on the exact POLY8T10 MKII image and explicitly approved “Approve this scoped experimental release” for 0.2.6-experimental. [The source-bound report](../sdk/octabam/modules/poly8/evidence/owner-release-t10.md) retains the delivered image hashes, actual statement and unreported coverage. `sdk/poly8-build-approval.json` now binds only the exact T10 native source. Chip worst-case timing, complete memory-bound qualification and separately reported Part/project/reboot tests remain waived and unverified. The historical 0.2.5 approval remains in Git history and the report; it does not authorize this update. Documentation, licence, native/browser parity and release checks remain mandatory.

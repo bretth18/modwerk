@@ -1,7 +1,10 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 // Every Elektron machine Modwerk knows about, with what is known about modding its firmware.
 // Facts about devices other than the Octatrack come from public research projects and are linked from each profile.
 import MACHINES from './machines.generated.json'
 import type { MachineProfile } from './machine-contract'
+import { assetUrl } from '../hosting'
 
 export type DeviceStatus = 'available' | 'preview' | 'research' | 'open'
 export type StepState = 'done' | 'started' | 'open'
@@ -78,7 +81,7 @@ export function rememberDevice(id: string) {
   try { localStorage.setItem(DEVICE_KEY, id) } catch { /* the choice is a convenience only */ }
 }
 
-// The Octatrack keeps its original routes (#library, #module/id, #configuration); other machines use #<id>/…
+// Library and configuration views keep hash routes; Digitakt/Digitone module pages have public paths.
 export type DeviceRoute = { device: DeviceProfile; view: 'library' | 'module' | 'configuration'; category?: string; moduleId?: string }
 
 export function parseDeviceRoute(route: string): DeviceRoute | undefined {
@@ -95,5 +98,6 @@ export function parseDeviceRoute(route: string): DeviceRoute | undefined {
 export function deviceHref(id: string, path = '') {
   if (id === 'octatrack') return '#' + (path || 'library')
   if (id === ALL_MACHINES) return '#all'
+  if ((id === 'digitakt' || id === 'digitone') && /^module\/[a-z0-9-]+$/.test(path)) return assetUrl(`${id}/${path}/`)
   return '#' + id + (path ? '/' + path : '')
 }

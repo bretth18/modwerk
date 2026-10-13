@@ -53,10 +53,22 @@
       "priority": 18
     },
     {
+      "id": "everb",
+      "key": "EVERB",
+      "fxId": 27,
+      "priority": 18
+    },
+    {
       "id": "sidechain-compressor",
       "key": "SIDECHAIN_COMPRESSOR",
       "fxId": 24,
       "priority": 30
+    },
+    {
+      "id": "output-matrix",
+      "key": "OUTPUT MATRIX",
+      "fxId": null,
+      "priority": 21
     }
   ],
   "customIds": [
@@ -69,6 +81,7 @@
     15,
     23,
     26,
+    27,
     29,
     30,
     31

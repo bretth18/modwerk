@@ -5,7 +5,8 @@ import { modulePageHref } from './modules'
 
 export function BugReportNotice({ tracker }: { tracker: IssueTracker | null }) {
   const where = tracker?.tracker === 'github' ? <>opens a public GitHub issue for the module’s developers (no GitHub account needed)</> : <>notifies the module’s developers and opens a public thread in <a href="#forum?category=issues">Bug reports</a></>
-  return <p className="service-note">Posting {where}. The title, description, device and module version are public under your username; your configuration, build fingerprint and any attached log stay private to you, the module’s maintainers and the administrator. Leave out firmware and personal information.</p>
+  const published = tracker?.tracker === 'github' ? 'The title, description, device, module version, configuration, build fingerprint and any attached log are public there under your username, and the developers reply there.' : 'The title, description, device and module version are public under your username; your configuration, build fingerprint and any attached log stay private to you, the module’s maintainers and the administrator.'
+  return <p className="service-note">Posting {where}. {published} Leave out firmware and personal information.</p>
 }
 /** Open issues first, so a reporter can add to one instead of filing it again. */
 export function ExistingIssues({ id, tracker }: { id: string; tracker: IssueTracker | null }) {

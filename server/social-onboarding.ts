@@ -5,6 +5,7 @@ import { COMMUNITY_RULES_VERSION } from '../src/legal/policy'
 import { NEWS_CONSENT_VERSION } from './news-preferences'
 import { digest, HttpError, response, token } from './security'
 import { validUsername } from './social-config'
+import { DISCORD_INVITE_CAMPAIGN } from '../src/config/development-discord'
 
 type Handoff = {session:string;cookies:string[]}
 const now = () => Math.floor(Date.now()/1000)
@@ -72,7 +73,8 @@ export async function completeSocialOnboarding(env:Env,db:Database,body:Record<s
       db.prepare('UPDATE auth_users SET username=?,displayUsername=?,name=?,updatedAt=? WHERE id=? AND EXISTS(SELECT 1 FROM social_pending_accounts WHERE user_id=? AND expires>?)').bind(username,username,username,Date.now(),user.id,user.id,time),
       db.prepare('INSERT OR IGNORE INTO account_policy_acceptances(user_id,version) SELECT user_id,? FROM social_pending_accounts WHERE user_id=? AND expires>?').bind(COMMUNITY_RULES_VERSION,user.id,time),
       db.prepare('INSERT INTO account_news_preferences(user_id,enabled,consent_version,changed_at) SELECT user_id,?,?,? FROM social_pending_accounts WHERE user_id=? AND expires>? ON CONFLICT(user_id) DO NOTHING').bind(Number(enabled),enabled?NEWS_CONSENT_VERSION:null,new Date().toISOString(),user.id,time),
-      db.prepare('INSERT OR IGNORE INTO member_discord_invites(user_id) SELECT user_id FROM social_pending_accounts WHERE user_id=? AND expires>?').bind(user.id,time),
+      db.prepare(`INSERT INTO member_discord_invites(user_id,campaign) SELECT user_id,? FROM social_pending_accounts WHERE user_id=? AND expires>?
+        ON CONFLICT(user_id) DO UPDATE SET campaign=excluded.campaign,shown_at=CURRENT_TIMESTAMP WHERE member_discord_invites.campaign<>excluded.campaign`).bind(DISCORD_INVITE_CAMPAIGN,user.id,time),
       db.prepare('DELETE FROM social_pending_accounts WHERE user_id=? AND expires>?').bind(user.id,time),
     ])
   } catch {throw new HttpError(409,'Your account could not be saved. Try another username or keep the suggested name.')}

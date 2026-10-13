@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "candidateVersion": "0.1.4-experimental",
+  "method": "Original recording hits versus complete firmware emulator 909 track readback. One common tail-RMS gain from the low-Attack native comparison follows fixed stock AMP compensation. No per-peak normalization or phase search.",
+  "candidateTailRmsListeningGain": 1.0392318992480007,
+  "conditions": [
+    {
+      "name": "minimum",
+      "referenceFilename": "BD Attack Rise.wav",
+      "listeningReferenceHitsOneBased": [
+        6,
+        7
+      ],
+      "comparisonReferenceHitsOneBased": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "referenceSha256": "5cb6d0917c8119e6675a1034bbfe55a532a113d958d12a7ce0c8f6b1406533cf",
+      "emulatorSourceWavSha256": "6a99877c1ff185859d0056cb4969cfb7c99620aa26322899bdc00716f9baf75c",
+      "auditionWavSha256": "4e3a5092799bc3f920be007b548303f5ab0401bd73ea3f0009702ccc13e89eed",
+      "fullHitRmsError": {
+        "0-10ms": 0.01865671889097472,
+        "20-700ms": 0.005096652946699171
+      },
+      "referenceTailFrequencyHz": 45.640663514334584,
+      "emulatorTailFrequencyHz": 45.637176425660016,
+      "referenceTailDecaySeconds": 0.2529509267003443,
+      "emulatorTailDecaySeconds": 0.246705358319576
+    },
+    {
+      "name": "attack-maximum",
+      "referenceFilename": "BD Attack Rise.wav",
+      "listeningReferenceHitsOneBased": [
+        47,
+        48
+      ],
+      "comparisonReferenceHitsOneBased": [
+        45,
+        46,
+        47,
+        48
+      ],
+      "referenceSha256": "5cb6d0917c8119e6675a1034bbfe55a532a113d958d12a7ce0c8f6b1406533cf",
+      "emulatorSourceWavSha256": "e7a9a79a37c0043dbd89beed11062354a21c812466bd904c8b8cc4adc681db3f",
+      "auditionWavSha256": "de7f59aab9123736e1eb301eeda20f7a04d53d0299eafbe757a9e1039828509f",
+      "fullHitRmsError": {
+        "0-10ms": 0.020626820275657008,
+        "20-700ms": 0.007910479536767274
+      },
+      "referenceTailFrequencyHz": 45.59868113992095,
+      "emulatorTailFrequencyHz": 45.637176425660016,
+      "referenceTailDecaySeconds": 0.2529831706170258,
+      "emulatorTailDecaySeconds": 0.246705358319576
+    },
+    {
+      "name": "tune-maximum",
+      "referenceFilename": "BD Tune Rise.wav",
+      "listeningReferenceHitsOneBased": [
+        63,
+        64
+      ],
+      "comparisonReferenceHitsOneBased": [
+        61,
+        62,
+        63,
+        64
+      ],
+      "referenceSha256": "4326aa2649bbfd55439d3ba28a5cb19e0f513258ce635848a6defafe2d83eff4",
+      "emulatorSourceWavSha256": "6ffbbef2786e35813ac92eaa65fc1bcc6d2c508172f4f3f7571d5a7d5350dde9",
+      "auditionWavSha256": "884bce4a3deee034ecd606fb67128893e7774d35291b1d05a70f614e0fe12e22",
+      "fullHitRmsError": {
+        "0-10ms": 0.029674142647626595,
+        "20-700ms": 0.008991360800475995
+      },
+      "referenceTailFrequencyHz": 46.288838392884486,
+      "emulatorTailFrequencyHz": 46.29938679329241,
+      "referenceTailDecaySeconds": 0.2512036007248805,
+      "emulatorTailDecaySeconds": 0.2462020677854066
+    }
+  ],
+  "privateFirmwareLabel": "AB014REF05",
+  "sourceFiles": {
+    "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+    "fit909.json": "6917d613b5033069f226b9f6a440f6eefd935e596452546d5bc27b73c5e3dd08",
+    "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+  }
+}

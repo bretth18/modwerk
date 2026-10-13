@@ -77,8 +77,9 @@ class SynthRelease(unittest.TestCase):
         self.assertLessEqual(report['audio']['fourVoices']['patched']['finalHalfSecondPeak'], 2)
         capture = json.loads((FOLDER/'media/capture.json').read_text())
         image = capture['imageSha256']
-        self.assertEqual(len(doc['media']), 7)
-        for media in doc['media']:
+        screenshots = [media for media in doc['media'] if 'otUi' in media]
+        self.assertEqual(len(screenshots), 7)
+        for media in screenshots:
             self.assertEqual(media['otUi']['imageSha256'], image)
             self.assertEqual(sha(FOLDER/media['path']), capture['screenshots'][Path(media['path']).name])
         self.assertEqual(image, report['patchedNativeMainSha256'])

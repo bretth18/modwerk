@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "machine": "digitakt-ii",
+  "interface": "1.0",
+  "status": "Upstream elekloader core-dt2 1.0 for Digitakt II OS 1.17. Modwerk integration and publication qualification are in progress.",
+  "events": [
+    {
+      "name": "ev_tick",
+      "when": "the UI compose check, approximately 30 Hz",
+      "handler": "void f(void *ctrl); set ctrl + 0x20 to 1 to request redraw; not an audio-rate clock"
+    },
+    {
+      "name": "ev_draw",
+      "when": "after the OS composes the 128x64 screen",
+      "handler": "void f(void *bmp, void *ctrl)"
+    },
+    {
+      "name": "ev_key",
+      "when": "a UI key event",
+      "handler": "int f(void *brain, void *event); nonzero consumes the event"
+    },
+    {
+      "name": "ev_enc",
+      "when": "a UI encoder event",
+      "handler": "int f(void *brain, void *event); nonzero consumes the event"
+    },
+    {
+      "name": "ev_settings",
+      "when": "building the SETTINGS menu",
+      "handler": "void f(void *menu)"
+    },
+    {
+      "name": "ev_personalize",
+      "when": "building the PERSONALIZE menu",
+      "handler": "void f(void *menu)"
+    }
+  ],
+  "tables": [
+    {
+      "name": "core_fast",
+      "entry": 4,
+      "purpose": "Copy-table entries used to move linked .fast code into the Digitakt II SRAM tail on the first UI tick."
+    }
+  ],
+  "exports": [
+    {
+      "name": "core_additem",
+      "prototype": "void core_additem(menu, row)",
+      "purpose": "Add a SETTINGS or PERSONALIZE row from the corresponding event handler."
+    }
+  ],
+  "claims": [],
+  "memory": {
+    "area": "0x47f00000-0x47f40000",
+    "fast": "0x8000f100-0x80010000"
+  }
+}

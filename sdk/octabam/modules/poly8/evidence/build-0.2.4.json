@@ -1,0 +1,44 @@
+{
+  "firmware": "1.40C",
+  "version": "0.2.4-experimental",
+  "build_tag": "14",
+  "image_sha256": "a75b8ea6130acabbcca3c32255883e168b1885d727e3de4b91b4c68a29cdd77d",
+  "native_sdk_revision": "79a11d0683a53e52ae2608a9005065c6ec129b32",
+  "source_sha256": {
+    "polyphony.s": "2e1873b60a6e48e35a8ad7a9dd6a9c3513f65e1086037d39643a2339fd105178",
+    "pool.c": "4b33927f1fd4d79a543ccd49d30c02cdd9cf0f383d513bb435a64964f1190471",
+    "recording.c": "05d8ed1aaaff605dec7272366af078437b385943c42df6b0e6261bf7531a06c6",
+    "registration.c": "4618e21f28648b232dfc8ed9d61452cf613a071cca4c7efc48bfe4906fa30980",
+    "registration-hooks.s": "27ab57d18594bf85a7bb603523a4c041ec40b91794448edfc22191b23f5aa937",
+    "registration.s": "dc5e3274192f9fd87996381bbf6ea38f0a3f80e5a387ca6968f80eaca3e36720",
+    "diagnostics.c": "4252c557657fdf93b33eda840ec93955e47c67987fb61ca5100b0cb4e27b5f59",
+    "manifest.py": "5d299743e79e81c266cb5ffb365c1a4ec0af05c0380f1ab9327c95bd58973ec2",
+    "prepare-registration.py": "e74aade0251f7183a70851ebceaed21f9a8ac970f532f3c383b4cd643d637f7a",
+    "build-diagnostic.py": "506d0caa1e5df494421a24b0a897335a38c0f7fdec8a777089fdf44b02f8f823",
+    "remix.py": "50cef3ce9cc490aa39118bec35b1238e95a32752aed4fe3a023ac7ef7c00d079"
+  },
+  "core_logger_version": "0.2.0",
+  "core_source_sha256": "7d5ec61364803cc851e28f67d158661b04b4fb60bf99f6db0738c11d8c74c0ba",
+  "logger_source_identity": "0a26ecf365db1346e04a05485f905f3224a2cf8b324cb5d77109b048b89f5978",
+  "reserve": {
+    "base": 1084839392,
+    "bytes": 10586112
+  },
+  "retained": 1095417312,
+  "static_stock": true,
+  "stock_dsp_payloads": {
+    "A": {
+      "address": 1074668324,
+      "bytes": 79563,
+      "sha256": "09684267438dbbb83163729b2509c5acab3c3d71124b50769d9105b5ce48cb39",
+      "original": true
+    },
+    "B": {
+      "address": 1074747887,
+      "bytes": 77061,
+      "sha256": "27c26cd3432580cb36c23e34f7dd97c99d668bac8b401df872d288f00074549e",
+      "original": true
+    }
+  },
+  "hardware": "T05 untested on MKII; observed T04 transport failure and earlier recording/audio symptoms remain open."
+}

@@ -1,0 +1,47 @@
+{
+  "status": "measured native instruction comparison, not physical CPU usage",
+  "conditions": {
+    "voices": 32,
+    "tracks": 8,
+    "notes_per_track": [
+      72,
+      76,
+      79,
+      84
+    ],
+    "sample": "generated 440 Hz stereo FLEX loop",
+    "amp": "ATK 0, HOLD INF, REL 20, VOL 64; held notes",
+    "window_frames": 1200,
+    "frames_per_block": 16,
+    "warmup_frames": 1200,
+    "filters_fx": "same per-track stock chain in both variants"
+  },
+  "results": [
+    {
+      "case": "separate",
+      "instructions": 95759992,
+      "measured_frames": 1200,
+      "instructions_per_16_samples": 79799.99333333333,
+      "active_primary": 8,
+      "active_extensions": 24
+    },
+    {
+      "case": "shared",
+      "instructions": 92144563,
+      "measured_frames": 1200,
+      "instructions_per_16_samples": 76787.13583333333,
+      "active_primary": 8,
+      "active_extensions": 24
+    }
+  ],
+  "shared_amp_saving_percent": 3.7755109670435227,
+  "decision": "Independent per-voice envelopes, per user choice; dynamic 32-head pool added afterward.",
+  "limitations": [
+    "Held notes only; envelope movement is not covered.",
+    "No hardware cycle or deadline claim."
+  ],
+  "variant_source_sha256": {
+    "polyphony-independent.s": "6fae1a978dcd93667de6b6d15b5756a25bd65b9ff0730931d367f4407ceeda9f",
+    "polyphony-para-bench.s": "421edb0eb54d35b1bf19b0bea03e99a17dfd72f9d7a541c48265a334ef4cbd43"
+  }
+}

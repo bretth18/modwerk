@@ -1,0 +1,199 @@
+{
+  "version": "0.2.4-experimental",
+  "candidate": "POLY8T05",
+  "firmware": "1.40C",
+  "image_sha256": "a75b8ea6130acabbcca3c32255883e168b1885d727e3de4b91b4c68a29cdd77d",
+  "logger_source_identity": "0a26ecf365db1346e04a05485f905f3224a2cf8b324cb5d77109b048b89f5978",
+  "native_sdk_revision": "79a11d0683a53e52ae2608a9005065c6ec129b32",
+  "static_stock": true,
+  "stock_dsp_payloads": {
+    "A": {
+      "address": 1074668324,
+      "bytes": 79563,
+      "sha256": "09684267438dbbb83163729b2509c5acab3c3d71124b50769d9105b5ce48cb39",
+      "original": true
+    },
+    "B": {
+      "address": 1074747887,
+      "bytes": 77061,
+      "sha256": "27c26cd3432580cb36c23e34f7dd97c99d668bac8b401df872d288f00074549e",
+      "original": true
+    }
+  },
+  "warm_restart": {
+    "marker": "504c01",
+    "mirror": "504c01",
+    "backing_machine": "01",
+    "loop": "00",
+    "poly_sound": {
+      "frames": 8820,
+      "channel_peaks": [
+        361,
+        361
+      ]
+    },
+    "flex_sound": {
+      "frames": 8820,
+      "channel_peaks": [
+        3042,
+        3042
+      ]
+    },
+    "recorded_steps": [
+      {
+        "step": 2,
+        "root": 72,
+        "shape": 0
+      },
+      {
+        "step": 4,
+        "root": 76,
+        "shape": 0
+      },
+      {
+        "step": 6,
+        "root": 79,
+        "shape": 0
+      }
+    ],
+    "additional_frames": 2234,
+    "sparse_selector": 31,
+    "sparse_slot_sound": {
+      "frames": 8820,
+      "channel_peaks": [
+        712,
+        712
+      ]
+    },
+    "adjacent_tuning_cache": "unchanged",
+    "fixture_saved_fx1": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "fixture_saved_fx2": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8
+    ],
+    "scope": "Native battery-RAM restart with FILTER/DELAY saved on all tracks, not a physical reboot."
+  },
+  "fresh_assignment": {
+    "marker": "504c01",
+    "mirror": "504c01",
+    "loop": "00",
+    "amp_hold": 127,
+    "amp_rel": 127,
+    "chord_records": [
+      {
+        "step": 3,
+        "root": 72,
+        "shape": 67
+      }
+    ]
+  },
+  "rapid_panel": {
+    "presses": 128,
+    "down_ms": 10,
+    "up_ms": 10,
+    "active_cap": 8,
+    "additional_frames": 7072,
+    "held_after_stop": "all clear",
+    "card_write_errors": 0,
+    "scope": "Emulated time; no physical deadline claim."
+  },
+  "modal": {
+    "automatic_dismissal": "pass",
+    "entry_paths": [
+      "SRC SETUP",
+      "machine chooser"
+    ],
+    "target_part": "unchanged"
+  },
+  "checkpoint": {
+    "target": 46,
+    "ring": {
+      "head": 48,
+      "count": 48,
+      "flushed": 48
+    },
+    "card_write_errors": 0,
+    "logs": [
+      {
+        "name": "OCTAMOD.LOG",
+        "bytes": 32768,
+        "sha256": "df6fc58f074d4f21df969daa9860176d4eb4ba9e84a3e37a87af8ef6b250f0f3",
+        "records": 29,
+        "polyCodes": [
+          4,
+          1,
+          2,
+          3,
+          5,
+          7,
+          6
+        ]
+      },
+      {
+        "name": "OCTAMOD1.LOG",
+        "bytes": 32768,
+        "sha256": "2c173ffd257daedbad5fdcdf40c7aa5ab5f1f36ebf174cdcda5bea6e11bdee79",
+        "records": 48,
+        "polyCodes": [
+          4,
+          1,
+          2,
+          3,
+          5,
+          7,
+          6
+        ]
+      }
+    ],
+    "recent_record_counter": "at least three placements present",
+    "early_engine_counters": "POLY/7 command and AMP counters both nonzero",
+    "scope": "Stock UI counter advanced by 2100 ticks to test existing backoff; real native engine and buffered CF writer/readback; no real-time 30-second timing claim."
+  },
+  "packaging": {
+    "artifacts": {
+      "OCTATRACK_POLY8T05.bin": {
+        "bytes": 461092,
+        "sha256": "844fc478b999c9e8a8f7e2837f521445734c7541b43090d5cf7df42e2b0e1420"
+      },
+      "OCTATRACK_OS1.40C_POLY8T05.syx": {
+        "bytes": 644069,
+        "sha256": "9d59bfd76f883cfb978a580c33b2fa0f97b21810be5061652ce84c9419b3c560"
+      },
+      "recovery/OCTATRACK_OS1.40C.bin": {
+        "bytes": 469852,
+        "sha256": "34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad"
+      },
+      "recovery/OCTATRACK_OS1.40C.syx": {
+        "bytes": 656304,
+        "sha256": "0a8d2d2b35c2cc78fa338576adc1af0cbc094cef973255103165c73edd87f2b6"
+      }
+    },
+    "cf_elup": "exact MAIN/header/seed round trip",
+    "midi_syx": "exact MAIN round trip"
+  },
+  "repository_check": {
+    "base": "79a11d0683a53e52ae2608a9005065c6ec129b32",
+    "test_files": 191,
+    "tests": 1286,
+    "vitest_workers": 1,
+    "result": "pass",
+    "scope": "All original suites/assertions/timeouts enabled; SDK/catalog/licences/lint/typecheck/build pass."
+  },
+  "sample_preview": "Native preview probe remains unqualified: stock control also did not confirm the expected fixture tone.",
+  "hardware": "T05 unverified on MKII; T04 transport failure and earlier recording/audio symptoms remain open."
+}

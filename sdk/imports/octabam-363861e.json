@@ -38,12 +38,22 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/analog-bassdrum/CPU.md",
       "sourceSha256": "b20288ccf080f0f3409479b228dea7ca4f3b3e40a7a0727a285df6cbcd637385",
-      "vendoredSha256": "f748b76aefa1bd8ebe91c8f78700409e7183113a4b51d731d31ec12ed536f62f",
+      "vendoredSha256": "6cee9e962705413905d2dd7444759c036a8ceede844471eb603b8c7f040aaae0",
       "localUpdates": [
         {
           "moduleVersion": "0.1.3-experimental",
           "previousVendoredSha256": "b20288ccf080f0f3409479b228dea7ca4f3b3e40a7a0727a285df6cbcd637385",
           "reason": "Owner-tested TDEP/SAT smoothing update and matching release documentation; original import and source fingerprints retained."
+        },
+        {
+          "moduleVersion": "0.1.4-experimental",
+          "previousVendoredSha256": "f748b76aefa1bd8ebe91c8f78700409e7183113a4b51d731d31ec12ed536f62f",
+          "reason": "Owner-auditioned 909 direct-out reference update and matching release documentation; fresh physical/timing/memory qualification explicitly waived for this exact source. Original upstream fingerprints retained."
+        },
+        {
+          "moduleVersion": "0.1.5-experimental",
+          "previousVendoredSha256": "86a594d80cf4e6c23422c2d1296ae2daceb793d1e9e061f3447d3ea3b4aff91a",
+          "reason": "Restore stock SRC defaults in both Part copies on departure; exact AB015FIX01 promoted after reported physical FLEX persistence and owner merge/publication instruction. Updated release documentation retains broader unverified limits."
         }
       ]
     },
@@ -69,7 +79,7 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/analog-bassdrum/README.md",
       "sourceSha256": "4876d9613e5e65de0aefeef7ddd60ef6d0d5642c61b1fde60b97fc0f72255f68",
-      "vendoredSha256": "1656a1ffd9533605f7931cdac2488341aa69defc0f4321e77d887183f59d7d15",
+      "vendoredSha256": "d4d2900174dc66de7aa8c2b13e4a9a8155eb310e0d5c0b4ddc33e32f6f166dfb",
       "importedVendoredSha256": "57743ee073204e2a1b51ed7abad7ddf44eae95faddc90d397ca707d30a2bdfed",
       "adaptation": " Octamod 0.1.1 version and native verification evidence appended; imported fingerprint retained.",
       "localDocumentationUpdate": {
@@ -82,6 +92,34 @@
           "moduleVersion": "0.1.3-experimental",
           "previousVendoredSha256": "298478c31f64935eb87814eac9272651a2de15cef4781085bd3f613dec645b58",
           "reason": "Owner-tested TDEP/SAT smoothing update and matching release documentation; original import and source fingerprints retained."
+        },
+        {
+          "moduleVersion": "0.1.4-experimental",
+          "previousVendoredSha256": "1656a1ffd9533605f7931cdac2488341aa69defc0f4321e77d887183f59d7d15",
+          "reason": "Owner-auditioned 909 direct-out reference update and matching release documentation; fresh physical/timing/memory qualification explicitly waived for this exact source. Original upstream fingerprints retained."
+        },
+        {
+          "moduleVersion": "0.1.4-experimental",
+          "documentationOnly": true,
+          "previousVendoredSha256": "f52aa4eef3dcf791d128df145ad89773019293f4db963ae7de77344b1cf126b4",
+          "reason": "Document Flex SRC parameter retention and the reporter-confirmed page reset for issue #363; original import and upstream fingerprints preserved. Firmware source and qualification are unchanged."
+        },
+        {
+          "moduleVersion": "0.1.4-experimental",
+          "documentationOnly": true,
+          "previousVendoredSha256": "3736faf95b23136c57b83e50e708f0d5f2352a9030eef5123bc42b8cc2ca5bd3",
+          "reason": "Correct issue #363 guidance after the later power-cycle report: invalid retained FLEX SETUP can reject the working bank. Firmware and original import fingerprints remain unchanged; the 0.1.5 fix is staged privately."
+        },
+        {
+          "moduleVersion": "0.1.5-experimental",
+          "previousVendoredSha256": "efcdface8d593d015d0de6d037ec97ddb0781a9349343bfe30a8fda55d31d0cc",
+          "reason": "Restore stock SRC defaults in both Part copies on departure; exact AB015FIX01 promoted after reported physical FLEX persistence and owner merge/publication instruction. Updated release documentation retains broader unverified limits."
+        },
+        {
+          "moduleVersion": "0.1.5-experimental",
+          "documentationOnly": true,
+          "previousVendoredSha256": "a86c759c8955de4d0299b634fda94c01c1df6c7aa95dd3ad6c0e70e5177641df",
+          "reason": "Document the reviewed audio preview from PR #406; original upstream and import fingerprints retained. Firmware source and qualification are unchanged."
         }
       ]
     },
@@ -131,12 +169,17 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/analog-bassdrum/bd909.asm",
       "sourceSha256": "db1b2871957bb89bfd4184fc7556e5e46c44f3be1a889ba11fc1a679c4b1841e",
-      "vendoredSha256": "66f1abde9715b49a145daa1868d00b1ea73989bee2a8e904b9c44149a4d4afc8",
+      "vendoredSha256": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f",
       "localUpdates": [
         {
           "moduleVersion": "0.1.3-experimental",
           "previousVendoredSha256": "db1b2871957bb89bfd4184fc7556e5e46c44f3be1a889ba11fc1a679c4b1841e",
           "reason": "Owner-tested TDEP/SAT smoothing update and matching release documentation; original import and source fingerprints retained."
+        },
+        {
+          "moduleVersion": "0.1.4-experimental",
+          "previousVendoredSha256": "66f1abde9715b49a145daa1868d00b1ea73989bee2a8e904b9c44149a4d4afc8",
+          "reason": "Owner-auditioned 909 direct-out reference update and matching release documentation; fresh physical/timing/memory qualification explicitly waived for this exact source. Original upstream fingerprints retained."
         }
       ]
     },
@@ -177,12 +220,17 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/analog-bassdrum/dsp909.py",
       "sourceSha256": "c45ef4357cd66369181523784de0f5b328b8b18a58f3c19c60983d1173dd3195",
-      "vendoredSha256": "480a064a304380079019125eef98e9c68da26bd5408bbe38845563ccac94d2e4",
+      "vendoredSha256": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
       "localUpdates": [
         {
           "moduleVersion": "0.1.3-experimental",
           "previousVendoredSha256": "c45ef4357cd66369181523784de0f5b328b8b18a58f3c19c60983d1173dd3195",
           "reason": "Owner-tested TDEP/SAT smoothing update and matching release documentation; original import and source fingerprints retained."
+        },
+        {
+          "moduleVersion": "0.1.4-experimental",
+          "previousVendoredSha256": "480a064a304380079019125eef98e9c68da26bd5408bbe38845563ccac94d2e4",
+          "reason": "Owner-auditioned 909 direct-out reference update and matching release documentation; fresh physical/timing/memory qualification explicitly waived for this exact source. Original upstream fingerprints retained."
         }
       ]
     },
@@ -224,7 +272,14 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/analog-bassdrum/fit909.json",
       "sourceSha256": "e1e97b493b6c232bf6602ca224212e19f2aef3cff65fff404e7876648d228390",
-      "vendoredSha256": "e1e97b493b6c232bf6602ca224212e19f2aef3cff65fff404e7876648d228390"
+      "vendoredSha256": "6917d613b5033069f226b9f6a440f6eefd935e596452546d5bc27b73c5e3dd08",
+      "localUpdates": [
+        {
+          "moduleVersion": "0.1.4-experimental",
+          "previousVendoredSha256": "e1e97b493b6c232bf6602ca224212e19f2aef3cff65fff404e7876648d228390",
+          "reason": "Owner-auditioned 909 direct-out reference update and matching release documentation; fresh physical/timing/memory qualification explicitly waived for this exact source. Original upstream fingerprints retained."
+        }
+      ]
     },
     {
       "path": "modules/analog-bassdrum/generate.py",
@@ -240,7 +295,14 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/analog-bassdrum/machine.s",
       "sourceSha256": "07dc37b1c0bd0f061aabe27782c67df9dcd22769e9c080efbfdf354530d83b8d",
-      "vendoredSha256": "07dc37b1c0bd0f061aabe27782c67df9dcd22769e9c080efbfdf354530d83b8d"
+      "vendoredSha256": "90f9ddb5c2a4cee47e0334c3cd35a7e92d42b0ee37eb3bbc8062cc7821e6aeb4",
+      "localUpdates": [
+        {
+          "moduleVersion": "0.1.5-experimental",
+          "previousVendoredSha256": "07dc37b1c0bd0f061aabe27782c67df9dcd22769e9c080efbfdf354530d83b8d",
+          "reason": "Restore stock SRC defaults in both Part copies on departure; exact AB015FIX01 promoted after reported physical FLEX persistence and owner merge/publication instruction. Updated release documentation retains broader unverified limits."
+        }
+      ]
     },
     {
       "path": "modules/analog-bassdrum/manifest.py",
@@ -337,13 +399,19 @@
       "revision": "363861e31ee963c478fab2b190a0fabe1d7ce37b",
       "sourcePath": "modules/quantizer/README.md",
       "sourceSha256": "7361d0da558aac29b9d02752bab6c9cc7d569d83d81a843988df767e29bb3c69",
-      "vendoredSha256": "e19df9692d4febc6fa63a0e9d3d1fb40c3de866b84a97697b2e6aa5fcc30a913",
+      "vendoredSha256": "c227405736714e02df40baff8695fb617e4d63f8c3179775ee76f9c7a549d609",
       "importedVendoredSha256": "7ffc975e6de64f77478f4f9bdce8ee2b43dbe5a0a704bff0acfa0e61f2cf0a65",
       "adaptation": " Octamod 0.1.1 version and native verification evidence appended; imported fingerprint retained.",
       "localDocumentationUpdate": {
         "moduleVersion": "0.1.2-experimental",
         "previousVendoredSha256": "095c6e3a93c4278943cbc7c692db5d6c5099b1ae9805d203b90ef533f3ad5c1b",
         "reason": "Add actual OT UI access/capture documentation; native import and original upstream fingerprints preserved."
+      },
+      "localReleaseUpdate": {
+        "moduleVersion": "0.1.3-experimental",
+        "previousVendoredSha256": "e19df9692d4febc6fa63a0e9d3d1fb40c3de866b84a97697b2e6aa5fcc30a913",
+        "record": "octabam/modules/quantizer/TESTING.md",
+        "reason": "Repair standalone MIDI trig-mode drawer stack corruption (#181), synchronize current-version tutorial and exact software evidence. Original author/source fingerprints and prior adaptations are preserved."
       }
     },
     {
@@ -562,7 +630,13 @@
       "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
       "sourcePath": "quantizer/manifest.py",
       "sourceSha256": "b28a9a120e3e6e5e4a5719404f8ff56667c22b582a0fd4595315b4d20ac7d9a4",
-      "vendoredSha256": "3a8ba2d366320ce702b02129386e3d384f0e9d6ae7df64e4811b32f3e08e4011"
+      "vendoredSha256": "e637e3718e4b65320b847ef0758e0d46800f8be6b8020290f89192c798c535ef",
+      "localReleaseUpdate": {
+        "moduleVersion": "0.1.3-experimental",
+        "previousVendoredSha256": "3a8ba2d366320ce702b02129386e3d384f0e9d6ae7df64e4811b32f3e08e4011",
+        "record": "octabam/modules/quantizer/TESTING.md",
+        "reason": "Repair standalone MIDI trig-mode drawer stack corruption (#181), synchronize current-version tutorial and exact software evidence. Original author/source fingerprints and prior adaptations are preserved."
+      }
     },
     {
       "path": "modules/quantizer/upstream/quantizer/quantizer.s",
@@ -570,7 +644,13 @@
       "revision": "525f4b19b04dc3ba3f3bae3b25abbf48df34a10a",
       "sourcePath": "quantizer/quantizer.s",
       "sourceSha256": "91f34be65891fdc61988a3d3a7736b55457572355ffc42d0f423df688e1698fb",
-      "vendoredSha256": "91f34be65891fdc61988a3d3a7736b55457572355ffc42d0f423df688e1698fb"
+      "vendoredSha256": "b14f214cc8236c19b8881d1113ea42359052a6d7ef0e9e0f02aaa88279da64a9",
+      "localReleaseUpdate": {
+        "moduleVersion": "0.1.3-experimental",
+        "previousVendoredSha256": "91f34be65891fdc61988a3d3a7736b55457572355ffc42d0f423df688e1698fb",
+        "record": "octabam/modules/quantizer/TESTING.md",
+        "reason": "Repair standalone MIDI trig-mode drawer stack corruption (#181), synchronize current-version tutorial and exact software evidence. Original author/source fingerprints and prior adaptations are preserved."
+      }
     },
     {
       "path": "modules/quantizer/upstream/quantizer/scale.s",
@@ -1100,9 +1180,9 @@
     },
     {
       "path": "modules/quantizer/upstream/quantizer/manifest.py",
-      "address": 1074022840,
+      "address": 1074022846,
       "bytes": 8,
-      "sha256": "ba228773be7f5a27bf35390c81bc6b1947b642d5fd23ea9b5153ad3b48b54ff6"
+      "sha256": "494435e3f72313a14453f642bdba5b064022c657c63c015752fe23092eabd19f"
     },
     {
       "path": "modules/quantizer/upstream/quantizer/manifest.py",

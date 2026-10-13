@@ -1,0 +1,95 @@
+{
+  "initial_mode": 0,
+  "assigned_marker": "504c01",
+  "assigned_mirror": "504c01",
+  "mode": 1,
+  "amp": "007f7f40407f",
+  "loop": "00",
+  "live": "00000001",
+  "transport": "00000001",
+  "note_config": "03",
+  "guards": {
+    "0x460d1a90": "00000000",
+    "0x460d1a94": "00000000",
+    "0x46c7e956": "13ebc400",
+    "0x46c7dd26": "00000000"
+  },
+  "chord_records": [
+    {
+      "step": 3,
+      "root": 72,
+      "shape": 67
+    }
+  ],
+  "stress_start": "status sample=669847.502 ms=15189.286 frames=8383 frame=on idle=61409 wall=58.312",
+  "stress_maxactive": 8,
+  "stress_end": "status sample=783003.335 ms=17755.178 frames=15456 frame=on idle=73758 wall=143.034",
+  "card_status": "card ok rw=1 path=/work/fresh.img written=0 through=0 errors=0",
+  "version": "0.2.2-experimental",
+  "image_sha256": "a1bf19d70ec8df03695758518feeab2ff4eb801878ea15e3bf3345fc223409c3",
+  "hardware": {
+    "previous_image": "POLY8T02",
+    "reported": "No chromatic trigs recorded despite sound, flashing REC light and advancing playhead. Reboot changes POLY to FLEX; multiple voices clip.",
+    "current_candidate": "POLY8T03 failed on MKII: transport remains on step 1, every channel and sample preview silent. Owner reports stock 1.40C restores playback and preview in the same project. Cause open; no hardware fix claimed."
+  },
+  "recording_failure": "Unresolved on hardware. Both images record in the native fresh-assignment gate; marker and gain corrections are not claimed to fix recording.",
+  "limit": {
+    "src_modal": "46c7d384",
+    "timeout": "00000000",
+    "chooser_modal": "46c7d384",
+    "marker": "504c01",
+    "mirror": "504c01",
+    "loop": "00"
+  },
+  "battery_only_restart": {
+    "run": "ok sample=316924.720 frames=19294 stop=time",
+    "bank": "0x400e21e0",
+    "part": 0,
+    "marker": "504c01",
+    "mirror": "504c01",
+    "machine": "01",
+    "loop": "00",
+    "part_sha_match": true
+  },
+  "gain": {
+    "positive": {
+      "sum_min": 33546240,
+      "sum_max": 33546240,
+      "full_scale": 33554432,
+      "single_output_peak": 186546,
+      "eight_output_peak": 1495163
+    },
+    "negative": {
+      "sum_min": -33554432,
+      "sum_max": -33554432,
+      "full_scale": 33554432,
+      "single_output_peak": 186593,
+      "eight_output_peak": 1495525
+    },
+    "attenuation_db": -18.06179973983887,
+    "voice_gain": 0.125,
+    "tested_active_heads": 8
+  },
+  "midi": {
+    "boundary_notes": [
+      0,
+      127,
+      71,
+      72,
+      84,
+      96,
+      97,
+      126
+    ],
+    "velocity_zero_off": true,
+    "independent_tuning": true,
+    "ptch_lock_unchanged": true,
+    "finite_release_reclaims_voices": true
+  },
+  "logs_sha256": {
+    "fresh-protocol.log": "12a95276f4fa085a069c513d4c90f7542d64eee585f621872b4df863968ea0ff",
+    "limit-protocol.log": "a35dcd1a80240afa699bcdb92c9c0da17686711c9fac20bc93254ac1284e86c5",
+    "warm-protocol.log": "23593c1cc456263741a6df7875deee46a6b943348d00026e1026280605167ddc",
+    "t03-midi/midi-final.log": "4f556eb851b0598d4c6112accb50b0b63a75652d0e7cc3911cc270d7bd4aa022"
+  }
+}

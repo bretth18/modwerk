@@ -1,0 +1,6490 @@
+{
+  "schema": 1,
+  "date": "2026-10-09",
+  "candidateVersion": "0.1.4-experimental",
+  "sourceFiles": {
+    "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+    "fit909.json": "6917d613b5033069f226b9f6a440f6eefd935e596452546d5bc27b73c5e3dd08",
+    "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+  },
+  "controls": [
+    {
+      "control": "PITCH",
+      "values": [
+        {
+          "value": 0,
+          "peak": 0.34793663024902344,
+          "limitedSamples": 0
+        },
+        {
+          "value": 1,
+          "peak": 0.37627077102661133,
+          "limitedSamples": 0
+        },
+        {
+          "value": 2,
+          "peak": 0.3813052177429199,
+          "limitedSamples": 0
+        },
+        {
+          "value": 3,
+          "peak": 0.3650813102722168,
+          "limitedSamples": 0
+        },
+        {
+          "value": 4,
+          "peak": 0.37856245040893555,
+          "limitedSamples": 0
+        },
+        {
+          "value": 5,
+          "peak": 0.37357425689697266,
+          "limitedSamples": 0
+        },
+        {
+          "value": 6,
+          "peak": 0.37487363815307617,
+          "limitedSamples": 0
+        },
+        {
+          "value": 7,
+          "peak": 0.382016658782959,
+          "limitedSamples": 0
+        },
+        {
+          "value": 8,
+          "peak": 0.37164306640625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 9,
+          "peak": 0.3683924674987793,
+          "limitedSamples": 0
+        },
+        {
+          "value": 10,
+          "peak": 0.3696117401123047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 11,
+          "peak": 0.37671852111816406,
+          "limitedSamples": 0
+        },
+        {
+          "value": 12,
+          "peak": 0.39026689529418945,
+          "limitedSamples": 0
+        },
+        {
+          "value": 13,
+          "peak": 0.38504552841186523,
+          "limitedSamples": 0
+        },
+        {
+          "value": 14,
+          "peak": 0.3864727020263672,
+          "limitedSamples": 0
+        },
+        {
+          "value": 15,
+          "peak": 0.3713202476501465,
+          "limitedSamples": 0
+        },
+        {
+          "value": 16,
+          "peak": 0.3846888542175293,
+          "limitedSamples": 0
+        },
+        {
+          "value": 17,
+          "peak": 0.3799557685852051,
+          "limitedSamples": 0
+        },
+        {
+          "value": 18,
+          "peak": 0.3811531066894531,
+          "limitedSamples": 0
+        },
+        {
+          "value": 19,
+          "peak": 0.38829994201660156,
+          "limitedSamples": 0
+        },
+        {
+          "value": 20,
+          "peak": 0.37758970260620117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 21,
+          "peak": 0.37282848358154297,
+          "limitedSamples": 0
+        },
+        {
+          "value": 22,
+          "peak": 0.3741950988769531,
+          "limitedSamples": 0
+        },
+        {
+          "value": 23,
+          "peak": 0.382720947265625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 24,
+          "peak": 0.37212085723876953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 25,
+          "peak": 0.391326904296875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 26,
+          "peak": 0.39241504669189453,
+          "limitedSamples": 0
+        },
+        {
+          "value": 27,
+          "peak": 0.3756828308105469,
+          "limitedSamples": 0
+        },
+        {
+          "value": 28,
+          "peak": 0.3891305923461914,
+          "limitedSamples": 0
+        },
+        {
+          "value": 29,
+          "peak": 0.3842611312866211,
+          "limitedSamples": 0
+        },
+        {
+          "value": 30,
+          "peak": 0.3867316246032715,
+          "limitedSamples": 0
+        },
+        {
+          "value": 31,
+          "peak": 0.39394474029541016,
+          "limitedSamples": 0
+        },
+        {
+          "value": 32,
+          "peak": 0.3832731246948242,
+          "limitedSamples": 0
+        },
+        {
+          "value": 33,
+          "peak": 0.37859201431274414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 34,
+          "peak": 0.3798947334289551,
+          "limitedSamples": 0
+        },
+        {
+          "value": 35,
+          "peak": 0.38700151443481445,
+          "limitedSamples": 0
+        },
+        {
+          "value": 36,
+          "peak": 0.37629222869873047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 37,
+          "peak": 0.37262725830078125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 38,
+          "peak": 0.37372303009033203,
+          "limitedSamples": 0
+        },
+        {
+          "value": 39,
+          "peak": 0.38093996047973633,
+          "limitedSamples": 0
+        },
+        {
+          "value": 40,
+          "peak": 0.3945331573486328,
+          "limitedSamples": 0
+        },
+        {
+          "value": 41,
+          "peak": 0.3892989158630371,
+          "limitedSamples": 0
+        },
+        {
+          "value": 42,
+          "peak": 0.3905353546142578,
+          "limitedSamples": 0
+        },
+        {
+          "value": 43,
+          "peak": 0.3741002082824707,
+          "limitedSamples": 0
+        },
+        {
+          "value": 44,
+          "peak": 0.38744258880615234,
+          "limitedSamples": 0
+        },
+        {
+          "value": 45,
+          "peak": 0.3836021423339844,
+          "limitedSamples": 0
+        },
+        {
+          "value": 46,
+          "peak": 0.38486194610595703,
+          "limitedSamples": 0
+        },
+        {
+          "value": 47,
+          "peak": 0.39203310012817383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 48,
+          "peak": 0.38142824172973633,
+          "limitedSamples": 0
+        },
+        {
+          "value": 49,
+          "peak": 0.3765082359313965,
+          "limitedSamples": 0
+        },
+        {
+          "value": 50,
+          "peak": 0.37775707244873047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 51,
+          "peak": 0.3850278854370117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 52,
+          "peak": 0.37453556060791016,
+          "limitedSamples": 0
+        },
+        {
+          "value": 53,
+          "peak": 0.3944525718688965,
+          "limitedSamples": 0
+        },
+        {
+          "value": 54,
+          "peak": 0.3956289291381836,
+          "limitedSamples": 0
+        },
+        {
+          "value": 55,
+          "peak": 0.3787875175476074,
+          "limitedSamples": 0
+        },
+        {
+          "value": 56,
+          "peak": 0.39241790771484375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 57,
+          "peak": 0.38727569580078125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 58,
+          "peak": 0.3883519172668457,
+          "limitedSamples": 0
+        },
+        {
+          "value": 59,
+          "peak": 0.39600086212158203,
+          "limitedSamples": 0
+        },
+        {
+          "value": 60,
+          "peak": 0.3852572441101074,
+          "limitedSamples": 0
+        },
+        {
+          "value": 61,
+          "peak": 0.3812136650085449,
+          "limitedSamples": 0
+        },
+        {
+          "value": 62,
+          "peak": 0.3826112747192383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 63,
+          "peak": 0.3896903991699219,
+          "limitedSamples": 0
+        },
+        {
+          "value": 64,
+          "peak": 0.3790626525878906,
+          "limitedSamples": 0
+        },
+        {
+          "value": 65,
+          "peak": 0.3982210159301758,
+          "limitedSamples": 0
+        },
+        {
+          "value": 66,
+          "peak": 0.37529754638671875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 67,
+          "peak": 0.38260459899902344,
+          "limitedSamples": 0
+        },
+        {
+          "value": 68,
+          "peak": 0.396115779876709,
+          "limitedSamples": 0
+        },
+        {
+          "value": 69,
+          "peak": 0.3917231559753418,
+          "limitedSamples": 0
+        },
+        {
+          "value": 70,
+          "peak": 0.3931765556335449,
+          "limitedSamples": 0
+        },
+        {
+          "value": 71,
+          "peak": 0.3763003349304199,
+          "limitedSamples": 0
+        },
+        {
+          "value": 72,
+          "peak": 0.38974618911743164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 73,
+          "peak": 0.38477563858032227,
+          "limitedSamples": 0
+        },
+        {
+          "value": 74,
+          "peak": 0.3862175941467285,
+          "limitedSamples": 0
+        },
+        {
+          "value": 75,
+          "peak": 0.39325380325317383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 76,
+          "peak": 0.3827948570251465,
+          "limitedSamples": 0
+        },
+        {
+          "value": 77,
+          "peak": 0.37853002548217773,
+          "limitedSamples": 0
+        },
+        {
+          "value": 78,
+          "peak": 0.3799443244934082,
+          "limitedSamples": 0
+        },
+        {
+          "value": 79,
+          "peak": 0.38694143295288086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 80,
+          "peak": 0.4002509117126465,
+          "limitedSamples": 0
+        },
+        {
+          "value": 81,
+          "peak": 0.39536380767822266,
+          "limitedSamples": 0
+        },
+        {
+          "value": 82,
+          "peak": 0.3968019485473633,
+          "limitedSamples": 0
+        },
+        {
+          "value": 83,
+          "peak": 0.3798489570617676,
+          "limitedSamples": 0
+        },
+        {
+          "value": 84,
+          "peak": 0.3934040069580078,
+          "limitedSamples": 0
+        },
+        {
+          "value": 85,
+          "peak": 0.38827991485595703,
+          "limitedSamples": 0
+        },
+        {
+          "value": 86,
+          "peak": 0.3902311325073242,
+          "limitedSamples": 0
+        },
+        {
+          "value": 87,
+          "peak": 0.3975868225097656,
+          "limitedSamples": 0
+        },
+        {
+          "value": 88,
+          "peak": 0.38663530349731445,
+          "limitedSamples": 0
+        },
+        {
+          "value": 89,
+          "peak": 0.3818984031677246,
+          "limitedSamples": 0
+        },
+        {
+          "value": 90,
+          "peak": 0.38345956802368164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 91,
+          "peak": 0.3904581069946289,
+          "limitedSamples": 0
+        },
+        {
+          "value": 92,
+          "peak": 0.3797292709350586,
+          "limitedSamples": 0
+        },
+        {
+          "value": 93,
+          "peak": 0.3992319107055664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 94,
+          "peak": 0.4004068374633789,
+          "limitedSamples": 0
+        },
+        {
+          "value": 95,
+          "peak": 0.38376760482788086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 96,
+          "peak": 0.39748048782348633,
+          "limitedSamples": 0
+        },
+        {
+          "value": 97,
+          "peak": 0.3923306465148926,
+          "limitedSamples": 0
+        },
+        {
+          "value": 98,
+          "peak": 0.3937249183654785,
+          "limitedSamples": 0
+        },
+        {
+          "value": 99,
+          "peak": 0.4009127616882324,
+          "limitedSamples": 0
+        },
+        {
+          "value": 100,
+          "peak": 0.39020490646362305,
+          "limitedSamples": 0
+        },
+        {
+          "value": 101,
+          "peak": 0.3854522705078125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 102,
+          "peak": 0.38680553436279297,
+          "limitedSamples": 0
+        },
+        {
+          "value": 103,
+          "peak": 0.3939642906188965,
+          "limitedSamples": 0
+        },
+        {
+          "value": 104,
+          "peak": 0.3831048011779785,
+          "limitedSamples": 0
+        },
+        {
+          "value": 105,
+          "peak": 0.37895774841308594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 106,
+          "peak": 0.38034677505493164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 107,
+          "peak": 0.3873019218444824,
+          "limitedSamples": 0
+        },
+        {
+          "value": 108,
+          "peak": 0.4005708694458008,
+          "limitedSamples": 0
+        },
+        {
+          "value": 109,
+          "peak": 0.39580726623535156,
+          "limitedSamples": 0
+        },
+        {
+          "value": 110,
+          "peak": 0.3970952033996582,
+          "limitedSamples": 0
+        },
+        {
+          "value": 111,
+          "peak": 0.3801994323730469,
+          "limitedSamples": 0
+        },
+        {
+          "value": 112,
+          "peak": 0.39354991912841797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 113,
+          "peak": 0.38864660263061523,
+          "limitedSamples": 0
+        },
+        {
+          "value": 114,
+          "peak": 0.39006757736206055,
+          "limitedSamples": 0
+        },
+        {
+          "value": 115,
+          "peak": 0.39739036560058594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 116,
+          "peak": 0.3867154121398926,
+          "limitedSamples": 0
+        },
+        {
+          "value": 117,
+          "peak": 0.38219356536865234,
+          "limitedSamples": 0
+        },
+        {
+          "value": 118,
+          "peak": 0.3836531639099121,
+          "limitedSamples": 0
+        },
+        {
+          "value": 119,
+          "peak": 0.3907618522644043,
+          "limitedSamples": 0
+        },
+        {
+          "value": 120,
+          "peak": 0.37981271743774414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 121,
+          "peak": 0.3993234634399414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 122,
+          "peak": 0.4005312919616699,
+          "limitedSamples": 0
+        },
+        {
+          "value": 123,
+          "peak": 0.38353681564331055,
+          "limitedSamples": 0
+        },
+        {
+          "value": 124,
+          "peak": 0.39711999893188477,
+          "limitedSamples": 0
+        },
+        {
+          "value": 125,
+          "peak": 0.3920097351074219,
+          "limitedSamples": 0
+        },
+        {
+          "value": 126,
+          "peak": 0.3934140205383301,
+          "limitedSamples": 0
+        },
+        {
+          "value": 127,
+          "peak": 0.40107154846191406,
+          "limitedSamples": 0
+        }
+      ],
+      "referenceErrorDb": -71.43921422903067,
+      "note": "64 native blocks per value, retrigger at each step; stress walk, not isolated full decay."
+    },
+    {
+      "control": "DECAY",
+      "values": [
+        {
+          "value": 0,
+          "peak": 0.3479447364807129,
+          "limitedSamples": 0
+        },
+        {
+          "value": 1,
+          "peak": 0.3836040496826172,
+          "limitedSamples": 0
+        },
+        {
+          "value": 2,
+          "peak": 0.38944149017333984,
+          "limitedSamples": 0
+        },
+        {
+          "value": 3,
+          "peak": 0.3733072280883789,
+          "limitedSamples": 0
+        },
+        {
+          "value": 4,
+          "peak": 0.3867974281311035,
+          "limitedSamples": 0
+        },
+        {
+          "value": 5,
+          "peak": 0.3818082809448242,
+          "limitedSamples": 0
+        },
+        {
+          "value": 6,
+          "peak": 0.3831057548522949,
+          "limitedSamples": 0
+        },
+        {
+          "value": 7,
+          "peak": 0.39025211334228516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 8,
+          "peak": 0.3797178268432617,
+          "limitedSamples": 0
+        },
+        {
+          "value": 9,
+          "peak": 0.3748764991760254,
+          "limitedSamples": 0
+        },
+        {
+          "value": 10,
+          "peak": 0.3760957717895508,
+          "limitedSamples": 0
+        },
+        {
+          "value": 11,
+          "peak": 0.38320255279541016,
+          "limitedSamples": 0
+        },
+        {
+          "value": 12,
+          "peak": 0.39674997329711914,
+          "limitedSamples": 0
+        },
+        {
+          "value": 13,
+          "peak": 0.3915281295776367,
+          "limitedSamples": 0
+        },
+        {
+          "value": 14,
+          "peak": 0.39281463623046875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 15,
+          "peak": 0.37621021270751953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 16,
+          "peak": 0.38958215713500977,
+          "limitedSamples": 0
+        },
+        {
+          "value": 17,
+          "peak": 0.3848457336425781,
+          "limitedSamples": 0
+        },
+        {
+          "value": 18,
+          "peak": 0.3860454559326172,
+          "limitedSamples": 0
+        },
+        {
+          "value": 19,
+          "peak": 0.39319276809692383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 20,
+          "peak": 0.38248348236083984,
+          "limitedSamples": 0
+        },
+        {
+          "value": 21,
+          "peak": 0.37772226333618164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 22,
+          "peak": 0.37895965576171875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 23,
+          "peak": 0.3861880302429199,
+          "limitedSamples": 0
+        },
+        {
+          "value": 24,
+          "peak": 0.37558603286743164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 25,
+          "peak": 0.3947920799255371,
+          "limitedSamples": 0
+        },
+        {
+          "value": 26,
+          "peak": 0.39588117599487305,
+          "limitedSamples": 0
+        },
+        {
+          "value": 27,
+          "peak": 0.3791513442993164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 28,
+          "peak": 0.3925967216491699,
+          "limitedSamples": 0
+        },
+        {
+          "value": 29,
+          "peak": 0.38761186599731445,
+          "limitedSamples": 0
+        },
+        {
+          "value": 30,
+          "peak": 0.38892173767089844,
+          "limitedSamples": 0
+        },
+        {
+          "value": 31,
+          "peak": 0.3961353302001953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 32,
+          "peak": 0.385465145111084,
+          "limitedSamples": 0
+        },
+        {
+          "value": 33,
+          "peak": 0.3807830810546875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 34,
+          "peak": 0.38208675384521484,
+          "limitedSamples": 0
+        },
+        {
+          "value": 35,
+          "peak": 0.3891940116882324,
+          "limitedSamples": 0
+        },
+        {
+          "value": 36,
+          "peak": 0.37837886810302734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 37,
+          "peak": 0.3736753463745117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 38,
+          "peak": 0.3747715950012207,
+          "limitedSamples": 0
+        },
+        {
+          "value": 39,
+          "peak": 0.381988525390625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 40,
+          "peak": 0.3955831527709961,
+          "limitedSamples": 0
+        },
+        {
+          "value": 41,
+          "peak": 0.390350341796875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 42,
+          "peak": 0.3915843963623047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 43,
+          "peak": 0.375150203704834,
+          "limitedSamples": 0
+        },
+        {
+          "value": 44,
+          "peak": 0.3883976936340332,
+          "limitedSamples": 0
+        },
+        {
+          "value": 45,
+          "peak": 0.3836336135864258,
+          "limitedSamples": 0
+        },
+        {
+          "value": 46,
+          "peak": 0.38489341735839844,
+          "limitedSamples": 0
+        },
+        {
+          "value": 47,
+          "peak": 0.3920621871948242,
+          "limitedSamples": 0
+        },
+        {
+          "value": 48,
+          "peak": 0.38145971298217773,
+          "limitedSamples": 0
+        },
+        {
+          "value": 49,
+          "peak": 0.3765377998352051,
+          "limitedSamples": 0
+        },
+        {
+          "value": 50,
+          "peak": 0.37778759002685547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 51,
+          "peak": 0.3850588798522949,
+          "limitedSamples": 0
+        },
+        {
+          "value": 52,
+          "peak": 0.3744816780090332,
+          "limitedSamples": 0
+        },
+        {
+          "value": 53,
+          "peak": 0.3935699462890625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 54,
+          "peak": 0.3947443962097168,
+          "limitedSamples": 0
+        },
+        {
+          "value": 55,
+          "peak": 0.37790393829345703,
+          "limitedSamples": 0
+        },
+        {
+          "value": 56,
+          "peak": 0.3915367126464844,
+          "limitedSamples": 0
+        },
+        {
+          "value": 57,
+          "peak": 0.38639259338378906,
+          "limitedSamples": 0
+        },
+        {
+          "value": 58,
+          "peak": 0.3874673843383789,
+          "limitedSamples": 0
+        },
+        {
+          "value": 59,
+          "peak": 0.39511919021606445,
+          "limitedSamples": 0
+        },
+        {
+          "value": 60,
+          "peak": 0.38429880142211914,
+          "limitedSamples": 0
+        },
+        {
+          "value": 61,
+          "peak": 0.37951135635375977,
+          "limitedSamples": 0
+        },
+        {
+          "value": 62,
+          "peak": 0.38091039657592773,
+          "limitedSamples": 0
+        },
+        {
+          "value": 63,
+          "peak": 0.38798999786376953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 64,
+          "peak": 0.37736034393310547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 65,
+          "peak": 0.3965187072753906,
+          "limitedSamples": 0
+        },
+        {
+          "value": 66,
+          "peak": 0.3735952377319336,
+          "limitedSamples": 0
+        },
+        {
+          "value": 67,
+          "peak": 0.3809022903442383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 68,
+          "peak": 0.3943476676940918,
+          "limitedSamples": 0
+        },
+        {
+          "value": 69,
+          "peak": 0.38929080963134766,
+          "limitedSamples": 0
+        },
+        {
+          "value": 70,
+          "peak": 0.39074182510375977,
+          "limitedSamples": 0
+        },
+        {
+          "value": 71,
+          "peak": 0.3738675117492676,
+          "limitedSamples": 0
+        },
+        {
+          "value": 72,
+          "peak": 0.3873114585876465,
+          "limitedSamples": 0
+        },
+        {
+          "value": 73,
+          "peak": 0.3823423385620117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 74,
+          "peak": 0.38378381729125977,
+          "limitedSamples": 0
+        },
+        {
+          "value": 75,
+          "peak": 0.3908219337463379,
+          "limitedSamples": 0
+        },
+        {
+          "value": 76,
+          "peak": 0.38030099868774414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 77,
+          "peak": 0.3754434585571289,
+          "limitedSamples": 0
+        },
+        {
+          "value": 78,
+          "peak": 0.37685585021972656,
+          "limitedSamples": 0
+        },
+        {
+          "value": 79,
+          "peak": 0.38385486602783203,
+          "limitedSamples": 0
+        },
+        {
+          "value": 80,
+          "peak": 0.39716386795043945,
+          "limitedSamples": 0
+        },
+        {
+          "value": 81,
+          "peak": 0.392275333404541,
+          "limitedSamples": 0
+        },
+        {
+          "value": 82,
+          "peak": 0.39371538162231445,
+          "limitedSamples": 0
+        },
+        {
+          "value": 83,
+          "peak": 0.37676048278808594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 84,
+          "peak": 0.390317440032959,
+          "limitedSamples": 0
+        },
+        {
+          "value": 85,
+          "peak": 0.38513755798339844,
+          "limitedSamples": 0
+        },
+        {
+          "value": 86,
+          "peak": 0.38655805587768555,
+          "limitedSamples": 0
+        },
+        {
+          "value": 87,
+          "peak": 0.39391517639160156,
+          "limitedSamples": 0
+        },
+        {
+          "value": 88,
+          "peak": 0.3829631805419922,
+          "limitedSamples": 0
+        },
+        {
+          "value": 89,
+          "peak": 0.37822389602661133,
+          "limitedSamples": 0
+        },
+        {
+          "value": 90,
+          "peak": 0.37978506088256836,
+          "limitedSamples": 0
+        },
+        {
+          "value": 91,
+          "peak": 0.38678550720214844,
+          "limitedSamples": 0
+        },
+        {
+          "value": 92,
+          "peak": 0.37605810165405273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 93,
+          "peak": 0.3955554962158203,
+          "limitedSamples": 0
+        },
+        {
+          "value": 94,
+          "peak": 0.3966856002807617,
+          "limitedSamples": 0
+        },
+        {
+          "value": 95,
+          "peak": 0.37957048416137695,
+          "limitedSamples": 0
+        },
+        {
+          "value": 96,
+          "peak": 0.39328432083129883,
+          "limitedSamples": 0
+        },
+        {
+          "value": 97,
+          "peak": 0.3881340026855469,
+          "limitedSamples": 0
+        },
+        {
+          "value": 98,
+          "peak": 0.3895282745361328,
+          "limitedSamples": 0
+        },
+        {
+          "value": 99,
+          "peak": 0.3967151641845703,
+          "limitedSamples": 0
+        },
+        {
+          "value": 100,
+          "peak": 0.38600873947143555,
+          "limitedSamples": 0
+        },
+        {
+          "value": 101,
+          "peak": 0.3812546730041504,
+          "limitedSamples": 0
+        },
+        {
+          "value": 102,
+          "peak": 0.38260650634765625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 103,
+          "peak": 0.3897676467895508,
+          "limitedSamples": 0
+        },
+        {
+          "value": 104,
+          "peak": 0.37886571884155273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 105,
+          "peak": 0.37429141998291016,
+          "limitedSamples": 0
+        },
+        {
+          "value": 106,
+          "peak": 0.37567901611328125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 107,
+          "peak": 0.38263607025146484,
+          "limitedSamples": 0
+        },
+        {
+          "value": 108,
+          "peak": 0.3959026336669922,
+          "limitedSamples": 0
+        },
+        {
+          "value": 109,
+          "peak": 0.391141414642334,
+          "limitedSamples": 0
+        },
+        {
+          "value": 110,
+          "peak": 0.39243125915527344,
+          "limitedSamples": 0
+        },
+        {
+          "value": 111,
+          "peak": 0.3755331039428711,
+          "limitedSamples": 0
+        },
+        {
+          "value": 112,
+          "peak": 0.3888845443725586,
+          "limitedSamples": 0
+        },
+        {
+          "value": 113,
+          "peak": 0.38398265838623047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 114,
+          "peak": 0.3854031562805176,
+          "limitedSamples": 0
+        },
+        {
+          "value": 115,
+          "peak": 0.3926849365234375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 116,
+          "peak": 0.38162803649902344,
+          "limitedSamples": 0
+        },
+        {
+          "value": 117,
+          "peak": 0.377108097076416,
+          "limitedSamples": 0
+        },
+        {
+          "value": 118,
+          "peak": 0.3785676956176758,
+          "limitedSamples": 0
+        },
+        {
+          "value": 119,
+          "peak": 0.38567447662353516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 120,
+          "peak": 0.3747272491455078,
+          "limitedSamples": 0
+        },
+        {
+          "value": 121,
+          "peak": 0.39423656463623047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 122,
+          "peak": 0.3954453468322754,
+          "limitedSamples": 0
+        },
+        {
+          "value": 123,
+          "peak": 0.3784499168395996,
+          "limitedSamples": 0
+        },
+        {
+          "value": 124,
+          "peak": 0.39203596115112305,
+          "limitedSamples": 0
+        },
+        {
+          "value": 125,
+          "peak": 0.38692665100097656,
+          "limitedSamples": 0
+        },
+        {
+          "value": 126,
+          "peak": 0.3882927894592285,
+          "limitedSamples": 0
+        },
+        {
+          "value": 127,
+          "peak": 0.39560937881469727,
+          "limitedSamples": 0
+        }
+      ],
+      "referenceErrorDb": -71.70029857664532,
+      "note": "64 native blocks per value, retrigger at each step; stress walk, not isolated full decay."
+    },
+    {
+      "control": "TUNE",
+      "values": [
+        {
+          "value": 0,
+          "peak": 0.3479447364807129,
+          "limitedSamples": 0
+        },
+        {
+          "value": 1,
+          "peak": 0.3836040496826172,
+          "limitedSamples": 0
+        },
+        {
+          "value": 2,
+          "peak": 0.38944149017333984,
+          "limitedSamples": 0
+        },
+        {
+          "value": 3,
+          "peak": 0.3733072280883789,
+          "limitedSamples": 0
+        },
+        {
+          "value": 4,
+          "peak": 0.3867974281311035,
+          "limitedSamples": 0
+        },
+        {
+          "value": 5,
+          "peak": 0.3818082809448242,
+          "limitedSamples": 0
+        },
+        {
+          "value": 6,
+          "peak": 0.3831057548522949,
+          "limitedSamples": 0
+        },
+        {
+          "value": 7,
+          "peak": 0.39025020599365234,
+          "limitedSamples": 0
+        },
+        {
+          "value": 8,
+          "peak": 0.3797178268432617,
+          "limitedSamples": 0
+        },
+        {
+          "value": 9,
+          "peak": 0.3748779296875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 10,
+          "peak": 0.3760957717895508,
+          "limitedSamples": 0
+        },
+        {
+          "value": 11,
+          "peak": 0.38320064544677734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 12,
+          "peak": 0.39675092697143555,
+          "limitedSamples": 0
+        },
+        {
+          "value": 13,
+          "peak": 0.39152956008911133,
+          "limitedSamples": 0
+        },
+        {
+          "value": 14,
+          "peak": 0.39281272888183594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 15,
+          "peak": 0.37621164321899414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 16,
+          "peak": 0.38958215713500977,
+          "limitedSamples": 0
+        },
+        {
+          "value": 17,
+          "peak": 0.38484764099121094,
+          "limitedSamples": 0
+        },
+        {
+          "value": 18,
+          "peak": 0.3860454559326172,
+          "limitedSamples": 0
+        },
+        {
+          "value": 19,
+          "peak": 0.393190860748291,
+          "limitedSamples": 0
+        },
+        {
+          "value": 20,
+          "peak": 0.38248205184936523,
+          "limitedSamples": 0
+        },
+        {
+          "value": 21,
+          "peak": 0.37772226333618164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 22,
+          "peak": 0.37895965576171875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 23,
+          "peak": 0.3861880302429199,
+          "limitedSamples": 0
+        },
+        {
+          "value": 24,
+          "peak": 0.37558746337890625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 25,
+          "peak": 0.3947939872741699,
+          "limitedSamples": 0
+        },
+        {
+          "value": 26,
+          "peak": 0.39588165283203125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 27,
+          "peak": 0.3791513442993164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 28,
+          "peak": 0.39259767532348633,
+          "limitedSamples": 0
+        },
+        {
+          "value": 29,
+          "peak": 0.38761186599731445,
+          "limitedSamples": 0
+        },
+        {
+          "value": 30,
+          "peak": 0.38892364501953125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 31,
+          "peak": 0.3961334228515625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 32,
+          "peak": 0.3854637145996094,
+          "limitedSamples": 0
+        },
+        {
+          "value": 33,
+          "peak": 0.3807811737060547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 34,
+          "peak": 0.38208532333374023,
+          "limitedSamples": 0
+        },
+        {
+          "value": 35,
+          "peak": 0.3891925811767578,
+          "limitedSamples": 0
+        },
+        {
+          "value": 36,
+          "peak": 0.37837791442871094,
+          "limitedSamples": 0
+        },
+        {
+          "value": 37,
+          "peak": 0.37367725372314453,
+          "limitedSamples": 0
+        },
+        {
+          "value": 38,
+          "peak": 0.3747730255126953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 39,
+          "peak": 0.3819870948791504,
+          "limitedSamples": 0
+        },
+        {
+          "value": 40,
+          "peak": 0.39566516876220703,
+          "limitedSamples": 0
+        },
+        {
+          "value": 41,
+          "peak": 0.391232967376709,
+          "limitedSamples": 0
+        },
+        {
+          "value": 42,
+          "peak": 0.3924689292907715,
+          "limitedSamples": 0
+        },
+        {
+          "value": 43,
+          "peak": 0.3760347366333008,
+          "limitedSamples": 0
+        },
+        {
+          "value": 44,
+          "peak": 0.3892827033996582,
+          "limitedSamples": 0
+        },
+        {
+          "value": 45,
+          "peak": 0.38451480865478516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 46,
+          "peak": 0.38577842712402344,
+          "limitedSamples": 0
+        },
+        {
+          "value": 47,
+          "peak": 0.3929471969604492,
+          "limitedSamples": 0
+        },
+        {
+          "value": 48,
+          "peak": 0.38234424591064453,
+          "limitedSamples": 0
+        },
+        {
+          "value": 49,
+          "peak": 0.3774228096008301,
+          "limitedSamples": 0
+        },
+        {
+          "value": 50,
+          "peak": 0.37867259979248047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 51,
+          "peak": 0.3859415054321289,
+          "limitedSamples": 0
+        },
+        {
+          "value": 52,
+          "peak": 0.3753647804260254,
+          "limitedSamples": 0
+        },
+        {
+          "value": 53,
+          "peak": 0.3944525718688965,
+          "limitedSamples": 0
+        },
+        {
+          "value": 54,
+          "peak": 0.3956308364868164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 55,
+          "peak": 0.3787875175476074,
+          "limitedSamples": 0
+        },
+        {
+          "value": 56,
+          "peak": 0.39241933822631836,
+          "limitedSamples": 0
+        },
+        {
+          "value": 57,
+          "peak": 0.38727569580078125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 58,
+          "peak": 0.3883500099182129,
+          "limitedSamples": 0
+        },
+        {
+          "value": 59,
+          "peak": 0.39600086212158203,
+          "limitedSamples": 0
+        },
+        {
+          "value": 60,
+          "peak": 0.38518190383911133,
+          "limitedSamples": 0
+        },
+        {
+          "value": 61,
+          "peak": 0.38039588928222656,
+          "limitedSamples": 0
+        },
+        {
+          "value": 62,
+          "peak": 0.3817934989929199,
+          "limitedSamples": 0
+        },
+        {
+          "value": 63,
+          "peak": 0.38887453079223633,
+          "limitedSamples": 0
+        },
+        {
+          "value": 64,
+          "peak": 0.37824535369873047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 65,
+          "peak": 0.3974018096923828,
+          "limitedSamples": 0
+        },
+        {
+          "value": 66,
+          "peak": 0.3744802474975586,
+          "limitedSamples": 0
+        },
+        {
+          "value": 67,
+          "peak": 0.38178539276123047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 68,
+          "peak": 0.3952326774597168,
+          "limitedSamples": 0
+        },
+        {
+          "value": 69,
+          "peak": 0.39017534255981445,
+          "limitedSamples": 0
+        },
+        {
+          "value": 70,
+          "peak": 0.39162492752075195,
+          "limitedSamples": 0
+        },
+        {
+          "value": 71,
+          "peak": 0.3747520446777344,
+          "limitedSamples": 0
+        },
+        {
+          "value": 72,
+          "peak": 0.3881959915161133,
+          "limitedSamples": 0
+        },
+        {
+          "value": 73,
+          "peak": 0.3832240104675293,
+          "limitedSamples": 0
+        },
+        {
+          "value": 74,
+          "peak": 0.38466739654541016,
+          "limitedSamples": 0
+        },
+        {
+          "value": 75,
+          "peak": 0.3917050361633301,
+          "limitedSamples": 0
+        },
+        {
+          "value": 76,
+          "peak": 0.38118743896484375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 77,
+          "peak": 0.3763279914855957,
+          "limitedSamples": 0
+        },
+        {
+          "value": 78,
+          "peak": 0.37774181365966797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 79,
+          "peak": 0.38474082946777344,
+          "limitedSamples": 0
+        },
+        {
+          "value": 80,
+          "peak": 0.39804935455322266,
+          "limitedSamples": 0
+        },
+        {
+          "value": 81,
+          "peak": 0.393160343170166,
+          "limitedSamples": 0
+        },
+        {
+          "value": 82,
+          "peak": 0.39459848403930664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 83,
+          "peak": 0.37764501571655273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 84,
+          "peak": 0.391202449798584,
+          "limitedSamples": 0
+        },
+        {
+          "value": 85,
+          "peak": 0.3860206604003906,
+          "limitedSamples": 0
+        },
+        {
+          "value": 86,
+          "peak": 0.38744258880615234,
+          "limitedSamples": 0
+        },
+        {
+          "value": 87,
+          "peak": 0.39480018615722656,
+          "limitedSamples": 0
+        },
+        {
+          "value": 88,
+          "peak": 0.3838467597961426,
+          "limitedSamples": 0
+        },
+        {
+          "value": 89,
+          "peak": 0.37910985946655273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 90,
+          "peak": 0.38067007064819336,
+          "limitedSamples": 0
+        },
+        {
+          "value": 91,
+          "peak": 0.38766908645629883,
+          "limitedSamples": 0
+        },
+        {
+          "value": 92,
+          "peak": 0.3769407272338867,
+          "limitedSamples": 0
+        },
+        {
+          "value": 93,
+          "peak": 0.3965153694152832,
+          "limitedSamples": 0
+        },
+        {
+          "value": 94,
+          "peak": 0.3983879089355469,
+          "limitedSamples": 0
+        },
+        {
+          "value": 95,
+          "peak": 0.3812727928161621,
+          "limitedSamples": 0
+        },
+        {
+          "value": 96,
+          "peak": 0.39498472213745117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 97,
+          "peak": 0.3898348808288574,
+          "limitedSamples": 0
+        },
+        {
+          "value": 98,
+          "peak": 0.39123010635375977,
+          "limitedSamples": 0
+        },
+        {
+          "value": 99,
+          "peak": 0.39841747283935547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 100,
+          "peak": 0.3877115249633789,
+          "limitedSamples": 0
+        },
+        {
+          "value": 101,
+          "peak": 0.38295698165893555,
+          "limitedSamples": 0
+        },
+        {
+          "value": 102,
+          "peak": 0.3843088150024414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 103,
+          "peak": 0.39147043228149414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 104,
+          "peak": 0.38056516647338867,
+          "limitedSamples": 0
+        },
+        {
+          "value": 105,
+          "peak": 0.3759918212890625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 106,
+          "peak": 0.3773818016052246,
+          "limitedSamples": 0
+        },
+        {
+          "value": 107,
+          "peak": 0.3843350410461426,
+          "limitedSamples": 0
+        },
+        {
+          "value": 108,
+          "peak": 0.39760684967041016,
+          "limitedSamples": 0
+        },
+        {
+          "value": 109,
+          "peak": 0.39284229278564453,
+          "limitedSamples": 0
+        },
+        {
+          "value": 110,
+          "peak": 0.3941316604614258,
+          "limitedSamples": 0
+        },
+        {
+          "value": 111,
+          "peak": 0.37723255157470703,
+          "limitedSamples": 0
+        },
+        {
+          "value": 112,
+          "peak": 0.39058589935302734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 113,
+          "peak": 0.385683536529541,
+          "limitedSamples": 0
+        },
+        {
+          "value": 114,
+          "peak": 0.3871021270751953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 115,
+          "peak": 0.39438533782958984,
+          "limitedSamples": 0
+        },
+        {
+          "value": 116,
+          "peak": 0.3833322525024414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 117,
+          "peak": 0.37880897521972656,
+          "limitedSamples": 0
+        },
+        {
+          "value": 118,
+          "peak": 0.38026952743530273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 119,
+          "peak": 0.3873786926269531,
+          "limitedSamples": 0
+        },
+        {
+          "value": 120,
+          "peak": 0.37642812728881836,
+          "limitedSamples": 0
+        },
+        {
+          "value": 121,
+          "peak": 0.3959388732910156,
+          "limitedSamples": 0
+        },
+        {
+          "value": 122,
+          "peak": 0.39714956283569336,
+          "limitedSamples": 0
+        },
+        {
+          "value": 123,
+          "peak": 0.3801536560058594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 124,
+          "peak": 0.3937349319458008,
+          "limitedSamples": 0
+        },
+        {
+          "value": 125,
+          "peak": 0.3886270523071289,
+          "limitedSamples": 0
+        },
+        {
+          "value": 126,
+          "peak": 0.3899970054626465,
+          "limitedSamples": 0
+        },
+        {
+          "value": 127,
+          "peak": 0.3973116874694824,
+          "limitedSamples": 0
+        }
+      ],
+      "referenceErrorDb": -71.46947793439088,
+      "note": "64 native blocks per value, retrigger at each step; stress walk, not isolated full decay."
+    },
+    {
+      "control": "ATK",
+      "values": [
+        {
+          "value": 0,
+          "peak": 0.3479447364807129,
+          "limitedSamples": 0
+        },
+        {
+          "value": 1,
+          "peak": 0.3858160972595215,
+          "limitedSamples": 0
+        },
+        {
+          "value": 2,
+          "peak": 0.39390039443969727,
+          "limitedSamples": 0
+        },
+        {
+          "value": 3,
+          "peak": 0.37960290908813477,
+          "limitedSamples": 0
+        },
+        {
+          "value": 4,
+          "peak": 0.3955979347229004,
+          "limitedSamples": 0
+        },
+        {
+          "value": 5,
+          "peak": 0.3926229476928711,
+          "limitedSamples": 0
+        },
+        {
+          "value": 6,
+          "peak": 0.3961453437805176,
+          "limitedSamples": 0
+        },
+        {
+          "value": 7,
+          "peak": 0.40582895278930664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 8,
+          "peak": 0.39687252044677734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 9,
+          "peak": 0.3938465118408203,
+          "limitedSamples": 0
+        },
+        {
+          "value": 10,
+          "peak": 0.3972644805908203,
+          "limitedSamples": 0
+        },
+        {
+          "value": 11,
+          "peak": 0.4071769714355469,
+          "limitedSamples": 0
+        },
+        {
+          "value": 12,
+          "peak": 0.4246087074279785,
+          "limitedSamples": 0
+        },
+        {
+          "value": 13,
+          "peak": 0.421205997467041,
+          "limitedSamples": 0
+        },
+        {
+          "value": 14,
+          "peak": 0.4249610900878906,
+          "limitedSamples": 0
+        },
+        {
+          "value": 15,
+          "peak": 0.40838623046875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 16,
+          "peak": 0.4259018898010254,
+          "limitedSamples": 0
+        },
+        {
+          "value": 17,
+          "peak": 0.4227313995361328,
+          "limitedSamples": 0
+        },
+        {
+          "value": 18,
+          "peak": 0.4264187812805176,
+          "limitedSamples": 0
+        },
+        {
+          "value": 19,
+          "peak": 0.4371790885925293,
+          "limitedSamples": 0
+        },
+        {
+          "value": 20,
+          "peak": 0.42697811126708984,
+          "limitedSamples": 0
+        },
+        {
+          "value": 21,
+          "peak": 0.42354869842529297,
+          "limitedSamples": 0
+        },
+        {
+          "value": 22,
+          "peak": 0.4272727966308594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 23,
+          "peak": 0.43827152252197266,
+          "limitedSamples": 0
+        },
+        {
+          "value": 24,
+          "peak": 0.42760705947875977,
+          "limitedSamples": 0
+        },
+        {
+          "value": 25,
+          "peak": 0.4532914161682129,
+          "limitedSamples": 0
+        },
+        {
+          "value": 26,
+          "peak": 0.4570307731628418,
+          "limitedSamples": 0
+        },
+        {
+          "value": 27,
+          "peak": 0.43878602981567383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 28,
+          "peak": 0.45775842666625977,
+          "limitedSamples": 0
+        },
+        {
+          "value": 29,
+          "peak": 0.45385313034057617,
+          "limitedSamples": 0
+        },
+        {
+          "value": 30,
+          "peak": 0.4578242301940918,
+          "limitedSamples": 0
+        },
+        {
+          "value": 31,
+          "peak": 0.46936893463134766,
+          "limitedSamples": 0
+        },
+        {
+          "value": 32,
+          "peak": 0.458071231842041,
+          "limitedSamples": 0
+        },
+        {
+          "value": 33,
+          "peak": 0.45431041717529297,
+          "limitedSamples": 0
+        },
+        {
+          "value": 34,
+          "peak": 0.4582552909851074,
+          "limitedSamples": 0
+        },
+        {
+          "value": 35,
+          "peak": 0.46982336044311523,
+          "limitedSamples": 0
+        },
+        {
+          "value": 36,
+          "peak": 0.4581456184387207,
+          "limitedSamples": 0
+        },
+        {
+          "value": 37,
+          "peak": 0.45414018630981445,
+          "limitedSamples": 0
+        },
+        {
+          "value": 38,
+          "peak": 0.4577817916870117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 39,
+          "peak": 0.4696316719055176,
+          "limitedSamples": 0
+        },
+        {
+          "value": 40,
+          "peak": 0.49000072479248047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 41,
+          "peak": 0.48560428619384766,
+          "limitedSamples": 0
+        },
+        {
+          "value": 42,
+          "peak": 0.489565372467041,
+          "limitedSamples": 0
+        },
+        {
+          "value": 43,
+          "peak": 0.469329833984375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 44,
+          "peak": 0.48977041244506836,
+          "limitedSamples": 0
+        },
+        {
+          "value": 45,
+          "peak": 0.4855318069458008,
+          "limitedSamples": 0
+        },
+        {
+          "value": 46,
+          "peak": 0.48954105377197266,
+          "limitedSamples": 0
+        },
+        {
+          "value": 47,
+          "peak": 0.5019168853759766,
+          "limitedSamples": 0
+        },
+        {
+          "value": 48,
+          "peak": 0.4893455505371094,
+          "limitedSamples": 0
+        },
+        {
+          "value": 49,
+          "peak": 0.48476743698120117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 50,
+          "peak": 0.4887409210205078,
+          "limitedSamples": 0
+        },
+        {
+          "value": 51,
+          "peak": 0.5012373924255371,
+          "limitedSamples": 0
+        },
+        {
+          "value": 52,
+          "peak": 0.48839664459228516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 53,
+          "peak": 0.5182242393493652,
+          "limitedSamples": 0
+        },
+        {
+          "value": 54,
+          "peak": 0.5223336219787598,
+          "limitedSamples": 0
+        },
+        {
+          "value": 55,
+          "peak": 0.500213623046875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 56,
+          "peak": 0.5222291946411133,
+          "limitedSamples": 0
+        },
+        {
+          "value": 57,
+          "peak": 0.51715087890625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 58,
+          "peak": 0.5211591720581055,
+          "limitedSamples": 0
+        },
+        {
+          "value": 59,
+          "peak": 0.534644603729248,
+          "limitedSamples": 0
+        },
+        {
+          "value": 60,
+          "peak": 0.5209574699401855,
+          "limitedSamples": 0
+        },
+        {
+          "value": 61,
+          "peak": 0.5159707069396973,
+          "limitedSamples": 0
+        },
+        {
+          "value": 62,
+          "peak": 0.5203170776367188,
+          "limitedSamples": 0
+        },
+        {
+          "value": 63,
+          "peak": 0.533409595489502,
+          "limitedSamples": 0
+        },
+        {
+          "value": 64,
+          "peak": 0.5194015502929688,
+          "limitedSamples": 0
+        },
+        {
+          "value": 65,
+          "peak": 0.5513248443603516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 66,
+          "peak": 0.5182914733886719,
+          "limitedSamples": 0
+        },
+        {
+          "value": 67,
+          "peak": 0.5317220687866211,
+          "limitedSamples": 0
+        },
+        {
+          "value": 68,
+          "peak": 0.555117130279541,
+          "limitedSamples": 0
+        },
+        {
+          "value": 69,
+          "peak": 0.5496859550476074,
+          "limitedSamples": 0
+        },
+        {
+          "value": 70,
+          "peak": 0.554290771484375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 71,
+          "peak": 0.5299696922302246,
+          "limitedSamples": 0
+        },
+        {
+          "value": 72,
+          "peak": 0.5534224510192871,
+          "limitedSamples": 0
+        },
+        {
+          "value": 73,
+          "peak": 0.5479841232299805,
+          "limitedSamples": 0
+        },
+        {
+          "value": 74,
+          "peak": 0.5526132583618164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 75,
+          "peak": 0.566401481628418,
+          "limitedSamples": 0
+        },
+        {
+          "value": 76,
+          "peak": 0.5516271591186523,
+          "limitedSamples": 0
+        },
+        {
+          "value": 77,
+          "peak": 0.5458989143371582,
+          "limitedSamples": 0
+        },
+        {
+          "value": 78,
+          "peak": 0.5504512786865234,
+          "limitedSamples": 0
+        },
+        {
+          "value": 79,
+          "peak": 0.5643696784973145,
+          "limitedSamples": 0
+        },
+        {
+          "value": 80,
+          "peak": 0.5888957977294922,
+          "limitedSamples": 0
+        },
+        {
+          "value": 81,
+          "peak": 0.5831966400146484,
+          "limitedSamples": 0
+        },
+        {
+          "value": 82,
+          "peak": 0.5879831314086914,
+          "limitedSamples": 0
+        },
+        {
+          "value": 83,
+          "peak": 0.5618963241577148,
+          "limitedSamples": 0
+        },
+        {
+          "value": 84,
+          "peak": 0.5868935585021973,
+          "limitedSamples": 0
+        },
+        {
+          "value": 85,
+          "peak": 0.580535888671875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 86,
+          "peak": 0.5852704048156738,
+          "limitedSamples": 0
+        },
+        {
+          "value": 87,
+          "peak": 0.600196361541748,
+          "limitedSamples": 0
+        },
+        {
+          "value": 88,
+          "peak": 0.5838713645935059,
+          "limitedSamples": 0
+        },
+        {
+          "value": 89,
+          "peak": 0.5779166221618652,
+          "limitedSamples": 0
+        },
+        {
+          "value": 90,
+          "peak": 0.5828776359558105,
+          "limitedSamples": 0
+        },
+        {
+          "value": 91,
+          "peak": 0.5975079536437988,
+          "limitedSamples": 0
+        },
+        {
+          "value": 92,
+          "peak": 0.5809588432312012,
+          "limitedSamples": 0
+        },
+        {
+          "value": 93,
+          "peak": 0.6175642013549805,
+          "limitedSamples": 0
+        },
+        {
+          "value": 94,
+          "peak": 0.622035026550293,
+          "limitedSamples": 0
+        },
+        {
+          "value": 95,
+          "peak": 0.5940713882446289,
+          "limitedSamples": 0
+        },
+        {
+          "value": 96,
+          "peak": 0.6208562850952148,
+          "limitedSamples": 0
+        },
+        {
+          "value": 97,
+          "peak": 0.6140608787536621,
+          "limitedSamples": 0
+        },
+        {
+          "value": 98,
+          "peak": 0.6189498901367188,
+          "limitedSamples": 0
+        },
+        {
+          "value": 99,
+          "peak": 0.6344237327575684,
+          "limitedSamples": 0
+        },
+        {
+          "value": 100,
+          "peak": 0.6171669960021973,
+          "limitedSamples": 0
+        },
+        {
+          "value": 101,
+          "peak": 0.6107316017150879,
+          "limitedSamples": 0
+        },
+        {
+          "value": 102,
+          "peak": 0.6154670715332031,
+          "limitedSamples": 0
+        },
+        {
+          "value": 103,
+          "peak": 0.6311397552490234,
+          "limitedSamples": 0
+        },
+        {
+          "value": 104,
+          "peak": 0.613497257232666,
+          "limitedSamples": 0
+        },
+        {
+          "value": 105,
+          "peak": 0.607093334197998,
+          "limitedSamples": 0
+        },
+        {
+          "value": 106,
+          "peak": 0.6119275093078613,
+          "limitedSamples": 0
+        },
+        {
+          "value": 107,
+          "peak": 0.6273045539855957,
+          "limitedSamples": 0
+        },
+        {
+          "value": 108,
+          "peak": 0.654695987701416,
+          "limitedSamples": 0
+        },
+        {
+          "value": 109,
+          "peak": 0.6482229232788086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 110,
+          "peak": 0.6530508995056152,
+          "limitedSamples": 0
+        },
+        {
+          "value": 111,
+          "peak": 0.623023509979248,
+          "limitedSamples": 0
+        },
+        {
+          "value": 112,
+          "peak": 0.6508712768554688,
+          "limitedSamples": 0
+        },
+        {
+          "value": 113,
+          "peak": 0.6438727378845215,
+          "limitedSamples": 0
+        },
+        {
+          "value": 114,
+          "peak": 0.6489057540893555,
+          "limitedSamples": 0
+        },
+        {
+          "value": 115,
+          "peak": 0.6653928756713867,
+          "limitedSamples": 0
+        },
+        {
+          "value": 116,
+          "peak": 0.6462154388427734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 117,
+          "peak": 0.6397237777709961,
+          "limitedSamples": 0
+        },
+        {
+          "value": 118,
+          "peak": 0.644838809967041,
+          "limitedSamples": 0
+        },
+        {
+          "value": 119,
+          "peak": 0.6610522270202637,
+          "limitedSamples": 0
+        },
+        {
+          "value": 120,
+          "peak": 0.6418924331665039,
+          "limitedSamples": 0
+        },
+        {
+          "value": 121,
+          "peak": 0.6828045845031738,
+          "limitedSamples": 0
+        },
+        {
+          "value": 122,
+          "peak": 0.6877374649047852,
+          "limitedSamples": 0
+        },
+        {
+          "value": 123,
+          "peak": 0.6560835838317871,
+          "limitedSamples": 0
+        },
+        {
+          "value": 124,
+          "peak": 0.6855626106262207,
+          "limitedSamples": 0
+        },
+        {
+          "value": 125,
+          "peak": 0.677884578704834,
+          "limitedSamples": 0
+        },
+        {
+          "value": 126,
+          "peak": 0.6830272674560547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 127,
+          "peak": 0.7001862525939941,
+          "limitedSamples": 0
+        }
+      ],
+      "referenceErrorDb": -71.81455766441779,
+      "note": "64 native blocks per value, retrigger at each step; stress walk, not isolated full decay."
+    },
+    {
+      "control": "TDEP",
+      "values": [
+        {
+          "value": 0,
+          "peak": 0.35484933853149414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 1,
+          "peak": 0.3546762466430664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 2,
+          "peak": 0.3573446273803711,
+          "limitedSamples": 0
+        },
+        {
+          "value": 3,
+          "peak": 0.34960269927978516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 4,
+          "peak": 0.35431528091430664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 5,
+          "peak": 0.3493189811706543,
+          "limitedSamples": 0
+        },
+        {
+          "value": 6,
+          "peak": 0.3506197929382324,
+          "limitedSamples": 0
+        },
+        {
+          "value": 7,
+          "peak": 0.35776424407958984,
+          "limitedSamples": 0
+        },
+        {
+          "value": 8,
+          "peak": 0.3491501808166504,
+          "limitedSamples": 0
+        },
+        {
+          "value": 9,
+          "peak": 0.34910106658935547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 10,
+          "peak": 0.3495488166809082,
+          "limitedSamples": 0
+        },
+        {
+          "value": 11,
+          "peak": 0.35071277618408203,
+          "limitedSamples": 0
+        },
+        {
+          "value": 12,
+          "peak": 0.36426210403442383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 13,
+          "peak": 0.3590421676635742,
+          "limitedSamples": 0
+        },
+        {
+          "value": 14,
+          "peak": 0.360323429107666,
+          "limitedSamples": 0
+        },
+        {
+          "value": 15,
+          "peak": 0.34967470169067383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 16,
+          "peak": 0.35709381103515625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 17,
+          "peak": 0.3523578643798828,
+          "limitedSamples": 0
+        },
+        {
+          "value": 18,
+          "peak": 0.3535590171813965,
+          "limitedSamples": 0
+        },
+        {
+          "value": 19,
+          "peak": 0.3607048988342285,
+          "limitedSamples": 0
+        },
+        {
+          "value": 20,
+          "peak": 0.34999513626098633,
+          "limitedSamples": 0
+        },
+        {
+          "value": 21,
+          "peak": 0.3456230163574219,
+          "limitedSamples": 0
+        },
+        {
+          "value": 22,
+          "peak": 0.35077333450317383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 23,
+          "peak": 0.358001708984375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 24,
+          "peak": 0.34740257263183594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 25,
+          "peak": 0.3666081428527832,
+          "limitedSamples": 0
+        },
+        {
+          "value": 26,
+          "peak": 0.36769580841064453,
+          "limitedSamples": 0
+        },
+        {
+          "value": 27,
+          "peak": 0.3509650230407715,
+          "limitedSamples": 0
+        },
+        {
+          "value": 28,
+          "peak": 0.3647623062133789,
+          "limitedSamples": 0
+        },
+        {
+          "value": 29,
+          "peak": 0.36330175399780273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 30,
+          "peak": 0.3646111488342285,
+          "limitedSamples": 0
+        },
+        {
+          "value": 31,
+          "peak": 0.3718247413635254,
+          "limitedSamples": 0
+        },
+        {
+          "value": 32,
+          "peak": 0.3614673614501953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 33,
+          "peak": 0.3599414825439453,
+          "limitedSamples": 0
+        },
+        {
+          "value": 34,
+          "peak": 0.36124420166015625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 35,
+          "peak": 0.36835145950317383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 36,
+          "peak": 0.35753631591796875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 37,
+          "peak": 0.35311460494995117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 38,
+          "peak": 0.35703372955322266,
+          "limitedSamples": 0
+        },
+        {
+          "value": 39,
+          "peak": 0.36424875259399414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 40,
+          "peak": 0.37784481048583984,
+          "limitedSamples": 0
+        },
+        {
+          "value": 41,
+          "peak": 0.3728647232055664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 42,
+          "peak": 0.37662458419799805,
+          "limitedSamples": 0
+        },
+        {
+          "value": 43,
+          "peak": 0.36018800735473633,
+          "limitedSamples": 0
+        },
+        {
+          "value": 44,
+          "peak": 0.37366390228271484,
+          "limitedSamples": 0
+        },
+        {
+          "value": 45,
+          "peak": 0.37115478515625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 46,
+          "peak": 0.37241411209106445,
+          "limitedSamples": 0
+        },
+        {
+          "value": 47,
+          "peak": 0.3797903060913086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 48,
+          "peak": 0.37120723724365234,
+          "limitedSamples": 0
+        },
+        {
+          "value": 49,
+          "peak": 0.3662853240966797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 50,
+          "peak": 0.36771583557128906,
+          "limitedSamples": 0
+        },
+        {
+          "value": 51,
+          "peak": 0.37679195404052734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 52,
+          "peak": 0.3663806915283203,
+          "limitedSamples": 0
+        },
+        {
+          "value": 53,
+          "peak": 0.3870859146118164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 54,
+          "peak": 0.3882603645324707,
+          "limitedSamples": 0
+        },
+        {
+          "value": 55,
+          "peak": 0.37156248092651367,
+          "limitedSamples": 0
+        },
+        {
+          "value": 56,
+          "peak": 0.3866434097290039,
+          "limitedSamples": 0
+        },
+        {
+          "value": 57,
+          "peak": 0.38162994384765625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 58,
+          "peak": 0.3840022087097168,
+          "limitedSamples": 0
+        },
+        {
+          "value": 59,
+          "peak": 0.3917689323425293,
+          "limitedSamples": 0
+        },
+        {
+          "value": 60,
+          "peak": 0.38210630416870117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 61,
+          "peak": 0.3774256706237793,
+          "limitedSamples": 0
+        },
+        {
+          "value": 62,
+          "peak": 0.37986040115356445,
+          "limitedSamples": 0
+        },
+        {
+          "value": 63,
+          "peak": 0.38703107833862305,
+          "limitedSamples": 0
+        },
+        {
+          "value": 64,
+          "peak": 0.3773307800292969,
+          "limitedSamples": 0
+        },
+        {
+          "value": 65,
+          "peak": 0.3965725898742676,
+          "limitedSamples": 0
+        },
+        {
+          "value": 66,
+          "peak": 0.3744783401489258,
+          "limitedSamples": 0
+        },
+        {
+          "value": 67,
+          "peak": 0.3818626403808594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 68,
+          "peak": 0.39604854583740234,
+          "limitedSamples": 0
+        },
+        {
+          "value": 69,
+          "peak": 0.39105987548828125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 70,
+          "peak": 0.3932337760925293,
+          "limitedSamples": 0
+        },
+        {
+          "value": 71,
+          "peak": 0.3769559860229492,
+          "limitedSamples": 0
+        },
+        {
+          "value": 72,
+          "peak": 0.3904552459716797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 73,
+          "peak": 0.3860139846801758,
+          "limitedSamples": 0
+        },
+        {
+          "value": 74,
+          "peak": 0.38750505447387695,
+          "limitedSamples": 0
+        },
+        {
+          "value": 75,
+          "peak": 0.3950638771057129,
+          "limitedSamples": 0
+        },
+        {
+          "value": 76,
+          "peak": 0.38496875762939453,
+          "limitedSamples": 0
+        },
+        {
+          "value": 77,
+          "peak": 0.38015031814575195,
+          "limitedSamples": 0
+        },
+        {
+          "value": 78,
+          "peak": 0.38197898864746094,
+          "limitedSamples": 0
+        },
+        {
+          "value": 79,
+          "peak": 0.3893465995788574,
+          "limitedSamples": 0
+        },
+        {
+          "value": 80,
+          "peak": 0.40296220779418945,
+          "limitedSamples": 0
+        },
+        {
+          "value": 81,
+          "peak": 0.3981032371520996,
+          "limitedSamples": 0
+        },
+        {
+          "value": 82,
+          "peak": 0.3998394012451172,
+          "limitedSamples": 0
+        },
+        {
+          "value": 83,
+          "peak": 0.3831486701965332,
+          "limitedSamples": 0
+        },
+        {
+          "value": 84,
+          "peak": 0.3969230651855469,
+          "limitedSamples": 0
+        },
+        {
+          "value": 85,
+          "peak": 0.3917655944824219,
+          "limitedSamples": 0
+        },
+        {
+          "value": 86,
+          "peak": 0.3933987617492676,
+          "limitedSamples": 0
+        },
+        {
+          "value": 87,
+          "peak": 0.40094518661499023,
+          "limitedSamples": 0
+        },
+        {
+          "value": 88,
+          "peak": 0.3901638984680176,
+          "limitedSamples": 0
+        },
+        {
+          "value": 89,
+          "peak": 0.38556718826293945,
+          "limitedSamples": 0
+        },
+        {
+          "value": 90,
+          "peak": 0.38714122772216797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 91,
+          "peak": 0.39427757263183594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 92,
+          "peak": 0.38367128372192383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 93,
+          "peak": 0.40328168869018555,
+          "limitedSamples": 0
+        },
+        {
+          "value": 94,
+          "peak": 0.40450477600097656,
+          "limitedSamples": 0
+        },
+        {
+          "value": 95,
+          "peak": 0.3874821662902832,
+          "limitedSamples": 0
+        },
+        {
+          "value": 96,
+          "peak": 0.40127134323120117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 97,
+          "peak": 0.3961925506591797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 98,
+          "peak": 0.39764881134033203,
+          "limitedSamples": 0
+        },
+        {
+          "value": 99,
+          "peak": 0.40488529205322266,
+          "limitedSamples": 0
+        },
+        {
+          "value": 100,
+          "peak": 0.39418554306030273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 101,
+          "peak": 0.3894824981689453,
+          "limitedSamples": 0
+        },
+        {
+          "value": 102,
+          "peak": 0.3908810615539551,
+          "limitedSamples": 0
+        },
+        {
+          "value": 103,
+          "peak": 0.39808177947998047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 104,
+          "peak": 0.38721323013305664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 105,
+          "peak": 0.3826718330383301,
+          "limitedSamples": 0
+        },
+        {
+          "value": 106,
+          "peak": 0.38408756256103516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 107,
+          "peak": 0.3910698890686035,
+          "limitedSamples": 0
+        },
+        {
+          "value": 108,
+          "peak": 0.40436220169067383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 109,
+          "peak": 0.39961814880371094,
+          "limitedSamples": 0
+        },
+        {
+          "value": 110,
+          "peak": 0.40092897415161133,
+          "limitedSamples": 0
+        },
+        {
+          "value": 111,
+          "peak": 0.3840627670288086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 112,
+          "peak": 0.3974266052246094,
+          "limitedSamples": 0
+        },
+        {
+          "value": 113,
+          "peak": 0.3925356864929199,
+          "limitedSamples": 0
+        },
+        {
+          "value": 114,
+          "peak": 0.3939642906188965,
+          "limitedSamples": 0
+        },
+        {
+          "value": 115,
+          "peak": 0.4012598991394043,
+          "limitedSamples": 0
+        },
+        {
+          "value": 116,
+          "peak": 0.3902115821838379,
+          "limitedSamples": 0
+        },
+        {
+          "value": 117,
+          "peak": 0.3856978416442871,
+          "limitedSamples": 0
+        },
+        {
+          "value": 118,
+          "peak": 0.38716745376586914,
+          "limitedSamples": 0
+        },
+        {
+          "value": 119,
+          "peak": 0.3942842483520508,
+          "limitedSamples": 0
+        },
+        {
+          "value": 120,
+          "peak": 0.38334226608276367,
+          "limitedSamples": 0
+        },
+        {
+          "value": 121,
+          "peak": 0.40285730361938477,
+          "limitedSamples": 0
+        },
+        {
+          "value": 122,
+          "peak": 0.4040694236755371,
+          "limitedSamples": 0
+        },
+        {
+          "value": 123,
+          "peak": 0.38708066940307617,
+          "limitedSamples": 0
+        },
+        {
+          "value": 124,
+          "peak": 0.4006667137145996,
+          "limitedSamples": 0
+        },
+        {
+          "value": 125,
+          "peak": 0.39555835723876953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 126,
+          "peak": 0.3969302177429199,
+          "limitedSamples": 0
+        },
+        {
+          "value": 127,
+          "peak": 0.4042510986328125,
+          "limitedSamples": 0
+        }
+      ],
+      "referenceErrorDb": -71.50002166251866,
+      "note": "64 native blocks per value, retrigger at each step; stress walk, not isolated full decay."
+    },
+    {
+      "control": "SAT",
+      "values": [
+        {
+          "value": 0,
+          "peak": 0.3479447364807129,
+          "limitedSamples": 0
+        },
+        {
+          "value": 1,
+          "peak": 0.3838043212890625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 2,
+          "peak": 0.38843202590942383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 3,
+          "peak": 0.3668193817138672,
+          "limitedSamples": 0
+        },
+        {
+          "value": 4,
+          "peak": 0.3732261657714844,
+          "limitedSamples": 0
+        },
+        {
+          "value": 5,
+          "peak": 0.36068296432495117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 6,
+          "peak": 0.3558955192565918,
+          "limitedSamples": 0
+        },
+        {
+          "value": 7,
+          "peak": 0.3602108955383301,
+          "limitedSamples": 0
+        },
+        {
+          "value": 8,
+          "peak": 0.36799097061157227,
+          "limitedSamples": 0
+        },
+        {
+          "value": 9,
+          "peak": 0.3740110397338867,
+          "limitedSamples": 0
+        },
+        {
+          "value": 10,
+          "peak": 0.37779808044433594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 11,
+          "peak": 0.382845401763916,
+          "limitedSamples": 0
+        },
+        {
+          "value": 12,
+          "peak": 0.38723325729370117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 13,
+          "peak": 0.3925199508666992,
+          "limitedSamples": 0
+        },
+        {
+          "value": 14,
+          "peak": 0.3969416618347168,
+          "limitedSamples": 0
+        },
+        {
+          "value": 15,
+          "peak": 0.3997054100036621,
+          "limitedSamples": 0
+        },
+        {
+          "value": 16,
+          "peak": 0.4050412178039551,
+          "limitedSamples": 0
+        },
+        {
+          "value": 17,
+          "peak": 0.41070127487182617,
+          "limitedSamples": 0
+        },
+        {
+          "value": 18,
+          "peak": 0.411710262298584,
+          "limitedSamples": 0
+        },
+        {
+          "value": 19,
+          "peak": 0.4165515899658203,
+          "limitedSamples": 0
+        },
+        {
+          "value": 20,
+          "peak": 0.41685009002685547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 21,
+          "peak": 0.4185948371887207,
+          "limitedSamples": 0
+        },
+        {
+          "value": 22,
+          "peak": 0.42038965225219727,
+          "limitedSamples": 0
+        },
+        {
+          "value": 23,
+          "peak": 0.424222469329834,
+          "limitedSamples": 0
+        },
+        {
+          "value": 24,
+          "peak": 0.4262566566467285,
+          "limitedSamples": 0
+        },
+        {
+          "value": 25,
+          "peak": 0.42830514907836914,
+          "limitedSamples": 0
+        },
+        {
+          "value": 26,
+          "peak": 0.43256568908691406,
+          "limitedSamples": 0
+        },
+        {
+          "value": 27,
+          "peak": 0.4336714744567871,
+          "limitedSamples": 0
+        },
+        {
+          "value": 28,
+          "peak": 0.4348740577697754,
+          "limitedSamples": 0
+        },
+        {
+          "value": 29,
+          "peak": 0.4376845359802246,
+          "limitedSamples": 0
+        },
+        {
+          "value": 30,
+          "peak": 0.44051265716552734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 31,
+          "peak": 0.4418768882751465,
+          "limitedSamples": 0
+        },
+        {
+          "value": 32,
+          "peak": 0.44546079635620117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 33,
+          "peak": 0.45094728469848633,
+          "limitedSamples": 0
+        },
+        {
+          "value": 34,
+          "peak": 0.45174503326416016,
+          "limitedSamples": 0
+        },
+        {
+          "value": 35,
+          "peak": 0.4545626640319824,
+          "limitedSamples": 0
+        },
+        {
+          "value": 36,
+          "peak": 0.4552726745605469,
+          "limitedSamples": 0
+        },
+        {
+          "value": 37,
+          "peak": 0.4581732749938965,
+          "limitedSamples": 0
+        },
+        {
+          "value": 38,
+          "peak": 0.4635491371154785,
+          "limitedSamples": 0
+        },
+        {
+          "value": 39,
+          "peak": 0.4654827117919922,
+          "limitedSamples": 0
+        },
+        {
+          "value": 40,
+          "peak": 0.4667210578918457,
+          "limitedSamples": 0
+        },
+        {
+          "value": 41,
+          "peak": 0.471834659576416,
+          "limitedSamples": 0
+        },
+        {
+          "value": 42,
+          "peak": 0.47510766983032227,
+          "limitedSamples": 0
+        },
+        {
+          "value": 43,
+          "peak": 0.4776487350463867,
+          "limitedSamples": 0
+        },
+        {
+          "value": 44,
+          "peak": 0.47942161560058594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 45,
+          "peak": 0.48406505584716797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 46,
+          "peak": 0.4882340431213379,
+          "limitedSamples": 0
+        },
+        {
+          "value": 47,
+          "peak": 0.4915952682495117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 48,
+          "peak": 0.4935903549194336,
+          "limitedSamples": 0
+        },
+        {
+          "value": 49,
+          "peak": 0.4992499351501465,
+          "limitedSamples": 0
+        },
+        {
+          "value": 50,
+          "peak": 0.5006155967712402,
+          "limitedSamples": 0
+        },
+        {
+          "value": 51,
+          "peak": 0.5039539337158203,
+          "limitedSamples": 0
+        },
+        {
+          "value": 52,
+          "peak": 0.5092616081237793,
+          "limitedSamples": 0
+        },
+        {
+          "value": 53,
+          "peak": 0.512352466583252,
+          "limitedSamples": 0
+        },
+        {
+          "value": 54,
+          "peak": 0.5186753273010254,
+          "limitedSamples": 0
+        },
+        {
+          "value": 55,
+          "peak": 0.5247941017150879,
+          "limitedSamples": 0
+        },
+        {
+          "value": 56,
+          "peak": 0.5281624794006348,
+          "limitedSamples": 0
+        },
+        {
+          "value": 57,
+          "peak": 0.5354862213134766,
+          "limitedSamples": 0
+        },
+        {
+          "value": 58,
+          "peak": 0.542726993560791,
+          "limitedSamples": 0
+        },
+        {
+          "value": 59,
+          "peak": 0.5463871955871582,
+          "limitedSamples": 0
+        },
+        {
+          "value": 60,
+          "peak": 0.5531206130981445,
+          "limitedSamples": 0
+        },
+        {
+          "value": 61,
+          "peak": 0.5605063438415527,
+          "limitedSamples": 0
+        },
+        {
+          "value": 62,
+          "peak": 0.5718779563903809,
+          "limitedSamples": 0
+        },
+        {
+          "value": 63,
+          "peak": 0.5797162055969238,
+          "limitedSamples": 0
+        },
+        {
+          "value": 64,
+          "peak": 0.5889630317687988,
+          "limitedSamples": 0
+        },
+        {
+          "value": 65,
+          "peak": 0.6014771461486816,
+          "limitedSamples": 0
+        },
+        {
+          "value": 66,
+          "peak": 0.6138858795166016,
+          "limitedSamples": 0
+        },
+        {
+          "value": 67,
+          "peak": 0.6255741119384766,
+          "limitedSamples": 0
+        },
+        {
+          "value": 68,
+          "peak": 0.637000560760498,
+          "limitedSamples": 0
+        },
+        {
+          "value": 69,
+          "peak": 0.6532449722290039,
+          "limitedSamples": 0
+        },
+        {
+          "value": 70,
+          "peak": 0.6656041145324707,
+          "limitedSamples": 0
+        },
+        {
+          "value": 71,
+          "peak": 0.6813912391662598,
+          "limitedSamples": 0
+        },
+        {
+          "value": 72,
+          "peak": 0.6908717155456543,
+          "limitedSamples": 0
+        },
+        {
+          "value": 73,
+          "peak": 0.7041354179382324,
+          "limitedSamples": 0
+        },
+        {
+          "value": 74,
+          "peak": 0.7147302627563477,
+          "limitedSamples": 0
+        },
+        {
+          "value": 75,
+          "peak": 0.724949836730957,
+          "limitedSamples": 0
+        },
+        {
+          "value": 76,
+          "peak": 0.7333517074584961,
+          "limitedSamples": 0
+        },
+        {
+          "value": 77,
+          "peak": 0.7412471771240234,
+          "limitedSamples": 0
+        },
+        {
+          "value": 78,
+          "peak": 0.7461342811584473,
+          "limitedSamples": 0
+        },
+        {
+          "value": 79,
+          "peak": 0.7478399276733398,
+          "limitedSamples": 0
+        },
+        {
+          "value": 80,
+          "peak": 0.7458691596984863,
+          "limitedSamples": 0
+        },
+        {
+          "value": 81,
+          "peak": 0.7439765930175781,
+          "limitedSamples": 0
+        },
+        {
+          "value": 82,
+          "peak": 0.7422060966491699,
+          "limitedSamples": 0
+        },
+        {
+          "value": 83,
+          "peak": 0.7405533790588379,
+          "limitedSamples": 0
+        },
+        {
+          "value": 84,
+          "peak": 0.7390084266662598,
+          "limitedSamples": 0
+        },
+        {
+          "value": 85,
+          "peak": 0.7375679016113281,
+          "limitedSamples": 0
+        },
+        {
+          "value": 86,
+          "peak": 0.7372632026672363,
+          "limitedSamples": 0
+        },
+        {
+          "value": 87,
+          "peak": 0.7359237670898438,
+          "limitedSamples": 0
+        },
+        {
+          "value": 88,
+          "peak": 0.7346630096435547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 89,
+          "peak": 0.7334752082824707,
+          "limitedSamples": 0
+        },
+        {
+          "value": 90,
+          "peak": 0.7323846817016602,
+          "limitedSamples": 0
+        },
+        {
+          "value": 91,
+          "peak": 0.7314190864562988,
+          "limitedSamples": 0
+        },
+        {
+          "value": 92,
+          "peak": 0.7305288314819336,
+          "limitedSamples": 0
+        },
+        {
+          "value": 93,
+          "peak": 0.7297053337097168,
+          "limitedSamples": 0
+        },
+        {
+          "value": 94,
+          "peak": 0.7289233207702637,
+          "limitedSamples": 0
+        },
+        {
+          "value": 95,
+          "peak": 0.7281627655029297,
+          "limitedSamples": 0
+        },
+        {
+          "value": 96,
+          "peak": 0.7273988723754883,
+          "limitedSamples": 0
+        },
+        {
+          "value": 97,
+          "peak": 0.7266154289245605,
+          "limitedSamples": 0
+        },
+        {
+          "value": 98,
+          "peak": 0.7258639335632324,
+          "limitedSamples": 0
+        },
+        {
+          "value": 99,
+          "peak": 0.7251858711242676,
+          "limitedSamples": 0
+        },
+        {
+          "value": 100,
+          "peak": 0.7245426177978516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 101,
+          "peak": 0.7239093780517578,
+          "limitedSamples": 0
+        },
+        {
+          "value": 102,
+          "peak": 0.7232284545898438,
+          "limitedSamples": 0
+        },
+        {
+          "value": 103,
+          "peak": 0.722475528717041,
+          "limitedSamples": 0
+        },
+        {
+          "value": 104,
+          "peak": 0.7216129302978516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 105,
+          "peak": 0.7206063270568848,
+          "limitedSamples": 0
+        },
+        {
+          "value": 106,
+          "peak": 0.7194652557373047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 107,
+          "peak": 0.7182197570800781,
+          "limitedSamples": 0
+        },
+        {
+          "value": 108,
+          "peak": 0.7168784141540527,
+          "limitedSamples": 0
+        },
+        {
+          "value": 109,
+          "peak": 0.7154445648193359,
+          "limitedSamples": 0
+        },
+        {
+          "value": 110,
+          "peak": 0.7139225006103516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 111,
+          "peak": 0.7123193740844727,
+          "limitedSamples": 0
+        },
+        {
+          "value": 112,
+          "peak": 0.710639476776123,
+          "limitedSamples": 0
+        },
+        {
+          "value": 113,
+          "peak": 0.7088847160339355,
+          "limitedSamples": 0
+        },
+        {
+          "value": 114,
+          "peak": 0.7070364952087402,
+          "limitedSamples": 0
+        },
+        {
+          "value": 115,
+          "peak": 0.7050795555114746,
+          "limitedSamples": 0
+        },
+        {
+          "value": 116,
+          "peak": 0.7030267715454102,
+          "limitedSamples": 0
+        },
+        {
+          "value": 117,
+          "peak": 0.7008905410766602,
+          "limitedSamples": 0
+        },
+        {
+          "value": 118,
+          "peak": 0.6986827850341797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 119,
+          "peak": 0.6964178085327148,
+          "limitedSamples": 0
+        },
+        {
+          "value": 120,
+          "peak": 0.6941075325012207,
+          "limitedSamples": 0
+        },
+        {
+          "value": 121,
+          "peak": 0.6917610168457031,
+          "limitedSamples": 0
+        },
+        {
+          "value": 122,
+          "peak": 0.6893372535705566,
+          "limitedSamples": 0
+        },
+        {
+          "value": 123,
+          "peak": 0.6868109703063965,
+          "limitedSamples": 0
+        },
+        {
+          "value": 124,
+          "peak": 0.6842532157897949,
+          "limitedSamples": 0
+        },
+        {
+          "value": 125,
+          "peak": 0.6816153526306152,
+          "limitedSamples": 0
+        },
+        {
+          "value": 126,
+          "peak": 0.6789689064025879,
+          "limitedSamples": 0
+        },
+        {
+          "value": 127,
+          "peak": 0.6763439178466797,
+          "limitedSamples": 0
+        }
+      ],
+      "referenceErrorDb": -91.60215608242369,
+      "note": "64 native blocks per value, retrigger at each step; stress walk, not isolated full decay."
+    },
+    {
+      "control": "ACCNT",
+      "values": [
+        {
+          "value": 0,
+          "peak": 0.00010204315185546875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 1,
+          "peak": 0.00011491775512695312,
+          "limitedSamples": 0
+        },
+        {
+          "value": 2,
+          "peak": 0.001117706298828125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 3,
+          "peak": 0.0019812583923339844,
+          "limitedSamples": 0
+        },
+        {
+          "value": 4,
+          "peak": 0.003062725067138672,
+          "limitedSamples": 0
+        },
+        {
+          "value": 5,
+          "peak": 0.003998279571533203,
+          "limitedSamples": 0
+        },
+        {
+          "value": 6,
+          "peak": 0.005028724670410156,
+          "limitedSamples": 0
+        },
+        {
+          "value": 7,
+          "peak": 0.0061855316162109375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 8,
+          "peak": 0.007045745849609375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 9,
+          "peak": 0.00801229476928711,
+          "limitedSamples": 0
+        },
+        {
+          "value": 10,
+          "peak": 0.0091705322265625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 11,
+          "peak": 0.010581016540527344,
+          "limitedSamples": 0
+        },
+        {
+          "value": 12,
+          "peak": 0.012290000915527344,
+          "limitedSamples": 0
+        },
+        {
+          "value": 13,
+          "peak": 0.013503551483154297,
+          "limitedSamples": 0
+        },
+        {
+          "value": 14,
+          "peak": 0.015032291412353516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 15,
+          "peak": 0.015887737274169922,
+          "limitedSamples": 0
+        },
+        {
+          "value": 16,
+          "peak": 0.01810598373413086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 17,
+          "peak": 0.019636154174804688,
+          "limitedSamples": 0
+        },
+        {
+          "value": 18,
+          "peak": 0.021716594696044922,
+          "limitedSamples": 0
+        },
+        {
+          "value": 19,
+          "peak": 0.024169445037841797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 20,
+          "peak": 0.02676677703857422,
+          "limitedSamples": 0
+        },
+        {
+          "value": 21,
+          "peak": 0.029494285583496094,
+          "limitedSamples": 0
+        },
+        {
+          "value": 22,
+          "peak": 0.03239250183105469,
+          "limitedSamples": 0
+        },
+        {
+          "value": 23,
+          "peak": 0.035427093505859375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 24,
+          "peak": 0.03852987289428711,
+          "limitedSamples": 0
+        },
+        {
+          "value": 25,
+          "peak": 0.041918277740478516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 26,
+          "peak": 0.04508829116821289,
+          "limitedSamples": 0
+        },
+        {
+          "value": 27,
+          "peak": 0.048699378967285156,
+          "limitedSamples": 0
+        },
+        {
+          "value": 28,
+          "peak": 0.05248546600341797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 29,
+          "peak": 0.0561680793762207,
+          "limitedSamples": 0
+        },
+        {
+          "value": 30,
+          "peak": 0.06017446517944336,
+          "limitedSamples": 0
+        },
+        {
+          "value": 31,
+          "peak": 0.06444406509399414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 32,
+          "peak": 0.06858396530151367,
+          "limitedSamples": 0
+        },
+        {
+          "value": 33,
+          "peak": 0.07275056838989258,
+          "limitedSamples": 0
+        },
+        {
+          "value": 34,
+          "peak": 0.07747888565063477,
+          "limitedSamples": 0
+        },
+        {
+          "value": 35,
+          "peak": 0.08212041854858398,
+          "limitedSamples": 0
+        },
+        {
+          "value": 36,
+          "peak": 0.08639001846313477,
+          "limitedSamples": 0
+        },
+        {
+          "value": 37,
+          "peak": 0.0916604995727539,
+          "limitedSamples": 0
+        },
+        {
+          "value": 38,
+          "peak": 0.09653759002685547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 39,
+          "peak": 0.10142993927001953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 40,
+          "peak": 0.10977411270141602,
+          "limitedSamples": 0
+        },
+        {
+          "value": 41,
+          "peak": 0.11390924453735352,
+          "limitedSamples": 0
+        },
+        {
+          "value": 42,
+          "peak": 0.12004470825195312,
+          "limitedSamples": 0
+        },
+        {
+          "value": 43,
+          "peak": 0.12339210510253906,
+          "limitedSamples": 0
+        },
+        {
+          "value": 44,
+          "peak": 0.13128042221069336,
+          "limitedSamples": 0
+        },
+        {
+          "value": 45,
+          "peak": 0.13608407974243164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 46,
+          "peak": 0.14310312271118164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 47,
+          "peak": 0.15262699127197266,
+          "limitedSamples": 0
+        },
+        {
+          "value": 48,
+          "peak": 0.15555953979492188,
+          "limitedSamples": 0
+        },
+        {
+          "value": 49,
+          "peak": 0.16098260879516602,
+          "limitedSamples": 0
+        },
+        {
+          "value": 50,
+          "peak": 0.1684269905090332,
+          "limitedSamples": 0
+        },
+        {
+          "value": 51,
+          "peak": 0.17918968200683594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 52,
+          "peak": 0.18191766738891602,
+          "limitedSamples": 0
+        },
+        {
+          "value": 53,
+          "peak": 0.19913339614868164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 54,
+          "peak": 0.20804929733276367,
+          "limitedSamples": 0
+        },
+        {
+          "value": 55,
+          "peak": 0.20745182037353516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 56,
+          "peak": 0.22340917587280273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 57,
+          "peak": 0.22916126251220703,
+          "limitedSamples": 0
+        },
+        {
+          "value": 58,
+          "peak": 0.23861265182495117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 59,
+          "peak": 0.25240468978881836,
+          "limitedSamples": 0
+        },
+        {
+          "value": 60,
+          "peak": 0.2546215057373047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 61,
+          "peak": 0.26061248779296875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 62,
+          "peak": 0.2710146903991699,
+          "limitedSamples": 0
+        },
+        {
+          "value": 63,
+          "peak": 0.2859001159667969,
+          "limitedSamples": 0
+        },
+        {
+          "value": 64,
+          "peak": 0.2880239486694336,
+          "limitedSamples": 0
+        },
+        {
+          "value": 65,
+          "peak": 0.313201904296875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 66,
+          "peak": 0.30550336837768555,
+          "limitedSamples": 0
+        },
+        {
+          "value": 67,
+          "peak": 0.32219839096069336,
+          "limitedSamples": 0
+        },
+        {
+          "value": 68,
+          "peak": 0.3449673652648926,
+          "limitedSamples": 0
+        },
+        {
+          "value": 69,
+          "peak": 0.35207605361938477,
+          "limitedSamples": 0
+        },
+        {
+          "value": 70,
+          "peak": 0.3652191162109375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 71,
+          "peak": 0.36095428466796875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 72,
+          "peak": 0.3861422538757324,
+          "limitedSamples": 0
+        },
+        {
+          "value": 73,
+          "peak": 0.3934483528137207,
+          "limitedSamples": 0
+        },
+        {
+          "value": 74,
+          "peak": 0.4074726104736328,
+          "limitedSamples": 0
+        },
+        {
+          "value": 75,
+          "peak": 0.427980899810791,
+          "limitedSamples": 0
+        },
+        {
+          "value": 76,
+          "peak": 0.42924976348876953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 77,
+          "peak": 0.4366288185119629,
+          "limitedSamples": 0
+        },
+        {
+          "value": 78,
+          "peak": 0.4514336585998535,
+          "limitedSamples": 0
+        },
+        {
+          "value": 79,
+          "peak": 0.47354841232299805,
+          "limitedSamples": 0
+        },
+        {
+          "value": 80,
+          "peak": 0.5045084953308105,
+          "limitedSamples": 0
+        },
+        {
+          "value": 81,
+          "peak": 0.5126605033874512,
+          "limitedSamples": 0
+        },
+        {
+          "value": 82,
+          "peak": 0.5294632911682129,
+          "limitedSamples": 0
+        },
+        {
+          "value": 83,
+          "peak": 0.5209231376647949,
+          "limitedSamples": 0
+        },
+        {
+          "value": 84,
+          "peak": 0.5555148124694824,
+          "limitedSamples": 0
+        },
+        {
+          "value": 85,
+          "peak": 0.5636916160583496,
+          "limitedSamples": 0
+        },
+        {
+          "value": 86,
+          "peak": 0.5818843841552734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 87,
+          "peak": 0.6099357604980469,
+          "limitedSamples": 0
+        },
+        {
+          "value": 88,
+          "peak": 0.6092009544372559,
+          "limitedSamples": 0
+        },
+        {
+          "value": 89,
+          "peak": 0.6181483268737793,
+          "limitedSamples": 0
+        },
+        {
+          "value": 90,
+          "peak": 0.6377978324890137,
+          "limitedSamples": 0
+        },
+        {
+          "value": 91,
+          "peak": 0.6675500869750977,
+          "limitedSamples": 0
+        },
+        {
+          "value": 92,
+          "peak": 0.6659774780273438,
+          "limitedSamples": 0
+        },
+        {
+          "value": 93,
+          "peak": 0.7202119827270508,
+          "limitedSamples": 0
+        },
+        {
+          "value": 94,
+          "peak": 0.7413640022277832,
+          "limitedSamples": 0
+        },
+        {
+          "value": 95,
+          "peak": 0.7267818450927734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 96,
+          "peak": 0.773252010345459,
+          "limitedSamples": 0
+        },
+        {
+          "value": 97,
+          "peak": 0.7821283340454102,
+          "limitedSamples": 0
+        },
+        {
+          "value": 98,
+          "peak": 0.8046598434448242,
+          "limitedSamples": 0
+        },
+        {
+          "value": 99,
+          "peak": 0.8406705856323242,
+          "limitedSamples": 0
+        },
+        {
+          "value": 100,
+          "peak": 0.8366374969482422,
+          "limitedSamples": 0
+        },
+        {
+          "value": 101,
+          "peak": 0.8458619117736816,
+          "limitedSamples": 0
+        },
+        {
+          "value": 102,
+          "peak": 0.8695869445800781,
+          "limitedSamples": 0
+        },
+        {
+          "value": 103,
+          "peak": 0.9083137512207031,
+          "limitedSamples": 0
+        },
+        {
+          "value": 104,
+          "peak": 0.9030823707580566,
+          "limitedSamples": 0
+        },
+        {
+          "value": 105,
+          "peak": 0.9132981300354004,
+          "limitedSamples": 0
+        },
+        {
+          "value": 106,
+          "peak": 0.9390068054199219,
+          "limitedSamples": 0
+        },
+        {
+          "value": 107,
+          "peak": 0.9807009696960449,
+          "limitedSamples": 0
+        },
+        {
+          "value": 108,
+          "peak": 1.0,
+          "limitedSamples": 2
+        },
+        {
+          "value": 109,
+          "peak": 1.0,
+          "limitedSamples": 2
+        },
+        {
+          "value": 110,
+          "peak": 1.0,
+          "limitedSamples": 3
+        },
+        {
+          "value": 111,
+          "peak": 1.0,
+          "limitedSamples": 2
+        },
+        {
+          "value": 112,
+          "peak": 1.0,
+          "limitedSamples": 4
+        },
+        {
+          "value": 113,
+          "peak": 1.0,
+          "limitedSamples": 4
+        },
+        {
+          "value": 114,
+          "peak": 1.0,
+          "limitedSamples": 7
+        },
+        {
+          "value": 115,
+          "peak": 1.0,
+          "limitedSamples": 17
+        },
+        {
+          "value": 116,
+          "peak": 1.0,
+          "limitedSamples": 23
+        },
+        {
+          "value": 117,
+          "peak": 1.0,
+          "limitedSamples": 31
+        },
+        {
+          "value": 118,
+          "peak": 1.0,
+          "limitedSamples": 35
+        },
+        {
+          "value": 119,
+          "peak": 1.0,
+          "limitedSamples": 40
+        },
+        {
+          "value": 120,
+          "peak": 1.0,
+          "limitedSamples": 41
+        },
+        {
+          "value": 121,
+          "peak": 1.0,
+          "limitedSamples": 45
+        },
+        {
+          "value": 122,
+          "peak": 1.0,
+          "limitedSamples": 47
+        },
+        {
+          "value": 123,
+          "peak": 1.0,
+          "limitedSamples": 69
+        },
+        {
+          "value": 124,
+          "peak": 1.0,
+          "limitedSamples": 105
+        },
+        {
+          "value": 125,
+          "peak": 1.0,
+          "limitedSamples": 123
+        },
+        {
+          "value": 126,
+          "peak": 1.0,
+          "limitedSamples": 140
+        },
+        {
+          "value": 127,
+          "peak": 1.0,
+          "limitedSamples": 155
+        }
+      ],
+      "referenceErrorDb": -75.06372225844999,
+      "note": "64 native blocks per value, retrigger at each step; stress walk, not isolated full decay."
+    },
+    {
+      "control": "LPF",
+      "values": [
+        {
+          "value": 0,
+          "peak": 0.3479447364807129,
+          "limitedSamples": 0
+        },
+        {
+          "value": 1,
+          "peak": 0.33940744400024414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 2,
+          "peak": 0.3456249237060547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 3,
+          "peak": 0.3393268585205078,
+          "limitedSamples": 0
+        },
+        {
+          "value": 4,
+          "peak": 0.34575939178466797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 5,
+          "peak": 0.3443336486816406,
+          "limitedSamples": 0
+        },
+        {
+          "value": 6,
+          "peak": 0.3455543518066406,
+          "limitedSamples": 0
+        },
+        {
+          "value": 7,
+          "peak": 0.34894704818725586,
+          "limitedSamples": 0
+        },
+        {
+          "value": 8,
+          "peak": 0.34493303298950195,
+          "limitedSamples": 0
+        },
+        {
+          "value": 9,
+          "peak": 0.343264102935791,
+          "limitedSamples": 0
+        },
+        {
+          "value": 10,
+          "peak": 0.34444332122802734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 11,
+          "peak": 0.3472728729248047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 12,
+          "peak": 0.35378026962280273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 13,
+          "peak": 0.35146331787109375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 14,
+          "peak": 0.3524818420410156,
+          "limitedSamples": 0
+        },
+        {
+          "value": 15,
+          "peak": 0.3457064628601074,
+          "limitedSamples": 0
+        },
+        {
+          "value": 16,
+          "peak": 0.35196495056152344,
+          "limitedSamples": 0
+        },
+        {
+          "value": 17,
+          "peak": 0.34981822967529297,
+          "limitedSamples": 0
+        },
+        {
+          "value": 18,
+          "peak": 0.3511075973510742,
+          "limitedSamples": 0
+        },
+        {
+          "value": 19,
+          "peak": 0.3534979820251465,
+          "limitedSamples": 0
+        },
+        {
+          "value": 20,
+          "peak": 0.3496413230895996,
+          "limitedSamples": 0
+        },
+        {
+          "value": 21,
+          "peak": 0.34816884994506836,
+          "limitedSamples": 0
+        },
+        {
+          "value": 22,
+          "peak": 0.34857845306396484,
+          "limitedSamples": 0
+        },
+        {
+          "value": 23,
+          "peak": 0.3515157699584961,
+          "limitedSamples": 0
+        },
+        {
+          "value": 24,
+          "peak": 0.3479466438293457,
+          "limitedSamples": 0
+        },
+        {
+          "value": 25,
+          "peak": 0.35608673095703125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 26,
+          "peak": 0.357027530670166,
+          "limitedSamples": 0
+        },
+        {
+          "value": 27,
+          "peak": 0.34972286224365234,
+          "limitedSamples": 0
+        },
+        {
+          "value": 28,
+          "peak": 0.35564422607421875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 29,
+          "peak": 0.3530130386352539,
+          "limitedSamples": 0
+        },
+        {
+          "value": 30,
+          "peak": 0.3536558151245117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 31,
+          "peak": 0.3564028739929199,
+          "limitedSamples": 0
+        },
+        {
+          "value": 32,
+          "peak": 0.35231542587280273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 33,
+          "peak": 0.35106325149536133,
+          "limitedSamples": 0
+        },
+        {
+          "value": 34,
+          "peak": 0.3519468307495117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 35,
+          "peak": 0.3545255661010742,
+          "limitedSamples": 0
+        },
+        {
+          "value": 36,
+          "peak": 0.3498234748840332,
+          "limitedSamples": 0
+        },
+        {
+          "value": 37,
+          "peak": 0.34882593154907227,
+          "limitedSamples": 0
+        },
+        {
+          "value": 38,
+          "peak": 0.34862470626831055,
+          "limitedSamples": 0
+        },
+        {
+          "value": 39,
+          "peak": 0.3522615432739258,
+          "limitedSamples": 0
+        },
+        {
+          "value": 40,
+          "peak": 0.3575267791748047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 41,
+          "peak": 0.3555169105529785,
+          "limitedSamples": 0
+        },
+        {
+          "value": 42,
+          "peak": 0.35652923583984375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 43,
+          "peak": 0.34955453872680664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 44,
+          "peak": 0.3548135757446289,
+          "limitedSamples": 0
+        },
+        {
+          "value": 45,
+          "peak": 0.3526935577392578,
+          "limitedSamples": 0
+        },
+        {
+          "value": 46,
+          "peak": 0.35395050048828125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 47,
+          "peak": 0.35671234130859375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 48,
+          "peak": 0.35158443450927734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 49,
+          "peak": 0.35099172592163086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 50,
+          "peak": 0.3509817123413086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 51,
+          "peak": 0.3540482521057129,
+          "limitedSamples": 0
+        },
+        {
+          "value": 52,
+          "peak": 0.34999895095825195,
+          "limitedSamples": 0
+        },
+        {
+          "value": 53,
+          "peak": 0.3635721206665039,
+          "limitedSamples": 0
+        },
+        {
+          "value": 54,
+          "peak": 0.3660087585449219,
+          "limitedSamples": 0
+        },
+        {
+          "value": 55,
+          "peak": 0.3520221710205078,
+          "limitedSamples": 0
+        },
+        {
+          "value": 56,
+          "peak": 0.3655123710632324,
+          "limitedSamples": 0
+        },
+        {
+          "value": 57,
+          "peak": 0.36186981201171875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 58,
+          "peak": 0.36377716064453125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 59,
+          "peak": 0.37267112731933594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 60,
+          "peak": 0.3642997741699219,
+          "limitedSamples": 0
+        },
+        {
+          "value": 61,
+          "peak": 0.3614225387573242,
+          "limitedSamples": 0
+        },
+        {
+          "value": 62,
+          "peak": 0.36431312561035156,
+          "limitedSamples": 0
+        },
+        {
+          "value": 63,
+          "peak": 0.372622013092041,
+          "limitedSamples": 0
+        },
+        {
+          "value": 64,
+          "peak": 0.3637690544128418,
+          "limitedSamples": 0
+        },
+        {
+          "value": 65,
+          "peak": 0.38288307189941406,
+          "limitedSamples": 0
+        },
+        {
+          "value": 66,
+          "peak": 0.36118078231811523,
+          "limitedSamples": 0
+        },
+        {
+          "value": 67,
+          "peak": 0.368746280670166,
+          "limitedSamples": 0
+        },
+        {
+          "value": 68,
+          "peak": 0.38230276107788086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 69,
+          "peak": 0.3779025077819824,
+          "limitedSamples": 0
+        },
+        {
+          "value": 70,
+          "peak": 0.3797721862792969,
+          "limitedSamples": 0
+        },
+        {
+          "value": 71,
+          "peak": 0.3637723922729492,
+          "limitedSamples": 0
+        },
+        {
+          "value": 72,
+          "peak": 0.37729310989379883,
+          "limitedSamples": 0
+        },
+        {
+          "value": 73,
+          "peak": 0.37288427352905273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 74,
+          "peak": 0.37470436096191406,
+          "limitedSamples": 0
+        },
+        {
+          "value": 75,
+          "peak": 0.38202762603759766,
+          "limitedSamples": 0
+        },
+        {
+          "value": 76,
+          "peak": 0.3720698356628418,
+          "limitedSamples": 0
+        },
+        {
+          "value": 77,
+          "peak": 0.3676567077636719,
+          "limitedSamples": 0
+        },
+        {
+          "value": 78,
+          "peak": 0.36939191818237305,
+          "limitedSamples": 0
+        },
+        {
+          "value": 79,
+          "peak": 0.37665414810180664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 80,
+          "peak": 0.39012813568115234,
+          "limitedSamples": 0
+        },
+        {
+          "value": 81,
+          "peak": 0.3856358528137207,
+          "limitedSamples": 0
+        },
+        {
+          "value": 82,
+          "peak": 0.3873724937438965,
+          "limitedSamples": 0
+        },
+        {
+          "value": 83,
+          "peak": 0.3709254264831543,
+          "limitedSamples": 0
+        },
+        {
+          "value": 84,
+          "peak": 0.3845968246459961,
+          "limitedSamples": 0
+        },
+        {
+          "value": 85,
+          "peak": 0.37976694107055664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 86,
+          "peak": 0.3814363479614258,
+          "limitedSamples": 0
+        },
+        {
+          "value": 87,
+          "peak": 0.3889780044555664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 88,
+          "peak": 0.37837886810302734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 89,
+          "peak": 0.37391138076782227,
+          "limitedSamples": 0
+        },
+        {
+          "value": 90,
+          "peak": 0.3756747245788574,
+          "limitedSamples": 0
+        },
+        {
+          "value": 91,
+          "peak": 0.3828701972961426,
+          "limitedSamples": 0
+        },
+        {
+          "value": 92,
+          "peak": 0.37239599227905273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 93,
+          "peak": 0.39199352264404297,
+          "limitedSamples": 0
+        },
+        {
+          "value": 94,
+          "peak": 0.3933072090148926,
+          "limitedSamples": 0
+        },
+        {
+          "value": 95,
+          "peak": 0.376462459564209,
+          "limitedSamples": 0
+        },
+        {
+          "value": 96,
+          "peak": 0.39029455184936523,
+          "limitedSamples": 0
+        },
+        {
+          "value": 97,
+          "peak": 0.38533926010131836,
+          "limitedSamples": 0
+        },
+        {
+          "value": 98,
+          "peak": 0.3868904113769531,
+          "limitedSamples": 0
+        },
+        {
+          "value": 99,
+          "peak": 0.39421701431274414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 100,
+          "peak": 0.38365840911865234,
+          "limitedSamples": 0
+        },
+        {
+          "value": 101,
+          "peak": 0.3790445327758789,
+          "limitedSamples": 0
+        },
+        {
+          "value": 102,
+          "peak": 0.3805203437805176,
+          "limitedSamples": 0
+        },
+        {
+          "value": 103,
+          "peak": 0.38781166076660156,
+          "limitedSamples": 0
+        },
+        {
+          "value": 104,
+          "peak": 0.37705183029174805,
+          "limitedSamples": 0
+        },
+        {
+          "value": 105,
+          "peak": 0.37258148193359375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 106,
+          "peak": 0.3740687370300293,
+          "limitedSamples": 0
+        },
+        {
+          "value": 107,
+          "peak": 0.38112545013427734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 108,
+          "peak": 0.3944883346557617,
+          "limitedSamples": 0
+        },
+        {
+          "value": 109,
+          "peak": 0.3898196220397949,
+          "limitedSamples": 0
+        },
+        {
+          "value": 110,
+          "peak": 0.39119386672973633,
+          "limitedSamples": 0
+        },
+        {
+          "value": 111,
+          "peak": 0.37436723709106445,
+          "limitedSamples": 0
+        },
+        {
+          "value": 112,
+          "peak": 0.3877997398376465,
+          "limitedSamples": 0
+        },
+        {
+          "value": 113,
+          "peak": 0.3829684257507324,
+          "limitedSamples": 0
+        },
+        {
+          "value": 114,
+          "peak": 0.38445234298706055,
+          "limitedSamples": 0
+        },
+        {
+          "value": 115,
+          "peak": 0.3918018341064453,
+          "limitedSamples": 0
+        },
+        {
+          "value": 116,
+          "peak": 0.38080263137817383,
+          "limitedSamples": 0
+        },
+        {
+          "value": 117,
+          "peak": 0.37633609771728516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 118,
+          "peak": 0.37784671783447266,
+          "limitedSamples": 0
+        },
+        {
+          "value": 119,
+          "peak": 0.38500499725341797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 120,
+          "peak": 0.37410640716552734,
+          "limitedSamples": 0
+        },
+        {
+          "value": 121,
+          "peak": 0.39366579055786133,
+          "limitedSamples": 0
+        },
+        {
+          "value": 122,
+          "peak": 0.3949165344238281,
+          "limitedSamples": 0
+        },
+        {
+          "value": 123,
+          "peak": 0.3779487609863281,
+          "limitedSamples": 0
+        },
+        {
+          "value": 124,
+          "peak": 0.3915743827819824,
+          "limitedSamples": 0
+        },
+        {
+          "value": 125,
+          "peak": 0.3865041732788086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 126,
+          "peak": 0.38790321350097656,
+          "limitedSamples": 0
+        },
+        {
+          "value": 127,
+          "peak": 0.3952517509460449,
+          "limitedSamples": 0
+        }
+      ],
+      "referenceErrorDb": -71.6019935447223,
+      "note": "64 native blocks per value, retrigger at each step; stress walk, not isolated full decay."
+    },
+    {
+      "control": "LOW",
+      "values": [
+        {
+          "value": 0,
+          "peak": 0.21111297607421875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 1,
+          "peak": 0.16535186767578125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 2,
+          "peak": 0.16526317596435547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 3,
+          "peak": 0.1666574478149414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 4,
+          "peak": 0.16535425186157227,
+          "limitedSamples": 0
+        },
+        {
+          "value": 5,
+          "peak": 0.16560935974121094,
+          "limitedSamples": 0
+        },
+        {
+          "value": 6,
+          "peak": 0.16523218154907227,
+          "limitedSamples": 0
+        },
+        {
+          "value": 7,
+          "peak": 0.16427850723266602,
+          "limitedSamples": 0
+        },
+        {
+          "value": 8,
+          "peak": 0.1648421287536621,
+          "limitedSamples": 0
+        },
+        {
+          "value": 9,
+          "peak": 0.16475820541381836,
+          "limitedSamples": 0
+        },
+        {
+          "value": 10,
+          "peak": 0.1640911102294922,
+          "limitedSamples": 0
+        },
+        {
+          "value": 11,
+          "peak": 0.16279029846191406,
+          "limitedSamples": 0
+        },
+        {
+          "value": 12,
+          "peak": 0.16086435317993164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 13,
+          "peak": 0.16045379638671875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 14,
+          "peak": 0.15938186645507812,
+          "limitedSamples": 0
+        },
+        {
+          "value": 15,
+          "peak": 0.15980195999145508,
+          "limitedSamples": 0
+        },
+        {
+          "value": 16,
+          "peak": 0.1574387550354004,
+          "limitedSamples": 0
+        },
+        {
+          "value": 17,
+          "peak": 0.15656185150146484,
+          "limitedSamples": 0
+        },
+        {
+          "value": 18,
+          "peak": 0.15506267547607422,
+          "limitedSamples": 0
+        },
+        {
+          "value": 19,
+          "peak": 0.15289020538330078,
+          "limitedSamples": 0
+        },
+        {
+          "value": 20,
+          "peak": 0.1521739959716797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 21,
+          "peak": 0.15079641342163086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 22,
+          "peak": 0.14875364303588867,
+          "limitedSamples": 0
+        },
+        {
+          "value": 23,
+          "peak": 0.146026611328125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 24,
+          "peak": 0.14481306076049805,
+          "limitedSamples": 0
+        },
+        {
+          "value": 25,
+          "peak": 0.14074373245239258,
+          "limitedSamples": 0
+        },
+        {
+          "value": 26,
+          "peak": 0.14143753051757812,
+          "limitedSamples": 0
+        },
+        {
+          "value": 27,
+          "peak": 0.13701725006103516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 28,
+          "peak": 0.14533710479736328,
+          "limitedSamples": 0
+        },
+        {
+          "value": 29,
+          "peak": 0.14520502090454102,
+          "limitedSamples": 0
+        },
+        {
+          "value": 30,
+          "peak": 0.14951515197753906,
+          "limitedSamples": 0
+        },
+        {
+          "value": 31,
+          "peak": 0.15811634063720703,
+          "limitedSamples": 0
+        },
+        {
+          "value": 32,
+          "peak": 0.1545124053955078,
+          "limitedSamples": 0
+        },
+        {
+          "value": 33,
+          "peak": 0.15515947341918945,
+          "limitedSamples": 0
+        },
+        {
+          "value": 34,
+          "peak": 0.1601719856262207,
+          "limitedSamples": 0
+        },
+        {
+          "value": 35,
+          "peak": 0.16954755783081055,
+          "limitedSamples": 0
+        },
+        {
+          "value": 36,
+          "peak": 0.16636896133422852,
+          "limitedSamples": 0
+        },
+        {
+          "value": 37,
+          "peak": 0.16758966445922852,
+          "limitedSamples": 0
+        },
+        {
+          "value": 38,
+          "peak": 0.17319250106811523,
+          "limitedSamples": 0
+        },
+        {
+          "value": 39,
+          "peak": 0.18355655670166016,
+          "limitedSamples": 0
+        },
+        {
+          "value": 40,
+          "peak": 0.1988968849182129,
+          "limitedSamples": 0
+        },
+        {
+          "value": 41,
+          "peak": 0.20061874389648438,
+          "limitedSamples": 0
+        },
+        {
+          "value": 42,
+          "peak": 0.20728635787963867,
+          "limitedSamples": 0
+        },
+        {
+          "value": 43,
+          "peak": 0.20047521591186523,
+          "limitedSamples": 0
+        },
+        {
+          "value": 44,
+          "peak": 0.21686506271362305,
+          "limitedSamples": 0
+        },
+        {
+          "value": 45,
+          "peak": 0.21943330764770508,
+          "limitedSamples": 0
+        },
+        {
+          "value": 46,
+          "peak": 0.22695255279541016,
+          "limitedSamples": 0
+        },
+        {
+          "value": 47,
+          "peak": 0.2395157814025879,
+          "limitedSamples": 0
+        },
+        {
+          "value": 48,
+          "peak": 0.23784351348876953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 49,
+          "peak": 0.2409963607788086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 50,
+          "peak": 0.2493729591369629,
+          "limitedSamples": 0
+        },
+        {
+          "value": 51,
+          "peak": 0.2630271911621094,
+          "limitedSamples": 0
+        },
+        {
+          "value": 52,
+          "peak": 0.2617974281311035,
+          "limitedSamples": 0
+        },
+        {
+          "value": 53,
+          "peak": 0.28644561767578125,
+          "limitedSamples": 0
+        },
+        {
+          "value": 54,
+          "peak": 0.2959127426147461,
+          "limitedSamples": 0
+        },
+        {
+          "value": 55,
+          "peak": 0.2895379066467285,
+          "limitedSamples": 0
+        },
+        {
+          "value": 56,
+          "peak": 0.31052541732788086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 57,
+          "peak": 0.31499576568603516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 58,
+          "peak": 0.32536983489990234,
+          "limitedSamples": 0
+        },
+        {
+          "value": 59,
+          "peak": 0.34201478958129883,
+          "limitedSamples": 0
+        },
+        {
+          "value": 60,
+          "peak": 0.3415851593017578,
+          "limitedSamples": 0
+        },
+        {
+          "value": 61,
+          "peak": 0.3468899726867676,
+          "limitedSamples": 0
+        },
+        {
+          "value": 62,
+          "peak": 0.35849857330322266,
+          "limitedSamples": 0
+        },
+        {
+          "value": 63,
+          "peak": 0.37651491165161133,
+          "limitedSamples": 0
+        },
+        {
+          "value": 64,
+          "peak": 0.37736034393310547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 65,
+          "peak": 0.40862607955932617,
+          "limitedSamples": 0
+        },
+        {
+          "value": 66,
+          "peak": 0.3971738815307617,
+          "limitedSamples": 0
+        },
+        {
+          "value": 67,
+          "peak": 0.4171314239501953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 68,
+          "peak": 0.4443240165710449,
+          "limitedSamples": 0
+        },
+        {
+          "value": 69,
+          "peak": 0.45197153091430664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 70,
+          "peak": 0.46700048446655273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 71,
+          "peak": 0.4613509178161621,
+          "limitedSamples": 0
+        },
+        {
+          "value": 72,
+          "peak": 0.4907212257385254,
+          "limitedSamples": 0
+        },
+        {
+          "value": 73,
+          "peak": 0.49903345108032227,
+          "limitedSamples": 0
+        },
+        {
+          "value": 74,
+          "peak": 0.5152158737182617,
+          "limitedSamples": 0
+        },
+        {
+          "value": 75,
+          "peak": 0.5387477874755859,
+          "limitedSamples": 0
+        },
+        {
+          "value": 76,
+          "peak": 0.5423765182495117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 77,
+          "peak": 0.5582065582275391,
+          "limitedSamples": 0
+        },
+        {
+          "value": 78,
+          "peak": 0.5769000053405762,
+          "limitedSamples": 0
+        },
+        {
+          "value": 79,
+          "peak": 0.6024689674377441,
+          "limitedSamples": 0
+        },
+        {
+          "value": 80,
+          "peak": 0.6309804916381836,
+          "limitedSamples": 0
+        },
+        {
+          "value": 81,
+          "peak": 0.6472568511962891,
+          "limitedSamples": 0
+        },
+        {
+          "value": 82,
+          "peak": 0.6700596809387207,
+          "limitedSamples": 0
+        },
+        {
+          "value": 83,
+          "peak": 0.6740550994873047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 84,
+          "peak": 0.7055020332336426,
+          "limitedSamples": 0
+        },
+        {
+          "value": 85,
+          "peak": 0.725562572479248,
+          "limitedSamples": 0
+        },
+        {
+          "value": 86,
+          "peak": 0.7470684051513672,
+          "limitedSamples": 0
+        },
+        {
+          "value": 87,
+          "peak": 0.7764377593994141,
+          "limitedSamples": 0
+        },
+        {
+          "value": 88,
+          "peak": 0.7885169982910156,
+          "limitedSamples": 0
+        },
+        {
+          "value": 89,
+          "peak": 0.8061428070068359,
+          "limitedSamples": 0
+        },
+        {
+          "value": 90,
+          "peak": 0.8314471244812012,
+          "limitedSamples": 0
+        },
+        {
+          "value": 91,
+          "peak": 0.8631300926208496,
+          "limitedSamples": 0
+        },
+        {
+          "value": 92,
+          "peak": 0.8743243217468262,
+          "limitedSamples": 0
+        },
+        {
+          "value": 93,
+          "peak": 0.9198956489562988,
+          "limitedSamples": 0
+        },
+        {
+          "value": 94,
+          "peak": 0.9461679458618164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 95,
+          "peak": 0.9516782760620117,
+          "limitedSamples": 0
+        },
+        {
+          "value": 96,
+          "peak": 0.9911456108093262,
+          "limitedSamples": 0
+        },
+        {
+          "value": 97,
+          "peak": 1.0,
+          "limitedSamples": 12
+        },
+        {
+          "value": 98,
+          "peak": 1.0,
+          "limitedSamples": 55
+        },
+        {
+          "value": 99,
+          "peak": 1.0,
+          "limitedSamples": 108
+        },
+        {
+          "value": 100,
+          "peak": 1.0,
+          "limitedSamples": 136
+        },
+        {
+          "value": 101,
+          "peak": 1.0,
+          "limitedSamples": 178
+        },
+        {
+          "value": 102,
+          "peak": 1.0,
+          "limitedSamples": 231
+        },
+        {
+          "value": 103,
+          "peak": 1.0,
+          "limitedSamples": 280
+        },
+        {
+          "value": 104,
+          "peak": 1.0,
+          "limitedSamples": 322
+        },
+        {
+          "value": 105,
+          "peak": 1.0,
+          "limitedSamples": 354
+        },
+        {
+          "value": 106,
+          "peak": 1.0,
+          "limitedSamples": 385
+        },
+        {
+          "value": 107,
+          "peak": 1.0,
+          "limitedSamples": 409
+        },
+        {
+          "value": 108,
+          "peak": 1.0,
+          "limitedSamples": 429
+        },
+        {
+          "value": 109,
+          "peak": 1.0,
+          "limitedSamples": 449
+        },
+        {
+          "value": 110,
+          "peak": 1.0,
+          "limitedSamples": 467
+        },
+        {
+          "value": 111,
+          "peak": 1.0,
+          "limitedSamples": 485
+        },
+        {
+          "value": 112,
+          "peak": 1.0,
+          "limitedSamples": 503
+        },
+        {
+          "value": 113,
+          "peak": 1.0,
+          "limitedSamples": 516
+        },
+        {
+          "value": 114,
+          "peak": 1.0,
+          "limitedSamples": 531
+        },
+        {
+          "value": 115,
+          "peak": 1.0,
+          "limitedSamples": 545
+        },
+        {
+          "value": 116,
+          "peak": 1.0,
+          "limitedSamples": 559
+        },
+        {
+          "value": 117,
+          "peak": 1.0,
+          "limitedSamples": 572
+        },
+        {
+          "value": 118,
+          "peak": 1.0,
+          "limitedSamples": 584
+        },
+        {
+          "value": 119,
+          "peak": 1.0,
+          "limitedSamples": 599
+        },
+        {
+          "value": 120,
+          "peak": 1.0,
+          "limitedSamples": 609
+        },
+        {
+          "value": 121,
+          "peak": 1.0,
+          "limitedSamples": 620
+        },
+        {
+          "value": 122,
+          "peak": 1.0,
+          "limitedSamples": 630
+        },
+        {
+          "value": 123,
+          "peak": 1.0,
+          "limitedSamples": 639
+        },
+        {
+          "value": 124,
+          "peak": 1.0,
+          "limitedSamples": 648
+        },
+        {
+          "value": 125,
+          "peak": 1.0,
+          "limitedSamples": 656
+        },
+        {
+          "value": 126,
+          "peak": 1.0,
+          "limitedSamples": 667
+        },
+        {
+          "value": 127,
+          "peak": 1.0,
+          "limitedSamples": 675
+        }
+      ],
+      "referenceErrorDb": -72.09456894968977,
+      "note": "64 native blocks per value, retrigger at each step; stress walk, not isolated full decay."
+    },
+    {
+      "control": "HIGH",
+      "values": [
+        {
+          "value": 0,
+          "peak": 0.3400707244873047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 1,
+          "peak": 0.35170745849609375,
+          "limitedSamples": 0
+        },
+        {
+          "value": 2,
+          "peak": 0.3559575080871582,
+          "limitedSamples": 0
+        },
+        {
+          "value": 3,
+          "peak": 0.349703311920166,
+          "limitedSamples": 0
+        },
+        {
+          "value": 4,
+          "peak": 0.3557896614074707,
+          "limitedSamples": 0
+        },
+        {
+          "value": 5,
+          "peak": 0.35387611389160156,
+          "limitedSamples": 0
+        },
+        {
+          "value": 6,
+          "peak": 0.35471105575561523,
+          "limitedSamples": 0
+        },
+        {
+          "value": 7,
+          "peak": 0.3568148612976074,
+          "limitedSamples": 0
+        },
+        {
+          "value": 8,
+          "peak": 0.35344743728637695,
+          "limitedSamples": 0
+        },
+        {
+          "value": 9,
+          "peak": 0.351346492767334,
+          "limitedSamples": 0
+        },
+        {
+          "value": 10,
+          "peak": 0.35258960723876953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 11,
+          "peak": 0.3539113998413086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 12,
+          "peak": 0.36008310317993164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 13,
+          "peak": 0.3574490547180176,
+          "limitedSamples": 0
+        },
+        {
+          "value": 14,
+          "peak": 0.35768651962280273,
+          "limitedSamples": 0
+        },
+        {
+          "value": 15,
+          "peak": 0.35183191299438477,
+          "limitedSamples": 0
+        },
+        {
+          "value": 16,
+          "peak": 0.3569469451904297,
+          "limitedSamples": 0
+        },
+        {
+          "value": 17,
+          "peak": 0.3544921875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 18,
+          "peak": 0.35570335388183594,
+          "limitedSamples": 0
+        },
+        {
+          "value": 19,
+          "peak": 0.3575139045715332,
+          "limitedSamples": 0
+        },
+        {
+          "value": 20,
+          "peak": 0.35429811477661133,
+          "limitedSamples": 0
+        },
+        {
+          "value": 21,
+          "peak": 0.3524460792541504,
+          "limitedSamples": 0
+        },
+        {
+          "value": 22,
+          "peak": 0.3527646064758301,
+          "limitedSamples": 0
+        },
+        {
+          "value": 23,
+          "peak": 0.35499095916748047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 24,
+          "peak": 0.3519625663757324,
+          "limitedSamples": 0
+        },
+        {
+          "value": 25,
+          "peak": 0.35926151275634766,
+          "limitedSamples": 0
+        },
+        {
+          "value": 26,
+          "peak": 0.3598623275756836,
+          "limitedSamples": 0
+        },
+        {
+          "value": 27,
+          "peak": 0.3528151512145996,
+          "limitedSamples": 0
+        },
+        {
+          "value": 28,
+          "peak": 0.3585190773010254,
+          "limitedSamples": 0
+        },
+        {
+          "value": 29,
+          "peak": 0.3555927276611328,
+          "limitedSamples": 0
+        },
+        {
+          "value": 30,
+          "peak": 0.35613250732421875,
+          "limitedSamples": 0
+        },
+        {
+          "value": 31,
+          "peak": 0.35991716384887695,
+          "limitedSamples": 0
+        },
+        {
+          "value": 32,
+          "peak": 0.35465574264526367,
+          "limitedSamples": 0
+        },
+        {
+          "value": 33,
+          "peak": 0.35360050201416016,
+          "limitedSamples": 0
+        },
+        {
+          "value": 34,
+          "peak": 0.3543872833251953,
+          "limitedSamples": 0
+        },
+        {
+          "value": 35,
+          "peak": 0.3564620018005371,
+          "limitedSamples": 0
+        },
+        {
+          "value": 36,
+          "peak": 0.3520388603210449,
+          "limitedSamples": 0
+        },
+        {
+          "value": 37,
+          "peak": 0.3510465621948242,
+          "limitedSamples": 0
+        },
+        {
+          "value": 38,
+          "peak": 0.35068798065185547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 39,
+          "peak": 0.35413503646850586,
+          "limitedSamples": 0
+        },
+        {
+          "value": 40,
+          "peak": 0.3614773750305176,
+          "limitedSamples": 0
+        },
+        {
+          "value": 41,
+          "peak": 0.35700082778930664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 42,
+          "peak": 0.3583049774169922,
+          "limitedSamples": 0
+        },
+        {
+          "value": 43,
+          "peak": 0.3512411117553711,
+          "limitedSamples": 0
+        },
+        {
+          "value": 44,
+          "peak": 0.35614871978759766,
+          "limitedSamples": 0
+        },
+        {
+          "value": 45,
+          "peak": 0.3539891242980957,
+          "limitedSamples": 0
+        },
+        {
+          "value": 46,
+          "peak": 0.3551931381225586,
+          "limitedSamples": 0
+        },
+        {
+          "value": 47,
+          "peak": 0.3632478713989258,
+          "limitedSamples": 0
+        },
+        {
+          "value": 48,
+          "peak": 0.35454511642456055,
+          "limitedSamples": 0
+        },
+        {
+          "value": 49,
+          "peak": 0.3521432876586914,
+          "limitedSamples": 0
+        },
+        {
+          "value": 50,
+          "peak": 0.3538236618041992,
+          "limitedSamples": 0
+        },
+        {
+          "value": 51,
+          "peak": 0.36216115951538086,
+          "limitedSamples": 0
+        },
+        {
+          "value": 52,
+          "peak": 0.35352516174316406,
+          "limitedSamples": 0
+        },
+        {
+          "value": 53,
+          "peak": 0.37337684631347656,
+          "limitedSamples": 0
+        },
+        {
+          "value": 54,
+          "peak": 0.37610483169555664,
+          "limitedSamples": 0
+        },
+        {
+          "value": 55,
+          "peak": 0.3614974021911621,
+          "limitedSamples": 0
+        },
+        {
+          "value": 56,
+          "peak": 0.3763251304626465,
+          "limitedSamples": 0
+        },
+        {
+          "value": 57,
+          "peak": 0.37307214736938477,
+          "limitedSamples": 0
+        },
+        {
+          "value": 58,
+          "peak": 0.3759016990661621,
+          "limitedSamples": 0
+        },
+        {
+          "value": 59,
+          "peak": 0.38518857955932617,
+          "limitedSamples": 0
+        },
+        {
+          "value": 60,
+          "peak": 0.3764362335205078,
+          "limitedSamples": 0
+        },
+        {
+          "value": 61,
+          "peak": 0.37360334396362305,
+          "limitedSamples": 0
+        },
+        {
+          "value": 62,
+          "peak": 0.3769111633300781,
+          "limitedSamples": 0
+        },
+        {
+          "value": 63,
+          "peak": 0.3859376907348633,
+          "limitedSamples": 0
+        },
+        {
+          "value": 64,
+          "peak": 0.37736034393310547,
+          "limitedSamples": 0
+        },
+        {
+          "value": 65,
+          "peak": 0.3991832733154297,
+          "limitedSamples": 0
+        },
+        {
+          "value": 66,
+          "peak": 0.37885522842407227,
+          "limitedSamples": 0
+        },
+        {
+          "value": 67,
+          "peak": 0.3899240493774414,
+          "limitedSamples": 0
+        },
+        {
+          "value": 68,
+          "peak": 0.4078707695007324,
+          "limitedSamples": 0
+        },
+        {
+          "value": 69,
+          "peak": 0.40630626678466797,
+          "limitedSamples": 0
+        },
+        {
+          "value": 70,
+          "peak": 0.41171884536743164,
+          "limitedSamples": 0
+        },
+        {
+          "value": 71,
+          "peak": 0.39717912673950195,
+          "limitedSamples": 0
+        },
+        {
+          "value": 72,
+          "peak": 0.4158658981323242,
+          "limitedSamples": 0
+        },
+        {
+          "value": 73,
+          "peak": 0.4144754409790039,
+          "limitedSamples": 0
+        },
+        {
+          "value": 74,
+          "peak": 0.42023372650146484,
+          "limitedSamples": 0
+        },
+        {
+          "value": 75,
+          "peak": 0.4325985908508301,
+          "limitedSamples": 0
+        },
+        {
+          "value": 76,
+          "peak": 0.42470216751098633,
+          "limitedSamples": 0
+        },
+        {
+          "value": 77,
+          "peak": 0.42330455780029297,
+          "limitedSamples": 0
+        },
+        {
+          "value": 78,
+          "peak": 0.4293489456176758,
+          "limitedSamples": 0
+        },
+        {
+          "value": 79,
+          "peak": 0.44231462478637695,
+          "limitedSamples": 0
+        },
+        {
+          "value": 80,
+          "peak": 0.4632582664489746,
+          "limitedSamples": 0
+        },
+        {
+          "value": 81,
+          "peak": 0.46213722229003906,
+          "limitedSamples": 0
+        },
+        {
+          "value": 82,
+          "peak": 0.46889686584472656,
+          "limitedSamples": 0
+        },
+        {
+          "value": 83,
+          "peak": 0.4526238441467285,
+          "limitedSamples": 0
+        },
+        {
+          "value": 84,
+          "peak": 0.4747586250305176,
+          "limitedSamples": 0
+        },
+        {
+          "value": 85,
+          "peak": 0.4733090400695801,
+          "limitedSamples": 0
+        },
+        {
+          "value": 86,
+          "peak": 0.4803776741027832,
+          "limitedSamples": 0
+        },
+        {
+          "value": 87,
+          "peak": 0.4954667091369629,
+          "limitedSamples": 0
+        },
+        {
+          "value": 88,
+          "peak": 0.4864320755004883,
+          "limitedSamples": 0
+        },
+        {
+          "value": 89,
+          "peak": 0.48543691635131836,
+          "limitedSamples": 0
+        },
+        {
+          "value": 90,
+          "peak": 0.49305248260498047,
+          "limitedSamples": 0
+        },
+        {
+          "value": 91,
+          "peak": 0.5084781646728516,
+          "limitedSamples": 0
+        },
+        {
+          "value": 92,
+          "peak": 0.49912261962890625,
+          "limitedSamples": 0
+        },
+        {
+          "value": 93,
+          "peak": 0.5326075553894043,
+          "limitedSamples": 0
+        },
+        {
+          "value": 94,
+          "peak": 0.5404114723205566,
+          "limitedSamples": 0
+        },
+        {
+          "value": 95,
+          "peak": 0.5217061042785645,
+          "limitedSamples": 0
+        },
+        {
+          "value": 96,
+          "peak": 0.5481858253479004,
+          "limitedSamples": 0
+        },
+        {
+          "value": 97,
+          "peak": 0.5468950271606445,
+          "limitedSamples": 0
+        },
+        {
+          "value": 98,
+          "peak": 0.5554633140563965,
+          "limitedSamples": 0
+        },
+        {
+          "value": 99,
+          "peak": 0.5731391906738281,
+          "limitedSamples": 0
+        },
+        {
+          "value": 100,
+          "peak": 0.5631628036499023,
+          "limitedSamples": 0
+        },
+        {
+          "value": 101,
+          "peak": 0.5622892379760742,
+          "limitedSamples": 0
+        },
+        {
+          "value": 102,
+          "peak": 0.5711417198181152,
+          "limitedSamples": 0
+        },
+        {
+          "value": 103,
+          "peak": 0.5896573066711426,
+          "limitedSamples": 0
+        },
+        {
+          "value": 104,
+          "peak": 0.5788922309875488,
+          "limitedSamples": 0
+        },
+        {
+          "value": 105,
+          "peak": 0.5781793594360352,
+          "limitedSamples": 0
+        },
+        {
+          "value": 106,
+          "peak": 0.5874671936035156,
+          "limitedSamples": 0
+        },
+        {
+          "value": 107,
+          "peak": 0.6065201759338379,
+          "limitedSamples": 0
+        },
+        {
+          "value": 108,
+          "peak": 0.6366872787475586,
+          "limitedSamples": 0
+        },
+        {
+          "value": 109,
+          "peak": 0.6362757682800293,
+          "limitedSamples": 0
+        },
+        {
+          "value": 110,
+          "peak": 0.6463699340820312,
+          "limitedSamples": 0
+        },
+        {
+          "value": 111,
+          "peak": 0.6236100196838379,
+          "limitedSamples": 0
+        },
+        {
+          "value": 112,
+          "peak": 0.6557073593139648,
+          "limitedSamples": 0
+        },
+        {
+          "value": 113,
+          "peak": 0.6545596122741699,
+          "limitedSamples": 0
+        },
+        {
+          "value": 114,
+          "peak": 0.6652522087097168,
+          "limitedSamples": 0
+        },
+        {
+          "value": 115,
+          "peak": 0.687288761138916,
+          "limitedSamples": 0
+        },
+        {
+          "value": 116,
+          "peak": 0.6743545532226562,
+          "limitedSamples": 0
+        },
+        {
+          "value": 117,
+          "peak": 0.6739344596862793,
+          "limitedSamples": 0
+        },
+        {
+          "value": 118,
+          "peak": 0.6851305961608887,
+          "limitedSamples": 0
+        },
+        {
+          "value": 119,
+          "peak": 0.7075409889221191,
+          "limitedSamples": 0
+        },
+        {
+          "value": 120,
+          "peak": 0.6941657066345215,
+          "limitedSamples": 0
+        },
+        {
+          "value": 121,
+          "peak": 0.7427539825439453,
+          "limitedSamples": 0
+        },
+        {
+          "value": 122,
+          "peak": 0.7544155120849609,
+          "limitedSamples": 0
+        },
+        {
+          "value": 123,
+          "peak": 0.7278814315795898,
+          "limitedSamples": 0
+        },
+        {
+          "value": 124,
+          "peak": 0.7656350135803223,
+          "limitedSamples": 0
+        },
+        {
+          "value": 125,
+          "peak": 0.7642717361450195,
+          "limitedSamples": 0
+        },
+        {
+          "value": 126,
+          "peak": 0.7767238616943359,
+          "limitedSamples": 0
+        },
+        {
+          "value": 127,
+          "peak": 0.8022842407226562,
+          "limitedSamples": 0
+        }
+      ],
+      "referenceErrorDb": -72.00890120375824,
+      "note": "64 native blocks per value, retrigger at each step; stress walk, not isolated full decay."
+    }
+  ],
+  "tableFractionsAndMonotonicity": true,
+  "fastGainAll128ValuesPositiveAndBounded": true,
+  "physicalControlPositions": "unknown between endpoints; no uniform sweep assumption",
+  "limits": [
+    "This stress walk is an emulator range check, not a hardware test.",
+    "ACCNT/SAT/LOW/HIGH retain the existing gain and desk laws; combined loud settings can hit the final output limiter."
+  ],
+  "privateFirmwareLabel": "AB014REF05"
+}

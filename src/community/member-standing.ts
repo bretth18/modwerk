@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 /** Roles shown on profiles and posts. Members are 'user' unless an administrator or a confirmed module claim makes
  * them a developer; the owner is set only by migration. */
 export const MEMBER_ROLES = ['user', 'developer', 'owner'] as const

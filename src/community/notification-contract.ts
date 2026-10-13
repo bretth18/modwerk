@@ -1,10 +1,13 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 export type NotificationKind = 'reply' | 'mention' | 'bug_report' | 'post_like' | 'module_comment' | 'module_rating' | 'module_like' | 'module_update' | 'message' | 'request_status' | GithubIssueKind
-/** Replies and status changes on one of the recipient's own reports, locally or on GitHub. */
+/** Replies on a report the recipient owns or joined, and status changes on their own reports. */
 export type GithubIssueKind = 'issue_comment' | 'issue_resolved' | 'issue_closed' | 'issue_reopened'
 /** One bell entry. For `request_status` the excerpt is the request's new status.
  * Content fields come from public posts, comments and GitHub issues; the entry itself is private to its recipient.
- * `github_actor` and `url` are the GitHub login and issue link for GitHub activity. `post_page` is the thread page that holds `post_id`. */
-export type NotificationItem = { id: string; kind: NotificationKind; seen: boolean; created_at: string; thread_id: string | null; post_id: string | null; post_page?: number | null; module_id: string | null; module_version?: string | null; actor: string | null; actorOfficial: boolean; actorAvatar?: string | null; title: string | null; excerpt: string | null; rating: number | null; issue_id: string | null; github_actor: string | null; url: string | null }
+ * `github_actor` and `url` are the GitHub login and issue link for GitHub activity. `post_page` is the thread page that holds `post_id`.
+ * `issueReporter` is false for a maintainer or public participant; `issuePublic` distinguishes the public conversation from private maintainer activity. */
+export type NotificationItem = { id: string; kind: NotificationKind; seen: boolean; created_at: string; thread_id: string | null; post_id: string | null; post_page?: number | null; module_id: string | null; module_version?: string | null; actor: string | null; actorOfficial: boolean; actorAvatar?: string | null; title: string | null; excerpt: string | null; rating: number | null; issue_id: string | null; issue_scope?: 'module' | 'configuration' | null; issueReporter?: boolean; issuePublic?: boolean; github_actor: string | null; url: string | null }
 export type AnnouncementVisibility = 'public' | 'signed-in'
 /** Shared display contract. The bell lists private activity and signed-in announcements; public announcements have a separate floating card. Announcements are never mailed. */
 export type BellItem = Omit<NotificationItem, 'kind'> & { kind: NotificationKind | 'announcement' }

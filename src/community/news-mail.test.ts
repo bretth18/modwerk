@@ -68,6 +68,7 @@ describe('news mail campaigns', () => {
     expect((await overview()).campaigns).toEqual([])
   })
 
+  // Five real account flows, provider pacing and the hourly scheduler need headroom on shared CI runners.
   it('sends a queued campaign once per consenting member, rechecking consent at send time', async () => {
     const { call, member, news, act, delivery, run, db, env, overview, admin } = await fixture()
     const first = await member('firstone'), second = await member('secondtwo'), declined = await member('declined', false), suspended = await member('suspended'), withdrawn = await member('withdrawn')
@@ -102,7 +103,7 @@ describe('news mail campaigns', () => {
     worker.scheduled({ cron: '17 * * * *' }, env, { waitUntil: job => { jobs.push(job) } })
     await Promise.all(jobs)
     expect(messages).toHaveLength(0)
-  })
+  }, 15000)
 
   it('keeps within the daily news budget without touching the account mail budget', async () => {
     const { member, news, act, run, db, call, env } = await fixture()

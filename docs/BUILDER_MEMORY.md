@@ -10,6 +10,14 @@ Legacy detours with guards shorter than their emitted instruction span are exten
 
 Stock-free GNU linker fixtures cover BSS bytes, boundary symbols, alignment and page-placement choices. Shared-builder preservation records bind exact source hashes and unchanged native complete-image identities for previously approved modules. Software parity does not constitute hardware or chip-cycle qualification.
 
+Retained browser preservation also requires the validated commit to be an
+actual ancestor of HEAD. A `merge --no-commit` can expose new binding files while
+that history exists only in MERGE_HEAD; the precommit check correctly refuses
+the overlay. Keep the exact checked commit and source patch, reconstruct only
+your uncommitted diff on current main while retaining its changes, then rerun
+the required check. Never relabel a proof or bypass its protected hashes or
+ancestry check.
+
 The port follows [octabam 6f9e5bc9](https://github.com/sambanks/octabam/blob/6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136/tools/remix/platform_build.py), while retaining Modwerk’s existing source cache, stock-copy guards and runtime types. Run `scripts/verify-builder-memory.py` in the isolated SDK toolchain container for stock-free native memory integration checks.
 
 The shared-builder validation reruns 38 legacy native profiles with identical complete-image hashes/refusals and checks all five current comparison records (490 selections), including USB Audio and Euclid 0.1.4. Mixed-build records affected by the USB Audio and Euclid updates are refreshed without changing those modules’ code or approvals. FM Synth’s original software/worker/audio reports remain frozen; publication checks the complete current native coverage and its recomputed counts rather than fixing the comparison pool to the historical report’s size.

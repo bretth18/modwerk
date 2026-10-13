@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { packSection } from '../aplib'
 import { contentChecksum, encodeSyx } from './sysex'
-import { inspectDigiFirmware, MAX_DIGI_FIRMWARE_BYTES } from './firmware'
+import { inspectDigiFirmware, MAX_DIGI_FIRMWARE_BYTES, type DigiMachine } from './firmware'
 import { LINK_DEVICES, type LinkDevice } from './elemod'
+import { ELE3_DEVICES } from './ele3'
 import { sha256Hex } from './hash'
 
 // This entire container is generated from an arbitrary pattern, with no firmware bytes.
-async function fixture() {
+async function fixture(machine: DigiMachine = 'digitakt') {
   const image = Uint8Array.from({ length: 512 }, (_, i) => i % 31), packed = packSection(image)
   const container = new Uint8Array(64 + packed.length + (-packed.length & 15))
   container.set([0x45, 0x4c, 0x45, 0x33]); container.set([0x54, 0x45, 0x53, 0x54], 0x14)
@@ -15,9 +16,11 @@ async function fixture() {
   container.set(packed, 64)
   const stream = new Uint8Array(8 + container.length), streamView = new DataView(stream.buffer)
   streamView.setUint32(0, container.length); streamView.setUint32(4, contentChecksum(container)); stream.set(container, 8)
-  const framing = Uint8Array.from([0xf0, 0, 0x20, 0x3c, 0x0a, 0, 0x7d, 0, 0x10, 1, 2, 3, 0, 0, 0, 0xf7])
-  const bytes = encodeSyx(stream, 0x0a, framing, framing)
-  const device: LinkDevice = { ...LINK_DEVICES[0], releases: [{ version: 'TEST', syxSha256: await sha256Hex(bytes), mainSha256: await sha256Hex(image), mainLength: image.length }] }
+  const deviceId = ELE3_DEVICES[machine].sysexId
+  const framing = Uint8Array.from([0xf0, 0, 0x20, 0x3c, deviceId, 0, 0x7d, 0, 0x10, 1, 2, 3, 0, 0, 0, 0xf7])
+  const bytes = encodeSyx(stream, deviceId, framing, framing)
+  const profile = LINK_DEVICES.find(item => item.machine === machine)!
+  const device: LinkDevice = { ...profile, releases: [{ version: 'TEST', syxSha256: await sha256Hex(bytes), mainSha256: await sha256Hex(image), mainLength: image.length }] }
   return { bytes, device }
 }
 
@@ -25,6 +28,10 @@ describe('local Digi firmware identity', () => {
   it('returns only verified metadata from the complete file and unpacked image', async () => {
     const { bytes, device } = await fixture()
     expect(await inspectDigiFirmware('digitakt', bytes, 'synthetic.syx', [device])).toEqual({ machine: 'digitakt', release: 'TEST', name: 'synthetic.syx', bytes: bytes.length, sha256: device.releases[0].syxSha256 })
+  })
+  it('inspects a Digitakt II ELE3 image using its own SysEx id and memory layout', async () => {
+    const { bytes, device } = await fixture('digitakt-ii')
+    expect(await inspectDigiFirmware('digitakt-ii', bytes, 'synthetic-dt2.syx', [device])).toMatchObject({ machine: 'digitakt-ii', release: 'TEST', name: 'synthetic-dt2.syx' })
   })
   it('refuses wrong-machine and modified files before parsing', async () => {
     const { bytes, device } = await fixture(), modified = bytes.slice(); modified[0] ^= 1

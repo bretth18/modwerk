@@ -10,7 +10,7 @@ function fixture() {
   const view = new DataView(stock.buffer)
   view.setUint16(0x100, 0x41f9); view.setUint32(0x102, base + 0x100); view.setUint16(0x106, 0x4e75)
   view.setUint16(0x200, 0x4eb9); view.setUint32(0x202, base + 0x100)
-  const device: LinkDevice = { key: 'test-machine', machine: 'digitakt', name: 'Synthetic', mainLoad: base,
+  const device: LinkDevice = { key: 'test-machine', machine: 'digitakt', name: 'Synthetic', sysexId: 0x0a, mainLoad: base,
     releases: [{ version: '1.0', syxSha256: 'a'.repeat(64), mainSha256: sha(stock), mainLength: stock.length }],
     areas: { ddr: [0x41000000, 0x41001000], sram: [0x50000000, 0x50001000] }, ddr: [0x41000000, 0x41001000], sramCode: [0x50000000, 0x50001000], fastTable: '', protected: [] }
   const plan: CompiledElemodPlan = { schemaVersion: 1, machine: 'digitakt', id: 'proof', version: '1.0', release: '1.0',

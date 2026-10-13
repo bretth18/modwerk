@@ -1,5 +1,8 @@
 /** Copyable prompts that start a coding agent on a new module in a contributor's fork. */
-export type StarterMachine = 'octatrack' | 'digitakt' | 'digitone'
+import { developerWorkflowPrompt, INSTRUMENT_STEPS } from './developer-guidance'
+import { DEVICES, DEVICES_BY_ID, deviceTitle, type DeviceProfile } from '../devices/registry'
+
+export type StarterMachine = DeviceProfile['id']
 
 export interface Starter {
   id: string
@@ -14,11 +17,10 @@ export interface Starter {
   example: string
 }
 
-export const STARTER_MACHINES: { id: StarterMachine; name: string; note?: string }[] = [
-  { id: 'octatrack', name: 'Octatrack MKI / MKII' },
-  { id: 'digitakt', name: 'Digitakt mk1', note: 'Preview' },
-  { id: 'digitone', name: 'Digitone mk1 / Keys', note: 'Preview' },
-]
+export const STARTER_MACHINES: { id: StarterMachine; name: string; note?: string }[] = DEVICES.map(device => ({
+  id: device.id, name: deviceTitle(device),
+  note: device.sdk ? (device.status === 'preview' ? 'Preview' : undefined) : 'Integration needed',
+}))
 
 const OCTATRACK: Starter[] = [
   { id: 'effect', title: 'An effect', summary: 'A new FX1 or FX2 effect on the DSP, such as a filter, delay or distortion.', guides: ['effects.md'], example: 'Mini Verb, Tape Echo, Character',
@@ -54,42 +56,113 @@ const DIGI: Starter[] = [
     task: 'Port this elekloader mod to Modwerk: {idea}\nImport it with `npm run elekloader:update`, pin `source` to the author\'s commit, keep their credit, licence and README under upstream/, and record the import in sdk/imports/.' },
 ]
 
-export function startersFor(machine: StarterMachine) { return machine === 'octatrack' ? OCTATRACK : DIGI }
+const INTEGRATION: Starter[] = [{
+  id: 'integration', title: 'Instrument integration', summary: 'Research and qualify SDK/builder support before writing a module.', guides: [], example: '',
+  task: 'Research and prepare Modwerk support for this instrument: {idea}',
+}]
+
+export function startersFor(machine: StarterMachine) {
+  return machine === 'octatrack' ? OCTATRACK : DEVICES_BY_ID[machine]?.sdk ? DIGI : INTEGRATION
+}
+
+const REPOSITORY = 'https://github.com/repeat98/modwerk'
+
+/** Opens every prompt. A coding agent carries on; a plain chat assistant, which cannot build a module, must guide a newcomer through setup instead. */
+function setupGuidance(repository = REPOSITORY, login = '') {
+  return [
+    'Read this first: which kind of assistant are you?',
+    'A) A coding assistant that can edit files and run commands in my Modwerk checkout (Claude Code, Codex, Cursor, Copilot agent mode or any assistant in an IDE or terminal): skip this block and do not walk me through setup. Only tell me what is missing (git, Node 24, my fork), then carry on with the instructions below.',
+    'B) A chat assistant without access to my files and a terminal (ChatGPT, Gemini, Claude on the web): you cannot build a module. Do not propose a module, design its controls, ask about my idea or write code. Your only job is to get me set up. Reply now with one short sentence that we start with the setup, and ask which operating system I use. Then guide me one step at a time and wait for me to confirm each step before the next. Assume I have never used GitHub or a terminal: explain each step in plain words with exact clicks and links, and show me how to open a terminal on my system.',
+    '  1. A free GitHub account (github.com/signup). Ask for my login and use it as the module author.',
+    '  2. Fork ' + repository + ' with the Fork button, install git if I have none, then clone my fork and install its packages (Node 24 through nvm; nvm-windows on Windows):',
+    ...cloneCommands(repository, login).split('\n').map(line => '     ' + line),
+    '  3. A coding agent that works on files in that folder: Claude Code (Claude subscription) or Codex (ChatGPT plan), as a desktop app, IDE extension or terminal tool. Octatrack native builds also need Python 3.10+, Docker and my own stock OS 1.40C, which stays on my computer and is never sent to you.',
+    '  4. Open the cloned folder in that agent, then tell me to copy this whole prompt from my first message and paste it there. Then stop: the agent takes over.',
+  ]
+}
+
+const AGENT_ONLY = 'Instructions for the coding agent. A chat assistant must not act on anything below, only on the setup above.'
+const SETUP_REMINDER = 'Reminder: if you are a chat assistant, nothing above applies yet. Reply with the setup guidance only, starting with my operating system.'
+
+function withSetup(body: string[], repository: string, login: string) {
+  return [...setupGuidance(repository, login), '', AGENT_ONLY, '', ...body, '', SETUP_REMINDER].join('\n')
+}
+
+/** Stops a new module that the library already has, or that is already in flight. */
+const CATALOGUE_CHECK = 'Before you plan anything, look at what Modwerk already has: the module library on modwerk.app or, in an up-to-date checkout (git fetch upstream), sdk/catalog.json (Octatrack), src/catalog/machine-modules.json (Digitakt, Digitone) and sdk/drafts/, plus the open pull requests (`gh pr list`). If a module already does what I describe, or my port is already listed, tell me which one and suggest extending it through the update workflow instead of building a duplicate. Only go on with a new module if mine is clearly different, and say how.'
 
 const IDEA_PLACEHOLDER = '<describe your idea: what it does, its controls, and how it should sound or behave>'
 const PORT_PLACEHOLDER = '<name the module and link its source>'
 
 /** The files a starter prompt asks the agent to read, relative to the repository root. */
 export function starterReading(machine: StarterMachine, starter: Starter) {
-  const files = ['AGENTS.md', 'docs/ADD_A_MODULE.md', 'docs/module-guides/README.md', ...starter.guides.map(guide => 'docs/module-guides/' + guide)]
-  return machine === 'octatrack' ? [...files, 'sdk/octabam/AGENTS.md'] : [...files, 'sdk/machines/' + machine + '/README.md']
+  const files = ['AGENTS.md', 'docs/DEVELOPER_WORKFLOW.md', 'docs/ADD_A_MODULE.md', 'docs/MODULE_AUTHOR_UPDATES.md', 'docs/MODULE_QUALIFICATION.md', 'docs/SDK.md', 'docs/module-guides/README.md', ...starter.guides.map(guide => 'docs/module-guides/' + guide)]
+  return machine === 'octatrack' ? [...files, 'sdk/octabam/AGENTS.md'] : DEVICES_BY_ID[machine]?.sdk
+    ? [...files, DEVICES_BY_ID[machine].sdk!]
+    : [...files, 'docs/ADD_A_MACHINE.md', 'sdk/machines/README.md', 'sdk/machines/' + machine + '/machine.json']
 }
 
-export function starterPrompt(machine: StarterMachine, starter: Starter, idea = '', login = '') {
+export function starterPrompt(machine: StarterMachine, starter: Starter, idea = '', login = '', repository = REPOSITORY) {
+  if (!DEVICES_BY_ID[machine]?.sdk) return integrationPrompt(machine, idea, login, '', '', repository)
   const name = STARTER_MACHINES.find(item => item.id === machine)!.name
   const author = login.trim().replace(/^@/, '') || '<your-github-login>'
   const description = idea.trim() || (starter.port ? PORT_PLACEHOLDER : IDEA_PLACEHOLDER)
   const reading = starterReading(machine, starter).map(file => '- ' + file + (file === 'sdk/octabam/AGENTS.md' ? ' (the DSP and ColdFire traps)' : file === 'docs/ADD_A_MODULE.md' ? ' (the "' + (machine === 'octatrack' ? 'Octatrack' : 'Digitakt and Digitone') + '" section)' : ''))
   const scaffold = machine === 'octatrack' ? 'npm run module:new -- <id> --kind dsp|coldfire --author ' + author : 'npm run module:new -- <id> --machine ' + machine + ' --author ' + author
   const create = starter.port ? 'Create the module folder as the guide describes for a port.' : 'Scaffold it with `' + scaffold + '`.'
-  return [
+  return withSetup([
     'I am working in my fork of Modwerk, which builds custom firmware modules for Elektron instruments. Help me make a module for the ' + name + '.',
     '',
     starter.task.replace('{idea}', description),
     '',
+    CATALOGUE_CHECK,
+    '',
     'Before you write code, read:',
     ...reading,
     '',
-    'Then work step by step:',
-    '1. Create a branch off main.',
-    '2. Propose a module id, its controls and the exact button steps to reach it on the unit. Wait for my OK.',
-    '3. ' + create,
-    '4. Write the source, the manifest, README.md (with a tutorial of at least three steps), TESTING.md and LICENSE.',
-    '5. Run `npm run module:doctor -- <id>` until every line is green' + (machine === 'octatrack' ? ' (a new module needs evidence/performance.json: `npm run perf:audit`)' : '') + ', then `npm run check`.',
-    '6. Tell me exactly what to test on my ' + name + ' and which screenshots to capture. Record only results I report back to you.',
+    'Use Node 24 and npm ci. Propose a module id, its controls and the exact button steps to reach it on the unit. Wait for my OK before implementation. ' + create,
     '',
-    'Rules: the module must fit the unit\'s own UI flows (stock gestures, stock style, its controls where a musician would look for them) and by default leave every stock flow as it is. A minor change to a stock flow is allowed only if it is well thought out and documented in the README: what changes, why it is needed and what else I considered, what a musician sees differently, how to turn it off, and which neighbouring flows you checked. Propose any such change to me first, and list the stock flows you compared in TESTING.md. Never commit firmware, extracted stock code or tables, dumps or built images; my OS file stays outside the repository. Keep every author\'s credit and licence. Do not claim a test nobody ran.',
-  ].join('\n')
+    developerWorkflowPrompt('create'),
+  ], repository, login)
+}
+
+export function updatePrompt(machine: StarterMachine, module = '', idea = '', issue = '', repository = REPOSITORY, login = '') {
+  if (!DEVICES_BY_ID[machine]?.sdk) return integrationPrompt(machine, idea, login, module, issue, repository)
+  const name = STARTER_MACHINES.find(item => item.id === machine)!.name
+  const reading = starterReading(machine, { ...startersFor(machine)[0], guides: [] })
+  return withSetup([
+    'I am working in my Modwerk fork. Help me fix or update ' + (module.trim() || '<module id or source link>') + ' for the ' + name + '.',
+    'Change: ' + (idea.trim() || '<describe the change or investigate the linked report>'),
+    ...(issue.trim() ? ['Fix issue ' + issue.trim()] : []),
+    '',
+    'Before changing code, read:', ...reading.map(file => '- ' + file),
+    'Read the module’s manifest, README, TESTING and its category guide before implementation. Use Node 24 and npm ci.',
+    '', developerWorkflowPrompt('update'),
+  ], repository, login)
+}
+
+function integrationPrompt(machine: StarterMachine, idea = '', login = '', module = '', issue = '', repository = REPOSITORY) {
+  const device = DEVICES_BY_ID[machine]
+  const name = deviceTitle(device)
+  return withSetup([
+    'I am working in my Modwerk fork. Help me research and prepare instrument support for the ' + name + '.',
+    'Goal: ' + (idea.trim() || '<describe the module or instrument support you want>'),
+    ...(module.trim() ? ['Requested module/change: ' + module.trim()] : []),
+    ...(issue.trim() ? ['Related issue: ' + issue.trim()] : []),
+    ...(login.trim() ? ['My GitHub login: ' + login.trim().replace(/^@/, '')] : []),
+    '',
+    'This instrument has no published Modwerk SDK or qualified module builder yet. The dropdown lists known instruments, not a claim that they can all build modules. Do not use Digitakt/Digitone commands, core slots, render hooks or memory budgets for this hardware.',
+    'Before changing code, read:', ...starterReading(machine, INTEGRATION[0]).map(file => '- ' + file),
+    'Current machine profile: ' + device.summary,
+    ...device.research?.map(source => 'Public research: ' + source.label + ' — ' + source.url) ?? [],
+    '',
+    'Instrument integration workflow:', ...INSTRUMENT_STEPS.map((step, index) => `${index + 1}. ${step.title}: ${step.summary}`),
+    '',
+    'Use Node 24 and npm ci. Establish what is known about the stock format, exact rebuild, recovery/boot, hooks/core and module support. Separate confirmed evidence, public research and unknowns. Propose a scoped integration plan and wait for my approval before implementation. Shared SDK/builder changes need owner review; the automatic author-update path does not apply to instrument integration.',
+    'Follow docs/ADD_A_MACHINE.md for profile, platform, toolchain, compatibility and browser integration. Keep stock firmware and extracted bytes private; do not mark unsupported milestones done or invent hardware results. Regenerate the machine registry through npm run machines:generate; never edit generated files by hand.',
+    'Only after the platform is integrated and qualified may we scaffold, build or publish a module. The following module workflow describes that later stage; it does not establish present support:',
+    '', developerWorkflowPrompt('create'),
+  ], repository, login)
 }
 
 export function cloneCommands(repository: string, login = '') {

@@ -4,11 +4,11 @@
   "sourceSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
   "staticStock": true,
   "builderSources": {
-    "tools/build/build_bus.py": "38d80300f9e7fee2d59bd1c81d7bf421ada6d9e35ee40350c53a2583322dfa31",
-    "tools/build/ab_image.py": "d51e8face61e0642f24743cc8081b1d258943f5040a3b34d003cf34a4f797c14",
+    "tools/build/build_bus.py": "61b00556870b6cb1de4fe28620f82927cd2fcb30dee6f1ac1304ac6a6fff3872",
+    "tools/build/ab_image.py": "c4573d4e0715961f7081dc1d5a0639d42ac63313ccc9e50a0737ac0685e2fc14",
     "tools/remix/loader.S": "32e09fd813ddc65511390faaebc3b86d963b2700f304b35cdb1ec48f90449287"
   },
-  "moduleSourceTreeSha256": "fe0366a92d3bcc800590b41f352db914b0ff2c75d43c56ae20afb8faa1607f2a",
+  "moduleSourceTreeSha256": "4af7f602316cfc3055c44f9f46cb835412bebc9990018252577c997bbe1c084a",
   "packing": null,
   "proofs": [
     {
@@ -46,11 +46,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265887,
-      "sha256": "e5639f9f47feaaaf74d202c411409d42a021017d0067e3c5aa4f2493798fd8d3",
-      "osSha256": "78f803ad1746b3a104ca8d426e751ee229b9a5ccefa8d1ce39df3ef8ebc4add9",
-      "maskedOsSha256": "88b9d812ed3cbda5a15b434c8537e8d72070d1c5e08f5c7e6a3add40e895d487",
-      "appendSha256": "4853c6f69ed131026070a3ef76869f551643a58c497ffed3e6157a49f13c642d"
+      "bytes": 1266195,
+      "sha256": "137580f326b6adc3b0d58f2183d530507f1b370c48911b38d5d0cf94d9e96898",
+      "osSha256": "2a230496f4d4fc486e8b9a96b574b55373668d50d05ada21631c042253d8d5e4",
+      "maskedOsSha256": "12d6dd097a2eee1efd750a6f706a1f15126b9c788c7f48134a1596a8b798c28c",
+      "appendSha256": "1b2396220615c9fb7cded6ac9c8c41425ef0b636cc1f6255bab39b851a651e3b"
     },
     {
       "moduleIds": [
@@ -73,11 +73,11 @@
         "fx2": [],
         "hidden": []
       },
-      "bytes": 1265887,
-      "sha256": "b72a2441ed3a5aa7a3a476a756f3272b7f0e7b956c87a0056de57e909dc09c57",
-      "osSha256": "8a6a82c8fa05153b74b2cb75ffa41ae1a74b5e76c937bc81955f77d45686aa79",
-      "maskedOsSha256": "b66853954895aff566d9fb00606692e11b6800e5dbcbd6c5c2ccafb14fe529cf",
-      "appendSha256": "4853c6f69ed131026070a3ef76869f551643a58c497ffed3e6157a49f13c642d"
+      "bytes": 1266195,
+      "sha256": "81ffef2ca02c2eecd0a2f52e4ef5c58ce9920d69dc930f29a248bab45662fb0c",
+      "osSha256": "8585a03dbe35d6cde8269f8e4319fab88b9569115dfee2c01526947148e1ae10",
+      "maskedOsSha256": "ffd4a6c9de97551bcb65d9710988723bff1d8fb788c2d79eafc31bd3591f27fc",
+      "appendSha256": "1b2396220615c9fb7cded6ac9c8c41425ef0b636cc1f6255bab39b851a651e3b"
     },
     {
       "moduleIds": [
@@ -115,11 +115,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265474,
-      "sha256": "4df71dd0ace8d7f41ab78663a2b2c74dbf7b850225194af48c11f2524c86d19c",
-      "osSha256": "0ebe10750103ae6541266c365b5520afae3e292fa6b5b212b8880308d877a2b8",
-      "maskedOsSha256": "3051c461e492a70cdeb3f90429e5a9f9f3a4817f3ad4a832413a4123ec5930f9",
-      "appendSha256": "e3accf08cd3825f3d8b14964921e0681a35cacfde8a5820bf98af5126e2fb402"
+      "bytes": 1265778,
+      "sha256": "34d9c2d904d50382e0d95693694435dcef2efe25467094f49f1e7015a95b8918",
+      "osSha256": "bb67761ec6b94cc0b2115b97351384c105fe0c11bf74ebf703ad1179defd954b",
+      "maskedOsSha256": "0725a53ae30304763d4cbfda05d58c6d189dd755b4c3e13c416c49d37fac0d6a",
+      "appendSha256": "50b504f855c06d571989225ede31d66790d1efa24336c9cc7f312fa369ddb8f8"
     },
     {
       "moduleIds": [
@@ -145,11 +145,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265474,
-      "sha256": "6f8b8e32fa04732fe367091362668e5a1e14de734552fa9d9578d574cdfcc868",
-      "osSha256": "76182f060fc3fb50d84819d1a7c4a4f8500aa6a5b5ad9bf7a11be1590d95e8bb",
-      "maskedOsSha256": "ad231b9b1774b598990b63866558bc633e0e719cbba19199a1de9c28b2301677",
-      "appendSha256": "e3accf08cd3825f3d8b14964921e0681a35cacfde8a5820bf98af5126e2fb402"
+      "bytes": 1265778,
+      "sha256": "63f99bbd9b109c0fb690c3381826502253b675e31e9e7b297952d22e324a47bf",
+      "osSha256": "f07b84cad5e2aa66f3872322d69ac02e07ef52bcb22b9af10781b9a141f63d51",
+      "maskedOsSha256": "397a96848c03dc0a66910a7ca4ad9a7f0fb26983bfb148568fc1d2e5c1665c43",
+      "appendSha256": "50b504f855c06d571989225ede31d66790d1efa24336c9cc7f312fa369ddb8f8"
     },
     {
       "moduleIds": [
@@ -188,11 +188,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1368190,
-      "sha256": "f6c0006c8ff37e2bb25880e954a8bbe55fc0dee94ebd5f8616330bc481c07197",
-      "osSha256": "28f16195520a29b0a2036a5502bacbdf47029a7888ce94b293366759136ad743",
-      "maskedOsSha256": "7455c0da724e0928884155247641c5d8387400d30a67fe0f7a93527edd30ec17",
-      "appendSha256": "c344a9c747ef55cce473d33fd1e07a8d32e20ea034a80bb6224569a7fcbb4c15"
+      "bytes": 1368478,
+      "sha256": "10243d982fe638b72ab37fa623a81eab6c6fe5f8fcd1056b12b1937e3771879c",
+      "osSha256": "a2e1524be2d38631d23c29a95a7e41a7d1f9c42256385a3ee12fe8278a49eb2f",
+      "maskedOsSha256": "6a98fbcd8324d093f08e67f7dd62400fe04b7de15b07afcc567c46a46a4540ce",
+      "appendSha256": "97c5347c9188de4b04810e2284ccd59345841590e07deed96191f6d0feea0beb"
     },
     {
       "moduleIds": [
@@ -218,11 +218,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1368190,
-      "sha256": "fc25dbf8c7100e3a8e1445649737950941dd9a4a2d2eedc0139863860579e80b",
-      "osSha256": "6c136ca8458575194d4f08e9c18849744028bbc05b36702c3ac23e82da61df8e",
-      "maskedOsSha256": "4d05659c482edb8cc6dd06cdb4976b8e898ead2487fb79b87db713fe4d2e42ee",
-      "appendSha256": "c344a9c747ef55cce473d33fd1e07a8d32e20ea034a80bb6224569a7fcbb4c15"
+      "bytes": 1368478,
+      "sha256": "5a190aeff2e16e1793eb117f7962a1b24844a77d64020717b1c9fbe67b87e54e",
+      "osSha256": "3be7a66c0076bb9c9a3afe9cbadc685cd33730e4c055de7ba38550e730cf12eb",
+      "maskedOsSha256": "b9c655b1aa1fd75f945c235021379aa9ee5a392803991a259453662aa31364b8",
+      "appendSha256": "97c5347c9188de4b04810e2284ccd59345841590e07deed96191f6d0feea0beb"
     },
     {
       "moduleIds": [
@@ -262,11 +262,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1367780,
-      "sha256": "584bd0e503864fcacbeb4d0865f8615b056fdcd2bf34736c125448d1d4b10127",
-      "osSha256": "26dd6bfa1c7ab8564a27ace26f9c536e61edbd7f42467e8a09781a0f0a17f192",
-      "maskedOsSha256": "8af01095eacd64e13065ba61873cbab94a771fa44674e6d237b5fbfafa41d23f",
-      "appendSha256": "4af8b39b7f92056eb5f85124df8f0310bacb899c5bacf21ae47927678e83c389"
+      "bytes": 1368062,
+      "sha256": "58321fd4b6c171b5af0700287d5f6392e7e832feb648c6069a4c6e28a4bcc57e",
+      "osSha256": "3e16219a42d7c9c37231fb94d528e5d5de1111e02eef97f00f895851951feacd",
+      "maskedOsSha256": "e7743bf7f3326c6b78d8167edbdc36835c1a77e0bebc6ff8f136cfca065ed026",
+      "appendSha256": "1ea6df77166ed0f6cb4f430b0bda4f776402a6dd7f02ed2686538d6feb39ddc9"
     },
     {
       "moduleIds": [
@@ -294,11 +294,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1367780,
-      "sha256": "974a7ac7bce966152abcb7435751442a5baaecda9d1a7901864d3f1ad9d2445d",
-      "osSha256": "e8594f390bc58ded1be4c4125248fd457da53b66307b8c520d3d9d6d432cb710",
-      "maskedOsSha256": "f1180ff0b8411753d8f959d67f334ad94867c8fcdeb7bf05fd293bda2f2bbc76",
-      "appendSha256": "4af8b39b7f92056eb5f85124df8f0310bacb899c5bacf21ae47927678e83c389"
+      "bytes": 1368062,
+      "sha256": "549c8b6c66dfa21f87bd1521eba0c82956515920940c80926876168ca920b217",
+      "osSha256": "c186f9b7ffe56addcb0971b50d47fe04e22ff4a5fd73082486e0d18ee6c98a18",
+      "maskedOsSha256": "726c2455304163092019c459d4d07eaa3bdc8f5e7f252752bf5673f4be4df844",
+      "appendSha256": "1ea6df77166ed0f6cb4f430b0bda4f776402a6dd7f02ed2686538d6feb39ddc9"
     },
     {
       "moduleIds": [
@@ -337,11 +337,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267958,
-      "sha256": "9a27e066474a55a267af86c607663249b8f928507b9f002e1f4cf63d31a7f154",
-      "osSha256": "a71823d014e9156bcc90b656d66b7122537490f11c1e83fbc75f97ab0bb26260",
-      "maskedOsSha256": "ed5df40659596b8c8072d1d191eb89d6d0a29e4d479146394a129aced7df810a",
-      "appendSha256": "4ec6bfd54171c38200695b8271715d32066b2ede113dfaaa30d34603c941de54"
+      "bytes": 1268254,
+      "sha256": "941e1f2d0a370d904ded0f8bc9166c55d73c77ee078e3dea9490057aa2e8b15b",
+      "osSha256": "c9ae093351383173688bd9ce168bb0e8dd42fec36f892f4e30d85cd19b946da3",
+      "maskedOsSha256": "858712fc4a3d5a1ad3885b2d9e6cad0c25c0ab8a1f04855fba5390b7b8094f2a",
+      "appendSha256": "a26e4c07bbd444d5186f791a391e90b81f097e155a20d9d23e3a2ee6350ed7a5"
     },
     {
       "moduleIds": [
@@ -368,11 +368,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267958,
-      "sha256": "b9f539adc924e5676c1b13306c30976708703445550145c43e1b343fa67a211e",
-      "osSha256": "a641493860416ed97b6180eed1461ee33d2d450a32651d63e22fc028aa2cb41a",
-      "maskedOsSha256": "3e9efeed180b55908607eb893b68310ff600866afc60633d074aed0c39505228",
-      "appendSha256": "4ec6bfd54171c38200695b8271715d32066b2ede113dfaaa30d34603c941de54"
+      "bytes": 1268254,
+      "sha256": "16f936613f704796e163d8af295434bd8a82e533697a247e38d988e05477262d",
+      "osSha256": "a1469d23f72502ee0b53203e267edba8c5729221fb7f4bb524993328f9d4a2d8",
+      "maskedOsSha256": "00bbfcddc15e36a7b82e7c0f82ca2a3263e47454d104e2a04aa127b716246906",
+      "appendSha256": "a26e4c07bbd444d5186f791a391e90b81f097e155a20d9d23e3a2ee6350ed7a5"
     },
     {
       "moduleIds": [
@@ -413,11 +413,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267553,
-      "sha256": "81f85cff2837c04d0508795239a92e62026381fef1867233fde31bda8bb04bbc",
-      "osSha256": "c18948c9382dc582ea4279c411dfc7f59b045a2c2ed6d3e8e9a4c9dae1850b45",
-      "maskedOsSha256": "3c40323852a01b40b969ff927c3f09667ceb3b7450e57c070bad128b3f9d2409",
-      "appendSha256": "16d5d36a2b1dc18fcf5aa809e5406be9e879e3252f2cae11aaf0a53b7c473ead"
+      "bytes": 1267819,
+      "sha256": "3d81491d62316ade2d711b9683ddf08571cba38cb14c3e6a392c1d489a94231b",
+      "osSha256": "2be9cc9af0c5bc448ac7cfcbae44e50f3793946638949bcc8d7ff0090f9b3cbc",
+      "maskedOsSha256": "91f4a984b2de37ad499a3e2d59e6e675af466f84db74b6ee19f5ad47e10244d8",
+      "appendSha256": "bc534b0dc730c8e87575572087960239b54a39eb35aed3bcba95b592841d0046"
     },
     {
       "moduleIds": [
@@ -446,11 +446,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267389,
-      "sha256": "9bba5cbd1b55730b3434409421fd446aa03480001c36e1ad5d2f6fdb75c855d0",
-      "osSha256": "b6d04ba98f25286ba0cfd832128920dc47ec7da2b4bb6009c7ebf0ff2a47512e",
-      "maskedOsSha256": "469bd897432b36988199c26e25037e3cd10d4178368f8aeaa1408387cfd2d43a",
-      "appendSha256": "23926d853361adc56769003d5bb6f8ceef2333402d5ed7bd244b19b6c491aeef"
+      "bytes": 1267684,
+      "sha256": "6cea3f7770e16fb9b05955b317bd6d468a9a62abcab6d9cfd89de014de8fb74e",
+      "osSha256": "2185e2ae5e73bf275f294c0e984f547ed447b79db7b545db7d2c06b7693bae7c",
+      "maskedOsSha256": "e5412c22563ae9034ff51242e304bffbe665f8fff6b0d5b83692c7959a4a6901",
+      "appendSha256": "bb2708d4bb0e34d38a90bc5541b27d8fae7131564f585a821cdee20380ab5876"
     },
     {
       "moduleIds": [
@@ -491,11 +491,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1370212,
-      "sha256": "8feaaed6e338f2a54726eed25f817241c8a333ff0cb36e93a63db6c4085d4ce8",
-      "osSha256": "6d017bbb406509155a1a560b642df2d226abd732bd3863a00eee36e82b05e006",
-      "maskedOsSha256": "b8479cfad4f44269fe0a2712a11d0c9a99e570a6b914657151832dabf66bea88",
-      "appendSha256": "9f063a192047e8ef3aaf6ca20b2fb220ffa17af0d92e8180b1684f76ade0c65e"
+      "bytes": 1370505,
+      "sha256": "3f844d28e5a755e1101c18d1c7399f6a6fdc89e993d080678fb189d37e858e5e",
+      "osSha256": "74effbc1c1643176809cfa3f18d4be31adab01cca10d74e5ee62c9ea9c8f9ceb",
+      "maskedOsSha256": "7213f17a691317b6d406bf21f1d5022d342f15489d7f757611cc8d6f8a261995",
+      "appendSha256": "e1dec0e97a0f47a199a359e3787536c2146dc686e99b9ddc2459605f1fb77084"
     },
     {
       "moduleIds": [
@@ -524,11 +524,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1370212,
-      "sha256": "be10f5096cd991b43176aa184b763c485f97ff85a1eaa124d9d54e1db6a93bc9",
-      "osSha256": "233e14622f2b1dacd9edb6e5c17b16f8669b82e8bb9067b8b7b1be5e2b29f2f8",
-      "maskedOsSha256": "913a231071774db411dbff0995a81e757b3e6e513b882ccfeb6d413d525dbaba",
-      "appendSha256": "9f063a192047e8ef3aaf6ca20b2fb220ffa17af0d92e8180b1684f76ade0c65e"
+      "bytes": 1370505,
+      "sha256": "1bbaf6947f5cf49814c1f723ca843eb5173bb2d97ed3a2ccdf43824fa7a7cb31",
+      "osSha256": "47c63f95fa97a2bd0899afa52992a20ad15c0e72abd55a848710be80b16f196b",
+      "maskedOsSha256": "ba7d29f3138d59ed87363682f9437fe379391bd5a6078760ffa82b2dbdb6270e",
+      "appendSha256": "e1dec0e97a0f47a199a359e3787536c2146dc686e99b9ddc2459605f1fb77084"
     },
     {
       "moduleIds": [
@@ -571,11 +571,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1369804,
-      "sha256": "00d0c9479acf84ca49342d8502206c3d4552208f3f54f2c919f4d29812be8e90",
-      "osSha256": "ce7617bffa2c6bb8f9e0c8109a4a89a36bd46a7f6281295691bc431d8da8f9ef",
-      "maskedOsSha256": "d071757025afde816e197a939d78d6e0b6032e39f3adee5df254b02392000b5f",
-      "appendSha256": "bdb367f2259fe8edd38494f714b7f435dc835c41929117523dbc38bd85674145"
+      "bytes": 1370065,
+      "sha256": "6072af06407d313bf872ff4647f6bff880f270d19753528480b64d47e10b95d6",
+      "osSha256": "bee48b7ccf84faf01bbe5939db79bdb21c261526bc7c534a64c0cb686d35b679",
+      "maskedOsSha256": "639303cea7d72afde7d4ce901fab6d15eeefa6e17a6c5286b4d947735a849591",
+      "appendSha256": "59c43989300aec097f4f279b586d8e6305c4406cb47dc2100b8ef005db15f3dd"
     },
     {
       "moduleIds": [
@@ -606,11 +606,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1369643,
-      "sha256": "cd556e400ff27367529bff25cf2736ff646df187c20cb8f8a4ea5594e0a51001",
-      "osSha256": "3020e773c2bdb3baa2afbd9854f2001f8710c0fa794fe03ad4f1c4782e5628df",
-      "maskedOsSha256": "eb1bcd1cbbff6b5eb6babca93f1a1443e71e1655f8b67b078b6a59db3383590f",
-      "appendSha256": "6ddbae78a55c0c28bc90b5c6e73412c17c37435f0319f09207be8089e028ba5b"
+      "bytes": 1369935,
+      "sha256": "09cf08b5561a67daff70e8c28390f135cfcc32463af30a4452cc7941f5b4c59b",
+      "osSha256": "997d7c8b26a7d90544608f341d8e8e78ac97a1bdb1514a6490f48b5cf4f7a358",
+      "maskedOsSha256": "8ef615c2f43d6056779d6863cdd2794118562f8b0539ee18df7430be3ab44f81",
+      "appendSha256": "0a1cf04faa59d421329ac18c545749304cbffa0173978f837d0be8c784d028e4"
     },
     {
       "moduleIds": [
@@ -648,11 +648,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265887,
-      "sha256": "81ad860817a7703796737bc77d3fa4cda0f396b515a0160dd39571c427db369a",
-      "osSha256": "a1d11eb9d730fe2de695abae500db8797d2986463d857316dd47aec1cd532092",
-      "maskedOsSha256": "bb86a85633ff82bcd03e65b34e5e9fb5e2afad67ab9b93e7cd56719bce7e463e",
-      "appendSha256": "4853c6f69ed131026070a3ef76869f551643a58c497ffed3e6157a49f13c642d"
+      "bytes": 1266195,
+      "sha256": "c7b69aa507adb8d4adc4ca31afe68c6dbf8fc3e68368618eb3c1677a045f16f7",
+      "osSha256": "d81e2f0613504eed0ff68bd064de5dcfe2b71e998a3be890c17aa4485dea671f",
+      "maskedOsSha256": "b6066bde08d5e4bc195c8ea980644a0fc9d81257a604479e7ce74c8d648597fc",
+      "appendSha256": "1b2396220615c9fb7cded6ac9c8c41425ef0b636cc1f6255bab39b851a651e3b"
     },
     {
       "moduleIds": [
@@ -676,11 +676,11 @@
         "fx2": [],
         "hidden": []
       },
-      "bytes": 1265887,
-      "sha256": "3abc0aa58c1147ae55df08ad4561afe4dc33352e0152ef14750d3157167e2839",
-      "osSha256": "8d1e6eabd912d796c549ce1e21c4bc266785c49a3cf7c418c94758189d2f46e5",
-      "maskedOsSha256": "0959ff1a9a07eeefb6e67f12135a0296fb791c1d8756658b5a6ad3194bf38ce6",
-      "appendSha256": "4853c6f69ed131026070a3ef76869f551643a58c497ffed3e6157a49f13c642d"
+      "bytes": 1266195,
+      "sha256": "7717425e2c0b9c888ff041aad8d473581c151ae89d56d988e38e4a043f6c2855",
+      "osSha256": "d23f2a54bb3422d30cd9f13e129d8372339e649874c44a11a0a25c6001a9e22f",
+      "maskedOsSha256": "eaf7560e435ad3e55b9eb0964b624639889031100054f034db232b57b3713b0f",
+      "appendSha256": "1b2396220615c9fb7cded6ac9c8c41425ef0b636cc1f6255bab39b851a651e3b"
     },
     {
       "moduleIds": [
@@ -719,11 +719,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265474,
-      "sha256": "a5c8cff4771bb4a72de0e87bb3b0ca8d994585475dad71c3a60a60cfc587d0cc",
-      "osSha256": "c061873448d8367447fb5a7a2d0585c4f01d3b78fcbf15ebae862ea3f9eeda09",
-      "maskedOsSha256": "c8bb9261e55ab07517a7e8c7ba7a5edb2fa881b3d48d3d690e1d3f3f12a5020b",
-      "appendSha256": "e3accf08cd3825f3d8b14964921e0681a35cacfde8a5820bf98af5126e2fb402"
+      "bytes": 1265778,
+      "sha256": "3817b0be6d6dd606283b128a0953eec20a5dc5b4a65791ae0481f066ad821c6c",
+      "osSha256": "256546f96e223ab0e8caae806c0e5a1398a64c0786b445609163c23a200a9f42",
+      "maskedOsSha256": "3c8300fe0d56fb1792374fb9b1c1f123ada9a81612d336a78f02cd7d41e4bc24",
+      "appendSha256": "50b504f855c06d571989225ede31d66790d1efa24336c9cc7f312fa369ddb8f8"
     },
     {
       "moduleIds": [
@@ -750,11 +750,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265474,
-      "sha256": "8c9a3e4ef192a0f1f94cdd73b00b2d3449136944e3a964230df7e5a0cf90db52",
-      "osSha256": "ddbc1df37c1651712088356bc71f21f397de7f2273798f149c6323fd088c4734",
-      "maskedOsSha256": "ce51bab6356ec46a00977f17d89a296e4a8726d11b25ff92aebf4b1fa1cfee54",
-      "appendSha256": "e3accf08cd3825f3d8b14964921e0681a35cacfde8a5820bf98af5126e2fb402"
+      "bytes": 1265778,
+      "sha256": "c97f5b44dc35c48e173f6dfc8f3af47fea479fd7957f3e894d17df7f57c7a561",
+      "osSha256": "2ec6fa0ea697e05f529428163835c835223412b5784b97ef273472fcb8ac66b6",
+      "maskedOsSha256": "87a9c4374c669addeb2860a5f828e569c563ef2c6f179334e61524ba4432c7b8",
+      "appendSha256": "50b504f855c06d571989225ede31d66790d1efa24336c9cc7f312fa369ddb8f8"
     },
     {
       "moduleIds": [
@@ -794,11 +794,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1368190,
-      "sha256": "19f996ac9beaf793796fcabefa47cad59d297c7be9f5b326141449a4ba700cc4",
-      "osSha256": "81c39fe4ae926b130213a81d8646013c7065193fd5c7dba0020d829ddedee426",
-      "maskedOsSha256": "20401675f6aa4ea94d1411b8a2848347b31bacb6338a85bc1dcafcd430e01ef4",
-      "appendSha256": "c344a9c747ef55cce473d33fd1e07a8d32e20ea034a80bb6224569a7fcbb4c15"
+      "bytes": 1368478,
+      "sha256": "c1e0a01b9bf8ce4ff26a33022d6b0163ab4a7873060bf7434b55f0b6b39e49dc",
+      "osSha256": "09bcea4b05213d3c58567de0c474593dd920d3e270d6320f0de14b86c8b4c31d",
+      "maskedOsSha256": "7860ab76b3969652fa8ae197d2f04c034d97275a38ab4961c3cb5d6852ad8755",
+      "appendSha256": "97c5347c9188de4b04810e2284ccd59345841590e07deed96191f6d0feea0beb"
     },
     {
       "moduleIds": [
@@ -825,11 +825,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1368190,
-      "sha256": "384c51d4f592f968d15e31781fa22cafe109da949473f3d5ac41532ebf318e23",
-      "osSha256": "e199c3ea2fbeae21cd6efec3fa804c636ef145ed608be3076247cfa3959306ef",
-      "maskedOsSha256": "e07fe5669811e4cd2f9a7c7cb28ee43b78dfed8a7bb88d3478d20d34e07fac80",
-      "appendSha256": "c344a9c747ef55cce473d33fd1e07a8d32e20ea034a80bb6224569a7fcbb4c15"
+      "bytes": 1368478,
+      "sha256": "cea62dd482177eb22db6488ae27e9c545ce0a73e1ec6eae59749b930b086ed67",
+      "osSha256": "f810d3ff1cabeeed86094c0da7edd6602f43667be7ab7723c39e80035d7ead45",
+      "maskedOsSha256": "dece648bcf71365212f85c8aa923d9125fddf84ae8c42d20957eb804994b425f",
+      "appendSha256": "97c5347c9188de4b04810e2284ccd59345841590e07deed96191f6d0feea0beb"
     },
     {
       "moduleIds": [
@@ -869,11 +869,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267958,
-      "sha256": "100974c3b16866789ccd1d27fec3c9727ef7557471deed65e41762fbddb5dee6",
-      "osSha256": "a74690611f4eab67bbad20ff27f0ffbd01c1f1bbaefbb89ea619dd2ad31dd571",
-      "maskedOsSha256": "f2bdb2a9c72dde437d0de8a934e78acfec6a21c4dc474bebf43c76c70591b9cc",
-      "appendSha256": "4ec6bfd54171c38200695b8271715d32066b2ede113dfaaa30d34603c941de54"
+      "bytes": 1268254,
+      "sha256": "92ef6e44390c41ad5a8fc719485e0e61429dcf40f92a82a1ba253d8a02bcc09f",
+      "osSha256": "89185dc31ee4f2eaae4180b2413437b0b6f726073b24033c5317498c9d22587f",
+      "maskedOsSha256": "0efb680a6a7a21fba351886c8a76ee1d4c33f0be4f9cab114f3ba32e99f3e296",
+      "appendSha256": "a26e4c07bbd444d5186f791a391e90b81f097e155a20d9d23e3a2ee6350ed7a5"
     },
     {
       "moduleIds": [
@@ -901,11 +901,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267958,
-      "sha256": "9b41154aa35a0720a14bd4692dc5a4eb6bea50f2f4ea20206a841a5a48960016",
-      "osSha256": "7037a57d48f7fe3aa84d1d641e1ea77afb96cecfc8f5596aca1ca3a5dfd27e86",
-      "maskedOsSha256": "9abe225c27ded16452f9511a693f66e6320b079106c8ef02595915d259d512a2",
-      "appendSha256": "4ec6bfd54171c38200695b8271715d32066b2ede113dfaaa30d34603c941de54"
+      "bytes": 1268254,
+      "sha256": "5363ddc77fcbcfc644658a0093d0749cc9283e1d0bcb8ba9fcaf4232d4f456a8",
+      "osSha256": "f4ef589b7452362479858f5971618b908a4a00202f350ed5719a5fb4bbdabed8",
+      "maskedOsSha256": "c61b351eba38ab7b4e6e238e6611c8e3247834c397f68ebdd0ce3c67d8198667",
+      "appendSha256": "a26e4c07bbd444d5186f791a391e90b81f097e155a20d9d23e3a2ee6350ed7a5"
     },
     {
       "moduleIds": [
@@ -944,11 +944,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265472,
-      "sha256": "478473d6258de412d518273c57ddc1c3ad889722e0192642de2af3268e67673f",
-      "osSha256": "d39185b1cf7592549ea68a75d8884439c63607add2382a4b8a04b6f0f6396976",
-      "maskedOsSha256": "1542d4472b78f5fb367ede7a2648d1752f25c32572b9908c9b870bb0f2318925",
-      "appendSha256": "33190322a40497a0932ee7e0eba1f5d507d686a18351ce597ff9aba8537b6267"
+      "bytes": 1265779,
+      "sha256": "9e7aeb4406045b04733fece857da0a12002397fc2d488711e221074d10f3aaed",
+      "osSha256": "c0a1c0af6f0be7ba701fc3419e10dc83e49f1f1c214d01fee97ac14c531c4cdf",
+      "maskedOsSha256": "36eddb655b0d1c3ebda9fbbc3dfe605bc8b8d1b613d5336c992bbe9255721f97",
+      "appendSha256": "ee40a116e5466496b1ce9b342f328c40e1bb1eecb10160d1408150a591878732"
     },
     {
       "moduleIds": [
@@ -975,11 +975,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265472,
-      "sha256": "ab44e4f155b44fd3c227f893c66b9f9277e142466709c16f2c36fba501680e2f",
-      "osSha256": "ea97cb2e24858c3a366a424e4302fdab71b4f4a693d661b18fc404b8d62f0575",
-      "maskedOsSha256": "4bc2ab6fd452f88bcd6340cab6e9318cbfcf30896ad8f2cad2abaf30ceb985eb",
-      "appendSha256": "33190322a40497a0932ee7e0eba1f5d507d686a18351ce597ff9aba8537b6267"
+      "bytes": 1265779,
+      "sha256": "a2966c2e9a6f7c548feb96e8ba5416cf863257d0a7e22f752a48a44003537b3b",
+      "osSha256": "8c27932af16a21fa0790bb0410853a4bc4bbf5249741f3032c2e8913aec3945c",
+      "maskedOsSha256": "c4626fd3bdd31d3b42ec72dd1ec8a412913f866c689d6ff7a6e63adb2416da7b",
+      "appendSha256": "ee40a116e5466496b1ce9b342f328c40e1bb1eecb10160d1408150a591878732"
     },
     {
       "moduleIds": [
@@ -1020,11 +1020,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265086,
-      "sha256": "7d27d7840147f434b6232f8475b65e1f507f191b255c5859372a7c4f5425f8e4",
-      "osSha256": "e103321c54a7ad57d4738ba08e64d1b9bd04e4407cd801011ab7aa845dd01405",
-      "maskedOsSha256": "5136ac1d6525b16ec956da7d870dd2a0535d52578b404d761b6487bed0e08a09",
-      "appendSha256": "21d7daaf824056e058e85aadde0e32a0fada22ba65f70c314b6c277b7077d149"
+      "bytes": 1265373,
+      "sha256": "a15fef0b2a5c16d162c5601f1b6c1289e4e2b4361c356645c44487733ab62c24",
+      "osSha256": "05b074b94d2aba664d2353945e8a9cfe6bf9293a6c10ca3fadbf2eb29f5e9016",
+      "maskedOsSha256": "5d0c50fec14e48a7c0ad0ffa8ad7daf0c1f5ee9f5fdad5df74f957657a352d0d",
+      "appendSha256": "a238aa37bd73641a1b3b21396d0d9b9255c84bc8ca6f661a2b37502dd08a4eb6"
     },
     {
       "moduleIds": [
@@ -1053,11 +1053,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265035,
-      "sha256": "13e14c15e8a2670607429c6395ce0c776bda5c59667fee882aa685180bde3567",
-      "osSha256": "5f72f2f2e261c35d696c529e173d2c1b324f08092f23f6bfb6774fbfde18b250",
-      "maskedOsSha256": "854d96250fa672e2824d80a62627fb045fdacd5d750a25c6c3734acedcac0e79",
-      "appendSha256": "7375609a3d7e59daa988c2c30816bad3b5937578742fdfc237add66487cb7354"
+      "bytes": 1265340,
+      "sha256": "93a3f4257ff7418d142d8cfcac8abd0327cc474dbff73365fe3ce99e744a923e",
+      "osSha256": "9ecd5f97c45ac15464ebbbc8b1bec0913f5e8b5b01a8f88dca95ac89e5f042ae",
+      "maskedOsSha256": "64aa3cbb9a20057dc7338be0e9beffcbe85f4f2c4e2ee52d261fdb0584bc6039",
+      "appendSha256": "45df84dc240fb0c947960cb443dec0e5594a21e643c33def9c7d89841dad7d92"
     },
     {
       "moduleIds": [
@@ -1098,11 +1098,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1367779,
-      "sha256": "bd65294cdfc35d1fdc50838e63dd9f46a2012397e448a14566d748c4eb41f66f",
-      "osSha256": "41ec4b14c65ca63e58e93186629afdfa3d7b5bd7e5840fd73c9587b89e8348f6",
-      "maskedOsSha256": "888bd9a5510ac897a95efef3b775a999e660ed61c195381a323aad73083a1d1c",
-      "appendSha256": "3c38b1062b2ee8d4a27d24bde0746f0a8c8e9772a4ed9c6f047bab991452be9a"
+      "bytes": 1368063,
+      "sha256": "0d2c964cfcb0e478aa69a34e768936289d6029e6c5b31b341d53643ee5d6393d",
+      "osSha256": "448b0fb5bf82f62fd3efb2274d51e3bc6d3a863906dea14f2ff8834521dc9e69",
+      "maskedOsSha256": "38fd8faff0606142b14bc50ee300ea89597d9af8c48b4f561356ded1e35f70dd",
+      "appendSha256": "dfa89c9b51d6a766287e9ab21a227a3cc5784028fa0ae0e1e3537f601527f757"
     },
     {
       "moduleIds": [
@@ -1131,11 +1131,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1367779,
-      "sha256": "5602b904d6e3c0a83a15d872ac5beeb17474bb245eba4d4b86761505e3ced4f7",
-      "osSha256": "a1e0a95337a6bbf9b3f66637f1d8cff196b49642832763a6a4c9cd34ffe26980",
-      "maskedOsSha256": "4b93f2d41d0a0f62aa7a3ea4c651171cbd02be27698170f5335de0fd4dd97828",
-      "appendSha256": "3c38b1062b2ee8d4a27d24bde0746f0a8c8e9772a4ed9c6f047bab991452be9a"
+      "bytes": 1368063,
+      "sha256": "7126384ccf926cd49f1631032e644547931401de167863425e07768fe6a76902",
+      "osSha256": "7f05b579d671b6227fcb364bf464a2962ec9091c5ec78a5573525d07759c646e",
+      "maskedOsSha256": "e64e3942903cf5b32c3aa389b5620214922606a5daee8c3fa828ea0f475bc749",
+      "appendSha256": "dfa89c9b51d6a766287e9ab21a227a3cc5784028fa0ae0e1e3537f601527f757"
     },
     {
       "moduleIds": [
@@ -1178,11 +1178,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1367392,
-      "sha256": "1b1b29559e135734dd7ec4c0019ad905cc473b9c0861f1748c2982824af1c12f",
-      "osSha256": "106ddf710dea3dfc9adbe81b92d95e7f96cc1e3cb9094bf08a91237b9b6494e3",
-      "maskedOsSha256": "90ab92acde6ed0f50ed3c0cecc49f7ab833173dadaadb4e3cf73d1fc7776a620",
-      "appendSha256": "749067362206e3b49f74a6c4711cd9e3e856bbfbdf5aa6ecba46df2d06c86763"
+      "bytes": 1367656,
+      "sha256": "bde094cdb44f45a18925cba6077972e376329bf338ef359de204d82338574a47",
+      "osSha256": "cb93b2817e225a4caef3cb77f614afc6d9bcc0633e35441f68eeba145638c656",
+      "maskedOsSha256": "1afc8bce97ab381fb565e8429479b7ee9c5c6a2a6a1721787b8a6110333fbe2c",
+      "appendSha256": "0e5392a09de7cf86a3885b871d16630c769aeb24038c2bc45588564c7be9154f"
     },
     {
       "moduleIds": [
@@ -1213,11 +1213,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1367341,
-      "sha256": "db8933c26a7e81f20cccb1e1999d35bfafda3fb0bcf9a7d1bad6475e543c1c25",
-      "osSha256": "2f69c60547adbcd116dc5eff99961dcf3fc94703f8702f0da021ce47750b1ec1",
-      "maskedOsSha256": "060344991054761d1e1bc4b70a19ba981cd11d15a8d76568afc15d0d95523b0f",
-      "appendSha256": "56051bb067e3003fc8df9077a1bfaf70d049acf8d417ad06506225f7704da3e5"
+      "bytes": 1367623,
+      "sha256": "858998c2eba54ef68c57929e753dd1c20cd9fdb3cb0f49a9834a921122441c42",
+      "osSha256": "74212b7631a393056f8471e111d6261b63751d4cf959a026f01fd859382f3f2d",
+      "maskedOsSha256": "9cf4809c6bc5296ad944472589cf06784aff4a2a6e173e083a22e2349a0456e4",
+      "appendSha256": "5d58385b0a9dede185a32865f5661bb0b785e62b5267ba5ef42ee9b646d48244"
     },
     {
       "moduleIds": [
@@ -1259,11 +1259,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267487,
-      "sha256": "601c5617decfdc828166a9c6678eb2978ab163d4d41fe437658f67b11afac599",
-      "osSha256": "8925d158e6df365798aa873229b8c476e696f3cd77850d50fd046db8affd458c",
-      "maskedOsSha256": "e055745090187e4dd7e9a17cadc9771c7394f91236d43f4b2e831da95560a5b5",
-      "appendSha256": "816446ddc453c0a31fd4b2400097c37874a97997707e33d68be7039bab67fbc8"
+      "bytes": 1267789,
+      "sha256": "885d06664f60ea1fd68038a2026c75242e6d703a733971713d72696e38fd2689",
+      "osSha256": "b639a2dfa9a677aeb2208a1dcee0678588d107ffcd391ec067a4ad0068524ca4",
+      "maskedOsSha256": "ffa7dce9b9317d059ff3586c8066ddba940ccb40b0e9f473f9d5372f0e4bea84",
+      "appendSha256": "bfa8f665fe86b21a0ded0356e6d6725d79d85d9b372e081a30be26fe7dd0a646"
     },
     {
       "moduleIds": [
@@ -1293,11 +1293,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267491,
-      "sha256": "5d0c5e9195f1e5a970feb8c1a9440f01ed15c906aae94d978a546b548c07c316",
-      "osSha256": "c816755e7a2573b7cf26496f9af83003ad61ee106a4448d207f7b9915d5a8367",
-      "maskedOsSha256": "21e33ea131c99de5acb0a510412a372dde6ac8bac52aadc78be459b6737abcea",
-      "appendSha256": "2a96f0e201b01c9026d63baba5a806f76b887604ef3da9e9b6129fbf946a1032"
+      "bytes": 1267792,
+      "sha256": "f12faffc5502b9e7d5191a5bc14863aefd9afebc4ae0f18024efb32f1fa583cf",
+      "osSha256": "7fd870c4722ee3b73344c72c11d4662e0a59f691054dad9bbe671c57124892cd",
+      "maskedOsSha256": "b9d70cf7ab4df204710f829513ac113cf504e6ac72ad4477e1358e9568875b2c",
+      "appendSha256": "704fb8d2e7c75e9d392240500ebfb22d389731cc42d37a42c790c8684e3fe7c9"
     },
     {
       "moduleIds": [
@@ -1340,11 +1340,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1266823,
-      "sha256": "08349e508fd71b9cd109c27245b8abab75a8f851e7d55c41502d1f8e8fade79e",
-      "osSha256": "87b1be8896b0968778cb3ae37c3ccd5789450eb0dc57f5bd71b844598e7e6737",
-      "maskedOsSha256": "fa068ad3401cec985cc5dbfae7f2f761f442d8d04eafeb0a9ac2bf5179ab0058",
-      "appendSha256": "4196df4b182a533212a504daf57f3b5c37d1f42cc408a7de523bb8b12fdd4573"
+      "bytes": 1267123,
+      "sha256": "a5dda81c27e0991785d3b1834db94aca674c6f13d6edba0dfee40efb9aff820a",
+      "osSha256": "6e18197c550aa4bf1ed82667b2ebfc948a58cae8a3442bd3381368a7074795a5",
+      "maskedOsSha256": "e231de6bad3f5f98f818f00917290d1a594abb319215b1cf68a4262f2c9a7b0c",
+      "appendSha256": "1d1ff03cfc32ca71ce3156616bf89bb7958c9753d8ab35eb2f85d369a825cecd"
     },
     {
       "moduleIds": [
@@ -1376,11 +1376,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1266823,
-      "sha256": "765992de66e72dee9af12294e4dfe08a1fb35f3da755548d442d9586b3dde71a",
-      "osSha256": "7794072d272fc6d852a99f00175934172494e29d9cddcba6e1218ebe884f0b9c",
-      "maskedOsSha256": "7b5925fd26915c43d62b1e8486caef78fe10fa3602d95df075f6f083255b17f5",
-      "appendSha256": "4196df4b182a533212a504daf57f3b5c37d1f42cc408a7de523bb8b12fdd4573"
+      "bytes": 1267123,
+      "sha256": "07badf077468875ca8a8c4dba036f8754e40b66c00a302d8f88feb1f05b12657",
+      "osSha256": "54ffd3bdba6afb5cca705b57d93cf68ed8f6848498e9638900a542e04cccf672",
+      "maskedOsSha256": "bb74737b3e0619947bbb591927df4459765fb5f92c8b306db2683f4dcabffb66",
+      "appendSha256": "1d1ff03cfc32ca71ce3156616bf89bb7958c9753d8ab35eb2f85d369a825cecd"
     },
     {
       "moduleIds": [
@@ -1424,11 +1424,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1369740,
-      "sha256": "dc0a994c301f53a5ff3148a4b40babe5f3cdcbb3f59b998258bb975a6805e08d",
-      "osSha256": "dc22a75ea121cd1b0da63c73d8d333cc2964dfc8b3945fcc2a35aa3572719fe8",
-      "maskedOsSha256": "1547cf0105cc78e7d9aebe08152e0b2bcec431dfac584a04f2416ea4e8208406",
-      "appendSha256": "bce9667c6b3a15aaacdb3121c0c88be4e6eab57a17f41aef41050c76e465b6ee"
+      "bytes": 1370036,
+      "sha256": "2947429276a4edbbb2be4158f9c19cdf34180cee0c6b10a1d291efd6c2102ec1",
+      "osSha256": "3b095681f6b0ec7c102789ca782f58fcdaca8a320542e8477f71a7eef31b5099",
+      "maskedOsSha256": "75ade795a5641685612322acf4b18480eb44cc18aaee9b1c82bc9dc193dadbb0",
+      "appendSha256": "31fb9c3fca746d676602fc27a910898f1c957e1c33709a708a38bdd86fb9bcfc"
     },
     {
       "moduleIds": [
@@ -1460,11 +1460,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1369745,
-      "sha256": "ba3c38286340e982001281fe5650951998fdf4c5695ea7b2379afe6cab23eedd",
-      "osSha256": "96d1d6ca45cbaf4e8c6a6dc244d0f476c9685f548c9b8a356915905059f99686",
-      "maskedOsSha256": "0d7d7e4b7910bcd8309255d63c14b97535a4cbeb75a9dde05eaab0a6a0e26199",
-      "appendSha256": "f7942c24b0dfd9a12c422d7502afcf1cf306c33dbe296942cb80e77f047bec72"
+      "bytes": 1370039,
+      "sha256": "14e8514121823abf1d4ce8317b9bf42dcd950fb1e23b01179ccb874d7e5117f3",
+      "osSha256": "e6c571321f3f15b250b9c85603e3a648a675864adaeaaf58e42d175828a44380",
+      "maskedOsSha256": "2bc6de7c1bf5d468b77faf54447289e93c9eccd77a42e514e9285c8c988b717b",
+      "appendSha256": "e590c8c1119305e82b6997eaa95768b75260162d204838b6d365673afbfe0591"
     },
     {
       "moduleIds": [
@@ -1509,11 +1509,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1369076,
-      "sha256": "087b7808775f2b857175c7883281f775c8100105edf76d93feb03013ff616cd3",
-      "osSha256": "fd734e3148ced81211c5b1eb0071baaa068a692e3c08989ad06cec81f9a5b7d4",
-      "maskedOsSha256": "76101113329d35ca110c5e2832d5d1745d24c4e74a604ee9a7d21fe35b72c7c5",
-      "appendSha256": "de12635cf6e8ee161382c2da93ae24daed1756f293685a691f89c12a48be03a0"
+      "bytes": 1369370,
+      "sha256": "d8d34b9cfb8512f1611585202867061bf71148537102a546ccb77626ca2f80a9",
+      "osSha256": "19198a5a3a59c3c5f31b561747d796d49b8dcfe4b01444dcc160b2445de3abee",
+      "maskedOsSha256": "64ca95788e60b7503027de3d1c747b2b8d7f4c2be8370a11fce06ca9e9573bd7",
+      "appendSha256": "415059c80fcb36be888a46550c83b0de0ffffc4431b5218e7149a94d9b1ac4c5"
     },
     {
       "moduleIds": [
@@ -1547,11 +1547,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1369076,
-      "sha256": "a7c4581de774391011da2699ef5086766be83ef0c2377e64d728f09b938b1aae",
-      "osSha256": "77e3a2540431daa45c9fcdf8f24ce5cad9750d63f06a51dfa5354852a72740c7",
-      "maskedOsSha256": "303e7b1b097f585ff71d9892def024e803293bb207ca2be5d400b0fc221e1002",
-      "appendSha256": "de12635cf6e8ee161382c2da93ae24daed1756f293685a691f89c12a48be03a0"
+      "bytes": 1369370,
+      "sha256": "0e01540f098d134fa052c554288a6c390558af114afcd72a91650e50364867e9",
+      "osSha256": "019b70514d2718a540b1c87adf6b246250cda800a35d0dd36bc68f63dec34433",
+      "maskedOsSha256": "3427742434f9cd5c4566b3a37b83c10750eeed0ae68cb306c5c0b562be7fc585",
+      "appendSha256": "415059c80fcb36be888a46550c83b0de0ffffc4431b5218e7149a94d9b1ac4c5"
     },
     {
       "moduleIds": [
@@ -1591,11 +1591,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265472,
-      "sha256": "08ad1992a766a91073afe898dc5902144814bfb8a0b7153a7e7a65933622172f",
-      "osSha256": "8290b4f53800c41a011265715d0006ae265053be43cdfb9c6238a5f767ba8ebf",
-      "maskedOsSha256": "4eadd979355bfb83de0685c3f9631ebd983d1bc3060b98cfcb86b7cdb0e08254",
-      "appendSha256": "33190322a40497a0932ee7e0eba1f5d507d686a18351ce597ff9aba8537b6267"
+      "bytes": 1265779,
+      "sha256": "bc4aa67d5f5fbde55894b9283d9c2e85e52a608573c79dbc5969aa442484e79a",
+      "osSha256": "9eab1643a4d94c75777ff0312c849552b249fdc823cea2c4eb702088c4e257a3",
+      "maskedOsSha256": "6e9267b21f0edd8fc655c1297267b9268dd381f3f1a3d52f024b22da9c8d80fe",
+      "appendSha256": "ee40a116e5466496b1ce9b342f328c40e1bb1eecb10160d1408150a591878732"
     },
     {
       "moduleIds": [
@@ -1623,11 +1623,1319 @@
         ],
         "hidden": []
       },
-      "bytes": 1265472,
-      "sha256": "3add8dcd7cb8b9ead173f06b0344d5c4276e6d0a096e7443f6c9e6429bbee4a6",
-      "osSha256": "3ded27605986c8a9186ac15449ccd9db677c24ff7daa54f997decbe25e057637",
-      "maskedOsSha256": "57fe8b043494794c400ae27a10e0ecd75016ef3a93967ec148dc40f828368c57",
-      "appendSha256": "33190322a40497a0932ee7e0eba1f5d507d686a18351ce597ff9aba8537b6267"
+      "bytes": 1265779,
+      "sha256": "af7085a413870cb75a32b999204492ab65eebedecf0b88b69c29755065786751",
+      "osSha256": "35520e81ac01519ba958f35c4422d387798aa5aa7e9be7126e5227122581de67",
+      "maskedOsSha256": "d05ed7360f1869e9e0709c26f5dd29579ad3de057aef773ea02463ff325ec11a",
+      "appendSha256": "ee40a116e5466496b1ce9b342f328c40e1bb1eecb10160d1408150a591878732"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266806,
+      "sha256": "e47db2689a697505ff01012ebf518588c8d429f581408e669ec71943133fdff1",
+      "osSha256": "3b2fae42eb224eb402e7c3b325fc586896b00d868e452cbf6532191b9b0ea4c9",
+      "maskedOsSha256": "2ae2a8c9b41f7b13392577f2dbba2b04fada98d26bd75690f8c10a5af9d1a854",
+      "appendSha256": "7df0645f2ba8546b8316bcbba2e03f61845f8e1a134896985baecae08f016bc0"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266806,
+      "sha256": "9e1edcce09a0a0e194ff43bf8bf279bd3658fec8c59a5ebe1a8f50815d0be8d0",
+      "osSha256": "6def828ece8f76ef3c6c1600ad4547e7959cb1698eff45c8f19b2e2b6cbe691a",
+      "maskedOsSha256": "935d8292d09d402df33135b5c0f565933f2086567d7ca3f0350ccb99b2c31f81",
+      "appendSha256": "7df0645f2ba8546b8316bcbba2e03f61845f8e1a134896985baecae08f016bc0"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266141,
+      "sha256": "d94a0a829221238721f217e41fdd366043dc411215cababfb59154a47c64f7fb",
+      "osSha256": "b316f7f2009a00fab44c79f8d128acd7fa93d379f311d9c19514accf7ab1c625",
+      "maskedOsSha256": "af0f5f807f6e91d8859a983dff7ea949622811a09018b323c1016b85c95179da",
+      "appendSha256": "593ad48b6968c45682a33a501f2cd88bb83c766a8efa2f23bcb2f2cdbf2a8a40"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266141,
+      "sha256": "deecd1cfed5de3e6a5f72dd0c06bdae16376434972fff822b0c647f0fec2db98",
+      "osSha256": "964e1474e1d1b4bbad981b67f1b7c95a9085f53b17ef38a0e655cb7b4aa770ee",
+      "maskedOsSha256": "67cbb108a456f35b27c676e51843b84a4df5328d60983f8255c1d397dffe155c",
+      "appendSha256": "593ad48b6968c45682a33a501f2cd88bb83c766a8efa2f23bcb2f2cdbf2a8a40"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "TAPE ECHO",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369091,
+      "sha256": "de16cdfe409b4ea9a1f86d4e2f5371f3fc4778ff54a8e7c51154634504d62f03",
+      "osSha256": "7d964866876c173a114c5e4e53c5e02a6e07a7330134a92d1e9c7516a8e7af82",
+      "maskedOsSha256": "2e656f4089dde4c3d2cf4a22564efefa9cc215fa2ad6ccecd0d5ccc6944d8c17",
+      "appendSha256": "76a9a4e83d434bfa7a03bd5fc09793478e7c945710a18e2b12708b521eb3a87b"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1369091,
+      "sha256": "0f3dbc36de4c6aff3e626edea0a4197235bec1372e52a08023acbd20f701047a",
+      "osSha256": "1f64227e1fb9801d67b286f843e459da7e544532d0b97076be371b8a741a2bec",
+      "maskedOsSha256": "c4ed8ee73d157c11ade9edcf354320852b1aebc478682967e3f110b87b8f928b",
+      "appendSha256": "76a9a4e83d434bfa7a03bd5fc09793478e7c945710a18e2b12708b521eb3a87b"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1368421,
+      "sha256": "67a45293d891586b4fd4ac2c129b0e689dff6f4f63ad59d36d8ef05275aa6bc4",
+      "osSha256": "ce35a1f28f29b9124d7978165e3b0c3432e7054eb6bd579458dbb4e248e2564e",
+      "maskedOsSha256": "6aa558516e4c6532bdd58d3406b2b5b93cb85a2bb0500ac7deb35d594bac7cb4",
+      "appendSha256": "6b96aedd89a2d8eb9056e614457d86f1e805a50562706018e7337c5c58a9cb39"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1368421,
+      "sha256": "7a28345e6147b777025f7afbdda1143c874eb66a5973ac9ef143aec268049fbf",
+      "osSha256": "defe04e39aaba28869a07d7f5674764747aeec9d9d5526a7026fcc615576787e",
+      "maskedOsSha256": "524f6ad2da5443842d267c8250e7311ec54adcc366facbb2b6c7b9edca42045a",
+      "appendSha256": "6b96aedd89a2d8eb9056e614457d86f1e805a50562706018e7337c5c58a9cb39"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "EUCLID",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1268603,
+      "sha256": "4d21dd481a57049f16c2190cb66bdb9fb3d1c682e17db1d580d757592dd19942",
+      "osSha256": "b014a89e58bdef79dd36df1e4eb0243b78d606e71d9da7da3741894d421b11f4",
+      "maskedOsSha256": "fc396c2ee19259250c445bbafffac9f2e5453edd00642b3777410769743b56f6",
+      "appendSha256": "126cb94417dd22c76d8b49496dea1519621a26c882b4874b8c6064e34dfa7dda"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1268603,
+      "sha256": "060070d98ff277a74b56b5869d3976e57b318d33fd77434ed140822367d6acd4",
+      "osSha256": "2eaa3da4226831bc07e2209bfe8d9e827acd0f1119ba71681c916b68c34ffd20",
+      "maskedOsSha256": "2a657a94972c903ebcd657f0a9766d502365be3548cf46f5498dfc4f0d81560a",
+      "appendSha256": "126cb94417dd22c76d8b49496dea1519621a26c882b4874b8c6064e34dfa7dda"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EUCLID",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 761 words are free across 3 separate runs but the largest single opening has only 672; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 761 words are free across 3 separate runs but the largest single opening has only 672; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1370852,
+      "sha256": "88a17db262009cd0f0a225a327d18e68683aa83c1cbfcd018602870a5481a281",
+      "osSha256": "7127d5900865918cf226dce5929b8b64ba959c9f80b17e3f9349c9a3ce95c676",
+      "maskedOsSha256": "7835b5c480ded83b5f92d16682767d3dfe22aa28d3c98e8e7e7e5d62b3d3cce5",
+      "appendSha256": "f43edb772e377c7caa76eff077e7bc1434fcfc281f1510bc1abb3560183eaf8f"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1370852,
+      "sha256": "2294ae939f33b4f614105603716ef7c2d3b0c3774dfc616b0423ad305f8902ff",
+      "osSha256": "d96195de457dbf87f6a168bf01b0160de41850df806885909895f2383ec9c4d8",
+      "maskedOsSha256": "f8fc2ccdf12873390f3932ae36d76cdcb33094f8f832f7156d7198854f933ec4",
+      "appendSha256": "f43edb772e377c7caa76eff077e7bc1434fcfc281f1510bc1abb3560183eaf8f"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 756 words are free across 3 separate runs but the largest single opening has only 672; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 756 words are free across 3 separate runs but the largest single opening has only 672; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266806,
+      "sha256": "c6de06aec52f4472de1920e3be2943b63669e2dde6b04315721c7bd2a3b9fd44",
+      "osSha256": "bab91a2a2106f085e7149f50404eabbf070098916347b5a8b0b3fdcc6e4e8f6c",
+      "maskedOsSha256": "ce2f5908cb31fb753e63c48e9f423bd7f3aa770542a4747a2741a729747c91ad",
+      "appendSha256": "7df0645f2ba8546b8316bcbba2e03f61845f8e1a134896985baecae08f016bc0"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266806,
+      "sha256": "e5ef5e2406db7c81c1fc8a0bdb4d9adfc7a137d68b824734bf1a037ad51dc5e9",
+      "osSha256": "0d24bc371407ee0625c6e89f8085b19b93c4cc6d9d04abc6c97842e03c4e4f4b",
+      "maskedOsSha256": "7d620b5c639b38e6bf6801ea9ed4bd3f8abf7cd5eba5e5175db469662265b7f2",
+      "appendSha256": "7df0645f2ba8546b8316bcbba2e03f61845f8e1a134896985baecae08f016bc0"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266135,
+      "sha256": "e2ac421f88f665ca30be0652f2f5df726ff8a6a486fbae8f20334e49828aaca5",
+      "osSha256": "adf56204cbabfeda5b95f5282622ab6eb305d56591737f18bcf20a25e2756b74",
+      "maskedOsSha256": "56d4d91725da4e1399e6b55c41bd8cf2254f64d5becbecf415fbd6615f8790f6",
+      "appendSha256": "47ef81686881cc12829a099df490bbca14e2d9ffa779257e00a89ee25c5355ba"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266135,
+      "sha256": "2c50f0743b15487e99366aeed779282b19b4ce98cc00fa54a84401641af6da5d",
+      "osSha256": "cacf7d81ed08bc07de675f6db4c56e79b85d47dfee5b6cfb68d20519921e1656",
+      "maskedOsSha256": "d74560551f3efad37833bf6dbba92a43454a75e3689c11083734c61cde44c277",
+      "appendSha256": "47ef81686881cc12829a099df490bbca14e2d9ffa779257e00a89ee25c5355ba"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 734 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 734 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1368420,
+      "sha256": "0e201cafb342cf7783b70d223753b56acb4691e5afbe59ccaec944d28c6a054b",
+      "osSha256": "5a4194f42f8773fa4ef682e302a0942412dae161389bbf82896b9e4277dbc863",
+      "maskedOsSha256": "84beb385bccc5931fef7f1c6592e0a52713adab781ca65b28cd351f03191af8f",
+      "appendSha256": "e036fa8e39359d99e0c2399985baf77b8bf4dd7aa0c7aa0938c094ade84a0884"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1368420,
+      "sha256": "8b30f2f20d46d9d08276d9e577b256acd3a52e5ed6c3990cd5244b0929b75a41",
+      "osSha256": "56b20fd80c90895dc948f891c282e833d5e51e298d4cdd298b56c3628773eae3",
+      "maskedOsSha256": "37ed365b55dcb6875f6fca61aab93ec8f4bcb4b74ea81397c5d6ca8f2c40ff40",
+      "appendSha256": "e036fa8e39359d99e0c2399985baf77b8bf4dd7aa0c7aa0938c094ade84a0884"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 729 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 729 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 875 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 875 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 339 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 339 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 870 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 870 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 334 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 334 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
     },
     {
       "moduleIds": [
@@ -1665,11 +2973,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1268559,
-      "sha256": "59a15dec3006c537c6ca57dbdd085d900ba1c8292faa9a097e8f26d2d2e60540",
-      "osSha256": "5c0d28d65d17977fe60e71bbfb7685f60ea66bea38842d3ff72cdf56665b61e4",
-      "maskedOsSha256": "4bf6caa6dcd61222ec7555b1aa8d50011f361772bc8ec6c343dd22e5f5003b0d",
-      "appendSha256": "bda0973c0afbacb0ba1946576b41cbcf57a221479cf6a7dcb61b9a49adb1b187"
+      "bytes": 1268863,
+      "sha256": "a13a712efc47d359af60ed82614463889c895db5433405d158e3d66587b1459a",
+      "osSha256": "1be7f94110f52352f4be4bf43d2456886bbbd6d7da7474d309fc32bd0637da68",
+      "maskedOsSha256": "5579f745a0fc61611d038934fd8937673fefd263dca838ad1e24e6a3d84a50fe",
+      "appendSha256": "c86dece93dfd259cbc7caf6de2e806bc314116cd16b89c5561edf2127bdb9a28"
     },
     {
       "moduleIds": [
@@ -1693,11 +3001,11 @@
         "fx2": [],
         "hidden": []
       },
-      "bytes": 1268559,
-      "sha256": "725befadcbaf486e1e18be07a89f57b5c96142b9bddca0f7df890f3f5fba65df",
-      "osSha256": "8aa237d4d912a8367fce86e6c47f36e8e2278022686eef411f08cd4247db2ebe",
-      "maskedOsSha256": "340f7f8c8ff81701b056deac6546acb3753da60fc006e36ee1e1bccb08efdfda",
-      "appendSha256": "bda0973c0afbacb0ba1946576b41cbcf57a221479cf6a7dcb61b9a49adb1b187"
+      "bytes": 1268863,
+      "sha256": "3986cbbb96f92e95acbef7e4ae351cc994d77ee3160711e262dd73ddce2cfe58",
+      "osSha256": "92bcf940aff3352af4caa0caf9e1b42b179d1349f80f1659b7189addb167bb07",
+      "maskedOsSha256": "795603fa71a8829bcc73f6d25bd6da40363f4a0e5ecc17b7b35c64b4c975204e",
+      "appendSha256": "c86dece93dfd259cbc7caf6de2e806bc314116cd16b89c5561edf2127bdb9a28"
     },
     {
       "moduleIds": [
@@ -1736,11 +3044,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1268146,
-      "sha256": "3db1d1698bd07e4d265df1c1be42eae70c1d267ae61186fdb162f71011f67fec",
-      "osSha256": "5ed68c01c08074915bf7099c6938ff8155d2a1a0b89fe0c23e21ed49f270d894",
-      "maskedOsSha256": "3f57fb786e9b2c1cdc39ed9175dc851232472c87eff689c52f4f8ff1db40a063",
-      "appendSha256": "39b51fa74ffc4ce3e61c09e4f05ae13814f7c61bb2be9848a47c7fb2693b518a"
+      "bytes": 1268446,
+      "sha256": "37718a65525afe126ec6461befb81481099be56e0fc1df0b7639ae4051fa0f7a",
+      "osSha256": "018b13515255e4e3a8785cfce17e72da0fd1f6496d6fa241ea5f15e4044866eb",
+      "maskedOsSha256": "5fb09e5b7968c5474b471fa64f69519959f749378e0a8d7f4c5dedb7c5c9feeb",
+      "appendSha256": "58e7cbdaf80d5c0b979f5267df4adcac2065997705c4111f77f5663a64050044"
     },
     {
       "moduleIds": [
@@ -1767,11 +3075,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1268146,
-      "sha256": "bbf1109120fcc75940fcc61a49d8f6ac7f5e44b0423c921b9db43f3e23bd24c8",
-      "osSha256": "17d3c9699ae8fff2c04c76a95657622db5b88929d4d280d9a8c552165352983c",
-      "maskedOsSha256": "ffd08456d221b1c54c32fb8f8ff956236838322a431ba5d762032e56b7b1560e",
-      "appendSha256": "39b51fa74ffc4ce3e61c09e4f05ae13814f7c61bb2be9848a47c7fb2693b518a"
+      "bytes": 1268446,
+      "sha256": "ee2b9b159fadee848a214795733ae0ccb3b2ecaa0df2a5b180a7d9f92db8ff47",
+      "osSha256": "0042fdf88d7cf3970c8eba1fa1aad8a343871f58d880328955b1f85dd1479e62",
+      "maskedOsSha256": "08ba2c68759251ce4e56eb0fe1f137efb08c680a3edc8f78140501523cee05fe",
+      "appendSha256": "58e7cbdaf80d5c0b979f5267df4adcac2065997705c4111f77f5663a64050044"
     },
     {
       "moduleIds": [
@@ -1811,11 +3119,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1370878,
-      "sha256": "c5bd22dd4f32050090dbf304b27e122cf8bb45a2ed2c3504a49b7819a09b5191",
-      "osSha256": "c2b4fc3b65db85fcd76f3473467d612fe1859949db3ce912a28ca625b3398e55",
-      "maskedOsSha256": "4abe3bab2a8530aa156cbfd40e486632a1db8c98a9768255b312106078022f2f",
-      "appendSha256": "4e16bb31845728e1795e8a6c8452b4ba30144ade3967226a238a5fce5bd2da98"
+      "bytes": 1371170,
+      "sha256": "2ff293deaf183d724f191742b85adee2316d75206d693f27d2be5152ce4bb3dd",
+      "osSha256": "5f3f3ac9840eeca54daf62a9e069bf41077f97da816679cf411e1b607343911d",
+      "maskedOsSha256": "22a1edb9829a86b0c45654fb8c002c753b4878ce36641b9d59733db716f895de",
+      "appendSha256": "3481635542a1b5f9f3ee46cb059ff5337cf9a97ff9523e6946fd2c8f32c99972"
     },
     {
       "moduleIds": [
@@ -1842,11 +3150,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1370878,
-      "sha256": "d6a60165d20adfe281a8ba8a0ca206b31d98564b2cdce629c1730b4ba0e6c317",
-      "osSha256": "af03db1eef6450b898561cfe4f5546e9716d68b1e2a9fec30ca53fa8e6f326b5",
-      "maskedOsSha256": "726c9fc6b2bbec527a3a0f29eaf819caa047db0fd68c462491149c7d4185a1cd",
-      "appendSha256": "4e16bb31845728e1795e8a6c8452b4ba30144ade3967226a238a5fce5bd2da98"
+      "bytes": 1371170,
+      "sha256": "e5b9f9d47e172ca1a3a1c977a8c438fd8a4fbdd30cdb637c47e2e817095eeb7d",
+      "osSha256": "6a663d53ff603c59c7311e0fef627e68500ef788eb518ee1bd77d772bb58300b",
+      "maskedOsSha256": "7a0fa1c4fc9e4de99e5082ece358a55adfd86fb9c08edd0acb83f32791165f13",
+      "appendSha256": "3481635542a1b5f9f3ee46cb059ff5337cf9a97ff9523e6946fd2c8f32c99972"
     },
     {
       "moduleIds": [
@@ -1886,11 +3194,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1270618,
-      "sha256": "ccf00e5e7f60d800733d261b01f73247934a61f14516ffb0a68a3caa289de893",
-      "osSha256": "a035adc1706c1cfdbb1964c6539049ad9a5094348e6ba99311b33b8a3e94d065",
-      "maskedOsSha256": "e0520eb23e0154f1e09c0a0d362cd4a03ebf92feeccbcbe71345c610f7e2d6f9",
-      "appendSha256": "3a790c384941d40a1f09db7cbb58864a0e188e0ffea4255837aa0f0f8f512614"
+      "bytes": 1270914,
+      "sha256": "8ec8288358ff759887c1fb88b279182e1e59f4b76052705db6235e5c4386e2da",
+      "osSha256": "aa73ebbabd79739bef2be459875fb2dfcb10400caccc25a2194581606162bf42",
+      "maskedOsSha256": "8f815c7bd194149285a4ac18fd7dff2281e9a856fc1549abe4340102b7734dea",
+      "appendSha256": "a7a11ab794b7222596d64dd2aec033af3bb3ab538734bc46b4e471a1cf81ca8f"
     },
     {
       "moduleIds": [
@@ -1918,11 +3226,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1270618,
-      "sha256": "7fb0914d424acf8f76a7bc6b0361b63ec764cabe995132525bcaf72053dc0195",
-      "osSha256": "86bbbd9d8c9620f02acdc041dc39bd3d9ab7de965984d3fa61c125773b4404b1",
-      "maskedOsSha256": "d2d97daeb3c85f66ec11092ee33d0ca883232a339c7daddf48d0f32b67c25917",
-      "appendSha256": "3a790c384941d40a1f09db7cbb58864a0e188e0ffea4255837aa0f0f8f512614"
+      "bytes": 1270914,
+      "sha256": "196e13a2ff4e341b61a3305d4be470bc03b1618f8fce14075723ca7dc2cf5ed3",
+      "osSha256": "d5ba87a8201276b883b8b149f4ba7701f7c09ba8b3f8ae74cd565643e9e9f54e",
+      "maskedOsSha256": "84e3899b8fb12589f67f963c767e26dbdde5ae275747918605ea558138099f73",
+      "appendSha256": "a7a11ab794b7222596d64dd2aec033af3bb3ab538734bc46b4e471a1cf81ca8f"
     },
     {
       "moduleIds": [
@@ -1962,11 +3270,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1268144,
-      "sha256": "b1f5c38e83c47375b62557b3dd5e129d30d7ff2240582eab721c3d3984a753e3",
-      "osSha256": "73eb997a71be741c9a852bac14583990b3fe80d05485f839b4508b33e3f6a647",
-      "maskedOsSha256": "f7f3a878ccf9537b8faf9ae15448a6c55d16bb9327dff91d2989f4135643d02f",
-      "appendSha256": "e5a198ce8dfee60f2e0a4068561d7c66923984618ec4330c6d8b561003623de8"
+      "bytes": 1268447,
+      "sha256": "c7f87429de501a5ba062d3997ffdf899f13a8720580db3cea0756d67450b3464",
+      "osSha256": "41082a2e05e843609b639afebe487b9fb652b7a8c23ef2823539244f4f474457",
+      "maskedOsSha256": "d5a3a7d92c48ef17074ed7d6c8edc275c84dcba4cb8e11652618571c75eb56ed",
+      "appendSha256": "531e76474134044a110921af4bb07901bab033e8e4dfe884b808f630275ab55b"
     },
     {
       "moduleIds": [
@@ -1994,11 +3302,85 @@
         ],
         "hidden": []
       },
-      "bytes": 1268144,
-      "sha256": "e30098aaa0d27c20e9561a9fd714b7231a319ca703edcba4d8a482d9d56c46ce",
-      "osSha256": "1588c5ecdf15cc4d44ffb92bb7db471917d05f42ed8577bb440831f33ba957f9",
-      "maskedOsSha256": "8cb224148953ce326ed196fd68ac32aba907c3937ff28c145b780bc66ddcb3dc",
-      "appendSha256": "e5a198ce8dfee60f2e0a4068561d7c66923984618ec4330c6d8b561003623de8"
+      "bytes": 1268447,
+      "sha256": "20cacccaaca46e78a8c16c72d9f5eb22dbb6552fcdf943f7acc21253cd59182e",
+      "osSha256": "3d09ef728f4d5444f62d638bca967522da2779003bc3ef30c316b0879fdfdbf5",
+      "maskedOsSha256": "31e633d42d570731c8052356712e29e1d3fa7455f99944f5f7924366c87631ca",
+      "appendSha256": "531e76474134044a110921af4bb07901bab033e8e4dfe884b808f630275ab55b"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1269474,
+      "sha256": "c7758b249717f122aeb1ec13c40592bae0d79aa4ed37bcc4a76599c16782a284",
+      "osSha256": "8fac574fd3939598a0e4873e5729897e60e0db3e84cd62b2ba6266d3c029241a",
+      "maskedOsSha256": "6148e1a7fd32acf2d9613c57596fbb012382746c19db634f91b88bd925c77023",
+      "appendSha256": "4bdc53934db52600df026a09bcdd68b0f62c1a93ae0be88f1ea611ca3bb44751"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1269474,
+      "sha256": "67dd2fd51f3321188663735e10c73aa78aa9e1f09dacb7d32773e06bfcb48e14",
+      "osSha256": "314f22880d9049f0e411cafdb3af6beb16b0754dd796a09065a41c298ba4e891",
+      "maskedOsSha256": "775f488e326fb3d022682281315a5bd9b805d24eda4697493a6771f2def1ade9",
+      "appendSha256": "4bdc53934db52600df026a09bcdd68b0f62c1a93ae0be88f1ea611ca3bb44751"
     },
     {
       "moduleIds": [
@@ -2036,11 +3418,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1268067,
-      "sha256": "d7750331be18376f8871077d22ca3084ab39e685049134b042b84755f7fdeca7",
-      "osSha256": "ff51784be9e5728b34f8f1b9bb6cf660331faefcc66549fc94c23ac231148a97",
-      "maskedOsSha256": "b75a203c78a4f635b01f46100a9e7d1f5f52a92218d969cc0118db5eb30b690e",
-      "appendSha256": "fada72088917077fe318aecdc8f64a092b43590ce716e0529ce35b7d5557ea00"
+      "bytes": 1268387,
+      "sha256": "275d62e14ba44aadbaa3770d5b72b31a7af5a62cc2edc4d9b9ed3f6508d62b1b",
+      "osSha256": "ba0b9fa1d63af1b2abb4dc53d3abcdcb33c68b0eab51a685a3bebd050d32a3d4",
+      "maskedOsSha256": "5899ac56b5555b2a17590c0431c3068bdd69c12b2a3bb9492e70d8f090241903",
+      "appendSha256": "695a10ff26c8c66acc4a1b99c68cb7c971e5184f231217c88d42cd94b79d4996"
     },
     {
       "moduleIds": [
@@ -2064,11 +3446,11 @@
         "fx2": [],
         "hidden": []
       },
-      "bytes": 1268067,
-      "sha256": "c5be03d0668a78b443c1b2cbf1c65d9750ab249c2065af0799591cd27195449f",
-      "osSha256": "5596bbe82497486ecc7224b64d56733b23cac906f80c4b8c364a46ec0a101bba",
-      "maskedOsSha256": "39126961cd318adeaecac2350f01c7f6a649a1dead86542319af8728a1dfeb1b",
-      "appendSha256": "fada72088917077fe318aecdc8f64a092b43590ce716e0529ce35b7d5557ea00"
+      "bytes": 1268387,
+      "sha256": "f5c99bcaca545482d44db3ff837965d837e6f8143de878d4dd81c9513dcc591b",
+      "osSha256": "cab55921e7d43fc5791b2ba59e9134f3d56e6afa95aa6f5d70dd4723fcd960b7",
+      "maskedOsSha256": "857667b0bd5786f118e830b2e0611f25a5ce4ef5bbe3e80501a1201b8016bbbd",
+      "appendSha256": "695a10ff26c8c66acc4a1b99c68cb7c971e5184f231217c88d42cd94b79d4996"
     },
     {
       "moduleIds": [
@@ -2107,11 +3489,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267654,
-      "sha256": "894a82055626490dbd5326ef609a0d2febeb91a82d1e2a9efb73052d1d77cfab",
-      "osSha256": "d89b173f09b4e9be13b3c07a7b9b1fd50a3c3078e8272ea9e4cbdb47c62fe65a",
-      "maskedOsSha256": "b4bdc1684a5803cce868036722bd81a5ed75888283d529227f3a8da468b3f4b2",
-      "appendSha256": "0c0685c824523d48f76cc767d544a222271af61941066255f72f843bf5053c16"
+      "bytes": 1267970,
+      "sha256": "dd846221475057dd5caa28ad80885394c2c158a1c5bdd2ca7e685aeab09fbe99",
+      "osSha256": "05e1a97ff5b62fe420feb90b94e74142a52b824594446bb126b9231ea100f029",
+      "maskedOsSha256": "65bf7700ab410932f50a8463eb06e965f48a685ebe5883824261da726b041194",
+      "appendSha256": "d55e06ec5de51df6a32b009a40dc44368091135aac2f6cc23afbd572a753ba76"
     },
     {
       "moduleIds": [
@@ -2138,11 +3520,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267654,
-      "sha256": "aa82893cc3e020369452a61dbef9b37e95374a35efda23b0b70815b418aa6230",
-      "osSha256": "325640bc675d7520f5d5659b8c694557ecf10d1142a72d78cf490e16d86bc0b3",
-      "maskedOsSha256": "01b86408c5e28bdaed30a00b4a0476110ce3697ca44cb06971ae75584870a4cd",
-      "appendSha256": "0c0685c824523d48f76cc767d544a222271af61941066255f72f843bf5053c16"
+      "bytes": 1267970,
+      "sha256": "cc7982da49d83b506ea9531bda044846f17590676827167b61dab386dc83d096",
+      "osSha256": "976bcdb63e2b32f95203daad4ed11fcd81fde1403fa7ca44e1a4f4428cafb809",
+      "maskedOsSha256": "ee49e28516518f9cf9bd4ce41168da4c461f7ea7137774c2693a9155641f3243",
+      "appendSha256": "d55e06ec5de51df6a32b009a40dc44368091135aac2f6cc23afbd572a753ba76"
     },
     {
       "moduleIds": [
@@ -2182,11 +3564,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1370374,
-      "sha256": "6c380b5c529099342fcc01f1b26ae37833e4cea1068f202237067e66db4fd0d0",
-      "osSha256": "26956934897b26bda55dc71eea83ac049742fcc6e6def2c6f466afe566eafd0c",
-      "maskedOsSha256": "89536e181fa937932db2a6ea80eca8b691da82d4501b41642ffa37352cc898be",
-      "appendSha256": "6af41ffea4a7b4f1e0cbfcb329c2c3fffb42760949f1195590c9cb594fe04522"
+      "bytes": 1370670,
+      "sha256": "41eb457e49cd756dd04cfa31cd99f85d621e372dc13514ed43a732e4aeb3c657",
+      "osSha256": "ac8b6a4ec0cef96bf5e651d166ed53c27f6208c9d3d7313bdbd57fb1a07d731d",
+      "maskedOsSha256": "b0a1a7c23746e3f46d4cc60f061367d61dc8bb0d2ec6b4969a69cd62b1865b20",
+      "appendSha256": "cd49ca3b16578628ab8f0438778cbe159ad193dc06474f51d4f63370e20583a8"
     },
     {
       "moduleIds": [
@@ -2213,11 +3595,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1370374,
-      "sha256": "66a64eb98231ca88b0d6176a5d22f1815c17d019293e419b2a1822d117b469bb",
-      "osSha256": "671d95f98c31afb72316bb0ca90f9223802db8f0d0edf4abfca7a7a76e7d101c",
-      "maskedOsSha256": "32c660d7db36b7582c07d8196a8dd061751a121d63c049b2a37354a376a04814",
-      "appendSha256": "6af41ffea4a7b4f1e0cbfcb329c2c3fffb42760949f1195590c9cb594fe04522"
+      "bytes": 1370670,
+      "sha256": "9e98c68eed51b33231777ce0fb99951ffd4fe7bd7629b4254fb9c74f82099d74",
+      "osSha256": "711248127364f019c9297247b6c27eca67b79d50daa7452a2c68c346f4ac01e8",
+      "maskedOsSha256": "686c659cf1b1062b593b2c09b1c523055b4ed65c1b7fcecefeb7de989bb67e4f",
+      "appendSha256": "cd49ca3b16578628ab8f0438778cbe159ad193dc06474f51d4f63370e20583a8"
     },
     {
       "moduleIds": [
@@ -2257,11 +3639,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1270126,
-      "sha256": "ed2d64b4697f111596ea28d357a9dce2032ab2719ac214cc566d6e089ba088c5",
-      "osSha256": "664bade4608397d1f6cded5735dc5a940986867fb8c17093cb1d6300aa1e86fc",
-      "maskedOsSha256": "cef5766467398142950b05c2bcbd2652cbcd2baad6bc4075e82e1f807b0d6744",
-      "appendSha256": "74d43b91dbf74f64a41ed0d595aff009e20edae0078d1842c7ab5eb7bd21de92"
+      "bytes": 1270442,
+      "sha256": "467c682c3ed0ece79d400b7e1001dec15924e2b63cd359cdeea733d0e896c3c3",
+      "osSha256": "91f88de2e704211d3f5c3b65dabae766956c541fba3cb8f08afeddd0f0565caf",
+      "maskedOsSha256": "6df2b5cfdd1a4ecfcc9e5c2ebffba0b38a5a8cd49cc32b27b31a0c6a22653260",
+      "appendSha256": "4f3184a51058ec660f3f6e1bc2e9c4b984b908391dff6fc116a69f057063373a"
     },
     {
       "moduleIds": [
@@ -2289,11 +3671,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1270126,
-      "sha256": "afa9b4f658178b42ab5dc2784f06d845cc14a05607362df1717ce67b80a4732b",
-      "osSha256": "8af77698b4851fc4727fde1a2e598f50b82b7d824268d9fee485cf5af1cd131f",
-      "maskedOsSha256": "a3be472c9a598441a8a6453f80e78793a4c1d5dd17a4232e5331a814b55342b8",
-      "appendSha256": "74d43b91dbf74f64a41ed0d595aff009e20edae0078d1842c7ab5eb7bd21de92"
+      "bytes": 1270442,
+      "sha256": "82b06b866ed8c0d695249332da55165960a1fa0f0482160afda82b91c0735f93",
+      "osSha256": "eda61e083b73d822986044ad9d565603afddbdca10a3472c7c65724fcfb21b71",
+      "maskedOsSha256": "cf3ec4cefe1ed036466a482281bb92ee4cbac55040e964cb28d8be254795d0fa",
+      "appendSha256": "4f3184a51058ec660f3f6e1bc2e9c4b984b908391dff6fc116a69f057063373a"
     },
     {
       "moduleIds": [
@@ -2333,11 +3715,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267652,
-      "sha256": "d132eb0b55a9faaf9261489ce93220875fdcd3abd4540a3ddc3848d4bb90ff2b",
-      "osSha256": "ba8f3ed26967a4ffe8e85db7f06bc243823e273f94295f8fa50461a11c71acf9",
-      "maskedOsSha256": "88dee6ca1b947f3351c11e6ab1a735c7627e0fc718d583d8f2ee79e6828a1f5a",
-      "appendSha256": "e04bf6b0377ae5a89d566b472751b9d80a3e0ed7162fa77921ad0238d80fc2bf"
+      "bytes": 1267971,
+      "sha256": "29e5bd233f917f91af7315a96465399329e85d712ebb2373b4212ba61166c88b",
+      "osSha256": "d843b90f6c204c0a7cbe65b4c5441ab7ca3c68ef8c9d323a587580b75d1984a1",
+      "maskedOsSha256": "565cda5f0b11caa7546f2b2dca5780e2c2b9c58e38d685bc8e2fa117c27502f7",
+      "appendSha256": "d40a0a87a39374d643a1c93afa279682f7bb3ce1b60e777c52c56a6f8e19d200"
     },
     {
       "moduleIds": [
@@ -2365,11 +3747,85 @@
         ],
         "hidden": []
       },
-      "bytes": 1267652,
-      "sha256": "5b37b56d8096132f372ea5941d8985ab0b99e627a398b38940afd0185a50c59f",
-      "osSha256": "27b77832568e66c1a177f486cab26e617f5cb12ae70566094b5c1df2cab017a7",
-      "maskedOsSha256": "0261a17e03e90fbcffc8448e04728b61030161233ca929e1e2d685e1e8987950",
-      "appendSha256": "e04bf6b0377ae5a89d566b472751b9d80a3e0ed7162fa77921ad0238d80fc2bf"
+      "bytes": 1267971,
+      "sha256": "e779a3c7b1d46117f1687434a0bc54e88802cc7ab82bdac58b9664c4653206dc",
+      "osSha256": "2b40bb001e8c83246c712e42957eab15d37b7ba16209ae916462d25011f69994",
+      "maskedOsSha256": "b26f178815cbeb79d733faa5f84d88198620f69a75a7b3c709cc9a4c52dfdd4e",
+      "appendSha256": "d40a0a87a39374d643a1c93afa279682f7bb3ce1b60e777c52c56a6f8e19d200"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "quantizer"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1268998,
+      "sha256": "30a0d32af8bea4aa2bdee337a83c3a67b3f5528f8690ec29bcbf7cd6d6abb784",
+      "osSha256": "202e0a8c7141829329e8623c29d6c59f5b49858421eb254d8b6f979fe4fde52d",
+      "maskedOsSha256": "c76613946632eb53352bfe42cb2c3bfd6ca98e2bec6284d098fcf728f397f8c1",
+      "appendSha256": "b818db69619b46327be472a8b66563461c6517895f99089452ac2db772352468"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "quantizer"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1268998,
+      "sha256": "78e5944538d0a36f5d057ab227cda9498864525edda02c88ec814ee6eb1c7d37",
+      "osSha256": "f5253ac39bcdb7d77d2d8d6be2444ac3d095ef250516c81150b2eb101be8d461",
+      "maskedOsSha256": "3ed7d0608922a027cd91678a9e93dca78c3d3725ea5a23aac73c256616ebc011",
+      "appendSha256": "b818db69619b46327be472a8b66563461c6517895f99089452ac2db772352468"
     },
     {
       "moduleIds": [
@@ -2407,11 +3863,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265887,
-      "sha256": "f898dbc2009512e6a862baccfffbd77a5d13daa3e3d788e9df67f25ed0203dd2",
-      "osSha256": "73978f27469ebb90358ce0794f3890b80bcd34ee85528fcb06b4d29ccea5fed4",
-      "maskedOsSha256": "d59e094d8756ab5d1abb150248939be6197b6fedb56a99de7b076bc384bb4b4f",
-      "appendSha256": "4853c6f69ed131026070a3ef76869f551643a58c497ffed3e6157a49f13c642d"
+      "bytes": 1266195,
+      "sha256": "166a79b505eb5e4b393f239f1d7d9369beaf6802d080bc92fd26719ebd8841a8",
+      "osSha256": "1c58d583b13199de62837b2c934191634ba673332c0d6646663fee56a20182aa",
+      "maskedOsSha256": "2df5fd68b31e1f90200fe239ceec190b767c2038442cfcaba122f4e664cdbb1b",
+      "appendSha256": "1b2396220615c9fb7cded6ac9c8c41425ef0b636cc1f6255bab39b851a651e3b"
     },
     {
       "moduleIds": [
@@ -2435,11 +3891,11 @@
         "fx2": [],
         "hidden": []
       },
-      "bytes": 1265887,
-      "sha256": "8e152e6887223959729e5f3ebc08311ac260b3168a593dcf709aa78dbc26d875",
-      "osSha256": "e6bc634688cf47d23c1af5228f75c9ccbcf448f832a6410a182e2577ee30de59",
-      "maskedOsSha256": "cc08de86cfe4af5b7c733af061381208da4dae7496e29c876c90e2795be0266a",
-      "appendSha256": "4853c6f69ed131026070a3ef76869f551643a58c497ffed3e6157a49f13c642d"
+      "bytes": 1266195,
+      "sha256": "419cf01ffb8c183bbdaf15c9b6eb2971957538f2651b5cd942b533dae7205ce3",
+      "osSha256": "cc74aefca8fc14b4b2cf70402c20dd4b7a57d4f941602f0deb8ab99f7264bdb8",
+      "maskedOsSha256": "14d632c871a51365380ab0b6ce2c9bd00705092c0f1edc5a7946cd6b812685bd",
+      "appendSha256": "1b2396220615c9fb7cded6ac9c8c41425ef0b636cc1f6255bab39b851a651e3b"
     },
     {
       "moduleIds": [
@@ -2478,11 +3934,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265474,
-      "sha256": "e356e0def24158afcfa3bd277a7c9da58ab54fd87754b8b57f0da10c3cc8fb74",
-      "osSha256": "53e5d09654f080d4f478b21a83b247e58d057a7cfc89cb72390005de84b30c59",
-      "maskedOsSha256": "aae8bee1baf60dd0c32b066218f3ee09106608f21391395260e08b431074028e",
-      "appendSha256": "e3accf08cd3825f3d8b14964921e0681a35cacfde8a5820bf98af5126e2fb402"
+      "bytes": 1265778,
+      "sha256": "6cfd04e443eed834ebd9c8c7ea45bd8986106ad776ed8d6104c2e933f9e51448",
+      "osSha256": "2498d9391053c851d39ad0a63ac9e88e52d345a5e63d9fa1faff27e9a02de9ef",
+      "maskedOsSha256": "f683defd96b8b0b29254ee812561c0eadc0f5be26089bb0bfcfde5aacb27001a",
+      "appendSha256": "50b504f855c06d571989225ede31d66790d1efa24336c9cc7f312fa369ddb8f8"
     },
     {
       "moduleIds": [
@@ -2509,11 +3965,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265474,
-      "sha256": "42c9e6a49b8c049f8504b9c839327b80ea3dbd73203231475e7bfeb8dddc2027",
-      "osSha256": "a2f5f70a32c25fea8ff3d507075300660a4222c204c72e11076a2301fdd58ff1",
-      "maskedOsSha256": "a0fd8f7a059f608698b19f97903156f6953ed35b9a33ff186b2e4f1f9616274e",
-      "appendSha256": "e3accf08cd3825f3d8b14964921e0681a35cacfde8a5820bf98af5126e2fb402"
+      "bytes": 1265778,
+      "sha256": "f8b4f55cf85f7219c31bcdc513e0450ce73522c344ef721cf2adb8efcf707a0a",
+      "osSha256": "d93a566699835dadb482853fa6d1bfb6153c39ca577b630068f1f392048b12db",
+      "maskedOsSha256": "b22565de1d5501f4124334f97312629574b34f05e3f825a634ab8259b0c3ad4c",
+      "appendSha256": "50b504f855c06d571989225ede31d66790d1efa24336c9cc7f312fa369ddb8f8"
     },
     {
       "moduleIds": [
@@ -2553,11 +4009,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1368190,
-      "sha256": "f1d0b2f051f8af88cf4d3d6ce0e36ec457a0da7e71167334a171dc1d303a365a",
-      "osSha256": "cf027da4db1c3cd96f4766ceaea4599ab1945c4bd6847b27cb579b345ed579e6",
-      "maskedOsSha256": "253cb7619a621d087e50729fa7cf5df01927364b240105e224637869e112797b",
-      "appendSha256": "c344a9c747ef55cce473d33fd1e07a8d32e20ea034a80bb6224569a7fcbb4c15"
+      "bytes": 1368478,
+      "sha256": "ea47dba6d132db3692eaddaa3e8f6c3cad62ca0be036fd6a4525b88b2af28006",
+      "osSha256": "6157c0d4353536451a5c351ed9b9c5da6a68b56ac2627c63eb0e8e6609345f17",
+      "maskedOsSha256": "c6380af73d5e75715bb348ad5f741acf4ad5e981c9b489e3e5afbea031382cf6",
+      "appendSha256": "97c5347c9188de4b04810e2284ccd59345841590e07deed96191f6d0feea0beb"
     },
     {
       "moduleIds": [
@@ -2584,11 +4040,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1368190,
-      "sha256": "0eecfcb8dd9c25085612456b1e06eb08b5f149d26691d4703fa5515d4d6dd557",
-      "osSha256": "9d835b11387368f33a94947b84c29ed9f77934be48add2fb1bd6e7aeb00cff2a",
-      "maskedOsSha256": "ba521aa78ba953612d663c3b89b28def4bfd0f168e6a9cb949799d7d875fcb87",
-      "appendSha256": "c344a9c747ef55cce473d33fd1e07a8d32e20ea034a80bb6224569a7fcbb4c15"
+      "bytes": 1368478,
+      "sha256": "7e579079d58bafcd4119947ee599572a08c3e2a5a2827687f4a6cfcb0a1900ba",
+      "osSha256": "dca7e517c1977a496ed09b90b61ba3135b4418cddb18203e93bea074209b4ef3",
+      "maskedOsSha256": "ba247ad66551d0789c729e3f5f4fa7cefc03541022c149f0fae7bcc8e421d9cd",
+      "appendSha256": "97c5347c9188de4b04810e2284ccd59345841590e07deed96191f6d0feea0beb"
     },
     {
       "moduleIds": [
@@ -2628,11 +4084,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267958,
-      "sha256": "77e6638f58f00c747a2125701c040c9dab28254ad999c5b5486ee46734508d98",
-      "osSha256": "0d3f39366b33a3ec7431d5f6bb6b67599b8a910224c554d9267463387abe5755",
-      "maskedOsSha256": "b82753069d78d9d822a577ee82093289d1006b344c9431fae9182f84666326e5",
-      "appendSha256": "4ec6bfd54171c38200695b8271715d32066b2ede113dfaaa30d34603c941de54"
+      "bytes": 1268254,
+      "sha256": "904ef2877aa314ef42b6d7464657b39fb45472a11a43c87bb7ea5fef3cdaaecb",
+      "osSha256": "2b8e092ba29d2f292f118f8da0acad16839516b5a359b4033b8e357b2cd03658",
+      "maskedOsSha256": "32240d08cd37d3edf57538d2e02a47a2666e264150364e34b3659b477b519001",
+      "appendSha256": "a26e4c07bbd444d5186f791a391e90b81f097e155a20d9d23e3a2ee6350ed7a5"
     },
     {
       "moduleIds": [
@@ -2660,11 +4116,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267958,
-      "sha256": "a8d18d21c968be6f3e3859cabb5883852c0dd55454591af98eece18e45174e94",
-      "osSha256": "d34bac3e80042c0e479efce47919ac01e7fe3cc502c3925107f9ebc801fcf498",
-      "maskedOsSha256": "d6d456788c5fc031086e048d08eab7dc30a9601bc4b0faf6a2d33163251545da",
-      "appendSha256": "4ec6bfd54171c38200695b8271715d32066b2ede113dfaaa30d34603c941de54"
+      "bytes": 1268254,
+      "sha256": "ea08632371e0c843c066769b4a2c587474756f54aab67124702500fa99d7752c",
+      "osSha256": "e02c65389655260c303aaa502120f96bb9bf9767565cbc65830a219f8b64ea5e",
+      "maskedOsSha256": "28bc6927d9f84c6dad911c1afc06337ebf666cbc42a2355a1fc670f24e0d46b3",
+      "appendSha256": "a26e4c07bbd444d5186f791a391e90b81f097e155a20d9d23e3a2ee6350ed7a5"
     },
     {
       "moduleIds": [
@@ -2704,11 +4160,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265472,
-      "sha256": "5d2dd121259ce9960a8cbca43830c5759501b414129467b244e9bad20f0fb713",
-      "osSha256": "fb6a0af7f90b6c39624ceea9ed1ac17ccc1f2ecde766d35efbc8dc5fe3c6f098",
-      "maskedOsSha256": "0fda5e015070b07a0b73771eebb3c4250161762e85d7dd092bbfea8cb8e4de07",
-      "appendSha256": "33190322a40497a0932ee7e0eba1f5d507d686a18351ce597ff9aba8537b6267"
+      "bytes": 1265779,
+      "sha256": "478c7f7bb383bf7cca1a14eb64f577c311a0be16b39e505a62830023ac18c32e",
+      "osSha256": "b3dc92ffacc1c7540fd1fd936c784eec60781ad61c861ae32aabd21eae05838d",
+      "maskedOsSha256": "351b1a53afaee0e1c0c2485a73e7db200b49a63b9745f5ca0fbe111e56adea43",
+      "appendSha256": "ee40a116e5466496b1ce9b342f328c40e1bb1eecb10160d1408150a591878732"
     },
     {
       "moduleIds": [
@@ -2736,11 +4192,85 @@
         ],
         "hidden": []
       },
-      "bytes": 1265472,
-      "sha256": "88ac2a8d8197e6b074e51187e6c64b7b613dad2a446dc5396afc13bd0d3a362d",
-      "osSha256": "1f2840980e342f20d5cf07d9caf4e880dc09ec7dc5b285a4d5106ee6fe7603ee",
-      "maskedOsSha256": "a7e78f9d2c0f08666cf33539ce96d4fb369dc82b71e1434abf0279bbb0e31cd8",
-      "appendSha256": "33190322a40497a0932ee7e0eba1f5d507d686a18351ce597ff9aba8537b6267"
+      "bytes": 1265779,
+      "sha256": "b16bbf48a8fcfa6d704c1c240640281f7a5ebec9c7d219ae6cbdd3acc35f838d",
+      "osSha256": "860950f264d49569910a27fd5cdedbeaafb0dc403a26eb369fe9194f458e787c",
+      "maskedOsSha256": "24847b40a5555d7a50f19ddccf02f3245eeef482514dd60f5fd7041b2d2d05ba",
+      "appendSha256": "ee40a116e5466496b1ce9b342f328c40e1bb1eecb10160d1408150a591878732"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "previewvol"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266806,
+      "sha256": "b99c26864482eceb1a010ab217c61052239d4b010d588df140a5a10436a15601",
+      "osSha256": "1d31bf1ee95f90f6fee64ad22782fb62965ce44b236b4d0b35d0e5d3d03353f4",
+      "maskedOsSha256": "d741170ad21df1d0389a12b5f7cb177f61c071af6129f8f1e543a427c41e3b44",
+      "appendSha256": "7df0645f2ba8546b8316bcbba2e03f61845f8e1a134896985baecae08f016bc0"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "previewvol"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266806,
+      "sha256": "4f7eb0b20559f2350991fe3f009e8e69f0c737f7b6758dc2c370f8d0dff3cd7d",
+      "osSha256": "b4bfbfcdc4d01a386bbab71b4496448c59f85991e033a052b186aceccce2cd6c",
+      "maskedOsSha256": "86162e0630cdaea622527d836a072d771c938194526a7a000f3f8a906f851fa3",
+      "appendSha256": "7df0645f2ba8546b8316bcbba2e03f61845f8e1a134896985baecae08f016bc0"
     },
     {
       "moduleIds": [
@@ -2778,11 +4308,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265887,
-      "sha256": "9a2ce4b226a8dd523ee3e9ef86c3933c23f10ef71d890c75ff411d2242e348e8",
-      "osSha256": "7a12a19206b75d74d60ad755f3f873b58da5bbd8d7549b3c05a2d47455e1a50a",
-      "maskedOsSha256": "cb3b12910971ba0eb2e04c537681eb396db1da5057855e39df834da790b29f4c",
-      "appendSha256": "4853c6f69ed131026070a3ef76869f551643a58c497ffed3e6157a49f13c642d"
+      "bytes": 1266195,
+      "sha256": "ccc20eb19979fc9ff71c7d78b34b145bdc8bd702a85428b046a0ae9e8ecd69d6",
+      "osSha256": "0b92f0dc7d43d03d74692ba2052a39e662528bf43caf7e0a8c241fe63a91c8a3",
+      "maskedOsSha256": "381b15117d36ac8394bddfd95fe0aeb4aada32fcad1dd0d7f317b37837e39641",
+      "appendSha256": "1b2396220615c9fb7cded6ac9c8c41425ef0b636cc1f6255bab39b851a651e3b"
     },
     {
       "moduleIds": [
@@ -2806,11 +4336,11 @@
         "fx2": [],
         "hidden": []
       },
-      "bytes": 1265887,
-      "sha256": "23b666a89dcd302a71a3f1a39cb768e41beb0c275842648784a15138546cc344",
-      "osSha256": "d1bca7613e8307c0dd586d8f02a4c1049b1f8e9750012919ddd4e83dec0b61ea",
-      "maskedOsSha256": "8a43225413e84d74702bd9eddc61bacdd76d2f50e63a67de726a3ced2271bf58",
-      "appendSha256": "4853c6f69ed131026070a3ef76869f551643a58c497ffed3e6157a49f13c642d"
+      "bytes": 1266195,
+      "sha256": "5c04b25500e224fcfb3ee926e5b7d1841a695eebc9caefbb412c3a1508839f76",
+      "osSha256": "e700a86470a59bfb6567700c5091725d509bc5f739af8276cb1cdf82b97a2f47",
+      "maskedOsSha256": "b9b0210935f463713eed1097232d8658b1d38314c7df1d27ed3245af714e2358",
+      "appendSha256": "1b2396220615c9fb7cded6ac9c8c41425ef0b636cc1f6255bab39b851a651e3b"
     },
     {
       "moduleIds": [
@@ -2849,11 +4379,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265474,
-      "sha256": "7980f121b0f5e711cb144677ea9c404c4210e00736fd6f7e34029c339694fe19",
-      "osSha256": "f1ecde94739cb56948af518e263a3d9a1993b5c00888024b8dc56f659fd6a2bf",
-      "maskedOsSha256": "41a306dc2af6face4c1f71e67acdc553c3b7c0366b81a54f4b5d00d7573166e7",
-      "appendSha256": "e3accf08cd3825f3d8b14964921e0681a35cacfde8a5820bf98af5126e2fb402"
+      "bytes": 1265778,
+      "sha256": "30ee691bd4947eba8bf42074a890ec615606f1541b00c805ec0ddf8546ee0488",
+      "osSha256": "9c9d9cc5b29f4d6500674c588daa3efa783a4c4ddcd6591ea4f4c8f04bad5979",
+      "maskedOsSha256": "797aed20f080dcb1ddaeb79f6d14fe2e84233312e78d817ed2fd6c8ddd12b76a",
+      "appendSha256": "50b504f855c06d571989225ede31d66790d1efa24336c9cc7f312fa369ddb8f8"
     },
     {
       "moduleIds": [
@@ -2880,11 +4410,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265474,
-      "sha256": "5cceaa8866f70e43a0c8c083402ebff3bca662ea8608ddc6167b6008d0f7a688",
-      "osSha256": "2f32aef46a99038d26180ed08579441d9675435dabe94d52389cc93bdf53394b",
-      "maskedOsSha256": "37fb96bc503fa1d077b6c396fcf3e429f6178ce76815fe2ade4bef9670ed9bce",
-      "appendSha256": "e3accf08cd3825f3d8b14964921e0681a35cacfde8a5820bf98af5126e2fb402"
+      "bytes": 1265778,
+      "sha256": "45e8e501f362813f5d741255dc22c4b379d0838324b50aa928b1ac6cd0e5bb9e",
+      "osSha256": "2a0af3a45ad7b1b95e22474c0c99dae57da1412c5edb10b45d958796ce696e46",
+      "maskedOsSha256": "9f65b1c73dfa5f7a3f2fd23f10b1b0af283f5ae82c3521172244c82d56d6bf1c",
+      "appendSha256": "50b504f855c06d571989225ede31d66790d1efa24336c9cc7f312fa369ddb8f8"
     },
     {
       "moduleIds": [
@@ -2924,11 +4454,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1368190,
-      "sha256": "82f6755bae56e849571c25c5c767acaa964e6582a5dc94c72827973193cc3394",
-      "osSha256": "0441d68165a208a40975e34f6c994c06b70d98894353e878d0e10caa14a3fa44",
-      "maskedOsSha256": "6fb0116c74673676feff267bfc01e8c57b3e8036c59ee143be54e6d72e3d51f1",
-      "appendSha256": "c344a9c747ef55cce473d33fd1e07a8d32e20ea034a80bb6224569a7fcbb4c15"
+      "bytes": 1368478,
+      "sha256": "30e03d767e6b82ae791df4be56ad3e6a64a16cd9d6984ecd74a6dac0b2929718",
+      "osSha256": "41f4b559595fe74693082342c70fcf02bf0aee1f16c3cc9b51ceb1866208b8e2",
+      "maskedOsSha256": "3f68f6b74601d549cc682b34304e28007a132d478c700eb9a65b173d4fa5c843",
+      "appendSha256": "97c5347c9188de4b04810e2284ccd59345841590e07deed96191f6d0feea0beb"
     },
     {
       "moduleIds": [
@@ -2955,11 +4485,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1368190,
-      "sha256": "de824451cb3ef2235aefb953b4770ee5c8399a0a3ca304f1bd72fae70e4a36ba",
-      "osSha256": "c879f1866bb15eb6ee14a74c5bead687ec102c5df3de020a84bbe8227bd347f8",
-      "maskedOsSha256": "fd1b13813d6ae6c4db3ed9c39ea48fd55794be6bdf6cdfafab8ff700a078a343",
-      "appendSha256": "c344a9c747ef55cce473d33fd1e07a8d32e20ea034a80bb6224569a7fcbb4c15"
+      "bytes": 1368478,
+      "sha256": "0d7bc20922bdd0653f65684bbe78b22a5344f7d17d1501d3a83d55d441ae5e97",
+      "osSha256": "b2478a179eddd86187eefeeb98df44f8531d18d5c8a47b26b630ce70972c13dd",
+      "maskedOsSha256": "2fdab423d74ba7f75ea24f397717497e514b0d56869b2c6c779a9fea639936d4",
+      "appendSha256": "97c5347c9188de4b04810e2284ccd59345841590e07deed96191f6d0feea0beb"
     },
     {
       "moduleIds": [
@@ -2999,11 +4529,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267958,
-      "sha256": "334fa3e1ef12314b8eba635b491bfe6f430001d08a2fb0fe13b032881676082f",
-      "osSha256": "50d6de4c52235d4891f8714492adf9155da6c3a597585796b8484c5011f67b3a",
-      "maskedOsSha256": "5d7e390e6cc2927680ff68ec5e630ea59ea47db8472744c880fd2ed23d7b4a17",
-      "appendSha256": "4ec6bfd54171c38200695b8271715d32066b2ede113dfaaa30d34603c941de54"
+      "bytes": 1268254,
+      "sha256": "0e5c73c97c88f908613b11771dc8945524c57e56cf96d36326545bb3dea1de7a",
+      "osSha256": "e775e5bc80b0d9258bd11da31ea2eb133235a9daced3a56374e6e2d6a97e24d4",
+      "maskedOsSha256": "7b16ce849b00e92117009f8b1afa4f65ee6b550cbe693c9b14941c55de0a94ba",
+      "appendSha256": "a26e4c07bbd444d5186f791a391e90b81f097e155a20d9d23e3a2ee6350ed7a5"
     },
     {
       "moduleIds": [
@@ -3031,11 +4561,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267958,
-      "sha256": "a82f587cca05960e1f3550634f2f0c0539b237dc563b7d66d4a016206faa8435",
-      "osSha256": "563ba935bcf6aba2a74c7574832ded860bf798ff24cc68a3b42199aa726359d5",
-      "maskedOsSha256": "a854584d1432d6dbf562b3076394d13248b6494ea08fc8acb4604b0ff8abb85c",
-      "appendSha256": "4ec6bfd54171c38200695b8271715d32066b2ede113dfaaa30d34603c941de54"
+      "bytes": 1268254,
+      "sha256": "9cee1c1345aa814916e77e1143c34e6613d46fc70e73b9c6bc8c07f625a3d275",
+      "osSha256": "d790bcd018d0e8080c069d184fed82768e1a0d79c3ce1269fd07428c8ba1dda4",
+      "maskedOsSha256": "0f43368c0d226d04ddde601a6e47f22e27d33a956d6d20f9889ed1063498852f",
+      "appendSha256": "a26e4c07bbd444d5186f791a391e90b81f097e155a20d9d23e3a2ee6350ed7a5"
     },
     {
       "moduleIds": [
@@ -3075,11 +4605,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265472,
-      "sha256": "d423454ce2f20589a5e47fcb79c6f422873f7741035514edb96d4b0b0c7f81ad",
-      "osSha256": "4b7f4b2857e3325d59d456e5569b72ec40dfb1c41b5e97713a2011838f4a034b",
-      "maskedOsSha256": "2fa2e81065d40234a4612650bd7540e46ed8e12e8d2177608e847adb4b463a6e",
-      "appendSha256": "33190322a40497a0932ee7e0eba1f5d507d686a18351ce597ff9aba8537b6267"
+      "bytes": 1265779,
+      "sha256": "83766518929659456b2f0cfcddace0f330b6edb3a771cc63e162e72c99b7aba4",
+      "osSha256": "dfeef892b883ad37951ce51a9a86c8275e20a3cbebdfb8c01c4b9926753e2815",
+      "maskedOsSha256": "b368952379826f96589c91f505b26d7ea610d37bd9ff6020c5715bfa2bdd6e71",
+      "appendSha256": "ee40a116e5466496b1ce9b342f328c40e1bb1eecb10160d1408150a591878732"
     },
     {
       "moduleIds": [
@@ -3107,11 +4637,85 @@
         ],
         "hidden": []
       },
-      "bytes": 1265472,
-      "sha256": "7e6f68593bc45b813988d758bf885cf2f42bfebacca133c335e4b5edabd33421",
-      "osSha256": "6af78fa897ee8756dc17ff45756ba9cb36c6ed10448fc95e8522ed49c9d1ed9c",
-      "maskedOsSha256": "6b686e220ff5747d5a4ebbce25b9e37925ef0afbc2f26a6d317cb1b1e8fa300b",
-      "appendSha256": "33190322a40497a0932ee7e0eba1f5d507d686a18351ce597ff9aba8537b6267"
+      "bytes": 1265779,
+      "sha256": "5a52129bc8273a2f275c28b824e240996804c2fe20c748193cd8c14d6354c1b4",
+      "osSha256": "52ae167e195b75b86b6d45e93c2aad857411c56c81e14409c24451b1b4aa7004",
+      "maskedOsSha256": "53ca9c619531e57f4975d53102eef0b5161dd7c708a740e545e4a83e6b481042",
+      "appendSha256": "ee40a116e5466496b1ce9b342f328c40e1bb1eecb10160d1408150a591878732"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266806,
+      "sha256": "fdbd407f9ad5ef070dfe17cab751eb78885ea6d981be9930d59db3863f58377f",
+      "osSha256": "24f959f914c7d8b3f1928916e30224bfd906ca39d741e61fab1c634aa0bbbf9e",
+      "maskedOsSha256": "b9d9a812088dfee4e692b6a9e3a3692ec12c9a3cd918a0063d196d3f351f89de",
+      "appendSha256": "7df0645f2ba8546b8316bcbba2e03f61845f8e1a134896985baecae08f016bc0"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266806,
+      "sha256": "355884ddc613eff58630311d9258dddc3b9deca760e3d91e31b0e26ecf97adef",
+      "osSha256": "1bee922cd4b5f033670e5dcd41c505abba3a99a48e9d2d02e30ed90fe9d8a9d8",
+      "maskedOsSha256": "57ee3b7896fbf37bf4237d389217d6235f5bc8804560a88556bd784ce8e6b127",
+      "appendSha256": "7df0645f2ba8546b8316bcbba2e03f61845f8e1a134896985baecae08f016bc0"
     },
     {
       "moduleIds": [
@@ -3153,11 +4757,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1270747,
-      "sha256": "7beab04b0f903681463755d6154a6a42bf34a7cd73f5860bbd9afd04838ee7fc",
-      "osSha256": "7223441d958b114a1a0b05cd52cfa898ede6f64599f158fde28fb4cd68df9800",
-      "maskedOsSha256": "d9090ada4d1406cbf0971768dc522961cc892a56a187ad430036e93583e7d21c",
-      "appendSha256": "fa93da60d6d85208cc74aac7b59b2ec35cb0bcc315fa735531afbbf10a25e4e4"
+      "bytes": 1271067,
+      "sha256": "d4a172114a8e4039f31c8afed63c6b38f229a9742c9f2ca66e0d6e97673134c0",
+      "osSha256": "9fbd743d5ac0e272fa0c266884eec7ae44b8b0986076255ecdec8de89eaf8c33",
+      "maskedOsSha256": "2959d920686f33bf7dabae6e606c916eb105774d7f36f8292f807c6c5f4039e4",
+      "appendSha256": "e63c62b35edf3a06d481487672490df1812de25491ebe40772663743045607ff"
     },
     {
       "moduleIds": [
@@ -3185,11 +4789,11 @@
         "fx2": [],
         "hidden": []
       },
-      "bytes": 1270747,
-      "sha256": "77876f8350fc3fbd463b60f8c2280ac15cd75f5d95cf16e4fbebbd9810e521a3",
-      "osSha256": "9cafe8a728eaba3e15ac7e74216fde6f2f100875beb94786cfb8fec5f925ed7c",
-      "maskedOsSha256": "456756d9db5eafe26391871217412493f4442f1c136098edf14671dff137a6d7",
-      "appendSha256": "fa93da60d6d85208cc74aac7b59b2ec35cb0bcc315fa735531afbbf10a25e4e4"
+      "bytes": 1271067,
+      "sha256": "703b71a2c39fb4cbbc459f2390a83dfbff8c1ef31bb6b43148a34d09dc0c83b0",
+      "osSha256": "f1adc28cbb49c5088b2c01c0214134a015215cbfe1dc51b553e1a27485a0defe",
+      "maskedOsSha256": "4da34acd2f343aae3668ee7b40b05efbfb47e1cd7df379e80e753b120f0b047d",
+      "appendSha256": "e63c62b35edf3a06d481487672490df1812de25491ebe40772663743045607ff"
     },
     {
       "moduleIds": [
@@ -3232,11 +4836,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1270334,
-      "sha256": "1447167d0341c6c9f1077adcba9e76fb2ea9be4282941a1bc368aca35c53ad1a",
-      "osSha256": "684627625e986ce8304bac6e72d1fa632809089fe90ff9c5602145ad0ec19087",
-      "maskedOsSha256": "2263b9fcd2fe582541b6a6ba3b5615490ff1cbf7053bea8789dc35c8419c1bec",
-      "appendSha256": "119d28a1d16b93d45d3a19612bc42be9548101d36277214fdd4f460cee0bacbd"
+      "bytes": 1270650,
+      "sha256": "84bf45d7b7dd8bd50d6d0a7d04f873ea3f16eb1b761b2ab23f7a68b2bbdcf2ed",
+      "osSha256": "2de034190119654c0cd32ad8fac0699b56e9716d270371cc00a24243ac263a4e",
+      "maskedOsSha256": "02e6f511663d646c30d5d3185ed526bb1bada21480d657b05d38f8b51677469e",
+      "appendSha256": "cdd05a56a2196228bed7165bdff601d9699bbcf5d60ac0b30a57634220165eb1"
     },
     {
       "moduleIds": [
@@ -3267,11 +4871,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1270334,
-      "sha256": "c2bb0b706f3b9d96a21382f221c20572806ca5eabfc63a0c693af7b4b863f15b",
-      "osSha256": "f29bff8dc2d41373a122ceca40c8d1aabbfb6008853d3dcd9f5c3ed50c4504bc",
-      "maskedOsSha256": "5b6b52d3fd3e03142e92c9ed65ecbe88e52ed596b0e0463b2ab4d29d4d853697",
-      "appendSha256": "119d28a1d16b93d45d3a19612bc42be9548101d36277214fdd4f460cee0bacbd"
+      "bytes": 1270650,
+      "sha256": "c33221f853ae02f814d42b32b6e32e3006493fedeea0478984d603ed66309701",
+      "osSha256": "358d47491009ca0c8063f6d7501d7e9149fc755bd5642eb8b6c0d17b28e3d8ad",
+      "maskedOsSha256": "509491aa212acc60608fa0340ff1c1cc4ef73a04fbc070515f8014aa2e771e5d",
+      "appendSha256": "cdd05a56a2196228bed7165bdff601d9699bbcf5d60ac0b30a57634220165eb1"
     },
     {
       "moduleIds": [
@@ -3315,11 +4919,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1373074,
-      "sha256": "885a0ca3fa282ff32eaa9da12508bbc4e61a3cf6b19a21eb66ab0382b3f455c3",
-      "osSha256": "aab64d2a0158034c52b89ddf4e6ab082675b5a0a2769b569089742d1a015d5e3",
-      "maskedOsSha256": "384ab4f52627379871a9758de9f556622dd2daac879f857494d6b450d34acdbf",
-      "appendSha256": "65c034338679eb7328de099c6d74f109be32c4f7dc4d42c9f024d34eb28ec511"
+      "bytes": 1373362,
+      "sha256": "ed12c99d80161355b86f6d32028af55aff495ad8bcd5ed37d382c84ddc9fe2dc",
+      "osSha256": "1150cea8458c1a464c750a2d9471905aba88aee16c063982f412b82cc12745d0",
+      "maskedOsSha256": "c68e75676305017ced94ecfcd768d1a90e1fc5df18b43d8b8096e0e89cc83db3",
+      "appendSha256": "64414f673d3e26003c01163d6e408d84f796a0006f6fbe5b6871385af3fad9b8"
     },
     {
       "moduleIds": [
@@ -3350,11 +4954,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1373074,
-      "sha256": "7898aa8772c22ddd43aea93c15c4d926105ff21919d123eea04c60288d03c54f",
-      "osSha256": "0fe67411deb96f7fa91fc6ef17953009a33ab36f9169ef42efd34f73c0d5ce0f",
-      "maskedOsSha256": "eee8a04e63f9ee913641325c0166720a2c6e3f89354808be01fe7fbcced28faa",
-      "appendSha256": "65c034338679eb7328de099c6d74f109be32c4f7dc4d42c9f024d34eb28ec511"
+      "bytes": 1373362,
+      "sha256": "cbb61cd50b6cb69c6f441aff770f2ab7dfb7633a21d03b454bc1b2f10e2a076a",
+      "osSha256": "89e6238f29287cb223460436411774593e8285b7776ef94a3b5c8c8ea439e30a",
+      "maskedOsSha256": "c67670359411bc19a624bfc64abbed12a60fe6c694d729dab00cfcd87915e051",
+      "appendSha256": "64414f673d3e26003c01163d6e408d84f796a0006f6fbe5b6871385af3fad9b8"
     },
     {
       "moduleIds": [
@@ -3474,11 +5078,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1270332,
-      "sha256": "f585eb41e11957d6159f815b4a4b753a2e9b87d758e2e7a3addba826fc7c95ab",
-      "osSha256": "7f32328acdfb8cd525a2af926e1270a4e7d7435467915e946f56dcb2b20b5bf7",
-      "maskedOsSha256": "d7284a4993132f7da9b6c7238df4bdaddd8c29581515a06cf18fb0c454a2ee38",
-      "appendSha256": "dd1e6bed8c18b2b64be97d2878e8a68b7f9a58f200a887330aedbbfca5fd3da1"
+      "bytes": 1270651,
+      "sha256": "a0d3ccacb9d8a19e2a50c089528747132bdaf31e79d6cfcd1dc75f919a5b23c8",
+      "osSha256": "f0190aaca2f5409ab00c22d1ba3c564015434db0ef74c258a6e3d891982f116a",
+      "maskedOsSha256": "c49588e2c4731bcfaf9c2f9fda711fa280f252c2a0423db1a8c64355c84931ce",
+      "appendSha256": "4fb4ef57d41fcf30e5f9e792f7fe8690b2e31dd8e39c7d0451bbfc71a9559014"
     },
     {
       "moduleIds": [
@@ -3510,11 +5114,93 @@
         ],
         "hidden": []
       },
-      "bytes": 1270332,
-      "sha256": "6481df675e44fbdaba2f8f67ed75175b7e392ad90024546ef812232dc07073d7",
-      "osSha256": "69a59b08361b520d6e39b2c881e88aae4dd6fa6fe1c0451255f0c706686f9679",
-      "maskedOsSha256": "d17188eea51946a9277198f8e3ae13686786ac68c12026a209ace41983c971dd",
-      "appendSha256": "dd1e6bed8c18b2b64be97d2878e8a68b7f9a58f200a887330aedbbfca5fd3da1"
+      "bytes": 1270651,
+      "sha256": "10eb25e182d99176bf91f35abf58a78a5766203f77c9ec7821efda91cbb122ed",
+      "osSha256": "939c863da9a2a23a7532a7b00978e3dcafdd86c2da90f9fadc9dfbce3e076ada",
+      "maskedOsSha256": "a138b370d98e859a6764302c62f72ef1fbcd74ff7d532ea9b65343c67cf8d842",
+      "appendSha256": "4fb4ef57d41fcf30e5f9e792f7fe8690b2e31dd8e39c7d0451bbfc71a9559014"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1271678,
+      "sha256": "6abb752b1474163fe74d0c6825f66f9afeef28352068c82d5453773cd2ebd06a",
+      "osSha256": "2c9d1a2b29673e91f5afd455cd17126b63f77f777a44814bfe181cc2b7665cde",
+      "maskedOsSha256": "7f202ba41d03d5c22912726777b29787364ba40ca1b1890d52346e29ccb40a3f",
+      "appendSha256": "6c824e038d01b6b51dc86d483a9774d017e1fdb99a0059b1ac031f20eed7c5a2"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1271678,
+      "sha256": "37767be12b01ad83ffb418bc240125b0b70f8165205d141ec723e5f7741b39dc",
+      "osSha256": "af79995652c3a585ec6af7d6150ef21945f85aa07098d7f85dc4fc0735c05b89",
+      "maskedOsSha256": "5bc2b1b38df667936b5fb2963aeb6f92d2cce8dfcd919d5a062609ddddf36e5d",
+      "appendSha256": "6c824e038d01b6b51dc86d483a9774d017e1fdb99a0059b1ac031f20eed7c5a2"
     },
     {
       "moduleIds": [
@@ -3551,11 +5237,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1266006,
-      "sha256": "a856a47a288b6c724c47fea5c3be739efe3e1349093148f9d4469b21f52f08e7",
-      "osSha256": "7e0ced917d1d9a3121ac96377d8c1959d66974df6852fd04b8a034d23905d4ac",
-      "maskedOsSha256": "8f6390cd96355ba045f0f464b95934f36a8f9c5661628e2726d70b76174678c7",
-      "appendSha256": "d03f71762badc3aa5f258e39fb51933c9ae953140a3fbca62fbd9646a16b794b"
+      "bytes": 1266319,
+      "sha256": "e86f576e6cdbd113a7f258784bc04a08bd1f630a730d2e48aca2b7c4c4c9b68a",
+      "osSha256": "631f4a6dae41ef8900fec61fa43f6b41c02627ba9c84071baaa3e2dc528a4389",
+      "maskedOsSha256": "9274d1557fab16a1587b97a2247ff0f7763e6480b2b1d0b7fe8230407f7a4d94",
+      "appendSha256": "8469eb13803834295f4aa900fdb4f6bfcfacdf7a351868cc1c2cd6b08c217060"
     },
     {
       "moduleIds": [
@@ -3581,11 +5267,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1266006,
-      "sha256": "196b7735cc1cefc8eaf4d9b027f84d1dadbd70ee82f827c65740e848d2030f40",
-      "osSha256": "6c376c82513e30a63c1cc31478a61d72b69c6f077cd0d1583c8c4075a53e8f1f",
-      "maskedOsSha256": "5a94b9303b4f0228552413e0b4fb05888716dac7a0a42e97d1f1414e227ca81e",
-      "appendSha256": "d03f71762badc3aa5f258e39fb51933c9ae953140a3fbca62fbd9646a16b794b"
+      "bytes": 1266319,
+      "sha256": "364a011c82a41da7a8d0563d32d20a362fe55bb5de87c5b7b6864176e2ceabe6",
+      "osSha256": "cda2541f4c391829f73273b240fb435442e7b3e2978f80e19f8fe9921cc2c831",
+      "maskedOsSha256": "0ab5625393a44d24106aa0bc7db2812dd6f4163be4db5c8775ba497dd6757ee8",
+      "appendSha256": "8469eb13803834295f4aa900fdb4f6bfcfacdf7a351868cc1c2cd6b08c217060"
     },
     {
       "moduleIds": [
@@ -3624,11 +5310,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265669,
-      "sha256": "bf5a2de5a492f87096b13c6c59061f3f0602efb56356ac3fd037db138179c491",
-      "osSha256": "39506b714e2c174076ec04b83e2c5fc8ed21428ddc468d2d6f211db4336dc9c5",
-      "maskedOsSha256": "51b34a3aef0cec192b1ef2d8d4d1afa3eb9ecc0f558a1b64c3d9cdb33003df24",
-      "appendSha256": "93e09ed13e8b802e348043845efe703b8db1e248fd22a6c934634019ca56a512"
+      "bytes": 1265975,
+      "sha256": "4c250443265609e0f09b5afcfb6cd03d6eb2d832c28501a3da2d9648cb45fd4a",
+      "osSha256": "3163ebd950cabd70ed783d5f1eeca536d23040c723d42f762946377b68da274b",
+      "maskedOsSha256": "b36780d446ab9896f1570890040665f431a6a2ef5fa56ec185f7001b8db6ef00",
+      "appendSha256": "20030c85ce679f919f8ded30c489db4398a09398c6958804cf594747e46a5ed5"
     },
     {
       "moduleIds": [
@@ -3656,11 +5342,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265487,
-      "sha256": "648bd11eed7fe20fb9646b448600de889460d86789bffc53eee8fb674e0c18f6",
-      "osSha256": "a01da57b06a64ed9045783d921d872ae5e17050ec36bc6d6319d0f554fb93523",
-      "maskedOsSha256": "4490aedaaa8e906886cc2f5f1ae7354e07047898d5974e35bbc814a9a6b11b76",
-      "appendSha256": "dfb6679e1c9414e7beafc5cf70d4f417fe3cb40c6bf1c4c114750900ab91ca74"
+      "bytes": 1265793,
+      "sha256": "8e531530ee186ae0ddfb87b02f448f423aa68cdc6cf9022c37535eac304ba77c",
+      "osSha256": "be760280c7a47b4ca34e363f85ad1acf036017357894b2f1c214f055c183e77f",
+      "maskedOsSha256": "f01b3a592b9774865124bb762f4f261a11fc2ca88e2fe77c026384988576f66d",
+      "appendSha256": "fb01bc67f530c9140ed442c29dc43235d9a69b36c104ff5005537f67ff75a966"
     },
     {
       "moduleIds": [
@@ -3699,11 +5385,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1368312,
-      "sha256": "657352b55fc09b247615cf7f35d056670a2aeb47c4f1f7e86de812750501d384",
-      "osSha256": "3770cf33867dd50567f2fbd985945844d94748db8d90c33dffc77111263f46fe",
-      "maskedOsSha256": "0272ec46b791b6c216664873b7234a13d21ba85f76cb64e2daf845e9da9ffcb7",
-      "appendSha256": "9b6ffe2dd2ebe3168ce466ad394639e8162751b5f796d1b94eb24fa1ab35b858"
+      "bytes": 1368603,
+      "sha256": "9ffe17457bc8496ca889e874e092f2d1ec4dd9e442a581609162d11944a6cd97",
+      "osSha256": "8509dbcb7f3517b01ed8f30aadec493717536a083d3b58c5f73f00d3490b79fb",
+      "maskedOsSha256": "3639869bbcae80fcca86401df5b562675532ce1f428299d0b62db4215d928f79",
+      "appendSha256": "ee0cf3a6f0bd29a48cf592049de09c2073aa21ac308bd9f491aeff7a46c6a93b"
     },
     {
       "moduleIds": [
@@ -3731,11 +5417,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1368312,
-      "sha256": "768c91142b1b9056e54192bb3e8b2747ffe0246c8635246c3a41d4337b3461fc",
-      "osSha256": "15f5f88e6ae057ab6a4e7ae7d2883020a0809464e256c8b4f79d485f2f8e7096",
-      "maskedOsSha256": "48eb9d3c2330473b2e1a04b607d1b7e6b27342a285ea1353ce742e559dc12b83",
-      "appendSha256": "9b6ffe2dd2ebe3168ce466ad394639e8162751b5f796d1b94eb24fa1ab35b858"
+      "bytes": 1368603,
+      "sha256": "b96b8755053f118f8d79a75b15e776b9b049dace2d1454985fdfab6ff2640215",
+      "osSha256": "de5c046c3261c3319736e802b746c4dd3a445a38ff081977e7a3ee149a6e150a",
+      "maskedOsSha256": "e92b3f955595ac4820297d4290e68b633135aa93da5c263cbc8c9b63b89cb24a",
+      "appendSha256": "ee0cf3a6f0bd29a48cf592049de09c2073aa21ac308bd9f491aeff7a46c6a93b"
     },
     {
       "moduleIds": [
@@ -3776,11 +5462,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1367975,
-      "sha256": "f8f149be16ad3c0514637477b1e10fee65c01c85397f30e1c7b7723039a8e194",
-      "osSha256": "46eec7ecaad926fceb9ee8ef118eac93fc0f723b12bf97b365537679858eaeb1",
-      "maskedOsSha256": "7b85667c022b40dbe0107a0f4ceb3829947a6f709b78b73d52988056683beb5e",
-      "appendSha256": "201cb8b13affcd7c1d2157b09191fd3f614425e421b27a1b793be7b933d3d25f"
+      "bytes": 1368253,
+      "sha256": "be703998b0104d35278f19e5f8de23f2624b8e9978ab5394ba4ccef5239d1414",
+      "osSha256": "49f84a53039aa255e066bb544951d868fd5268df7c23b514dc11605fe743f2ab",
+      "maskedOsSha256": "0fa8b43d091c59206ba41b16915da0710f8dc3cab7164b6a35faf934098445ec",
+      "appendSha256": "d6d78c24bbbc3c14b87b6295c451581704418135b23fb48245a5d39f77ddac1c"
     },
     {
       "moduleIds": [
@@ -3810,11 +5496,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1367789,
-      "sha256": "78132f6e13cbeef2e21982e22637eda45052a6a8c51da4499d334596a97f255f",
-      "osSha256": "0f13eb76a79a39354224dfa8a540ee769403876627ed98a568711a227791ca71",
-      "maskedOsSha256": "5b576750b594905448924b1cfd76b4d5f7f718dafb99b1f8854523f38bdf5548",
-      "appendSha256": "34b4a62518aa5c5dcdafce154e0ac62dafecbe73fa78dd4553975b0272ad2641"
+      "bytes": 1368075,
+      "sha256": "314869a084b96d5bbbb2af548eb78e258eae0e7f4c33163922f45e2ebbaa5e7f",
+      "osSha256": "e0b6140b2a9c2990f942a639f77145be1c40f963e1967fd13451c0a5655d0568",
+      "maskedOsSha256": "75f5d8906c7c260aab642b49ade1cef0d2166e4760d5e29d0a415e2b83eb865f",
+      "appendSha256": "d0cfd858358df3b35133a46a5767ac4e052437cce7decc298376055002bbab7d"
     },
     {
       "moduleIds": [
@@ -3854,11 +5540,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1268033,
-      "sha256": "47710de45a2aa9fe870c3a46584b3f121fdabe3f8bdac208ba366b41e6b50921",
-      "osSha256": "c9105c35cb0cccf363c28e9c1557b196994394529637778a2e9ae37d31743253",
-      "maskedOsSha256": "fda26b025b31004339d406bcbfed3d2bb1dd8bb4f1af2ae6a0889e6ca6e5ae9d",
-      "appendSha256": "ec550476ec60e68d835263e3a402c2184a5067288a09bdccaddde968afe21dbc"
+      "bytes": 1268331,
+      "sha256": "465ab8a63428ff2b92aae45ec62d73403ef7ba80e0b09db9195ee5481e7a0bcb",
+      "osSha256": "7682c07d7761cab5327975239ff989c54b20a8b3b493003cc4736f7308542523",
+      "maskedOsSha256": "97dfdab99c249c98540b9f49b97e6fe53f6aa3cf9376c9ca9d1cf72c9d80d935",
+      "appendSha256": "89e01c7c8d1e632c6660666f43dcdb7b15c008a9dc1ff1226e4de9714d9f72d4"
     },
     {
       "moduleIds": [
@@ -3887,11 +5573,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267967,
-      "sha256": "68be5dbdffbac3ff9499cb84a8ddbc9bb431b44ffbd4bb213f8e0ff5c42ce9f3",
-      "osSha256": "5b65518400496df495342eb0c6ffc26ad14bbb41eb16a9327d37dd8a4478c07e",
-      "maskedOsSha256": "21737810e0bc321129fe0d6e30c2b7ff4da7bb8253500b7da2c159702d34afb5",
-      "appendSha256": "58b67a7b1fa0bafb8a9d2718802c5898663e1d1bd1caa46b011e252a0b7e7df8"
+      "bytes": 1268267,
+      "sha256": "4e38fa8e8c7fb24eec215f3f7d424ef87a39be4919eef32ac2a3805e46b5348f",
+      "osSha256": "ba930110f9b3a138849f8e09288b4fa864b529b4833ffdf8d4ae947966f360b7",
+      "maskedOsSha256": "c5d4c114daf89cc1c8dfbee23e1d763d382f2c021a683ac74567daea2acb3f3e",
+      "appendSha256": "72ebf2619288d59c61f181ef45cf74a8ba46eacf9a43873a59c3d3af4db3278a"
     },
     {
       "moduleIds": [
@@ -3932,11 +5618,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267368,
-      "sha256": "53da3a1c62b20256a0c05e4bd4d79419541436d58e8b3ed95c164910600222d5",
-      "osSha256": "18f3fcc914a8fbdbb0ff1a92c16a6a499ec129700fa2c69815618604e2475158",
-      "maskedOsSha256": "10e2f25505cc82650a421fbb1f8d3b1e9b90a0b4a66691d85aeddc399dfd8cba",
-      "appendSha256": "80f5c39aae6e9bf075eac1c323aaab9a264ce549f7253620f6e6bd78c66dd9a5"
+      "bytes": 1267663,
+      "sha256": "9492aa8df19838f1df825b192ddcc501ebff1bb9da2138a46ca31096f79b0926",
+      "osSha256": "8def39edf8d70f7aa9a5eeea65a1304a23d4b924206e88ac42c06b8b1d522364",
+      "maskedOsSha256": "b2500465f1630530b46eabd1b3bc213d55798189a4127377bc396c001e32968c",
+      "appendSha256": "0053cfc8e4e202776966dfda252752294cf5a4d0fc853c7b5384439da8ee267b"
     },
     {
       "moduleIds": [
@@ -3967,11 +5653,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267368,
-      "sha256": "b6e987e5262bbfac57262798233f59922c39437a786b4c223c8c227f4cb6cd21",
-      "osSha256": "d6834d61cdc06e9a533bfdb8468fc5d1ef15091844ad3dff81cdc2ddac85d929",
-      "maskedOsSha256": "1db179a8c00a3d73119adb444699744e744f1748c0e954be0c80f7a8c998c6c1",
-      "appendSha256": "80f5c39aae6e9bf075eac1c323aaab9a264ce549f7253620f6e6bd78c66dd9a5"
+      "bytes": 1267663,
+      "sha256": "bbf9ac82c83ddbbe77901c68b49740e1bcaefc6525228bbad26b27b38c53c167",
+      "osSha256": "406317f6a84ba136b2df022ad1006ee57e0f8afc3b34808ea1379e05d6606338",
+      "maskedOsSha256": "c130c2f9d87a96a6f66f2490bd1b93bc281e718c4f10a5153dfc2e299831d7c5",
+      "appendSha256": "0053cfc8e4e202776966dfda252752294cf5a4d0fc853c7b5384439da8ee267b"
     },
     {
       "moduleIds": [
@@ -4013,11 +5699,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1370287,
-      "sha256": "8356cd4c9808914112abba6797cc401f508e569865c1cd61340d86b07f5a0ddd",
-      "osSha256": "7f5eaeaea963b9ae4bd333e27fd221338c25192a6683ba10bf83e5d6b7d4a34b",
-      "maskedOsSha256": "f45b619c98b82c89a1e596a8f2a26b19088f66ade948744ee24cce41c0627753",
-      "appendSha256": "d1a87e09c18d88df93472b7e4a032cfd071653babae803892178b03d7de387da"
+      "bytes": 1370577,
+      "sha256": "f6cc86e2e5abfb359794f49d904e7eee31dee6073519c3f1934699ca773625c2",
+      "osSha256": "3afc5f2e078814757414a0dfe505da933667a598e4ce8cd79d7a65c86a8e64db",
+      "maskedOsSha256": "74ab5aa9a57e47f169b8b1e1e96ea76d34a7e87f7b92e7af829b161d4718ae5d",
+      "appendSha256": "07696c7d1b0d12918630a8fe3227ac7efc9a6717fc679ec720761ceb50bd04f7"
     },
     {
       "moduleIds": [
@@ -4048,11 +5734,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1370221,
-      "sha256": "54e4f4c9fb404ec31890f593c98abb929cd54b52c506e142e199fe31a85df6a4",
-      "osSha256": "45c41959bbccf9d34c67cbf1a1c91109e5696ab7c441275774015569134feaa6",
-      "maskedOsSha256": "74173472d05c6f9ae7d4c2866f0f072f7c0a3c1b4454f28c81b463729b16f596",
-      "appendSha256": "baee5bc05fa94706c7b0095adc856f773c556ad575b3dc65452ea55ad1e4c43d"
+      "bytes": 1370509,
+      "sha256": "9da0053ea74f877b19f9d136dd0b1cc16903fea742b7e1a3e84370457c43d3ab",
+      "osSha256": "2d394476aa6c49dbbacd6a11acc3068058ebe07f95add983db07a2aed4ac8772",
+      "maskedOsSha256": "6715ac763986e97368aab22f11f25be6957f37eefcbd857f3628841a6e43fa3f",
+      "appendSha256": "61cd3d692b317652b067dc617f9673a116121f5dcaf4a120097080d97df0a604"
     },
     {
       "moduleIds": [
@@ -4095,11 +5781,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1369622,
-      "sha256": "af11b62b8f8d1208816c1fde51f44053d84fb21ebc9475d469d2ed48d10b77a5",
-      "osSha256": "b70e1bac9592589b2cfc92c8f49599cb82035fd388481a7954e649264e4ca0f9",
-      "maskedOsSha256": "12ceb134e32b2f2f3a84fbf164e7c6dcebc87396774e07ca403ed023374b8551",
-      "appendSha256": "757de791b1c77eccb456bc28e0523b367911a02af8031fee20919f39d766d4dc"
+      "bytes": 1369910,
+      "sha256": "6bc8a9439558fb60be0190e898c46bcd2ce890abaec30e0b0ced9c86ff0d1b50",
+      "osSha256": "9b19604c07831bf701213a5b3da1ea2dc45f9cf2eb7dbb6b0ca41386921eb221",
+      "maskedOsSha256": "8c19074ecadd8225ee2293c78d5e2e6bc28dd25a25366cd33be0877cd8948f83",
+      "appendSha256": "c8865bab0bd878c02aea940bc19282dce58fe80e779ba0853784a6a7305227c4"
     },
     {
       "moduleIds": [
@@ -4132,11 +5818,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1369622,
-      "sha256": "80612857d1a2f1e203697d21ff3005840ce72451ab0e6ab2af3c35fe347f7ca0",
-      "osSha256": "fac743968709e9a850099735dbe8f7773f725bf27448c579bd1dd4dd5e6de053",
-      "maskedOsSha256": "0768c00b2ae5dd124f5ab8791c2e05544e16bab295fcacc14a6ec5ea59535195",
-      "appendSha256": "757de791b1c77eccb456bc28e0523b367911a02af8031fee20919f39d766d4dc"
+      "bytes": 1369910,
+      "sha256": "4d48732995d93a7b3215127142260b516c6818d07a0a5dfcf6a7e87c6258a118",
+      "osSha256": "e8363da6e0f1eaf003ba500a46327ff0ba9afb4cad7d5826bf0e8abe631d9a91",
+      "maskedOsSha256": "8c18e2b76741ee8c70612c3c4a8c8c1cd028a548087ac71dd688485a1d2e573d",
+      "appendSha256": "c8865bab0bd878c02aea940bc19282dce58fe80e779ba0853784a6a7305227c4"
     },
     {
       "moduleIds": [
@@ -4174,11 +5860,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1266006,
-      "sha256": "cf70fa7d2c45feb594f573bb835638a32c95d7dc5cf654b3bd9c306a4da69284",
-      "osSha256": "30e995924e9a9c4d4de03e09ed7edfe84ad2ac873cea57bb278fa366a32b35bf",
-      "maskedOsSha256": "1e5277b2ccd21768648eea6cfd6507cb883619711e031a4b9e622174e457c98c",
-      "appendSha256": "d03f71762badc3aa5f258e39fb51933c9ae953140a3fbca62fbd9646a16b794b"
+      "bytes": 1266319,
+      "sha256": "4199c0fc12ac4224a7c09a6d2a36327cbf4a3eaf7fa6ba49a63ca3d67a43b88a",
+      "osSha256": "7f9c5776e61ff6e4dfafdc56e12c0516b1ff379f1402e4e5f1801605933d7a01",
+      "maskedOsSha256": "42e499dfb30be3787261c2a0c96e6cf9c2d30c65475b7d7fd97bdbe5309b2fb0",
+      "appendSha256": "8469eb13803834295f4aa900fdb4f6bfcfacdf7a351868cc1c2cd6b08c217060"
     },
     {
       "moduleIds": [
@@ -4205,11 +5891,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1266006,
-      "sha256": "2159d176d3b38fee8bf2c2377728068ae12c39516da37c9a89d024b2da25ab57",
-      "osSha256": "6d2cd6861f6ff384919dd5b4013fa5f1a88c6fa667542a172ed8037e37f092e6",
-      "maskedOsSha256": "4ed85a60d11325192023f241e019ca9e5ecafdd497aa3fd5638f18f672bb9b05",
-      "appendSha256": "d03f71762badc3aa5f258e39fb51933c9ae953140a3fbca62fbd9646a16b794b"
+      "bytes": 1266319,
+      "sha256": "dac79a844d7de86a5b8154cc77eb8ccddd5857e3316301c787eeaa9c960015f2",
+      "osSha256": "037c1cc33d6d05beffc944b9ef37f3fcb31eef4ac6cf435a88367bd7b2321192",
+      "maskedOsSha256": "e479667ff82988329ec2f8c380f7a347dc9c8b187b9511398d1db5e2e85d49de",
+      "appendSha256": "8469eb13803834295f4aa900fdb4f6bfcfacdf7a351868cc1c2cd6b08c217060"
     },
     {
       "moduleIds": [
@@ -4249,11 +5935,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265619,
-      "sha256": "a6b73d14041560ff9d010776cee271ec34a51381d5faf6afe531b78dc740b429",
-      "osSha256": "62229d891fbb41b8acc8a11f38d397a150210e13f26b6db3d9a508bd4fb39f3a",
-      "maskedOsSha256": "c0e32600ee9d9789a346f373594374d5b549e6ab5d5a47efcc68a2adabcb8d01",
-      "appendSha256": "8d0ecc6ec3a6e27153485bef606158232f606405d64827701c19b08daf665fa8"
+      "bytes": 1265925,
+      "sha256": "16bae736f2ebbca051ebebf114723c5d0865fb297eeac3d817f8c308c3c0c980",
+      "osSha256": "6fb8ebe81288601ea66e770c4f88610bccdfe21deb01043cc639bd2f4b9dd032",
+      "maskedOsSha256": "ae21f7542c814cc69313801efd3b6b5285370ad8aa526ec4b502a5a2d913edb7",
+      "appendSha256": "d2d11c3c3f406853806f44d9cf7dfed744a2a05318d14c8e8190ae16e5bb49bb"
     },
     {
       "moduleIds": [
@@ -4282,11 +5968,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1265479,
-      "sha256": "8047abac37615bad76b4a4478a9f32ebe0fedf139a053fc4910bfb8a96f3c37c",
-      "osSha256": "d1327eb95661bd10a6b6a021ef04130867bc4bdf41a1d31fc476a8dbe87ec8ba",
-      "maskedOsSha256": "d64d68f3b9a9c205bf65db72cffa33d17a511fb75ab7724055898cbddc414357",
-      "appendSha256": "1b20dceb3f5a0c9050baae4753fe29c73051e102dc624f83946928ea76d8ddea"
+      "bytes": 1265791,
+      "sha256": "2cc65f437e72d753cc44ef1678e8b55ab5013bda4e895e60349395ba7aa89535",
+      "osSha256": "a99813d836fffc233d36a1aceb8ba775f12cfeebddc29aa4287624971e33b7e5",
+      "maskedOsSha256": "aaeb2c86729445adf1d84ffa02675aa71034b367527b46f5a1160a18ec1f67db",
+      "appendSha256": "d18b37b3ef73b2b22135b7142e978e7464f68705424c698a46b933cf2a08a5c3"
     },
     {
       "moduleIds": [
@@ -4327,11 +6013,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1264967,
-      "sha256": "3cef1cac417147a30a7d1e6b40a53622068f1d3a548173275b358625e8f0b83d",
-      "osSha256": "f4ececbe4f64fe6d8163e39487bfd702d500d5d56aafa4ba2eefc4015488d459",
-      "maskedOsSha256": "8bceda2f82c6b5237283dd1d34facae10c2635f7048185a25cebb065782ff685",
-      "appendSha256": "c78e2773dd14b8fd862d3cc85542afa8352b208a1da8f58c5422934c5084742a"
+      "bytes": 1265266,
+      "sha256": "99dc6c3108b99c4d55c3167252592f10eb9f15702449c5e02ab7e8b32a731236",
+      "osSha256": "31cba78aa6f3ed49e8059663c49351efb794eca277b05daf66db50a4b1fd5023",
+      "maskedOsSha256": "fee9c6d3b96bbe1bfdcaa26ec11d27e68f2dfe6bc0834a28e52831ba8f2d4bb2",
+      "appendSha256": "1287bf50b80e308a8e224333656215bc7ab2d856979840218d0bcd9befc7007a"
     },
     {
       "moduleIds": [
@@ -4362,11 +6048,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1264967,
-      "sha256": "e1140e55bbc50581e971a91dc54aac8884daf67546f373ac51d8d9bcdeae6343",
-      "osSha256": "0e50469e2f138827e0288c16016f956932ccc5858963ab71a74537959f264cdf",
-      "maskedOsSha256": "a60981eda0218deb9cfab18d68525a30306a04c18a4f619bfc5238e463961413",
-      "appendSha256": "c78e2773dd14b8fd862d3cc85542afa8352b208a1da8f58c5422934c5084742a"
+      "bytes": 1265266,
+      "sha256": "a6eefba81aaa7303c9b8aeb1f828ff291a7406102d3d58130b7a42119ff19b4a",
+      "osSha256": "e72c06719dbea5c51b3ebb7d09c02fa4116293a871889a3d695b374f349c65d2",
+      "maskedOsSha256": "9c45b243f118904dafc42f4d2973c1f2d11bd49189560e686403840bda77f077",
+      "appendSha256": "1287bf50b80e308a8e224333656215bc7ab2d856979840218d0bcd9befc7007a"
     },
     {
       "moduleIds": [
@@ -4408,11 +6094,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1367921,
-      "sha256": "6cc7780a07a3e6dda5244a0c2cc949fb85d0e2d57fd06199780690f4863e0876",
-      "osSha256": "213cea484eecafb56e811fac4e98c482441df115ef6811406fc031f704fb2018",
-      "maskedOsSha256": "9d49939f7a67cd9f5512d83edbc0367707c5aa9c1a7cedca0a18b7d7dd117802",
-      "appendSha256": "4a7f4d91ee25971b566d69a6f6320448ac7a668b5d8d223f9d3a76e499468c81"
+      "bytes": 1368203,
+      "sha256": "c34c6316c95beef7354c8c3693b1737759153b551a279a4c38dc46e9e9185cf2",
+      "osSha256": "0bc60fbdb02ce6199692649f7ee471f3de4efd3de517e3da2b3340c42c83ee2d",
+      "maskedOsSha256": "825669428b784969e015abf6563c0a3e1304dd21c0459244751fb244e2c8039b",
+      "appendSha256": "5fea49d31480bd5a0ab3e3a4cbe8084a22c1762e6e8b31ca1de2351b29f64800"
     },
     {
       "moduleIds": [
@@ -4443,11 +6129,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1367785,
-      "sha256": "6b3310d1ef3b9a3174c706dcc6eac6c5dd3bfbee18f36d28ba1285754d3756ff",
-      "osSha256": "50ed7bcc4ae7f6f8c6fe1f406cfb386c9a98089eac8749212c6ac4b1e1890908",
-      "maskedOsSha256": "a7615c19690805c04dfb580f20fa6414f578cc57a54bdc55de1c58c6cd258769",
-      "appendSha256": "e46780c63713be3f4c47842afc1420595cf015383c8c876c4c9cb9a70f8e5be8"
+      "bytes": 1368069,
+      "sha256": "6c169864b1ced8245d8b3af0d8d4847c0228ebf36594932d1bc0be41c00464ad",
+      "osSha256": "4b7ec857f1f0439240dba2558d80fcce940d194138d724eec56c78c6268e3d3e",
+      "maskedOsSha256": "d5141e15b38f0828080cc25e66cca1b313d349ecd054d0b45225bdbea6a99bb8",
+      "appendSha256": "db14f2a4853309ac6b5b943fe6c8e3617b7f474ece350fb2eec4aa8ccb687c4f"
     },
     {
       "moduleIds": [
@@ -4490,11 +6176,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1367269,
-      "sha256": "6ae04f343519f7566b44dfd6c0aa7d77a43c663df6bef0f888adf8396d73d3b6",
-      "osSha256": "32963aab0def2b89ceb3ee347ae7131eec6f62ac13042c7ee9e3dccf757d3d25",
-      "maskedOsSha256": "dbfc98abde7b139e0556a4d81ab64963fc83d4849df648d065ae8e5c68363c52",
-      "appendSha256": "7cefc542e44a14e27f589ab247083acacfaea38399899b2c76c6922ded00c698"
+      "bytes": 1367548,
+      "sha256": "32e456d901d04c5dc5d2407d77fbc26aacd2368ef19a1c9e8e890d389323e599",
+      "osSha256": "7b93feb6372ae3aecc9d3733931fe6ebdc4cfd469bed273f48273ee281ebc906",
+      "maskedOsSha256": "0d4f5543f31cd56991e2b451df9552f87cc71a2af22b0bb8353a77d9dbd117e6",
+      "appendSha256": "e3e625f3d65c725d5615fbf5b255765668374403cc47fc023d987aa1ea884757"
     },
     {
       "moduleIds": [
@@ -4527,11 +6213,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1367269,
-      "sha256": "3bbbfdcd3000630f46da1dfebab13dcb75393921f7e25e2dc3c7800cfa629fe9",
-      "osSha256": "006290ada183128098bffec74d98e47a0479ffeb43f4c37f1574d75ebd5a9fea",
-      "maskedOsSha256": "e2226ff6668fe1a4f1bebbfaf009fac10b16222be95f91cec56b450673833290",
-      "appendSha256": "7cefc542e44a14e27f589ab247083acacfaea38399899b2c76c6922ded00c698"
+      "bytes": 1367548,
+      "sha256": "7826286f07e90013137acc8bdb62b2c525a57a74d0c99132da5aa7a6d6fa8df0",
+      "osSha256": "9903e72425440db5181ca44c9fae71fc49b2f46379d4cc4b95c926d9ea710495",
+      "maskedOsSha256": "50ec0c4e0b08d12df063339fbb608f82b40cdba74bf4b2c05edde01fd2719646",
+      "appendSha256": "e3e625f3d65c725d5615fbf5b255765668374403cc47fc023d987aa1ea884757"
     },
     {
       "moduleIds": [
@@ -4573,11 +6259,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267428,
-      "sha256": "82dcafa5a9d441d93522d9fd3a1304fd2d475b868117980b716a08e07dd365aa",
-      "osSha256": "6965266cd329f3f60fb18c307dfb233ecf2b04f5e27b7b371bbc5d7e095782a6",
-      "maskedOsSha256": "1ed5930c011da3cc6188de73f2ba8a5aa7a9e2f8d01c896718b187dd23ac8182",
-      "appendSha256": "555a763e808765680f6c55b8464b6c485d28d47ce98923472bf58f7d307cd1e7"
+      "bytes": 1267723,
+      "sha256": "ab9a024c08bc7e9dbaa8393f432b95fd7d95d3414287d9b9c269fb52486181a7",
+      "osSha256": "8ff12919ee52bff56246123a669c117b76f2f7276acf28eefc3fd8abe74c5f64",
+      "maskedOsSha256": "aa0de12789e5df65c93264d0f260f96f310b27e2206084fed0049c31db363f64",
+      "appendSha256": "069372ab615e5e22d0c72277c0de20d08e61c295d6a47967434ba0af37bdecb9"
     },
     {
       "moduleIds": [
@@ -4609,11 +6295,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1267428,
-      "sha256": "ebd31a72c30c714b885b0d4fcdde72e2110342c7defa5ee218756f72a67712a6",
-      "osSha256": "5d97462e1c8681547c6410fd5bd7c985ed8e0819270ba5bbb65d7ca2d8dfbb45",
-      "maskedOsSha256": "43bcb3803e4bd5818a74ec0dddfabc41bdaf61c581f2828990676be77d042eee",
-      "appendSha256": "555a763e808765680f6c55b8464b6c485d28d47ce98923472bf58f7d307cd1e7"
+      "bytes": 1267723,
+      "sha256": "bb99eda4fdd2d8e45a7b6e9f26b261a18de0b3f71bc83a3a680b35027ae69955",
+      "osSha256": "18a0609b244706ae50a53384aef162cb696c5dae1d21e207eda5db26d0fb3ac4",
+      "maskedOsSha256": "d2740839cb7abfbe30da8cd903877b1a4fe764d5a48658ebbf896d6f3039d461",
+      "appendSha256": "069372ab615e5e22d0c72277c0de20d08e61c295d6a47967434ba0af37bdecb9"
     },
     {
       "moduleIds": [
@@ -4657,7 +6343,7 @@
         ],
         "hidden": []
       },
-      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 394 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 339 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
     },
     {
       "moduleIds": [
@@ -4691,7 +6377,7 @@
         ],
         "hidden": []
       },
-      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 394 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 339 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
     },
     {
       "moduleIds": [
@@ -4735,11 +6421,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1369679,
-      "sha256": "243e7ba6827c3abdc8e31e76f67bedd04a0cf650d2e973e8fa8044d2e32696a3",
-      "osSha256": "a322015acee7bedd743142bcc6a19482bc9c06de8ab8886626904355042720d5",
-      "maskedOsSha256": "64a82dbfedf2ffa889fb56a85b72a5102a1c73b57d985f4d45d19b65773f8783",
-      "appendSha256": "6e5fd291d6401462d0f5abe9c5507e97b75e0386e55202c5d029b4dcbe534534"
+      "bytes": 1369966,
+      "sha256": "a9b49fa0e6faa0abd710410fd25185e25125f8825df79724459b925f4f8b3248",
+      "osSha256": "d57e64c4116504233e08239a042a126839d981e85a3c96c40d3dacfdd3a3908d",
+      "maskedOsSha256": "8fe6d2bfe43eab058be21e055d01668d8ec23ced755384c9b1ebac10de60f5fd",
+      "appendSha256": "a25f431132daf487b9e3dc53a74c4f126269833158dae51c0100265e570c07c5"
     },
     {
       "moduleIds": [
@@ -4773,11 +6459,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1369679,
-      "sha256": "479a73775be604581d2db2606423f963dd5b9c46451eb1465564aaf0eff5e8a9",
-      "osSha256": "b627e4fc857d6a7830afe3975295e9954401d36c5d0a610507acbcb3428c98c8",
-      "maskedOsSha256": "ef3566e408134f19ff03d37e832a7d8f8bf9039f0b3fbb6750b2ce627f6b372a",
-      "appendSha256": "6e5fd291d6401462d0f5abe9c5507e97b75e0386e55202c5d029b4dcbe534534"
+      "bytes": 1369966,
+      "sha256": "e8cef7f56ba6e67693c35963922adb1986bccaf442a5059d16a9cd8b02bf1370",
+      "osSha256": "cd186f2bd3b1998a3e7d9fa8daaae9fb0d8127c7a90aa1ddfa924b53301400b3",
+      "maskedOsSha256": "3818468c5831f9d4906073e726b54858e235163be96f442785ab6b5459715f4e",
+      "appendSha256": "a25f431132daf487b9e3dc53a74c4f126269833158dae51c0100265e570c07c5"
     },
     {
       "moduleIds": [
@@ -4823,7 +6509,7 @@
         ],
         "hidden": []
       },
-      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 389 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 334 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
     },
     {
       "moduleIds": [
@@ -4859,7 +6545,1239 @@
         ],
         "hidden": []
       },
-      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 389 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 334 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266694,
+      "sha256": "a6b23493e93084f1a3a14319a2f67224281eb6323fb5f7b668949ed6cd2c4290",
+      "osSha256": "b3b7cb21055e7f4b9c68d6144e93e955ef6a75e66b6a19e21f55a4596dd3b936",
+      "maskedOsSha256": "693eb01bd34abaabfcbcbf3ecdc3c2852b059531e34091ec1624b5845f2b4c19",
+      "appendSha256": "12e77034bb0c8adfcd938608ba43a69db58cd1c20dc528d5f5f87a943afa73e0"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1266694,
+      "sha256": "8d4123e5860136ba0e2e9b34904df9b2139bf2e9e82a1c7deb17d1d41be89cfe",
+      "osSha256": "d33461f5dbbd97e36b0c4a9e270c2062ca8703f187811867bab7c9a4ebfd3c7c",
+      "maskedOsSha256": "ebd77e7c935eba97c2beffefb424aa94e6c7b42a18b9d6da039605170530c87d",
+      "appendSha256": "12e77034bb0c8adfcd938608ba43a69db58cd1c20dc528d5f5f87a943afa73e0"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 361 words are free across 3 separate runs but the largest single opening has only 272; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 361 words are free across 3 separate runs but the largest single opening has only 272; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPE ECHO",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "bytes": 1368979,
+      "sha256": "769392c8de1ecb23a7b0a4c45278215d05de21733129cb885805b3a063f90db4",
+      "osSha256": "108f2a13efcad2895fea3f5460c2d86f9afafffb0108d63b6358365681d76622",
+      "maskedOsSha256": "2e1ddacb49697dd31459bf173b6606ea5a54e0ca1689f1743d590d5bea040c0b",
+      "appendSha256": "330c5070c71d8f45eb638d3094e6bfc834d55413856d67c1c96faf28ca3718a7"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "bytes": 1368979,
+      "sha256": "85071e11902c6e286d04b63d91386641008e4f648459b672ab55bae0f6b1e6dd",
+      "osSha256": "5f616507dfb3f78f8b7a1115bb227140bfb32dc71a28d5e50b2cb4d83aa24305",
+      "maskedOsSha256": "8032b5739892d066ff34337388e6d5473a06c7fab5c8c658db5d509dba07cb7a",
+      "appendSha256": "330c5070c71d8f45eb638d3094e6bfc834d55413856d67c1c96faf28ca3718a7"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 356 words are free across 3 separate runs but the largest single opening has only 272; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 356 words are free across 3 separate runs but the largest single opening has only 272; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "EUCLID",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 502 words are free across 3 separate runs but the largest single opening has only 272; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 502 words are free across 3 separate runs but the largest single opening has only 272; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EUCLID",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 761 words are free across 3 separate runs but the largest single opening has only 672; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 761 words are free across 3 separate runs but the largest single opening has only 672; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 497 words are free across 3 separate runs but the largest single opening has only 272; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 497 words are free across 3 separate runs but the largest single opening has only 272; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 756 words are free across 3 separate runs but the largest single opening has only 672; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 756 words are free across 3 separate runs but the largest single opening has only 672; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 475 words are free across 3 separate runs but the largest single opening has only 272; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 475 words are free across 3 separate runs but the largest single opening has only 272; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 734 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 734 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 470 words are free across 3 separate runs but the largest single opening has only 272; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: SIDECHAIN_COMPRESSOR does not fit any harvested run -- 470 words are free across 3 separate runs but the largest single opening has only 272; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 729 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 729 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 875 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 875 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 339 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 339 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 870 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 870 words are free across 3 separate runs but the largest single opening has only 645; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 334 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "analog-bassdrum",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "SIDECHAIN_COMPRESSOR"
+        ],
+        "hidden": []
+      },
+      "error": "payload A: AIR CHORUS does not fit any harvested run -- 334 words are free across 3 separate runs but the largest single opening has only 250; harvest an effect BETWEEN two runs to join them into one"
     },
     {
       "moduleIds": [
@@ -4897,11 +7815,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1268678,
-      "sha256": "cfabe0bf033fa643df98b2835d1bdf03c0fc701d73056bc2685f06cf0c271e21",
-      "osSha256": "167e0c3982921edb7513a99106d3d68aebd6c96a916598fe965531d66ee3c64c",
-      "maskedOsSha256": "43710e7482a5940bd53bffbf4ba44949a3a54c18e8ee56adffd82a2e11b94d04",
-      "appendSha256": "29e7304e75cfb21dbe06efd87833cecaac1fe3a0f2ad2c8ad16330550fb173f0"
+      "bytes": 1268987,
+      "sha256": "0e08abbe246904b5ade602d72e87da80e07eeb9eb1d3ac5d5a4ef8b61ddde57e",
+      "osSha256": "b0df29fb4af1e3c73272112328a9adbe9dcc3294d43c04675ad7acc247ebb096",
+      "maskedOsSha256": "c011fcdd0d0d544079666d636fa7b437a63b3a20da97fc3be7b31d5c6518e625",
+      "appendSha256": "37083e9bfcacd93b457f3535295b60c75f115db92f529065b2eb268428a60e2b"
     },
     {
       "moduleIds": [
@@ -4928,11 +7846,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1268678,
-      "sha256": "dfd2fd3a2d1f97df905d7fefbbc999f818904be2a2d8646319d568b6bcbfac2e",
-      "osSha256": "fff303ec021ec560fee0db01187d7a49a837f3df3784b90ce01ea17e20f202d4",
-      "maskedOsSha256": "f054973d0185798264e6e3a636e6c3eac2ee71a259a5270a33f8d958bdc1d036",
-      "appendSha256": "29e7304e75cfb21dbe06efd87833cecaac1fe3a0f2ad2c8ad16330550fb173f0"
+      "bytes": 1268987,
+      "sha256": "7444e102d595618eb638726b87e1818e644ea5a0da880ae7f09b83c9a3964b94",
+      "osSha256": "f59d11790fadb75a2cf26e47971068183fe36d85bfa51141241906c88547d168",
+      "maskedOsSha256": "df88e43fd4707ff31598ebb38a2d77b1a8d2c316ed4f93458b7fef3afb2f82f2",
+      "appendSha256": "37083e9bfcacd93b457f3535295b60c75f115db92f529065b2eb268428a60e2b"
     },
     {
       "moduleIds": [
@@ -4970,11 +7888,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1268186,
-      "sha256": "d5a6f35d797384b059726c3df6cf1ac45d56cc6cf9bc1d369ab78476ce953428",
-      "osSha256": "09f4300ad1cff319537080d9821335272c31ea6cca5522dc0f1e81d1cecdfbfb",
-      "maskedOsSha256": "c6cb6ca6d69e05054af6bb068ba9665b56a81352f3b33230e24925112610b283",
-      "appendSha256": "711ecf0aa9fc00a66af03f6faec13fb3fd08bb396c5e054dd50df6173489a7d7"
+      "bytes": 1268511,
+      "sha256": "6a03471479c0d9f803be9706fde73274520a7b0f5b92531df6ce06383efc4220",
+      "osSha256": "2698226a4c13bdbbac7ab96022ebb804610bd6363b65e9f4fe34685fef8a6a8c",
+      "maskedOsSha256": "edccb1a116371d0427dd58b1803aa6f213e6ebf714c84795e8589e2872df701e",
+      "appendSha256": "738ad79b7c5c0e906cf82b6e06471546b4369b11060cec70524fd4c66b766ff4"
     },
     {
       "moduleIds": [
@@ -5001,11 +7919,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1268186,
-      "sha256": "e57b0caeaf70e9fe55ba8cf7a2c6a6a93b8d546a915645e7ad3cba9f76f798f6",
-      "osSha256": "7233ba9b6911dc0a62774bb2e73b0201ef90838f1f6487fc355443029643d410",
-      "maskedOsSha256": "7efb4fd91114da72972ca4ee2ca5546bcfc9fb39fa67157007ef6a0b541e77f2",
-      "appendSha256": "711ecf0aa9fc00a66af03f6faec13fb3fd08bb396c5e054dd50df6173489a7d7"
+      "bytes": 1268511,
+      "sha256": "c3e53806bec9818c5428cd69cbd95eef1b7b943037e853fad4590576d5371893",
+      "osSha256": "0c9336e716c74afb3289a763fda0de03040b19c223292b23acabffcced525cab",
+      "maskedOsSha256": "7809488522d977a1ee31017235f9e990f8aa33d32c4949d7a542a401d8b4c49b",
+      "appendSha256": "738ad79b7c5c0e906cf82b6e06471546b4369b11060cec70524fd4c66b766ff4"
     },
     {
       "moduleIds": [
@@ -5043,11 +7961,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1266006,
-      "sha256": "7162a28e29e276c0961be90bfb6b303700dd9b675360db0ac2eb42b0ef7e9e1a",
-      "osSha256": "e981cf7781592f352c62d31713cb50fc7b4fde27daec48ecdd755178c9e3c2b4",
-      "maskedOsSha256": "903b72571a63e3171bbc8ddf66aae20a1c6dcedc74243b7c1b03cd8f0bbde524",
-      "appendSha256": "d03f71762badc3aa5f258e39fb51933c9ae953140a3fbca62fbd9646a16b794b"
+      "bytes": 1266319,
+      "sha256": "1dc7dbff74b50b7aebf6f732a4a8cd9fd8911d9c9d5661f1e232ccb0b7083ccf",
+      "osSha256": "7dcdb455f964bd71b1a76ad9e525af1e6910181c78e9f401463b0b1310aad089",
+      "maskedOsSha256": "259f84dd466ee5de2039a624465279b8b90cc909dcb860948a5b2a60fe460767",
+      "appendSha256": "8469eb13803834295f4aa900fdb4f6bfcfacdf7a351868cc1c2cd6b08c217060"
     },
     {
       "moduleIds": [
@@ -5074,11 +7992,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1266006,
-      "sha256": "b1a8dc68405218e2db02bef0bff74c354da43f3435b921c0138411bef872ebbf",
-      "osSha256": "fb1390c3f19a62bdc2b39f1637ed8a2f0d89fd7fba74ef09a7a337c836ef9ad9",
-      "maskedOsSha256": "cb2cd7c4a77fce1f42936653ccc7ab9aa2225c9c7a1a18e799cf91cfca38731c",
-      "appendSha256": "d03f71762badc3aa5f258e39fb51933c9ae953140a3fbca62fbd9646a16b794b"
+      "bytes": 1266319,
+      "sha256": "1b28010ea63ac40181cc060da49ff686a54fa36668c789543fa5cb312cd2b105",
+      "osSha256": "514e8d13c3a4ce18f56c096850f70265a0204cc35d9abcb101448701218fb31c",
+      "maskedOsSha256": "3f38ae5e78e1933f8f6d2a1f9403f9b48a188f016d15ef06ce801487badd9e8e",
+      "appendSha256": "8469eb13803834295f4aa900fdb4f6bfcfacdf7a351868cc1c2cd6b08c217060"
     },
     {
       "moduleIds": [
@@ -5116,11 +8034,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1266006,
-      "sha256": "17f49a18e6aecec321cff7bfb2b55716f6d9d3fbde47cb8dc6894b908eacc1f5",
-      "osSha256": "124fc596baf37a98c2aa2b0a192afcb9e54eb98a36e77b354c1e195acde0a95a",
-      "maskedOsSha256": "76ac9a8456c8d2d6c14c3c8dea5f0495f6f33a1b31718b0c1150c4134523ebe7",
-      "appendSha256": "d03f71762badc3aa5f258e39fb51933c9ae953140a3fbca62fbd9646a16b794b"
+      "bytes": 1266319,
+      "sha256": "f9f43da6520960bcc433c2a3ffdf6ff0df00d0d38686f0573fa163199d7f1aa1",
+      "osSha256": "495e3fea60d255cfb13a70031ea6b068053940316ba31e95031e15d5ce80490f",
+      "maskedOsSha256": "0893b6567ab9bec47efcfefdf29e6bbca7573ea592957638204a13ebdc8d1589",
+      "appendSha256": "8469eb13803834295f4aa900fdb4f6bfcfacdf7a351868cc1c2cd6b08c217060"
     },
     {
       "moduleIds": [
@@ -5147,11 +8065,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1266006,
-      "sha256": "9bc1f56d8d87b9b427c7b054d1487c6e1f443ea6842a95f595bf7f0e675941c6",
-      "osSha256": "ad263ab09bad3fa0e5a570a3f17440c050b9433bd794ef3e2fcefdac325c2d05",
-      "maskedOsSha256": "d49d85b627be4257f38fac4d53004f9e5b4232d60e73e83f23a29d0c4b18bd29",
-      "appendSha256": "d03f71762badc3aa5f258e39fb51933c9ae953140a3fbca62fbd9646a16b794b"
+      "bytes": 1266319,
+      "sha256": "4bcb78a65bcd617d9d4bd8ea12554c22a2de13aef1878f75a8e295b8ba225e88",
+      "osSha256": "1177659603ec0e190fdbddab38ef84611b786c4facc2cb74b3cc97648530e1ad",
+      "maskedOsSha256": "baf0f7f4753fdd54d6ada6422a2812026f266826756a41ae8a95f028664e919e",
+      "appendSha256": "8469eb13803834295f4aa900fdb4f6bfcfacdf7a351868cc1c2cd6b08c217060"
     },
     {
       "moduleIds": [
@@ -5193,11 +8111,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1270866,
-      "sha256": "463112c8027a0ffbaaa535d703e0d21be7bad3c23ef66dc40e5a51fb67e32df9",
-      "osSha256": "c2f02efcfc7a28817bb757121df9ac0416d72d41c5e6122a82f300fc3281d83b",
-      "maskedOsSha256": "9e0397dc8ea98c0dbd8150596f735188de243beabf6ba423d4bb52f902f4bbe7",
-      "appendSha256": "ab26b613450ca92d30658531821c39759df5dfccd2dbc10ded2d019370ba236d"
+      "bytes": 1271191,
+      "sha256": "9b4a5a53647bc03690b340c5c4fa2330f0d121636be9c2fb0bb878d182d3aca4",
+      "osSha256": "3ad3303e20ca132635fde0e2d758c6897ce45523a05b6e1859f4033fa0325f4f",
+      "maskedOsSha256": "af43267c2d9331cc0571732a27b67e18c7ad50a8c31c8d584bf3c49e264c8379",
+      "appendSha256": "b9aea673a3d56c62e2fc639966df00c85f219b5629d94a09ba759dead32474ba"
     },
     {
       "moduleIds": [
@@ -5228,11 +8146,11 @@
         ],
         "hidden": []
       },
-      "bytes": 1270866,
-      "sha256": "69b49eada46725222095e1684ff990863aa169f2c9708a2248d9f4ae21b2de2e",
-      "osSha256": "667ea189c3a3b0e90471bc166b6fb92de94a97719f8f24a4124e44b307872c69",
-      "maskedOsSha256": "2e30aaa66dafacd1693ae1bdf227dc7ce043362dcf466d2162108203cb64aaed",
-      "appendSha256": "ab26b613450ca92d30658531821c39759df5dfccd2dbc10ded2d019370ba236d"
+      "bytes": 1271191,
+      "sha256": "a1ce19d1f204fe7c1b4dc148b4766c796d39ea3682a079ec38e0ef7682878726",
+      "osSha256": "4186b1171fb07ce3b3b9f92483a1590776147e50e4a8d4156870231e7f0355b4",
+      "maskedOsSha256": "b120c283115b0ee54b9f354848d8e4134e020eddf8fd280d0ef1e0a0913f2248",
+      "appendSha256": "b9aea673a3d56c62e2fc639966df00c85f219b5629d94a09ba759dead32474ba"
     }
   ]
 }

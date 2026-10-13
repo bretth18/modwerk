@@ -8,6 +8,7 @@
 
 /* ---- firmware addresses that moved in OS 1.54 (tools/port_os.py, tools/os154.json) ---- */
 #ifdef OS154
+#define F_400c9812 0x400c9a3a
 #define F_40151cc2 0x40151eea
 #define F_4197b6b4 0x4197c6b4
 #define F_4197c7fc 0x4197d7fc
@@ -17,6 +18,7 @@
 #define F_4199df54 0x4199ef54
 #define F_4199df58 0x4199ef58
 #else
+#define F_400c9812 0x400c9812
 #define F_40151cc2 0x40151cc2
 #define F_4197b6b4 0x4197b6b4
 #define F_4197c7fc 0x4197c7fc
@@ -186,6 +188,33 @@ static int active_model(void)
         return -1;
     m = kit[0x9e + 0xa2 * t] - MACH_FIRST;
     return (unsigned)m < MONO_MACHINES ? m : -1;
+}
+
+/* SamplePageView's alternate SRC view draws a sample waveform instead of the
+ * controls. Synth machines have no waveform; keep their normal SRC view. Do
+ * this after key handling and before this view's tick, before composition. A
+ * track switch from a sample's expanded view is covered by the tick. Other
+ * parameter pages and machines retain their stock behaviour. */
+static void digimono_src_page(void *view)
+{
+    if (active_model() >= 0 && *(uint32_t *)((uint8_t *)view + 0x90) != 0) {
+        /* ParamPageView::setPageIndex also runs the view's page-change hook. */
+        ((void (*)(void *, uint32_t))0x40030596)(view, 0);
+        ((void (*)(void *))F_400c9812)(view);
+    }
+}
+
+int digimono_src_key(void *view, void *event)
+{
+    int taken = ((int (*)(void *, void *))0x4003b272)(view, event);
+    digimono_src_page(view);
+    return taken;
+}
+
+void digimono_src_tick(void *view)
+{
+    digimono_src_page(view);
+    ((void (*)(void *))0x40039ec0)(view);
 }
 
 /* A SLICE page id -> our knob 0..6 (B C E F G H D), or -1 (A = TUNE, anything else). */
@@ -387,6 +416,15 @@ uint32_t *digimono_layout_for(uint32_t machine)
         for (i = 0; i < KNOBS; i++)
             if (knob_p[m][i] < 0)
                 lay[m][at[i]] = 0;
+        if (m == MONO_PULS) {
+            /* Match SAW's SUB1/SUB2 at G/H. Move descriptors, not saved sound slots:
+             * existing values, p-locks and LFO destinations keep their meaning. */
+            lay[m][5] = LAY_SLICE[7];   /* D: PW   (slot 22) */
+            lay[m][6] = LAY_SLICE[8];   /* E: PWAD (slot 23) */
+            lay[m][7] = LAY_SLICE[9];   /* F: PWRS (slot 24) */
+            lay[m][8] = LAY_SLICE[6];   /* G: SUB1 (slot 21) */
+            lay[m][9] = LAY_SLICE[5];   /* H: SUB2 (slot 20) */
+        }
         lay_ok[m] = 1;
     }
     return lay[m];

@@ -1,0 +1,285 @@
+{
+  "firmware": "1.40C",
+  "imageSha256": "0ed556591dc2d081b43bc3608ac28d7800a2316588d1ffdd981c844761605384",
+  "emulatorSha256": "d3341a52587fd71f134c335ae48ba3708c78028656602dcdd9dd6009da4a3d7e",
+  "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6.",
+  "palette": {
+    "on": [
+      240,
+      240,
+      240
+    ],
+    "off": [
+      24,
+      24,
+      24
+    ]
+  },
+  "keyMs": 150,
+  "plan": [
+    {
+      "wait": 3000
+    },
+    {
+      "press": [
+        "YES"
+      ]
+    },
+    {
+      "wait": 2000
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "wait": 1500
+    },
+    {
+      "hold": [
+        "FUNC"
+      ]
+    },
+    {
+      "press": [
+        "DOWN"
+      ]
+    },
+    {
+      "wait": 200
+    },
+    {
+      "press": [
+        "DOWN"
+      ]
+    },
+    {
+      "wait": 200
+    },
+    {
+      "press": [
+        "DOWN"
+      ]
+    },
+    {
+      "wait": 200
+    },
+    {
+      "press": [
+        "DOWN"
+      ]
+    },
+    {
+      "wait": 200
+    },
+    {
+      "press": [
+        "DOWN"
+      ]
+    },
+    {
+      "wait": 200
+    },
+    {
+      "press": [
+        "DOWN"
+      ]
+    },
+    {
+      "wait": 200
+    },
+    {
+      "press": [
+        "DOWN"
+      ]
+    },
+    {
+      "wait": 200
+    },
+    {
+      "wait": 300
+    },
+    {
+      "capture": "ot-trig-mode-euclid.png"
+    },
+    {
+      "release": [
+        "FUNC"
+      ]
+    },
+    {
+      "wait": 800
+    },
+    {
+      "capture": "ot-euclid-panel.png"
+    },
+    {
+      "press": [
+        "FUNC",
+        "RIGHT"
+      ]
+    },
+    {
+      "wait": 800
+    },
+    {
+      "press": [
+        "YES"
+      ]
+    },
+    {
+      "wait": 400
+    },
+    {
+      "encoder": {
+        "name": "A",
+        "delta": 1
+      }
+    },
+    {
+      "wait": 200
+    },
+    {
+      "encoder": {
+        "name": "B",
+        "delta": 3
+      }
+    },
+    {
+      "wait": 200
+    },
+    {
+      "encoder": {
+        "name": "E",
+        "delta": 2
+      }
+    },
+    {
+      "wait": 200
+    },
+    {
+      "encoder": {
+        "name": "LEVEL",
+        "delta": 1
+      }
+    },
+    {
+      "wait": 600
+    },
+    {
+      "capture": "ot-euclid-page.png"
+    },
+    {
+      "press": [
+        "NO"
+      ]
+    },
+    {
+      "wait": 800
+    },
+    {
+      "capture": "ot-euclid-panel-on.png"
+    },
+    {
+      "press": [
+        "FUNC",
+        "LFO"
+      ]
+    },
+    {
+      "wait": 800
+    },
+    {
+      "encoder": {
+        "name": "A",
+        "delta": 60
+      }
+    },
+    {
+      "wait": 300
+    },
+    {
+      "encoder": {
+        "name": "A",
+        "delta": 60
+      }
+    },
+    {
+      "wait": 300
+    },
+    {
+      "encoder": {
+        "name": "A",
+        "delta": 60
+      }
+    },
+    {
+      "wait": 300
+    },
+    {
+      "encoder": {
+        "name": "A",
+        "delta": -5
+      }
+    },
+    {
+      "wait": 250
+    },
+    {
+      "encoder": {
+        "name": "A",
+        "delta": -5
+      }
+    },
+    {
+      "wait": 250
+    },
+    {
+      "encoder": {
+        "name": "A",
+        "delta": -5
+      }
+    },
+    {
+      "wait": 250
+    },
+    {
+      "encoder": {
+        "name": "A",
+        "delta": -5
+      }
+    },
+    {
+      "wait": 250
+    },
+    {
+      "encoder": {
+        "name": "A",
+        "delta": -5
+      }
+    },
+    {
+      "wait": 250
+    },
+    {
+      "encoder": {
+        "name": "F",
+        "delta": 40
+      }
+    },
+    {
+      "wait": 600
+    },
+    {
+      "capture": "ot-lfo-setup-euc.png"
+    }
+  ],
+  "screenshots": {
+    "ot-trig-mode-euclid.png": "4910f502edb7f1dd89d7f6627f292d5e917f1c79d367608897d909793cdd90fe",
+    "ot-euclid-panel.png": "ac815987d798f67b15f620bfaf867a07aab444f26d0ed51c59ed99cbf2751825",
+    "ot-euclid-page.png": "8fb7de69d9f158ed1fed4dc7f3bd28b53417e02d8f498f3886a7646a92ddf618",
+    "ot-euclid-panel-on.png": "d56dfd163fd9b7ab1e65fd20b555894ff7a139436c8a543b66773195e1056299",
+    "ot-lfo-setup-euc.png": "691bbcba66aa4183ca91049217ae70cc4c470f43c6371e82c93dbbefd6b63760"
+  }
+}

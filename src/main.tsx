@@ -5,13 +5,15 @@ import App from './App'
 import './styles.css'
 import { startRouting } from './routing'
 import { MODULES } from './catalog/modules'
+import { PublicAudioPreviews } from './components/PublicAudioPreviews'
 
 startRouting(MODULES.map(module => module.id))
 const ReportingPreview = import.meta.env.DEV ? lazy(() => import('./components/ReportingPreview')) : () => null
+const AudioPreviewPrototype = import.meta.env.DEV ? lazy(() => import('./components/AudioPreviewPrototype')) : () => null
 const preview = import.meta.env.DEV ? new URLSearchParams(window.location.search).get('preview') : null
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {preview === 'reporting' || preview === 'reporting-module' ? <Suspense fallback={<p>Opening reporting previews…</p>}><ReportingPreview modulePage={preview === 'reporting-module'}/></Suspense> : <CommunityProvider><App /></CommunityProvider>}
+    {preview === 'audio' ? <Suspense fallback={<p>Opening audio previews…</p>}><AudioPreviewPrototype/></Suspense> : preview === 'reporting' || preview === 'reporting-module' ? <Suspense fallback={<p>Opening reporting previews…</p>}><ReportingPreview modulePage={preview === 'reporting-module'}/></Suspense> : <CommunityProvider><PublicAudioPreviews><App /></PublicAudioPreviews></CommunityProvider>}
   </StrictMode>,
 )

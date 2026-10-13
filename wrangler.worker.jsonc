@@ -10,16 +10,25 @@
   "vars": {
     // Production push is enabled after VAPID setup; devices still opt in independently.
     "WEB_PUSH_ENABLED": "true",
+    // Immutable GitHub identities allowed to notify after the reviewed Pages deployment.
+    "RELEASE_REPOSITORY_ID": "1399349338",
+    "RELEASE_REPOSITORY_OWNER_ID": "67785539",
     "APP_URL": "https://modwerk.app/",
     "AUTH_BASE_URL": "https://octamod-community.octamod.workers.dev/api/auth",
     "REGISTRATION_OPEN": "false",
     "PRIVACY_READY": "false",
     "SESSION_TRANSPORT": "bearer",
     "WELCOME_MAIL_ENABLED": "true",
-    // Paid Resend plan: 50,000/month. Keep room for 80 account emails/day and other provider usage.
-    // Together these daily budgets allow at most 48,980 sends in a 31-day month.
+    // Paid Resend plan: 50,000/month. Independent 30-day budgets total 48,000 attempts.
+    // Verification/recovery capacity cannot be consumed by welcomes, activity or news.
+    "ACCOUNT_MAIL_DAILY_LIMIT": "500",
+    "ACCOUNT_MAIL_MONTHLY_LIMIT": "6000",
+    "WELCOME_MAIL_DAILY_LIMIT": "500",
+    "WELCOME_MAIL_MONTHLY_LIMIT": "6000",
     "ACTIVITY_MAIL_DAILY_LIMIT": "1000",
-    "NEWS_MAIL_DAILY_LIMIT": "500"
+    "ACTIVITY_MAIL_MONTHLY_LIMIT": "24000",
+    "NEWS_MAIL_DAILY_LIMIT": "500",
+    "NEWS_MAIL_MONTHLY_LIMIT": "12000"
   },
   "d1_databases": [
     {
@@ -29,8 +38,8 @@
       "migrations_dir": "migrations"
     }
   ],
-  // Images and sound clips attached to forum posts. Module screenshots and audio arrive through PRs and are
-  // served by the site instead. Create the bucket once with `npx wrangler r2 bucket create modwerk-forum-media`.
+  // Forum attachments and public module audio previews. Reviewed module documentation media is served by
+  // the site. Create the bucket once with `npx wrangler r2 bucket create modwerk-forum-media`.
   "r2_buckets": [
     {
       "binding": "MEDIA",

@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Bundled by the local MCP server, using the same domain code as React and its workers.
+export { DEVICES as machines, parseDeviceRoute } from '../src/devices/registry'
+export { MODULES as modules, resolveSelection } from '../src/catalog/modules'
+export { MODULE_DOCUMENTS_BY_ID as documents } from '../src/catalog/documents'
+export { DIGI_MODS as digiModules, estimateCombination, resolveDigiSelection, isDigiDevice } from '../src/devices/digi-mods'
+export { availableModules, moduleAvailabilityError } from '../src/catalog/availability'
+export { selectionConflicts } from '../src/catalog/selection-conflicts'
+export { newConfiguration, validateConfiguration, pinModuleVersions, afterDeleting } from '../src/config/workspace'
+export { inventoryChanges, missingFromProject, sameModules } from '../src/config/inventory'
+export { createRuntimeCatalogue, USB_MODULE_IDS, moduleSetKit } from '../src/engine/elekloader/module-set'
+export { OctatrackLink, tabLocks } from '../src/engine/elekloader/octatrack-link'
+export { UploadSession } from '../src/engine/elekloader/upload-session'
+export { findVendorInterface, UsbVendorTransport } from '../src/engine/elekloader/upload-usb'
+export { buildBase } from '../src/engine/elekloader/octatrack-base'
+export { apiFetch, setAdminSession } from '../src/community/api'

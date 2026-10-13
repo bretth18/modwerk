@@ -1,0 +1,27 @@
+{
+  "module": "poly-machine",
+  "version": "0.2.5-experimental",
+  "stockRead": false,
+  "cases": [
+    {
+      "case": "missing-replay",
+      "refused": true,
+      "reason": "Error: Invalid inherited stock placeholder inventory"
+    },
+    {
+      "case": "extra-replay",
+      "refused": true,
+      "reason": "Error: Invalid inherited stock placeholder inventory"
+    },
+    {
+      "case": "forged-guard",
+      "refused": true,
+      "reason": "Error: Inherited replay span must match its declared native detour guard"
+    },
+    {
+      "case": "nonzero-placeholder",
+      "refused": true,
+      "reason": "Error: Inherited stock spans require bounded, allocated zero placeholders."
+    }
+  ]
+}

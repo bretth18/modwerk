@@ -1,0 +1,13 @@
+{
+  "kind": "owner-approved-update",
+  "id": "everb",
+  "version": "0.1.1-experimental",
+  "approvedBy": "repeat98",
+  "approvedOn": "2026-10-12",
+  "waived": [
+    "current-build-hardware"
+  ],
+  "sourceSha256": "c06251e3744d0d9f66bc0d9622bf5ca3d00c8a69a52aedffdb49577d5bf2990a",
+  "ownerStatement": "Merged PR #441 (E-Verb 0.1.1-experimental, merge de866009) on 2026-10-12 without fresh hardware evidence; that PR requested this record.",
+  "reason": "Drafted by the module author's agent from the owner's merge of #441, which asked for exactly this record; merging this follow-up is the owner's approval of this exact native source with only current-build hardware waived. 0.1.1 changes four FX2 descriptor words (FUNC + turn stops, #438); both DSP memory images are byte-identical to 0.1.0, so 0.1.0's cycle and memory bounds (evidence/release-bounds.md) still hold. Verified on the ColdFire emulator only: hardware status stays historical (the owner's MKII report covers 0.1.0), and physical hardware, MKI and chip timing remain unverified for 0.1.1. Issue #438 stays open until the live download is verified and the reporter confirms."
+}

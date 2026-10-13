@@ -1,0 +1,168 @@
+{
+  "file": "media/audio-preview.mp3",
+  "sha256": "a992f8bd78e9eee2d91c689f80aac17f1e4b1153b3a2304dc3482ffbb3a3f2af",
+  "seconds": 11.4,
+  "encoding": {
+    "format": "MP3",
+    "sampleRateHz": 44100,
+    "channels": 2,
+    "bitrateKbps": 192,
+    "decodedPeakDbfs": -1.57,
+    "fadeInMs": 5,
+    "passFadeOutMs": 35,
+    "gapSeconds": 0,
+    "loudnessMatch": "first-hit",
+    "matchWindowSeconds": 0.08,
+    "limiter": false
+  },
+  "passes": [
+    {
+      "label": "dry",
+      "frames": 39696,
+      "settings": {
+        "SIZE": 64,
+        "DCY": 64,
+        "ABSB": 60,
+        "DPTH": 64,
+        "SPD": 64,
+        "MIX": 0,
+        "TILT": 64,
+        "PRE": 25,
+        "REV": 0,
+        "EDCY": 64,
+        "ESIZ": 64,
+        "": 0
+      },
+      "dryBitExact": true,
+      "pcmSha256": "09fe30eda007090c75f499b6dc05e8636497c1c2724874364c9f34bbdd882289",
+      "start": 0.0,
+      "duration": 0.9,
+      "renderedFrames": 39696,
+      "trimStartFrame": 0,
+      "trimEndFrame": 39690,
+      "matchGainDb": 0.0,
+      "unmatchedPeakDbfs": -14.0
+    },
+    {
+      "label": "bright hall",
+      "frames": 198464,
+      "settings": {
+        "SIZE": 110,
+        "DCY": 100,
+        "ABSB": 20,
+        "DPTH": 64,
+        "SPD": 64,
+        "MIX": 95,
+        "TILT": 64,
+        "PRE": 0,
+        "REV": 0,
+        "EDCY": 64,
+        "ESIZ": 64,
+        "": 0
+      },
+      "pcmSha256": "8e80d256e7cf01048b6fa54734f0661b7a3ae1049702cc88032687728a1a90ba",
+      "start": 0.9,
+      "duration": 4.5,
+      "renderedFrames": 198464,
+      "trimStartFrame": 0,
+      "trimEndFrame": 198450,
+      "matchGainDb": 7.642,
+      "unmatchedPeakDbfs": -12.407
+    },
+    {
+      "label": "sustaining octave shimmer",
+      "frames": 264608,
+      "settings": {
+        "SIZE": 110,
+        "DCY": 127,
+        "ABSB": 5,
+        "DPTH": 116,
+        "SPD": 90,
+        "MIX": 110,
+        "TILT": 64,
+        "PRE": 0,
+        "REV": 0,
+        "EDCY": 64,
+        "ESIZ": 64,
+        "": 0
+      },
+      "pcmSha256": "394a78da0b77173da4cbb2a26ecee95d4d583ea7f978104329ab129e7cc83a74",
+      "start": 5.4,
+      "duration": 6.0,
+      "renderedFrames": 264608,
+      "trimStartFrame": 0,
+      "trimEndFrame": 264600,
+      "matchGainDb": 9.083,
+      "unmatchedPeakDbfs": -3.951
+    }
+  ],
+  "validation": {
+    "nonzeroAudio": true,
+    "decodedPeakBelowMinus1Dbfs": true,
+    "final50msPeakDbfs": -5.601,
+    "clippedSamples": 0,
+    "maximumQuietRunSecondsBelowMinus48Dbfs": 0.06
+  },
+  "schemaVersion": 2,
+  "moduleId": "everb",
+  "moduleVersion": "0.1.1-experimental",
+  "rendered": "2026-10-12",
+  "sourceCommit": "32ac46b0c7e8c11e48ebc41674695e033142b46e",
+  "limitations": [
+    "Offline emulator/native render, not a physical Octatrack recording or new hardware/performance qualification."
+  ],
+  "sourceFilesSha256": {
+    "everb.asm": "0b463c9951b8528677e60016e1b75e1baafca48987cf7044e65f16555d9fe473",
+    "func_stops.py": "ebde489098755ee64cd7f61e78ff1dddca578c47affbea4c3c9888c74a555b69",
+    "generate.py": "cacfac5704455491ad4ae8e59ef16cd597b586a4a69f5b6cf0678e886c32392c",
+    "manifest.py": "75e05aa32e0160f76b81f4d60ad1ed2cdd89148691129e9dee1118d77a528363",
+    "perf.py": "a6efbf22ecfba5299e18b6237d5999d84beb10b1970380fc3a59c1e342de3d65",
+    "verify.py": "f5c3b6ae39027426bb13aa37d19cc172b56e928384fa078c52005935b79253b8"
+  },
+  "image": {
+    "moduleId": "everb",
+    "mainOsSha256": "092645d9fb8313ca273ccda27a0238116ef26b35de5793d78cead24b47c9cdf9",
+    "bytes": 1117484,
+    "source": "current main browser composer, released module package",
+    "stockMainSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e"
+  },
+  "harness": {
+    "name": "dsp_host",
+    "warmupBlocks": 300,
+    "framesPerBlock": 16,
+    "payloads": "A and B loaded; core A FX2 instance rendered",
+    "upstreamSourceSha256": "27257a3ee152d812629dc9880eb9abbb1d05b6df1dfb558f73d0d251bbf2d921",
+    "privateSourceSha256": "7c0a952a4029eb6bc34d3d614a8bdfec331518b08cc269b111dbeeaf4228f454",
+    "adaptation": "The private harness permits slot A tagged with bit 16 to carry Q15 values, writing their fractional byte to r6 unchanged; untagged 0..127 knobs retain the upstream protocol. No module instructions are changed."
+  },
+  "method": "Offline render of the released E-Verb DSP in its browser-composed private OS 1.40C image through its real dsp_host dispatch. Fresh engine per pass, first-hit RMS matching over 80 ms, no added gaps, 35 ms fades at the edited ends of the tails.",
+  "sample": {
+    "name": "106 Synth Chord Blue Synth 2.wav",
+    "pack": "Legowelt Roland JUNO 106 sample kit",
+    "pathWithinPack": "106 Synth Chord Blue Synth 2.wav",
+    "credit": "Legowelt (Danny Wolfers), ©2012 Pacific Micro International Software",
+    "license": "LicenseRef-Legowelt-Juno106-Sample-Permission",
+    "permissionFile": "106 SAMPLES README.txt",
+    "permissionFileSha256": "20398760fc080b8b53a8fff99b302d02a2ab73a420d90ee6333ee714ff47b2c3",
+    "permissionQuote": "This sample kit is free, you can do whatever you want it",
+    "originalFileSha256": "451a782fca3ddfba0dec8dfb8469931cec4115220e59b0bf65f2d4860d31b4c9",
+    "originalPcmSha256": "d0bd11115ee5320e221ce763ac28e904ec5c240f40628710e4a97b07a3d43bd9",
+    "originalFormat": {
+      "sampleRateHz": 44100,
+      "channels": 2,
+      "sampleBits": 16,
+      "frames": 109568
+    },
+    "preparation": {
+      "startFrame": 0,
+      "frames": 39690,
+      "fadeInMs": 0,
+      "fadeOutMs": 45.0,
+      "gainDb": -11.575831,
+      "peakDbfs": -14,
+      "resampled": false
+    },
+    "sourcePcmSha256": "d4810075bc2fca155fbfbbaa8d5031fc3b922747fad65bf36ba09dd43958f3e5",
+    "sourceFormat": "interleaved stereo signed little-endian int32 containing Q23 words"
+  }
+}

@@ -21,7 +21,7 @@
       "path": "tools/build/build_bus.py",
       "sourcePath": "tools/build/build_bus.py",
       "sourceSha256": "654f6d27f73e9680c9d6da57cd1a9e19fb5fed37fe2e5bf638bdfc54d3c60cf0",
-      "vendoredSha256": "38d80300f9e7fee2d59bd1c81d7bf421ada6d9e35ee40350c53a2583322dfa31"
+      "vendoredSha256": "d53381cb0b931319d62de1493c3292ac3a4b98afae4d64e9b715ed3f740e3289"
     },
     {
       "path": "tools/build/cycle_count.py",
@@ -200,7 +200,8 @@
     "Pass assembler constants through the compilation memo; retain stock-copy recipes and declared-value author oracles.",
     "Price remaining FX2 slots after a capped insert and compare server-free configurations to prevent cycle undercounts.",
     "Integrate upstream regression suites in the repository SDK check; adapt mailbox and native fixture paths.",
-    "Export OCTABAM_STATIC_STOCK=1 from the Makefile so make-built images keep stock DSP code and omit the experimental DSP DYNLOAD STOCK loader, which froze hardware; OCTABAM_STATIC_STOCK=0 opts in for emulator work."
+    "Export OCTABAM_STATIC_STOCK=1 from the Makefile so make-built images keep stock DSP code and omit the experimental DSP DYNLOAD STOCK loader, which froze hardware; OCTABAM_STATIC_STOCK=0 opts in for emulator work.",
+    "Keep a stock_dsp (hook-reached) module's ptable in P in build_bus.py XTABLE: Sidechain Compressor's table in the stock curve bank X:0x4840 froze a MKII on 9 Oct 2026 (cause open); dispatched effects' tables still move to X."
   ],
   "verificationRecord": "infrastructure-verification/octabam-7b2984c8.json",
   "limitations": [

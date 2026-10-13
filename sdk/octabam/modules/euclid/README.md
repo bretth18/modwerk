@@ -177,6 +177,8 @@ These are actual headless-emulator LCD captures, not hardware results. See
 recorded separately in [swing capture provenance](docs/swing-capture.md).
 No audio preview is included.
 
+**Audio preview.** [Listen](media/audio-preview.mp3). Owner-supplied modpad.wav at 128 BPM. An eight-bar middle excerpt (22.5–37.5 s) leaves both render-error ends out and preserves the supplied modulation and decay. Peak adjusted with short edge fades; no added gaps or DSP. Recording setup and module version were not supplied; this clip adds no hardware qualification. Source identity, permission, exact crop and encoding are in [audio preview provenance](media/audio-preview.json).
+
 ## Clock reset safety (0.1.4)
 
 Both PLAY paths save the full status register, mask interrupts while resetting Euclid's clock, and restore the previous interrupt mask and condition flags. The C reset clears initialized before rewriting the clock and publishes it last, with compiler memory barriers. This ports [octabam #620](https://github.com/sambanks/octabam/pull/620), pinned at 6f9e5bc9. Track timing, swing, phase policy and controls are unchanged.

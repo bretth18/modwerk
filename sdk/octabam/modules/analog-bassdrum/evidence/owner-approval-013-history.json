@@ -1,0 +1,14 @@
+{
+  "kind": "owner-approved-update",
+  "id": "analog-bassdrum",
+  "version": "0.1.3-experimental",
+  "approvedBy": "repeat98",
+  "approvedOn": "2026-10-08",
+  "ownerStatement": "works great and stable, let's release",
+  "reason": "Owner approved release after testing the hash-bound private update, then confirmed MKII, distinct 808/909 instances, Part/project reload and normal power-off/on retaining settings and audible output (\"MK2 yes all\"). Worst-case chip timing and complete memory bounds remain unmeasured; this exact experimental update retains those explicit limits. Native/browser parity, stock isolation, packaging, licensing and current UI/documentation remain required.",
+  "waived": [
+    "chip-worst-case-cycles",
+    "complete-memory-bounds"
+  ],
+  "sourceSha256": "bab3bfd04090ae139330f6c1121e3570b80eaf6b6a0e83c3937df4a2c4696eaf"
+}

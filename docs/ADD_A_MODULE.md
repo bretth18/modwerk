@@ -2,6 +2,8 @@
 
 This page is for contributors and for the coding agents they point at this repository. Read it, then the section for your machine. The other module documents are field references; open one only when a step links to it.
 
+Start with the [developer workflow and distribution context](DEVELOPER_WORKFLOW.md) for submission, release verification, report handling and catalogue boundaries. Instruments without an SDK follow [Add a machine](ADD_A_MACHINE.md) before module scaffolding.
+
 For an existing published module, start with [author updates](MODULE_AUTHOR_UPDATES.md). Telling a coding agent “fix issue <link>” in your fork starts the guided fix, version, hardware-test and release flow. The owner approves first releases; registered authors can publish their own later updates after checks pass.
 
 ## Read the guide for your category first
@@ -20,7 +22,7 @@ Every module follows [the guide for its category](module-guides/README.md): effe
 ## Rules that always apply
 
 - Never commit firmware, extracted stock code or tables, memory dumps, emulator cards or built images. Firmware stays on your computer. Stock code is referenced by address, length and SHA-256 and copied from each user's own OS file when they build.
-- Keep every author's credit and full licence text. Pin ported source to an exact commit.
+- Keep every author's credit and full licence text. Pin ported source to an exact commit. Both module contracts accept an optional `author.contributors` array of `{ "github": "handle", "name": "Display name" }` entries (`name` is optional). Each contributor appears on a separate line below the primary author in library cards, page headers and module information; describe their contribution in `author.credits` and the README. This attribution does not grant module ownership, report access or release authority; those continue to use the primary author and declared maintainers.
 - Code or behaviour changes inside a module folder need a higher semantic `version` in its manifest, and the same version in `sdk/catalog.json` once listed. Documentation/media/prose-only edits need a version bump only when requesting automatic author publication.
 - One module per pull request. The owner approves the first release and changes beyond the registered author's scope. Later scoped updates can use automatic author publication after evidence verification and required checks.
 
@@ -68,9 +70,9 @@ npm run modules:check -- --base origin/main   # version and publication rules fo
 
 Once your module is in the reviewed catalog, you can link your own Ko-fi page without changing its source or publishing a new module version. On Modwerk, open **Your account → Developer account**, verify the author/maintainer GitHub identity, claim the module, and save its HTTPS Ko-fi profile URL in **Developer workspace → Your Ko-fi page**. Visitors can then click the small cup beside your name to open an embedded tip dialog. You can replace or remove the link at any time. Support links are stored per module, including separate Digitakt and Digitone IDs. See [the developer workspace](DEVELOPER_WORKSPACE.md) for ownership rules.
 
-## Release notes (required for every module version)
+## Release notes (required for every fix and module version)
 
-Before publishing a new module or updating its version, add an entry under its community ID in `src/community/module-changelogs.json`. Octatrack IDs are the module ID (`euclid`); Digitakt and Digitone IDs include the machine (`digitakt-digihealth`, `digitone-digihealth`). Keep earlier entries. The module page’s Changelog tab shows these notes, including when live version history is unavailable.
+Every module fix must include its changelog update in the same PR; do not defer it until after the fix or release. Before publishing a new module or updating its version, add an entry under its community ID in `src/community/module-changelogs.json`. Octatrack IDs are the module ID (`euclid`); Digitakt and Digitone IDs include the machine (`digitakt-digihealth`, `digitone-digihealth`). Keep earlier entries. The module page’s Changelog tab shows these notes, including when live version history is unavailable.
 
 ```json
 {
@@ -80,17 +82,21 @@ Before publishing a new module or updating its version, add an entry under its c
 }
 ```
 
-Use the exact catalog/manifest version and the source-update date (`YYYY-MM-DD`). An optional `sourceCommit` is a full 40-character repository commit SHA; omit it until the referenced commit exists. Explain what changed, not just “updated module”. Mention changed controls, migration requirements and remaining limitations when relevant. Never imply hardware or audio testing that did not happen. Imported releases must distinguish upstream implementation changes from Modwerk packaging or documentation changes.
+Use the exact catalog/manifest version and the source-update date (`YYYY-MM-DD`). An optional `sourceCommit` is a full 40-character repository commit SHA; omit it until the referenced commit exists. Explain the actual fix or mitigation, not just “updated module”, and link the issue when available. Mention changed controls, migration requirements and remaining limitations when relevant. Never imply hardware or audio testing that did not happen. Imported releases must distinguish upstream implementation changes from Modwerk packaging or documentation changes.
 
 `npm run check -- --base origin/main` and `npm run build` reject missing current-version notes, duplicate/invalid versions, malformed dates and unknown module IDs. `node scripts/module-changelogs.mjs` runs just this inexpensive metadata check. Regenerate catalogs after a manifest version changes, then validate before committing. Notes live outside module source folders so adding them does not invalidate retained qualification records or trigger native compilation.
 
-The published release inventory includes these exact version-matched notes. Update emails include every change and limitation from that entry in HTML and plain text, with a link to the module’s Changelog tab. The Worker retains the published notes for delayed digests and refuses to announce a new version without them.
+The published release inventory includes these exact version-matched notes. Publication is quiet by default, including metadata-only version bumps. Set optional `announce: true` on that exact entry only after the owner or registered author explicitly chooses to notify followers; omitted or false means no follower update or automatic new-module announcement. An agent must not infer this choice from a request to publish, fix an issue or update media. A current version can opt in after a quiet deployment; retries, later media edits and superseded versions do not replay it. Existing follows and delivery preferences remain intact. Announced update emails include every change and limitation from the saved entry in HTML and plain text, with a link to the module’s Changelog tab.
 
-Documentation-only changes do not need a version bump: update the current entry with a clearly marked documentation-only note if the change belongs in its release history. A new version, including a metadata-only version when deliberately published, must always have its own entry.
+Documentation/media-only fixes do not need a version bump unless requesting automatic author publication, but must add a clearly marked documentation-only or media-only note to the current entry in the same PR. A new version, including a metadata-only version when deliberately published, must always have its own entry.
 
 ## Documentation-only updates
 
-Fixing a README, a tutorial, a caption or a screenshot of a module that already has its qualification record needs none of the heavy steps: no version bump, no rebuilt packages, no fresh approval, and no Docker compile in CI when only README, Markdown, `media/`, `presentation/` or `evidence/` files change. The packages and the owner's approval bind to the module's code fingerprint (`moduleSourceFingerprint` in `scripts/module-source.mjs`), which ignores those files and the manifest's prose. Open a normal pull request and run `npm run check -- --base origin/main`. The same classifier drives PR checks and deployment: prose and media on all three machines skip native compilation, while firmware source, linking/build inputs and compiler changes retain it. The site still bundles and publishes the documentation; unchanged Worker inputs skip its deploy. The frozen baseline modules, `cc-map`, `previewvol` and MIDI Scenes keep their older exact-folder rules (see [retained evidence](MODULE_QUALIFICATION.md#risk-based-update-checks--3-october-2026)).
+Local module `README.md`, `TESTING.md` and `CPU.md` can be edited without updating import checksums. Their recorded hashes remain import history. Code, licences, archived snapshots and preserved `upstream/` documentation retain exact checksums. The lightweight `npm run sdk:imports:check` uses Node alone and runs on documentation PRs; the full SDK check at publication uses the same policy.
+
+Fixing a README, a tutorial, a caption or a screenshot of a module that already has its qualification record needs none of the heavy steps: no version bump, no rebuilt packages, no fresh approval, and no Docker compile in CI when only README, Markdown, `media/`, `presentation/` or `evidence/` files change. Compiled packages bind to the module’s code fingerprint (`moduleSourceFingerprint` in `scripts/module-source.mjs`), which ignores those files and the manifest’s prose. Older native evidence can also bind the presentation thumbnail; use the [shared preview artwork path](#module-thumbnail-style) for those replacements. Open a normal pull request and run `npm run check -- --base origin/main`. The same classifier drives PR checks and deployment: prose and media on all three machines skip native compilation, while firmware source, linking/build inputs and compiler changes retain it. The site still bundles and publishes the documentation; unchanged Worker inputs skip its deploy. The frozen baseline modules, `cc-map`, `previewvol` and MIDI Scenes keep their older exact-folder rules (see [retained evidence](MODULE_QUALIFICATION.md#risk-based-update-checks--3-october-2026)).
+
+For imported files outside the three editable local guides, refresh affected `vendoredSha256` records in `sdk/imports/` after reviewed media or attribution edits, and record the local update while preserving upstream source fingerprints. Instrument capture checks must select `otUi` media; audio previews share the media list.
 
 ## What a finished module contains
 
@@ -106,6 +112,32 @@ Its folder, `sdk/<platform>/modules/<id>/`, holds:
 
 The checks reject missing sections, coloured screenshots and a version that did not increase. They cannot tell whether the documentation is true; the owner reviews first releases and registered authors verify their scoped updates.
 
+## Module thumbnail style
+
+Always use the library's shared signal-art style for new or replacement module
+thumbnails. Reuse the SVG classes and drawing conventions in
+`src/components/ModulePreview.tsx` and `src/devices/DigiModPreview.tsx`; keep saved
+SVG thumbnails consistent with the displayed illustration.
+
+- Use a `320×192` viewBox, the shared dark preview surface (or transparency in
+  the preview component), and the faint grid at y=52/97/142 and x=64/128/192/256.
+- Use the module/category `--signal` accent from the shared styles. Primary,
+  secondary and ghost strokes follow the existing widths and opacity levels;
+  use the shared dot and rhythm classes for filled marks.
+- Draw a clear signal, routing, rhythm or control diagram that explains the
+  module. Keep it readable at card size, with quiet space around the drawing.
+- Use small monospace labels with the shared letter spacing. The preview
+  already carries the module title; avoid oversized repeated titles, unrelated
+  colours, heavy frames, decorative badges and generic placeholder waveforms.
+- Keep diagrams conceptual. They must not imply measured audio, processor
+  load, hardware verification or instrument-screen authenticity.
+
+Some older native qualification/approval fingerprints include the original
+`presentation/thumbnail.svg`, even though the compiled-package fingerprint
+excludes presentation files. For these modules, replace the displayed artwork
+through the existing `ART` entry in `ModulePreview.tsx` and preserve the bound
+asset; do not rewrite evidence hashes for an illustration change.
+
 ## Screenshot walkthroughs
 
 Make the gallery a short usage tutorial for every machine: two to five
@@ -115,6 +147,34 @@ what they do; label inventories and fixture descriptions are insufficient.
 Keep alt text about the visible screen and reserve extra pages for supplementary
 screenshots. Read the complete gallery as a first-time user and follow the
 [screenshot caption standard](MODULE_UI_CAPTURES.md#write-a-short-screenshot-walkthrough).
+
+A module that makes or changes sound can also carry one short [audio preview](MODULE_AUDIO_PREVIEWS.md): an isolated sample comparison or an explicitly requested musical phrase that makes its controls audible.
+
+## Octatrack base and USB lifecycle
+
+New Octatrack development must deliver the browser-built base and USB module
+lifecycle alongside its card build. Plan common companions before writing
+code: stock FX, Analog BD and common custom machines/effects, on both DSP
+cores. Record shared hook/data ownership, contiguous P/X/Y placement, live
+stock tenants and fixed/instance cycle costs. A native composition or a
+standalone package that links is not completion.
+
+Release evidence must cover the exact source-built browser/runtime packages,
+regeneration and stock-free scan, base compatibility and truthful inventory,
+installation and self-test, Keep/Undo, replacement/removal, missing-module
+fallback and distinct instances through Part/project reload and physical
+reboot where applicable. Give hardware steps and record actual results;
+emulator/host tests do not fill missing hardware qualification. Preserve the
+previous approved download while preparing candidates.
+
+A newly developed module selectable in beta module sets must have a working
+USB path, not a card-only fallback; existing card-only modules need a reviewed
+migration before USB rollout. An unavoidable compatibility limit needs its
+actual resource/ownership reason and explicit owner review. This does not
+assert that pending loader ABI work (ABI 7), shared machine registration,
+table support or hooked DSP work is released: those adapters and new bases
+remain private staging until their checks and qualification are complete. See
+the [loader compatibility guide](../sdk/machines/octatrack/elekloader/README.md#runtime-compatibility-and-the-card-builder).
 
 ## Octatrack
 
@@ -149,7 +209,7 @@ screenshots. Read the complete gallery as a first-time user and follow the
 6. **Capture the screenshots** in the headless emulator with `scripts/capture-module-ui.py` ([how](MODULE_UI_CAPTURES.md)). Open every image before keeping it.
 7. **Check how it shows on the site.** The catalog entry puts the module in the library and the configurator; `npm run dev` shows it.
    - The library card draws `presentation/thumbnail.svg` (320×192). Hand-drawn art in `src/components/ModulePreview.tsx` is optional.
-   - Analog BD automatically refuses any module with an `effectId`, since it builds only beside stock effects. If your effect builds beside the stock FX2 effects, add it to `FITS_BESIDE_STOCK_FX2` in `src/catalog/selection-conflicts.ts`.
+   - Analog BD admits only the custom DSP effects named in `analogBdCompanions` in `src/catalog/selection-conflicts.ts` and refuses every other module with an `effectId`. Add yours there only after native/browser placement evidence on both cores. If your effect builds beside the stock FX2 effects, add it to `FITS_BESIDE_STOCK_FX2` in the same file. Both lists describe baked card placement, not the USB arena; see the [USB lifecycle](#octatrack-base-and-usb-lifecycle).
    - Add a short entry to `docs/VERIFICATION.md` with what you compared and the result.
 8. **Open the pull request.** Say what you tested, what you did not test and why.
 

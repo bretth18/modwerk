@@ -2535,7 +2535,29 @@
         }
       ],
       "replaces": "COMPRESSOR",
-      "sourceSha256": "aaa7c593ec62745a540cf82d7b4d7ac2f17f393cfedd5a9e1ff1a1453165ecd7"
+      "sourceSha256": "3bba6ac8ba315e10d6d7f2cb6342fb5ce6564e1ba6cd6ec362787d685c5e0cd7",
+      "detours": [
+        {
+          "address": 1073793768,
+          "guardLength": 6,
+          "guardSha256": "9a4b68c7876e6a4b172ba77e67b4305494b67444bae1a8e13c5f6e62ac6e7c2c",
+          "unit": "sc_cf",
+          "symbol": "sc_norm",
+          "kind": "jsr",
+          "bytes": 6,
+          "note": "frame builder's page-2 copier: a stale KEY (> 8) -> side-chain defaults"
+        },
+        {
+          "address": 1073757468,
+          "guardLength": 6,
+          "guardSha256": "9a4b68c7876e6a4b172ba77e67b4305494b67444bae1a8e13c5f6e62ac6e7c2c",
+          "unit": "sc_cf",
+          "symbol": "sc_norm",
+          "kind": "jsr",
+          "bytes": 6,
+          "note": "the copier's twin: the same check"
+        }
+      ]
     },
     {
       "id": "airwindows-chorus",
@@ -2815,31 +2837,580 @@
           "value": ""
         }
       ],
-      "sourceSha256": "9257a83bed59cbd5c4d8aa898639c939f7987fdb0a0e759e30758d51d876da1a"
+      "sourceSha256": "7f6cf5fc2893b50277aa8f96018a23e35eede87472d718c954f61dc3bca0bdd2"
+    },
+    {
+      "id": "everb",
+      "key": "EVERB",
+      "author": "user1303836",
+      "fxId": 27,
+      "donorAddress": 1074616560,
+      "donorSha256": "3b3f9b15f2f6addfea9fc281f5b9fdf054bf305778059b8d43db41d390f0401f",
+      "fx2Slot": 1074618440,
+      "slotSha256": "79bc740214b4d029e385d06d21e224d04e8f91b53fb26ea08ffa4e5d70964b7a",
+      "sourceSha256": "75e05aa32e0160f76b81f4d60ad1ed2cdd89148691129e9dee1118d77a528363",
+      "integers": [
+        {
+          "offset": 3,
+          "width": 1,
+          "value": 27
+        },
+        {
+          "offset": 94,
+          "width": 1,
+          "value": 64
+        },
+        {
+          "offset": 95,
+          "width": 1,
+          "value": 64
+        },
+        {
+          "offset": 96,
+          "width": 1,
+          "value": 60
+        },
+        {
+          "offset": 97,
+          "width": 1,
+          "value": 64
+        },
+        {
+          "offset": 98,
+          "width": 1,
+          "value": 64
+        },
+        {
+          "offset": 99,
+          "width": 1,
+          "value": 51
+        },
+        {
+          "offset": 100,
+          "width": 1,
+          "value": 64
+        },
+        {
+          "offset": 101,
+          "width": 1,
+          "value": 25
+        },
+        {
+          "offset": 102,
+          "width": 1,
+          "value": 0
+        },
+        {
+          "offset": 103,
+          "width": 1,
+          "value": 64
+        },
+        {
+          "offset": 104,
+          "width": 1,
+          "value": 64
+        },
+        {
+          "offset": 202,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 250,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 206,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 254,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 210,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 258,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 214,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 262,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 218,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 266,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 222,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 270,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 226,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 274,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 230,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 278,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 234,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 282,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 238,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 286,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 242,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 290,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 246,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 294,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 234,
+          "width": 4,
+          "value": 1073989400
+        },
+        {
+          "offset": 282,
+          "width": 4,
+          "value": 1074033236
+        },
+        {
+          "offset": 330,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 214,
+          "width": 4,
+          "value": 1073989536
+        },
+        {
+          "offset": 262,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 310,
+          "width": 4,
+          "value": 1073948900
+        },
+        {
+          "offset": 226,
+          "width": 4,
+          "value": 1073989536
+        },
+        {
+          "offset": 274,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 322,
+          "width": 4,
+          "value": 1073948900
+        },
+        {
+          "offset": 238,
+          "width": 4,
+          "value": 1073989536
+        },
+        {
+          "offset": 286,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 334,
+          "width": 4,
+          "value": 1073948900
+        },
+        {
+          "offset": 242,
+          "width": 4,
+          "value": 1073989536
+        },
+        {
+          "offset": 290,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 338,
+          "width": 4,
+          "value": 1073948900
+        },
+        {
+          "offset": 154,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 106,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 158,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 110,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 162,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 114,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 166,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 118,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 170,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 122,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 174,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 126,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 178,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 130,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 182,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 134,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 186,
+          "width": 4,
+          "value": 2
+        },
+        {
+          "offset": 138,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 190,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 142,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 194,
+          "width": 4,
+          "value": 128
+        },
+        {
+          "offset": 146,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 202,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 250,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 298,
+          "width": 4,
+          "value": 1073948900
+        },
+        {
+          "offset": 206,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 254,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 302,
+          "width": 4,
+          "value": 1073948900
+        },
+        {
+          "offset": 210,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 258,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 306,
+          "width": 4,
+          "value": 1073948900
+        },
+        {
+          "offset": 218,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 266,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 314,
+          "width": 4,
+          "value": 1073948900
+        },
+        {
+          "offset": 222,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 270,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 318,
+          "width": 4,
+          "value": 1073948900
+        },
+        {
+          "offset": 230,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 278,
+          "width": 4,
+          "value": 0
+        },
+        {
+          "offset": 326,
+          "width": 4,
+          "value": 1073948900
+        },
+        {
+          "offset": 398,
+          "width": 4,
+          "value": 286331153
+        },
+        {
+          "offset": 394,
+          "width": 4,
+          "value": 273
+        }
+      ],
+      "strings": [
+        {
+          "offset": 4,
+          "width": 5,
+          "value": "EVRB"
+        },
+        {
+          "offset": 9,
+          "width": 13,
+          "value": "E-Verb"
+        },
+        {
+          "offset": 22,
+          "width": 6,
+          "value": "SIZE"
+        },
+        {
+          "offset": 28,
+          "width": 6,
+          "value": "DCY"
+        },
+        {
+          "offset": 34,
+          "width": 6,
+          "value": "ABSB"
+        },
+        {
+          "offset": 40,
+          "width": 6,
+          "value": "DPTH"
+        },
+        {
+          "offset": 46,
+          "width": 6,
+          "value": "SPD"
+        },
+        {
+          "offset": 52,
+          "width": 6,
+          "value": "MIX"
+        },
+        {
+          "offset": 58,
+          "width": 6,
+          "value": "TILT"
+        },
+        {
+          "offset": 64,
+          "width": 6,
+          "value": "PRE"
+        },
+        {
+          "offset": 70,
+          "width": 6,
+          "value": "REV"
+        },
+        {
+          "offset": 76,
+          "width": 6,
+          "value": "EDCY"
+        },
+        {
+          "offset": 82,
+          "width": 6,
+          "value": "ESIZ"
+        }
+      ]
     }
   ],
-  "sourceCommit": null,
+  "sourceCommit": "7bcbafc28e91843667e03f99c91e839f690c8eb9",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
     "character": "0.1.1-experimental",
-    "miniverb": "0.2.0-experimental",
-    "tapeecho": "0.1.2-experimental",
+    "miniverb": "0.2.1-experimental",
+    "tapeecho": "0.1.3-experimental",
     "euclid": "0.1.4-experimental",
     "repitch": "0.1.2-experimental",
     "tapehead": "0.1.2-experimental",
-    "airwindows-chorus": "0.1.0-experimental",
-    "analog-bassdrum": "0.1.3-experimental",
-    "midi-scenes": "0.2.4-experimental",
+    "airwindows-chorus": "0.1.2-experimental",
+    "everb": "0.1.1-experimental",
+    "analog-bassdrum": "0.1.5-experimental",
+    "midi-scenes": "0.2.5-experimental",
     "usb-audio-out-tracks-main-cue": "0.2.0-experimental",
-    "quantizer": "0.1.2-experimental",
+    "quantizer": "0.1.3-experimental",
     "synth": "0.1.2-experimental",
     "previewvol": "0.1.2-experimental",
     "cc-map": "0.1.2-experimental",
-    "sidechain-compressor": "0.1.1-experimental",
-    "vector": "0.2.3-experimental",
+    "sidechain-compressor": "0.1.2-experimental",
+    "vector": "0.2.4-experimental",
     "playmodes": "0.1.1-experimental",
     "mute-modes": "0.1.0-experimental",
-    "recorder-loop-fix": "0.1.0-experimental"
+    "recorder-loop-fix": "0.1.0-experimental",
+    "poly8": "0.2.7-experimental",
+    "output-matrix": "0.1.0-experimental",
+    "euclid-seq": "0.1.0-experimental"
   }
 }

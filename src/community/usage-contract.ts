@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 export const USAGE_EVENTS = ['page_view', 'configuration_started', 'build_succeeded', 'build_failed', 'firmware_download_requested', 'configuration_exported', 'support_opened', 'support_link_opened', 'discord_member_prompt_shown', 'discord_member_join_clicked', 'discord_member_dismissed', 'discord_visitor_prompt_shown', 'discord_visitor_signup_clicked', 'discord_visitor_join_clicked', 'discord_visitor_dismissed', 'discord_welcome_join_clicked'] as const
 export type UsageEvent = typeof USAGE_EVENTS[number]
 /** What a public announcement card counts, for every viewer; each report names one public announcement and nothing else. */

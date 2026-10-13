@@ -1,0 +1,27 @@
+{
+  "moduleVersion": "0.2.4-experimental",
+  "sourceSha256": "1255e99133cbd8d6d2587c95f93462ea80fccbd169462a2acb02aedbd346cbd3",
+  "imageSha256": "cabcc2967a23a0ef719a38de444aec1b68662c12bb9057093d475b89424d0026",
+  "result": "passed",
+  "checks": {
+    "twelveSrcControlsEdited": true,
+    "otherSevenTracksUnchanged": true,
+    "poolBrowsingPreservesSettings": true,
+    "nativeSampleEditorAccessible": true,
+    "bothPoolListsAccessible": true,
+    "stepsAdvanceAfterPlay": true
+  },
+  "stepsAfterPlay": [
+    13,
+    13,
+    13,
+    13,
+    13,
+    13,
+    13,
+    13
+  ],
+  "limitations": [
+    "Stopped edits and menu browsing are current evidence. Live editing, stock file loading/sample confirmation, and Flex/Static audio continuity retain historical 0.2.3 evidence only. No physical hardware or DSP audio pass."
+  ]
+}

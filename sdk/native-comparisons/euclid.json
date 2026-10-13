@@ -22,10 +22,10 @@
   ],
   "summary": {
     "selections": 98,
-    "built": 42,
+    "built": 44,
     "identicalOutright": 0,
-    "identicalOutsidePlatformWrites": 42,
-    "refused": 56,
+    "identicalOutsidePlatformWrites": 44,
+    "refused": 54,
     "mismatches": 0
   },
   "selections": [
@@ -142,8 +142,8 @@
       },
       "native": {
         "bytes": 1114986,
-        "osSha256": "e2b81ed12ad85566c979d17450faf15b1aef9a7b1eb84403acb37d412e5626e1",
-        "maskedOsSha256": "540fd2ae47c0a16c2373f1b17fe5d4569cab3ac37cf390022cef59b0f088e273"
+        "osSha256": "c348e35bb1d1c816f49652cd1e84934db8d43fdee2d11226f4bd3e23c91bcc4c",
+        "maskedOsSha256": "8b1c37b64b516b93e67fe6bc782b3e2b59545bc3d22143903461f37d80101f88"
       },
       "result": "masked"
     },
@@ -174,8 +174,8 @@
       },
       "native": {
         "bytes": 1114986,
-        "osSha256": "6ac4c742d1b41e9d2414e42387f8cdc23cba3e916d47eb66e406b1dec307e6a6",
-        "maskedOsSha256": "8e61c40cf019a5ceb1b490040a4ba2c2df9913444cf591ec092b13a90c8527d8"
+        "osSha256": "f29f4d9846a2e19b568b6857c0fc09b734155d9d104f5431ac674014f1c419a8",
+        "maskedOsSha256": "2ca64a1b7b9c43141a86e78da11d486f7ce57384e4511ad5507040a0e3d09d2a"
       },
       "result": "masked"
     },
@@ -442,15 +442,16 @@
           "COMPRESSOR",
           "LO-FI",
           "DELAY",
-          "PLATE REV",
           "DARK REV",
           "EUCLID"
         ]
       },
       "native": {
-        "refused": "ANALOG BD's DSP source currently composes with stock effects only"
+        "bytes": 1268238,
+        "osSha256": "578475855500d2cc9c2b8161b023d982f7ee07dcaca708d47c2296656c7dbb59",
+        "maskedOsSha256": "8f1fcf770e81b16cd171def522b57c72e9f2e4896ea9e9bc36ea59ba410eea1b"
       },
-      "result": "refused"
+      "result": "masked"
     },
     {
       "moduleIds": [
@@ -477,9 +478,11 @@
         ]
       },
       "native": {
-        "refused": "ANALOG BD's DSP source currently composes with stock effects only"
+        "bytes": 1268238,
+        "osSha256": "a79a65b61a99ce395b54fd6da4cc119f21e9eb82fa0d6d49d7169aca68bddd15",
+        "maskedOsSha256": "f8ec23b0ce884ab811aba1343a153bc5cd2eb97ebf5f8ef0b7aef34cbdc8b955"
       },
-      "result": "refused"
+      "result": "masked"
     },
     {
       "moduleIds": [
@@ -669,9 +672,9 @@
         ]
       },
       "native": {
-        "bytes": 1127356,
-        "osSha256": "8e9849b313943b64a74191d0ddcb246f416e2883b3b803f734279e12fea396eb",
-        "maskedOsSha256": "5f177ae889cc26c80d858c692595c1aee2e1db14cbd21e8a011418484a39b597"
+        "bytes": 1127373,
+        "osSha256": "d3407c81569ef2d0ca455772398032bae9b1df6ef0ad64668c36395ff5f25eb9",
+        "maskedOsSha256": "d66d0e0d93636404dea5e85cc5b0269cf18180220c6e001d9e27536fdf20f3fa"
       },
       "result": "masked"
     },
@@ -700,9 +703,9 @@
         ]
       },
       "native": {
-        "bytes": 1127356,
-        "osSha256": "33c7343062e0f1773c70ff180baac675aba9f7626518fc6cc14846b20cb81011",
-        "maskedOsSha256": "05910dfbfc703e9bd9b5a0c47afa931a5071bba09000f62ef8d054d17ea50769"
+        "bytes": 1127373,
+        "osSha256": "012e7f4834ae3590a418e1186d9bace60f9bd61c6d41b11d5a0f3c52d222a280",
+        "maskedOsSha256": "231e3514438ba28851423f24ec30fa11d47886b8d04547777cbcec0aa8515ad9"
       },
       "result": "masked"
     },
@@ -970,9 +973,9 @@
         ]
       },
       "native": {
-        "bytes": 1122907,
-        "osSha256": "19f0ceb10ed8e6f55ce8f60ee9f43da94b8b56f194f9e90305100fc00d334ff8",
-        "maskedOsSha256": "e8820b3f58dff2453f5a844254261a5330b0f1c9114476171d1b435b0eb8b398"
+        "bytes": 1123175,
+        "osSha256": "7aaa8e06e062e8c408a4be10e000cb1f0859e74543e19ab8ba584dd4a5f15a4a",
+        "maskedOsSha256": "41c87f90ba9e7382034a59c371ac5cf2ff01b05dff16b2ee14c2dad75e20e600"
       },
       "result": "masked"
     },
@@ -1001,9 +1004,9 @@
         ]
       },
       "native": {
-        "bytes": 1122907,
-        "osSha256": "e461960845e8b58af1b3a83b85b4673626ed0fb26c44302419513b97b3093e05",
-        "maskedOsSha256": "689d73cb6b895cb50668fb2e8efcff4f3c5b9990163b6510f8c4a696801e328a"
+        "bytes": 1123175,
+        "osSha256": "b2b22a6ea9459738609db6449bbc1e726996a81bf1bfee6d1eec57098b0c745c",
+        "maskedOsSha256": "090340d9fe92d9d3ee0bf64ab87d2235bb522a3cf8f07a1f1427a0f81ce1efde"
       },
       "result": "masked"
     },
@@ -2466,9 +2469,9 @@
         ]
       },
       "native": {
-        "bytes": 1229993,
-        "osSha256": "031f333d8735a1dc5d3270177cdf1dae6746e4c190521ba8402f3b9dfda8e073",
-        "maskedOsSha256": "d692114a156e817b7a5aa010838e5346682d8e6f1f14ff8d1e7b9bca16565c58"
+        "bytes": 1230247,
+        "osSha256": "1d8ffe47d06db831ca1b95c225e2053a92312e8971ea11503dfe637393917703",
+        "maskedOsSha256": "f0b5a4121dbeb5a8e9fc6ad53fe07a098815dd6357cc86e16d418ee681aaf889"
       },
       "result": "masked"
     },
@@ -2505,9 +2508,9 @@
         ]
       },
       "native": {
-        "bytes": 1229993,
-        "osSha256": "9546418070f29ce1a30e1f63e114cf19d9447494a70abb756e609eb003ff0050",
-        "maskedOsSha256": "66ce022d21c181de840fe27a7a748cc0bbae4470a18a89af0b9bcd776b95c366"
+        "bytes": 1230247,
+        "osSha256": "c4f04f9e3be267a3a387c9aa4a0a14c8f1fba1516f698336a4dae7c6a77cfae0",
+        "maskedOsSha256": "d69998f2fd0bd95238907944ecfbd4e23446f5e1ae64a1ca8c90e4c5f22b5eaf"
       },
       "result": "masked"
     },
@@ -2723,9 +2726,9 @@
         ]
       },
       "native": {
-        "bytes": 1127356,
-        "osSha256": "6acdb9e4405e15d827313964ca199e9a6e00415cba6d6038dbd338f1563466b4",
-        "maskedOsSha256": "c449def41232d2035ea80c113231c696ab1036d23a1af914e3a4682d4fa3232e"
+        "bytes": 1127373,
+        "osSha256": "f67d37be76a24721fa5dc8aa2771e2fe55db651979a88c822d92af0dd9d6c472",
+        "maskedOsSha256": "b5b712810642ff349189cacb1fd82780de0edaf532131454cf542df7994beb56"
       },
       "result": "masked"
     },
@@ -2759,9 +2762,9 @@
         ]
       },
       "native": {
-        "bytes": 1127356,
-        "osSha256": "ca309a36cfca29560d481367a1e78df91dc9f4a429677c9faedd54adb689cabe",
-        "maskedOsSha256": "f5be297e26c2183e1a50d9fa50fbf731c37abe924f835cc86208fef5a824ffdb"
+        "bytes": 1127373,
+        "osSha256": "c451c62be43be62bd8b008eb81e7ec98bc34a4a4b4faf79a95d7dffe572a66d5",
+        "maskedOsSha256": "9bf729d824250eafd0fda25d92bd407543a923f65429c08dc907b68fe2b544dc"
       },
       "result": "masked"
     },
@@ -3322,9 +3325,9 @@
         ]
       },
       "native": {
-        "bytes": 1227795,
-        "osSha256": "26c06399cf6a4cc7e878bdb72ef71065ba3b5be06305ae97083a4cac744f0170",
-        "maskedOsSha256": "dc78dbe1bda40143f940358dc47b22d4f9ceeebeb5476bac41fa5dc4c49c656c"
+        "bytes": 1228059,
+        "osSha256": "f726820fac1789823c706d661a95f1d352a1bcdf31df8700a15644238bb56b3f",
+        "maskedOsSha256": "dd18c595185b7af0203587b64f4796b1cadc79a29e050962bda239a9832aca36"
       },
       "result": "masked"
     },
@@ -3362,9 +3365,9 @@
         ]
       },
       "native": {
-        "bytes": 1227795,
-        "osSha256": "fb83c9ef5c698d587b80b1259734edd6af3cf5517e5d08b1a7135890eac175ec",
-        "maskedOsSha256": "b57e661e2288f8fcba14daa79e1e2cb03fd25dbef6b960b0d7a87002ec3f7aa7"
+        "bytes": 1228059,
+        "osSha256": "059f38e65e62dfd8f7b68d8c56eb5f3730f3cf9dce59c84e9add5b764651e1c5",
+        "maskedOsSha256": "a81b40473359abc1b55014f9add989ae8bf5c362c4c4e33984df0bcb4cda1ba8"
       },
       "result": "masked"
     },
@@ -3411,9 +3414,9 @@
         ]
       },
       "native": {
-        "bytes": 1225076,
-        "osSha256": "6ec7a263078aa0131badc079790dd4a437c3421124fe52a5acd2ceb3867299d3",
-        "maskedOsSha256": "438af5136f3c0f70cb7fb5254be684c4af919df8d506f84bb669e22dd93d6ae8"
+        "bytes": 1225339,
+        "osSha256": "c76e99585d16aecaac739cc95ac05dbd89b2a61b11c02b46911d397491654c00",
+        "maskedOsSha256": "42f3678493ba20a5c1599bf07610d1e75300267ebcfbfe8409d4252e679ea807"
       },
       "result": "masked"
     },
@@ -3449,9 +3452,9 @@
         ]
       },
       "native": {
-        "bytes": 1225076,
-        "osSha256": "e79b5e9a2e4c8b3acbcaf90fcc7cb181c63e3ba808a00e21dfc26405a7805e8c",
-        "maskedOsSha256": "d9d1adfc428f9976b113dec38f5668acf4b130247aca82b50240a953f321b14b"
+        "bytes": 1225339,
+        "osSha256": "ce62ca87837e5756b00822ed5728398b7e69383451dd048f3ac68d12b111fee5",
+        "maskedOsSha256": "bade10c2d424ba0251e1f7f3e99d31bf2cc9abfe7f2cfb9375bef3a0e7b78b31"
       },
       "result": "masked"
     },
@@ -3575,8 +3578,8 @@
       },
       "native": {
         "bytes": 1117211,
-        "osSha256": "e09f76b28dfe44b8e0945ef379b18f0447170b7a559969a0004530e9ed22059f",
-        "maskedOsSha256": "e4b474c76bfdc4a9a437430705aa09d50f8ccd78e6d91c11f6c190631aea16a4"
+        "osSha256": "537b523ed2636963ca0309ffa24b780e496061437b6a916fc4a4f718748ea8bb",
+        "maskedOsSha256": "f9901564abfada4605995180c0636e91b9c532cd1776da983004c8925bc3b3ef"
       },
       "result": "masked"
     },
@@ -3609,8 +3612,8 @@
       },
       "native": {
         "bytes": 1117211,
-        "osSha256": "7655cbdb221e67f57a8376c99a20b07d29dbc87979e3432e7f67e739c6a1ae70",
-        "maskedOsSha256": "d99895af1b80512ccb54876898255c1e14e4875d7e5001c00e3a3cc29aef2023"
+        "osSha256": "79203fd3ac64d75dbd990338f8c34c550f524970fe2b68fb8bc49a9bd67dc48e",
+        "maskedOsSha256": "ae44a32f063988cd4aacd0703d13b8528132ee901c5efecb9ac9fadf5bbdc6d4"
       },
       "result": "masked"
     },
@@ -4089,9 +4092,9 @@
         ]
       },
       "native": {
-        "bytes": 1229564,
-        "osSha256": "eac0625d882a432bc79243edecf3c6c2ed097eec76ce34b236e014cc1d2cd368",
-        "maskedOsSha256": "411c48ed0433df9acb5ee78b7d65e7b0de085853b899c822699681c63b33bc95"
+        "bytes": 1229581,
+        "osSha256": "70d04ddb25201202c45736da2c30f429f8a2e2b76a2aa995ab22e1cd2ab42297",
+        "maskedOsSha256": "f3238fe4358ad198a96f430876d47f0b7a229b953a73830248d39fb9d1234cf9"
       },
       "result": "masked"
     },
@@ -4126,9 +4129,9 @@
         ]
       },
       "native": {
-        "bytes": 1229564,
-        "osSha256": "a8010f0e87547f2cf8e97bf14eb716a4485d2012b7aa58dbc36f8716d33c5349",
-        "maskedOsSha256": "ee7aaaa5adde9a64d15cd3f2a52bb25d155d2c492fe9c0ed29a61f1d0e8368aa"
+        "bytes": 1229581,
+        "osSha256": "defe1244637ad998855e9bff0fdf5531955001fe7d6104bc626e4689f6e78f6c",
+        "maskedOsSha256": "c84eaf0423d6b7b6e2dcc0f72dabaa0bdc88b12baff24ab9690c796d3e4ed443"
       },
       "result": "masked"
     },
@@ -4177,8 +4180,8 @@
       },
       "native": {
         "bytes": 1219877,
-        "osSha256": "6765742f443b7595cbff7f279486bafab38a21e1bfa89d008e0bd24dd64d63ec",
-        "maskedOsSha256": "1c47ca3ef440907fe64ffe45a78dbcb74981f46918e0eca43f7b7452681ab316"
+        "osSha256": "7f76e3285cad5052e0e636cce942a044163c8ef37e8d8b0678141b5655c8faa6",
+        "maskedOsSha256": "2eb7e8ebd05045302f8b9055229e989dccb8886be816e523cf0fd5ef8bb99c95"
       },
       "result": "masked"
     },
@@ -4215,8 +4218,8 @@
       },
       "native": {
         "bytes": 1219877,
-        "osSha256": "f49e47f19380afa1613da5df8d68f019f41421a7d3e5baf57768fc2a628943e0",
-        "maskedOsSha256": "cd9512d6340c92129abf3701c8add669c8fb8f53927801ba7817a1df57390385"
+        "osSha256": "325c1ff7d9cb2d41e923fbc88a7029597ba3a16b2caedab75a6cacd3df114d0c",
+        "maskedOsSha256": "6a1efca3a504bd0716fd59adef8971a96528dfdd46020e46c06962d296fc8d68"
       },
       "result": "masked"
     }

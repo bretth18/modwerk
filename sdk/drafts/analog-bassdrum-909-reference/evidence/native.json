@@ -1,0 +1,553 @@
+{
+  "schema": 1,
+  "moduleId": "analog-bassdrum",
+  "candidateVersion": "0.1.4-experimental",
+  "date": "2026-10-09",
+  "baseFiles": {
+    "modules/analog-bassdrum/control.s": "644f10fbc534d8351424e55ee96c2d0ff2f39a1b691ad8a695422d1c05e37a3f",
+    "modules/analog-bassdrum/engine.s": "c86a6ac24326fb52f71dd766b1ccc25e5dfd8511028b162459447c279da48425",
+    "modules/analog-bassdrum/machine.s": "07dc37b1c0bd0f061aabe27782c67df9dcd22769e9c080efbfdf354530d83b8d",
+    "modules/analog-bassdrum/manifest.py": "20fa1f744630354b3986a3ad82ac6a41744345796dc783891a4c9f0bd81c787e",
+    "modules/analog-bassdrum/ab_glue.asm": "c78dc31dfcfc7a0c6f10ae24b39744a88bed5211346bcae4f6931e2e6489223c",
+    "modules/analog-bassdrum/dsp808.py": "3d61ba9c258c319d90d7beb47f6cbc7dafb7336c49d8386912478d284cef603d",
+    "modules/analog-bassdrum/dsp909.py": "480a064a304380079019125eef98e9c68da26bd5408bbe38845563ccac94d2e4",
+    "modules/analog-bassdrum/octamod.module.json": "9c3df5028dbf4e604b4c4523555ccddebb9eac42a2ec4dee6ff87d8647d0c8a0",
+    "modules/analog-bassdrum/fit909.json": "e1e97b493b6c232bf6602ca224212e19f2aef3cff65fff404e7876648d228390",
+    "modules/analog-bassdrum/control.c": "29f392c7e007aaa695076eff0c897729a941676ff582e4bb17957074d56ceac5",
+    "modules/analog-bassdrum/bd909.asm": "66f1abde9715b49a145daa1868d00b1ea73989bee2a8e904b9c44149a4d4afc8",
+    "modules/analog-bassdrum/bd808.asm": "e7306bd284e9bca067cffc54dcbfb18ae7a0fc7b3a27253a246e58898ae9ee92",
+    "tools/harness/bd909.py": "a317bf0aab93a1465cb8e9900b6672ed72e6d91a5b4eee1778e481d8b863d534",
+    "tools/harness/bd808.py": "540f2ee7c4d79bca0970abe2937ffd294c695aa623e711875778295252017598",
+    "tools/harness/bd909_host/bd909_host.cpp": "1c25ff9be510d6941efe504a6eae7ebbcd9028a555a2b8c160290fcf02ad3195",
+    "tools/build/ab_image.py": "d51e8face61e0642f24743cc8081b1d258943f5040a3b34d003cf34a4f797c14",
+    "tools/build/ab_records.py": "71f44c4c54b281b5c813ffbab3abb98501620ad980582367004a1daeb2eeca45"
+  },
+  "candidateFiles": {
+    "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+    "fit909.json": "6917d613b5033069f226b9f6a440f6eefd935e596452546d5bc27b73c5e3dd08",
+    "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f",
+    "apply.py": "c4e2db723e9a70aacd4c915bdf73efdb76ce057914b6b25c614d126aa5626ce8",
+    "run.py": "360660d8e74c7fe8d0fa4496660235a9d5a28e2f2a4dde7baa3cba47d599e3da",
+    "calibrate.py": "5ce4b5b7bf9125291f9dd672d5bd455718609f405875dc81eaa8cba8bad376b4",
+    "qualification/multi_host.cpp": "c49d11ead0705bd9b3f92f8e22735f1ff22fdd430ab3cbe1e03355641cb71888",
+    "qualification/multi-test.py": "e209ed619bfc1ff9e2c44a2914ed59e2d96ebb144aca677886b658cb9065cfd9",
+    "compare.py": "b2fe62a216cd0cb845c8b09425aa1570fc2c37a01c2317344b702b65ffeb10f5",
+    "qualification/port.py": "701876d0fd8ee26eb798d743cffd4d18fad1e603994a78b80bb359e17046a4f9",
+    "qualification/source_probe.py": "dc3e3411243a8b0b293b25702ae32a17942cd048699e0fb77618d60bd4008488",
+    "qualification/ranges.py": "91f5e1ec30ab9dd7ba67e7a090960d1e2c9f0b5fb8aebabb6b26c5bd59b3a0b1",
+    "qualification/costs.py": "f27f6519324670caaca87bdad71fe18cea791e150e2becff47a3624b1eedc916"
+  },
+  "toolchainFiles": {
+    "build/source/dsp_host/dsp_asm": "cea81ed254112d49743ec9f25d753308e11e4011fd158a4612cf1e3db70b3fec",
+    "build/source/disassemble/dsp56kDisassemble": "c8d95fc5cf57a7fd3e46bb69b6386e0f6d9e33aa3e078c291ce98c89ad43cbed"
+  },
+  "native": {
+    "reference": [
+      {
+        "engine": "909",
+        "patch": "sat0",
+        "errorDb": -76.92644084942158,
+        "rmsAbsoluteError": 3.606331439959316e-05,
+        "peakAbsoluteError": 8.296966552734375e-05,
+        "quietQuantizationCase": false,
+        "maxInstructionsPerBlock": 6523,
+        "baselineMaxInstructionsPerBlock": 6136
+      },
+      {
+        "engine": "909",
+        "patch": "sat64",
+        "errorDb": -89.50695848652205,
+        "rmsAbsoluteError": 1.164561874797531e-05,
+        "peakAbsoluteError": 8.249282836914062e-05,
+        "quietQuantizationCase": false,
+        "maxInstructionsPerBlock": 6523,
+        "baselineMaxInstructionsPerBlock": 6136
+      },
+      {
+        "engine": "909",
+        "patch": "sat127",
+        "errorDb": -86.1990110032755,
+        "rmsAbsoluteError": 1.9835776724993784e-05,
+        "peakAbsoluteError": 0.0004711151123046875,
+        "quietQuantizationCase": false,
+        "maxInstructionsPerBlock": 6523,
+        "baselineMaxInstructionsPerBlock": 6136
+      },
+      {
+        "engine": "909",
+        "patch": "endpoint0",
+        "errorDb": -0.8684483155386618,
+        "rmsAbsoluteError": 1.2866153062669508e-06,
+        "peakAbsoluteError": 1.430511474609375e-05,
+        "quietQuantizationCase": true,
+        "maxInstructionsPerBlock": 6523,
+        "baselineMaxInstructionsPerBlock": 6136
+      },
+      {
+        "engine": "909",
+        "patch": "endpoint127",
+        "errorDb": -91.24879812113419,
+        "rmsAbsoluteError": 1.823870494728516e-05,
+        "peakAbsoluteError": 0.0008831024169921875,
+        "quietQuantizationCase": false,
+        "maxInstructionsPerBlock": 6523,
+        "baselineMaxInstructionsPerBlock": 6136
+      },
+      {
+        "engine": "909",
+        "patch": "moving-depth-sat-retriggers",
+        "errorDb": -89.11756815458745,
+        "maxInstructionsPerBlock": 6529
+      },
+      {
+        "engine": "808",
+        "patch": "sat0",
+        "errorDb": -97.47709645379686,
+        "rmsAbsoluteError": 2.9647426824788267e-06,
+        "peakAbsoluteError": 7.271766662597656e-06,
+        "quietQuantizationCase": false,
+        "maxInstructionsPerBlock": 4258,
+        "baselineMaxInstructionsPerBlock": 4258
+      },
+      {
+        "engine": "808",
+        "patch": "sat64",
+        "errorDb": -105.38791115821957,
+        "rmsAbsoluteError": 7.39999580514693e-07,
+        "peakAbsoluteError": 8.463859558105469e-06,
+        "quietQuantizationCase": false,
+        "maxInstructionsPerBlock": 4258,
+        "baselineMaxInstructionsPerBlock": 4258
+      },
+      {
+        "engine": "808",
+        "patch": "sat127",
+        "errorDb": -98.5900675277213,
+        "rmsAbsoluteError": 1.6654759707358705e-06,
+        "peakAbsoluteError": 5.1856040954589844e-05,
+        "quietQuantizationCase": false,
+        "maxInstructionsPerBlock": 4258,
+        "baselineMaxInstructionsPerBlock": 4258
+      },
+      {
+        "engine": "808",
+        "patch": "endpoint0",
+        "errorDb": -36.78579580095005,
+        "rmsAbsoluteError": 8.179774475508766e-07,
+        "peakAbsoluteError": 3.2186508178710938e-06,
+        "quietQuantizationCase": true,
+        "maxInstructionsPerBlock": 4258,
+        "baselineMaxInstructionsPerBlock": 4258
+      },
+      {
+        "engine": "808",
+        "patch": "endpoint127",
+        "errorDb": -90.8349464349112,
+        "rmsAbsoluteError": 4.127091749556454e-06,
+        "peakAbsoluteError": 0.0003088712692260742,
+        "quietQuantizationCase": false,
+        "maxInstructionsPerBlock": 4258,
+        "baselineMaxInstructionsPerBlock": 4258
+      },
+      {
+        "engine": "808",
+        "patch": "moving-depth-sat-retriggers",
+        "errorDb": -106.39710516653763,
+        "maxInstructionsPerBlock": 4260
+      }
+    ],
+    "unchanged808": [
+      {
+        "patch": "sat0",
+        "samples": 22048,
+        "bitIdentical": true
+      },
+      {
+        "patch": "sat64",
+        "samples": 22048,
+        "bitIdentical": true
+      },
+      {
+        "patch": "sat127",
+        "samples": 22048,
+        "bitIdentical": true
+      },
+      {
+        "patch": "endpoint0",
+        "samples": 22048,
+        "bitIdentical": true
+      },
+      {
+        "patch": "endpoint127",
+        "samples": 22048,
+        "bitIdentical": true
+      }
+    ],
+    "combined": [
+      {
+        "core": "A",
+        "engine": "909",
+        "codeWords": 997,
+        "maxInstructionsPerBlock": 6563,
+        "audioBitIdenticalToStandalone": true
+      },
+      {
+        "core": "A",
+        "engine": "808",
+        "codeWords": 997,
+        "maxInstructionsPerBlock": 4294,
+        "audioBitIdenticalToStandalone": true
+      },
+      {
+        "core": "B",
+        "engine": "909",
+        "codeWords": 997,
+        "maxInstructionsPerBlock": 6563,
+        "audioBitIdenticalToStandalone": true
+      },
+      {
+        "core": "B",
+        "engine": "808",
+        "codeWords": 997,
+        "maxInstructionsPerBlock": 4294,
+        "audioBitIdenticalToStandalone": true
+      }
+    ],
+    "previews": [
+      {
+        "name": "current-013",
+        "peak": 0.9999998807907104,
+        "limitedSamples": 52,
+        "sha256": "d67ca4bb0e1e5db040d668383cca7835985579483c6273b16b7a62fa8f3080e0",
+        "controls": [
+          49,
+          100,
+          0,
+          0,
+          64,
+          0,
+          1,
+          72,
+          0,
+          64,
+          64,
+          0
+        ],
+        "bpm": 70,
+        "hitControls": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            32
+          ],
+          [
+            0,
+            64
+          ],
+          [
+            0,
+            96
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            64
+          ],
+          [
+            32,
+            64
+          ],
+          [
+            64,
+            64
+          ],
+          [
+            96,
+            64
+          ],
+          [
+            127,
+            64
+          ]
+        ]
+      },
+      {
+        "name": "candidate-014",
+        "peak": 0.6597061157226562,
+        "limitedSamples": 0,
+        "sha256": "af9cdcad02e80e88aa000ad516789177d930f3955eb88671ace63f520f76a08b",
+        "controls": [
+          49,
+          100,
+          0,
+          0,
+          64,
+          0,
+          1,
+          72,
+          0,
+          64,
+          64,
+          0
+        ],
+        "bpm": 70,
+        "hitControls": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            32
+          ],
+          [
+            0,
+            64
+          ],
+          [
+            0,
+            96
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            127
+          ],
+          [
+            0,
+            64
+          ],
+          [
+            32,
+            64
+          ],
+          [
+            64,
+            64
+          ],
+          [
+            96,
+            64
+          ],
+          [
+            127,
+            64
+          ]
+        ]
+      }
+    ],
+    "triggerOffsets": [
+      {
+        "engine": "909",
+        "offsets": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "untriggeredSilence": true,
+        "noEarlyOutput": true,
+        "firstNonzeroAfterRequestedSample": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "engine": "808",
+        "offsets": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ],
+        "untriggeredSilence": true,
+        "noEarlyOutput": true,
+        "firstNonzeroAfterRequestedSample": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "instanceIsolation": [
+      {
+        "core": "A",
+        "simultaneousVoices": 4,
+        "engines": [
+          "909",
+          "808",
+          "909",
+          "808"
+        ],
+        "differentPatches": true,
+        "editingAndResetIsolation": true,
+        "audioBitIdenticalToEachVoiceAlone": true
+      },
+      {
+        "core": "B",
+        "simultaneousVoices": 4,
+        "engines": [
+          "909",
+          "808",
+          "909",
+          "808"
+        ],
+        "differentPatches": true,
+        "editingAndResetIsolation": true,
+        "audioBitIdenticalToEachVoiceAlone": true
+      }
+    ],
+    "neighborVariation": {
+      "equalControlHits": 8,
+      "peakValues": [
+        0.6597061157226562,
+        0.6560206413269043,
+        0.625554084777832,
+        0.6264944076538086,
+        0.657050609588623,
+        0.629427433013916,
+        0.6424965858459473,
+        0.6591558456420898
+      ],
+      "peakCoefficientOfVariation": 0.022287523769395457,
+      "deterministicReplayBitIdentical": true,
+      "pulseSeedRange": [
+        0.9199999999999999,
+        1.0
+      ],
+      "randomTriggerDelay": false,
+      "randomPitch": false
+    }
+  },
+  "physicalHardware": "untested",
+  "firmwarePersistence": "untested for candidate",
+  "worstCaseChipCycles": "unmeasured",
+  "fullChainAndMaximumFxLoad": "untested",
+  "publication": "Private candidate; approved public 0.1.3 remains unchanged",
+  "privateFirmwareLabel": "AB014REF05",
+  "sourceFiles": {
+    "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+    "fit909.json": "6917d613b5033069f226b9f6a440f6eefd935e596452546d5bc27b73c5e3dd08",
+    "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+  }
+}

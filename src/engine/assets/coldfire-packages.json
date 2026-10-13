@@ -176,7 +176,7 @@
     {
       "label": "tapeecho",
       "moduleId": "tapeecho",
-      "version": "0.1.2-experimental",
+      "version": "0.1.3-experimental",
       "key": "TAPE ECHO",
       "author": "repeat98",
       "cpu": "54455",
@@ -191,28 +191,32 @@
       "sha256": "0bd2782079a4890b6506cd44cd8d9f0db917bfc96e71b03821c05c9c555b4ba2"
     }
   ],
-  "sourceCommit": null,
+  "sourceCommit": "7bcbafc28e91843667e03f99c91e839f690c8eb9",
   "moduleVersions": {
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
     "character": "0.1.1-experimental",
-    "miniverb": "0.2.0-experimental",
-    "tapeecho": "0.1.2-experimental",
+    "miniverb": "0.2.1-experimental",
+    "tapeecho": "0.1.3-experimental",
     "euclid": "0.1.4-experimental",
     "repitch": "0.1.2-experimental",
     "tapehead": "0.1.2-experimental",
-    "airwindows-chorus": "0.1.0-experimental",
-    "analog-bassdrum": "0.1.3-experimental",
-    "midi-scenes": "0.2.4-experimental",
+    "airwindows-chorus": "0.1.2-experimental",
+    "everb": "0.1.1-experimental",
+    "analog-bassdrum": "0.1.5-experimental",
+    "midi-scenes": "0.2.5-experimental",
     "usb-audio-out-tracks-main-cue": "0.2.0-experimental",
-    "quantizer": "0.1.2-experimental",
+    "quantizer": "0.1.3-experimental",
     "synth": "0.1.2-experimental",
     "previewvol": "0.1.2-experimental",
     "cc-map": "0.1.2-experimental",
-    "sidechain-compressor": "0.1.1-experimental",
-    "vector": "0.2.3-experimental",
+    "sidechain-compressor": "0.1.2-experimental",
+    "vector": "0.2.4-experimental",
     "playmodes": "0.1.1-experimental",
     "mute-modes": "0.1.0-experimental",
-    "recorder-loop-fix": "0.1.0-experimental"
+    "recorder-loop-fix": "0.1.0-experimental",
+    "poly8": "0.2.7-experimental",
+    "output-matrix": "0.1.0-experimental",
+    "euclid-seq": "0.1.0-experimental"
   }
 }

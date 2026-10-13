@@ -123,6 +123,8 @@ jobs:
           bash scripts/build-elemod-isolated.sh "$GITHUB_WORKSPACE" "$RUNNER_TEMP/elemod-first" "$image"
           bash scripts/build-elemod-isolated.sh "$GITHUB_WORKSPACE" "$RUNNER_TEMP/elemod-second" "$image"
           diff --recursive "$RUNNER_TEMP/elemod-first" "$RUNNER_TEMP/elemod-second"
+      - name: Require current source-only release exports to reproduce from source
+        run: node scripts/verify-elemod-release-exports.mjs "$RUNNER_TEMP/elemod-first"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: elemod-source-${{ github.event.pull_request.head.sha }}
@@ -140,7 +142,19 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+      - name: Check upload transactions and malformed frames without firmware
+        run: sh sdk/runtime/upload/tests/run_host.sh
+      - name: Check private Elekloader source recipes with synthetic bytes only
+        run: python3 -B sdk/machines/octatrack/elekloader/test_recipe.py
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+        with:
+          # The Dockerfile still verifies the exact pinned image digests.
+          buildkitd-config-inline: |
+            [registry."docker.io"]
+              mirrors = ["mirror.gcr.io"]
       - name: Prepare pinned release toolchain
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
@@ -156,13 +170,20 @@ jobs:
         run: |
           image=$(docker image inspect modwerk-source-tools --format '{{.Id}}')
           bash scripts/build-modules-isolated.sh "$GITHUB_WORKSPACE" "$RUNNER_TEMP/octatrack-source" "$image"
+      - name: Compile the freestanding upload controller with the pinned ColdFire tools
+        run: |
+          image=$(docker image inspect modwerk-source-tools --format '{{.Id}}')
+          mkdir -p "$RUNNER_TEMP/upload-source"
+          docker run --rm --network none --cap-drop ALL --security-opt no-new-privileges --read-only \
+            --user "$(id -u):$(id -g)" --cpus 1 --memory 256m --pids-limit 64 \
+            --tmpfs /tmp:rw,nosuid,nodev,noexec,size=32m \
+            --mount "type=bind,source=$GITHUB_WORKSPACE/sdk/runtime/upload,target=/source,readonly" \
+            --mount "type=bind,source=$RUNNER_TEMP/upload-source,target=/output" \
+            --entrypoint python3 "$image" -B /source/compile.py --output /output/compiled
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: octatrack-source-${{ github.sha }}
           path: ${{ runner.temp }}/octatrack-source/packages
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 24
       - run: npm ci
       - name: Require compiled packages to reproduce the committed, native-verified packages
         run: node scripts/import-module-build.mjs "$RUNNER_TEMP/octatrack-source/packages" --development --check-only --verify-existing

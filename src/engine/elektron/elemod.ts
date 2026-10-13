@@ -5,12 +5,13 @@
 // bytes it expects; "stock" parts are copied from the owner's own, hash-checked image. No firmware is embedded here.
 import { sha256Hex } from './hash.ts'
 import { PCREL, decodeColdFire, readerAt, wholeInstructions } from './coldfire-isa.ts'
+import type { DigiMachine } from './ele3.ts'
 
 export class ModError extends Error {}
 
 export type LinkRelease = { version: string; syxSha256: string; mainSha256: string; mainLength: number }
 export type LinkDevice = {
-  key: string; machine: 'digitakt' | 'digitone'; name: string; mainLoad: number; releases: LinkRelease[]
+  key: string; machine: DigiMachine; name: string; sysexId: number; mainLoad: number; releases: LinkRelease[]
   areas: Record<string, [number, number]>; ddr: [number, number]; sramCode: [number, number]; fastTable: string; protected: [number, number, string][]
 }
 
@@ -18,6 +19,7 @@ export type LinkDevice = {
 export const LINK_DEVICES: LinkDevice[] = [
   {
     key: 'digitakt-mk1', machine: 'digitakt', name: 'Digitakt mk1', mainLoad: 0x40000400,
+    sysexId: 0x0a,
     releases: [
       { version: '1.53', syxSha256: '9bdd44bb6102fb25c143cfab97bc92b7a89c463f795d3112dce89771e29bcc92', mainSha256: '4b47a9507758ca5669ca02ab2c0374d2c04c98aece445408295cc1dcb265c5df', mainLength: 2475584 },
       { version: '1.54', syxSha256: 'f78ba80fa7b1da5fb0e1ff61ad61e9e71aafe79f4364fc49679f3651353e3cf6', mainSha256: '5c58bf9e3949ef09977c5fc007a61e8d026931f67f1621238379dfb8ee4d31a2', mainLength: 2479680 },
@@ -27,12 +29,21 @@ export const LINK_DEVICES: LinkDevice[] = [
   },
   {
     key: 'digitone-mk1', machine: 'digitone', name: 'Digitone mk1', mainLoad: 0x40000400,
+    sysexId: 0x0d,
     releases: [
       { version: '1.43', syxSha256: 'c5a54cc05b921f2e4bd814834c5365c2a5aa01d7772a9a2961fac1c3095bf9aa', mainSha256: '3831a477a2a22befb23c42e47e782853da49566ef5d0a1767fcf6c30e6767414', mainLength: 2732208 },
       { version: '1.44', syxSha256: 'd4f200d04484333d82822db7744e6484d0def8f2db8ddf55ee2b780cc13c9659', mainSha256: 'fce648a97c6c5d93b961732e8f8db6b02e0820c6d344c7e2131fa05a4b3168e4', mainLength: 2736304 },
     ],
     areas: { ddr: [0x47be0000, 0x47c00000] },
     ddr: [0x47be0000, 0x47c00000], sramCode: [0, 0], fastTable: '', protected: [],
+  },
+  {
+    key: 'digitakt-mk2', machine: 'digitakt-ii', name: 'Digitakt II', sysexId: 0x14, mainLoad: 0x40000400,
+    releases: [
+      { version: '1.17', syxSha256: '26c22f6652625ac2cfd47f7ee970d388ed8b6427dae3563c0a6a2f2d334350d5', mainSha256: 'a1e7b657b705eba1a19d81c33c1e11ba9c409816447ad74005d7bbf36da6d964', mainLength: 3275616 },
+    ],
+    areas: { ddr: [0x47f00000, 0x47f40000], 'sram-tail': [0x8000f100, 0x80010000], 'sram-block': [0x80006e80, 0x80008000] },
+    ddr: [0x47f00000, 0x47f40000], sramCode: [0x8000f100, 0x80010000], fastTable: 'core_fast', protected: [],
   },
 ]
 

@@ -20,7 +20,7 @@ if(machine!=='octatrack'){
   parseElemodBuild(JSON.parse(fill(await readFile(resolve(template,'build.json'),'utf8'))),document)
   await mkdir(resolve(destination,'src'),{recursive:true});await mkdir(resolve(destination,'media'))
   for(const file of ['modwerk.module.json','build.json','src/main.c','media/thumbnail.svg'])await writeFile(resolve(destination,file),fill(await readFile(resolve(template,file),'utf8')))
-  await copyFile(resolve(root,'LICENSE'),resolve(destination,'LICENSE'))
+  await copyFile(resolve(root,'LICENSES/GPL-3.0-or-later.txt'),resolve(destination,'LICENSE'))
   await writeFile(resolve(destination,'README.md'),`# ${name}\n\nA ${profile.name} mod by @${author}. Version ${document.version}.\n\nDescribe what it does, every control, how to reach it on the unit, and a short tutorial. Follow docs/ADD_A_MODULE.md, the guide for this mod's category in docs/module-guides/ (and sequencing.md if it acts in time), docs/SDK.md and the ${profile.name} guide (${profile.sdk.guide}).\n`)
   await writeFile(resolve(destination,'TESTING.md'),`# ${name} testing\n\nNo checks have been run. For each tier in docs/SDK.md, record the source commit, the exact build, the OS release, the machine model and every result. Keep firmware, dumps and build outputs out of this folder.\n`)
   console.log('Created '+destination+'\nRead the guide for the mod\'s category in docs/module-guides/ first (and sequencing.md if it acts in time). Implement src/, measure memory and load, add real screenshots, then raise evidence.tier with actual reports (docs/SDK.md). Run npm run module:doctor -- '+id+' until it is green.')

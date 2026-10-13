@@ -11,18 +11,18 @@ describe('paging through catalog results', () => {
   it('keeps captured order and distinguishes modules with the same ID on different machines', () => {
     const first = catalogNeighbors(browse, 'digitakt-digihealth')!
     expect(first).toMatchObject({ previous: undefined, position: 1, total: 2, backHref: '#all/system' })
-    expect(first.next).toMatchObject({ href: '#digitone/module/digihealth', name: 'digihealth · Digitone' })
+    expect(first.next).toMatchObject({ href: '/digitone/module/digihealth/', name: 'digihealth · Digitone' })
     const last = catalogNeighbors(browse, 'digitone-digihealth')!
     expect(last.next).toBeUndefined()
-    expect(last.previous?.href).toBe('#digitakt/module/digihealth')
+    expect(last.previous?.href).toBe('/digitakt/module/digihealth/')
     expect(last.position).toBe(2)
   })
 
   it('continues between machine groups and uses the canonical Octatrack slug', () => {
     const mixed = { ...browse, route: 'all', ids: ['synth', 'digitakt-digihealth', 'digitone-digihealth'] }
     expect(catalogNeighbors(mixed, 'digitakt-digihealth')?.previous?.href).toMatch(/module\/fm-synth\/$/)
-    expect(catalogNeighbors(mixed, 'digitakt-digihealth')?.next?.href).toBe('#digitone/module/digihealth')
-    expect(catalogNeighbors({ ...mixed, ids: [...mixed.ids].reverse() }, 'digitakt-digihealth')?.previous?.href).toBe('#digitone/module/digihealth')
+    expect(catalogNeighbors(mixed, 'digitakt-digihealth')?.next?.href).toBe('/digitone/module/digihealth/')
+    expect(catalogNeighbors({ ...mixed, ids: [...mixed.ids].reverse() }, 'digitakt-digihealth')?.previous?.href).toBe('/digitone/module/digihealth/')
   })
 
   it('restores the selection and filters after reload, dropping removed or duplicate entries', () => {
@@ -36,7 +36,7 @@ describe('paging through catalog results', () => {
     const updated = { ...browse, sort: DEFAULT_MODULE_SORT, ids: [...browse.ids].reverse() }
     const restored = parseCatalogBrowse(JSON.stringify(updated))
     expect(restored).toEqual(updated)
-    expect(catalogNeighbors(restored, 'digitone-digihealth')?.next?.href).toBe('#digitakt/module/digihealth')
+    expect(catalogNeighbors(restored, 'digitone-digihealth')?.next?.href).toBe('/digitakt/module/digihealth/')
     expect(catalogNeighbors(restored, 'digitakt-digihealth')?.next).toBeUndefined()
   })
 
@@ -47,6 +47,13 @@ describe('paging through catalog results', () => {
     expect(catalogNeighbors({ ...browse, ids: ['deleted-module'] }, 'deleted-module')).toBeNull()
   })
 
+  it('keeps beta paging only while the session has access', () => {
+    const beta = { ...browse, route: 'library', ids: ['miniverb', 'airwindows-chorus'] }
+    expect(parseCatalogBrowse(JSON.stringify(beta))?.ids).toEqual(['miniverb'])
+    expect(parseCatalogBrowse(JSON.stringify(beta), true)?.ids).toEqual(beta.ids)
+    expect(catalogNeighbors(beta, 'miniverb', true)?.next?.id).toBe('airwindows-chorus')
+    expect(catalogNeighbors(beta, 'miniverb')?.next).toBeUndefined()
+  })
   it('ignores invalid stored context and never builds an external return link', () => {
     for (const json of [null, '{', 'null', JSON.stringify({ ...browse, route: 'https://example.com' }), JSON.stringify({ ...browse, route: 'digitakt/configuration' }), JSON.stringify({ ...browse, ids: [1] }), JSON.stringify({ ...browse, sort: 'unknown' })]) {
       expect(parseCatalogBrowse(json)).toBeNull()

@@ -4,6 +4,7 @@
  * UI layer/window idioms follow Sam Banks' MIT octabam editor tooling.
  * Pending native/hardware qualification: see TESTING.md. */
 #include "engine.h"
+#include "persistence.h"
 #define U8(a) (*(volatile uint8_t *)(uintptr_t)(a))
 #define U32(a) (*(volatile uint32_t *)(uintptr_t)(a))
 #define BANK_PTR 0x46c82456u
@@ -61,10 +62,10 @@ static int valid_bank(void) { uint32_t b=U32(BANK_PTR); return b>=0x40000000u &&
 static volatile uint8_t *current_part(void) {
     return (volatile uint8_t *)(uintptr_t)(U32(BANK_PTR)+PART_OFF+(U8(PART_IDX)&3u)*PART_STRIDE);
 }
-static int signed_track(const volatile uint8_t *p, unsigned t) {
-    if(t>=8 || p[0x22u+t]>1) return 0;
-    const volatile uint8_t *s=p+SIGNATURE+30u*t;
-    return s[0]=='S' && s[1]=='2' && (s[2]==1 || s[2]==2);
+#define signed_track vector_signed_track
+extern int st_stock_validate(uint8_t *part);
+int st_validate_part(uint8_t *part) {
+    return vector_validate_part(part,st_stock_validate);
 }
 unsigned st_selected(void) {
     return valid_bank() && !U8(0x80000015u) && signed_track(current_part(),U8(TRACK_IDX));
@@ -95,7 +96,7 @@ static void dirty_part(unsigned part) {
 static VectorParams settings(unsigned t);
 static uint32_t get_seed(unsigned t);
 static void save_settings(unsigned t,const VectorParams *p,uint32_t seed);
-/* Only the unused PICKUP slots hold Vector settings. Stock Flex/Static
+/* Only the unused NEIGHBOR slots hold Vector settings. Stock Flex/Static
  * playback values and the chosen sample stay intact, including in EDIT. */
 unsigned st_assign(volatile uint8_t *part, unsigned t, unsigned enabled) {
     if(!valid_bank() || t>=8) return 1;

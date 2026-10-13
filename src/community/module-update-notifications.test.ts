@@ -13,7 +13,7 @@ import { developerApi } from '../../server/developers'
 import type { User } from '../../server/platform'
 import worker from '../../worker'
 
-type Mail = { to: string[]; text: string; html: string }
+type Mail = { subject: string; to: string[]; text: string; html: string }
 const databases: DatabaseSync[] = [], sent: Mail[] = [], password = 'a long original test passphrase'
 beforeEach(() => {
   sent.length = 0
@@ -24,7 +24,7 @@ beforeEach(() => {
   }))
 })
 afterEach(() => { vi.unstubAllGlobals(); for (const db of databases.splice(0)) db.close() })
-const release = (id = 'miniverb', version = '10.0.0'): ModuleRelease => ({ id, version, name: communityModule(id)!.name, href: communityModule(id)!.href, notes: { version, date: '2026-10-08', changes: ['Correct playback behavior for ' + id + ' v' + version + '.'] } })
+const release = (id = 'miniverb', version = '10.0.0'): ModuleRelease => ({ id, version, name: communityModule(id)!.name, href: communityModule(id)!.href, notes: { announce: true, version, date: '2026-10-08', changes: ['Correct playback behavior for ' + id + ' v' + version + '.'] } })
 const manifest = (modules: ModuleRelease[]) => ({ format: 'modwerk-module-releases-v1', modules })
 const report = { title: 'A control freezes', steps: 'Turn the control.', expected: 'A new value.', actual: 'It freezes.', context: { model: 'mk2', flash: 'flashed', os: '1.40C', modules: [{ id: 'miniverb', version: communityModule('miniverb')!.version }], keepStockFx2: true, build: '' }, logMissing: { reason: 'logger-not-in-build' } }
 
@@ -42,11 +42,50 @@ async function fixture() {
   const items = async (session: string) => (await (await server.call('/notifications', 'GET', undefined, session)).json()).items as BellItem[]
   const admin = async () => (await (await server.call('/auth/admin', 'POST', { key: 'e'.repeat(64) })).json()).token as string
   const publish = (...releases: ModuleRelease[]) => recordModuleReleases(server.env.DB!, releases)
-  const digests = async () => { sent.length = 0; return sendActivityDigests(server.env, server.env.DB!, new Date(Date.now() + 15 * 60000)) }
+  const digests = async (minutes = 24 * 60 + 15) => { sent.length = 0; return sendActivityDigests(server.env, server.env.DB!, new Date(Date.now() + minutes * 60000)) }
   return { ...server, member, items, admin, publish, digests }
 }
 
 describe('module update subscriptions', () => {
+  it('records quiet releases and media edits until that exact version is explicitly announced', async () => {
+    const f = await fixture(), follower = await f.member('quietfan')
+    await f.publish(release('miniverb', '9.0.0'))
+    await f.call('/modules/miniverb/updates', 'PATCH', { enabled: true }, follower.session)
+    const quiet = release('miniverb', '10.0.0'); delete quiet.notes!.announce
+    expect(await f.publish(quiet)).toEqual({ checked: 1, notified: 0 })
+    const next = release('miniverb', '11.0.0'); next.notes!.announce = false
+    expect(await f.publish(next)).toEqual({ checked: 1, notified: 0 })
+    expect(f.db.prepare('SELECT version FROM module_release_state').get()!.version).toBe('11.0.0')
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM module_releases').get()!.count).toBe(3)
+    expect(f.db.prepare('SELECT after_version FROM module_update_subscriptions').get()!.after_version).toBe('9.0.0')
+    expect(await f.items(follower.session)).toHaveLength(0)
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM announcements').get()!.count).toBe(0)
+    // An old inventory cannot announce a superseded release; the current version can opt in later.
+    expect(await f.publish(release('miniverb', '10.0.0'))).toEqual({ checked: 1, notified: 0 })
+    next.notes!.announce = true
+    expect(await f.publish(next)).toEqual({ checked: 1, notified: 1 })
+    expect(await f.publish(next)).toEqual({ checked: 1, notified: 0 })
+    next.notes!.changes.push('Media-only: replace the thumbnail with shared signal artwork.')
+    expect(await f.publish(next)).toEqual({ checked: 1, notified: 0 })
+    expect((await f.items(follower.session)).filter(item => item.kind === 'module_update')).toHaveLength(1)
+    // Opt-in belongs to one version and does not carry forward to the next release.
+    const later = release('miniverb', '12.0.0'); delete later.notes!.announce
+    expect(await f.publish(later)).toEqual({ checked: 1, notified: 0 })
+  })
+
+  it('queues beta releases only for eligible beta followers and stays quiet publicly', async () => {
+    const f = await fixture(), tester = await f.member('betafan'), ordinary = await f.member('publicfan')
+    f.db.prepare('UPDATE users SET beta_tester=1 WHERE id=?').run(tester.id)
+    await f.publish(release('miniverb', '0.9.0'))
+    for (const member of [tester, ordinary]) f.db.prepare('INSERT INTO module_update_subscriptions(user_id,module_id,after_version) VALUES(?,?,?)').run(member.id, 'airwindows-chorus', '0.1.0-experimental')
+    const beta = { ...release('airwindows-chorus', '0.1.1-experimental'), beta: true }
+    expect(parseModuleReleases(manifest([beta]))[0].beta).toBe(true)
+    await f.publish(beta); await f.publish(beta)
+    expect((await f.items(tester.session)).filter(item => item.kind === 'module_update')).toHaveLength(1)
+    expect(await f.items(ordinary.session)).toHaveLength(0)
+    expect(f.db.prepare("SELECT COUNT(*) AS count FROM announcements WHERE module_id='airwindows-chorus'").get()!.count).toBe(0)
+  })
+
   it('requires a verified member, scopes subscriptions to the account and follows all three machines independently', async () => {
     const f = await fixture(), owner = await f.member('follower'), other = await f.member('anotherfan')
     expect((await f.call('/modules/miniverb/updates')).status).toBe(401)
@@ -181,24 +220,111 @@ describe('module update subscriptions', () => {
     expect(db.prepare('SELECT COUNT(*) AS count FROM notifications').get()!.count).toBe(0)
   })
 
-  it('mails each queued version’s saved changes even after another release, and escapes HTML', async () => {
+  it('mails only the latest queued version’s saved changes and escapes HTML', async () => {
     const f = await fixture(), owner = await f.member('changelogfan')
     await f.call('/modules/miniverb/updates', 'PATCH', { enabled: true }, owner.session)
-    const first = { ...release(), notes: { ...release().notes!, changes: ['Fix the <script>alert(1)</script> control & retain playback.', 'Known limitation: hardware reboot persistence is unverified.', 'Retain the complete authored release note, including longer explanations of playback behavior and the exact conditions needed to reproduce a problem, without reducing it to a short notification excerpt.'] } }
-    const second = release('miniverb', '11.0.0')
+    const first = release()
+    const second = { ...release('miniverb', '11.0.0'), notes: { ...release('miniverb', '11.0.0').notes!, changes: ['Fix the <script>alert(1)</script> control & retain playback.', 'Known limitation: hardware reboot persistence is unverified.', 'Retain the complete authored release note, including longer explanations of playback behavior and the exact conditions needed to reproduce a problem, without reducing it to a short notification excerpt.'] } }
     await f.publish(first); await f.publish(second)
-    // A retry with edited notes cannot relabel the older queued release.
-    await f.publish({ ...first, notes: { ...first.notes, changes: ['These later changes must not appear in the old update email.'] } })
+    await f.publish({ ...second, notes: { ...second.notes, changes: ['These later changes must not appear in the saved update email.'] } })
     expect(await f.digests()).toEqual({ sent: 1 })
-    for (const entry of [first, second]) for (const change of entry.notes!.changes) expect(sent[0].text).toContain('  - ' + change)
-    expect(sent[0].text).toContain('Mini Verb 10.0.0 is now available')
+    for (const change of second.notes.changes) expect(sent[0].text).toContain('  - ' + change)
+    expect(sent[0].text).not.toContain('Mini Verb 10.0.0 is now available')
     expect(sent[0].text).toContain('Mini Verb 11.0.0 is now available')
     expect(sent[0].html).toContain('Fix the &lt;script&gt;alert(1)&lt;/script&gt; control &amp; retain playback.')
     expect(sent[0].html).toContain('<li>Known limitation: hardware reboot persistence is unverified.</li>')
     expect(sent[0].html).not.toContain('<script>')
     expect(sent[0].text).not.toContain('These later changes')
-    expect(sent[0].text).not.toContain('Open the module to review the update.')
     expect(sent[0].text).toContain('https://octamod.test/#module/miniverb?tab=changelog')
+    expect(await f.items(owner.session)).toHaveLength(2)
+    expect(f.db.prepare("SELECT COUNT(*) AS count FROM notifications WHERE kind='module_update' AND emailed=0").get()!.count).toBe(0)
+  })
+
+  it('collects different modules for a day and enforces daily spacing for existing six-hour preferences', async () => {
+    const f = await fixture(), owner = await f.member('dailyfan')
+    const ids = ['miniverb', 'digitakt-digihealth', 'digitone-digihealth']
+    for (const id of ids) await f.call('/modules/' + id + '/updates', 'PATCH', { enabled: true }, owner.session)
+    await f.call('/notifications/preferences', 'PATCH', { frequency: 'hours' }, owner.session)
+    await f.publish(...ids.map(id => release(id)))
+    const base = Date.now()
+    const stamp = (minutes: number) => new Date(base + minutes * 60000).toISOString().replace('T', ' ').slice(0, 19)
+    f.db.prepare("UPDATE notifications SET created_at=? WHERE module_id='digitakt-digihealth'").run(stamp(6 * 60))
+    f.db.prepare("UPDATE notifications SET created_at=? WHERE module_id='digitone-digihealth'").run(stamp(14 * 60))
+    expect(await f.digests(15)).toEqual({ sent: 0 })
+    expect(await f.digests(23 * 60)).toEqual({ sent: 0 })
+    expect(await f.digests()).toEqual({ sent: 1 })
+    expect(sent).toHaveLength(1)
+    expect(sent[0].subject).toBe('Your daily Modwerk module updates (3)')
+    for (const id of ids) expect(sent[0].text).toContain(release(id).name)
+    const last = f.db.prepare('SELECT last_module_digest_at FROM notification_preferences WHERE user_id=?').get(owner.id)!.last_module_digest_at
+    await f.publish(release('miniverb', '11.0.0'))
+    f.db.prepare("UPDATE notifications SET created_at=? WHERE module_version='11.0.0'").run(stamp(25 * 60))
+    expect(await f.digests(31 * 60)).toEqual({ sent: 0 })
+    expect(f.db.prepare('SELECT last_module_digest_at FROM notification_preferences WHERE user_id=?').get(owner.id)!.last_module_digest_at).toBe(last)
+    expect(await f.digests(48 * 60 + 16)).toEqual({ sent: 1 })
+    expect(sent[0].text).toContain('Mini Verb 11.0.0')
+    expect(sent[0].text).not.toContain('Mini Verb 10.0.0')
+  })
+
+  it('sends other activity on its chosen interval without discarding or counting deferred releases', async () => {
+    const f = await fixture(), owner = await f.member('mixedfan'), other = await f.member('mixedauthor')
+    await f.call('/modules/miniverb/updates', 'PATCH', { enabled: true }, owner.session)
+    const { id } = await (await f.call('/forum/threads', 'POST', { title: 'Daily updates', body: 'Discuss updates.', category: 'general' }, owner.session)).json()
+    await f.publish(release())
+    await f.call('/forum/threads/' + id + '/replies', 'POST', { body: 'A timely reply.' }, other.session)
+    expect(await f.digests(15)).toEqual({ sent: 1 })
+    expect(sent[0].text).toContain('A timely reply.')
+    expect(sent[0].text).not.toContain('Mini Verb 10.0.0')
+    expect(sent[0].text).not.toContain('more in your notifications')
+    expect(f.db.prepare("SELECT emailed FROM notifications WHERE kind='module_update'").get()!.emailed).toBe(0)
+    expect(f.db.prepare('SELECT last_module_digest_at FROM notification_preferences WHERE user_id=?').get(owner.id)!.last_module_digest_at).toBeNull()
+    expect(await f.digests()).toEqual({ sent: 1 })
+    expect(sent[0].text).toContain('Mini Verb 10.0.0')
+  })
+
+  it('waits for a fresh latest version to settle and reading it suppresses obsolete release mail', async () => {
+    const f = await fixture(), owner = await f.member('freshfan')
+    await f.call('/modules/miniverb/updates', 'PATCH', { enabled: true }, owner.session)
+    await f.publish(release()); await f.publish(release('miniverb', '11.0.0'))
+    const fresh = new Date(Date.now() + (24 * 60 + 14) * 60000).toISOString().replace('T', ' ').slice(0, 19)
+    f.db.prepare("UPDATE notifications SET created_at=? WHERE module_version='11.0.0'").run(fresh)
+    expect(await f.digests()).toEqual({ sent: 0 })
+    expect(f.db.prepare("SELECT COUNT(*) AS count FROM notifications WHERE emailed=0").get()!.count).toBe(2)
+    const latest = (await f.items(owner.session)).find(item => item.module_version === '11.0.0')!
+    await f.call('/notifications', 'PATCH', { ids: [latest.id] }, owner.session)
+    expect(await f.digests(25 * 60)).toEqual({ sent: 0 })
+    expect(f.db.prepare("SELECT COUNT(*) AS count FROM notifications WHERE emailed=0").get()!.count).toBe(0)
+    expect(await f.items(owner.session)).toHaveLength(2)
+  })
+
+  it('keeps the daily batch queued when delivery fails, then retries it without obsolete versions', async () => {
+    const f = await fixture(), owner = await f.member('retryfan')
+    await f.call('/modules/miniverb/updates', 'PATCH', { enabled: true }, owner.session)
+    await f.publish(release()); await f.publish(release('miniverb', '11.0.0'))
+    vi.mocked(fetch).mockResolvedValueOnce(new Response('{}', { status: 500 }))
+    expect(await f.digests()).toEqual({ sent: 0 })
+    expect(f.db.prepare('SELECT last_module_digest_at FROM notification_preferences WHERE user_id=?').get(owner.id)?.last_module_digest_at ?? null).toBeNull()
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM notifications WHERE emailed=0').get()!.count).toBe(2)
+    expect(await f.digests(25 * 60)).toEqual({ sent: 1 })
+    expect(sent[0].text).toContain('Mini Verb 11.0.0')
+    expect(sent[0].text).not.toContain('Mini Verb 10.0.0')
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM notifications WHERE emailed=0').get()!.count).toBe(0)
+  })
+
+  it('retains releases beyond the bounded read window and settles all obsolete versions after sending', async () => {
+    const f = await fixture(), owner = await f.member('burstfan')
+    await f.call('/modules/miniverb/updates', 'PATCH', { enabled: true }, owner.session)
+    await f.publish(release())
+    const fresh = new Date(Date.now() + (24 * 60 + 14) * 60000).toISOString().replace('T', ' ').slice(0, 19)
+    const insert = f.db.prepare("INSERT INTO notifications(id,user_id,kind,module_id,module_version,created_at) VALUES(?,?,'module_update','miniverb',?,?)")
+    for (let index = 0; index < 500; index++) insert.run('burst-' + index, owner.id, '11.0.' + index, fresh)
+    expect(await f.digests()).toEqual({ sent: 0 })
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM notifications WHERE emailed=0').get()!.count).toBe(501)
+    expect(await f.digests(25 * 60)).toEqual({ sent: 1 })
+    expect(sent[0].text).toContain('11.0.499 is now available')
+    expect(sent[0].subject).toBe('Your daily Modwerk module updates (1)')
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM notifications WHERE emailed=0').get()!.count).toBe(0)
+    expect(f.db.prepare('SELECT COUNT(*) AS count FROM notifications WHERE seen=0').get()!.count).toBe(501)
   })
 
   it.each(['digitakt-digihealth', 'digitone-digihealth'])('includes the version-matched changelog and instrument link for %s', async id => {
@@ -409,4 +535,13 @@ it('migrates historical reporters and existing push queues without losing delive
   db.prepare("INSERT INTO signup_events(user_id,username) VALUES('owner','owner')").run()
   expect(db.prepare('SELECT COUNT(*) AS count FROM push_deliveries').get()!.count).toBe(3)
   expect(db.prepare('SELECT id FROM notifications WHERE delivery_id=?').get('old-delivery')!.id).toBe('old-notification')
+})
+
+it('migrates existing digest timing while preserving email opt-outs and topic preferences', () => {
+  const db = new DatabaseSync(':memory:'); databases.push(db)
+  for (const name of readdirSync(new URL('../../migrations/', import.meta.url)).filter(name => name.endsWith('.sql') && name < '0069').sort()) db.exec(readFileSync(new URL('../../migrations/' + name, import.meta.url), 'utf8'))
+  db.prepare("INSERT INTO users(id,display_name,username,email_verified) VALUES('existing','Existing','existing',1)").run()
+  db.prepare("INSERT INTO notification_preferences(user_id,email_enabled,frequency,updates,last_digest_at) VALUES('existing',0,'hours',0,'2026-10-12 08:00:00')").run()
+  db.exec(readFileSync(new URL('../../migrations/0069_daily_module_digests.sql', import.meta.url), 'utf8'))
+  expect(db.prepare('SELECT email_enabled,frequency,updates,last_digest_at,last_module_digest_at FROM notification_preferences').get()).toEqual({ email_enabled: 0, frequency: 'hours', updates: 0, last_digest_at: '2026-10-12 08:00:00', last_module_digest_at: '2026-10-12 08:00:00' })
 })

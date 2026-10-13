@@ -35,6 +35,8 @@ async function fixture(){
  db.exec(readFileSync(new URL('../../migrations/0052_module_first_download.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0011_forum_accounts.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0012_better_auth.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0066_beta_testers.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0067_configuration_reports.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0054_discord_invitation.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0061_page_traffic.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0010_issue_reports.sql',import.meta.url),'utf8'))
@@ -56,6 +58,9 @@ async function fixture(){
  db.exec(readFileSync(new URL('../../migrations/0038_direct_messages.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0041_issue_closed_at.sql',import.meta.url),'utf8'))
  db.exec(readFileSync(new URL('../../migrations/0060_module_working_reports.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0068_report_triage.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0021_social_onboarding.sql',import.meta.url),'utf8'))
+ db.exec(readFileSync(new URL('../../migrations/0063_github_actions.sql',import.meta.url),'utf8'))
  const env:Env={DB:adapter(db),APP_URL:'https://octamod.test',ADMIN_KEY_SHA256:await digest(adminKey)}
  const objects=new Map<string,ArrayBuffer>()
  env.MEDIA={async put(key,bytes){objects.set(key,bytes)},async get(key){const bytes=objects.get(key);return bytes?{body:new ReadableStream({start(controller){controller.enqueue(new Uint8Array(bytes));controller.close()}})}:null},async delete(key){objects.delete(key)}}
@@ -125,7 +130,7 @@ describe('community access and review',()=>{
   expect((await call('/modules/remix-miniverb/rating','POST',{value:4},session)).status).toBe(200)
   expect((await call('/auth/email','POST',{email:'unused@example.test'})).status).toBe(404)
   const own=await (await call('/auth/session','GET',undefined,session)).json()
-  expect(own).toEqual({available:true,emailAvailable:false,forumMedia:true,registrationAvailable:false,ssoProviders:[],admin:false,user:{id:own.user.id,avatar:null,displayName:'Author guest',username:'author',verified:true}})
+  expect(own).toEqual({available:true,emailAvailable:false,forumMedia:true,registrationAvailable:false,ssoProviders:[],admin:false,user:{id:own.user.id,avatar:null,displayName:'Author guest',username:'author',verified:true,betaTester:false}})
  })
  it('keeps previously uploaded private media restricted without offering new upload routes',async()=>{
   const {call,db,env,tokens}=await fixture(),auth='octamod_session='+tokens.author,other='octamod_session='+tokens.other
@@ -192,7 +197,7 @@ describe('community access and review',()=>{
    const privateId=String(db.prepare('SELECT id FROM issues').get()!.id)
    expect((await call('/admin/issues/'+privateId+'/github','POST',{},'',undefined,admin)).status).toBe(400)
    expect(requests).toHaveLength(0)
-   expect(await (await call('/modules/spectrum/issues')).json()).toEqual({tracker:'github',issues:[],openCount:0,closedCount:0,hasMore:false,allUrl:'https://github.com/repeat98/octamod/issues?q='+encodeURIComponent('is:issue is:open label:"module:spectrum"')})
+   expect(await (await call('/modules/spectrum/issues')).json()).toEqual({tracker:'github',issues:[],openCount:0,closedCount:0,confirmedCount:0,needsInfoCount:0,hasMore:false,allUrl:'https://github.com/repeat98/octamod/issues?q='+encodeURIComponent('is:issue is:open label:"module:spectrum"')})
    // A public report becomes a GitHub issue straight away and gets no forum thread of its own.
    const published=await call('/modules/spectrum/issues','POST',issue({visibility:'forum',steps:'Ping @someone about #12 <img src=x>'}),reporter)
    expect(published.status).toBe(201)
@@ -201,11 +206,11 @@ describe('community access and review',()=>{
    const created=requests[0];expect(created).toMatchObject({url:'https://api.github.com/repos/repeat98/octamod/issues',method:'POST',auth:'Bearer github_pat_test'})
    expect(created.body.title).toBe('[spectrum] Knob issue');expect(created.body.labels).toEqual(['issue-report','module:spectrum'])
    const markdown=String(created.body.body)
-   expect(markdown).toContain('by [other](https://octamod.test/forum/profile/other/) · @sambanks');expect(markdown).toContain('| Module version | Not recorded |') // the configuration comes from the attached log, which does not list spectrum
+   expect(markdown).toContain('by [other](https://octamod.test/forum/profile/other/)');expect(markdown).not.toContain('@sambanks');expect(markdown).toContain('| Module version | Not recorded |') // the configuration comes from the attached log, which does not list spectrum
    expect(markdown).toContain('@\u200bsomeone');expect(markdown).toContain('#\u200b12');expect(markdown).not.toContain('<img')
-   expect(markdown).toContain('[open them on Modwerk](https://octamod.test/#developer/report/'+result.id+')')
-   // The configuration, build fingerprint and log stay private.
-   for(const secret of ['c'.repeat(64),'OCTAMOD-LOG','repitch'])expect(markdown).not.toContain(secret)
+   expect(markdown).not.toContain('#developer/report/');expect(markdown).toContain('Everything the reporter submitted is in this issue.')
+   // The reporter agreed to publish the configuration, build fingerprint and log on GitHub.
+   for(const published of ['c'.repeat(64),'<details><summary>OCTAMOD.LOG</summary>','# OCTAMOD-LOG','repitch'])expect(markdown).toContain(published)
    const [row]=await (await call('/admin/issues?status=all','GET',undefined,'',undefined,admin)).json();expect(row).toMatchObject({id:result.id,github_state:'failed',github_error:'GitHub answered 401: Bad credentials.'})
    expect((await call('/admin/issues/'+row.id+'/github','POST',{},reporter)).status).toBe(403)
    const retried=await (await call('/admin/issues/'+row.id+'/github','POST',{},'',undefined,admin)).json();expect(retried).toEqual({state:'synced',url:'https://github.com/repeat98/octamod/issues/41'})

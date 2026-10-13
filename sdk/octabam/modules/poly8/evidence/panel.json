@@ -1,0 +1,87 @@
+{
+  "tested_version": "0.2.0-experimental",
+  "historical": true,
+  "observations": {
+    "flex-direct": {
+      "track": 1,
+      "poly_signature_valid": true,
+      "backing_machine": "FLEX",
+      "octave": 0,
+      "ptch_raw": 64,
+      "ptch_live_lock_empty": true,
+      "held_owners": [],
+      "track_tuning_q26": 67108864,
+      "voice_increments_q26": [],
+      "pool_open": true
+    },
+    "assigned": {
+      "track": 1,
+      "poly_signature_valid": true,
+      "backing_machine": "FLEX",
+      "octave": 0,
+      "ptch_raw": 64,
+      "ptch_live_lock_empty": true,
+      "held_owners": [],
+      "track_tuning_q26": 67108864,
+      "voice_increments_q26": [],
+      "pool_open": false
+    },
+    "sound-chord": {
+      "track": 1,
+      "poly_signature_valid": true,
+      "backing_machine": "FLEX",
+      "octave": 0,
+      "ptch_raw": 64,
+      "ptch_live_lock_empty": true,
+      "held_owners": [
+        72,
+        76,
+        79
+      ],
+      "track_tuning_q26": 67108864,
+      "voice_increments_q26": [
+        50275328,
+        33554432,
+        42275840
+      ],
+      "pool_open": false
+    },
+    "tuned-chord": {
+      "track": 1,
+      "poly_signature_valid": true,
+      "backing_machine": "FLEX",
+      "octave": 0,
+      "ptch_raw": 73,
+      "ptch_live_lock_empty": true,
+      "held_owners": [
+        72,
+        76,
+        79
+      ],
+      "track_tuning_q26": 74461946,
+      "voice_increments_q26": [
+        55783968,
+        37230973,
+        46907980
+      ],
+      "pool_open": false
+    },
+    "reopen": {
+      "track": 1,
+      "poly_signature_valid": true,
+      "backing_machine": "FLEX",
+      "octave": 0,
+      "ptch_raw": 73,
+      "ptch_live_lock_empty": true,
+      "held_owners": [],
+      "track_tuning_q26": 74461946,
+      "voice_increments_q26": [
+        55783968,
+        37230973,
+        46907980
+      ],
+      "pool_open": false
+    }
+  },
+  "result": "Direct FLEX selection, loaded sample, chromatic ownership and independent tuning passed. TRACK double-tap reopening did not open the pool in this walk."
+}

@@ -3,14 +3,21 @@ import { canTrackModuleDownload } from '../src/community/module-downloads'
 import { compareModuleVersions } from '../src/catalog/versions'
 import { parseModuleReleases, type ModuleRelease } from '../src/community/module-release-contract'
 import { communityModule } from '../src/community/modules'
-import { needMember, throttle } from './auth'
+import { isBetaModule } from '../src/catalog/availability'
+import { memberBetaAccess } from './beta-testers'
+import { isAdmin, needMember, throttle } from './auth'
 import { emailReady } from './email'
 import { moduleReleaseAnnouncement } from './announcements'
-import { HttpError, jsonBody, response } from './security'
+import { digest, HttpError, jsonBody, response } from './security'
 
 /** A new report follows module releases unless its reporter declines this in the form. */
 export function followReportedModule(db: Database, moduleId: string, userId: string) {
   return db.prepare(`INSERT INTO module_update_subscriptions(user_id,module_id,after_version) VALUES(?,?,COALESCE((SELECT version FROM module_release_state WHERE module_id=?),?)) ON CONFLICT(user_id,module_id) DO NOTHING`).bind(userId, moduleId, moduleId, communityModule(moduleId)?.version ?? null)
+}
+
+/** A configuration report follows releases of each of its modules the reporter has not opted out of. */
+export function followReportedModules(db: Database, moduleIds: readonly string[], userId: string) {
+  return moduleIds.map(moduleId => db.prepare(`INSERT INTO module_update_subscriptions(user_id,module_id,after_version) SELECT ?,?,COALESCE((SELECT version FROM module_release_state WHERE module_id=?),?) WHERE NOT EXISTS(SELECT 1 FROM module_update_opt_outs WHERE user_id=? AND module_id=?) ON CONFLICT(user_id,module_id) DO NOTHING`).bind(userId, moduleId, moduleId, communityModule(moduleId)?.version ?? null, userId, moduleId))
 }
 
 export async function moduleUpdateRoutes(request: Request, env: Env, db: Database, moduleId: string, user: Parameters<typeof needMember>[0]) {
@@ -39,10 +46,10 @@ export async function moduleUpdateRoutes(request: Request, env: Env, db: Databas
 }
 
 /** Downloading follows future releases unless the member deliberately opted out. */
-export async function moduleDownloadRoute(request: Request, db: Database, moduleId: string, user: Parameters<typeof needMember>[0]) {
+export async function moduleDownloadRoute(request: Request, env: Env, db: Database, moduleId: string, user: Parameters<typeof needMember>[0]) {
   const member = needMember(user)
   if (!communityModule(moduleId)) throw new HttpError(404, 'Unknown module.')
-  if (!canTrackModuleDownload(moduleId)) throw new HttpError(400, 'This module is not available for download.')
+  if (!canTrackModuleDownload(moduleId,memberBetaAccess(member)||await isAdmin(request,env,db))) throw new HttpError(400, 'This module is not available for download.')
   const body = await jsonBody(request)
   if (Object.keys(body).length) throw new HttpError(400, 'Download follows accept no payload.')
   await throttle(db, 'download-follows:' + member.id, 200)
@@ -81,16 +88,20 @@ export async function recordModuleReleases(db: Database, releases: ModuleRelease
     if (previous && compareModuleVersions(release.version, previous) <= 0) {
       // Fill a legacy pending notification's notes without replacing an existing release snapshot.
       if (release.notes) await db.prepare('UPDATE module_releases SET notes=? WHERE module_id=? AND version=? AND notes IS NULL').bind(JSON.stringify(release.notes), release.id, release.version).run()
-      continue
+      // An explicitly chosen announcement may follow a quiet deployment of this version.
+      // Older inventories must never announce a superseded release.
+      if (compareModuleVersions(release.version, previous) < 0 || release.notes?.announce !== true) continue
     }
-    const followers = (await db.prepare('SELECT s.user_id,s.after_version FROM module_update_subscriptions s JOIN users u ON u.id=s.user_id JOIN auth_users a ON a.id=u.id WHERE s.module_id=? AND u.email_verified=1 AND a.emailVerified=1 AND u.suspended=0 AND u.username IS NOT NULL AND NOT EXISTS(SELECT 1 FROM social_pending_accounts p WHERE p.user_id=u.id)').bind(release.id).all<{ user_id: string; after_version: string | null }>()).results
-    const recipients = followers.filter(member => member.after_version !== null && compareModuleVersions(release.version, member.after_version) > 0)
+    const followers = (await db.prepare('SELECT s.user_id,s.after_version FROM module_update_subscriptions s JOIN users u ON u.id=s.user_id JOIN auth_users a ON a.id=u.id WHERE s.module_id=? AND (?=0 OR u.beta_tester=1 OR u.is_admin=1) AND u.email_verified=1 AND a.emailVerified=1 AND u.suspended=0 AND u.username IS NOT NULL AND NOT EXISTS(SELECT 1 FROM social_pending_accounts p WHERE p.user_id=u.id)').bind(release.id,Number(release.beta || isBetaModule(release.id))).all<{ user_id: string; after_version: string | null }>()).results
+    const announce = release.notes?.announce === true
+    const recipients = announce ? followers.filter(member => member.after_version !== null && compareModuleVersions(release.version, member.after_version) > 0) : []
     const statements = [
       db.prepare('INSERT INTO module_releases(module_id,version,name,href,notes) VALUES(?,?,?,?,?) ON CONFLICT(module_id,version) DO UPDATE SET notes=COALESCE(module_releases.notes,excluded.notes)').bind(release.id, release.version, release.name, release.href, JSON.stringify(release.notes)),
-      ...(!previous && initialized ? [await moduleReleaseAnnouncement(db, release)] : []),
+      ...(announce && !previous && initialized && !release.beta && !isBetaModule(release.id) ? [await moduleReleaseAnnouncement(db, release)] : []),
       ...recipients.map(member => db.prepare(`INSERT INTO notifications(id,user_id,kind,module_id,module_version,delivery_id) SELECT lower(hex(randomblob(16))),?,'module_update',?,?,? WHERE EXISTS(SELECT 1 FROM module_update_subscriptions WHERE user_id=? AND module_id=? AND after_version=?) ON CONFLICT DO NOTHING`).bind(member.user_id, release.id, release.version, 'module-release:' + release.id + ':' + release.version, member.user_id, release.id, member.after_version)),
-      // Do not move a subscriber back from a newer version if an old cached site is served.
-      ...followers.filter(member => member.after_version === null || compareModuleVersions(release.version, member.after_version) > 0).map(member => db.prepare('UPDATE module_update_subscriptions SET after_version=? WHERE user_id=? AND module_id=? AND after_version IS ?').bind(release.version, member.user_id, release.id, member.after_version)),
+      // Quiet versions leave the notification watermark available for a later explicit opt-in.
+      // Historical subscriptions still establish a quiet baseline, and never move backwards.
+      ...followers.filter(member => member.after_version === null || (announce && compareModuleVersions(release.version, member.after_version) > 0)).map(member => db.prepare('UPDATE module_update_subscriptions SET after_version=? WHERE user_id=? AND module_id=? AND after_version IS ?').bind(release.version, member.user_id, release.id, member.after_version)),
       db.prepare('INSERT INTO module_release_state(module_id,version) VALUES(?,?) ON CONFLICT(module_id) DO UPDATE SET version=excluded.version WHERE module_release_state.version IS ?').bind(release.id, release.version, previous ?? null),
     ]
     // Bound D1 batches while retaining retry-safe fanout.
@@ -107,17 +118,24 @@ export async function recordModuleReleases(db: Database, releases: ModuleRelease
 }
 
 /** Read the live site's published inventory, rather than the Worker's independently deployed source catalog. */
-export async function publishedModuleReleases(env: Env) {
-  if (!env.APP_URL) return []
+export async function publishedModuleReleases(env: Env, expectedSha256?: string) {
+  if (!env.APP_URL) {
+    if (expectedSha256) throw new HttpError(503, 'The published release inventory is not configured.')
+    return []
+  }
   const app = new URL(env.APP_URL)
   app.pathname = app.pathname.replace(/\/?$/, '/'); app.search = ''; app.hash = ''
   const url = new URL('module-releases.json', app)
   // Workers supports only follow/manual; a redirect remains a failed check through result.ok below.
   const result = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(10000), headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' } })
-  if (result.status === 404) return [] // The previous site can still be live during rollout.
+  if (result.status === 404) {
+    if (expectedSha256) throw new HttpError(409, 'The published release inventory is not live yet.')
+    return [] // The previous site can still be live during rollout.
+  }
   if (!result.ok) throw new Error('Published module versions could not be checked.')
   const body = await result.text()
   if (body.length > 256 * 1024) throw new Error('Module release inventory is too large.')
+  if (expectedSha256 && await digest(body) !== expectedSha256) throw new HttpError(409, 'The published release inventory does not match this deployment yet.')
   return parseModuleReleases(JSON.parse(body))
 }
 

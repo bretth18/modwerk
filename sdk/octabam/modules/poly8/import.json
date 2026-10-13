@@ -1,0 +1,25 @@
+{
+  "archive": "poly-machine-2026-10-05.zip",
+  "archiveSha256": "aea14145def3be530b3c6024229f6dc37c7d2ef5d569ab9d26ad4ea3a775fc30",
+  "repository": "https://github.com/repeat98/octamad",
+  "revision": "887a237686d39defb7b85f29359f1e29b9ff6241",
+  "workingTree": "POLY95 preservation snapshot includes uncommitted edits; file hashes are the exact input identity.",
+  "files": [
+    {
+      "path": "upstream/polyphony.s",
+      "sourcePath": "modules/poly-machine/polyphony.s",
+      "sha256": "3087b879e155eeca2ed15f9f7614aec6816ff37298c19733ff2d7f65b792034a"
+    },
+    {
+      "path": "upstream/README.md",
+      "sourcePath": "modules/poly-machine/README.md",
+      "sha256": "f05600660e1d13203382d8b2a63c0325717ec7bf61252a9cd43cc00b5dc09dbc"
+    },
+    {
+      "path": "upstream/STATUS.md",
+      "sourcePath": "modules/poly-machine/STATUS.md",
+      "sha256": "6bba71adf3e2a50097e57ffc5c5eb30d914b2077ba2434ad0364494e47c79f14"
+    }
+  ],
+  "integrationReference": "Modwerk VECTOR pool adapter, with Analog BD/FM signature registration conventions; MIT."
+}

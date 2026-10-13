@@ -1,0 +1,624 @@
+{
+  "moduleVersion": "0.2.6-experimental",
+  "nativeSourceSha256": "97d1bb05eccf20b8577274f5210dfb173fcba83e76b758b8d7a7653f8e5298a4",
+  "device": "Octatrack MKII",
+  "reportedDate": "2026-10-09",
+  "hardware": [
+    {
+      "build": "POLY8T07",
+      "updateSha256": "1c2278e27e84660a747ca076829ea6d3358f10d9b3f076508bbe73152848a2d8",
+      "mainSha256": "984d235e1fe52424d11d7326f26d7a3e9865e36389d32e77478ce44813586e90",
+      "configuration": "POLY8 + Analog BD + VECTOR + FM Synth + Scale Quantizer + Repitch + Mute Modes + Sidechain Compressor; core logger, dynamic DSP loader off",
+      "result": "Boot exception",
+      "vector": "03",
+      "address": "4004e7a0",
+      "withoutCF": "Same boot exception reported",
+      "stockRecovery": "User reports recovered using stock recovery before T08"
+    },
+    {
+      "build": "POLY8T08",
+      "updateSha256": "15000da0cdb78c71616122bfe502518d37dd4ab57c2bad4d69ed77a8997acfec",
+      "mainSha256": "e8b1d2365a8d36cf311a6b0843da3ea0a832336f4df49dd1377446138a5b9994",
+      "configuration": "POLY8 only + core logger; dynamic DSP loader off",
+      "result": "Same boot exception",
+      "vector": "03",
+      "address": "4004e7a0",
+      "withoutCF": "Not separately reported for T08",
+      "stockRecovery": "Not yet reported after T08"
+    },
+    {
+      "build": "POLY8T09",
+      "nativeSourceSha256": "d0a8ebafbee2e4423ab90a87e0fc3d297de5433da451e1ece02633b6611e0cff",
+      "updateSha256": "0077046f0dcf5cc5e38a52cef32b2c81d5522cb6167b7d3a93e710626a169a66",
+      "mainSha256": "68b852601ad8b2579f0b3321c6203624dc2c1dfaacc2237fcf05910f512dae72",
+      "configuration": "POLY8 only + core logger; dynamic DSP loader off",
+      "result": "Functional hardware report",
+      "tester": "repeat98",
+      "model": "MKII",
+      "reportedDate": "2026-10-09",
+      "ownerStatement": "ok works really well the only thing is we need to match the flow of loading the flex or static machines, I think the flex or static machines don't automatically open the sample pool after selection",
+      "interpretation": "User reports the corrected T09 build works on the MKII and requests a selection-flow change. This is a functional report, not a measured per-test pass.",
+      "limitations": [
+        "Duration, exact recording/stress/load coverage and Part/project/reboot persistence were not separately reported.",
+        "Chip worst-case timing and complete memory bounds are not established.",
+        "This report applies only to T09, before the selection-flow change."
+      ]
+    }
+  ],
+  "softwareRegression": {
+    "build": "Exact shipped T08 MAIN",
+    "imageSha256": "e8b1d2365a8d36cf311a6b0843da3ea0a832336f4df49dd1377446138a5b9994",
+    "method": "Fill all 10,586,112 bytes of reserved runtime SDRAM with 0xff at reset, before image load and platform loader execution; exact shipped T08, boot-logo, no CF, MKII and both DSP cores. Earlier focused nonzero-flag probe reproduced the same call.",
+    "result": "Page table remains all zero; first indirect widget call at 4004e7a0 uses odd target 4e922f03; emulator eventually stops illegal",
+    "flagSection": "Unloaded NOBITS (.bss), not cleared by the platform loader",
+    "interpretation": "Confirmed initialization defect and native reproduction of the failing call with an odd target. User subsequently reports the corrected T09 build works on MKII; detailed boot/reboot cases were not separately reported.",
+    "resetRegression": {
+      "imageSha256": "e8b1d2365a8d36cf311a6b0843da3ea0a832336f4df49dd1377446138a5b9994",
+      "emulatorSha256": "eb6edf981e382516897a24de70512da9ddcc29d69db052b8d504367d138aa776",
+      "poisonBeforeLoader": "40a955e0:a18800:ff",
+      "initialFlag": "ffffffff",
+      "finalFlag": "ffffffff",
+      "widgetTargets": [
+        "4e922f03"
+      ],
+      "result": "Faulty image retains poisoned BSS and reaches an odd widget target at hardware failing call 4004e7a0"
+    },
+    "emulatorLimit": "The native port reproduces the odd indirect target but stops illegal later; it does not emit the physical VEC 03 address exception faithfully."
+  },
+  "fixedOnHardware": true,
+  "rawImagesLogsAndDumps": "Private developer files only; not committed",
+  "nextHardwareTest": "T09 functional result received. Prepare the requested selection-flow update with native boot and UI regressions before offering another private image.",
+  "correctedSoftware": {
+    "nativeSourceSha256": "ae8d5cd7496dfa682e572381c74ae1984abc2a94d63b44f8627ba7cf6d4cb664",
+    "scope": "Startup flag fix before rebasing onto current main. The later VECTOR 0.2.4 adapter integration has a separate source/build identity and needs its own native checks.",
+    "images": [
+      {
+        "testFirmware": "POLYINIT",
+        "moduleVersion": "0.2.6-experimental",
+        "nativeSourceSha256": "ae8d5cd7496dfa682e572381c74ae1984abc2a94d63b44f8627ba7cf6d4cb664",
+        "modules": [
+          "poly8"
+        ],
+        "mainSha256": "ee556372122283b65ebb3cffc8ebc63bc0ab8e130e0f8d217b1e506fa6d4839f",
+        "updateSha256": "b525f166db71f408ca89c5b9cb070a034d075a9190eb9dce962e7bd444695a0d",
+        "nativeComparison": {
+          "verdict": "masked"
+        },
+        "roundTrip": true,
+        "stockTailPreserved": true,
+        "loader": false,
+        "coreLogger": true
+      },
+      {
+        "testFirmware": "POLYFULL",
+        "moduleVersion": "0.2.6-experimental",
+        "nativeSourceSha256": "ae8d5cd7496dfa682e572381c74ae1984abc2a94d63b44f8627ba7cf6d4cb664",
+        "modules": [
+          "poly8",
+          "analog-bassdrum",
+          "vector",
+          "synth",
+          "quantizer",
+          "repitch",
+          "mute-modes",
+          "sidechain-compressor"
+        ],
+        "mainSha256": "c1f3a68fed0f4208a4d777ef63e04791c27e2de5a927bc2d797e24da166b1419",
+        "updateSha256": "6d58023757e8c7641125415f910866ac0a851403d16f89a4603a332cb786483d",
+        "nativeComparison": {
+          "verdict": "masked"
+        },
+        "roundTrip": true,
+        "stockTailPreserved": true,
+        "loader": false,
+        "coreLogger": true
+      }
+    ],
+    "nativeBoot": [
+      {
+        "case": "fixed-dirty-blank",
+        "imageSha256": "ee556372122283b65ebb3cffc8ebc63bc0ab8e130e0f8d217b1e506fa6d4839f",
+        "emulatorSha256": "eb6edf981e382516897a24de70512da9ddcc29d69db052b8d504367d138aa776",
+        "poisonBeforeLoader": "40a955e0:a18800:ff",
+        "warmSRAM": false,
+        "initialFlag": "00000000",
+        "finalFlag": "00000001",
+        "slice": 47,
+        "widgetTargets": [
+          "400479b4"
+        ],
+        "widgetCalls": 72,
+        "status": "status sample=573322.275 ms=13000.505 frames=33105 frame=on idle=54923 wall=123.667",
+        "result": "Corrected image overwrites poisoned startup flag and completes 12 seconds of boot-logo startup without CF, no fault"
+      },
+      {
+        "case": "fixed-dirty-warm",
+        "imageSha256": "ee556372122283b65ebb3cffc8ebc63bc0ab8e130e0f8d217b1e506fa6d4839f",
+        "emulatorSha256": "eb6edf981e382516897a24de70512da9ddcc29d69db052b8d504367d138aa776",
+        "poisonBeforeLoader": "40a955e0:a18800:ff",
+        "warmSRAM": true,
+        "initialFlag": "00000000",
+        "finalFlag": "00000001",
+        "slice": 47,
+        "widgetTargets": [
+          "400479b4"
+        ],
+        "widgetCalls": 72,
+        "status": "status sample=573479.788 ms=13004.077 frames=33115 frame=on idle=55669 wall=145.855",
+        "result": "Corrected image overwrites poisoned startup flag and completes 12 seconds of boot-logo startup without CF, no fault"
+      },
+      {
+        "case": "fixed-full-dirty-warm-retry",
+        "imageSha256": "c1f3a68fed0f4208a4d777ef63e04791c27e2de5a927bc2d797e24da166b1419",
+        "emulatorSha256": "eb6edf981e382516897a24de70512da9ddcc29d69db052b8d504367d138aa776",
+        "poisonBeforeLoader": "40a955e0:a18800:ff",
+        "warmSRAM": true,
+        "initialFlag": "00000000",
+        "finalFlag": "00000001",
+        "slice": 47,
+        "widgetTargets": [
+          "400479b4",
+          "40a9577e"
+        ],
+        "widgetCalls": 72,
+        "status": "status sample=573469.158 ms=13003.836 frames=33114 frame=on idle=55583 wall=225.818",
+        "result": "Corrected image overwrites poisoned startup flag and completes 12 seconds of boot-logo startup without CF, no fault"
+      }
+    ],
+    "sourceGates": [
+      "verify-initialization.py: all three runtime units contain no allocated nonempty NOBITS sections; original failed source is rejected for 4-byte .bss",
+      "verify-addressing.py: all 121 compiled PC-relative operands pass"
+    ],
+    "nativeSourceGatesNegativeControl": "Original immutable T07/T08 source fails the initialization gate, as required.",
+    "behavior": {
+      "soloUI": {
+        "image_sha256": "ee556372122283b65ebb3cffc8ebc63bc0ab8e130e0f8d217b1e506fa6d4839f",
+        "new_loop": 0,
+        "loop_after_encoder": 1,
+        "loop_after_reselect": 1,
+        "reselect_part_unchanged": true,
+        "sample_slots_after_double_track": "46c7d34c",
+        "chooser_type": "00000005",
+        "right_pane": 1,
+        "right_machine": 1,
+        "marker_after_sample_yes": "504c01",
+        "loop_after_sample_yes": 1,
+        "flex_marker": "000000",
+        "reassigned_loop": 0,
+        "cancel_marker": "504c01",
+        "pipo_after_reselect": 3
+      },
+      "soloHeldChordsAndStress": {
+        "image_sha256": "ee556372122283b65ebb3cffc8ebc63bc0ab8e130e0f8d217b1e506fa6d4839f",
+        "marker": "504c01",
+        "mirror": "504c01",
+        "machine": "01",
+        "loop": "00",
+        "chromatic_mode": 1,
+        "poly_sound": {
+          "frames": 8832,
+          "channel_peaks": [
+            361,
+            361
+          ]
+        },
+        "flex_sound": {
+          "frames": 8830,
+          "channel_peaks": [
+            3042,
+            3042
+          ]
+        },
+        "sample_preview": "not tested; use --preview for the unqualified probe",
+        "transport": "00000001",
+        "live_record": "00000001",
+        "play_start": "status sample=471462.681 ms=10690.764 frames=28971 frame=on idle=57323 wall=137.181",
+        "play_end": "status sample=532335.768 ms=12071.106 frames=32779 frame=on idle=64504 wall=165.698",
+        "records": [
+          {
+            "step": 2,
+            "root": 72,
+            "shape": 41
+          },
+          {
+            "step": 5,
+            "root": 73,
+            "shape": 0
+          },
+          {
+            "step": 6,
+            "root": 73,
+            "shape": 41
+          },
+          {
+            "step": 9,
+            "root": 74,
+            "shape": 4
+          },
+          {
+            "step": 10,
+            "root": 74,
+            "shape": 41
+          }
+        ],
+        "decoded_chords": [
+          {
+            "step": 2,
+            "root": 72,
+            "shape": 41,
+            "offsets": [
+              0,
+              4,
+              7
+            ]
+          },
+          {
+            "step": 5,
+            "root": 73,
+            "shape": 0,
+            "offsets": [
+              0
+            ]
+          },
+          {
+            "step": 6,
+            "root": 73,
+            "shape": 41,
+            "offsets": [
+              0,
+              4,
+              7
+            ]
+          },
+          {
+            "step": 9,
+            "root": 74,
+            "shape": 4,
+            "offsets": [
+              0,
+              4
+            ]
+          },
+          {
+            "step": 10,
+            "root": 74,
+            "shape": 41,
+            "offsets": [
+              0,
+              4,
+              7
+            ]
+          }
+        ],
+        "stopped_before_playback": {
+          "frames": 8831,
+          "channel_peaks": [
+            1,
+            1
+          ]
+        },
+        "sequenced_chord_audio": {
+          "frames": 8833,
+          "channel_peaks": [
+            2243,
+            2243
+          ]
+        },
+        "stress_start": "status sample=594106.925 ms=13471.812 frames=36643 frame=on idle=71981 wall=211.557",
+        "amp_before_stress": "007f7f40407f",
+        "stress_press": 127,
+        "stress_end": "status sample=707311.275 ms=16038.804 frames=43725 frame=on idle=84397 wall=294.430",
+        "result": "Held major chords recorded on advancing steps, sequencer audio and 128 rapid trig presses pass; physical hardware and sample audition remain unqualified"
+      },
+      "combinedChooserAudioAndStress": {
+        "image_sha256": "c1f3a68fed0f4208a4d777ef63e04791c27e2de5a927bc2d797e24da166b1419",
+        "cursor": 8,
+        "fm_marker": "464d01",
+        "vector_marker": "533202",
+        "poly_marker": "504c01",
+        "analog_bd_marker": "414201",
+        "fm_double_track_row": 8,
+        "second_poly_modal": "46c7d384",
+        "modal_no_dismissal": "pass",
+        "modal_automatic_dismissal": "pass",
+        "fm_audio": {
+          "frames": 8830,
+          "peak": 382
+        },
+        "vector_audio": {
+          "frames": 8829,
+          "peak": 3259
+        },
+        "poly_audio": {
+          "frames": 8828,
+          "peak": 725
+        },
+        "analog_bd_audio": {
+          "frames": 8828,
+          "peak": 2292
+        },
+        "poly_amp": "007f7f40407f",
+        "stress_start": "status sample=1552813.126 ms=35211.182 frames=46243 frame=on idle=160069 wall=386.532",
+        "stress_press": 127,
+        "stress_maxactive": 8,
+        "stress_end": "status sample=1665976.707 ms=37777.250 frames=53322 frame=on idle=172264 wall=417.688",
+        "result": "Four signed machines, shared chooser, isolated audio, second-POLY refusal and 128 rapid panel presses pass; hardware timing remains unqualified"
+      }
+    },
+    "firstAttempts": [
+      {
+        "case": "fullNoCFBoot",
+        "imageSha256": "c1f3a68fed0f4208a4d777ef63e04791c27e2de5a927bc2d797e24da166b1419",
+        "outcome": "stop=wall; inconclusive, no address/illegal fault recorded. The isolated retry passed. Contention as cause was not established."
+      },
+      {
+        "case": "soloRecording",
+        "imageSha256": "ee556372122283b65ebb3cffc8ebc63bc0ab8e130e0f8d217b1e506fa6d4839f",
+        "outcome": "stop=wall; inconclusive, no address/illegal fault recorded. The isolated retry passed. Contention as cause was not established."
+      }
+    ],
+    "hardwareStatus": "Not tested; no replacement firmware offered"
+  },
+  "currentMainIntegration": {
+    "baseCommit": "cfa000f6d77e8f50a3c039df3962217b8990a8e0",
+    "change": "Shared Part validator delegates to current VECTOR persistence adapter when linked; preserve its packed setting protection and actual stock result/corrections. Exact reviewed VECTOR validation detour is replaced by the shared entry. Companion module source stays unchanged.",
+    "hostRegression": "PASS with address/undefined sanitizers: all 256 mixed Analog BD/FM/VECTOR signature masks, all settings restored, stock validator called exactly once, return value and unrelated correction preserved.",
+    "stockFreeBuild": "PASS including mandatory startup-section, 121-address and 256-mask sanitizer gates. Importer validates complete source inventory and version pins; local artifacts imported without release approval.",
+    "nativeSourceSha256": "d0a8ebafbee2e4423ab90a87e0fc3d297de5433da451e1ece02633b6611e0cff",
+    "images": [
+      {
+        "testFirmware": "POLYINIT",
+        "nativeSourceSha256": "d0a8ebafbee2e4423ab90a87e0fc3d297de5433da451e1ece02633b6611e0cff",
+        "modules": [
+          "poly8"
+        ],
+        "mainSha256": "68b852601ad8b2579f0b3321c6203624dc2c1dfaacc2237fcf05910f512dae72",
+        "updateSha256": "5b5056c90a32e4f6a93e11b177a916d2b93cbecd249ec16bca914ddaab8306d9",
+        "nativeComparison": {
+          "verdict": "masked"
+        },
+        "roundTrip": true,
+        "stockTailPreserved": true,
+        "loader": false,
+        "coreLogger": true
+      },
+      {
+        "testFirmware": "POLYFULL",
+        "nativeSourceSha256": "d0a8ebafbee2e4423ab90a87e0fc3d297de5433da451e1ece02633b6611e0cff",
+        "modules": [
+          "poly8",
+          "analog-bassdrum",
+          "vector",
+          "synth",
+          "quantizer",
+          "repitch",
+          "mute-modes",
+          "sidechain-compressor"
+        ],
+        "mainSha256": "95361ee8343d15026f461a0e181a878d7adaf99b6f279c7da1ad4323eeaf9a1c",
+        "updateSha256": "0972bba5e34dc0442bdfb49ec6c50492e3818a722cb0b67ed18f90d0ead3817d",
+        "nativeComparison": {
+          "verdict": "masked"
+        },
+        "roundTrip": true,
+        "stockTailPreserved": true,
+        "loader": false,
+        "coreLogger": true
+      }
+    ],
+    "nativeComparison": "Both current-main solo and eight-module configurations match fresh native builds outside declared platform writes; BIN round trips and original tail pass. This is two profiles, not the full compatibility matrix.",
+    "nativeBoot": [
+      {
+        "imageSha256": "95361ee8343d15026f461a0e181a878d7adaf99b6f279c7da1ad4323eeaf9a1c",
+        "emulatorSha256": "eb6edf981e382516897a24de70512da9ddcc29d69db052b8d504367d138aa776",
+        "poisonBeforeLoader": "40a955e0:a18800:ff",
+        "warmSRAM": true,
+        "initialFlag": "00000000",
+        "initialTable": "000000000000000000000000000000000000000000000000000000000000000000000000",
+        "slice": 47,
+        "finalFlag": "00000001",
+        "finalTable": "400d301c400d31ae400d3340400d34d2400d3664400d31ae40ab2050400d31ae40a9ade4",
+        "cpu": "cfstatus instructions=1217003059 ms=13003.473 pc=4001fc9c why=reached the RTOS handoff (trap #0) at pc 40000e46 rtoswhy=time",
+        "status": "status sample=573453.145 ms=13003.473 frames=33113 frame=on idle=55555 wall=278.122",
+        "widgetTargets": [
+          "400479b4",
+          "40a9577e"
+        ],
+        "widgetCalls": 72,
+        "result": "Corrected image overwrites poisoned startup flag and completes 12 seconds of boot-logo startup without CF, no fault"
+      },
+      {
+        "imageSha256": "68b852601ad8b2579f0b3321c6203624dc2c1dfaacc2237fcf05910f512dae72",
+        "emulatorSha256": "eb6edf981e382516897a24de70512da9ddcc29d69db052b8d504367d138aa776",
+        "poisonBeforeLoader": "40a955e0:a18800:ff",
+        "warmSRAM": true,
+        "initialFlag": "00000000",
+        "initialTable": "000000000000000000000000000000000000000000000000000000000000000000000000",
+        "slice": 47,
+        "finalFlag": "00000001",
+        "finalTable": "400d301c400d31ae400d3340400d34d2400d3664400d31ae000000000000000000000000",
+        "cpu": "cfstatus instructions=1191519432 ms=13004.440 pc=4001fc9c why=reached the RTOS handoff (trap #0) at pc 40000e46 rtoswhy=time",
+        "status": "status sample=573495.788 ms=13004.440 frames=33116 frame=on idle=55672 wall=312.063",
+        "widgetTargets": [
+          "400479b4"
+        ],
+        "widgetCalls": 72,
+        "result": "Corrected image overwrites poisoned startup flag and completes 12 seconds of boot-logo startup without CF, no fault"
+      }
+    ],
+    "applicationChecks": {
+      "targetedUnitTests": "29 pass; 1 generated catalogue compatibility test fails because generated POLY8 document still contains old conflicts. No assertion skipped.",
+      "nativeSDKTests": "4 symbol-export tests pass",
+      "requiredCheck": "FAIL at module qualification: existing owner approval is for 0.2.5, not changed 0.2.6. Full app suite did not run through this command.",
+      "doctor": "FAIL after local package import: packages/fingerprint now pass; current-build performance, exact-version qualification, full native comparison and generated declaration metadata remain incomplete.",
+      "typecheck": "PASS: tsc -b",
+      "lint": "PASS: no errors, six existing application warnings"
+    },
+    "remaining": "Current source solo and combined native boot/audio/recording/rapid-panel regressions pass. Full compatibility/declaration metadata, generated catalogue, current-build physical boot/audio, chip timing and complete memory qualification remain incomplete; no public release.",
+    "combinedBehavior": {
+      "image_sha256": "95361ee8343d15026f461a0e181a878d7adaf99b6f279c7da1ad4323eeaf9a1c",
+      "cursor": 8,
+      "fm_marker": "464d01",
+      "vector_marker": "533202",
+      "poly_marker": "504c01",
+      "analog_bd_marker": "414201",
+      "fm_double_track_row": 8,
+      "second_poly_modal": "46c7d384",
+      "modal_no_dismissal": "pass",
+      "modal_automatic_dismissal": "pass",
+      "fm_audio": {
+        "frames": 8830,
+        "peak": 382
+      },
+      "vector_audio": {
+        "frames": 8830,
+        "peak": 3259
+      },
+      "poly_audio": {
+        "frames": 8828,
+        "peak": 725
+      },
+      "analog_bd_audio": {
+        "frames": 8829,
+        "peak": 2292
+      },
+      "poly_amp": "007f7f40407f",
+      "stress_start": "status sample=1552814.446 ms=35211.212 frames=46242 frame=on idle=160052 wall=173.119",
+      "stress_press": 127,
+      "stress_maxactive": 8,
+      "stress_end": "status sample=1665979.641 ms=37777.316 frames=53321 frame=on idle=172267 wall=212.890",
+      "result": "Four signed machines, shared chooser, isolated audio, second-POLY refusal and 128 rapid panel presses pass; hardware timing remains unqualified"
+    },
+    "soloRecordingAndStress": {
+      "image_sha256": "68b852601ad8b2579f0b3321c6203624dc2c1dfaacc2237fcf05910f512dae72",
+      "marker": "504c01",
+      "mirror": "504c01",
+      "machine": "01",
+      "loop": "00",
+      "chromatic_mode": 1,
+      "poly_sound": {
+        "frames": 8831,
+        "channel_peaks": [
+          361,
+          361
+        ]
+      },
+      "flex_sound": {
+        "frames": 8830,
+        "channel_peaks": [
+          3042,
+          3042
+        ]
+      },
+      "sample_preview": "not tested; use --preview for the unqualified probe",
+      "transport": "00000001",
+      "live_record": "00000001",
+      "play_start": "status sample=471462.681 ms=10690.764 frames=28971 frame=on idle=57378 wall=88.958",
+      "play_end": "status sample=532336.557 ms=12071.124 frames=32779 frame=on idle=64559 wall=100.515",
+      "records": [
+        {
+          "step": 2,
+          "root": 72,
+          "shape": 41
+        },
+        {
+          "step": 5,
+          "root": 73,
+          "shape": 0
+        },
+        {
+          "step": 6,
+          "root": 73,
+          "shape": 41
+        },
+        {
+          "step": 9,
+          "root": 74,
+          "shape": 4
+        },
+        {
+          "step": 10,
+          "root": 74,
+          "shape": 41
+        }
+      ],
+      "decoded_chords": [
+        {
+          "step": 2,
+          "root": 72,
+          "shape": 41,
+          "offsets": [
+            0,
+            4,
+            7
+          ]
+        },
+        {
+          "step": 5,
+          "root": 73,
+          "shape": 0,
+          "offsets": [
+            0
+          ]
+        },
+        {
+          "step": 6,
+          "root": 73,
+          "shape": 41,
+          "offsets": [
+            0,
+            4,
+            7
+          ]
+        },
+        {
+          "step": 9,
+          "root": 74,
+          "shape": 4,
+          "offsets": [
+            0,
+            4
+          ]
+        },
+        {
+          "step": 10,
+          "root": 74,
+          "shape": 41,
+          "offsets": [
+            0,
+            4,
+            7
+          ]
+        }
+      ],
+      "stopped_before_playback": {
+        "frames": 8832,
+        "channel_peaks": [
+          1,
+          1
+        ]
+      },
+      "sequenced_chord_audio": {
+        "frames": 8832,
+        "channel_peaks": [
+          2243,
+          2243
+        ]
+      },
+      "stress_start": "status sample=594106.925 ms=13471.812 frames=36643 frame=on idle=72038 wall=111.655",
+      "amp_before_stress": "007f7f40407f",
+      "stress_press": 127,
+      "stress_end": "status sample=707256.021 ms=16037.551 frames=43722 frame=on idle=84467 wall=138.861",
+      "result": "Held major chords recorded on advancing steps, sequencer audio and 128 rapid trig presses pass; physical hardware and sample audition remain unqualified"
+    },
+    "nextPrivateCandidate": {
+      "testFirmware": "POLY8T09",
+      "nativeSourceSha256": "d0a8ebafbee2e4423ab90a87e0fc3d297de5433da451e1ece02633b6611e0cff",
+      "mainSha256": "68b852601ad8b2579f0b3321c6203624dc2c1dfaacc2237fcf05910f512dae72",
+      "updateSha256": "0077046f0dcf5cc5e38a52cef32b2c81d5522cb6167b7d3a93e710626a169a66",
+      "packaging": "Version-field-only retag through production ELUP codec; exact already-tested MAIN, packed section, stock tail and seed preserved; all checksums regenerated.",
+      "delivery": "Private POLY8-only test candidate after matched dirty-memory boot and current-source recording regressions; no hardware result or publication approval claimed."
+    }
+  },
+  "fixedOnHardwareBasis": "Corrected T09 received an owner functional report on MKII; no duration or separate per-test coverage reported."
+}

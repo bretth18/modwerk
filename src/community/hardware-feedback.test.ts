@@ -29,6 +29,14 @@ describe('hardware feedback on a later visit', () => {
     expect(dueHardwareFeedback('alice', now + FEEDBACK_SNOOZE)).toBeUndefined()
     expect(dueHardwareFeedback('alice', now + FEEDBACK_DELAY + FEEDBACK_SNOOZE)).toBeDefined()
   })
+  it('can request a tomorrow reminder after reopening a previously dismissed build', () => {
+    rememberHardwareFeedback('alice', build, now)
+    updateHardwareFeedback('alice', build, 'dismiss', now)
+    rememberHardwareFeedback('alice', build, now + FEEDBACK_DELAY)
+    updateHardwareFeedback('alice', build, 'later', now + FEEDBACK_DELAY)
+    expect(dueHardwareFeedback('alice', now + FEEDBACK_DELAY + FEEDBACK_SNOOZE - 1)).toBeUndefined()
+    expect(dueHardwareFeedback('alice', now + FEEDBACK_DELAY + FEEDBACK_SNOOZE)).toBeDefined()
+  })
   it('keeps dismissed and completed builds quiet, while still asking for unfinished modules', () => {
     rememberHardwareFeedback('alice', build, now)
     updateHardwareFeedback('alice', build, { completed: 'miniverb' }, now + FEEDBACK_DELAY)

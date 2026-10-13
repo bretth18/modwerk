@@ -1,0 +1,19 @@
+{
+  "firmware": "1.40C",
+  "version": "0.2.2-experimental",
+  "build_tag": "12",
+  "image_sha256": "a1bf19d70ec8df03695758518feeab2ff4eb801878ea15e3bf3345fc223409c3",
+  "native_sdk_revision": "6d20796",
+  "source_sha256": {
+    "polyphony.s": "8079a2c3012db0696638e995a55bc71d2f9b4b8402f0ce53307e2d5a9cafe157",
+    "pool.c": "4b33927f1fd4d79a543ccd49d30c02cdd9cf0f383d513bb435a64964f1190471",
+    "recording.c": "0eccf0d1c4beabe9ebe2f6915f4f0277b99a9715018ea444a192e1b4ea0f5b5b",
+    "registration.c": "92d3d6fda2e689f855182cf9ecc4244a0f9b189d6ed736fb29f79a7a69be0168",
+    "registration-hooks.s": "27ab57d18594bf85a7bb603523a4c041ec40b91794448edfc22191b23f5aa937",
+    "registration.s": "0fa0706bee8c2185752fa49a6ab73b22d8ee9927e22b5fa9548639a9c35c64ac",
+    "manifest.py": "5d299743e79e81c266cb5ffb365c1a4ec0af05c0380f1ab9327c95bd58973ec2"
+  },
+  "native_rebuild_after_rebase": "Native BUILD12 and authored C regeneration are byte-identical to the tested image. Rebased to ea7069d; sdk/octabam build/runtime inputs are unchanged. New main startup artwork applies through the app composer and does not alter this private native module test.",
+  "hardware": "MKII recording/stall/clipping retest pending; no success claimed.",
+  "pr_base_revision": "ea7069de079b82f6287e92e8608719d6b210686d"
+}

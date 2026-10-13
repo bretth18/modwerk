@@ -1,6 +1,38 @@
 # Digi EQ testing
 
-## In Modwerk
+## Clear and box alignment — 1.0.2-experimental, 11 October 2026
+
+Issue [#185](https://github.com/repeat98/modwerk/issues/185) is reproduced on OS 1.54 with the pinned 1.0b object: the native FUNC + held LFO + PLAY shortcut displays “CLEAR PAGE EQ” but leaves edited bands unchanged. The firmware's unused None page has no stock EQ parameters. The new, guarded master-view clear callback delegates to the stock handler for feedback and other pages, then restores all four bands' default frequency, gain, Q and type, clears partial encoder counts, recomputes the live coefficients and writes only the EQ-owned kit bits. Knob modes and the global override are preserved. The icon now ends at x=13, matching the pattern header; its EQ label is centered.
+
+[evidence/clear-1.0.2.json](evidence/clear-1.0.2.json) binds runtime source SHA-256 `eeeb9242b68a5c0770403caee5feba821fe7960727215a701fe93426e60319af`, compiler, packages, private images and native input observations. Candidate compilation used a tracked-source snapshot of main plus the recorded source/manifest overlay; the base commit alone is not this source. CI must reproduce both committed source-only exports.
+
+- Firmware-free GCC 16.2 / binutils 2.47 compilation passes on OS 1.53 and 1.54 in the pinned container without network or credentials. Exported packages and local recipe materialization produce byte-identical private firmware.
+- The unchanged builder accepts core 2.1, DIGICHAIN 1.6, Digi Mono 0.13.3-experimental and Digi EQ 1.0.2-experimental on both releases. Stock hashes, patch overlap, instruction boundaries, placement budgets and saved container verification pass; sections 2, 4, 5 and 8 remain unchanged.
+- Final catalogue pins reference source/package commit `1107d484c8d7ad84cfff14917b34acdcb83a53e6`. Both OS releases build without overrides and save/read back the same D185 image hashes below; the tested capture candidate and final pinned release are byte-identical.
+- Native panel regressions on both releases edit all sixteen band parameters, then reset them to frequency indices `[25,55,89,114]`, gains `[24,24,24,24]`, Q indices `[4,5,5,4]` and types `[1,2,2,5]`. Comparisons of all eight sound records find zero changed bytes outside EQ-owned bits, including the shared Digi Poly high bit.
+- Repeated Clear stays at defaults. The pressed A mode still edits Q afterward. FUNC+PLAY without held LFO leaves the EQ unchanged, and Internal Mixer Clear leaves the edited EQ unchanged. Global override preservation is source-reviewed only. Copy/Paste, Undo Clear, physical save/reload and reboot are unqualified.
+- Filter DSP, coefficient calculations and stored EQ layout are unchanged by source review. This does not establish working audio or runtime timing on the new linked image.
+- Current [media/capture.json](media/capture.json) records complete native EQ and Q/type frames from the exact OS 1.53 D185 candidate, input events, selected timestamps, kit/catalog identities and the local package override. Every retained PNG was opened for review. No menu, parameter or LCD state was injected.
+
+Compiled module memory is 8,578 B `.run` + 564 B `.bss` + 4 B event contribution = **9,146 B**, excluding shared dependencies and alignment. The tested combination passes the linker's 128 KiB shared RAM and 2,304 B fast-RAM checks. Complete stack/heap/lifetime bounds, chip timing and hardware canaries are unmeasured.
+
+### Exact private builds and physical checks
+
+Use your stock recovery file and a disposable project. Build the selection above with output version D185:
+
+| OS | Private firmware SHA-256 |
+| --- | --- |
+| 1.53 | `d8717d1d10418c6833d8312ba266d96fa7e3ecb03c78c3a927f2e45caeb5b6c5` |
+| 1.54 | `255990b52f0c293a57c1c4d27b0deedd0a12ed78cc3cedae40f418f1147c67a6` |
+
+1. Open Master EQ with FUNC + LFO twice. Play distinct audio tracks; edit every band’s gain, frequency, Q and type, including an always-active filter type. Hold FUNC and LFO, then press PLAY (CLEAR). Confirm default values, a flat curve and unchanged audio through the expected bypass/default response on main outs, headphones and USB.
+2. Repeat Clear and edit again. Check normal/pressed encoder modes, other master pages, stock pattern Clear, EQ page Copy/Paste and Undo Clear. Confirm other tracks and companion modules remain independent.
+3. Test with GLOBAL FX/MIX > MASTER EQ both off and on. Switch patterns with distinct EQ settings; clear the active EQ and confirm the intended per-pattern/global behavior.
+4. Save/reload the project, power-cycle the physical unit and repeat with the exact saved image. Exercise the busiest supported project and report dropouts, hangs, changed sounds or lost settings. This is a single master EQ, so per-track EQ instances and FX-slot/DSP-core placement do not apply.
+
+Hardware, audio, DSP timing, complete runtime memory bounds, persistence, physical reboot and stress remain unverified. Owner repeat98 explicitly approved “Approve this exact experimental release and issue closure with the limits disclosed” for this exact 1.0.2 source and both D185 images on 11 October 2026. The complete source/image-bound exception is in the evidence JSON. Closure remains gated on an actual saved live-download verification. Global override is source-reviewed only; Copy/Paste and Undo Clear are unqualified. No hardware pass is recorded, and this does not extend any prior module waiver.
+
+## Historical import in Modwerk
 
 Nothing has been flashed or tested on hardware in Modwerk. Evidence tier: `none`.
 

@@ -1,16 +1,20 @@
-# Mini Verb — Tone and lower-right Mix
+# Mini Verb
 
-Version: 0.2.0-experimental · author: [Jannik Aßfalg](https://github.com/repeat98)
+Version: 0.2.1-experimental · author: [Jannik Aßfalg](https://github.com/repeat98)
 
 ## Overview
 
-Mini Verb keeps Mini Verb's accepted four-branch, eight-allpass feedback tank
-and adds a small stereo tone stage on the wet output. It moves Mix down one
-row into the empty encoder F slot and puts Tone above it on encoder C.
-This release updates the existing `miniverb` identity and FX ID 0x17.
-The owner accepted its sound and stability in Octemu on 8 October 2026 and
-explicitly authorized publication without physical hardware evidence for this
-exact version. Hardware status remains untested; see TESTING.md.
+Mini Verb is a four-branch, eight-allpass reverb with stereo output tone and
+modulation. This update fixes intermediate dry/wet clipping at hot input
+levels: the mixer preserves headroom for the wet-minus-dry difference before
+multiplication, then limits only its final output. The tank, controls, defaults,
+FX ID 0x17 and state allocation are unchanged.
+
+The mixer defect is reproduced on both native emulated DSP cores. The original
+THRU noise reported in [#428](https://github.com/repeat98/modwerk/issues/428)
+remains unconfirmed on hardware. The owner approved this exact experimental source with hardware, chip timing
+and complete runtime memory bounds waived on 11 October 2026. Report #428
+stays open until reporter confirmation; see TESTING.md for the evidence and limits.
 
 ## Controls
 
@@ -38,7 +42,7 @@ to produce its complementary high-pass. Their shared crossover is about
 without boosting a band. Bright removes bass rather than adding treble gain.
 
 Tone smooths per sample with a 1/256 coefficient. The crossover stays fixed during movement, and an exact neutral bypass
-preserves the previous voice's audio and reduces its instruction cost.
+retains the tank's neutral output and reduces its instruction cost.
 A sub-LSB remainder snaps to its target once per process call, outside the
 sample loop, so returning to 64 reaches an exact bypass. Both stereo
 filter histories clear with the existing unconditional instance initialization.
@@ -59,8 +63,13 @@ room lengths, modulation clock or existing DECAY/DAMP/MOD/RATE mappings.
 
 ## Compatibility and limitations
 
-FX2, Octatrack OS 1.40C; own effect ID 0x17 beside DARK REV. The owner approved this experimental update with physical hardware evidence
-waived. Review the migration below before loading existing projects.
+FX2, Octatrack OS 1.40C; own effect ID 0x17 beside DARK REV. No parameter or
+project-layout migration is needed from 0.2.0. The wider mixer can change
+otherwise unclipped output by up to 8 of the 24-bit least significant bits;
+neutral audio is no longer promised bit-identical to older mixers.
+Physical hardware, chip timing, complete runtime bounds, played automation,
+Part/project persistence and physical reboot remain unverified for this source.
+Review the migration below when upgrading from 0.1.x.
 
 **Existing project data needs migration.** Parameters are stored by slot, not
 name. Slot C previously held MIX and now holds TONE; slot F previously had no
@@ -90,8 +99,9 @@ The 16K ring allocation and its occupied 13,750 positions are unchanged.
 Tone adds target/current state at X:(r7+$2e/$2f) and left/right pole history at
 X:(r7+$3c/$3d), within the original X:(r7+$20..$3f) block. Initialization still
 clears all 32 scalar words and progressively clears the same 16K ring.
-Historical 0.1.2 cost and audio measurements remain in the published module;
-they are not relabeled as tests of this update.
+The mixer adds four program words and four instructions per stereo sample,
+with no additional scalar or ring state. Historical cost and hardware records
+remain version-labelled; they are not tests of this update.
 
 ## Authorship and licences
 
@@ -108,10 +118,10 @@ Actual firmware-rendered LCD captures from the private common-builder image:
 
 ![DECAY, DAMP, TONE above MOD, RATE, MIX on the main FX2 page.](media/ot-controls.png)
 
-These emulator captures show the new layout with transport stopped and an
+These emulator captures show the six-control layout with transport stopped and an
 empty scratch card; they do not prove hardware behavior or audible playback.
 See [capture provenance](media/capture.json) and [capture rights](media/LICENSE.md).
 The native verifier writes private dark/neutral/bright percussion WAVs for
-level-preserving listening. The owner reported that it works well and is
-stable in Octemu; this acceptance report has no reported duration or instance
-count. Physical hardware remains untested.
+level-preserving listening. Physical hardware remains untested for this source.
+
+**Audio preview.** [Listen](media/audio-preview.mp3). One clap, played three times: dry, then Mini Verb as a room (DECAY 104, DAMP 70, TONE 64, MOD 80, RATE 2, MIX 76), then a long, bright tail (DECAY 122, DAMP 40, TONE 96, MOD 110, RATE 5, MIX 90). It is an offline render on a computer through version 0.2.0-experimental, not a recording of an Octatrack or a test of the 0.2.1 mixer fix. The sample, settings and method are in [audio-preview.json](media/audio-preview.json); rights are in [media rights](media/LICENSE.md).

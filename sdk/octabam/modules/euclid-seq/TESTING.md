@@ -454,28 +454,99 @@ Limitations: one unit and one session; duration and project contents were not
 recorded; live recording, MIDI tracks, Parts and bank changes were not
 exercised. The tester found the EUCLID page hard to read.
 
+## Merged source (13 October 2026)
+
+After merging current upstream `main` (`8ce3a97`) into `euclid-seq`, the
+module folder's native source is unchanged from `5524fd1` (the same
+qualification source SHA-256,
+`f1185452b80a0a1d27f1dde9736f26cdb84cd766dc92ac7e8d5183784a1f5910`), and
+`prepare.py` regenerates `control.s` byte for byte. A fresh
+`make bus REMIX=es-dev` build of the merged tree is byte-identical to the
+development image VACEUCLID8 was made from
+(`4b5b3cc259060caf140a7a241cc42358d435ffc28f55298680a2d32c9e15eaa4`).
+On it: `verify.py` all four gates OK; 34/34 on the MKII panel; 34/34 on
+the MKI panel; 54/54 copy, paste, clear, undo, Part save and reload checks
+(MKII).
+
+## Screenshots
+
+`media/*.png` are LCD framebuffer captures made with
+`scripts/capture-module-ui.py` (headless ot_emu, MKII panel, empty scratch
+card, stopped transport) from the VACEUCLID8 image
+`0ed556591dc2d081b43bc3608ac28d7800a2316588d1ffdd981c844761605384` on
+13 October 2026; the plan and screenshot hashes are in `media/capture.json`.
+The plan selects EUCLID in TRIG MODE (FUNC + seven DOWN presses), captures
+the panel, opens the page with FUNC+RIGHT, turns EUC on and sets PL1 5,
+PL2 3, RO2 2 and XOR, closes it, then sets LFO 1's PMTR to EUC PL1 with
+DEP 40 in LFO SETUP. They show the screens only: the pictured settings were
+not played or listened to in this capture.
+
 ## Memory
 
-From the linked unit of the source `a178bfe` build (`make bus REMIX=es-dev`,
-`out/platform/runtime/runtime.elf`, `m68k-elf-size -A`), 10 October 2026:
+From the linked unit of the merged source build (`make bus REMIX=es-dev`,
+`out/platform/runtime/runtime.elf`, `m68k-elf-size -A`), 13 October 2026,
+byte-identical to the image VACEUCLID8 was made from:
 
 | Region | Bytes |
 | --- | --- |
-| Code (`.text`: C, stubs, layers) in the platform reserve | 11,984 |
-| Read-only data (`.rodata`) | 197 |
-| Initialised data (`.data`: key layers, mode tables, icon) | 760 |
-| Zeroed state (`.bss`: LFO buffers, page state) | 144 |
-| **Unit total (DRAM, platform reserve)** | **13,085** |
+| Code (`.text`: C, stubs, key layers, constant tables) in the platform reserve | 18,820 |
+| Read-only data (`.rodata`) | 226 |
+| Initialised state (`.data`: page, clipboard, undo copy, LFO buffers) | 338 |
+| Zeroed state (`.bss`) | 0 |
+| **Unit total (DRAM, platform reserve)** | **19,384** |
 | Battery RAM settings table `0x100f9000..0x100fd010` | 16,400 |
 | Battery RAM LFO destination table `0x100fd100..0x100fd710` | 1,552 |
+| Battery RAM saved Part LFO destinations `0x100fd800..0x100fde10` | 1,552 |
+| **Total** | **38,888** |
 
-One copy for all tracks, patterns and Parts; no heap, no DSP memory. The
-shared octabam loader the platform appends (7,842 B at `0x4010fdf0` in this
-build) and the platform's 10 MB DRAM reserve are not the module's own.
+One copy for all tracks, patterns and Parts; no heap, no DSP memory, no
+cave space. The shared octabam loader the platform appends (11,029 B at
+`0x4010fdf0` in this build) and the platform's 10 MB DRAM reserve are not
+the module's own. Stack use was not measured.
 
 ## Performance
 
-Executed instructions on the emulator are listed under the LFO section
-above; they are instruction counts, not cycles. Outside LFO modulation the
-module runs only on key, knob and length-setter events (one pass over at
-most 64 steps). No chip timing was measured.
+`evidence/performance.json` (`npm run perf:audit -- check`): cycles
+**note**, stock benchmark **fail** (not measured), stress **fail** (not
+run). Figures are executed-instruction counts from ot_emu's instruction
+counter, or longest paths over the linked unit's control-flow graph; they
+are not chip cycles, and no chip timing was measured.
+
+Measured 13 October 2026 on the VACEUCLID8 image: all eight audio tracks
+EUC on (PL1 5-10, PL2 3, RO1 2), all 24 LFOs on EUCLID destinations (PL1,
+RO1, TRO) with DEP raised, playing in grid recording for 3 s (8,276
+frames); counts run from the stock site to its resume address and include
+any interrupt taken inside a stub.
+
+| Path | Context | Runs | Executed instructions | Static longest path |
+|---|---|---|---|---|
+| LFO engine, frame builder copy (`0x4000d032`), per LFO | frame builder (stack `0x80000…`) | 198,624 | 96 every call; 2,304 for 24 consecutive calls | 96 per call |
+| LFO engine, other copy (`0x40003c98`) | | 0 in this run | | 96 |
+| Step evaluation, any-trig test, per track per step | sequencer (stack `0x80006…`) | 192 | 364 mean, 398 max | 1,016 |
+| Step evaluation, sample-trig test | sequencer | 36 | 338 mean, 389 max | 1,007 |
+| Slide search stubs | sequencer | 0 (no slides) | | 1,011 each, per candidate step |
+| Step path, all of the above between two track-1 evaluations | sequencer | | 5,775 max | not established |
+| Grid LED painter, per trig key | UI | 688 | 531 mean, 27,367 max (an interrupt inside the stub) | 1,036 |
+| EUCLID page knob turn: regeneration and redraw | UI | 48 | 25,223–496,657 (includes the page redraw and interrupts) | not computed |
+
+The static longest paths count each instruction once over the control-flow
+graph, adding callees' bounds; `live_params`'s three-LFO loop is bounded by
+counting its whole body three times. The slide search calls its stubs once
+per candidate step in a stock loop whose iteration count was not bounded
+here, so the step path has no static bound. Step evaluations were seen
+between LFO calls of one frame, so a frame can carry both paths.
+
+The record's event is one frame's LFO-engine work: 24 x 96 = 2,304
+instructions, measured and static alike; cycles = instructions x 32 (the
+allowance Play Modes uses), 73,728 of a 95,779-cycle frame at 264 MHz (77%,
+over half: the allowance is a deliberately pessimistic stand-in for
+unmeasured chip timing, not a measured load). Every frame, an LFO not on a
+EUCLID destination passes the stub's short check (19-28 instructions
+earlier measured), with or without Euclid in use.
+
+Not measured: the stock benchmark needs `cfmeter.py` captures of the CF
+METER insert on the stock image and on this image under the same flood;
+that insert is not in this repository and no capture exists. Not run: the
+ColdFire stress record's wire-rate MIDI flood (Euclid Seq handles no MIDI
+itself). No hang occurred in any emulator run above. These two rows need
+the owner's decision before publication.

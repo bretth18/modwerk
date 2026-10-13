@@ -1,0 +1,89 @@
+{
+  "moduleVersion": "0.2.1-experimental",
+  "mainOsSha256": "af3dddc8263846bcd63e6487e753730d77b1c1c372b893bab143c252c4b0f3b8",
+  "moduleAssemblySha256": "54f718c47683c8620e2cbeef0fd814583eacfca31051ced637ced287bfbdb283",
+  "emulatorSha256": "3e04ecbfb9f00a45d7f8a832215241f3832443cd485d5cc58b3b5b97cfd7a4f0",
+  "setup": {
+    "model": "emulated MKII",
+    "card": "empty scratch card, no saved project",
+    "selection": [
+      "miniverb",
+      "tapeecho",
+      "tapehead",
+      "usb-audio-out-tracks-main-cue",
+      "synth",
+      "sidechain-compressor"
+    ],
+    "trackRuns": [
+      {
+        "track": 1,
+        "core": 1
+      },
+      {
+        "track": 5,
+        "core": 0
+      }
+    ],
+    "machine": "THRU",
+    "inputRoute": "A+B",
+    "inputVolume": "0 dB",
+    "ampHold": "INF",
+    "ampAttack": 0,
+    "ampRelease": 0,
+    "effect": "Mini Verb FX2",
+    "controls": [
+      104,
+      70,
+      64,
+      80,
+      2,
+      32
+    ],
+    "trigger": "TRACK + PLAY, then four repeats",
+    "input": "emulated tones, moderate input; no physical source"
+  },
+  "audio": [
+    {
+      "privateFilename": "reported-manual-retrigger-thru25-t1.wav",
+      "frames": 123591,
+      "sampleRate": 44100,
+      "peakFs": 0.017059326171875,
+      "rmsDbFs": -43.606624061805455,
+      "outputClippedSamples": 0,
+      "sha256": "0c19ed305dae4312dc5ae6d8922a6e0b14461267934bcf356965350fe3d26f71"
+    },
+    {
+      "privateFilename": "reported-manual-retrigger-thru25-t5.wav",
+      "frames": 123591,
+      "sampleRate": 44100,
+      "peakFs": 0.017059326171875,
+      "rmsDbFs": -43.606624061805455,
+      "outputClippedSamples": 0,
+      "sha256": "0c19ed305dae4312dc5ae6d8922a6e0b14461267934bcf356965350fe3d26f71"
+    },
+    {
+      "privateFilename": "reported-manual-thru25-t1.wav",
+      "frames": 88280,
+      "sampleRate": 44100,
+      "peakFs": 0.01708984375,
+      "rmsDbFs": -43.591905894238735,
+      "outputClippedSamples": 0,
+      "sha256": "87a30c7a82926613ae73c859102df9671f26138f0dffc6d56f037d60335fc15e"
+    },
+    {
+      "privateFilename": "reported-manual-thru25-t5.wav",
+      "frames": 88280,
+      "sampleRate": 44100,
+      "peakFs": 0.01708984375,
+      "rmsDbFs": -43.591905894238735,
+      "outputClippedSamples": 0,
+      "sha256": "87a30c7a82926613ae73c859102df9671f26138f0dffc6d56f037d60335fc15e"
+    }
+  ],
+  "conclusion": "Both separately booted tracks produce nonzero audio without output clipping or emulator failure. Active Mini Verb scalar state observed on each core. This checks candidate image operation, not reproduction or resolution of the original hardware noise.",
+  "limitations": [
+    "Private emulator watchdog extended from four to eight stalled windows to allow the runtime checksum; firmware unchanged.",
+    "One THRU track per native boot; simultaneous distinct full-instrument instances and Part/project/reboot persistence not checked.",
+    "No listening verdict, original project/recording, physical hardware, USB host stream, maximum load, chip timing or complete memory bounds."
+  ]
+}

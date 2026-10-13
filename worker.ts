@@ -1,14 +1,18 @@
+// SPDX-License-Identifier: Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 import { cleanupPush, startPush } from './server/push'
 import { sendMemberWelcomes } from './server/welcome-mail'
 import { cleanupDeveloperAuth } from './server/developer-auth'
 import { cleanupAccounts } from './server/accounts'
 import { cleanupUsage } from './server/usage'
+import { cleanupOctatrackDiagnostics } from './server/octatrack-diagnostics'
 import { cleanupPresence } from './server/presence'
 import { ensureModuleThreads } from './server/module-threads'
 import { sendActivityDigests } from './server/activity-mail'
 import { sendNewsMail } from './server/news-mail'
 import { syncModuleReleases } from './server/module-updates'
 import { cleanupForumMedia } from './server/forum-media'
+import { cleanupAudioPreviews } from './server/audio-previews'
 import { handleCommunity } from './server/transport'
 import type { Env } from './server/platform'
 
@@ -41,8 +45,9 @@ export default {
     const db = env.DB
     const activity = () => syncModuleReleases(env, db).catch(error => { console.error(`Published module versions could not be checked; retrying next hour: ${failureDetail(error)}`) }).then(() => sendActivityDigests(env, db))
     context.waitUntil(runHourly({
+      'Octatrack diagnostics cleanup': () => cleanupOctatrackDiagnostics(db),
       'push cleanup': () => cleanupPush(db), 'usage cleanup': () => cleanupUsage(db), 'presence cleanup': () => cleanupPresence(db), 'account cleanup': () => cleanupAccounts(db),
-      'developer auth cleanup': () => cleanupDeveloperAuth(db), 'module threads': () => ensureModuleThreads(db), 'activity digests': activity, 'news mail': () => sendNewsMail(env, db), 'forum media cleanup': () => cleanupForumMedia(env),
+      'developer auth cleanup': () => cleanupDeveloperAuth(db), 'module threads': () => ensureModuleThreads(db), 'activity digests': activity, 'news mail': () => sendNewsMail(env, db), 'forum media cleanup': () => cleanupForumMedia(env), 'audio preview cleanup': () => cleanupAudioPreviews(env),
     }))
   },
 }

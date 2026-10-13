@@ -1,0 +1,15 @@
+{
+  "kind": "owner-approved-update",
+  "id": "poly8",
+  "version": "0.2.7-experimental",
+  "approvedBy": "repeat98",
+  "approvedOn": "2026-10-12",
+  "ownerStatement": "approved",
+  "reason": "The owner approved the exact 0.2.7 experimental sequencer-release candidate after its native tests, versioned source, stock-free packages, current UI captures, private test BIN and exact-version publication blocker were described. Current-build physical hardware, chip worst-case timing and complete memory-bound qualification remain waived for this exact source only. No MKI pass or new physical persistence/flood result is claimed. Native/browser parity, stock isolation, current UI evidence, repository checks and owner-reviewed merge remain mandatory. The approval statement and candidate identities are retained in evidence/sequence-release-0.2.7.md; prior T10 hardware reports remain historical.",
+  "sourceSha256": "e5b8ed40809a3f5f4812a83d3fe20d50c1f6c87d38183e26072c1ce0f3439121",
+  "waived": [
+    "current-build-hardware",
+    "chip-worst-case-cycles",
+    "complete-memory-bounds"
+  ]
+}

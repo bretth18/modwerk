@@ -1,0 +1,128 @@
+{
+ "elemod": 2,
+ "id": "perform-levels",
+ "version": "1.0",
+ "title": "Perform keeps levels",
+ "description": "Track levels set in PERFORM KIT mode stay when you leave it; every other parameter still goes back to the pattern's kit, as stock.",
+ "category": "Performance",
+ "author": "toonst",
+ "license": "GPL-2.0-or-later",
+ "target": {
+  "device": "digitakt-mk2",
+  "product": "Digitakt II",
+  "os": "1.17",
+  "syx_sha256": "26c22f6652625ac2cfd47f7ee970d388ed8b6427dae3563c0a6a2f2d334350d5",
+  "section3_sha256": "a1e7b657b705eba1a19d81c33c1e11ba9c409816447ad74005d7bbf36da6d964",
+  "section3_len": 3275616
+ },
+ "sections": {
+  ".run": {
+   "align": 4,
+   "len": 188,
+   "parts": [
+    [
+     "stock",
+     "0x40062558",
+     8
+    ],
+    [
+     "hex",
+     "4feffff448d70203"
+    ],
+    [
+     "stock",
+     "0x4030d870",
+     8
+    ],
+    [
+     "hex",
+     "0000508f4cd702034fef000c20572eaa00984ed04feffff4707f48d7001cb0af00146574226f00102051242800302042487800802f094e90"
+    ],
+    [
+     "stock",
+     "0x40034c8c",
+     8
+    ],
+    [
+     "hex",
+     "260022424e914fef00104a83674a4a806746224320402600428441e8001406830000003443e90014321975d871c1b08267063141fffe7801b68866ec4a84671842a7226f001420512f2f00182f09"
+    ],
+    [
+     "stock",
+     "0x40032268",
+     8
+    ],
+    [
+     "hex",
+     "000c"
+    ],
+    [
+     "stock",
+     "0x40002336",
+     10
+    ],
+    [
+     "hex",
+     "0000"
+    ]
+   ]
+  }
+ },
+ "symbols": {
+  "pl_off": [
+   ".run",
+   0
+  ],
+  "pl_keep": [
+   ".run",
+   44
+  ]
+ },
+ "exports": [
+  "pl_keep",
+  "pl_off"
+ ],
+ "imports": [],
+ "weak": [],
+ "relocs": [
+  [
+   ".run",
+   22,
+   "abs32",
+   "sec:.run",
+   44
+  ]
+ ],
+ "sites": [
+  {
+   "addr": "0x40064ba6",
+   "len": 6,
+   "stock_sha256": "a11bb208fb59c257f1ef65fb930b5b0bc8db54fb7b7712dca18191a6887ed673",
+   "new": "4eb900000000",
+   "kind": "code",
+   "relocs": [
+    [
+     2,
+     "abs32",
+     "sym:pl_off",
+     0
+    ]
+   ]
+  }
+ ],
+ "collections": {},
+ "contribute": [],
+ "copied": [],
+ "resources": {},
+ "requires": [
+  "core"
+ ],
+ "conflicts": [],
+ "build": {
+  "sources": {
+   "levels.s": "0be5f44d1a6456757812b9c5a20bad413cf035790e71c4f90d6070d4babc6b24",
+   "levels.c": "fd6a1bd4aa680c4becef84c1e6dbc397cdfc9e19e0f8708c33c5a5bc91b17359"
+  }
+ },
+ "signature": null
+}

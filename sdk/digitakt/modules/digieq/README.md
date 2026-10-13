@@ -1,6 +1,6 @@
 # Digi EQ
 
-Modwerk metadata version: `1.0.1-experimental`.
+Modwerk metadata version: `1.0.2-experimental`.
 
 ## Overview
 
@@ -29,14 +29,15 @@ Master pages (FUNC + LFO): Master EQ (2/4), between Compressor and Internal Mixe
 1. Press FUNC + LFO for the master pages; FUNC + LFO steps through Compressor (1/4), Master EQ (2/4), Internal Mixer (3/4) and External Mixer (4/4).
 2. Turn knobs A-D for the bands’ levels and E-H for their frequencies; bands 1-4 are the columns A/E, B/F, C/G and D/H.
 3. Press a knob to switch it to its band’s Q (A-D) or type (E-H); press it again to go back.
-4. For one EQ on every pattern, turn on SETTINGS > GLOBAL FX/MIX > MASTER EQ.
+4. To reset the EQ, hold FUNC and LFO, then press PLAY (CLEAR). All four bands return to their default gain, frequency, Q and type; the selected knob modes and global override stay as they were.
+5. For one EQ on every pattern, turn on SETTINGS > GLOBAL FX/MIX > MASTER EQ.
 
 ### Quick tutorial: shape the master mix
 
 1. Use a build containing Digi EQ. Press FUNC + LFO twice to reach Master EQ (2/4). Start a pattern with audio already loaded.
 2. Turn band 1 level with A and its frequency with E to compare a small low-frequency cut with the initial 0 dB setting.
 3. Press A to edit the band’s Q and E to edit its type; press them again to return to level and frequency.
-4. Return every band to 0 dB and use the original shelf/bell types for the starting response, then stop playback. A zero-level HP, LP, BP or notch still filters.
+4. Hold FUNC and LFO, then press PLAY (CLEAR) for the flat default response; stop playback. A zero-level HP, LP, BP or notch still filters until its type is reset.
 
 ## Compatibility and limitations
 
@@ -59,7 +60,7 @@ See [TESTING.md](TESTING.md) for the documentation capture run and the separate 
 
 - gdeo607 — Digi EQ design and code, part of digi1_mods
 
-The source is pinned to [35bacb3730d108e4dc48a7bd6de4c99ae9b161e6](https://github.com/gdeo607/digi1_mods/tree/35bacb3730d108e4dc48a7bd6de4c99ae9b161e6). The full MIT licence is in [LICENSE](LICENSE). Capture rights are declared separately in [media/LICENSE.md](media/LICENSE.md).
+The imported source is pinned to [35bacb3730d108e4dc48a7bd6de4c99ae9b161e6](https://github.com/gdeo607/digi1_mods/tree/35bacb3730d108e4dc48a7bd6de4c99ae9b161e6). Modwerk 1.0.2 adds the page-clear hook and aligns the EQ box with the pattern header; filter DSP and saved EQ layout are unchanged. The full MIT licence is in [LICENSE](LICENSE). Capture rights are declared separately in [media/LICENSE.md](media/LICENSE.md).
 
 ## Screens and audio
 

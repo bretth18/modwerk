@@ -7,7 +7,6 @@ import type { CfRuntimeLink } from './coldfire-link.ts'
 import { compiledModuleSource } from './module-build.ts'
 import { resolveSelection } from '../catalog/modules.ts'
 import type { OsWrite } from './os-patches.ts'
-export const CORE_LOGGER_VERSION = pkg.version
 export const LOGGER_RESERVE_BYTES = 16 * 6144
 export const LOGGER_RETAINED_BYTES = 8192
 const BASE = 0x40a955e0, OS_BASE = 0x40000400
@@ -27,11 +26,11 @@ export async function readCoreLogger() {
   if (await loggerHash(bytes) !== pkg.sha256) throw new Error('Core logger package checksum mismatch.')
   return { label: 'octamod-core-logger', object: parseColdFireObject(bytes) }
 }
-export async function installCoreLogger(runtime: CfRuntimeLink, original: Uint8Array, ids: readonly string[], chooser: {fx1: readonly string[]; fx2: readonly string[]; hidden: readonly string[]}) {
-  const source = await loggerHash(encode(JSON.stringify({core:pkg.sourceSha256,modules:compiledModuleSource().sourceTreeSha256})))
+export async function installCoreLogger(runtime: CfRuntimeLink, original: Uint8Array, ids: readonly string[], chooser: {fx1: readonly string[]; fx2: readonly string[]; hidden: readonly string[]}, startup?: {version: string; sourceSha256: string}) {
+  const source = await loggerHash(encode(JSON.stringify({core:pkg.sourceSha256,modules:compiledModuleSource().sourceTreeSha256,...(startup?{startup:startup.sourceSha256}:{})})))
   const modules = resolveSelection(ids).map(({id,version}) => ({id,version}))
   const own = new Set(resolveSelection(ids).map(module => module.key))
-  const configuration = {fx1:['NONE',...(chooser.fx1.length?chooser.fx1:chooserMetadata.stockFx1)],fx2:['NONE',...chooser.fx2],hidden:[...chooser.hidden],logger:pkg.version,modules,os:'1.40C',source,stockfx2:chooser.fx2.some(key=>!own.has(key))}
+  const configuration = {fx1:['NONE',...(chooser.fx1.length?chooser.fx1:chooserMetadata.stockFx1)],fx2:['NONE',...chooser.fx2],hidden:[...chooser.hidden],logger:pkg.version,modules,os:'1.40C',source,stockfx2:chooser.fx2.some(key=>!own.has(key)),...(startup?{startup:startup.version}:{})}
   const hash = await loggerHash(encode(JSON.stringify(configuration)))
   const values = {build:hash.slice(0,16),os:configuration.os,modules:modules.map(m=>m.id+'@'+m.version).join(';'),configuration:hash,source,fx1:configuration.fx1.join(';'),fx2:configuration.fx2.join(';'),hidden:configuration.hidden.join(';')}
   const text = runtime.sections.find(section => section.name === '.text')

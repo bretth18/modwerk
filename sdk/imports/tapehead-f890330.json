@@ -32,8 +32,16 @@
       "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
       "sourcePath": "sdk/drafts/tapehead/README.md",
       "sourceSha256": "1a8b29da8f007d16b5d37711eca62dc26c14f5bc8fd82b9401eac01db100c16d",
-      "vendoredSha256": "3caeb6a18333032f548b9974d232bea85caa6aee2cfd7a08991b81623362f16d",
-      "note": "Octamod release integration: status, licence path, pinned source/evidence revision and parity record; native DSP and manifest unchanged from the draft"
+      "vendoredSha256": "e8d7f06b9287217a57d4c0f7342d17cb8895d4a707ad4775988375ea9b5e7dcc",
+      "note": "Octamod release integration: status, licence path, pinned source/evidence revision and parity record; native DSP and manifest unchanged from the draft",
+      "localUpdates": [
+        {
+          "moduleVersion": "0.1.2-experimental",
+          "documentationOnly": true,
+          "previousVendoredSha256": "3caeb6a18333032f548b9974d232bea85caa6aee2cfd7a08991b81623362f16d",
+          "reason": "Document the reviewed audio preview from PR #406; original upstream and import fingerprints retained. Firmware source and qualification are unchanged."
+        }
+      ]
     },
     {
       "path": "modules/tapehead/TESTING.md",
@@ -122,8 +130,16 @@
       "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
       "sourcePath": "sdk/drafts/tapehead/media/LICENSE.md",
       "sourceSha256": "249e7696bc1bd9c1de6aad265367303224bb15b2cf4708ebc5d4b95facea6146",
-      "vendoredSha256": "249e7696bc1bd9c1de6aad265367303224bb15b2cf4708ebc5d4b95facea6146",
-      "note": "Imported unchanged"
+      "vendoredSha256": "da56577c025ee28b7430802d117b402017cf2fd67a9fc5ec323c04c4d5cbc64b",
+      "note": "Imported unchanged",
+      "localUpdates": [
+        {
+          "moduleVersion": "0.1.2-experimental",
+          "documentationOnly": true,
+          "previousVendoredSha256": "249e7696bc1bd9c1de6aad265367303224bb15b2cf4708ebc5d4b95facea6146",
+          "reason": "Document the reviewed audio preview from PR #406; original upstream and import fingerprints retained. Firmware source and qualification are unchanged."
+        }
+      ]
     },
     {
       "path": "modules/tapehead/media/capture.json",
@@ -140,8 +156,16 @@
       "revision": "f890330be81c457a83e43e3f166fb50942ae8ff6",
       "sourcePath": "sdk/drafts/tapehead/octamod.module.json",
       "sourceSha256": "6207c42c6714787669c462f2a1760b9a1d4e112404f94708e73412d6b18889d9",
-      "vendoredSha256": "21e5e5c60a61e68e657674fb29bbc4278b5cbb0ab0e3af47f70db40c85914610",
-      "note": "Octamod release integration: status, licence path, pinned source/evidence revision and parity record; native DSP and manifest unchanged from the draft"
+      "vendoredSha256": "5b69a66beaca0e610df5fa12f249c0d0f642855f6d4a527a6ac91f145d3bec75",
+      "note": "Octamod release integration: status, licence path, pinned source/evidence revision and parity record; native DSP and manifest unchanged from the draft",
+      "localUpdates": [
+        {
+          "moduleVersion": "0.1.2-experimental",
+          "documentationOnly": true,
+          "previousVendoredSha256": "21e5e5c60a61e68e657674fb29bbc4278b5cbb0ab0e3af47f70db40c85914610",
+          "reason": "Document the reviewed audio preview from PR #406; original upstream and import fingerprints retained. Firmware source and qualification are unchanged."
+        }
+      ]
     },
     {
       "path": "modules/tapehead/presentation/thumbnail.svg",

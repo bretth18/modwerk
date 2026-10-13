@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 2,
+  "moduleId": "euclid",
+  "catalogModuleVersion": "0.1.4-experimental",
+  "recordedModuleVersion": null,
+  "rendered": "2026-10-12",
+  "file": "media/audio-preview.mp3",
+  "sha256": "dac2dff3cda83285aa33b56d4f29edf90b3deee7c3616027fd2f520986279898",
+  "seconds": 15,
+  "method": "Owner-supplied audio; excerpt only. No additional Euclid processing. Exclude the first 22.5 and last 22.5 seconds, apply one common peak gain and 8/35 ms edge fades, and encode MP3. Capture method and DSP settings were not supplied.",
+  "sample": {
+    "name": "modpad.wav",
+    "originalFileSha256": "4e7b7c573907d6f52d88bb306891d7d4cdfe407b386afb9baabd317bb792cb44",
+    "originalPcmSha256": "eb9130628e0ef30d79a3654ce125dc223d1837aab33d3de2fcc81de623996dc5",
+    "originalFormat": {
+      "sampleRateHz": 48000,
+      "channels": 2,
+      "sampleBits": 24,
+      "frames": 2880000,
+      "seconds": 60
+    },
+    "permission": "Owner supplied the file and explicitly requested its use as the Euclid preview on 2026-10-12.",
+    "license": "LicenseRef-Owner-Provided-Audio-Permission",
+    "credit": "Audio supplied by repeat98; underlying sample/capture attribution not supplied."
+  },
+  "passes": [
+    {
+      "label": "Owner-supplied Euclid excerpt",
+      "start": 0,
+      "duration": 15,
+      "sourceStartFrame": 1080000,
+      "sourceEndFrame": 1800000,
+      "sourceStartSeconds": 22.5,
+      "sourceEndSeconds": 37.5,
+      "sourceExcerptPcmSha256": "e7e02adab891d50410b71d1836f345e1d22d1584d1f07e5d227e58bad8595dc1",
+      "settings": null
+    }
+  ],
+  "tempo": {
+    "bpm": 128,
+    "status": "Audio estimate accepted by owner",
+    "method": "Spectral-flux transient grid from 10–50 seconds and recurring 3.75-second phrase; eight beats at 128 BPM. Sixteenth-note grid gives approximately 127.97 BPM; tempo rounded to 128 and confirmed by owner.",
+    "bars": 8,
+    "beats": 32
+  },
+  "encoding": {
+    "format": "MP3",
+    "sampleRateHz": 48000,
+    "channels": 2,
+    "bitrateKbps": 192,
+    "decodedPeakDbfs": -1.57,
+    "gainDb": -1.299,
+    "fadeInMs": 8,
+    "passFadeOutMs": 35,
+    "gapSeconds": 0,
+    "loudnessMatch": "single common peak gain",
+    "limiter": false
+  },
+  "validation": {
+    "nonzeroAudio": true,
+    "decodedPeakBelowMinus1Dbfs": true,
+    "clippedSamples": 0,
+    "sourceClippedSamples": 0
+  },
+  "limitations": [
+    "User-provided audio; capture method, recorded module version, source samples and hardware behaviour were not independently verified."
+  ]
+}

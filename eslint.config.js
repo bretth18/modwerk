@@ -21,7 +21,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['redirect/**/*.js', 'public/push-sw.js'],
+    files: ['redirect/**/*.js', 'public/push-sw.js', 'public/app-startup.js'],
     languageOptions: { globals: { ...globals.browser, ...globals.serviceworker } },
   },
   {

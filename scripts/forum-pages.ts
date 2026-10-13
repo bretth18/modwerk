@@ -4,13 +4,10 @@ import { threadPath } from '../src/community/forum-links.ts'
 import { FORUM_CATEGORIES } from '../src/community/forum-contract.ts'
 import { siteUrls } from './module-pages.ts'
 import { socialCard } from './social-cards.ts'
+import { escapeHtml, pageMetadataHtml, pageContentHtml, paragraph, link } from './page-html.ts'
 
 /** One row of the Worker's `GET /api/forum/pages.json`: public threads only. */
 export type ForumPageThread = { id: string; title: string; category: string; machine: string | null; username: string; created_at: string; updated_at: string; replies: number; excerpt: string; image: string | null }
-
-function escapeHtml(value: string) {
-  return value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!)
-}
 
 /** A 1200 × 630 card for a thread without a picture: topic, title, author and replies. */
 export async function threadCard(thread: ForumPageThread, root: string, siteName: string): Promise<Buffer> {
@@ -32,10 +29,9 @@ export function forumThreadPageHtml(html: string, thread: ForumPageThread, base:
     ...(thread.image ? { 'og:image': thread.image, 'og:image:alt': 'Image from the discussion', 'twitter:image': thread.image, 'twitter:image:alt': 'Image from the discussion' }
       : cardPath ? { 'og:image': new URL(cardPath, appUrl).href, 'og:image:alt': 'Forum thread: ' + thread.title, 'twitter:image': new URL(cardPath, appUrl).href, 'twitter:image:alt': 'Forum thread: ' + thread.title } : {}),
   }
-  const page = html
+  const metadata = pageMetadataHtml(html, title, pageUrl, values)
     .replace(/<base href="[^"]*"\s*\/>/, `<base href="${escapeHtml(base.startsWith('/') ? base : '../'.repeat(path.split('/').length - 1))}" />`)
-    .replace(/(<meta (?:property|name)="([^"]+)" content=")[^"]*("\s*\/>)/g, (tag, start, key: string, end) => key in values ? start + escapeHtml(values[key]) + end : tag)
-    .replace(/<title>[\s\S]*?<\/title>/, `<title>${escapeHtml(title)}</title>\n    <link rel="canonical" href="${escapeHtml(pageUrl)}" />`)
+  const page = pageContentHtml(metadata, link(appUrl.href, 'Module library') + `<h1>${escapeHtml(thread.title)}</h1>` + paragraph(`${topic} discussion by @${thread.username}.`) + paragraph(description))
   // The site card's size and type do not describe a member's picture.
   return thread.image ? page.replace(/\s*<meta property="og:image:(?:type|width|height)" content="[^"]*"\s*\/>/g, '') : page
 }
@@ -60,7 +56,7 @@ export async function fetchForumThreads(api: string, warn: (message: string) => 
   }
 }
 
-/** Static pages for every public thread, plus robots.txt pointing crawlers at the Worker's sitemap. */
+/** Static pages for public threads. The SEO plugin advertises only pages emitted in this build. */
 export function forumPages(api: string | undefined): Plugin {
   let config: ResolvedConfig
   return {
@@ -72,8 +68,6 @@ export function forumPages(api: string | undefined): Plugin {
       const index = bundle['index.html']
       if (!index || index.type !== 'asset') throw new Error('Missing built app HTML for forum pages.')
       const html = String(index.source)
-      const sitemap = api ? new URL('forum/sitemap.xml', api.replace(/\/?$/, '/')).href : ''
-      this.emitFile({ type: 'asset', fileName: 'robots.txt', source: 'User-agent: *\nAllow: /\n' + (sitemap ? 'Sitemap: ' + sitemap + '\n' : '') })
       if (!api) return
       const { siteName } = siteUrls(html, config.base)
       for (const thread of await fetchForumThreads(api, message => this.warn(message))) {

@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "kind": "elekloader-catalog",
- "revision": "a1be3ce0c006ea0c46fa82c6f254c11a05d42beb",
+ "revision": "94516877d374af1e7c14a69c6c7602773590e8045fd8f3b8c1fcaa47e155f6fc",
  "about": "elekloader's curated catalog: the cores and mods a site may offer, each pinned by sha256 to its author's release or commit. docs/INTEGRATING.md.",
  "cores": [
   {
@@ -67,6 +67,19 @@
    "source": {
     "repo": "irpina/digitables",
     "tag": "v1.3"
+   }
+  },
+  {
+   "file": "core-1.0.elemod",
+   "sha256": "95303655a9358f581b485acb68b884b394a577f5d0b373f0a3e5957c8d0ca72c",
+   "id": "core",
+   "version": "1.0",
+   "device": "digitakt-mk2",
+   "os": "1.17",
+   "license": "GPL-2.0-or-later",
+   "source": {
+    "repo": "toonst/digitakt2-perform",
+    "tag": "v1.0"
    }
   }
  ],
@@ -328,17 +341,17 @@
    "on_unit": "Not yet tested on a unit, its author reports; it passes their emulator tests on OS 1.53 and 1.54."
   },
   {
-   "file": "digimono-0.13b.elemod",
-   "sha256": "79b51a364b1b7fd8ca13ac6aacba15bd1439bb46569b11d1ad5b3a35b1cec3ec",
+   "file": "digimono-0.13.3-experimental-os1.53.elemod",
+   "sha256": "2800a2b948c074346bfd5b9ba9c081c192c8778d463f358171ebb4d68f920388",
    "id": "digimono",
-   "version": "0.13b",
+   "version": "0.13.3-experimental",
    "device": "digitakt-mk1",
    "os": "1.53",
    "license": "MIT",
    "source": {
-    "repo": "gdeo607/digi1_mods",
-    "commit": "35bacb3730d108e4dc48a7bd6de4c99ae9b161e6",
-    "path": "elemods/digimono-0.13b.elemod"
+    "repo": "repeat98/modwerk",
+    "commit": "20ce6bcc910741ab2bc49fd288ee57dd13d7900f",
+    "path": "sdk/imports/packages/digimono/digimono-0.13.3-experimental-os1.53.elemod"
    },
    "title": "Digi Mono",
    "requires": [
@@ -347,24 +360,24 @@
    ],
    "conflicts": [],
    "summary": "Seven synth machines after the Monomachine: sine, noise, saw, pulse, an ensemble, a formant voice and a three-sine chord, each with its own SRC page.",
-   "description": "Synth machines for the audio tracks, after the Monomachine's GND and SWAVE machines: MONO SIN, MONO NOISE, MONO SAW (unison, two sub-oscillators), MONO PULSE (PWM, unison, sub), MONO ENS (four oscillators at set intervals, chorus), MONO VO (a formant voice: vowel to vowel, consonants) and POLY SIN (three sines at set notes, a pitch envelope), in the FUNC+SRC machine list. They need no sample; the track's filter, amp, LFOs and effects work on them as on a sample. A clean-room engine: no Monomachine code or data. The SRC page shows each machine's own knobs (B, C, E, F, G, H); A is TUNE, D the (unused) sample slot. Needs digichain 1.6 or later, which elekloader ticks with it.",
+   "description": "Digi Mono adds seven synth machines to the FUNC+SRC list, after the Monomachine’s GND and SWAVE machines: MONO SIN, MONO NOISE, MONO SAW, MONO PULSE, MONO ENS, MONO VO and POLY SIN. They need no sample: the engine’s output takes the sample’s place in the voice, so the track’s filter, amp, LFOs, sends, p-locks and level work on it as on a sample. Knob A stays TUNE; B to H are the machine’s own parameters, named and shown in their units. The engine is a clean-room rewrite from the Monomachine manual, with no Monomachine code or data. Repeated SRC presses retain the synth control page. SAW and PULSE keep SUB1/SUB2 at G/H; PULSE width controls use D/E/F. Saved parameter slots keep their original meanings.",
    "category": "Sound",
    "author": "gdeo607",
    "needs_core": "2.1",
-   "on_unit": "Not yet tested on a unit, its author reports; it passes their emulator tests on OS 1.53 and 1.54."
+   "on_unit": "Current Modwerk build has native emulator parameter/UI evidence only; hardware, audio, timing, memory bounds, persistence, reboot, played p-lock/LFO and stress remain unverified."
   },
   {
-   "file": "digimono-0.13b-os1.54.elemod",
-   "sha256": "bbd79b944ab7a2176d933d671cc3019e2f55748412c37e1b9c64779348137dbc",
+   "file": "digimono-0.13.3-experimental-os1.54.elemod",
+   "sha256": "c7f1b44f4cc613cf0f16f276fa64732626088f92a0ee0e0425c4e1a9ae50f991",
    "id": "digimono",
-   "version": "0.13b",
+   "version": "0.13.3-experimental",
    "device": "digitakt-mk1",
    "os": "1.54",
    "license": "MIT",
    "source": {
-    "repo": "gdeo607/digi1_mods",
-    "commit": "35bacb3730d108e4dc48a7bd6de4c99ae9b161e6",
-    "path": "elemods/digimono-0.13b-os1.54.elemod"
+    "repo": "repeat98/modwerk",
+    "commit": "20ce6bcc910741ab2bc49fd288ee57dd13d7900f",
+    "path": "sdk/imports/packages/digimono/digimono-0.13.3-experimental-os1.54.elemod"
    },
    "title": "Digi Mono",
    "requires": [
@@ -373,11 +386,11 @@
    ],
    "conflicts": [],
    "summary": "Seven synth machines after the Monomachine: sine, noise, saw, pulse, an ensemble, a formant voice and a three-sine chord, each with its own SRC page.",
-   "description": "Synth machines for the audio tracks, after the Monomachine's GND and SWAVE machines: MONO SIN, MONO NOISE, MONO SAW (unison, two sub-oscillators), MONO PULSE (PWM, unison, sub), MONO ENS (four oscillators at set intervals, chorus), MONO VO (a formant voice: vowel to vowel, consonants) and POLY SIN (three sines at set notes, a pitch envelope), in the FUNC+SRC machine list. They need no sample; the track's filter, amp, LFOs and effects work on them as on a sample. A clean-room engine: no Monomachine code or data. The SRC page shows each machine's own knobs (B, C, E, F, G, H); A is TUNE, D the (unused) sample slot. Needs digichain 1.6 or later, which elekloader ticks with it.",
+   "description": "Digi Mono adds seven synth machines to the FUNC+SRC list, after the Monomachine’s GND and SWAVE machines: MONO SIN, MONO NOISE, MONO SAW, MONO PULSE, MONO ENS, MONO VO and POLY SIN. They need no sample: the engine’s output takes the sample’s place in the voice, so the track’s filter, amp, LFOs, sends, p-locks and level work on it as on a sample. Knob A stays TUNE; B to H are the machine’s own parameters, named and shown in their units. The engine is a clean-room rewrite from the Monomachine manual, with no Monomachine code or data. Repeated SRC presses retain the synth control page. SAW and PULSE keep SUB1/SUB2 at G/H; PULSE width controls use D/E/F. Saved parameter slots keep their original meanings.",
    "category": "Sound",
    "author": "gdeo607",
    "needs_core": "2.1",
-   "on_unit": "Not yet tested on a unit, its author reports; it passes their emulator tests on OS 1.53 and 1.54."
+   "on_unit": "Current Modwerk build has native emulator parameter/UI evidence only; hardware, audio, timing, memory bounds, persistence, reboot, played p-lock/LFO and stress remain unverified."
   },
   {
    "file": "digipoly-2.0.elemod",
@@ -486,17 +499,17 @@
    "on_unit": "Not yet tested on a unit, its author reports; it passes their emulator tests on OS 1.53 and 1.54."
   },
   {
-   "file": "digieq-1.0b.elemod",
-   "sha256": "af5088bf444de4f1c269e56151805e196277568a96645cf216fc947091162969",
+   "file": "digieq-1.0.2-experimental-os1.53.elemod",
+   "sha256": "0c1288ede65771b6a791e25f31f2917747e20bae83b76698839010a312425d3a",
    "id": "digieq",
-   "version": "1.0b",
+   "version": "1.0.2-experimental",
    "device": "digitakt-mk1",
    "os": "1.53",
    "license": "MIT",
    "source": {
-    "repo": "gdeo607/digi1_mods",
-    "commit": "35bacb3730d108e4dc48a7bd6de4c99ae9b161e6",
-    "path": "elemods/digieq-1.0b.elemod"
+    "repo": "repeat98/modwerk",
+    "commit": "1107d484c8d7ad84cfff14917b34acdcb83a53e6",
+    "path": "sdk/imports/packages/digieq/digieq-1.0.2-experimental-os1.53.elemod"
    },
    "title": "Digi EQ",
    "requires": [
@@ -504,24 +517,24 @@
    ],
    "conflicts": [],
    "summary": "A 4-band master EQ on every output (main outs, headphones and USB), per pattern.",
-   "description": "A 4-band master EQ on every output - main, headphones and USB alike - as a page of the master pages (FUNC+LFO) between Compressor and Internal Mixer. Knobs A-D: band level; press one for that band's Q. Knobs E-H: band frequency; press one for its type (HP, low shelf, bell, notch, band pass, high shelf, LP). The response curve is drawn above the knobs. The settings belong to the pattern: they live in the kit, so every pattern has its own EQ and it is saved with the project and kept over a power-off. SETTINGS > GLOBAL FX/MIX > MASTER EQ makes the EQ you can hear override every pattern's own.",
+   "description": "A 4-band master EQ on every output - main, headphones and USB alike - as a page of the master pages (FUNC+LFO) between Compressor and Internal Mixer. Knobs A-D: band level; press one for that band's Q. Knobs E-H: band frequency; press one for its type (HP, low shelf, bell, notch, band pass, high shelf, LP). The response curve is drawn above the knobs. The settings belong to the pattern: they live in the kit, so every pattern has its own EQ and it is saved with the project and kept over a power-off. SETTINGS > GLOBAL FX/MIX > MASTER EQ makes the EQ you can hear override every pattern's own. Hold FUNC and LFO, then press PLAY (CLEAR) to restore all four bands to their defaults; knob modes and the global override are preserved.",
    "category": "Sound",
    "author": "gdeo607",
    "needs_core": "2.1",
-   "on_unit": "Not yet tested on a unit, its author reports; it passes their emulator tests on OS 1.53 and 1.54."
+   "on_unit": "Current Modwerk build has native emulator parameter/UI evidence only; hardware, audio, timing, complete memory bounds, persistence, physical reboot and stress remain unverified."
   },
   {
-   "file": "digieq-1.0b-os1.54.elemod",
-   "sha256": "82dcd78faf44e67bc7fd0920266bb122583bd60288c1dd03fa878b6f3f9301a0",
+   "file": "digieq-1.0.2-experimental-os1.54.elemod",
+   "sha256": "7de10c293647ccaa457dfde3b9b8353a35aef452051815869ae545fd07bd8e71",
    "id": "digieq",
-   "version": "1.0b",
+   "version": "1.0.2-experimental",
    "device": "digitakt-mk1",
    "os": "1.54",
    "license": "MIT",
    "source": {
-    "repo": "gdeo607/digi1_mods",
-    "commit": "35bacb3730d108e4dc48a7bd6de4c99ae9b161e6",
-    "path": "elemods/digieq-1.0b-os1.54.elemod"
+    "repo": "repeat98/modwerk",
+    "commit": "1107d484c8d7ad84cfff14917b34acdcb83a53e6",
+    "path": "sdk/imports/packages/digieq/digieq-1.0.2-experimental-os1.54.elemod"
    },
    "title": "Digi EQ",
    "requires": [
@@ -529,11 +542,11 @@
    ],
    "conflicts": [],
    "summary": "A 4-band master EQ on every output (main outs, headphones and USB), per pattern.",
-   "description": "A 4-band master EQ on every output - main, headphones and USB alike - as a page of the master pages (FUNC+LFO) between Compressor and Internal Mixer. Knobs A-D: band level; press one for that band's Q. Knobs E-H: band frequency; press one for its type (HP, low shelf, bell, notch, band pass, high shelf, LP). The response curve is drawn above the knobs. The settings belong to the pattern: they live in the kit, so every pattern has its own EQ and it is saved with the project and kept over a power-off. SETTINGS > GLOBAL FX/MIX > MASTER EQ makes the EQ you can hear override every pattern's own.",
+   "description": "A 4-band master EQ on every output - main, headphones and USB alike - as a page of the master pages (FUNC+LFO) between Compressor and Internal Mixer. Knobs A-D: band level; press one for that band's Q. Knobs E-H: band frequency; press one for its type (HP, low shelf, bell, notch, band pass, high shelf, LP). The response curve is drawn above the knobs. The settings belong to the pattern: they live in the kit, so every pattern has its own EQ and it is saved with the project and kept over a power-off. SETTINGS > GLOBAL FX/MIX > MASTER EQ makes the EQ you can hear override every pattern's own. Hold FUNC and LFO, then press PLAY (CLEAR) to restore all four bands to their defaults; knob modes and the global override are preserved.",
    "category": "Sound",
    "author": "gdeo607",
    "needs_core": "2.1",
-   "on_unit": "Not yet tested on a unit, its author reports; it passes their emulator tests on OS 1.53 and 1.54."
+   "on_unit": "Current Modwerk build has native emulator parameter/UI evidence only; hardware, audio, timing, complete memory bounds, persistence, physical reboot and stress remain unverified."
   },
   {
    "file": "digiutils-1.9a.elemod",
@@ -584,6 +597,52 @@
    "author": "gdeo607",
    "needs_core": "2.1",
    "on_unit": "Its author reports the stand-alone 1.5d tested on a Digitakt mk1, and 1.9a not yet; it passes their emulator tests on OS 1.53 and 1.54."
+  },
+  {
+   "file": "perform-direct-1.0.elemod",
+   "sha256": "601b187f5af3025234c83e8c077b1e8f4ac755a8f1a8c929ab03aff331f30732",
+   "id": "perform-direct",
+   "version": "1.0",
+   "device": "digitakt-mk2",
+   "os": "1.17",
+   "license": "GPL-2.0-or-later",
+   "source": {
+    "repo": "toonst/digitakt2-perform",
+    "tag": "v1.0"
+   },
+   "title": "Direct perform",
+   "requires": [
+    "core"
+   ],
+   "conflicts": [],
+   "summary": "PRESET alone toggles PERFORM KIT; FUNC + PRESET opens the PRESET/KIT menu.",
+   "category": "Performance",
+   "author": "toonst",
+   "needs_core": "1.0",
+   "on_unit": "The author reports the key swap working on Digitakt II OS 1.17 in an earlier version that also had a PERSONALIZE on/off row. The current pair with perform-levels is not reported tested together on a unit."
+  },
+  {
+   "file": "perform-levels-1.0.elemod",
+   "sha256": "bb100389f2800401495ca3fa3a52d5974bb00434a8a70fd6f89978ec6b25d9e6",
+   "id": "perform-levels",
+   "version": "1.0",
+   "device": "digitakt-mk2",
+   "os": "1.17",
+   "license": "GPL-2.0-or-later",
+   "source": {
+    "repo": "toonst/digitakt2-perform",
+    "tag": "v1.0"
+   },
+   "title": "Perform keeps levels",
+   "requires": [
+    "core"
+   ],
+   "conflicts": [],
+   "summary": "Track levels set in PERFORM KIT mode stay when you leave it; every other parameter returns to the pattern's kit.",
+   "category": "Performance",
+   "author": "toonst",
+   "needs_core": "1.0",
+   "on_unit": "The author reports perform-levels working on Digitakt II OS 1.17. The pair with perform-direct is not reported tested together on a unit."
   }
  ]
 }

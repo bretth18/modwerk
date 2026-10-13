@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 import { SUPPORT_URL } from '../config/support'
 
 /** The owner asked to link his existing Ko-fi on every reviewed module he authored. */

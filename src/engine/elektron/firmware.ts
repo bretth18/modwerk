@@ -3,8 +3,9 @@
 import { LINK_DEVICES, type LinkDevice } from './elemod.ts'
 import { ELE3_DEVICES, mainImage, readEle3Syx } from './ele3.ts'
 import { sha256Hex } from './hash.ts'
+import type { DigiMachine as Ele3Machine } from './ele3.ts'
 
-export type DigiMachine = 'digitakt' | 'digitone'
+export type DigiMachine = Ele3Machine
 export type DigiFirmwareInspection = { machine: DigiMachine; release: string; name: string; bytes: number; sha256: string }
 export const MAX_DIGI_FIRMWARE_BYTES = 8 * 1024 * 1024
 
@@ -15,7 +16,9 @@ export async function inspectDigiFirmware(machine: DigiMachine, bytes: Uint8Arra
   if (!bytes.length || bytes.length > MAX_DIGI_FIRMWARE_BYTES) throw new Error('Choose one original .syx OS file for this machine.')
   const sha256 = await sha256Hex(bytes), release = device.releases.find(entry => entry.syxSha256 === sha256)
   if (!release) throw new Error('This is not a supported original ' + device.name + ' OS file. Choose OS ' + device.releases.map(entry => entry.version).join(' or ') + ' from Elektron.')
-  const image = mainImage(readEle3Syx(bytes), ELE3_DEVICES[machine])
+  const file = readEle3Syx(bytes)
+  if (file.deviceId !== device.sysexId) throw new Error('This OS file carries a different device id than the supported ' + device.name + ' release.')
+  const image = mainImage(file, ELE3_DEVICES[machine])
   if (image.length !== release.mainLength || await sha256Hex(image) !== release.mainSha256) throw new Error('The OS file failed its integrity check. Choose the original download again.')
   return { machine, release: release.version, name, bytes: bytes.length, sha256 }
 }

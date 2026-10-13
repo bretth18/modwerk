@@ -1,6 +1,7 @@
 import { needMember, throttle } from './auth'
 import { githubCommentOnce, githubConfig, githubIssueReplies, inert } from './github'
 import { claimGithubAction } from './github-actions'
+import { publicIssueReplyStatement } from './issue-notifications'
 import { profilePath } from '../src/community/forum-links'
 import type { Database, Env, User } from './platform'
 import { digest, HttpError, jsonBody, required, response } from './security'
@@ -12,7 +13,8 @@ export async function publicIssueReplies(request: Request, env: Env, db: Databas
   if (!match || !['GET', 'POST'].includes(request.method)) return null
   const page = Number(url.searchParams.get('page') ?? 0)
   if (!Number.isSafeInteger(page) || page < 0 || page > 10000) throw new HttpError(400, 'Choose a valid reply page.')
-  const issue = await db.prepare('SELECT github_number FROM issues WHERE id=? AND module_id=? AND public_json IS NOT NULL AND github_url IS NOT NULL AND github_number IS NOT NULL').bind(match[2], match[1]).first<{ github_number: number }>()
+  // A whole-configuration report is a conversation on each of its modules.
+  const issue = await db.prepare('SELECT github_number FROM issues WHERE id=? AND (module_id=? OR EXISTS(SELECT 1 FROM issue_modules m WHERE m.issue_id=issues.id AND m.module_id=?)) AND public_json IS NOT NULL AND github_url IS NOT NULL AND github_number IS NOT NULL').bind(match[2], match[1], match[1]).first<{ github_number: number }>()
   if (!issue || !Number.isSafeInteger(issue.github_number) || issue.github_number <= 0) throw new HttpError(404, 'Public GitHub report not found.')
   const config = githubConfig(env)
   if (!config) throw new HttpError(503, 'GitHub replies are temporarily unavailable. Open the conversation on GitHub.')
@@ -32,9 +34,7 @@ export async function publicIssueReplies(request: Request, env: Env, db: Databas
       const text = 'Reply from **[' + author + ' on Modwerk](' + profile + ')**:\n\n' + inert(content).split(/\r?\n/).map(line => '> ' + line).join('\n')
       await db.prepare('UPDATE github_actions SET published_hash=? WHERE id=?').bind(await digest(text + '\n\n' + marker), key).run()
       await githubCommentOnce(config, issue.github_number, marker, text)
-      await db.prepare(`INSERT INTO notifications(id,user_id,kind,actor_id,issue_id,module_id,excerpt,delivery_id)
-        SELECT lower(hex(randomblob(16))),i.reporter_id,'issue_comment',?,i.id,i.module_id,?,? FROM issues i JOIN users u ON u.id=i.reporter_id
-        WHERE i.id=? AND i.reporter_id<>? AND u.email_verified=1 AND u.suspended=0 ON CONFLICT DO NOTHING`).bind(member.id, content.slice(0, 400), key, match[2], member.id).run()
+      await publicIssueReplyStatement(db, match[2], key, content, member.id).run()
       await receipt.complete()
       return response({ ok: true }, 201)
     } catch {

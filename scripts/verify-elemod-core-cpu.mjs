@@ -11,7 +11,9 @@ import { LINK_DEVICES, parseElemod, linkMods } from '../src/engine/elektron/elem
 const args = process.argv.slice(2), one = name => args[args.indexOf(name) + 1]
 if (!args.includes('--packages') || !args.includes('--python')) throw new Error('Usage: verify-elemod-core-cpu.mjs --packages DIR --python PATCHED_UNICORN_PYTHON')
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..'), packages = resolve(one('--packages')), cases = []
-for (const device of LINK_DEVICES) {
+const inventory = JSON.parse(await readFile(resolve(packages, 'core-build.json'), 'utf8'))
+// Only machines with a Modwerk boot probe; an imported upstream core has none.
+for (const device of LINK_DEVICES.filter(item => inventory.artifacts.some(entry => entry.machine === item.machine))) {
   const release = device.releases[0], plan = JSON.parse(await readFile(resolve(packages, 'cores', device.machine, release.version + '.json'), 'utf8'))
   if (plan.stage !== 'boot-probe' || plan.providesInterface !== false) throw new Error('Expected the original boot-only probe')
   for (const mode of ['normal', 'no-bss', 'no-run', 'empty']) {

@@ -1,0 +1,267 @@
+{
+  "schema": 1,
+  "candidateVersion": "0.1.4-experimental",
+  "referenceSha256": "5cb6d0917c8119e6675a1034bbfe55a532a113d958d12a7ce0c8f6b1406533cf",
+  "emulatorWavSha256": "e7a9a79a37c0043dbd89beed11062354a21c812466bd904c8b8cc4adc681db3f",
+  "analysisToolSha256": "099c14968b3efe1699fc30bfd6853997010b85f10dd146a159587e83469afd27",
+  "method": "Median fourth-order causal bandpass energy with 512 pre-roll and 4096 post-edge samples, DC-initialized filters; actual carried-state emulator hits after the first. One fixed tail-RMS listening gain after stock AMP compensation. No per-peak gain is used for spectral comparison.",
+  "bandsHz": [
+    [
+      2000,
+      4000
+    ],
+    [
+      4000,
+      8000
+    ],
+    [
+      8000,
+      12000
+    ],
+    [
+      12000,
+      18000
+    ],
+    [
+      18000,
+      21500
+    ]
+  ],
+  "relativeBandEnergyDb": [
+    1.2394987167109959,
+    -1.341227971296691,
+    -3.4571141570978265,
+    -4.133962847387074,
+    -0.10065862761332542
+  ],
+  "commonListeningGain": 1.0392318992480007,
+  "referenceFinalEight": {
+    "hits": [
+      {
+        "peak": 0.7004910707473755,
+        "tailRms": 0.09915130962553806,
+        "tailNormalizedPeak": 7.064869575529564
+      },
+      {
+        "peak": 0.7436027526855469,
+        "tailRms": 0.09918335812638407,
+        "tailNormalizedPeak": 7.497253236152919
+      },
+      {
+        "peak": 0.7359635829925537,
+        "tailRms": 0.09920023532910169,
+        "tailNormalizedPeak": 7.418970131985656
+      },
+      {
+        "peak": 0.7309876680374146,
+        "tailRms": 0.09919609538497731,
+        "tailNormalizedPeak": 7.369117354876435
+      },
+      {
+        "peak": 0.695931077003479,
+        "tailRms": 0.09927719768774512,
+        "tailNormalizedPeak": 7.009979060774652
+      },
+      {
+        "peak": 0.7227199673652649,
+        "tailRms": 0.09912974893109666,
+        "tailNormalizedPeak": 7.2906466036508855
+      },
+      {
+        "peak": 0.7333046793937683,
+        "tailRms": 0.09918092027400209,
+        "tailNormalizedPeak": 7.39360632436062
+      },
+      {
+        "peak": 0.7390193939208984,
+        "tailRms": 0.09924588309272148,
+        "tailNormalizedPeak": 7.446348109275848
+      }
+    ],
+    "tailNormalizedPeakCv": 0.023012725569215322,
+    "detrendedTailNormalizedPeakCv": 0.022405167296932513,
+    "shapeRmsSpreadAfterLevelAndAlignment": {
+      "0-10ms": 0.032301134533096715,
+      "10-30ms": 0.024450627428594163
+    },
+    "nuisanceFits": [
+      {
+        "alignmentSamples": 0.39726098416780803,
+        "transientGain": 0.9979033342739672
+      },
+      {
+        "alignmentSamples": 0.4039060372924048,
+        "transientGain": 0.994307098196789
+      },
+      {
+        "alignmentSamples": -0.27429102683880285,
+        "transientGain": 0.995599970523489
+      },
+      {
+        "alignmentSamples": -0.11689415946431359,
+        "transientGain": 1.001786633297572
+      },
+      {
+        "alignmentSamples": -0.051429126927724236,
+        "transientGain": 1.0067886732112725
+      },
+      {
+        "alignmentSamples": 0.1592556207812392,
+        "transientGain": 0.9940096318898625
+      },
+      {
+        "alignmentSamples": 0.1215605135435292,
+        "transientGain": 0.999777691582578
+      },
+      {
+        "alignmentSamples": -0.6416384549086552,
+        "transientGain": 1.0011512181878768
+      }
+    ]
+  },
+  "referenceFinalFour": {
+    "hits": [
+      {
+        "peak": 0.695931077003479,
+        "tailRms": 0.09927719768774512,
+        "tailNormalizedPeak": 7.009979060774652
+      },
+      {
+        "peak": 0.7227199673652649,
+        "tailRms": 0.09912974893109666,
+        "tailNormalizedPeak": 7.2906466036508855
+      },
+      {
+        "peak": 0.7333046793937683,
+        "tailRms": 0.09918092027400209,
+        "tailNormalizedPeak": 7.39360632436062
+      },
+      {
+        "peak": 0.7390193939208984,
+        "tailRms": 0.09924588309272148,
+        "tailNormalizedPeak": 7.446348109275848
+      }
+    ],
+    "tailNormalizedPeakCv": 0.023121911354293673,
+    "detrendedTailNormalizedPeakCv": 0.008062594700532739,
+    "shapeRmsSpreadAfterLevelAndAlignment": {
+      "0-10ms": 0.031193624426813598,
+      "10-30ms": 0.030107339091581656
+    },
+    "nuisanceFits": [
+      {
+        "alignmentSamples": 0.04811398718338609,
+        "transientGain": 1.0052503882847865
+      },
+      {
+        "alignmentSamples": 0.25624884861475017,
+        "transientGain": 0.9923537252112392
+      },
+      {
+        "alignmentSamples": 0.21926060164704197,
+        "transientGain": 0.9981572787785938
+      },
+      {
+        "alignmentSamples": -0.5368772655459761,
+        "transientGain": 0.9996704220620025
+      }
+    ]
+  },
+  "emulatorEqualControlHits": {
+    "hits": [
+      {
+        "peak": 0.6685557790565739,
+        "tailRms": 0.10081626795973957,
+        "tailNormalizedPeak": 6.631427572021988
+      },
+      {
+        "peak": 0.6823060207807593,
+        "tailRms": 0.10081626795973957,
+        "tailNormalizedPeak": 6.767816688604606
+      },
+      {
+        "peak": 0.6613182294194986,
+        "tailRms": 0.10081624381812757,
+        "tailNormalizedPeak": 6.559639641132794
+      },
+      {
+        "peak": 0.6644933061838232,
+        "tailRms": 0.10081624381812757,
+        "tailNormalizedPeak": 6.591133343378361
+      },
+      {
+        "peak": 0.6855873918157847,
+        "tailRms": 0.10081624381812757,
+        "tailNormalizedPeak": 6.800366348230389
+      },
+      {
+        "peak": 0.6817575770320502,
+        "tailRms": 0.10081626795973957,
+        "tailNormalizedPeak": 6.762376656357746
+      },
+      {
+        "peak": 0.6500956357199149,
+        "tailRms": 0.10081624381812757,
+        "tailNormalizedPeak": 6.448322324849625
+      }
+    ],
+    "tailNormalizedPeakCv": 0.018125709979423504,
+    "detrendedTailNormalizedPeakCv": 0.017798090810658185,
+    "shapeRmsSpreadAfterLevelAndAlignment": {
+      "0-10ms": 0.008648441243448044,
+      "10-30ms": 0.002417023614106948
+    },
+    "nuisanceFits": [
+      {
+        "alignmentSamples": -0.0022945754925288737,
+        "transientGain": 0.9998657208268887
+      },
+      {
+        "alignmentSamples": 0.005366807854789824,
+        "transientGain": 0.998471700963715
+      },
+      {
+        "alignmentSamples": -0.00018212158431813586,
+        "transientGain": 1.001731744883729
+      },
+      {
+        "alignmentSamples": -0.0046894012512934,
+        "transientGain": 1.0012790091575807
+      },
+      {
+        "alignmentSamples": 0.003968314225735385,
+        "transientGain": 0.9966506818015525
+      },
+      {
+        "alignmentSamples": 0.00634912177929332,
+        "transientGain": 0.9986118022336191
+      },
+      {
+        "alignmentSamples": -0.009193097662398427,
+        "transientGain": 1.0030924933667031
+      }
+    ]
+  },
+  "limits": [
+    "Only 2–4 final reference hits may hold the endpoint; their rising peak trend can still contain knob movement.",
+    "Eight-hit detrended spread is an estimate, not a clean measured random-strength target.",
+    "Reference shape spread includes capture noise, residual knob motion and interpolation uncertainty.",
+    "Synthesized variation is pseudorandom strength plus shaped noise, not a reconstruction of each physical hit.",
+    "This is an emulator comparison, not physical audio or clock/persistence validation."
+  ],
+  "privateFirmwareLabel": "AB014REF05",
+  "sourceFiles": {
+    "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+    "fit909.json": "6917d613b5033069f226b9f6a440f6eefd935e596452546d5bc27b73c5e3dd08",
+    "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+  },
+  "mainOsSha256": "84c5a0fa1101dd531ea4e03cb60224c194cb9b5d8b77fae3754d9412a26b5c91",
+  "strengthRange": [
+    0.92,
+    1
+  ],
+  "randomPitch": false,
+  "randomTriggerDelay": false,
+  "faithfulIndividualHitReproduction": false,
+  "nativeEqualControlEightHitPeakCv": 0.022287523769395457
+}

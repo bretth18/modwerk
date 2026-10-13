@@ -26,6 +26,7 @@
         .equ    SRAM_PART, 0x100a4ece
         .equ    SIG_OFF, 0x2a + 18
         .equ    FLEX_P, 0x400d31ae
+        .equ    FLEX_DEFAULTS, 0x400d320c
         .equ    PAGE2_GAP, 0x1da - 0x2a
         .equ    PB_TABLE, 0x400d5f38
 
@@ -82,6 +83,7 @@ ab_sig_write:
         move.l %a0,-(%sp)
         move.l %d0,-(%sp)
         lea ab_defaults,%a0
+.sw_defaults_start:
         moveq #5,%d0
 .sw_defaults1:
         move.b (%a0)+,-12(%a1)
@@ -98,6 +100,8 @@ ab_sig_write:
         lea -6(%a1),%a1
         move.l (%sp)+,%d0
         move.l (%sp)+,%a0
+        tst.l %d1
+        beq.s .sw_unmark
 .sw_mark:
         move.b #'A',(%a1)
         move.b  #'B',1(%a1)
@@ -107,6 +111,19 @@ ab_sig_write:
         move.b  (%a1),%d2
         cmpi.b  #'A',%d2
         bne.s   .sw_out
+        move.b  1(%a1),%d2
+        cmpi.b  #'B',%d2
+        bne.s   .sw_out
+        move.b  2(%a1),%d2
+        cmpi.b  #1,%d2
+        bne.s   .sw_out
+        | Both Part copies must be valid before the AB marker disappears.
+        | Read the same stock FLEX defaults used by ab_validate_part.
+        move.l  %a0,-(%sp)
+        move.l  %d0,-(%sp)
+        movea.l #FLEX_DEFAULTS,%a0
+        bra.s   .sw_defaults_start
+.sw_unmark:
         clr.b   (%a1)
         clr.b   1(%a1)
         clr.b   2(%a1)

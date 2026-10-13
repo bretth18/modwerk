@@ -159,7 +159,9 @@ if not (BUILD_TAG.isdigit() and 1 <= len(BUILD_TAG) <= 2):
 # garbage audio: 0x00-0x03 are the four values stock has always treated as
 # bare synonyms for "no effect". 0x06 is the exact id tools/build/build_dspprobe.py
 # proved runs custom DSP code on real hardware. schema.py enforces the range.
-_MODS = remix_modules()
+from remix.machine_composition import compose_map
+_MODS = compose_map(remix_modules(), REMIX.modules)
+remix_modules = lambda: _MODS
 _SEL = [_MODS[k] for k in CARRIED]
 # A STOCK row (tools/remix/stock.py) gets no clone, no code and no words:
 # its descriptor and dispatch are where stock put them. The build writes
@@ -2861,6 +2863,20 @@ hostquit:
         _xt_tables = [k for k in sorted((k for k in CARRIED if k in _texts),
                                         key=lambda k: _MODS[k].dsp.priority)
                       if "$facade" in _texts[k] or PTABLE_MARK in _texts[k]]
+        # ⚠️ ONLY A DISPATCHED EFFECT'S TABLE IS PARKED. A stock_dsp module's
+        # code has no dispatch entry: stock code reaches it through hooks.
+        # SIDECHAIN_COMPRESSOR is the one with a table, and its table in the
+        # curve bank froze a MKII at step 1 (9 Oct 2026: Analog BD + Mini
+        # Verb + TapeHead + Sidechain, reverbs, LO-FI and DJ EQ given up);
+        # the same image with the table in P runs. ot_emu runs the frozen
+        # image clean, so the cause is not known. Until a unit runs such a
+        # table from X, it stays in P (AGENTS.md; FAILURE_MODES.md).
+        _xt_refused = [k for k in _xt_tables if k in STOCK_DSP]
+        _xt_tables = [k for k in _xt_tables if k not in _xt_refused]
+        if _xt_refused:
+            print(f"  XTABLE: {', '.join(_xt_refused)}'s table stays in P -- "
+                  f"hook-reached code reading the stock curve bank froze a "
+                  f"MKII (9 Oct 2026) and is not hardware-proven")
         _pristine = IMG.read_bytes()
         _xt_rec = {t: stock_mod.curve_bank_record(_pristine, t) for t in "AB"}
         _xt_same = (all(_xt_rec.values()) and
@@ -3059,6 +3075,27 @@ hostquit:
                 if _c + len(_w) <= _end:
                     _fit = (_r, _tab, _s2, _c, _w, _syms)
                     break
+            _split_table = None
+            if _fit is None and name in remix_modules() and remix_modules()[name].dsp.split_ptable and _xa is None:
+                if not _ptab or "$facade" in src or _arena:
+                    sys.exit(f"{name}: separate placement requires one fixed P table")
+                # Try table openings in the same stable order as code. Do not
+                # advance either cursor until both independent runs fit.
+                for _tr in _candidates:
+                    _ta = _tr["cursor"]
+                    if _ta + len(_ptab) > _tr["base"] + _tr["words"]:
+                        continue
+                    _code_runs = sorted(runs, key=lambda r: (r["base"] + r["words"] - r["cursor"] - (len(_ptab) if r is _tr else 0), r["base"])) if "ANALOG BD" in REMIX.modules and not DYNAMIC else runs
+                    for _cr in _code_runs:
+                        _ca = _cr["cursor"] + (len(_ptab) if _cr is _tr else 0)
+                        _s2 = src.replace(PTABLE_MARK, f"${_ta:x}")
+                        _w, _syms = assemble_syms(_s2, _ca, label=name)
+                        if _ca + len(_w) <= _cr["base"] + _cr["words"]:
+                            _split_table = (_tr, _ta, list(_ptab))
+                            _fit = (_cr, None, _s2, _ca, _w, _syms)
+                            break
+                    if _fit is not None:
+                        break
             if _fit is None:
                 if len(runs) < 2 and _last is not None:
                     # ⚠️ WORDING FROZEN: the build report is API (refhash
@@ -3075,6 +3112,11 @@ hostquit:
                          f"only {_big}; harvest an effect BETWEEN two runs to "
                          f"join them into one")
             _r, tab, src, cursor, words, _syms = _fit
+            if _split_table is not None:
+                _tr, _ta, _tw = _split_table
+                place(_tw, _ta)
+                _tr["cursor"] = _ta + len(_tw)
+                print(f"  PTABLE        P:0x{_ta:05x}..0x{_ta + len(_tw):05x} ({len(_tw)} words)  {name}'s separate table")
             _hooks = remix_modules()[name].dsp.hooks if name in remix_modules() else ()
             init_a, proc_a = _syms.get("init"), _syms.get("proc")
             if name not in HOOKED and name not in STOCK_DSP and (init_a is None or proc_a is None):

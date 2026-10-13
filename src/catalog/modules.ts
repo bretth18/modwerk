@@ -1,6 +1,9 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 import { MODULE_DOCUMENTS } from './documents.ts'
 import { moduleReleasedAt } from './module-releases.ts'
 import sdkCatalog from '../../sdk/catalog.json' with { type: 'json' }
+import { displayName, type ModuleContributor } from './module-authors.ts'
 export const CATALOG_SOURCE = {
   repository: 'https://github.com/repeat98/octamad',
   revision: 'b8deefc88b2c3e5f3c6158e364eb741df1924e1d',
@@ -32,6 +35,7 @@ export type FirmwareModule = {
   author: string
   authorName: string
   authorUrl: string
+  contributors?: readonly ModuleContributor[]
   sourcePath: string
   fxId?: number
   version: string
@@ -42,12 +46,15 @@ export type FirmwareModule = {
 export const MODULES: readonly FirmwareModule[] = MODULE_DOCUMENTS.map(document=>({
   id:document.id,key:document.key,name:document.name,category:LIBRARY_CATEGORY_OVERRIDES[document.id]??document.category,
   description:document.presentation.summary,detail:document.compatibility.location,
-  author:document.author.github,authorName:document.author.name??document.author.github,authorUrl:'https://github.com/'+document.author.github,
+  author:document.author.github,authorName:displayName(document.author.github,document.author.name),authorUrl:'https://github.com/'+document.author.github,
+  contributors:document.author.contributors,
   sourcePath:'sdk/octabam/modules/'+document.id+'/manifest.py',version:document.version,addedAt:MODULE_ADDED_AT[document.id],updatedAt:moduleReleasedAt(document.id,document.version),fxId:document.compatibility.effectId??undefined,
 }))
 
-// Every module with an effect ID adds DSP code, paused ones included.
-export const DSP_EFFECT_IDS: readonly string[] = MODULES.filter(module => module.fxId !== undefined).map(module => module.id)
+// DSP code that stock code reaches through hooks, with no effect ID or chooser row.
+export const HOOKED_DSP_IDS: readonly string[] = ['output-matrix']
+// Every module with an effect ID adds DSP code, paused ones included, and so does every hooked module.
+export const DSP_EFFECT_IDS: readonly string[] = MODULES.filter(module => module.fxId !== undefined || HOOKED_DSP_IDS.includes(module.id)).map(module => module.id)
 
 export function getModuleSource(module: FirmwareModule): string {
   const source = MODULE_DOCUMENTS.find(document => document.id === module.id)?.source

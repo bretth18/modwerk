@@ -29,7 +29,8 @@ async function handleRequest(request: Request, env: Env, context?: { waitUntil(p
       result = response({ error: error instanceof HttpError ? error.message : 'The request could not be completed.' }, error instanceof HttpError ? error.status : 500)
     }
   }
-  if(context && !['GET','HEAD','OPTIONS'].includes(request.method) && result.ok)startPush(env,context)
+  // Presence check-ins never queue notifications and should not dispatch push for every visitor/minute.
+  if(context && new URL(request.url).pathname !== '/api/community/online' && !['GET','HEAD','OPTIONS'].includes(request.method) && result.ok)startPush(env,context)
   const headers = new Headers(result.headers)
   headers.set('Server-Timing','app;dur='+(performance.now()-started).toFixed(1))
   headers.set('Vary', 'Origin')

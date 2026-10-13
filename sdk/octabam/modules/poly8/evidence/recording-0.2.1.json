@@ -1,0 +1,69 @@
+{
+  "initial_mode": 0,
+  "mode": 1,
+  "amp": "007f7f40407f",
+  "loop": "00",
+  "live": "00000001",
+  "transport": "00000001",
+  "note_config": "03",
+  "chord_records": [
+    {
+      "step": 3,
+      "root": 72,
+      "shape": 67
+    }
+  ],
+  "stress_start": "status sample=601495.222 ms=13639.347 frames=4111 frame=on idle=52777 wall=12.148",
+  "stress_maxactive": 8,
+  "stress_end": "status sample=714694.050 ms=16206.214 frames=11186 frame=on idle=64931 wall=35.506",
+  "card_status": "card ok rw=1 path=/work/keys.img written=0 through=0 errors=0",
+  "version": "0.2.1-experimental",
+  "image_sha256": "be02d610668b1c16cf0fd0108d7a1a0d70524339d71f00f33dc62c0ae38b5ca7",
+  "panel_protocol_log_sha256": "3d5107cb3c5a0f5a8decb784596b446e48e3a3766c94ca81c0fbc73c75b2a738",
+  "hardware": "not tested",
+  "persistence": {
+    "cold_reloaded_records": [
+      {
+        "step": 3,
+        "root": 72,
+        "shape": 67
+      }
+    ],
+    "playing_offsets": [
+      -9,
+      -12,
+      -11,
+      -10
+    ],
+    "track_tuning": 67108864,
+    "part_PTCH": 64
+  },
+  "held_notes": [
+    72,
+    73,
+    74,
+    75
+  ],
+  "held_cleared_after_stop": true,
+  "native_save": "card ok rw=1 path=/work/keys.img written=6932 through=6932 errors=0",
+  "native_save_protocol_sha256": "badf938282c1cc1f258d739e432f5ffa53dc8663f09dfe0f82239977057b3d9e",
+  "cold_reloaded_log_sha256": "fd1ff4c1dfaed4fcc1662de45cfb42098fe82eccd2e3a61fe2f4e8cf1c94104b",
+  "midi_regression": {
+    "notes": [
+      0,
+      127,
+      71,
+      72,
+      84,
+      96,
+      97,
+      126
+    ],
+    "velocity_zero_off": true,
+    "independent_tuning": true,
+    "ptch_lock_unchanged": true,
+    "finite_release_reclaimed": true,
+    "frames_completed": 2400,
+    "log_sha256": "9af1504ef01f255e309ae0e2396732e3971349a7ca8f4fcb16a620bfc2bbb57e"
+  }
+}

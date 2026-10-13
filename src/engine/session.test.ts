@@ -1,13 +1,18 @@
-import { describe, expect, it, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { describe, expect, it, onTestFinished, vi } from 'vitest'
 import { decodeFirmware, encodeFirmware, type DecodedFirmware } from './elek'
 import { createEngineSession } from './session'
+import { composeSelection } from './compose-os'
 import { FIRMWARE_VERSION, type EngineResponse } from './protocol'
+import { isModulePaused } from '../catalog/availability'
+import { buildBase } from './elekloader/octatrack-base'
 
 // Exercise the real session/report/packaging boundary with synthetic bytes.
 // Stock verification and the composer are covered by their separate tests and
 // private native checks; no proprietary firmware enters this test or CI.
 vi.mock('./base', () => ({ inspectBaseFirmware: vi.fn().mockResolvedValue({ version: '1.40C' }) }))
 vi.mock('./stock-dsp', () => ({ recoverStockDsp: vi.fn().mockResolvedValue([]) }))
+vi.mock('./elekloader/octatrack-base', () => ({ buildBase: vi.fn(async () => ({ bin: Uint8Array.of(1, 2, 3), sha256: 'b', base: 'c'.repeat(64) })) }))
 vi.mock('./compose-os', () => ({ composeSelection: vi.fn(async (original: Uint8Array) => ({
   bytes: original.slice(), chooser: { fx1: [], fx2: [], hidden: [] },
   runtime: { bytes: 0, reservedBytes: 0 },
@@ -20,10 +25,23 @@ const synthetic = (): DecodedFirmware => ({
 })
 
 describe('Octatrack firmware boot name', () => {
+  it('selects beta startup for an eligible request and returns to classic after revocation', async () => {
+    const firmware = synthetic(), replies: EngineResponse[] = []
+    const handle = createEngineSession(response => { replies.push(response) })
+    await handle({ id: 1, type: 'inspect', name: 'synthetic.bin', buffer: new Uint8Array(encodeFirmware(firmware, firmware.mainOs, 'STOCK')).buffer })
+    for (const [index, betaAccess] of [false, true, false].entries()) {
+      await handle({ id: index + 2, type: 'validate', moduleIds: ['repitch'], keepStockFx2: false, betaAccess })
+      const reply = replies.at(-1)
+      expect(reply?.type).toBe('validated')
+      if (reply?.type !== 'validated') throw new Error(JSON.stringify(reply))
+      expect(reply.report.startupAnimation).toBe(betaAccess ? 'beta-docking' : 'classic')
+      expect(vi.mocked(composeSelection).mock.calls.at(-1)?.[4]).toBe(betaAccess)
+    }
+  })
   it('uses only the panel boot font letter range', () => {
     expect(FIRMWARE_VERSION).toMatch(/^[A-Z0-9. ]{1,10}$/)
   })
-  it.each([['repitch'], ['midi-scenes'], ['usb-audio-out-tracks-main-cue', 'quantizer']])(
+  it.each([['repitch'], ['midi-scenes'], ['usb-audio-out-tracks-main-cue', 'quantizer']].filter(ids => !ids.some(isModulePaused)))(
     'uses ELEKLOADER in validation, the build report and all ten update-header bytes for %j', async (...moduleIds) => {
       const original = synthetic(), input = encodeFirmware(original, original.mainOs, 'STOCK')
       const before = input.slice(), replies: EngineResponse[] = []
@@ -43,7 +61,7 @@ describe('Octatrack firmware boot name', () => {
         expect(FIRMWARE_VERSION).toBe('ELEKLOADER')
         expect(built.report.version).toBe('ELEKLOADER')
         expect(built.report.moduleIds).toEqual(moduleIds)
-        if (moduleIds.includes('midi-scenes')) expect(built.report.moduleVersions['midi-scenes']).toBe('0.2.4-experimental')
+        if (moduleIds.includes('midi-scenes')) expect(built.report.moduleVersions['midi-scenes']).toBe('0.2.5-experimental')
         const decoded = decodeFirmware(new Uint8Array(built.buffer))
         expect(new TextDecoder().decode(decoded.header.subarray(8))).toBe('ELEKLOADER')
         expect(decoded.header.subarray(0, 8)).toEqual(original.header.subarray(0, 8))
@@ -54,4 +72,57 @@ describe('Octatrack firmware boot name', () => {
       expect(input).toEqual(before)
     },
   )
+})
+
+describe('placement diagnosis', () => {
+  it('stops trying removals for a selection once a newer one arrives', async () => {
+    // Recorded with stock FX2 off, as is each selection one module smaller, so the diagnosis composes candidates.
+    const crowded = ['miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', 'analog-bassdrum', 'previewvol', 'sidechain-compressor', 'playmodes', 'mute-modes', 'recorder-loop-fix']
+    const compose = vi.mocked(composeSelection), original = compose.getMockImplementation()!
+    let attempts = 0, reached = () => {}
+    const second = new Promise<void>(resolve => { reached = resolve })
+    compose.mockImplementation(async (bytes, ids, ...rest) => {
+      if (ids.length === 1) return original(bytes, ids, ...rest)
+      if (++attempts === 2) reached()
+      await new Promise(resolve => setTimeout(resolve, 1))
+      throw new Error('Demo overruns the region')
+    })
+    try {
+      const firmware = synthetic(), replies: EngineResponse[] = []
+      const handle = createEngineSession(response => { replies.push(response) })
+      await handle({ id: 1, type: 'inspect', name: 'synthetic.bin', buffer: new Uint8Array(encodeFirmware(firmware, firmware.mainOs, 'STOCK')).buffer })
+      const stale = handle({ id: 2, type: 'validate', moduleIds: crowded, keepStockFx2: false })
+      await second
+      await handle({ id: 3, type: 'validate', moduleIds: ['repitch'], keepStockFx2: false })
+      await stale
+      // The full diagnosis would compose the selection and 66 candidates; the newer request stopped it after a few.
+      expect(attempts).toBeLessThan(6)
+      const last = (id: number) => replies.filter(reply => reply.id === id).at(-1)
+      expect(last(2)).toMatchObject({ type: 'error', message: expect.stringContaining('newer selection') })
+      expect(last(3)?.type).toBe('validated')
+    } finally { compose.mockImplementation(original) }
+  })
+})
+
+describe('the Modwerk base', () => {
+  it('asks for the OS file first, then builds from the verified file with the committed package', async () => {
+    const text = readFileSync(new URL('./assets/octatrack-base.elemod', import.meta.url), 'utf8')
+    const fetched = vi.fn(async (url: string) => (url.endsWith('octatrack-base.elemod') ? new Response(text) : new Response(null, { status: 404 })))
+    vi.stubGlobal('fetch', fetched)
+    onTestFinished(() => { vi.unstubAllGlobals() })
+    const replies: EngineResponse[] = [], handle = createEngineSession(response => { replies.push(response) })
+    await handle({ id: 1, type: 'base' })
+    expect(replies.at(-1)).toMatchObject({ type: 'error', message: expect.stringContaining('OS 1.40C file first') })
+    const firmware = synthetic(), input = new Uint8Array(encodeFirmware(firmware, firmware.mainOs, 'STOCK'))
+    await handle({ id: 2, type: 'inspect', name: 'synthetic.bin', buffer: input.slice().buffer })
+    await handle({ id: 3, type: 'base' })
+    const reply = replies.at(-1) as Extract<EngineResponse, { type: 'base' }>
+    expect(reply).toMatchObject({ type: 'base', sha256: 'b', base: 'c'.repeat(64) })
+    expect([...new Uint8Array(reply.buffer)]).toEqual([1, 2, 3])
+    const [stock, fetchedText, fills] = vi.mocked(buildBase).mock.calls[0]
+    expect(stock).toEqual(input)
+    expect(fetchedText).toBe(text)
+    expect(fetched).toHaveBeenCalledOnce()
+    expect(fills.length).toBeGreaterThan(0)
+  })
 })

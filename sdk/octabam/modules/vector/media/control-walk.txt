@@ -1,0 +1,45 @@
+tap 0x32
+tap 0x32
+tap 0x10
+tap 0x22
+snap ot-generator
+dump ui-before
+enc 0 -2
+enc 1 1
+enc 2 1
+enc 3 1
+enc 4 1
+enc 5 1
+tap 0x31
+snap ot-generated
+double 0x22
+snap ot-location
+snap ot-setup
+enc 0 1
+enc 1 -1
+enc 2 1
+enc 3 1
+enc 4 1
+enc 5 1
+dump ui-twelve-edits
+tap 0x22
+tap 0x3e
+snap ot-edit
+tap 0x3e
+double 0x10
+snap ot-pool-choice
+tap 0x33
+tap 0x21
+snap ot-static-pool
+tap 0x34
+tap 0x20
+tap 0x21
+snap ot-flex-pool
+tap 0x32
+tap 0x32
+dump ui-pool-preserved
+tap 0x28
+run 1200
+peek 0x800064d0 8
+tap 0x27
+quit

@@ -1,16 +1,17 @@
 ; ---------------------------------------------------------------------------
 ; bd909 -- the Analog Bassdrum's TR-909 voice on the DSP (one voice per call).
 ;
-; A circuit-stage model fitted to the user's Drumazon 2 (modules/analog-
-; bassdrum/DSP909.md; the fits and every table: dsp909.py):
+; Reference candidate using Skee Mask's TR-909 recordings for body, attack
+; and short Tune, retaining other controls and the shared desk. All tables:
+; dsp909.py; candidate measurements and limitations: TESTING.md.
 ;   ENV5  pitch envelope ep, set at the trig, decays with TUNE
 ;   VCO   linear triangle, f = fb(PITCH) + A(PITCH,TUNE,TDEP) * ep, held while
-;         the trig resets C14 and released rising ~2.48 ms after it
-;   SHAPE static asymmetric shaper on the triangle (degree-11 polynomial)
+;         the trigger holds the negative crest for 32 samples before release
+;   SHAPE complex-harmonic even/odd phase body fit to the supplied 909
 ;   VCA   ~60 ms hold with a slow droop, then the DECAY release (48-bit)
 ;   THUMP the VCA's control feedthrough: a slow negative DC (48-bit)
-;   PULSE the trigger pulse ends the first time the triangle reaches THETA;
-;         the edge rings through a HP and the 5.8 kHz resonant low-pass
+;   PULSE negative exponential discharge, HP + resonant LP + output pole;
+;         subtle hit variation samples the existing free-running noise state
 ;   NOISE free-running LCG, HP 230 Hz and two LP 2.37 kHz, gated by ENV2
 ;   LPF   the service notes' output network (knob 8; 0 passes through)
 ;   DESK  SAT (knob 5), LOW (9), HIGH (10): a Mackie-desk stage after it,
@@ -54,6 +55,14 @@ zq01:
         move    a1,n1
         move    #>@T_GT@,r1
         move    x:(r1+n1),y0            ; gt(TUNE)
+ ; The recorded Tune endpoints also shift the settled VCO frequency.
+ ; Derive its small offset from the existing monotone Tune table.
+        move    x:(r5+@INCB@),b
+        move    #>@KTFB0@,x1
+        add     x1,b
+        move    #>@KTFB@,x1
+        mac     x1,y0,b
+        move    b,x:(r5+@INCB@)
         mpyr    y0,x0,a
         move    #>@T_DKP@,r1
         move    x:(r1+n1),y1
@@ -94,6 +103,16 @@ zq01:
         move    x:(r1+n1),x0
         mpyr    x0,y1,a
         move    a,x:(r5+@GP@)
+ ; Fast discharge follows Attack too; affine gain uses the same normalized
+ ; table. KFDR carries 1/4 so every decoded constant is a signed fraction.
+        move    a,x0
+        move    #>@KFDR@,y0
+        mpy     y0,x0,a
+        asl     a
+        asl     a
+        move    #>@KGS@,x0
+        mac     x0,y1,a
+        move    a,x:(r5+@GS@)
         move    #>@T_ATN@,r1
         move    x:(r1+n1),x0
         mpyr    x0,y1,a
@@ -210,12 +229,7 @@ zq04:
         asl     a
         neg     a
         move    a,x0                    ; x0 = x (1.0 limits to $7fffff)
-; (4) the trigger pulse ends the first time the triangle reaches THETA
-        cmp     #>@THETA@,a
-        move    x:(r5+@PULSE@),b
-        move    #0,y1
-        tge     y1,b
-        move    b,x:(r5+@PULSE@)
+; (4) The transient is a decaying trigger pulse, independent of VCO phase.
 ; (5) S/16 = c0/16 + x*(c1/16 + x*( ... + x*c11/16)), Horner; the degree-11
 ;     partial sums need the 1/16 (dsp909.horner_ok), two asl give S/4
         move    #>@CPOLY@,r1
@@ -242,6 +256,26 @@ zq04:
         mac     y0,x0,b         x:(r1)+,a
         move    b,y0
         mac     y0,x0,a
+ ; Quadrature Q(x)/16, then u*(1+x)*Q(x)/16. The endpoint factor gives
+ ; continuous joins at the triangle's crests; no oscillator/history is added.
+        move    a,y1
+        move    #>@CQUAD@,r1
+        move    x:(r1)+,y0
+        move    x:(r1)+,a
+        mac     y0,x0,a         x:(r1)+,b
+        move    a,y0
+        mac     y0,x0,b         x:(r1)+,a
+        move    b,y0
+        mac     y0,x0,a         x:(r1)+,b
+        move    a,y0
+        mac     y0,x0,b
+        move    b,y0
+        move    x:(r5+@U@),x1
+        mpy     x1,y0,b
+        move    b,y0
+        move    b,a
+        mac     y0,x0,a
+        add     y1,a
         asl     a
         asl     a
         move    a,y1                    ; y1 = S/4
@@ -286,17 +320,24 @@ zq04:
         move    x:(r5+@SGDC@),y0
         mac     -y0,x0,a
         move    a,x:(r5+@ACC@)          ; the body
-; (9) pulse at 8x: r8 += KR8 - KR*r8; up8 = -r8*PULSE
-        move    x:(r5+@R8@),x0
-        move    x0,b
-        move    #>@KR8@,y1
-        add     y1,b                    #>@KR@,y0
-        mac     -y0,x0,b
-        move    b,x:(r5+@R8@)
-        move    b,x0
-        move    x:(r5+@PULSE@),y0
-        mpy     -y0,x0,b
-        move    b,x1                    ; x1 = up8
+ ; (9) Two Attack-controlled negative discharges.
+; The sample-domain envelope follows the native trigger offset; no extra clock.
+        move    x:(r5+@PULSE@),x0
+        move    #>@KPR@,y1
+        mpy     x0,y1,b
+        move    b,x:(r5+@PULSE@)
+        move    x:(r5+@GP@),y0
+        mpy     y0,x0,a                 ; longer discharge follows ATK
+        move    x:(r5+@FAST@),x0
+        move    #>@KFAST@,y1
+        mpy     x0,y1,b
+        move    b,x:(r5+@FAST@)
+        move    x:(r5+@GS@),y0
+        mac     y0,x0,a                 ; short edge remains at minimum ATK
+        neg     a
+        asr     a
+        asr     a                       ; quarter-scale mixed input for headroom
+        move    a,x1
         move    x:(r5+@LPU@),x0         ; lpu += ku*(up - lpu)
         move    x0,a
         move    #>@KU@,y0
@@ -338,9 +379,15 @@ zq04:
         move    x:(r5+@LPU@),y0
         move    #>@KU16@,x1
         mac     x1,y0,b
-        move    b,x0
-        move    x:(r5+@GP@),y0
-        mpy     y0,x0,b
+; The pulse's own output pole. R8 is reused; it is filter history now and
+; survives triggers, like the HP/biquad/LP histories. No state words are added.
+        move    b,x1
+        move    x:(r5+@R8@),x0
+        move    x0,b
+        move    #>@KPLP@,y0
+        mac     x1,y0,b
+        mac     -y0,x0,b
+        move    b,x:(r5+@R8@)
         move    b,x:(r5+@PT@)           ; the pulse term / 16
 ; (10) noise: 24-bit LCG, HP, two LP, times ENV2 = e2 - e3. The chain runs
 ;      at half scale (BNH carries the 1/2): the HP swings w - prev, up to 2
@@ -571,19 +618,25 @@ zq05:
 
 ; ---- zq06: the trig ---------------------------------------------------------
 ; ep, the pulse flag and ENV2 to full; the count to 0; the VCA to 1.0 (48-bit)
-; and the ramp to 0. u starts where the triangle holds x_r, backed off by the
-; release's fractional sample so the first released sample lands on time.
+; u starts at the negative body crest. Pulse filter histories survive triggers.
 ; The thump, the filters and the noise keep running (a retrig does not reset
 ; the output coupling or the noise circuit).
 zq06:
         move    #>$7fffff,x0
         move    x0,x:(r5+@EP@)
-        move    x0,x:(r5+@PULSE@)
         move    x0,x:(r5+@E2@)
         move    x0,x:(r5+@E3@)
+; Sample the existing free-running noise state once per hit. Only pulse
+; strength moves (+/- 6.4%); pitch, trigger timing and the body stay fixed.
+        move    x:(r5+@LCG@),x0
+        move    #>@KPJIT@,y1
+        move    #>@KPBASE@,a
+        mac     x0,y1,a
+        move    a,x:(r5+@PULSE@)
+        move    a,x:(r5+@FAST@)
         clr     a
         move    a,x:(r5+@C@)
-        move    a,x:(r5+@R8@)
+        move    a,x:(r5+@O@)            ; restore the short VCA rise
         move    #>$7fffff,x0            ; m = 1 (48-bit: $7fffff:$ffffff)
         move    x0,x:(r5+@LMH@)
         move    #>$ffffff,x0
@@ -605,6 +658,8 @@ zq02:
         do      #@SWORDS@,zq08
         move    a,x:(r1)+
 zq08:
+        move    a,x:(r5+@FAST@)
+        move    a,x:(r5+@GS@)
         move    #>$7fffff,x0
         move    x0,x:(r5+@C@)
         move    x0,x:(r5+@KLPF@)

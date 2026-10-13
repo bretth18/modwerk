@@ -76,18 +76,22 @@ describe('module qualification hard gates',()=>{
     hardware.sourceRevision=example.tests.evidenceRevision;hardware.limitations=[]
     expect(reported).toThrow('limits of the reported hardware test')
   })
-  it('retains exactly the existing eleven versions and their honest evidence without filling in measurements',async()=>{
+  it('retains exactly the existing eleven frozen versions', () => {
     expect(baseline.modules).toHaveLength(11)
-    const frozen=parseQualificationBaseline(baseline)
-    for(const module of catalog.modules.filter(m=>!['cc-map','previewvol'].includes(m.id))) {
-      const folder=resolve('sdk/octabam/modules',module.id),record=frozen.get(module.id)
-      const unchanged=record?.version===module.version&&record.folderSha256===await moduleFolderSha256(folder)
+    expect(parseQualificationBaseline(baseline).size).toBe(11)
+  })
+  // Give each complete qualification check its own unchanged per-test deadline.
+  for (const module of catalog.modules.filter(m => !['cc-map', 'previewvol'].includes(m.id))) {
+    it(`preserves ${module.id} qualification and honest evidence without inventing measurements`, async () => {
+      const frozen = parseQualificationBaseline(baseline)
+      const folder = resolve('sdk/octabam/modules', module.id), record = frozen.get(module.id)
+      const unchanged = record?.version === module.version && record.folderSha256 === await moduleFolderSha256(folder)
       // Generated web documents include display-only baseline resource estimates.
       // Qualify the source manifest, as publication validation does.
-      const source=parseModuleDocument(JSON.parse(readFileSync(resolve(folder,'octamod.module.json'),'utf8')))
-      expect(await requireFolderQualification(folder,source,frozen)).toBe(unchanged?'retained':source.tests.retainedEvidence?'retained-evidence':module.id==='midi-scenes'?'owner-approved-standalone':['miniverb','synth','usb-audio-out-tracks-main-cue','euclid','mute-modes','recorder-loop-fix','analog-bassdrum','airwindows-chorus'].includes(module.id)?'owner-approved-update':'qualified')
-    }
-  })
+      const source = parseModuleDocument(JSON.parse(readFileSync(resolve(folder, 'octamod.module.json'), 'utf8')))
+      expect(await requireFolderQualification(folder, source, frozen)).toBe(unchanged ? 'retained' : source.tests.retainedEvidence ? 'retained-evidence' : ['midi-scenes', 'miniverb', 'synth', 'usb-audio-out-tracks-main-cue', 'euclid', 'mute-modes', 'recorder-loop-fix', 'analog-bassdrum', 'airwindows-chorus', 'poly8', 'quantizer', 'everb'].includes(module.id) ? 'owner-approved-update' : 'qualified')
+    })
+  }
   it('binds an owner-approved update to its exact version and native source, never to verified hardware',async()=>{
     const root=mkdtempSync(resolve(tmpdir(),'octamod-owner-update.')),folder=resolve(root,'module')
     try {

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """The 909 voice on the DSP: tables, the assembled engine and its reference.
 
-fit909.json holds the numbers fitted to the user's Drumazon 2 (DSP909.md
-says how and with which scripts). From them this builds:
+fit909.json holds the private TR-909 reference candidate. The body, pulse
+and short Tune endpoint use Skee Mask's supplied recordings; other controls
+and the shared desk retain the approved model. From them this builds:
 
   tables()        the 128-entry knob tables and fixed coefficients, 24-bit
   source(layout)  bd909.asm with every placeholder filled
@@ -48,7 +49,7 @@ OFF = {name: k for k, name in enumerate(STATE)}
 # Reuse the per-sample scratch words for depth history; scratch moves into
 # MODEL/hidden-control transport slots after the glue has consumed MODEL.
 OFF.update(SINCA=OFF['ACC'], SGDC=OFF['PT'], ACC=54, PT=59,
-           SSAT=61)
+           SSAT=61, FAST=62, GS=63)
 SWORDS = len(STATE)
 
 
@@ -190,9 +191,9 @@ def tables():
         T_THS=[OUT * B['k_dc'] * thump((i + .5) / 128 * a_max) * VBS for i in range(128)],
         T_VB=[(max(i, 1) / 100) ** 2 / VBS for i in range(128)],
         T_VA=[VA(max(i, 1)) / VAS for i in range(128)],
-        T_ATP=[OUT * (B['k0'] + u_of(i)) * VAS for i in range(128)],
+        T_ATP=[OUT * (B['k0'] + u_of(i)) * VAS / PU['gain_scale'] for i in range(128)],
         # the noise chain runs at half scale: its HP swings (w - prev), up to 2
-        T_ATN=[2 * OUT * u_of(i) * NZ['g'] / NOISE_RMS * VAS / SHIFT for i in range(128)],
+        T_ATN=[2 * OUT * (NZ['attack_floor'] + (1-NZ['attack_floor'])*u_of(i)) * NZ['g'] / NOISE_RMS * VAS / SHIFT for i in range(128)],
         T_LPF=[1 - 2 ** -23] + [1 - k_pole(f) for f in LPF_HZ[1:]],
         # SAT: drive / stage / 32 (five asl) and the make-up / 2 (one asl)
         T_TIN=[mk_drive(i) / MK['stage'] / 32 for i in range(128)],
@@ -203,14 +204,18 @@ def tables():
         T_GB=[min(u_of(i) ** 2, 1 - 2 ** -23) for i in range(128)],
         T_OB=[math.sqrt(2 * u_of(i)) * MK['stage'] / 16 for i in range(128)],
     )
+    tfb=2*FIT['tune']['base_delta_hz']/RATE/(t['T_GT'][-1]-t['T_GT'][0])
     b0, b1, b2, a1, a2 = biquad_lp(PU['f0'], PU['q'])
     ahp, anh = k_pole(PU['f_hp']), k_pole(NZ['f_hp'])
     c = dict(
+        KTFB=tfb,KTFB0=-tfb*t['T_GT'][0],
         KA_INC=k_inc, K_BODY=4 * OUT * B['G'] * VBS,
-        NREL=math.ceil(B['t_r'] * RATE), FRAC=1 - (math.ceil(B['t_r'] * RATE) - B['t_r'] * RATE),
-        U0=-0.5 + B['x_r'] / 2, THETA=FIT['theta'], NHOLD=round(B['t_h'] * RATE),
+        NREL=math.ceil(B['t_r'] * RATE), FRAC=B.get('release_fraction', 1 - (math.ceil(B['t_r'] * RATE) - B['t_r'] * RATE)),
+        U0=B.get('phase_reset', -0.5 + B['x_r'] / 2), THETA=FIT['theta'], NHOLD=round(B['t_h'] * RATE),
         KA=1 - k_exp(B['tau_a']), DKDROOP=1 - k_exp(B['tau_droop']), KTH=1 - k_exp(B['tau_dc']),
-        KR=1 - k_exp(PU['tau_r2']), KR8=8 * (1 - k_exp(PU['tau_r2'])),
+        KPR=k_exp(PU['tau_decay']), KPLP=1-k_pole(PU['f_output']),
+        KPBASE=PU['jitter_base'], KPJIT=PU['jitter_depth'],
+        KFAST=k_exp(PU['fast_tau']), KGS=PU['fast_gain']*OUT*VAS/PU['gain_scale'], KFDR=PU['fast_depth']/4,
         AHP=ahp, BHP=(1 + ahp) / 2, KU=1 - k_pole(PU['f_u']),
         KW16=PU['k_w'] / 128, KU16=PU['k_u'] / 128,
         ANH=anh, BNH=(1 + anh) / 4, KL1=1 - k_pole(NZ['f_lp1']), KL2=1 - k_pole(NZ['f_lp2']),
@@ -218,14 +223,15 @@ def tables():
         LCGK=LCG_K, LCGC=LCG_C, SEED=SEED,
         KSAT=MK['k_sat'], KB=MK['kb'], KM=MK['km'], KMS=2 * MK['stage'] / 16,
     )
-    # S/16 in Horner order: the degree-11 partial sums reach 2.8 at S/4; the
-    # engine's two asl bring the result back to S/4
+    # S/16 in Horner order; the two asl bring the result back to S/4.
+    # Check every partial sum after refitting, not only the final output.
     cpoly = [x / 16 for x in list(B['c'])[::-1]] + [B['c0'] / 16]
-    assert horner_ok(cpoly) < 1, 'Horner partial sum overflows'
+    cquad=[x/16 for x in B['quadrature'][::-1]]
+    assert horner_ok(cpoly) < 1 and horner_ok(cquad)<1, 'Horner partial sum overflows'
     cbiq = [b0, b1, b2, -a1 / 2, -a2]
-    for name, v in list(t.items()) + [('CPOLY', cpoly), ('CBIQ', cbiq)]:
+    for name, v in list(t.items()) + [('CPOLY', cpoly), ('CQUAD',cquad), ('CBIQ', cbiq)]:
         assert all(-1 <= x < 1 for x in v), name
-    return t, c, dict(CPOLY=cpoly, CBIQ=cbiq), dict(a_max=a_max, k_inc=k_inc)
+    return t, c, dict(CPOLY=cpoly, CQUAD=cquad, CBIQ=cbiq), dict(a_max=a_max, k_inc=k_inc)
 
 
 def q24(x):
@@ -417,7 +423,7 @@ class Voice:
                       for k, v in self.c.items()}
         self.ep = self.u = self.o = self.m = self.th = 0.0
         self.cnt = (1 << 23) - 1
-        self.pulse = 0.0
+        self.pulse = self.fast = 0.0
         self.r = self.upp = self.hp = self.lpu = 0.0
         self.bx1 = self.bx2 = self.by1 = self.by2 = 0.0
         self.lcg = SEED
@@ -429,7 +435,7 @@ class Voice:
 
     def block(self, k, trig=None, frames=16):
         t, c = self.t, self.c
-        inc_b = t['T_INCB'][k[0]]
+        inc_b = fl24(t['T_INCB'][k[0]]+c['KTFB0']+c['KTFB']*t['T_GT'][k[2]])
         q = rnd24(rnd24(t['T_AP'][k[0]] * t['T_GT'][k[2]]) * t['T_GD'][k[4]])
         inc_a = rnd24(q * c['KA_INC'])
         dkp, dkd = t['T_DKP'][k[2]], t['T_DKD'][k[1]]
@@ -438,6 +444,7 @@ class Voice:
         gbody = vb * c['K_BODY']
         va = t['T_VA'][k[7]]
         gp = va * t['T_ATP'][k[3]]
+        gs = va * c['KGS'] + 4*gp*c['KFDR']
         gn = va * t['T_ATN'][k[3]]
         klpf = t['T_LPF'][k[8]]
         targets = (inc_a, rnd24(gdc))
@@ -445,13 +452,16 @@ class Voice:
             self.depth_values = targets
         self.desk_knobs(k)
         b0, b1, b2, na1h, na2 = self.lists['CBIQ']
-        cp = self.lists['CPOLY']
+        cp = self.lists['CPOLY']; cq=self.lists['CQUAD']
         out = []
         for i in range(frames):
             if trig is not None and i == trig:
-                self.ep = self.pulse = self.e2 = self.e3 = 1 - 2 ** -23
+                self.ep = self.e2 = self.e3 = 1 - 2 ** -23
+                white = (self.lcg - (1 << 24) if self.lcg & 0x800000 else self.lcg) / 8388608
+                self.pulse = rnd24(c['KPBASE'] + c['KPJIT'] * white)
+                self.fast = self.pulse
+                self.o = 0.0
                 self.cnt = 0
-                self.r = 0.0
                 self.m = 1.0
                 self.u = fl24(c['U0'] - c['FRAC'] * (inc_b + self.depth_values[0]))
             self.depth_values = tuple(slew24(v, target) for v, target in zip(self.depth_values, targets))
@@ -463,27 +473,30 @@ class Voice:
                 if self.u >= 1:
                     self.u -= 2
             x = 1 - 2 * abs(self.u)
-            if x >= c['THETA']:
-                self.pulse = 0.0
             x = min(x, 1 - 2 ** -23)
             h = cp[0]
             for cf in cp[1:]:
                 h = cf + h * x
-            s4 = 4 * h
+            qh=cq[0]
+            for cf in cq[1:]: qh=cf+qh*x
+            s4=4*(h+self.u*(1+x)*qh)
             self.o += c['KA'] * (1 - self.o)
             self.m -= self.m * (c['DKDROOP'] if self.cnt < c['NHOLD'] else dkd)
             g = self.o * self.m
             body = gbody * g * s4
             self.th += c['KTH'] * (g - self.th)
             body -= gdc * self.th
-            self.r += c['KR'] * (1 - self.r)
-            up8 = -8 * self.r * self.pulse
+            up8 = -(self.pulse * gp + self.fast * gs) / 4
+            self.fast = fl24(self.fast * c['KFAST'])
+            self.pulse = fl24(self.pulse * c['KPR'])
             self.lpu += c['KU'] * (up8 - self.lpu)
             self.hp = c['AHP'] * self.hp + c['BHP'] * (up8 - self.upp)
             self.upp = up8
             w8 = b0 * self.hp + b1 * self.bx1 + b2 * self.bx2 + 2 * na1h * self.by1 + na2 * self.by2
             self.bx2, self.bx1, self.by2, self.by1 = self.bx1, self.hp, self.by1, w8
-            pt = gp * (c['KW16'] * w8 + c['KU16'] * self.lpu)
+            pulse_term = c['KW16'] * w8 + c['KU16'] * self.lpu
+            self.r += c['KPLP'] * (pulse_term - self.r)
+            pt = self.r
             self.lcg = (self.lcg * LCG_M + LCG_C) & 0xffffff
             wn = (self.lcg - (1 << 24) if self.lcg & 0x800000 else self.lcg) / 8388608
             self.nh = c['ANH'] * self.nh + c['BNH'] * (wn - self.nprev)

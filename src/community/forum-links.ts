@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 /** Forum links are explicit web URLs; executable, local and credential-bearing URLs stay text. */
 export function forumLink(value: string): string | undefined {
   if (Array.from(value).some(character=>character.charCodeAt(0)<=32||character.charCodeAt(0)===127)) return undefined

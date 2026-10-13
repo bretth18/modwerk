@@ -1,10 +1,12 @@
-import { issueStatusStatements } from './issue-notifications'
+import { issueStatusStatements, publicIssueReplyStatement } from './issue-notifications'
 import { handleGithubCommand } from './github-commands'
 import type { Database, Env } from './platform'
 import { HttpError } from './security'
 import { communityModule } from '../src/community/modules'
+import { CONFIGURATION_REPORT_MAX_OWNERS, configurationOwners, configurationSummary } from '../src/community/configuration-report'
 import { profilePath } from '../src/community/forum-links'
-import { REPORT_CLOSURE_REASONS, type ReportClosureReason } from '../src/community/report-closure'
+import { FLASH_STATES, type IssueContext } from '../src/community/issue-context'
+import { REPORT_CLOSURE_REASONS, REPORT_COMMANDS, type ReportClosureReason } from '../src/community/report-closure'
 import { digest } from './security'
 
 const API = 'https://api.github.com'
@@ -61,33 +63,62 @@ export function inert(text: string) {
 }
 const quote = (text: string) => inert(text).split(/\r?\n/).map(line => '> ' + line).join('\n')
 
-/** What the reporter agreed to publish; the configuration, build fingerprint and log stay on the site. */
-export type PublicBugDetails = { device: string; version: string; steps: string; expected: string; actual: string }
-export type MirroredIssue = { id: string; module_id: string; title: string; reporter: string | null; owners: string[]; details: PublicBugDetails }
+/**
+ * What the reporter agreed to publish. `full` marks reports filed since 13 October 2026, whose reporters agreed to
+ * publish the configuration, build fingerprint and log on GitHub too; older reports keep them on the site.
+ */
+export type PublicBugDetails = { device: string; version: string; steps: string; expected: string; actual: string; modules?: { id: string; name: string; version: string }[]; full?: boolean }
+/** A whole-configuration report lists every module in `moduleIds`; `module_id` is then only the first of them. */
+export type MirroredIssue = { id: string; module_id: string; scope?: 'module' | 'configuration'; moduleIds?: string[]; title: string; reporter: string | null; owners: string[]; details: PublicBugDetails; context?: IssueContext; log?: string }
 
-export function issueTitle(issue: Pick<MirroredIssue, 'module_id' | 'title'>) { return ('[' + issue.module_id + '] ' + issue.title).slice(0, 256) }
+export function issueTitle(issue: Pick<MirroredIssue, 'module_id' | 'scope' | 'title'>) { return ('[' + (issue.scope === 'configuration' ? 'configuration' : issue.module_id) + '] ' + issue.title).slice(0, 256) }
 const GITHUB_LOGIN = /^[A-Za-z0-9-]{1,39}$/
 const appLink = (app: string | undefined, hash: string) => { if (!app) return null; const url = new URL(app); url.hash = hash; return url.href }
+const cell = (text: string) => inert(text).replace(/\|/g, '\\|')
+
+/** The validated log, verbatim in a collapsed block. Past `room` characters the oldest records go; `#` lines stay in place. */
+export function logBlock(text: string, room: number) {
+  const lines = text.split(/\r?\n/).filter(Boolean), marker = (line: string) => line.startsWith('#')
+  let left = room - 300 - lines.filter(marker).reduce((sum, line) => sum + line.length + 1, 0), from = lines.length
+  for (; from > 0; from--) {
+    const line = lines[from - 1]
+    if (marker(line)) continue
+    if (line.length + 1 > left) break
+    left -= line.length + 1
+  }
+  const omitted = lines.slice(0, from).filter(line => !marker(line)).length
+  // Header values may hold backticks; a longer fence keeps the log inside the code block.
+  const fence = '`'.repeat(Math.max(3, ...(text.match(/`+/g) ?? []).map(run => run.length + 1)))
+  return ['<details><summary>OCTAMOD.LOG' + (omitted ? ' (oldest ' + omitted + ' records left out to fit GitHub)' : '') + '</summary>', '', fence + 'text', ...lines.filter((line, index) => index >= from || marker(line)), fence, '', '</details>', '']
+}
 
 export function issueMarkdown(issue: MirroredIssue, app?: string) {
-  const owners = [...new Set(issue.owners.filter(login => GITHUB_LOGIN.test(login)).map(login => '@' + login))]
+  const configuration = issue.scope === 'configuration', context = issue.context
+  const owners = [...new Set(issue.owners.filter(login => GITHUB_LOGIN.test(login)).map(login => '@' + login))].slice(0, configuration ? CONFIGURATION_REPORT_MAX_OWNERS : undefined)
   const reporter = issue.reporter ? inert(issue.reporter) : 'a Modwerk member', profile = issue.reporter && app ? new URL(profilePath(issue.reporter), app).href : null
-  const site = appLink(app, '') ?? 'https://modwerk.app/', details = appLink(app, 'developer/report/' + issue.id), { device, version, steps, expected, actual } = issue.details
-  return ['Reported on [Modwerk](' + site + ') for **`' + issue.module_id + '`** by ' + (profile ? '[' + reporter + '](' + profile + ')' : reporter) + (owners.length ? ' · ' + owners.join(' ') : ''), '',
-    '| | |', '| --- | --- |', '| Device | ' + inert(device).replace(/\|/g, '\\|') + ' |', '| Module version | ' + inert(version).replace(/\|/g, '\\|') + ' |', '',
-    ...([['Steps to reproduce', steps], ['Expected', expected], ['Actual', actual]] as const).filter(([, text]) => text).flatMap(([heading, text]) => ['### ' + heading, '', quote(text), '']), '---',
-    '_The reporter’s configuration, build fingerprint and device log are private' + (details ? '. Verified maintainers can [open them on Modwerk](' + details + ')' : '') + '. Comments and status changes here are sent to the reporter on Modwerk._', '',
+  const site = appLink(app, '') ?? 'https://modwerk.app/', { device, version, steps, expected, actual } = issue.details
+  const modules = configuration ? issue.details.modules ?? [] : []
+  const report = ['Reported on [Modwerk](' + site + ') for ' + (configuration ? 'the **whole configuration**' : '**`' + issue.module_id + '`**') + ' by ' + (profile ? '[' + reporter + '](' + profile + ')' : reporter) + (owners.length ? ' · ' + owners.join(' ') : ''), '',
+    '| | |', '| --- | --- |', '| Device | ' + cell(device) + ' |', configuration ? '| Configuration | ' + configurationSummary(modules.length) + ' |' : '| Module version | ' + cell(version) + ' |',
+    ...(context ? ['| Firmware | ' + cell(FLASH_STATES[context.flash].replace('an Octamod', 'a Modwerk')) + ' |', '| Build fingerprint | ' + (context.build ? '`' + context.build + '`' : 'Not recorded') + ' |'] : []), '',
+    ...(configuration ? ['### Modules in this configuration', '', ...modules.map(module => '- `' + module.id + '` ' + inert(module.version)), '', 'Reported for the whole configuration: the cause may be one module or how they combine. Reply here to narrow it down.', ''] : []),
+    ...(!configuration && context ? ['### Configuration', '', ...(context.modules.length ? context.modules.map(module => '- `' + module.id + '` ' + inert(module.version)) : ['No modules recorded.']), ''] : []),
+    ...([['Steps to reproduce', steps], ['Expected', expected], ['Actual', actual]] as const).filter(([, text]) => text).flatMap(([heading, text]) => ['### ' + heading, '', quote(text), ''])]
+  const rest = ['---',
+    '_' + (issue.details.full ? 'Everything the reporter submitted is in this issue.' : 'The reporter’s configuration, build fingerprint and any device log were not published with this report; ask here if you need them.') + ' Comments and status changes here are sent to the reporter on Modwerk, and the reporter’s replies appear here._', '',
     '### Module maintainer actions', '',
-    'Reply here normally. Registered module maintainers can post these commands without a fork or repository write access:', '',
-    '- `/modwerk close configuration <explanation>` (also: `duplicate`, `not_reproducible`, `withdrawn`)',
-    '- `/modwerk reopen <explanation>`',
-    '- `/modwerk resolve <version> verified-download` — only after verifying that exact published download fixes this report on your unit.', '',
+    'Reply here normally. Registered authors and verified current maintainers ' + (configuration ? 'of any module in this configuration ' : '') + 'can manage reports with new comments; no fork or repository write access is needed:', '',
+    ...REPORT_COMMANDS.map(command => '- `' + (configuration && command.startsWith('/modwerk resolve') ? '/modwerk resolve <module-id> <published-version> verified-download' : command) + '`'), '',
+    'Keep a report open with `needs-info` while waiting for the reporter. Confirm only a reproduced bug; use `unknown` for a configuration report. Questions and suggestions can use `/modwerk classify question|feature <explanation>`. Advanced states: `/modwerk investigate <explanation>`, `/modwerk awaiting-verification <explanation>`, `/modwerk unconfirm <explanation>`.', '',
+    'Only the registered release author can use `resolve`, after verifying that exact published download fixes the report on their unit. Ordinary closures claim no new firmware fix.', '',
     'A merged PR alone does not resolve a report. [Author release steps](https://github.com/repeat98/modwerk/blob/main/docs/MODULE_AUTHOR_UPDATES.md).',
-  ].join('\n').slice(0, BODY_LIMIT)
+  ]
+  const log = issue.log ? ['### Device log', '', ...logBlock(issue.log, BODY_LIMIT - [...report, ...rest].join('\n').length)] : []
+  return [...report, ...log, ...rest].join('\n').slice(0, BODY_LIMIT)
 }
 
 export async function createGithubIssue(config: GithubConfig, issue: MirroredIssue, app?: string) {
-  const created = await github<{ number: number; html_url: string }>(config, '/issues', 'POST', { title: issueTitle(issue), body: issueMarkdown(issue, app), labels: ['issue-report', 'module:' + issue.module_id] })
+  const created = await github<{ number: number; html_url: string }>(config, '/issues', 'POST', { title: issueTitle(issue), body: issueMarkdown(issue, app), labels: ['issue-report', ...(issue.scope === 'configuration' ? ['configuration', ...(issue.moduleIds ?? [issue.module_id]).map(id => 'module:' + id)] : ['module:' + issue.module_id])] })
   if (!Number.isInteger(created.number) || typeof created.html_url !== 'string' || !created.html_url.startsWith('https://github.com/')) throw new Error('GitHub returned an unexpected issue.')
   return { number: created.number, url: created.html_url }
 }
@@ -122,12 +153,7 @@ export async function closeGithubReport(config: GithubConfig, number: number, re
   await setGithubIssueState(config, number, 'closed', 'not_planned')
 }
 
-/** Everyone GitHub should notify: the module author and its declared maintainers. */
-function moduleOwners(moduleId: string, author: string) {
-  return [author, ...(communityModule(moduleId)?.maintainers ?? [])]
-}
-
-type IssueRow = { id: string; module_id: string; author_login: string; title: string; reporter: string | null; github_state: string; public_json: string | null }
+type IssueRow = { id: string; module_id: string; scope: 'module' | 'configuration'; author_login: string; title: string; reporter: string | null; github_state: string; public_json: string | null; context_json: string | null }
 
 /**
  * Create the GitHub issue for a stored report. The report is kept whatever GitHub answers.
@@ -136,15 +162,21 @@ type IssueRow = { id: string; module_id: string; author_login: string; title: st
 export async function mirrorIssue(db: Database, env: Env, id: string, stale = false) {
   const config = githubConfig(env)
   if (!config) return { state: 'none' as const }
-  const row = await db.prepare('SELECT i.id,i.module_id,i.author_login,i.title,i.github_state,i.public_json,u.username AS reporter FROM issues i JOIN users u ON u.id=i.reporter_id WHERE i.id=?').bind(id).first<IssueRow>()
+  const row = await db.prepare('SELECT i.id,i.module_id,i.scope,i.author_login,i.title,i.github_state,i.public_json,i.context_json,u.username AS reporter FROM issues i JOIN users u ON u.id=i.reporter_id WHERE i.id=?').bind(id).first<IssueRow>()
   if (!row) throw new HttpError(404, 'Issue not found.')
-  // Only reports whose reporter chose a public bug description are published, and only that description.
+  // Only reports whose reporter chose a public bug description are published, and only what they agreed to publish.
   if (!row.public_json) throw new HttpError(400, 'This report is private and cannot be published to GitHub.')
   // Claim the row so concurrent requests cannot open two GitHub issues.
   const claimable = stale ? "('none','pending','failed','syncing')" : "('none','pending','failed')"
   if (!await db.prepare("UPDATE issues SET github_state='syncing',github_error='' WHERE id=? AND github_state IN " + claimable + " RETURNING id").bind(id).first()) return { state: row.github_state as 'synced' | 'syncing' }
   try {
-    const created = await createGithubIssue(config, { id: row.id, module_id: row.module_id, title: row.title, reporter: row.reporter, owners: moduleOwners(row.module_id, row.author_login), details: JSON.parse(row.public_json) as PublicBugDetails }, env.APP_URL)
+    const moduleIds = row.scope === 'configuration' ? (await db.prepare('SELECT module_id FROM issue_modules WHERE issue_id=? ORDER BY rowid').bind(id).all<{ module_id: string }>()).results.map(item => item.module_id) : undefined
+    const owners = moduleIds ? configurationOwners(moduleIds.map(moduleId => ({ id: moduleId }))) : (communityModule(row.module_id)?.maintainers ?? [])
+    const details = JSON.parse(row.public_json) as PublicBugDetails
+    // Only reporters who agreed to publish them get their configuration and log on GitHub.
+    const log = details.full ? (await db.prepare('SELECT text FROM issue_logs WHERE issue_id=?').bind(id).first<{ text: string }>())?.text : undefined
+    const context = details.full && row.context_json ? JSON.parse(row.context_json) as IssueContext : undefined
+    const created = await createGithubIssue(config, { id: row.id, module_id: row.module_id, scope: row.scope, moduleIds, title: row.title, reporter: row.reporter, owners, details, context, log }, env.APP_URL)
     await db.prepare("UPDATE issues SET github_state='synced',github_number=?,github_url=?,github_error='' WHERE id=?").bind(created.number, created.url, id).run()
     return { state: 'synced' as const, url: created.url }
   } catch (error) {
@@ -184,8 +216,6 @@ export async function handleGithubWebhook(request: Request, env: Env, db: Databa
   if (!issue) return { ok: true, handled: false }
   const delivery = (request.headers.get('X-GitHub-Delivery') ?? '').slice(0, 100) || crypto.randomUUID()
   if(await db.prepare('SELECT id FROM github_webhook_deliveries WHERE id=?').bind(delivery).first())return {ok:true,handled:true}
-  const notify = (kind: string, actor: unknown, excerpt: string | null) => db.prepare(`INSERT INTO notifications(id,user_id,kind,issue_id,module_id,github_actor,excerpt,delivery_id) SELECT lower(hex(randomblob(16))),i.reporter_id,?,i.id,i.module_id,?,?,? FROM issues i JOIN users u ON u.id=i.reporter_id WHERE i.github_number=? AND u.suspended=0 AND NOT EXISTS(SELECT 1 FROM github_webhook_deliveries WHERE id=?) ON CONFLICT DO NOTHING`)
-    .bind(kind, typeof actor === 'string' && GITHUB_LOGIN.test(actor) ? actor : null, excerpt, delivery, number,delivery)
   if (event === 'issue_comment') {
     const comment = payload.comment
     // Bots (CI, release tooling) talk to developers, not reporters.
@@ -202,7 +232,14 @@ export async function handleGithubWebhook(request: Request, env: Env, db: Databa
       await db.prepare('INSERT INTO github_webhook_deliveries(id,issue_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(delivery, issue.id).run()
       return { ok: true, handled: true }
     }
-    await db.batch([notify('issue_comment', comment.user?.login, comment.body.slice(0, 400)),db.prepare('INSERT INTO github_webhook_deliveries(id,issue_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(delivery,issue.id)])
+    const acknowledgement = /<!-- modwerk-(?:command|triage):/.test(comment.body) && await db.prepare("SELECT id FROM github_actions WHERE issue_id=? AND published_hash=? AND (id LIKE 'command:%' OR id LIKE 'triage:%')").bind(issue.id,await digest(comment.body)).first()
+    if (acknowledgement) {
+      await db.prepare('INSERT INTO github_webhook_deliveries(id,issue_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(delivery,issue.id).run()
+      return {ok:true,handled:true}
+    }
+    const login = typeof comment.user?.login === 'string' && GITHUB_LOGIN.test(comment.user.login) ? comment.user.login : null
+    const githubId = Number.isSafeInteger(comment.user?.id) && Number(comment.user?.id) > 0 ? String(comment.user?.id) : null
+    await db.batch([publicIssueReplyStatement(db, issue.id, delivery, comment.body, null, login, githubId),db.prepare('INSERT INTO github_webhook_deliveries(id,issue_id) VALUES(?,?) ON CONFLICT DO NOTHING').bind(delivery,issue.id)])
     return { ok: true, handled: true }
   }
   const status = payload.action === 'closed' ? 'closed' : payload.action === 'reopened' ? 'open' : null

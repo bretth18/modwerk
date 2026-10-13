@@ -65,7 +65,11 @@ describe('risk-based retained module evidence',()=>{
       expect(await check()).toBe('retained-evidence')
       document.resources.storage.value=1
       await expect(check()).rejects.toThrow('full qualification')
-    } else await expect(check()).rejects.toThrow('README.md; full qualification')
+    } else {
+      expect(await check()).toBe('retained-evidence')
+      put('sdk/octabam/modules/'+example.id+'/README.md',qualificationReadme.replace('Overview','Changed historical overview')+'\nTrack swing documentation.\n')
+      await expect(check()).rejects.toThrow('README.md; full qualification')
+    }
   })
   it('allows real documentation/media changes but still validates the documentation and pixels',async()=>{
     const docs=document.tests.retainedEvidence!.documentation
@@ -76,6 +80,12 @@ describe('risk-based retained module evidence',()=>{
     save();expect(await check()).toBe('retained-evidence')
     put('sdk/octabam/modules/'+example.id+'/media/ui.png',Buffer.from('invalid PNG'))
     await expect(check()).rejects.toThrow('black-and-white PNG')
+  })
+  it('does not require an obsolete builder exception for exact approved infrastructure',async()=>{
+    put('sdk/builder-preservation/old.json',JSON.stringify({moduleIds:[document.id]}))
+    expect(await check()).toBe('retained-evidence')
+    put('src/engine/compose-os.ts','changed runtime dependency\n')
+    await expect(check()).rejects.toThrow('Invalid or stale builder preservation')
   })
   it.each([
     ['manifest.py','raise AssertionError("changed code")\n'],
@@ -128,6 +138,17 @@ describe('risk-based retained module evidence',()=>{
     put(path,JSON.stringify(artifact));await expect(check()).rejects.toThrow('full qualification')
     artifact.compilerSha256='c'.repeat(64)
     artifact.qualification='New hardware pass'
+    put(path,JSON.stringify(artifact));await expect(check()).rejects.toThrow('full qualification')
+  })
+  it('allows a derived composition inventory label while preserving every native proof',async()=>{
+    const path='src/engine/assets/analog-bd-composition-proofs.json'
+    const artifact={moduleSourceTreeSha256:'a'.repeat(64),sourceSha256:'s'.repeat(64),proofs:[{moduleIds:[document.id],maskedOsSha256:'b'.repeat(64)}]}
+    put(path,JSON.stringify(artifact))
+    git('add',path);git('-c','user.name=Evidence test','-c','user.email=fixture@example.invalid','commit','--quiet','-m','Synthetic original native proof')
+    document.tests.retainedEvidence!.commit=git('rev-parse','HEAD');git('update-ref','refs/remotes/origin/main',document.tests.retainedEvidence!.commit)
+    artifact.moduleSourceTreeSha256='c'.repeat(64)
+    put(path,JSON.stringify(artifact));expect(await check()).toBe('retained-evidence')
+    artifact.proofs[0].maskedOsSha256='d'.repeat(64)
     put(path,JSON.stringify(artifact));await expect(check()).rejects.toThrow('full qualification')
   })
   it('preserves historical status when retaining a frozen baseline release',async()=>{

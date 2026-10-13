@@ -1,0 +1,68 @@
+{
+  "firmware": "1.40C",
+  "version": "0.2.7-experimental",
+  "testFirmware": "POLY8T447",
+  "imageSha256": "ab78639d7881f05637fb876da77fa98bd7d1ef69e4815ef9a85bd427a50da00c",
+  "nativeSourceSha256": "e5b8ed40809a3f5f4812a83d3fe20d50c1f6c87d38183e26072c1ce0f3439121",
+  "emulatorSha256": "9889a52d419d125b947bdd2e856d56c1281ae392d1d9f4178b58d6251cd7967b",
+  "setup": "Actual native ColdFire/DSP MKII LCD from the 0.2.7 sequencer-release candidate, with the runtime arena filled with 0xff before loading. The SRC assignment/reselection, double-TRACK, LEFT/RIGHT and sample YES regression passes. These are emulator captures; physical MKI confirmation remains pending.",
+  "palette": {
+    "on": [
+      255,
+      255,
+      255
+    ],
+    "off": [
+      0,
+      0,
+      0
+    ]
+  },
+  "scale": 6,
+  "plan": "walk.jsonl",
+  "planSha256": "46056e0b121867ab41d97279582ed4fd5e6c6cb976c289e6dfd15b40bdb923e6",
+  "nativeUiGateSha256": "9a9b1e17a9b23d5a4930e643b2d8851cc128cc458e80ff107137872880fd9fa9",
+  "privateProtocolSha256": "f35b756d7272566ea0a3870982a69dbc730f66fba754395f35add85134f8a60c",
+  "reportSha256": "e8207469de1ccc0b8658546452d8bdae4219e09554a6866c00b7bd7fd1eb73ca",
+  "screenshots": [
+    {
+      "file": "assigned-src.png",
+      "sha256": "e8c1774ade3a87f0ed460f6f17664c888020337965ef42c94a63ff2a00bd76e2",
+      "lcd_sha256": "1ed9ada4acddc862f3eedc06f5564b656b481bac635167e942ae696f4d67ccb7",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "left-machine-chooser.png",
+      "sha256": "5f3bbb0a95ae6cd22385d0dfdbccc1957ff027348eda6f97c68bce44d1f96a20",
+      "lcd_sha256": "c74f4009192fe295ab40da8c5bc0b83604652f0209fd853bd1596aa44471a217",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "right-flex-pool.png",
+      "sha256": "7465155d13e277319efea0c2859309e60e28b9e34e53aa622465e47b685eb0e1",
+      "lcd_sha256": "ae1a8e96a16c0a01fbe540b56539d43aaf86469e715f7630f0a1b762b12fcf3a",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    }
+  ]
+}

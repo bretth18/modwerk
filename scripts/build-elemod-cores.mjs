@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Source-only development probes, separate from deployable core packages.
 import { execFileSync } from 'node:child_process'
-import { readFile, writeFile, mkdir, readdir } from 'node:fs/promises'
+import { readFile, writeFile, mkdir, readdir, stat } from 'node:fs/promises'
 import { resolve, dirname } from 'node:path'
 import { createHash } from 'node:crypto'
 import { LINK_DEVICES, parseElemod } from '../src/engine/elektron/elemod.ts'
@@ -31,6 +31,8 @@ export async function buildCoreProbes({ root, output, sourceCommit, compiler, cf
   }
   await scan(shared)
   for (const device of LINK_DEVICES) {
+    // Machines whose core is an imported upstream package (Digitakt II) have no Modwerk probe folder.
+    if (!await stat(resolve(root, 'sdk', device.machine, 'core')).then(item => item.isDirectory(), () => false)) continue
     const specBytes = await readFile(resolve(root, 'sdk', device.machine, 'core', manifest))
     const spec = JSON.parse(specBytes.toString('utf8'))
     if (spec.schemaVersion !== 1 || spec.machine !== device.machine || spec.stage !== stage || spec.providesInterface !== false || spec.version !== version || Object.keys(spec.releases).sort().join() !== device.releases.map(r => r.version).sort().join()) throw new Error('Invalid draft core probe')

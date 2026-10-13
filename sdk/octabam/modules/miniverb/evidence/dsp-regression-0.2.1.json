@@ -1,0 +1,390 @@
+{
+  "moduleVersion": "0.2.1-experimental",
+  "sampleRate": 44100,
+  "framesPerBlock": 16,
+  "hardware": "not tested",
+  "checks": [
+    {
+      "name": "baseline: assembler/disassembler round-trip",
+      "passed": true,
+      "words": 532
+    },
+    {
+      "name": "candidate: assembler/disassembler round-trip",
+      "passed": true,
+      "words": 536
+    },
+    {
+      "name": "baseline: static cycle marker preserves code",
+      "passed": true
+    },
+    {
+      "name": "candidate: static cycle marker preserves code",
+      "passed": true
+    },
+    {
+      "name": "TONE 64: low-level accepted voice within 8 LSB, split 0",
+      "passed": true,
+      "peakDifferenceLsb": 4
+    },
+    {
+      "name": "TONE 64: low-level accepted voice within 8 LSB, split 1",
+      "passed": true,
+      "peakDifferenceLsb": 4
+    },
+    {
+      "name": "TONE 64: low-level accepted voice within 8 LSB, split 7",
+      "passed": true,
+      "peakDifferenceLsb": 4
+    },
+    {
+      "name": "TONE 64: low-level accepted voice within 8 LSB, split 15",
+      "passed": true,
+      "peakDifferenceLsb": 4
+    },
+    {
+      "name": "MIX 0: exact dry at TONE 0",
+      "passed": true
+    },
+    {
+      "name": "MIX 0: exact dry at TONE 64",
+      "passed": true
+    },
+    {
+      "name": "MIX 0: exact dry at TONE 127",
+      "passed": true
+    },
+    {
+      "name": "rawWetMeasurement: assembler/disassembler round-trip",
+      "passed": true,
+      "words": 536
+    },
+    {
+      "name": "0.24 FS, core 0: raw wet and 25% mix stay affine",
+      "passed": true,
+      "eligibleSamples": 173944,
+      "oldPeakErrorLsb": 125.0,
+      "newPeakErrorLsb": 125.75,
+      "rawWetLimitedSamples": 0,
+      "mixedClippedSamples": 0
+    },
+    {
+      "name": "0.24 FS, core 1: raw wet and 25% mix stay affine",
+      "passed": true,
+      "eligibleSamples": 173944,
+      "oldPeakErrorLsb": 125.0,
+      "newPeakErrorLsb": 125.75,
+      "rawWetLimitedSamples": 0,
+      "mixedClippedSamples": 0
+    },
+    {
+      "name": "0.9 FS, core 0: raw wet and 25% mix stay affine",
+      "passed": true,
+      "eligibleSamples": 167992,
+      "oldPeakErrorLsb": 1737799.75,
+      "newPeakErrorLsb": 468.25,
+      "rawWetLimitedSamples": 5952,
+      "mixedClippedSamples": 0
+    },
+    {
+      "name": "core 0: published mixer reproduces intermediate clipping",
+      "passed": true
+    },
+    {
+      "name": "0.9 FS, core 1: raw wet and 25% mix stay affine",
+      "passed": true,
+      "eligibleSamples": 167992,
+      "oldPeakErrorLsb": 1737799.75,
+      "newPeakErrorLsb": 468.25,
+      "rawWetLimitedSamples": 5952,
+      "mixedClippedSamples": 0
+    },
+    {
+      "name": "core 1: published mixer reproduces intermediate clipping",
+      "passed": true
+    },
+    {
+      "name": "TONE 0, 70 Hz: finite unclipped wet signal",
+      "passed": true
+    },
+    {
+      "name": "TONE 64, 70 Hz: finite unclipped wet signal",
+      "passed": true
+    },
+    {
+      "name": "TONE 127, 70 Hz: finite unclipped wet signal",
+      "passed": true
+    },
+    {
+      "name": "bright endpoint removes lows; dark endpoint retains lows",
+      "passed": true,
+      "gainDb": {
+        "0": -0.1024292887673167,
+        "127": -16.60488119940846
+      }
+    },
+    {
+      "name": "TONE 0, 4000 Hz: finite unclipped wet signal",
+      "passed": true
+    },
+    {
+      "name": "TONE 64, 4000 Hz: finite unclipped wet signal",
+      "passed": true
+    },
+    {
+      "name": "TONE 127, 4000 Hz: finite unclipped wet signal",
+      "passed": true
+    },
+    {
+      "name": "dark endpoint removes highs; bright endpoint retains highs",
+      "passed": true,
+      "gainDb": {
+        "0": -18.854595785933117,
+        "127": -0.3372647163127806
+      }
+    },
+    {
+      "name": "eight instances: private and shared Y/program bounds",
+      "passed": true
+    },
+    {
+      "name": "instance 0: simultaneous and isolated output identical",
+      "passed": true
+    },
+    {
+      "name": "instance 1: simultaneous and isolated output identical",
+      "passed": true
+    },
+    {
+      "name": "instance 2: simultaneous and isolated output identical",
+      "passed": true
+    },
+    {
+      "name": "instance 3: simultaneous and isolated output identical",
+      "passed": true
+    },
+    {
+      "name": "instance 4: simultaneous and isolated output identical",
+      "passed": true
+    },
+    {
+      "name": "instance 5: simultaneous and isolated output identical",
+      "passed": true
+    },
+    {
+      "name": "instance 6: simultaneous and isolated output identical",
+      "passed": true
+    },
+    {
+      "name": "instance 7: simultaneous and isolated output identical",
+      "passed": true
+    },
+    {
+      "name": "instance 0: all seven unexcited instances stay exactly silent",
+      "passed": true
+    },
+    {
+      "name": "instance 1: all seven unexcited instances stay exactly silent",
+      "passed": true
+    },
+    {
+      "name": "instance 2: all seven unexcited instances stay exactly silent",
+      "passed": true
+    },
+    {
+      "name": "instance 3: all seven unexcited instances stay exactly silent",
+      "passed": true
+    },
+    {
+      "name": "instance 4: all seven unexcited instances stay exactly silent",
+      "passed": true
+    },
+    {
+      "name": "instance 5: all seven unexcited instances stay exactly silent",
+      "passed": true
+    },
+    {
+      "name": "instance 6: all seven unexcited instances stay exactly silent",
+      "passed": true
+    },
+    {
+      "name": "instance 7: all seven unexcited instances stay exactly silent",
+      "passed": true
+    },
+    {
+      "name": "interleaved cores preserve all eight outputs",
+      "passed": true
+    },
+    {
+      "name": "dirty delay buffers: all eight silent after init",
+      "passed": true
+    },
+    {
+      "name": "dirty scalar blocks: Tone states clear on every init",
+      "passed": true
+    },
+    {
+      "name": "processing stays within 2% of published 0.2.0 cost",
+      "passed": true,
+      "candidatePeak": 23616,
+      "baselinePeak": 23360,
+      "extraPercent": 1.0958904109588996
+    },
+    {
+      "name": "30 seconds: eight moving instances, dirty init and all buffer guards",
+      "passed": true,
+      "blocks": 82688,
+      "peak": 23616
+    },
+    {
+      "name": "dark: stereo, no clipping and decaying percussion tail",
+      "passed": true
+    },
+    {
+      "name": "neutral: stereo, no clipping and decaying percussion tail",
+      "passed": true
+    },
+    {
+      "name": "bright: stereo, no clipping and decaying percussion tail",
+      "passed": true
+    },
+    {
+      "name": "smoothed endpoints and return to exact neutral",
+      "passed": true,
+      "lastState": 0
+    },
+    {
+      "name": "full-range Tone jumps retain the per-sample slew bound",
+      "passed": true,
+      "maxBlockStep": 1018399
+    }
+  ],
+  "loads": [
+    {
+      "effect": "MINIVERB",
+      "case": "eight_moving",
+      "instances": 8,
+      "blocks": 2048,
+      "cores": [
+        {
+          "core": 0,
+          "mean_block": 23544.946428571428,
+          "peak_block": 23616,
+          "peak_at": 224,
+          "init_instructions": 184
+        },
+        {
+          "core": 1,
+          "mean_block": 23539.14620535714,
+          "peak_block": 23616,
+          "peak_at": 224,
+          "init_instructions": 184
+        }
+      ],
+      "peak_audio": 1712001,
+      "clipped_samples": 0
+    },
+    {
+      "effect": "MINIVERB",
+      "case": "baseline_load",
+      "instances": 8,
+      "blocks": 2048,
+      "cores": [
+        {
+          "core": 0,
+          "mean_block": 23288.946428571428,
+          "peak_block": 23360,
+          "peak_at": 224,
+          "init_instructions": 184
+        },
+        {
+          "core": 1,
+          "mean_block": 23283.14620535714,
+          "peak_block": 23360,
+          "peak_at": 224,
+          "init_instructions": 184
+        }
+      ],
+      "peak_audio": 4194304,
+      "clipped_samples": 0
+    },
+    {
+      "effect": "MINIVERB",
+      "case": "neutral_load",
+      "instances": 8,
+      "blocks": 2048,
+      "cores": [
+        {
+          "core": 0,
+          "mean_block": 21348.0,
+          "peak_block": 21348,
+          "peak_at": 128,
+          "init_instructions": 184
+        },
+        {
+          "core": 1,
+          "mean_block": 21348.0,
+          "peak_block": 21348,
+          "peak_at": 128,
+          "init_instructions": 184
+        }
+      ],
+      "peak_audio": 4194304,
+      "clipped_samples": 0
+    },
+    {
+      "effect": "MINIVERB",
+      "case": "stress_30s",
+      "instances": 8,
+      "blocks": 82688,
+      "cores": [
+        {
+          "core": 0,
+          "mean_block": 23546.703149262423,
+          "peak_block": 23616,
+          "peak_at": 224,
+          "init_instructions": 184
+        },
+        {
+          "core": 1,
+          "mean_block": 23539.84387131211,
+          "peak_block": 23616,
+          "peak_at": 224,
+          "init_instructions": 184
+        }
+      ],
+      "peak_audio": 1872157,
+      "clipped_samples": 0
+    }
+  ],
+  "sources": {
+    "miniverb.asm": "54f718c47683c8620e2cbeef0fd814583eacfca31051ced637ced287bfbdb283",
+    "manifest.py": "e18af286c50d9778cb60ddbe8b9348c4b4a71c04cb45171419d4d2a6681cc31c",
+    "verify.py": "1322d1e5f5335de0a38a6a2067d5456aa95eaa3c42f9ec4836fa7f9b056bf752"
+  },
+  "stockMainSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+  "baselineSources": {
+    "miniverb.asm": "b41a3e8b159fd4594af3eada72e84933d067b0335a2b1adc786bfcadc95fd136",
+    "manifest.py": "e18af286c50d9778cb60ddbe8b9348c4b4a71c04cb45171419d4d2a6681cc31c"
+  },
+  "baselineWords": 532,
+  "baselineProgramSha256": "0ae29649c6c2524dd3a3be824ece8b2673155664128996595c3492fa9ec0f59c",
+  "candidateWords": 536,
+  "candidateProgramSha256": "4169425cc4d67dfee6c8f40cce6f40d195b0bfed1d16772cebc1b92b18b3deaf",
+  "baselineStatic": {
+    "words": 411,
+    "cycles": 411,
+    "loop_end": "mv_end",
+    "total_words": 532
+  },
+  "candidateStatic": {
+    "words": 415,
+    "cycles": 415,
+    "loop_end": "mv_end",
+    "total_words": 536
+  },
+  "rawWetMeasurementSourceSha256": "3cfa42c960c3ef33a8d680ded9eddd9b7498d5b0b95388cb9c78fcb2f868b609",
+  "rawWetMeasurementWords": 536,
+  "rawWetMeasurementProgramSha256": "66e0422c82135b9d9924fa3b5db82bac8515f213bb64e6fa3d495c29cecbb931",
+  "complete": true
+}

@@ -10,6 +10,6 @@ export function moduleWorksReport(id: string, download?: DownloadedBuild) {
   return { testedModuleIds: [id], ...(download?.modules.some(module => module.id === id) ? { build: buildDetails(download) } : {}) }
 }
 
-export function saveWorkingReports(testedModuleIds: string[], build?: DownloadedBuild) {
-  return post<{ ok: true; testedModuleIds: string[] }>('/working-reports', { testedModuleIds, ...(build ? { build: buildDetails(build) } : {}) })
+export function saveWorkingReports(testedModuleIds: string[], build?: DownloadedBuild, catalogVersion?: string) {
+  return post<{ ok: true; testedModuleIds: string[] }>('/working-reports', { testedModuleIds, ...(build ? { build: buildDetails(build) } : catalogVersion ? { catalogVersion } : {}) })
 }

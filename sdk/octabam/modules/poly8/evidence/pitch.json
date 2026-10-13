@@ -1,0 +1,8 @@
+{
+  "tested_version": "0.2.0-experimental",
+  "historical": true,
+  "cases": 768,
+  "maximum_cents_error": 0.024667,
+  "maximum_instructions": 61,
+  "maximum_stack": 12
+}

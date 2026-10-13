@@ -90,4 +90,10 @@ describe('ELE3 container', () => {
     expect(() => verifyEle3Build(output, stock, pattern(20000, 17), device)).toThrow('expected image')
     expect(() => writeEle3Syx(stock, packMain(main), device, 'TOO LONG')).toThrow('4 printable characters')
   })
+
+  it('refuses to use the unsealed writer for the Digitakt II HMAC container', () => {
+    const sealedDevice = { ...device, seal: 'hmac' as const }
+    expect(() => writeEle3Syx(stock, stock.stored.get(3)!, sealedDevice)).toThrow('sealed HMAC OS')
+    expect(() => verifyEle3Build(raw, stock, main, sealedDevice)).toThrow('sealed HMAC OS')
+  })
 })

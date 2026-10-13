@@ -51,7 +51,7 @@ def main():
     # Retain historical suites; the Analog BD suite below covers its current shared layout.
     if a.suite=='sidechain-visible':order=['miniverb','tapeecho','euclid','repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map','sidechain-compressor']
     if a.suite=='visible':order=['miniverb','tapeecho','euclid','repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map']
-    if a.suite in ('sidechain-analog-bd','analog-bd'):order=['analog-bassdrum','miniverb','tapeecho','euclid','repitch','tapehead','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map','sidechain-compressor']
+    if a.suite in ('sidechain-analog-bd','analog-bd'):order=['analog-bassdrum','miniverb','tapeecho','euclid','repitch','tapehead','airwindows-chorus','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map','sidechain-compressor']
     if a.modules:order=a.modules.split(',')
     if a.vendored_sdk:order=[row['id'] for row in json.loads((app/'sdk/catalog.json').read_text())['modules'] if row['id'] in order]
     byid={m.name:m for m in known.values()}
@@ -103,7 +103,7 @@ def main():
     if a.suite=='sidechain':cases=[(ids,keep) for ids,keep in cases if 'sidechain-compressor' in ids]
     if a.suite=='sidechain-visible':cases=[(ids,keep) for ids,keep in cases if 'sidechain-compressor' in ids]
     if a.suite=='analog-bd':
-        dsp={'miniverb','tapeecho','euclid','tapehead','sidechain-compressor'}
+        dsp={'miniverb','tapeecho','euclid','tapehead','sidechain-compressor','airwindows-chorus'}
         utilities={'repitch','usb-audio-out-tracks-main-cue','quantizer','previewvol','cc-map'}
         # Every DSP subset plus every single-DSP/single-utility pairing and
         # each DSP companion with all utilities. Both chooser profiles.
@@ -163,6 +163,9 @@ def main():
                 work=pathlib.Path(tmp)
                 for name in ['modules','platform','dsp','vendor']:os.symlink(root/name,work/name,target_is_directory=True)
                 (work/'out').mkdir();os.chdir(work);sys.modules.pop('build_bus',None);build=importlib.import_module('build_bus');build.IMG=root/'out/raw/section_3_MAIN_OS.bin';build.OUT=work/'out/image.bin';log=io.StringIO()
+                # Analog BD's assembler outputs must share this selection's
+                # disposable workspace, never a second worker's SDK out/ tree.
+                importlib.import_module('ab_image').OUT=work/'out/analog-bassdrum'
                 if build.ORDER!=menu['fx2']:raise ValueError('Native carried / hidden order does not match the declared FX2 chooser: native '+json.dumps(build.ORDER)+' vs declared '+json.dumps(menu['fx2'])+'.')
                 try:
                     with contextlib.redirect_stdout(log):build.main()
@@ -178,7 +181,7 @@ def main():
                     proofs.append(proof)
                     print(f"{ids or ['stock']} default={default}: {len(image)} bytes, full native identity captured.")
                 except (SystemExit,AssertionError) as error:
-                    if a.static_stock and any(word in str(error) for word in ('has colliding modules:','overruns the region','nowhere to place','does not fit','do not fit','chooser list of','currently composes with stock effects only',' not free','past the stock zero run','fits neither the clone window','cannot share DSP memory')):
+                    if a.static_stock and any(word in str(error) for word in ('has colliding modules:','overruns the region','nowhere to place','does not fit','do not fit','chooser list of','currently composes with stock effects only',' not free','past the stock zero run','fits neither the clone window','cannot share DSP memory','pre-boot analog bd payload A dst overlaps runtime stage:')):
                         proofs.append({'moduleIds':ids,'keepStockFx2':default,'menu':menu,'error':str(error)});print(f"{ids or ['stock']} keep={default}: refused: {str(error)[:90]}")
                     elif ids==order and default and ('does not fit' in str(error) or 'do not fit' in str(error)):
                         proofs.append({'moduleIds':ids,'default':default,'menu':menu,'error':str(error)});print('Crowded all-module / stock-chooser selection rejects placement, as expected.')

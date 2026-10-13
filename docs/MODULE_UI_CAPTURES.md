@@ -122,6 +122,7 @@ For scene editing, `hold` keeps panel keys down while turning an encoder;
 `{"capture":"ot-scene-lock.png"}`, `{"release":["SCENE A"]}`.
 The supported UI keys also include `SCENE B`, `TRIG1`–`TRIG16`, MKII `AED`,
 `PUSH A`–`PUSH F` and `PUSH LEVEL` for physical encoder presses.
+`MIXER` opens the MIXER page.
 Kit/pattern workflows also support `CUE`, `PTN`, `BANK`, `REC` (copy),
 `PLAY` (clear) and `STOP` (paste); hold FUNC for clipboard actions.
 
@@ -227,6 +228,16 @@ screenshot's `media.capture.type` identifies `emulator` or `hardware`.
 `modules:check` checks those links, current module version, firmware/build
 identity, PNG hashes and monochrome pixels. UI documentation does not upgrade
 the module's hardware/audio/timing qualification.
+
+For native encoder regressions, send successive small `turn A 1 40` events
+rather than assuming one large-delta packet represents repeated detents.
+Digi Mono's regression needed successive events to demonstrate a parameter
+change through the pinned emulator's native panel driver. Compare structured
+parameter values before/after actual panel input and check other tracks for
+isolation; do not inject parameter state. See
+[the encoder regression helper](../scripts/verify-digimono-encoder-layout.py).
+These readbacks establish software parameter mapping, not audible behavior,
+hardware timing or save/reboot persistence.
 
 For local emulator captures, use digiemu revision
 `c1b5735835923e328f8b4950d6ba927875e5b669` with its six pinned Unicorn patches.

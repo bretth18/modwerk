@@ -9,13 +9,14 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { AVAILABLE_MODULES, PAUSED_MODULE_IDS } from '../src/catalog/availability.ts'
+import { availableModules, PAUSED_MODULE_IDS, isBetaModule } from '../src/catalog/availability.ts'
 import { LIBRARY_CATEGORIES } from '../src/catalog/modules.ts'
 import { parseModuleDocument } from '../src/catalog/module-contract.ts'
 import { COMPARED_BEFORE_RECORDS, NOT_COMPOSED } from './module-coverage.mjs'
 import { moduleSourceFingerprint } from './module-source.mjs'
+import { ANALOG_BD_DSP_COMPANIONS } from '../src/engine/analog-bd-layout.ts'
 import { moduleNativeSourceSha256 } from './module-qualification.mjs'
-import { judgeRecord } from './perf-audit-analysis.mjs'
+import { judgeRecord, ownerWaivedPerformanceRow } from './perf-audit-analysis.mjs'
 
 // Modules first listed on or after this day carry a measured performance record (docs/module-guides/README.md, "Performance"); earlier ones keep their qualification evidence.
 const PERFORMANCE_REQUIRED_FROM = '2026-10-07'
@@ -26,9 +27,27 @@ const json = path => JSON.parse(readFileSync(resolve(root, path), 'utf8'))
 const exists = path => existsSync(resolve(root, path))
 const catalog = json('sdk/catalog.json'), machineModules = ['digitakt', 'digitone'].flatMap(machine => exists('sdk/' + machine + '/modules') ? readdirSync(resolve(root, 'sdk', machine, 'modules'), { withFileTypes: true }).filter(entry => entry.isDirectory() && !entry.name.startsWith('_')).map(entry => ({ id: entry.name, machine })) : [])
 
+// An unknown id is answered before any check runs: the rules below take seconds on a large catalogue.
+if (!all && !exists('sdk/octabam/modules/' + ids[0]) && !machineModules.some(item => item.id === ids[0])) { console.error('No module named ' + ids[0] + ' under sdk/octabam/modules, sdk/digitakt/modules or sdk/digitone/modules.'); process.exit(2) }
+
 // The module and catalog rules every PR already enforces (versions, documentation, qualification, gauges, media): run once.
 const rules = spawnSync(process.execPath, ['scripts/modules.mjs'], { cwd: root, encoding: 'utf8' })
 const rulesProblem = rules.status === 0 ? '' : (rules.stderr.trim().split('\n').filter(line => line && !/^\s+at /.test(line)).slice(-1)[0] ?? 'failed')
+
+// native-metadata.json holds one ledger check per module combination (hundreds of thousands): parse it and count
+// each module's pairs once, not once per module.
+let nativeChecksCache
+function nativeChecks() {
+  if (!nativeChecksCache) {
+    const checks = json('src/catalog/native-metadata.json').checks, pairs = new Map()
+    for (const key of Object.keys(checks)) {
+      const ids = key.split('+')
+      if (ids.length === 2) for (const id of ids) pairs.set(id, (pairs.get(id) ?? 0) + 1)
+    }
+    nativeChecksCache = { checks, pairs }
+  }
+  return nativeChecksCache
+}
 
 // The qualification source hash is async; compute it once per module before the checks run.
 const nativeHashes = new Map()
@@ -47,10 +66,10 @@ function octatrack(id) {
   else if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(entry.addedAt ?? '')) fail('catalog entry', 'addedAt is missing or not a UTC time', 'add "addedAt": "2026-10-05T12:00:00Z" (the day it was first listed) to the entry')
   else ok('catalog entry', document.version + ', added ' + entry.addedAt.slice(0, 10))
 
-  const paused = PAUSED_MODULE_IDS.includes(id)
+  const paused = PAUSED_MODULE_IDS.includes(id) && !isBetaModule(id)
   if (paused) info('library', 'paused by the owner (PAUSED_MODULE_IDS in src/catalog/availability.ts): hidden, and not compared until it is reinstated')
-  else if (entry && !AVAILABLE_MODULES.some(module => module.id === id)) fail('library', 'the library does not offer it', 'run npm run modules:generate')
-  else if (entry) ok('library', 'offered in the library and the configurator')
+  else if (entry && !availableModules(true).some(module => module.id === id)) fail('library', 'the library does not offer it', 'run npm run modules:generate')
+  else if (entry) ok('library', isBetaModule(id) ? 'offered to beta testers in the library and configurator' : 'offered in the library and the configurator')
 
   if (!LIBRARY_CATEGORIES.includes(document.category)) fail('category guide', 'category ' + document.category + ' is not a library category', 'use one of ' + LIBRARY_CATEGORIES.join(', '))
   else if (!exists('docs/module-guides/' + document.category + '.md')) fail('category guide', 'docs/module-guides/' + document.category + '.md is missing', 'write the guide for this category')
@@ -64,16 +83,17 @@ function octatrack(id) {
   // Cycles, a benchmark against stock and a stress run. Required for a module listed from PERFORMANCE_REQUIRED_FROM; older modules are told.
   const approvalPath = 'sdk/' + id + '-build-approval.json'
   const hardwareApproval = exists(approvalPath) ? json(approvalPath) : null
-  const hardwareWaived = hardwareApproval?.kind === 'owner-approved-update' && hardwareApproval.approvedBy === 'repeat98' && hardwareApproval.id === id && hardwareApproval.version === document.version && hardwareApproval.sourceSha256 === nativeHashes.get(id) && hardwareApproval.waived?.includes('current-build-hardware')
   const performanceRequired = entry && (entry.addedAt ?? '').slice(0, 10) >= PERFORMANCE_REQUIRED_FROM
   if (exists(folder + '/evidence/performance.json')) {
     const record = json(folder + '/evidence/performance.json'), rows = judgeRecord(record)
+    // An ot_emu stress run stands in for dsp_host only where there is no dispatched instance: code reached through stock hooks.
+    if (record.stress?.harness === 'ot_emu' && document.compatibility?.effectId != null) fail('performance', 'stress: an ot_emu run is for code reached only through stock hooks; an effect with id ' + document.compatibility.effectId + ' renders under dsp_host -guard -dirty', 'python3 tools/harness/stress_project.py, then tools/harness/pressure.py render')
     if (record.module !== id || record.version !== document.version) fail('performance', 'evidence/performance.json is for ' + record.module + '@' + record.version + ', not ' + id + '@' + document.version, 'measure again for this version, then npm run perf:audit -- check ' + folder + '/evidence/performance.json')
     else for (const row of rows.filter(item => item.state === 'fail')) {
-      if (hardwareWaived && (row.name === 'stock benchmark' ? ['stockLongestUs', 'moduleLongestUs', 'stockIdlePercent', 'moduleIdlePercent'].every(key => record.load?.[key] === null) : row.name === 'stress' && ['floodMessagesPerSecond', 'clockBpm', 'seconds', 'stuckNotes', 'hangs', 'dropped'].every(key => record.stress?.[key] === null))) info('hardware performance', row.name + ' evidence is missing and explicitly owner-waived; retained hardware reports and model limits are in TESTING.md')
+      if (ownerWaivedPerformanceRow(record, row, hardwareApproval, nativeHashes.get(id))) info('performance exception', row.name + ' evidence is missing and explicitly owner-waived at this exact version/source; limits are in TESTING.md')
       else fail('performance', row.name + ': ' + row.detail, row.fix ?? 'npm run perf:audit -- check ' + folder + '/evidence/performance.json')
     }
-    if (!lines.some(line => line.name === 'performance')) ok('performance', rows.filter(item => item.name !== 'record' && !(hardwareWaived && ['stock benchmark', 'stress'].includes(item.name))).map(item => item.name + ' ' + item.state).join(', ') + ' (npm run perf:audit)')
+    if (!lines.some(line => line.name === 'performance')) ok('performance', rows.filter(item => item.name !== 'record' && !ownerWaivedPerformanceRow(record, item, hardwareApproval, nativeHashes.get(id))).map(item => item.name + ' ' + item.state).join(', ') + ' (npm run perf:audit)')
   } else if (performanceRequired) fail('performance', 'a new module needs ' + folder + '/evidence/performance.json: worst-case cycles, a benchmark against stock and a stress run', 'npm run perf:audit -- template dsp|coldfire, measure (docs/module-guides/README.md, "Performance"), then npm run perf:audit -- check')
   else info('performance', 'no evidence/performance.json. Not required before ' + PERFORMANCE_REQUIRED_FROM + '; npm run perf:audit measures the same three things')
 
@@ -95,18 +115,18 @@ function octatrack(id) {
     const record = exists('sdk/native-comparisons/' + id + '.json') ? json('sdk/native-comparisons/' + id + '.json') : null
     const code = nativeHashes.get(id)
     if (record) {
-      if (record.moduleSourceSha256 === code && record.summary.mismatches === 0) ok('native comparison', record.summary.selections + ' selections match native octabam (' + record.summary.built + ' built, ' + record.summary.refused + ' refused)')
+      if (record.moduleSourceSha256 === code && record.summary.mismatches === 0) ok('native comparison', record.summary.selections + ' selections match native octabam (' + record.summary.built + ' built, ' + record.summary.refused + ' refused' + (record.summary.browserPlatformRefused ? ', ' + record.summary.browserPlatformRefused + ' additional browser platform limits' : '') + ')')
       else fail('native comparison', 'the record was made for different code or has mismatches', 'npm run module:verify -- ' + id + ' --os <your OCTATRACK_OS1.40C.bin>')
     } else if (COMPARED_BEFORE_RECORDS[id] === code) ok('native comparison', 'compared by the earlier exhaustive suites at this exact code')
     else fail('native comparison', 'no current comparison with native octabam', 'npm run module:verify -- ' + id + ' --os <your OCTATRACK_OS1.40C.bin>')
   }
 
-  const checks = json('src/catalog/native-metadata.json').checks, pairs = Object.keys(checks).filter(key => key.split('+').length === 2 && key.split('+').includes(id)).length
+  const { checks, pairs: pairCounts } = nativeChecks(), pairs = pairCounts.get(id) ?? 0
   if (!(id in checks)) fail('declaration checks', 'the module alone has no recorded ledger check, so a build of it is refused', 'npm run module:verify -- ' + id + ' --os <your OCTATRACK_OS1.40C.bin> (it records them)')
   else ok('declaration checks', 'recorded alone and beside ' + pairs + ' other modules')
 
   const conflicts = document.compatibility.conflicts ?? []
-  info('conflicts', (document.compatibility.effectId != null ? 'effect id ' + document.compatibility.effectId + ': refused beside Analog BD automatically; ' : '') + (conflicts.length ? 'declared: ' + conflicts.join(', ') : 'none declared') + '. Are they complete? (guide: Integrate)')
+  info('conflicts', (document.compatibility.effectId != null ? 'effect id ' + document.compatibility.effectId + ': ' + (ANALOG_BD_DSP_COMPANIONS.includes(document.id) ? 'reviewed beside Analog BD, subject to DSP space; ' : 'refused beside Analog BD automatically; ') : '') + (conflicts.length ? 'declared: ' + conflicts.join(', ') : 'none declared') + '. Are they complete? (guide: Integrate)')
   return lines
 }
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "version": "0.2.4-experimental",
+  "version": "0.2.5-experimental",
   "nativeManifest": "manifest.py",
   "media": [
     {
@@ -15,8 +15,8 @@
         "page": "MIDI NOTE SETUP",
         "shows": "location",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.4-experimental",
-        "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
+        "moduleVersion": "0.2.5-experimental",
+        "imageSha256": "ed7ccf4f9a383caaf3210f526b69fded2384a272670da0a17d0ff87441b622b3",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
@@ -32,8 +32,8 @@
         "page": "MIDI CTRL 1 SETUP",
         "shows": "location",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.4-experimental",
-        "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
+        "moduleVersion": "0.2.5-experimental",
+        "imageSha256": "ed7ccf4f9a383caaf3210f526b69fded2384a272670da0a17d0ff87441b622b3",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
@@ -49,8 +49,8 @@
         "page": "MIDI CONTROL 1",
         "shows": "location-and-controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.4-experimental",
-        "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
+        "moduleVersion": "0.2.5-experimental",
+        "imageSha256": "ed7ccf4f9a383caaf3210f526b69fded2384a272670da0a17d0ff87441b622b3",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
@@ -66,8 +66,8 @@
         "page": "MIDI CONTROL 1, Scene A held",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.4-experimental",
-        "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
+        "moduleVersion": "0.2.5-experimental",
+        "imageSha256": "ed7ccf4f9a383caaf3210f526b69fded2384a272670da0a17d0ff87441b622b3",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
@@ -83,8 +83,8 @@
         "page": "MIDI CONTROL 1, Scene A released",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.4-experimental",
-        "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
+        "moduleVersion": "0.2.5-experimental",
+        "imageSha256": "ed7ccf4f9a383caaf3210f526b69fded2384a272670da0a17d0ff87441b622b3",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
@@ -100,8 +100,8 @@
         "page": "MIDI ARPEGGIATOR",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.4-experimental",
-        "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
+        "moduleVersion": "0.2.5-experimental",
+        "imageSha256": "ed7ccf4f9a383caaf3210f526b69fded2384a272670da0a17d0ff87441b622b3",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
@@ -117,8 +117,8 @@
         "page": "MIDI LFO",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.4-experimental",
-        "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
+        "moduleVersion": "0.2.5-experimental",
+        "imageSha256": "ed7ccf4f9a383caaf3210f526b69fded2384a272670da0a17d0ff87441b622b3",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     },
@@ -134,8 +134,8 @@
         "page": "MIDI CONTROL 2",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.4-experimental",
-        "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
+        "moduleVersion": "0.2.5-experimental",
+        "imageSha256": "ed7ccf4f9a383caaf3210f526b69fded2384a272670da0a17d0ff87441b622b3",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6. Empty scratch card; no external MIDI receiver; channel OFF."
       }
     }
@@ -248,35 +248,26 @@
       "scripts/midi-scenes-emulator/run.py",
       "scripts/verify-midi-scenes-worker.html"
     ],
-    "releaseWaiver": {
-      "moduleVersion": "0.2.4-experimental",
-      "sourceSha256": "5116aa89e8ff9086126313c260fb0b10ca5e1b0bb521238955dc0888b27c4d11",
-      "imageSha256": "debb24090cada4be00bc70880136f14e813b0d3a9018b516f922d33671bd9b87",
-      "approvedBy": "repeat98",
-      "approvedOn": "2026-10-03",
-      "reason": "Explicit owner approval: I explicitely approve enabling firmware building without hardware timing and complete memory bounds. Applies only to this exact standalone MIDISC2.0 release; unknown bounds remain unknown.",
-      "report": "evidence/build-approval.json",
-      "documentation": {
-        "tutorial": {
-          "title": "Quick tutorial: morph a MIDI filter CC",
-          "steps": [
-            "Press MIDI and select a MIDI track. Set and confirm its output channel in FUNC + SRC. In FUNC + FX1, assign CC1 to controller 74 with encoder C and confirm with YES; the receiver must use that controller for its filter.",
-            "Return to FX1. Hold FUNC and press encoder C to enable CC1, then set its base to 0. Hold SCENE A, assign a scene with a TRIG key, and turn C to 64; the scene-held value should read 64.",
-            "Release SCENE A: the base value should read 0. Sweep the crossfader between your assigned scenes to hear the receiver change; clear the scene lock or disable CC1 to stop this example. The retained captures verify the values and release behavior without a connected receiver."
-          ]
-        },
-        "screenshots": [
-          "media/ot-channel.png",
-          "media/ot-setup.png",
-          "media/ot-location.png",
-          "media/ot-scene-lock.png",
-          "media/ot-released.png",
-          "media/ot-arp.png",
-          "media/ot-lfo.png",
-          "media/ot-control2.png"
-        ],
-        "screenshotStyle": "black-and-white"
-      }
+    "documentation": {
+      "tutorial": {
+        "title": "Quick tutorial: morph a MIDI filter CC",
+        "steps": [
+          "Press MIDI and select a MIDI track. Set and confirm its output channel in FUNC + SRC. In FUNC + FX1, assign CC1 to controller 74 with encoder C and confirm with YES; the receiver must use that controller for its filter.",
+          "Return to FX1. Hold FUNC and press encoder C to enable CC1, then set its base to 0. Hold SCENE A, assign a scene with a TRIG key, and turn C to 64; the scene-held value should read 64.",
+          "Release SCENE A: the base value should read 0. Sweep the crossfader between your assigned scenes to hear the receiver change; clear the scene lock or disable CC1 to stop this example. The retained captures verify the values and release behavior without a connected receiver."
+        ]
+      },
+      "screenshots": [
+        "media/ot-channel.png",
+        "media/ot-setup.png",
+        "media/ot-location.png",
+        "media/ot-scene-lock.png",
+        "media/ot-released.png",
+        "media/ot-arp.png",
+        "media/ot-lfo.png",
+        "media/ot-control2.png"
+      ],
+      "screenshotStyle": "black-and-white"
     }
   },
   "source": {

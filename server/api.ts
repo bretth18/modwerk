@@ -1,9 +1,11 @@
 import { pushRoutes } from './push'
+import { publishedReleaseRoute } from './release-publish'
 import { followReportedModule, moduleChangelogRoute, moduleDownloadRoute, moduleUpdateRoutes } from './module-updates'
 import { issueStatusStatements } from './issue-notifications'
 import { forum, SHARED_CONFIGURATIONS, sharedConfigurationBinds } from './forum'
 import { forumPublic } from './forum-public'
 import { forumMedia } from './forum-media'
+import { audioPreviewRoutes } from './audio-previews'
 import { avatarRoutes } from './avatars'
 import { messageRoutes } from './messages'
 import { notificationRoutes, notifyModuleMaintainers, unsubscribe, withdrawModuleLike } from './notifications'
@@ -18,7 +20,7 @@ import { recordAnonymousCount, recordUsage, recordModuleDownload, usageStatistic
 import { moduleStatistics } from './module-statistics'
 import { worksReportCount } from './hardware-reports'
 import { workingReportRoute } from './working-reports'
-import { membersOnline } from './presence'
+import { membersOnline, sitePresenceRoute } from './presence'
 import { adminInsights } from './admin-insights'
 import { adminAccounts } from './admin-accounts'
 import { adminActivity } from './admin-activity'
@@ -33,6 +35,8 @@ import { boundedBody, checkOrigin, HttpError, jsonBody, optional, required, resp
 import { MODULES } from '../src/catalog/modules'
 import { handleGithubWebhook, githubConfig, mirrorIssue, setGithubIssueState } from './github'
 import { publicIssueReplies } from './issue-replies'
+import { createConfigurationReport } from './configuration-reports'
+import { octatrackDiagnosticRoutes } from './octatrack-diagnostics'
 import { IssueInputError, validateIssueContext, validateLogMissing } from '../src/community/issue-context'
 import { OT_LOG_MAX_BYTES, OtLogError, parseOtLog } from '../src/community/ot-log'
 
@@ -49,6 +53,11 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if (path === '/api/github/webhook' && request.method === 'POST') {
       if (!env.DB) throw new HttpError(503,'Community services are not connected yet.')
       return response(await handleGithubWebhook(request,env,env.DB,await boundedBody(request,1024*1024)))
+    }
+    // The Pages job authenticates server-to-server with GitHub OIDC after its approved deployment.
+    if (path === '/api/module-releases/sync') {
+      if (!env.DB) throw new HttpError(503,'Community services are not connected yet.')
+      return await publishedReleaseRoute(request,env,env.DB)
     }
     // Mail clients post one-click unsubscribes (RFC 8058) without an Origin or session; a signed token authorizes them.
     if (path === '/api/notifications/unsubscribe' && request.method === 'POST') {
@@ -78,6 +87,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     const developerAuth = await developerAuthentication(request,env,db)
     if(developerAuth)return developerAuth
     const user = await currentUser(request,db,env)
+    if(path==='/api/community/online'&&request.method==='POST')return await sitePresenceRoute(request,env,db,user)
     const publicReply = request.method === 'POST' ? await publicIssueReplies(request,env,db,user) : null
     if (publicReply) return publicReply
     if (path === '/api/working-reports') return await workingReportRoute(request,db,user)
@@ -85,6 +95,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if(announcements)return announcements
     // Private history rows name the administrator account that acted; the key falls back to the fixed administrator row.
     const adminId = await adminActor(request,env,db), admin = !!adminId
+    const diagnostics = await octatrackDiagnosticRoutes(request,db,user,admin)
+    if (diagnostics) return diagnostics
     const push = await pushRoutes(request,env,db,user,admin)
     if(push)return push
     const signedDeveloper = await developerUser(request,env,db)
@@ -96,6 +108,8 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if(avatar)return avatar
     const media = await forumMedia(request,env,db,user,admin)
     if(media)return media
+    const audioPreviews = await audioPreviewRoutes(request,env,db,user,admin)
+    if(audioPreviews)return audioPreviews
     const messages = await messageRoutes(request,db,user)
     if(messages)return messages
     const pages = await forumPublic(request,env,db)
@@ -106,7 +120,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
     if(notifications)return notifications
     let match: RegExpMatchArray | null
     if ((match = path.match(/^\/api\/modules\/([a-z0-9-]+)\/changelog$/)) && request.method === 'GET') return await moduleChangelogRoute(db,match[1])
-    if ((match = path.match(/^\/api\/modules\/([a-z0-9-]+)\/download$/)) && request.method === 'POST') return await moduleDownloadRoute(request,db,match[1],user)
+    if ((match = path.match(/^\/api\/modules\/([a-z0-9-]+)\/download$/)) && request.method === 'POST') return await moduleDownloadRoute(request,env,db,match[1],user)
     if ((match = path.match(/^\/api\/modules\/([a-z0-9-]+)\/updates$/))) return await moduleUpdateRoutes(request,env,db,match[1],user)
     if ((match = path.match(/^\/api\/media\/([^/]+)$/)) && request.method === 'GET') {
       const item = await db.prepare('SELECT m.*,s.status,s.owner_id,p.submission_id AS published FROM media m JOIN submissions s ON s.id=m.submission_id LEFT JOIN module_publications p ON p.submission_id=s.id WHERE m.id=?').bind(match[1]).first<Media & {status:string;owner_id:string;published:string|null}>()
@@ -172,13 +186,14 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       const status=url.searchParams.get('status')??'open',page=Number(url.searchParams.get('page')??0)
       if(!['open','closed'].includes(status))throw new HttpError(400,'Choose open or closed issues.')
       if(!Number.isSafeInteger(page)||page<0||page>10000)throw new HttpError(400,'Choose a valid issue page.')
-      const publicReports="FROM issues i LEFT JOIN forum_threads t ON t.id=i.forum_thread_id WHERE i.module_id=? AND (i.github_url IS NOT NULL OR (i.public_json IS NOT NULL AND t.hidden=0))"
+      // A whole-configuration report is listed on every module it contains.
+      const publicReports="FROM issues i LEFT JOIN forum_threads t ON t.id=i.forum_thread_id WHERE (i.module_id=? OR EXISTS(SELECT 1 FROM issue_modules m WHERE m.issue_id=i.id AND m.module_id=?)) AND (i.github_url IS NOT NULL OR (i.public_json IS NOT NULL AND t.hidden=0))"
       const [counts,rows]=await Promise.all([
-        db.prepare("SELECT COALESCE(SUM(i.status='open'),0) AS openCount,COALESCE(SUM(i.status='closed'),0) AS closedCount "+publicReports).bind(match[1]).first<{openCount:number;closedCount:number}>(),
-        db.prepare("SELECT i.id,i.title,i.github_url,i.github_number AS number,i.forum_thread_id,i.created_at,i.status,i.public_json,(SELECT u.username FROM users u WHERE u.id=i.reporter_id) AS reporter "+publicReports+" AND i.status=? ORDER BY i.created_at DESC,i.rowid DESC LIMIT 11 OFFSET ?").bind(match[1],status,page*10).all<{id:string;title:string;github_url:string|null;number:number|null;forum_thread_id:string|null;created_at:string;status:'open'|'closed';public_json:string|null;reporter:string|null}>(),
+        db.prepare("SELECT COALESCE(SUM(i.status='open'),0) AS openCount,COALESCE(SUM(i.status='closed'),0) AS closedCount,COALESCE(SUM(i.status='open' AND i.report_kind='bug' AND i.confirmed_at IS NOT NULL),0) AS confirmedCount,COALESCE(SUM(i.status='open' AND i.triage_state='needs_info'),0) AS needsInfoCount "+publicReports).bind(match[1],match[1]).first<{openCount:number;closedCount:number;confirmedCount:number;needsInfoCount:number}>(),
+        db.prepare("SELECT i.id,i.title,i.github_url,i.github_number AS number,i.forum_thread_id,i.created_at,i.status,i.scope,i.triage_state,i.report_kind,i.closure_reason,i.triage_note,i.closure_note,i.affected_version,i.confirmed_at,i.public_json,(SELECT u.username FROM users u WHERE u.id=i.reporter_id) AS reporter "+publicReports+" AND i.status=? ORDER BY i.created_at DESC,i.rowid DESC LIMIT 11 OFFSET ?").bind(match[1],match[1],status,page*10).all<{id:string;title:string;github_url:string|null;number:number|null;forum_thread_id:string|null;created_at:string;status:'open'|'closed';scope:'module'|'configuration';public_json:string|null;reporter:string|null;triage_note:string}>(),
       ])
       const issues=rows.results.slice(0,10).map(({public_json,github_url,forum_thread_id,...item})=>({...item,url:github_url??'#forum/thread/'+forum_thread_id,details:public_json?JSON.parse(public_json):null}))
-      return response({tracker:config?'github':'forum',issues,openCount:counts?.openCount??0,closedCount:counts?.closedCount??0,hasMore:rows.results.length>10,allUrl:config?'https://github.com/'+config.repository+'/issues?q='+encodeURIComponent('is:issue is:'+status+' label:"module:'+match[1]+'"'):null})
+      return response({tracker:config?'github':'forum',issues,openCount:counts?.openCount??0,closedCount:counts?.closedCount??0,confirmedCount:counts?.confirmedCount??0,needsInfoCount:counts?.needsInfoCount??0,hasMore:rows.results.length>10,allUrl:config?'https://github.com/'+config.repository+'/issues?q='+encodeURIComponent('is:issue is:'+status+' label:"module:'+match[1]+'"'):null})
     }
     if ((match=path.match(/^\/api\/modules\/([a-z0-9-]+)\/issues$/)) && request.method==='POST') {
       const owner=needMember(user)
@@ -210,9 +225,10 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if(!author)throw new HttpError(400,'No author is registered for this module.')
       await throttle(db,'issue-member:'+owner.id,10)
       const id=crypto.randomUUID(),details=[['Steps to reproduce',steps],['Expected',expected],['Actual',actual]].filter(([,text])=>text).map(([label,text])=>label+':\n'+text).join('\n\n')
-      const publicDetails=publicReport?publicBugDetails(match[1],context,log,steps,expected,actual):null
       // With GitHub configured, a public report becomes a GitHub issue and gets no forum thread of its own.
       const github=!!publicReport&&!!githubConfig(env)
+      // The form tells GitHub reporters their configuration, build fingerprint and log are published too.
+      const publicDetails=publicReport?{...publicBugDetails(match[1],context,log,steps,expected,actual),...(github&&{full:true})}:null
       const threadId=publicReport&&!github?crypto.randomUUID():null,postId=crypto.randomUUID()
       const statements=threadId?[
         db.prepare('INSERT INTO forum_threads(id,user_id,title,category,machine,module_id,issue_json) VALUES(?,?,?,\'issues\',?,?,?)').bind(threadId,owner.id,title,module?.machine??'octatrack',match[1],JSON.stringify(publicDetails)),
@@ -228,9 +244,10 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       const mirrored=github?await mirrorIssue(db,env,id):{state:'none' as const}
       return response({ok:true,id,author,forumThreadId:threadId,github:mirrored.state,githubUrl:'url' in mirrored?mirrored.url??null:null},201)
     }
+    if(path==='/api/configuration-reports'&&request.method==='POST')return createConfigurationReport(request,env,db,user)
     if(path==='/api/issues/mine'&&request.method==='GET'){
       if(!user)return response([])
-      return response((await db.prepare('SELECT id,module_id,author_login,title,body,status,created_at,github_url,public_sharing,maintainer_sharing,forum_thread_id FROM issues WHERE reporter_id=? ORDER BY created_at DESC LIMIT 100').bind(user.id).all()).results)
+      return response((await db.prepare('SELECT id,module_id,scope,(SELECT COUNT(*) FROM issue_modules m WHERE m.issue_id=issues.id) AS module_count,author_login,title,body,status,triage_state,report_kind,closure_reason,confirmed_at,created_at,github_url,public_sharing,maintainer_sharing,forum_thread_id FROM issues WHERE reporter_id=? ORDER BY created_at DESC LIMIT 100').bind(user.id).all()).results)
     }
     if (path.startsWith('/api/admin/')) {
       if (!admin) throw new HttpError(403,'Administrator access is required.')
@@ -250,7 +267,7 @@ export async function handleApi(request: Request, env: Env): Promise<Response> {
       if (path === '/api/admin/issues' && request.method === 'GET') {
         const moduleId = url.searchParams.has('moduleId') ? required(url.searchParams.get('moduleId'),'Module ID',100) : '', status = url.searchParams.get('status')??'all'
         if (!['all','open','closed'].includes(status)) throw new HttpError(400,'Choose all, open or closed issues.')
-        return response((await db.prepare("SELECT i.id,i.module_id,i.author_login,i.title,i.body,i.status,i.created_at,i.context_json,i.log_missing,i.log_missing_note,i.github_state,i.github_url,i.github_error,i.public_sharing,l.summary_json AS log_summary_json,u.display_name AS reporter FROM issues i JOIN users u ON u.id=i.reporter_id LEFT JOIN issue_logs l ON l.issue_id=i.id WHERE (?='' OR i.module_id=?) AND (?='all' OR i.status=?) ORDER BY i.created_at DESC,i.rowid DESC LIMIT 200").bind(moduleId,moduleId,status,status).all<Record<string,unknown>&{context_json:string|null;log_summary_json:string|null}>()).results.map(({context_json,log_summary_json,...item})=>({...item,context:context_json?JSON.parse(context_json):null,log:log_summary_json?JSON.parse(log_summary_json):null})))
+        return response((await db.prepare("SELECT i.id,i.module_id,i.scope,(SELECT COUNT(*) FROM issue_modules m WHERE m.issue_id=i.id) AS module_count,i.author_login,i.title,i.body,i.status,i.triage_state,i.report_kind,i.closure_reason,i.triage_note,i.closure_note,i.affected_version,i.confirmed_at,i.created_at,i.context_json,i.log_missing,i.log_missing_note,i.github_state,i.github_url,i.github_error,i.public_sharing,i.forum_thread_id,l.summary_json AS log_summary_json,u.display_name AS reporter FROM issues i JOIN users u ON u.id=i.reporter_id LEFT JOIN issue_logs l ON l.issue_id=i.id WHERE (?='' OR i.module_id=?) AND (?='all' OR i.status=?) ORDER BY i.created_at DESC,i.rowid DESC LIMIT 200").bind(moduleId,moduleId,status,status).all<Record<string,unknown>&{context_json:string|null;log_summary_json:string|null}>()).results.map(({context_json,log_summary_json,...item})=>({...item,context:context_json?JSON.parse(context_json):null,log:log_summary_json?JSON.parse(log_summary_json):null})))
       }
       if ((match=path.match(/^\/api\/admin\/issues\/([^/]+)\/log$/)) && request.method === 'GET') {
         const log=await db.prepare('SELECT text FROM issue_logs WHERE issue_id=?').bind(match[1]).first<{text:string}>()

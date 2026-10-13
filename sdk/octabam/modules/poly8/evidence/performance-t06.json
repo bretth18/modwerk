@@ -1,0 +1,471 @@
+{
+  "version": "0.2.5-experimental",
+  "baseline_image_sha256": "a75b8ea6130acabbcca3c32255883e168b1885d727e3de4b91b4c68a29cdd77d",
+  "image_sha256": "499476227e73968f48ae9ee436d4205c33fd852b14e0097d7606d47d9840a344",
+  "measured_blocks_per_case": 1000,
+  "samples_per_block": 16,
+  "scope": "Whole-system native ColdFire instruction averages over 1000 blocks after warm-up. Not physical cycles, CPU utilization, maximum interrupt latency or a proof of hardware deadlines. Audio compares all eight captured output channels over 16000 frames, allowing native host stream offsets up to 64 samples; actual offsets are listed.",
+  "stock_dsp": "Both complete stock DSP uploads are byte-identical. Startup-dominated DSP stopwatch summaries are excluded; no measured DSP cycle saving is claimed.",
+  "cases": [
+    {
+      "case": "idle",
+      "fixture": "POLY assigned, no voices",
+      "active_records": 0,
+      "t05_instructions_per_block": 23629.985,
+      "t06_instructions_per_block": 23629.985,
+      "reduction_percent": 0.0,
+      "identical_audio_frames": 16000,
+      "alignment_samples": 0,
+      "audio": [
+        {
+          "channel_peaks": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tail_sha256": "42ffed10f3b91628a57145265f5329324f9577fdaf2779733b6532d1bbfb84b7"
+        },
+        {
+          "channel_peaks": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "tail_sha256": "42ffed10f3b91628a57145265f5329324f9577fdaf2779733b6532d1bbfb84b7"
+        }
+      ]
+    },
+    {
+      "case": "one",
+      "fixture": "one root note 84",
+      "active_records": 1,
+      "t05_instructions_per_block": 25682.827,
+      "t06_instructions_per_block": 25682.827,
+      "reduction_percent": 0.0,
+      "identical_audio_frames": 16000,
+      "alignment_samples": 0,
+      "audio": [
+        {
+          "channel_peaks": [
+            0,
+            0,
+            91122,
+            91122,
+            63637,
+            63637,
+            0,
+            0
+          ],
+          "tail_sha256": "91a6572938b56e16e39bbae2e37bc21e311a5c74461b0c54b855bdb1fb8113e5"
+        },
+        {
+          "channel_peaks": [
+            0,
+            0,
+            91122,
+            91122,
+            63637,
+            63637,
+            0,
+            0
+          ],
+          "tail_sha256": "91a6572938b56e16e39bbae2e37bc21e311a5c74461b0c54b855bdb1fb8113e5"
+        }
+      ]
+    },
+    {
+      "case": "eight",
+      "fixture": "eight notes 84–91",
+      "active_records": 8,
+      "t05_instructions_per_block": 39851.352,
+      "t06_instructions_per_block": 38218.173,
+      "reduction_percent": 4.098,
+      "identical_audio_frames": 16000,
+      "alignment_samples": 0,
+      "audio": [
+        {
+          "channel_peaks": [
+            0,
+            0,
+            721854,
+            721854,
+            504125,
+            504125,
+            0,
+            0
+          ],
+          "tail_sha256": "90078777f2618bfd46b5feeb5ffe152c9af442a08da8e3ac23aa925b3007baf5"
+        },
+        {
+          "channel_peaks": [
+            0,
+            0,
+            721854,
+            721854,
+            504125,
+            504125,
+            0,
+            0
+          ],
+          "tail_sha256": "90078777f2618bfd46b5feeb5ffe152c9af442a08da8e3ac23aa925b3007baf5"
+        }
+      ]
+    },
+    {
+      "case": "eight-high",
+      "fixture": "eight notes 96–103",
+      "active_records": 8,
+      "t05_instructions_per_block": 44447.992,
+      "t06_instructions_per_block": 42688.091,
+      "reduction_percent": 3.959,
+      "identical_audio_frames": 16000,
+      "alignment_samples": -1,
+      "audio": [
+        {
+          "channel_peaks": [
+            0,
+            0,
+            688515,
+            688515,
+            480842,
+            480842,
+            0,
+            0
+          ],
+          "tail_sha256": "01d4bed91528f9a5a43e23af5d0a63886b4c90d8fe01036ba1b6e539b0dd59b0"
+        },
+        {
+          "channel_peaks": [
+            0,
+            0,
+            688515,
+            688515,
+            480842,
+            480842,
+            0,
+            0
+          ],
+          "tail_sha256": "ea4f14995003467ffceb9c914d885b1d37c54a6447d6230b7af864c07682a82b"
+        }
+      ]
+    },
+    {
+      "case": "wide-pitches",
+      "fixture": "eight notes 60/64/68/72/76/80/84/127; maximum actual ratio about 12×",
+      "active_records": 8,
+      "t05_instructions_per_block": 51232.201,
+      "t06_instructions_per_block": 49602.669,
+      "reduction_percent": 3.181,
+      "identical_audio_frames": 16000,
+      "alignment_samples": 0,
+      "audio": [
+        {
+          "channel_peaks": [
+            0,
+            0,
+            662936,
+            662936,
+            462979,
+            462979,
+            0,
+            0
+          ],
+          "tail_sha256": "8c1373bbabe9b280a6a96809c2c84c5e1f5e3431852d5a3bd8dffcc0b49f9eb4"
+        },
+        {
+          "channel_peaks": [
+            0,
+            0,
+            662936,
+            662936,
+            462979,
+            462979,
+            0,
+            0
+          ],
+          "tail_sha256": "8c1373bbabe9b280a6a96809c2c84c5e1f5e3431852d5a3bd8dffcc0b49f9eb4"
+        }
+      ]
+    },
+    {
+      "case": "attack",
+      "fixture": "eight notes 84–91, ATK 100",
+      "active_records": 8,
+      "t05_instructions_per_block": 40459.278,
+      "t06_instructions_per_block": 39338.173,
+      "reduction_percent": 2.771,
+      "identical_audio_frames": 16000,
+      "alignment_samples": 1,
+      "audio": [
+        {
+          "channel_peaks": [
+            0,
+            0,
+            17016,
+            17016,
+            11884,
+            11884,
+            0,
+            0
+          ],
+          "tail_sha256": "cf89cd84d934b76120ec7daa6f13c66fb5319116d6bee2030fad89c87590c986"
+        },
+        {
+          "channel_peaks": [
+            0,
+            0,
+            17016,
+            17016,
+            11884,
+            11884,
+            0,
+            0
+          ],
+          "tail_sha256": "9e79ddbd3a529654f24dfdb28f704a0c4ec9e31313c2d9602e9d02f9b2d6f3ac"
+        }
+      ]
+    },
+    {
+      "case": "release",
+      "fixture": "eight notes 84–91, REL 80, keys released before window",
+      "active_records": 8,
+      "t05_instructions_per_block": 40579.358,
+      "t06_instructions_per_block": 39458.183,
+      "reduction_percent": 2.763,
+      "identical_audio_frames": 16000,
+      "alignment_samples": -1,
+      "audio": [
+        {
+          "channel_peaks": [
+            0,
+            0,
+            369665,
+            369665,
+            258137,
+            258137,
+            0,
+            0
+          ],
+          "tail_sha256": "37a0bbacaa54a1a5bed90a7176679f949c4ffb798d4b67a8711c2fc314bbacf3"
+        },
+        {
+          "channel_peaks": [
+            0,
+            0,
+            369665,
+            369665,
+            258137,
+            258137,
+            0,
+            0
+          ],
+          "tail_sha256": "e58f4f1375eeb90e7840c6834a6ab878349ce5faf9437f4cb3648d4225dfa2c4"
+        }
+      ]
+    },
+    {
+      "case": "tuned-high",
+      "fixture": "eight notes 84–91, CC16=112 before window; steady elevated tuning",
+      "active_records": 8,
+      "t05_instructions_per_block": 43533.205,
+      "t06_instructions_per_block": 41772.926,
+      "reduction_percent": 4.044,
+      "identical_audio_frames": 16000,
+      "alignment_samples": 0,
+      "audio": [
+        {
+          "channel_peaks": [
+            0,
+            0,
+            720362,
+            720362,
+            503073,
+            503073,
+            0,
+            0
+          ],
+          "tail_sha256": "c7879a0f017d82706c46e707f69161780e8db920a7d1d6c40b8c9c3674a59dc7"
+        },
+        {
+          "channel_peaks": [
+            0,
+            0,
+            720362,
+            720362,
+            503073,
+            503073,
+            0,
+            0
+          ],
+          "tail_sha256": "c7879a0f017d82706c46e707f69161780e8db920a7d1d6c40b8c9c3674a59dc7"
+        }
+      ]
+    },
+    {
+      "case": "mixed",
+      "fixture": "eight POLY notes 84–91 plus seven FLEX tracks",
+      "active_records": 15,
+      "t05_instructions_per_block": 51803.551,
+      "t06_instructions_per_block": 50176.347,
+      "reduction_percent": 3.141,
+      "identical_audio_frames": 16000,
+      "alignment_samples": 0,
+      "audio": [
+        {
+          "channel_peaks": [
+            0,
+            0,
+            802308,
+            802308,
+            560312,
+            560312,
+            0,
+            0
+          ],
+          "tail_sha256": "76acfa255a5ff57d7b901c0c53d951c620813f859fbe50957b2a131f8101042f"
+        },
+        {
+          "channel_peaks": [
+            0,
+            0,
+            802308,
+            802308,
+            560312,
+            560312,
+            0,
+            0
+          ],
+          "tail_sha256": "76acfa255a5ff57d7b901c0c53d951c620813f859fbe50957b2a131f8101042f"
+        }
+      ]
+    },
+    {
+      "case": "budget-edge",
+      "fixture": "eight POLY notes 101–108 at admission cost 40, plus seven FLEX tracks",
+      "active_records": 15,
+      "t05_instructions_per_block": 60608.979,
+      "t06_instructions_per_block": 58606.766,
+      "reduction_percent": 3.303,
+      "identical_audio_frames": 16000,
+      "alignment_samples": 0,
+      "audio": [
+        {
+          "channel_peaks": [
+            0,
+            0,
+            1036030,
+            1036030,
+            723538,
+            723538,
+            0,
+            0
+          ],
+          "tail_sha256": "425bee9caa5e51feb491fd39c3a6844acb993a88399d327192d13f6592dc2b0b"
+        },
+        {
+          "channel_peaks": [
+            0,
+            0,
+            1036030,
+            1036030,
+            723538,
+            723538,
+            0,
+            0
+          ],
+          "tail_sha256": "425bee9caa5e51feb491fd39c3a6844acb993a88399d327192d13f6592dc2b0b"
+        }
+      ]
+    },
+    {
+      "case": "modulated",
+      "fixture": "eight POLY voices, seven FLEX tracks, 24 native LFOs including POLY PTCH",
+      "active_records": 15,
+      "t05_instructions_per_block": 53925.871,
+      "t06_instructions_per_block": 51873.998,
+      "reduction_percent": 3.805,
+      "identical_audio_frames": 16000,
+      "alignment_samples": 0,
+      "audio": [
+        {
+          "channel_peaks": [
+            0,
+            0,
+            1068470,
+            1068470,
+            746193,
+            746193,
+            0,
+            0
+          ],
+          "tail_sha256": "6de52c75c5f4bb62561eb98a68423e19d4c8dcc6561254f76da4a276270435b9"
+        },
+        {
+          "channel_peaks": [
+            0,
+            0,
+            1068470,
+            1068470,
+            746193,
+            746193,
+            0,
+            0
+          ],
+          "tail_sha256": "6de52c75c5f4bb62561eb98a68423e19d4c8dcc6561254f76da4a276270435b9"
+        }
+      ],
+      "poly_tuning_q26": [
+        66236351,
+        64525210
+      ]
+    },
+    {
+      "case": "budget-pressure",
+      "fixture": "notes 108–115, CC16=127; admission retires down to two voices",
+      "active_records": 2,
+      "t05_instructions_per_block": 46410.793,
+      "t06_instructions_per_block": 45804.979,
+      "reduction_percent": 1.305,
+      "identical_audio_frames": 16000,
+      "alignment_samples": 0,
+      "audio": [
+        {
+          "channel_peaks": [
+            0,
+            0,
+            180908,
+            180908,
+            126341,
+            126341,
+            0,
+            0
+          ],
+          "tail_sha256": "d19d2695358be2f3e3329aa34ffdfbe6fc849ae25894a001b2822a5de8e0ccb1"
+        },
+        {
+          "channel_peaks": [
+            0,
+            0,
+            180908,
+            180908,
+            126341,
+            126341,
+            0,
+            0
+          ],
+          "tail_sha256": "d19d2695358be2f3e3329aa34ffdfbe6fc849ae25894a001b2822a5de8e0ccb1"
+        }
+      ]
+    }
+  ]
+}

@@ -156,6 +156,13 @@
       "fx1Only": false
     },
     {
+      "id": "everb",
+      "key": "EVERB",
+      "fxId": 27,
+      "fx1": false,
+      "fx1Only": false
+    },
+    {
       "id": "analog-bassdrum",
       "key": "ANALOG BD",
       "fxId": null,
@@ -165,6 +172,13 @@
     {
       "id": "usb-audio-out-tracks-main-cue",
       "key": "USB AUDIO OUT TRACKS MAIN CUE",
+      "fxId": null,
+      "fx1": false,
+      "fx1Only": false
+    },
+    {
+      "id": "quantizer",
+      "key": "SCALE QUANTIZER",
       "fxId": null,
       "fx1": false,
       "fx1Only": false
@@ -211,6 +225,20 @@
       "fxId": null,
       "fx1": false,
       "fx1Only": false
+    },
+    {
+      "id": "poly8",
+      "key": "POLY8",
+      "fxId": null,
+      "fx1": false,
+      "fx1Only": false
+    },
+    {
+      "id": "output-matrix",
+      "key": "OUTPUT MATRIX",
+      "fxId": null,
+      "fx1": false,
+      "fx1Only": false
     }
   ],
   "customIds": [
@@ -223,6 +251,7 @@
     15,
     23,
     26,
+    27,
     29,
     30,
     31

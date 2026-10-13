@@ -1,5 +1,35 @@
 # Architecture decisions
 
+## One Elekloader builder for every machine — 9 October 2026
+
+The owner chose Elekloader as the core builder, with each machine extending its
+profiles, cores, linkable modules and resource rules. Retire the Octabam-derived
+production composer once the replacement preserves the approved catalogue,
+mandatory logger/startup infrastructure and qualification. Keep Octabam source
+and independent validation tools. Wrapping the old composer in a whole-image
+`.elemod` does not implement this decision.
+
+`src/engine/elekloader/machine-build.ts` is the shared kit entry point; Digitakt
+and Digitone already use it. Private Octatrack format-2 builds now run through
+the unchanged kit. The public OT cutover remains pending. The owner also wants
+safer updates with fewer power cycles: a resident base and verified USB runtime
+updates are the implementation target, with restart requirements explicit for
+unsupported changes. See [actual evidence and outstanding work](OCTATRACK_ELEKLOADER_MIGRATION.md).
+
+## Independent platform backend licensing — 9 October 2026
+
+The owner selected Elastic License 2.0 for the independent Modwerk API/backend
+in `server/`, `worker.ts`, `functions/` and `migrations/` to restrict hosted or
+managed reuse of its substantial functionality. The explicit owner-authored
+shared-helper inventory offers GPL-3.0-or-later OR Elastic-2.0 so the GPL browser
+frontend and ELv2 backend can each use it. The frontend, SDKs, modules, vendored
+builders and third-party contributions retain their existing licences. Earlier
+GPL revisions retain their rights. See [licence scope](../LICENSE) and the
+[ownership/dependency audit and limits](PLATFORM_LICENSING.md).
+
+This supersedes the blanket Modwerk GPL statements in the dated decisions
+below; it does not relicense upstream GPL code or extend to the frontend.
+
 ## Repository and source provenance
 
 The React frontend, community API, Octamod SDK, module sources, developer documentation and release tooling live in one repository. The SDK is a distinct directory and developer entry point. Preserve upstream octabam provenance, module authorship and applicable licences. Firmware, downloads, native build outputs, caches, secrets and local development notes do not belong in the public source tree.
@@ -111,7 +141,7 @@ The owner bought modwerk.app on 4 October 2026. It stays registered, with its DN
 
 The community API keeps trusting exactly one origin, set by `APP_URL`; the launch moves it from octamod.app to modwerk.app with the Worker, the sender and the Pages custom domain in one ordered cutover. octamod.app is not retired: it becomes a plain redirect to the same path on modwerk.app, so shared links and mail links already sent keep working. Browser storage is per site, so saved configurations are not carried over; the move is announced first so people can export them.
 
-Whether the public support contact becomes a `support@modwerk.app` forwarder is left to the owner; the Gmail contact chosen on 3 October stays until a forwarder is proven. Nothing in the repository edits DNS or a provider account. The order, records and checks are in [DOMAIN_AND_MAIL.md](DOMAIN_AND_MAIL.md); `npm run domain:check` reads public DNS and pages to report progress.
+On 10 October 2026 the owner decided the public support contact is `support@modwerk.app`, received through Resend's inbound mail, instead of the personal address chosen on 3 October, so no personal address is published. The switch is merged only after a message sent to the alias is proven to arrive. Nothing in the repository edits DNS or a provider account. The order, records and checks are in [DOMAIN_AND_MAIL.md](DOMAIN_AND_MAIL.md); `npm run domain:check` reads public DNS and pages to report progress.
 
 
 ## 4 October 2026 — Bug Reports forum and automatic developer delivery
@@ -258,3 +288,22 @@ Since the log became optional, a report could leave with no configuration at all
 The owner requested all day-to-day developer work in GitHub and users in the frontend. Public replies go into one GitHub thread from either surface; signed GitHub status events update Modwerk. Registered authors can close/reopen their own shared public reports and complete verified published fixes through scoped GitHub comment commands, without a fork, website claim or repository-wide permissions. Existing numeric ownership, suspension/revocation, privacy consent and exact live-release gates remain enforced. A merged PR is not a resolved report.
 
 The former developer workspace becomes Creator settings for claims, support links and direct private diagnostic access. The duplicate public report/activity inbox and frontend public closure controls are removed. Existing member module notifications, private reports and compatibility APIs remain.
+
+## 10 October 2026 — Reports about a whole configuration
+
+Every report belonged to one module and went to that module's author. A freeze that only happens with two effects loaded, or a build that fails, has no single module to name, so it reached no one, or only whichever author the reporter guessed.
+
+- **A report can be about a whole saved configuration.** It starts from the configuration page, not a module page, and is for problems in the combination or of unknown cause.
+- **Every module's authors receive it** (the owner chose this over owner triage and over a reporter-named suspect). Each distinct author and declared maintainer is mentioned once, and each can see the private details and close or reopen it. The cost is that an author may be pinged for a problem in someone else's module; the report says it concerns the whole configuration, and the cap on mentions stops a very large configuration from pinging dozens of people.
+- **The fix is released by one module,** so `/modwerk resolve` names it. Closing it for another reason works from any of them.
+- **The modules and versions are public;** the build fingerprint, the FX2 setting and the log are not. Authors without a Modwerk account need the list to reproduce the problem, and the `module:<id>` labels reveal it anyway. This widens what a report publishes beyond a module report's single version, so the privacy notice needs the owner's review.
+- **It does not count against a module.** A report that may not be that module's fault stays out of the per-module statistics behind the stability grade; each module's Issues tab still lists and counts it.
+- **Not done:** the module-page report form still files against one module and is unchanged, and the log reader is a copy in the configuration report rather than shared with it.
+
+## 13 October 2026 — Reports live entirely on GitHub
+
+A contributor following a report's "open them on Modwerk" link landed on Creator settings: only the module's own verified maintainers could open the private part, and a coding agent working from the issue asked for "the full report". The owner chose to keep report work completely on GitHub.
+
+- **New GitHub reports publish everything.** The issue also carries the firmware state, build fingerprint, module configuration and the validated `OCTAMOD.LOG` in a collapsed block (oldest records left out when it would pass GitHub's size limit). The forms say so before posting. Reports filed earlier are never republished; their `public_json` lacks `full`.
+- **Maintainers talk to reporters on GitHub.** Comments reach the reporter on Modwerk; the reporter's replies from Modwerk appear on the issue.
+- **The maintainer report page is gone from the frontend.** `#developer/report/<id>` shows Creator settings, and the report page no longer shows maintainer triage, close or release forms. The private-report API, the reporter's sharing toggle, Creator settings with claims and Ko-fi links, `/modwerk` commands and the release-completion endpoint are unchanged.

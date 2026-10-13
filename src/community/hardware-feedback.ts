@@ -4,7 +4,7 @@ import { communityModule } from './modules'
 
 export type DownloadedBuild = { machine: string; os: string; modules: readonly BuiltModule[] }
 export type HardwareFeedback = DownloadedBuild & { downloadedAt: number; remindAt: number; completed: string[]; dismissed: boolean; checkInAt?: number; checkInShownAt?: number }
-export const CHECK_IN_DELAY = 5 * 60 * 1000
+export const CHECK_IN_DELAY = 2 * 1000
 export const FEEDBACK_DELAY = 60 * 60 * 1000
 export const FEEDBACK_SNOOZE = 24 * FEEDBACK_DELAY
 export const FEEDBACK_RETENTION = 30 * FEEDBACK_SNOOZE
@@ -45,11 +45,15 @@ function save(memberId: string, records: HardwareFeedback[]) {
   try { localStorage.setItem(key(memberId), JSON.stringify(records)); window.dispatchEvent(new Event(FEEDBACK_CHANGED)); return true }
   catch { return false /* Optional reminders must never stop a download or a successful working confirmation. */ }
 }
-/** Keep the latest build of each machine. Re-downloading the same build preserves completed and dismissed feedback. */
+/** Every download schedules its guide. Repeated builds retain feedback and later-reminder preferences. */
 export function rememberHardwareFeedback(memberId: string, build: DownloadedBuild, now = Date.now()) {
   if (!memberId || !build.modules.length) return
   const records = readHardwareFeedback(memberId, now), id = feedbackId(build)
-  if (records.some(record => feedbackId(record) === id)) return
+  const existing = records.find(record => feedbackId(record) === id)
+  if (existing) {
+    save(memberId, records.map(record => record === existing ? { ...record, downloadedAt: now, checkInAt: now + CHECK_IN_DELAY, checkInShownAt: undefined } : record))
+    return
+  }
   const record: HardwareFeedback = { machine: build.machine, os: build.os, modules: build.modules.map(({ id, name, version }) => ({ id, name, version })), downloadedAt: now, remindAt: now + FEEDBACK_DELAY, checkInAt: now + CHECK_IN_DELAY, completed: [], dismissed: false }
   if (valid(record)) save(memberId, [record, ...records.filter(item => item.machine !== build.machine)].slice(0, 3))
 }
@@ -59,14 +63,14 @@ export function dueHardwareFeedback(memberId: string, now = Date.now()) {
 }
 /** Older downloads retain their inline reminders; only newly scheduled downloads open a modal. */
 export function nextHardwareCheckIn(memberId: string, now = Date.now()) {
-  return readHardwareFeedback(memberId, now).filter(item => !item.dismissed && item.checkInAt !== undefined && item.checkInShownAt === undefined && pendingFeedback(item).length)
+  return readHardwareFeedback(memberId, now).filter(item => item.checkInAt !== undefined && item.checkInShownAt === undefined)
     .sort((a, b) => a.checkInAt! - b.checkInAt!)[0]
 }
 /** Call under the member's browser lock. Persist before opening so another tab/visit stays quiet. */
 export function claimHardwareCheckIn(memberId: string, build: DownloadedBuild, now = Date.now()) {
   const records = readHardwareFeedback(memberId, now), id = feedbackId(build)
   const record = records.find(item => feedbackId(item) === id)
-  if (!record || record.dismissed || record.checkInAt === undefined || record.checkInAt > now || record.checkInShownAt !== undefined || !pendingFeedback(record).length) return
+  if (!record || record.checkInAt === undefined || record.checkInAt > now || record.checkInShownAt !== undefined) return
   const claimed = { ...record, checkInShownAt: now }
   if (save(memberId, records.map(item => item === record ? claimed : item))) return claimed
 }
@@ -75,7 +79,7 @@ export function updateHardwareFeedback(memberId: string, build: DownloadedBuild,
   const id = feedbackId(build)
   save(memberId, readHardwareFeedback(memberId, now).map(record => feedbackId(record) !== id ? record : {
     ...record,
-    ...(action === 'dismiss' ? { dismissed: true } : action === 'later' ? { remindAt: now + FEEDBACK_SNOOZE, checkInShownAt: now }
+    ...(action === 'dismiss' ? { dismissed: true, checkInShownAt: now } : action === 'later' ? { dismissed: false, remindAt: now + FEEDBACK_SNOOZE, checkInShownAt: now }
       : { completed: [...new Set([...record.completed, ...(typeof action.completed === 'string' ? [action.completed] : action.completed)])].filter(moduleId => record.modules.some(module => module.id === moduleId)) }),
   }))
 }

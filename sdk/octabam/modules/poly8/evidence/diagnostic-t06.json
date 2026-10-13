@@ -1,0 +1,196 @@
+{
+  "version": "0.2.5-experimental",
+  "candidate": "POLY8T06",
+  "image_sha256": "499476227e73968f48ae9ee436d4205c33fd852b14e0097d7606d47d9840a344",
+  "source_identity": "e9e525ad855b07315ff242f436abeff5c88da01e0e16fd98f570c3dc46f28a64",
+  "ui": {
+    "image_sha256": "499476227e73968f48ae9ee436d4205c33fd852b14e0097d7606d47d9840a344",
+    "new_loop": 0,
+    "loop_after_encoder": 1,
+    "loop_after_reselect": 1,
+    "reselect_part_unchanged": true,
+    "sample_slots_after_double_track": "46c7d34c",
+    "chooser_type": "00000005",
+    "right_pane": 1,
+    "right_machine": 1,
+    "marker_after_sample_yes": "504c01",
+    "loop_after_sample_yes": 1,
+    "flex_marker": "000000",
+    "reassigned_loop": 0,
+    "cancel_marker": "504c01",
+    "pipo_after_reselect": 3
+  },
+  "gain": {
+    "image_sha256": "499476227e73968f48ae9ee436d4205c33fd852b14e0097d7606d47d9840a344",
+    "cases": [
+      {
+        "polarity": "positive",
+        "input_pcm16": 32767,
+        "active_heads": 8,
+        "q25_sum": 33553152,
+        "ideal_q25_sum": 33553408,
+        "frames_checked": 16,
+        "within_full_scale": true
+      },
+      {
+        "polarity": "negative",
+        "input_pcm16": -32768,
+        "active_heads": 8,
+        "q25_sum": -33554176,
+        "ideal_q25_sum": -33554432,
+        "frames_checked": 16,
+        "within_full_scale": true
+      }
+    ],
+    "scope": "Native mixer before stock DSP; no hardware output clipping claim.",
+    "t05_control": "identical full-scale results"
+  },
+  "fresh_assignment": {
+    "marker": "504c01",
+    "mirror": "504c01",
+    "loop": "00",
+    "amp_hold": 127,
+    "amp_rel": 127,
+    "chord_records": [
+      {
+        "step": 3,
+        "root": 72,
+        "shape": 67
+      }
+    ]
+  },
+  "rapid_panel": {
+    "presses": 128,
+    "down_ms": 10,
+    "up_ms": 10,
+    "max_active": 8,
+    "additional_frames": 7077,
+    "held_after_stop": "clear"
+  },
+  "warm_restart": {
+    "marker": "504c01",
+    "mirror": "504c01",
+    "backing_machine": "01",
+    "loop": "00",
+    "poly_sound": {
+      "frames": 8820,
+      "channel_peaks": [
+        361,
+        361
+      ]
+    },
+    "flex_sound": {
+      "frames": 8820,
+      "channel_peaks": [
+        3042,
+        3042
+      ]
+    },
+    "recorded_steps": [
+      {
+        "step": 2,
+        "root": 72,
+        "shape": 0
+      },
+      {
+        "step": 4,
+        "root": 76,
+        "shape": 0
+      },
+      {
+        "step": 6,
+        "root": 79,
+        "shape": 0
+      }
+    ],
+    "additional_frames": 2234,
+    "sparse_selector": 31,
+    "sparse_slot_sound": {
+      "frames": 8820,
+      "channel_peaks": [
+        712,
+        712
+      ]
+    },
+    "adjacent_tuning_cache": "unchanged",
+    "scope": "Native battery-RAM boot; not a physical reboot."
+  },
+  "modal": {
+    "entry_paths": [
+      "SRC SETUP",
+      "machine chooser"
+    ],
+    "target_part": "unchanged",
+    "automatic_dismissal": "pass"
+  },
+  "checkpoint": {
+    "target": 46,
+    "ring": {
+      "head": 48,
+      "count": 48,
+      "flushed": 48
+    },
+    "logs": [
+      {
+        "name": "OCTAMOD.LOG",
+        "bytes": 32768,
+        "sha256": "0b720778cdc18dba5571da95c8e4b719c61d2e3f140685fedce3a6cef7ffefe3",
+        "records": 29,
+        "polyCodes": [
+          4,
+          1,
+          2,
+          3,
+          5,
+          7,
+          6
+        ]
+      },
+      {
+        "name": "OCTAMOD1.LOG",
+        "bytes": 32768,
+        "sha256": "9bd1c6804e55a8ca4d98476b599d5a85a76e28c45fc532816bf78095bce7e42c",
+        "records": 48,
+        "polyCodes": [
+          4,
+          1,
+          2,
+          3,
+          5,
+          7,
+          6
+        ]
+      }
+    ],
+    "card_write_errors": 0,
+    "scope": "Stock UI counter advanced by 2100 ticks to test existing backoff; real native engine and buffered CF writer/readback; no real-time 30-second timing claim."
+  },
+  "packaging": {
+    "OCTATRACK_POLY8T06.bin": {
+      "bytes": 461180,
+      "sha256": "0033a9989ffd29aecba1f49cb4ab94281cf3c4c400c76b264eee02fc9368e1b5"
+    },
+    "OCTATRACK_OS1.40C_POLY8T06.syx": {
+      "bytes": 644201,
+      "sha256": "525656238ffd6bf70ca5fc40b6cf976887937274a48974581043faaaee0b87b0"
+    },
+    "recovery/OCTATRACK_OS1.40C.bin": {
+      "bytes": 469852,
+      "sha256": "34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad"
+    },
+    "recovery/OCTATRACK_OS1.40C.syx": {
+      "bytes": 656304,
+      "sha256": "0a8d2d2b35c2cc78fa338576adc1af0cbc094cef973255103165c73edd87f2b6"
+    }
+  },
+  "repository_check": {
+    "base": "ee8fd7299f4c267ff0473c3493537e32b26c9634",
+    "test_files": 191,
+    "tests": 1286,
+    "vitest_workers": 1,
+    "result": "pass",
+    "original_timeouts": true
+  },
+  "sample_preview": "Native preview probe remains unqualified: stock control also did not confirm the expected fixture tone.",
+  "hardware": "T06 has not been tested on hardware. The user described T05 as works in theory; physical recording, reboot and CPU deadline qualification remain pending."
+}

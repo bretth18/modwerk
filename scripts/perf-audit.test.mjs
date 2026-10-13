@@ -4,7 +4,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { judgeRecord, selfTest, templateRecord } from './perf-audit-analysis.mjs'
+import { judgeRecord, selfTest, templateRecord, ownerWaivedPerformanceRow } from './perf-audit-analysis.mjs'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const audit = (...args) => spawnSync(process.execPath, ['scripts/perf-audit.mjs', ...args], { cwd: root, encoding: 'utf8' })
@@ -31,5 +31,32 @@ describe('perf audit', () => {
     expect(judgeRecord(null)[0].state).toBe('fail')
     expect(judgeRecord({ schema: 1, kind: 'nope' })[0].state).toBe('fail')
     expect(audit('check').status).toBe(2)
+  })
+})
+
+
+describe('exact-source performance exceptions', () => {
+  const source = 'a'.repeat(64)
+  const approval = { kind: 'owner-approved-update', approvedBy: 'repeat98', id: 'example', version: '0.1.0', sourceSha256: source, waived: ['chip-worst-case-cycles', 'current-build-hardware'] }
+  const record = () => ({ ...templateRecord('coldfire'), module: 'example', version: '0.1.0' })
+  it('keeps the raw audit failing and excuses only the explicitly missing fields', () => {
+    const r = record(), rows = judgeRecord(r)
+    expect(rows.filter(row => row.state === 'fail')).toHaveLength(3)
+    for (const row of rows.filter(row => row.state === 'fail')) expect(ownerWaivedPerformanceRow(r, row, approval, source)).toBe(true)
+    expect(ownerWaivedPerformanceRow(r, rows[0], approval, source)).toBe(false)
+  })
+  it('rejects stale, wrong-owner, wrong-version and incomplete approval scope', () => {
+    const r = record(), row = judgeRecord(r).find(row => row.name === 'cycles')
+    for (const change of [{ sourceSha256: 'b'.repeat(64) }, { approvedBy: 'contributor' }, { version: '0.2.0' }, { id: 'other' }, { kind: 'other' }, { waived: ['current-build-hardware'] }]) expect(ownerWaivedPerformanceRow(r, row, { ...approval, ...change }, source)).toBe(false)
+    expect(ownerWaivedPerformanceRow(r, row, approval, null)).toBe(false)
+  })
+  it('never excuses a failed or partly supplied measurement', () => {
+    const r = record()
+    r.cycles.measured = 1
+    expect(ownerWaivedPerformanceRow(r, judgeRecord(r).find(row => row.name === 'cycles'), approval, source)).toBe(false)
+    r.load.moduleLongestUs = 1000
+    expect(ownerWaivedPerformanceRow(r, judgeRecord(r).find(row => row.name === 'stock benchmark'), approval, source)).toBe(false)
+    r.stress.hangs = 1
+    expect(ownerWaivedPerformanceRow(r, judgeRecord(r).find(row => row.name === 'stress'), approval, source)).toBe(false)
   })
 })

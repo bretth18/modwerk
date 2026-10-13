@@ -1,0 +1,18 @@
+{
+  "firmware": "1.40C",
+  "build_tag": "11",
+  "image_sha256": "be02d610668b1c16cf0fd0108d7a1a0d70524339d71f00f33dc62c0ae38b5ca7",
+  "native_sdk_revision": "6d20796",
+  "source_sha256": {
+    "polyphony.s": "e3bb325421da43cca3802eb529132d71417537e89ac5803ae10960984636f64c",
+    "pool.c": "4b33927f1fd4d79a543ccd49d30c02cdd9cf0f383d513bb435a64964f1190471",
+    "recording.c": "0eccf0d1c4beabe9ebe2f6915f4f0277b99a9715018ea444a192e1b4ea0f5b5b",
+    "registration.c": "e4168b9e05116d0b06b5a678773d2cf45216816b423ced79e2f50406fed0d0cf",
+    "registration-hooks.s": "117230fe1fdc75a4ef900fd12600c80fae8d7acbf46d9a4dc44911832ed2172f",
+    "registration.s": "7cfa32064c8679997b3481094f71060c198bdf38f54b5d6a281f9b35ad622b60",
+    "manifest.py": "5d299743e79e81c266cb5ffb365c1a4ec0af05c0380f1ab9327c95bd58973ec2"
+  },
+  "native_rebuild_after_rebase": "Exact final authored source regenerated identical assembly and rebuilt to the same tested image. Final PR rebase 8304186 only changes SDK third-party prose; native build inputs remain identical to 6d20796.",
+  "hardware": "not tested",
+  "pr_base_revision": "8304186565dd53025e7fb7a575ff500756ad84fa"
+}

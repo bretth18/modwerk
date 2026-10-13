@@ -1,0 +1,512 @@
+{
+ "elemod": 2,
+ "id": "core",
+ "version": "1.0",
+ "title": "core",
+ "description": "The boot copier and the hook bus for the Digitakt II: every other mod needs it. On its own it changes nothing the unit does.",
+ "category": "Framework",
+ "author": "irpina",
+ "license": "GPL-2.0-or-later",
+ "target": {
+  "device": "digitakt-mk2",
+  "product": "Digitakt II",
+  "os": "1.17",
+  "syx_sha256": "26c22f6652625ac2cfd47f7ee970d388ed8b6427dae3563c0a6a2f2d334350d5",
+  "section3_sha256": "a1e7b657b705eba1a19d81c33c1e11ba9c409816447ad74005d7bbf36da6d964",
+  "section3_len": 3275616
+ },
+ "sections": {
+  ".boot": {
+   "align": 4,
+   "len": 50,
+   "parts": [
+    [
+     "hex",
+     "41f90000000043f900000000203c0000000022d8538066fa43f900000000203c0000000067064299538066fa4ef9400019b0"
+    ]
+   ]
+  },
+  ".run": {
+   "align": 4,
+   "len": 480,
+   "parts": [
+    [
+     "hex",
+     "2f0a45f900000000201a670c2f2f000820404e90588f60f0245f"
+    ],
+    [
+     "stock",
+     "0x4011bc60",
+     10
+    ],
+    [
+     "stock",
+     "0x4002dafe",
+     8
+    ],
+    [
+     "hex",
+     "4eb94011bc96508f2f0a45f900000000201a67102f2f00082f2f001020404e90508f60ec245f4e752f0a45f9000000006126245f4a8066064ef940030bd04e752f0a45f900000000610e245f4a8066064ef940030b644e75201a6712"
+    ],
+    [
+     "stock",
+     "0x4004eb62",
+     8
+    ],
+    [
+     "hex",
+     "20404e90508f4a8067ea4e752f0b47f900000000201b670a2f0a20404e90588f60f2265f2052487800024ef9400a5eb24e56ffc0"
+    ],
+    [
+     "stock",
+     "0x40001792",
+     8
+    ],
+    [
+     "stock",
+     "0x4000d566",
+     8
+    ],
+    [
+     "hex",
+     "41eeffc0429042a80004203c4019d8a82140000820132140000c41eeffd0208a42a80004203c4019d8a821400008202b00042140000c41eeffe0429042a80004203c4019d8a821400008202b00082140000c41eefff0208a42a80004203c4019d8a821400008202b000c2140000c"
+    ],
+    [
+     "stock",
+     "0x401504da",
+     8
+    ],
+    [
+     "hex",
+     "ebd0588f2400"
+    ],
+    [
+     "stock",
+     "0x4001d696",
+     8
+    ],
+    [
+     "stock",
+     "0x400f5572",
+     8
+    ],
+    [
+     "hex",
+     "486effd0486effc02f02"
+    ],
+    [
+     "stock",
+     "0x4001e44c",
+     8
+    ],
+    [
+     "stock",
+     "0x400175c6",
+     8
+    ],
+    [
+     "hex",
+     "4011527a508f"
+    ],
+    [
+     "stock",
+     "0x4008cc8c",
+     10
+    ],
+    [
+     "hex",
+     "4ab900000000662a2f0a45f900000000201a67142040225a201a588ae48867f022d8538066fa60e8700123c000000000245f4e7547f900000000201b670a2f0c20404e90588f60f2"
+    ],
+    [
+     "stock",
+     "0x4008196e",
+     8
+    ],
+    [
+     "hex",
+     "00804e750000"
+    ]
+   ]
+  },
+  ".bss": {
+   "align": 4,
+   "size": 20
+  }
+ },
+ "symbols": {
+  "VBR_FN": [
+   "abs",
+   1073748400
+  ],
+  "NO_DTIM0": [
+   "abs",
+   1
+  ],
+  "SETTINGS_RET": [
+   "abs",
+   1074421426
+  ],
+  "FN_MGR": [
+   "abs",
+   1075435688
+  ],
+  "MENU_ADD": [
+   "abs",
+   1074877050
+  ],
+  "ITEM_CTOR": [
+   "abs",
+   1074879044
+  ],
+  "OP_NEW": [
+   "abs",
+   1074916304
+  ],
+  "ENCDISP": [
+   "abs",
+   1073941348
+  ],
+  "KEYDISP": [
+   "abs",
+   1073941456
+  ],
+  "DRAWALL": [
+   "abs",
+   1074904214
+  ],
+  "dispatch": [
+   ".run",
+   132
+  ],
+  "fast_done": [
+   ".bss",
+   16
+  ],
+  "core_draw": [
+   ".run",
+   36
+  ],
+  "core_zero": [
+   ".bss",
+   0
+  ],
+  "core_key": [
+   ".run",
+   84
+  ],
+  "boot": [
+   ".boot",
+   0
+  ],
+  "core_fastcopy": [
+   ".run",
+   394
+  ],
+  "core_tick": [
+   ".run",
+   0
+  ],
+  "core_enc": [
+   ".run",
+   108
+  ],
+  "core_settings": [
+   ".run",
+   156
+  ],
+  "core_personalize": [
+   ".run",
+   446
+  ],
+  "core_additem": [
+   ".run",
+   192
+  ]
+ },
+ "exports": [
+  "boot",
+  "core_additem",
+  "core_draw",
+  "core_enc",
+  "core_fastcopy",
+  "core_key",
+  "core_personalize",
+  "core_settings",
+  "core_tick",
+  "core_zero"
+ ],
+ "imports": [
+  "__bss_start",
+  "__bss_words",
+  "__run_load",
+  "__run_start",
+  "__run_words",
+  "core_fast",
+  "ev_draw",
+  "ev_enc",
+  "ev_key",
+  "ev_personalize",
+  "ev_settings",
+  "ev_tick"
+ ],
+ "weak": [],
+ "relocs": [
+  [
+   ".boot",
+   2,
+   "abs32",
+   "sym:__run_load",
+   0
+  ],
+  [
+   ".boot",
+   8,
+   "abs32",
+   "sym:__run_start",
+   0
+  ],
+  [
+   ".boot",
+   14,
+   "abs32",
+   "sym:__run_words",
+   0
+  ],
+  [
+   ".boot",
+   26,
+   "abs32",
+   "sym:__bss_start",
+   0
+  ],
+  [
+   ".boot",
+   32,
+   "abs32",
+   "sym:__bss_words",
+   0
+  ],
+  [
+   ".run",
+   4,
+   "abs32",
+   "sym:ev_tick",
+   0
+  ],
+  [
+   ".run",
+   56,
+   "abs32",
+   "sym:ev_draw",
+   0
+  ],
+  [
+   ".run",
+   88,
+   "abs32",
+   "sym:ev_key",
+   0
+  ],
+  [
+   ".run",
+   112,
+   "abs32",
+   "sym:ev_enc",
+   0
+  ],
+  [
+   ".run",
+   160,
+   "abs32",
+   "sym:ev_settings",
+   0
+  ],
+  [
+   ".run",
+   396,
+   "abs32",
+   "sec:.bss",
+   16
+  ],
+  [
+   ".run",
+   406,
+   "abs32",
+   "sym:core_fast",
+   0
+  ],
+  [
+   ".run",
+   438,
+   "abs32",
+   "sec:.bss",
+   16
+  ],
+  [
+   ".run",
+   448,
+   "abs32",
+   "sym:ev_personalize",
+   0
+  ]
+ ],
+ "sites": [
+  {
+   "addr": "0x40000538",
+   "len": 6,
+   "stock_sha256": "f0c5fc0afd892b3ec3f8803e1d875a2a22c6bb4e2cb987adc582cf8dea48c28a",
+   "new": "4eb900000000",
+   "kind": "code",
+   "relocs": [
+    [
+     2,
+     "abs32",
+     "sym:boot",
+     0
+    ]
+   ]
+  },
+  {
+   "addr": "0x40032ad4",
+   "len": 6,
+   "stock_sha256": "d62de2d39cdfa81a43ed98c5b31f513bd9f4d05b70e171edb68bc88acf8606b6",
+   "new": "4eb900000000",
+   "kind": "code",
+   "relocs": [
+    [
+     2,
+     "abs32",
+     "sym:core_tick",
+     0
+    ]
+   ]
+  },
+  {
+   "addr": "0x40032b3a",
+   "len": 6,
+   "stock_sha256": "1d00d27ba0545706eb28444bb5b833e9277619dc5820403a9c1885b904ec176a",
+   "new": "4eb900000000",
+   "kind": "code",
+   "relocs": [
+    [
+     2,
+     "abs32",
+     "sym:core_draw",
+     0
+    ]
+   ]
+  },
+  {
+   "addr": "0x40033d94",
+   "len": 6,
+   "stock_sha256": "4789a0947398bdcd29628e6e4e0ef59344153f141a5dc6ece8f9a88d8fc6f4d4",
+   "new": "4eb900000000",
+   "kind": "code",
+   "relocs": [
+    [
+     2,
+     "abs32",
+     "sym:core_key",
+     0
+    ]
+   ]
+  },
+  {
+   "addr": "0x40033dde",
+   "len": 6,
+   "stock_sha256": "2227d337ce7d76bad9903a1afa0febe7754f64165c1c940b94302105aa5c831b",
+   "new": "4eb900000000",
+   "kind": "code",
+   "relocs": [
+    [
+     2,
+     "abs32",
+     "sym:core_enc",
+     0
+    ]
+   ]
+  },
+  {
+   "addr": "0x400a5eac",
+   "len": 6,
+   "stock_sha256": "c7589861366d298dd3e07f1f5ebce25db0435f9cad638eae321d68e7542f6c74",
+   "new": "4ef900000000",
+   "kind": "code",
+   "relocs": [
+    [
+     2,
+     "abs32",
+     "sym:core_settings",
+     0
+    ]
+   ]
+  },
+  {
+   "addr": "0x4009e2a2",
+   "len": 6,
+   "stock_sha256": "10552f30e94896a18c635b43b0f16452187a5e3db5b661ba3255c1ecb054fd50",
+   "new": "4ef900000000",
+   "kind": "code",
+   "relocs": [
+    [
+     2,
+     "abs32",
+     "sym:core_personalize",
+     0
+    ]
+   ]
+  }
+ ],
+ "collections": {
+  "ev_tick": {
+   "entry": 4
+  },
+  "ev_draw": {
+   "entry": 4
+  },
+  "ev_key": {
+   "entry": 4
+  },
+  "ev_enc": {
+   "entry": 4
+  },
+  "ev_settings": {
+   "entry": 4
+  },
+  "ev_personalize": {
+   "entry": 4
+  },
+  "core_fast": {
+   "entry": 16
+  }
+ },
+ "contribute": [
+  {
+   "to": "ev_tick",
+   "order": 0,
+   "data": "00000000",
+   "relocs": [
+    [
+     0,
+     "abs32",
+     "sym:core_fastcopy",
+     0
+    ]
+   ],
+   "claims": []
+  }
+ ],
+ "copied": [],
+ "resources": {},
+ "requires": [],
+ "conflicts": [],
+ "build": {
+  "sources": {
+   "core.s": "768cd000e66860da8a654592e8cd7ed44f39fe5a2a53089b878878082ab66e75",
+   "settings.s": "629ef344d3ef2e29edf721431147d42f718f00e127111cdf71e431f811df4f76",
+   "fast.s": "96fc437340b63289ad269bf03d66540cd500987be2d0611b37748accb0621f18",
+   "personalize.s": "583f0925914ac8d0689b705ebf825c820231a61e319829001f93b3c6758ab797"
+  }
+ },
+ "signature": null
+}

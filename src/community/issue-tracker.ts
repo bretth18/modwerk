@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 import { api } from './api'
+import type { ReportMetadata } from './report-closure'
 
 export type BugReportResult = { id: string; author: string; forumThreadId: string | null; github: 'none' | 'synced' | 'syncing' | 'failed'; githubUrl: string | null }
-export type PublicModuleIssue = {
+export type PublicModuleIssue = ReportMetadata & {
   id: string; title: string; url: string; created_at: string; status: 'open' | 'closed'; number: number | null; reporter: string | null
-  details: { device: string; version: string; steps: string; expected: string; actual: string } | null
+  /** A configuration report concerns every module in `details.modules`; a module report, only the module whose page lists it. */
+  scope?: 'module' | 'configuration'
+  details: { device: string; version: string; steps: string; expected: string; actual: string; modules?: { id: string; name: string; version: string }[] } | null
 }
 /** Public report descriptions and counts; private configurations and logs are never included. */
-export type IssueTracker = { tracker: 'github' | 'forum'; issues: PublicModuleIssue[]; allUrl: string | null; openCount: number; closedCount: number; hasMore: boolean }
+export type IssueTracker = { tracker: 'github' | 'forum'; issues: PublicModuleIssue[]; allUrl: string | null; openCount: number; closedCount: number; confirmedCount?: number; needsInfoCount?: number; hasMore: boolean }
 
 const issuesChanged = 'modwerk:module-issues-changed'
 export function refreshModuleIssues(id: string) { window.dispatchEvent(new CustomEvent(issuesChanged, { detail: id })) }

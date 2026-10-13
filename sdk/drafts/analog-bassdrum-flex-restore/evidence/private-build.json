@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "candidateVersion": "0.1.5-experimental",
+  "label": "AB015FIX01",
+  "sourceSha256": "e741e4876ea3ae44eb54ddc93ff3b5bf5f65ebb3e9320cc5fd1f602f7925966d",
+  "machineSourceSha256": "90f9ddb5c2a4cee47e0334c3cd35a7e92d42b0ee37eb3bbc8062cc7821e6aeb4",
+  "stockMainOsSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+  "mainOsSha256": "137580f326b6adc3b0d58f2183d530507f1b370c48911b38d5d0cf94d9e96898",
+  "mainOsBytes": 1266195,
+  "firmware": {
+    "bytes": 568928,
+    "sha256": "5737e32c4823fffa3236469e82425b3eb53ba75da1d8d0a690b824eaefeb63e2",
+    "savedFileDecodedMainOsMatchesNative": true
+  },
+  "dsp": {
+    "A": {
+      "sha256": "619c9f4c6b328b5569c7a30ae3bc5c760082da73b175e07954662859160f0c6d",
+      "identicalTo014": true,
+      "uploadSha256": "45494cfdae1a03bda8221e8a94b9641b8dad3e8fc92f6c3800c5341a2322971f",
+      "uploadIdenticalTo014": true
+    },
+    "B": {
+      "sha256": "167491c09433ffbb879731a29929c6dccc7086a431cef8c7fa35efde0867989a",
+      "identicalTo014": true,
+      "uploadSha256": "4d85480034d9146ca918144276df9af6418da6f60dd65b17d486758e74707787",
+      "uploadIdenticalTo014": true
+    }
+  },
+  "physicalHardware": "not tested",
+  "outputMatrix": "not tested",
+  "published": false,
+  "nativeToolsImageId": "sha256:3a5861370c0f3d4eb2507af6a20821ab6ad20569c9fb22f4dfce9d93d4fd93e2",
+  "runtimeBytes": 14052,
+  "baselineRuntimeBytes": 14016
+}

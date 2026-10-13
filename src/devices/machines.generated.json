@@ -240,12 +240,12 @@
     "order": 40,
     "name": "Digitakt II",
     "status": "research",
-    "summary": "Its OS file is sealed with an HMAC trailer. Emulator research exists.",
+    "summary": "Experimental OS 1.17 support exists in elekloader, with a core and released perform mods. Modwerk integration and qualification are not complete.",
     "steps": {
-      "format": "started",
-      "rebuild": "open",
+      "format": "done",
+      "rebuild": "done",
       "boot": "started",
-      "core": "open",
+      "core": "done",
       "mods": "open"
     },
     "art": {
@@ -253,13 +253,75 @@
       "encoders": 8,
       "trigs": 16
     },
+    "firmware": {
+      "releases": [
+        {
+          "version": "1.17",
+          "files": [
+            {
+              "name": "Digitakt_II_OS1.17.syx",
+              "sha256": "26c22f6652625ac2cfd47f7ee970d388ed8b6427dae3563c0a6a2f2d334350d5"
+            }
+          ]
+        }
+      ],
+      "flash": "Normal OS updates use Elektron Transfer with the owner's own stock OS file. Modwerk's DTII build path is experimental and downloads remain disabled.",
+      "recovery": "Hold FUNC while powering on, choose TRIG 4 (OS UPGRADE), then send the owner's stock .syx over MIDI DIN; recovery mode does not use USB."
+    },
     "research": [
       {
         "label": "digikit",
         "url": "https://github.com/m-dwyer/digikit",
         "note": "Emulator for the control processor that boots the real OS and shows its screen, plus analysis tools for the audio processor and the sealed OS file."
+      },
+      {
+        "label": "elekloader DTII core and OS 1.17 tests",
+        "url": "https://github.com/irpina/elekloader/tree/3acac10/mods/core-dt2",
+        "note": "Experimental OS 1.17 profile, sealed firmware writer and shared-event core. Its DTII tests verify byte-exact stock rebuilding, seal checks and linked builds. Core builds boot in Digikit; this is not Modwerk hardware qualification."
+      },
+      {
+        "label": "toonst's Digitakt II perform mods 1.0",
+        "url": "https://github.com/toonst/digitakt2-perform/releases/tag/v1.0",
+        "note": "Released core, perform-direct and perform-levels packages for OS 1.17. The author reports individual hardware results, including an earlier perform-direct version; the combined build is not hardware-tested. Modwerk listings remain to be added."
       }
-    ]
+    ],
+    "sdk": {
+      "platform": "elemod",
+      "modules": "sdk/digitakt-ii/modules",
+      "catalog": null,
+      "guide": "sdk/machines/digitakt-ii/README.md",
+      "core": {
+        "version": "1.0",
+        "path": "sdk/digitakt-ii/core-profile"
+      },
+      "toolchain": "m68k-elf GCC and binutils, Modwerk's elemod packager, and the vendored elekloader kit 0.5.0; firmware builds start from the owner's exact OS 1.17 .syx.",
+      "budgets": [
+        {
+          "name": "Shared mod memory",
+          "unit": "bytes",
+          "value": 262144,
+          "note": "Digitakt II DDR region 0x47F00000–0x47F40000, shared by core and linked mods."
+        },
+        {
+          "name": "Core image",
+          "unit": "bytes",
+          "value": 500,
+          "note": "Core 1.0 build: 480 bytes .run plus 20 bytes .bss; package link check measures each selected module set."
+        },
+        {
+          "name": "Fast SRAM for code",
+          "unit": "bytes",
+          "value": 3840,
+          "note": "SRAM tail 0x8000F100–0x80010000; core copies .fast code here on its first UI tick."
+        },
+        {
+          "name": "Per-event subscriptions",
+          "unit": "slots",
+          "value": 4,
+          "note": "Core 1.0 allocates four hook entries per shared event collection."
+        }
+      ]
+    }
   },
   {
     "schemaVersion": 1,
@@ -293,12 +355,12 @@
     "id": "syntakt",
     "order": 60,
     "name": "Syntakt",
-    "status": "open",
-    "summary": "Twelve analog and digital tracks. No public firmware research yet.",
+    "status": "research",
+    "summary": "OS 1.40A and 1.42 files documented and rebuilt byte-identical; modified builds boot on a unit and the stock 1.42 file returns it to stock. No shared core yet.",
     "steps": {
-      "format": "open",
-      "rebuild": "open",
-      "boot": "open",
+      "format": "done",
+      "rebuild": "done",
+      "boot": "done",
       "core": "open",
       "mods": "open"
     },
@@ -307,7 +369,53 @@
       "encoders": 8,
       "trigs": 16,
       "knobs": 2
-    }
+    },
+    "firmware": {
+      "releases": [
+        {
+          "version": "1.40A",
+          "files": [
+            {
+              "name": "Syntakt_OS1.40A.syx",
+              "sha256": "266a5a3022ff565bf470173147b7f3005b7da8ef80724b6271836818ac2b5828"
+            }
+          ]
+        },
+        {
+          "version": "1.42",
+          "files": [
+            {
+              "name": "Syntakt_OS1.42.syx",
+              "sha256": "ded3c59fdb909eb9e2c3307b30a486452c8fa6947b12c14e0ce35a187b7f37c1"
+            }
+          ]
+        }
+      ],
+      "flash": "Elektron Transfer over USB: set MIDI IN and OUT to the device, drop the .syx on and confirm on the device.",
+      "recovery": "Hold FUNC while powering on to open the STARTUP menu, choose TRIG 4 (OS UPGRADE), then send the owner's stock .syx from Transfer's SysEx Transfer / OS Upgrade via device startup menu over MIDI DIN; USB does not work there. Documented by Synthack-OS; this startup-menu path is not yet tested on our unit."
+    },
+    "research": [
+      {
+        "label": "elektron-firmware-tool",
+        "url": "https://github.com/mischa85/elektron-firmware-tool",
+        "note": "Writer. Reads Syntakt OS files (device 0x16). Unchanged -r repack is byte-identical (cmp) to stock OS 1.40A and 1.42, checked 2026-10-12."
+      },
+      {
+        "label": "Synthack-OS",
+        "url": "https://github.com/Angelo-politek/Synthack-OS",
+        "note": "MIT mods for OS 1.41 as patch.json with expected-byte hashes, plus modarea/vparams infrastructure. The project states seven mods run on hardware, and it documents recovery over MIDI DIN. No firmware hosted."
+      },
+      {
+        "label": "Synthack-OS 1.42 port",
+        "url": "https://github.com/Rxuting/Synthack-OS/tree/os-1.42",
+        "note": "master-comp ported to OS 1.42; the build booted and ran on the author's Syntakt (2026-10-11). No firmware hosted."
+      },
+      {
+        "label": "digiemu Syntakt port",
+        "url": "https://github.com/irpina/digiemu/pull/33",
+        "note": "Emulator boots OS 1.40A to the live UI with the second ColdFire rendering its digital machines; analog tracks and the FPGA are not modelled. Open PR."
+      }
+    ]
   },
   {
     "schemaVersion": 1,
@@ -335,11 +443,11 @@
     "order": 80,
     "name": "Analog Rytm",
     "status": "research",
-    "summary": "OS 1.74 file format documented; stock file rebuilds byte-identical; from-source replacement OS in progress.",
+    "summary": "OS 1.73 and 1.74 formats documented and rebuilt byte-identical; modified 1.73 and a from-source 1.74 replacement OS boot on hardware; stock recovers both over MIDI DIN.",
     "steps": {
       "format": "done",
       "rebuild": "done",
-      "boot": "started",
+      "boot": "done",
       "core": "open",
       "mods": "open"
     },
@@ -352,16 +460,41 @@
     "variants": [
       "MKII"
     ],
+    "firmware": {
+      "releases": [
+        {
+          "version": "1.73",
+          "files": [
+            {
+              "name": "Analog-Rytm_MKII_OS1.73.syx",
+              "sha256": "8ad671087ec30433d5407c7380d2396e0915ab931c5d3dd18a78bf284d3d1e52"
+            }
+          ]
+        }
+      ],
+      "flash": "Elektron Transfer over USB: set MIDI IN and OUT to the device, drop the .syx on and press YES on the device. It restarts by itself.",
+      "recovery": "Recovery mode is MIDI DIN ONLY — it does NOT work over USB: the startup menu never enumerates USB, so once a non-stock OS is on the unit a MIDI-DIN sender is REQUIRED (a USB-MIDI interface, or a hand-wired FT232RL serial adapter at 31250 baud: +5V/220 ohm to DIN 4, TXD/220 ohm to DIN 5, GND to DIN 2, raw .syx). Hold FUNC at power-on, TRIG 4 (OS UPGRADE), send the owner's stock .syx."
+    },
     "research": [
       {
         "label": "rytm-fw-re",
         "url": "https://github.com/ethernet8023/rytm-fw-re",
-        "note": "Static analysis of OS 1.74: container/transport format, boot contract, startup-menu recovery path, display pipeline (FPGA fifo bridge protocol), plus a from-source replacement OS that builds and wraps into a flashable syx. No firmware hosted."
+        "note": "Static analysis of OS 1.74: format, boot contract, startup-menu recovery, display pipeline, plus a from-source replacement OS. Hardware-verified: flashed over USB, booted (display + memory probe), recovered to stock 1.74 over MIDI DIN via a hand-wired FT232RL adapter. No firmware hosted."
       },
       {
         "label": "elektron-firmware-tool",
         "url": "https://github.com/mischa85/elektron-firmware-tool",
         "note": "Writer. Verified on OS 1.74: unchanged repack is byte-identical to the stock file (sysex re-encode and aPLib recompression included); section replacement round-trips exactly on re-extract."
+      },
+      {
+        "label": "rytm-mods-src",
+        "url": "https://github.com/ConnorWay32/rytm-mods-src",
+        "note": "MrScruff's OS 1.73 mod build, published with permission. make verify rebuilds the stock .syx byte for byte and asserts that only MAIN OS changes; eight of its twelve mods are marked hardware-verified by their author. No firmware hosted."
+      },
+      {
+        "label": "rytm-mods-boot-report",
+        "url": "https://github.com/ConnorWay32/rytm-mods-boot-report",
+        "note": "Stock OS 1.73 .syx rebuilt byte-identical by elektron-firmware-tool (matching SHA-256). A build of rytm-mods-src cf5ac006 then booted on an MKII with 0008-filter-hz working, and the stock .syx restored it. Also shows 1.74 to 1.73 over USB and DIN. Hashes and photos only."
       }
     ]
   },

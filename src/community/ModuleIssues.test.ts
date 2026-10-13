@@ -14,7 +14,7 @@ function renderIssues(data: IssueTracker | null, options: Partial<ReturnType<typ
 const tracker: IssueTracker = { tracker: 'github', issues: [issue], openCount: 12, closedCount: 3, hasMore: true, allUrl: 'https://github.com/repeat98/modwerk/issues' }
 
 describe('module issue presentation', () => {
-  it('marks a positive open count yellow and zero green with a readable label', () => {
+  it('keeps the total report count readable without declaring confirmation', () => {
     expect(renderToStaticMarkup(createElement(IssueCount, { count: 12 }))).toContain('data-open="true" aria-label="12 open issues">12</span>')
     expect(renderToStaticMarkup(createElement(IssueCount, { count: 0 }))).toContain('data-open="false" aria-label="0 open issues">0</span>')
     expect(renderToStaticMarkup(createElement(IssueCount, { count: 1 }))).toContain('aria-label="1 open issue"')
@@ -45,8 +45,19 @@ describe('module issue presentation', () => {
 
   it('keeps closed history available and distinguishes all closed from no reports', () => {
     expect(renderIssues({ ...tracker, issues: [], openCount: 0, hasMore: false })).toContain('All reported issues have been closed.')
-    expect(renderIssues({ ...tracker, issues: [], openCount: 0, closedCount: 0, hasMore: false })).toContain('No public bugs have been reported')
+    expect(renderIssues({ ...tracker, issues: [], openCount: 0, closedCount: 0, hasMore: false })).toContain('No public reports have been filed')
     expect(renderIssues({ ...tracker, issues: [{ ...issue, status: 'closed' }], openCount: 0 }, { status: 'closed' })).toContain('>Closed</span>')
+  })
+
+  it('distinguishes waiting reports, confirmed bugs and closure outcomes', () => {
+    const render = (extra: Partial<PublicModuleIssue>) => renderToStaticMarkup(createElement(ModuleIssueCard,{issue:{...issue,...extra}}))
+    expect(render({triage_state:'needs_info',triage_note:'Which track?',report_kind:'bug'})).toContain('Waiting for reporter')
+    expect(render({triage_state:'needs_info'})).toContain('data-confirmed="false"')
+    expect(render({triage_state:'needs_info',confirmed_at:'2026-10-12',affected_version:null})).toContain('data-confirmed="true"')
+    expect(render({triage_state:'confirmed',confirmed_at:'2026-10-12',affected_version:'0.1.0'})).toContain('Affected version: 0.1.0')
+    expect(render({status:'closed',closure_reason:'insufficient_information'})).toContain('Insufficient information')
+    expect(render({status:'closed',closure_reason:'fixed'})).toContain('>Fixed</span>')
+    expect(render({report_kind:'feature'})).toContain('Suggestion')
   })
 
   it('shows loading and retry states without declaring unloaded issues closed', () => {

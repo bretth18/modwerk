@@ -1,0 +1,107 @@
+{
+  "firmware": "1.40C",
+  "imageSha256": "f50074440b98ca4d52735223bbf56945bcfbd8ee8660347293dfa79a91344d2d",
+  "emulatorSha256": "3ce6cebde0de2c61edc4228436338a1e115ce227373351a5ca84aefc9cf90acb",
+  "setup": "Actual octemu/QEMU MKII LCD; locally generated firmware, disposable copied card and NVRAM; hardware untested. Selection opens FLEX directly, loads SINE440, then chromatic chord and PTCH movement. TRACK double-tap reopening was not confirmed.",
+  "palette": {
+    "on": [
+      255,
+      255,
+      255
+    ],
+    "off": [
+      0,
+      0,
+      0
+    ]
+  },
+  "scale": 6,
+  "plan": "walk.jsonl",
+  "planSha256": "9300eb2494e7839c94019c1949d4bbbc4d27d80c2c3ebb842dfff58a08748d6e",
+  "screenshots": [
+    {
+      "file": "ot-flex-direct.png",
+      "caption": "Native FLEX pool opened by selecting POLY",
+      "sha256": "9d75de9e80cceeb40fff070343e72a04728cd9c8b93ec2b495f63c7e9f915b7b",
+      "lcd_sha256": "2ecec101abd5d056f995c4a87868e19f38b38ce16261e8eaabd7262ee34c25a7",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "ot-browser.png",
+      "caption": "Stock FLEX file browser",
+      "sha256": "6a5bb1fd24d650973890b23c19da0ec46b1749c24622104aa5cfe3fbd74a0910",
+      "lcd_sha256": "071e4bd315b2333181be52c2af5934141ffa9fa22c74c7a58ab208efcd9a118c",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "ot-file-loaded.png",
+      "caption": "Loaded sample in FLEX slot 1",
+      "sha256": "d171df1aae097ce71bb5b074ed7d526f1edd37fd6acb25a0f5d38698ab86c13b",
+      "lcd_sha256": "3a5b4f5e503f7190d2c646e8b5dbdac18b571351900bc30e613db22b0a38cba6",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "ot-assigned.png",
+      "caption": "SRC/POLY after leaving the sample browser",
+      "sha256": "ebb5e1105939dae3340736207499d5f7d419243014588aeed19ce27011475196",
+      "lcd_sha256": "77460f7c5fe77733d8dafc5617708612c6810a536c6e048d27919aea94605e1e",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "ot-sound-chord.png",
+      "caption": "Chromatic chord with PTCH unchanged",
+      "sha256": "a723ca734c74f89abcbb1984e0849645a84061fa253f8228f88cffad07f280ab",
+      "lcd_sha256": "e592e2b5a28a2850f820e140d3e315aae179e8cf85628ef13ec5a14f6b348293",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "ot-tuned-chord.png",
+      "caption": "PTCH changed while chord owners remain held",
+      "sha256": "100acbc22217ff077e5f653bf8c2b8fa8f03e841c2652913814170bd15a52af8",
+      "lcd_sha256": "76140d39c2865574917063d2164ae34f6405af2cda998e7ca177226e855cf84d",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    }
+  ]
+}

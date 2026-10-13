@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "candidateVersion": "0.1.5-experimental",
+  "machineSourceSha256": "90f9ddb5c2a4cee47e0334c3cd35a7e92d42b0ee37eb3bbc8062cc7821e6aeb4",
+  "runtimeSha256": "f73a9f51649ec5735e83a384b91dbc81823a69e264c95e146101bfbdd983e581",
+  "chooserCases": 512,
+  "parts": 4,
+  "tracks": 8,
+  "partCopies": 2,
+  "reselectCases": 32,
+  "otherMachineRows": 5,
+  "registersAndStackPreserved": true,
+  "unrelatedPartBytesPreserved": true,
+  "physicalHardware": "not tested",
+  "baselineRegression": {
+    "version": "0.1.4-experimental",
+    "machineSourceSha256": "07dc37b1c0bd0f061aabe27782c67df9dcd22769e9c080efbfdf354530d83b8d",
+    "result": "fails the exact borrowed-parameter restore assertion for signed T1/Part 1"
+  }
+}

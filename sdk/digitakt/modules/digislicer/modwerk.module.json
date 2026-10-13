@@ -250,7 +250,7 @@
       "path": "media/thumbnail.svg",
       "kind": "thumbnail",
       "caption": "DIGISLICER thumbnail",
-      "alt": "Abstract sampling illustration for DIGISLICER",
+      "alt": "A sample waveform divided by slice boundaries.",
       "credit": "Modwerk",
       "license": "GPL-3.0-or-later",
       "source": "Original Modwerk illustration"

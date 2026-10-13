@@ -77,6 +77,84 @@ order. The upstream [verification record](../../../docs/STARTUP_ANIMATION.md)
 describes the Modwerk artwork; the VAC artwork has not yet been captured in
 the emulator or run on a unit.
 
+## Base edition
+
+The Elekloader base replaces the stock logo loop with its own startup,
+[`boot_anim.c`](../../machines/octatrack/elekloader/boot_anim.c): **docking**. The
+mark's ninth dot is a module arriving. First the mark flies in: every pixel of the
+frame and the tiles comes from far beyond the screen and lands, the frame clockwise,
+the tiles from the middle one round the ring. The lamps stay dark while the mark
+builds. The empty corner, the socket, blinks, and a light far off at trig 1 answers. The module runs along the
+trig row, turns up through the keys under the screen, enters it from below and docks;
+the screen's rows shudder. Its wave bends the screen like a lens as it passes,
+reveals MODWERK and **NEW / BETA** and rolls on across the whole panel. It takes 3.5 s and ends on the same frame each
+time (`base_art.final_pixels`).
+
+Screen and lamps are one plane: the LCD sits in the panel (lamp positions from the
+stock lamp table at run time, 54.2 hundredths of a millimetre per pixel), so the
+module and the wave cross the screen's edge without a break. Those two are all the
+lamps show, so the module's run and its wave carry the panel on their own. The lamps are white on
+an MKII. The startup sets channel A's colour to white at the panel's LED intensity
+and repeats the firmware's own pre-logo colour call before it returns. An MKI has
+fixed colours, so there they are red.
+
+The base has its own compact art in `base.json`, with room between the elements: the
+mark at 29 px (the same frame, 3 x 3 grid of 5 px tiles and detached tile), MODWERK
+at 11 px tall, NEW and BETA in a small 7 px type, and where each sits. Since
+the 12 October 2026 merge of main the base uses the beta docking edition's art below
+(owner: the newer one); the version is in `boot_art.h` but not on the screen.
+`base_art.py` writes it as C data (`boot_art.h`) for `build_core.py` and gives the
+final frame to the tests. Public builds are unchanged: they keep `artwork.json`, and
+`build.py` still writes only the two graphic tables above.
+
+## Beta docking edition
+
+Beta testers and verified administrators get the Elekloader migration's 3.5-second
+docking score in new Octatrack builds: flying mark, arriving module, screen wave,
+and matching panel lamps. The compact screen says **NEW / BETA**; it does not
+claim that the complete new Elekloader base is installed. Ordinary builds retain
+the original two graphics writes and 2.8-second stock renderer.
+
+`boot_anim.c`, `base.json` and `base_art.py` are ported from migration commit
+`fbef9d564`. `hooks.s` adapts the score to the existing runtime rather than importing
+the migration's loader, DSP, USB or module infrastructure. The two six-byte stock
+sites are fingerprint-guarded, and the compositor's instruction is recovered from
+verified local firmware into an empty replay slot. Drawing preserves all live
+registers and flags. The rom_gate.s adapter occupies the first 80 bytes of the
+verified descriptor cave (0x400d6b20..0x400d6b70); beta descriptor clones start
+80 bytes later, leaving the utility modules' fixed overflow sites intact. Its
+active word is zero in the initial MAIN image, so early compositor
+calls replay the local stock instruction before the RAM runtime is unpacked.
+Standalone MIDI Scenes uses 0x400d7490..0x400d74e0 inside the documented,
+unreferenced 0xff run after the scene-mute helper. Its live zero-filled CC cache
+at 0x400d7500..0x400d7600 stays intact. Only the score sets the active word while drawing; both replay slots are empty in the shipped
+packages. Keep persistent hooks inside the protected image caves: the appended
+early loader area is reused by stock RAM and is no longer executable during
+startup. Outside startup the drawing hook only replays the stock path.
+State is explicitly initialized in the loaded data, because this runtime loader
+does not initialize an added BSS. Existing runtime and staging bounds still apply;
+the sample-memory reservation is unchanged. The logger's configuration and source
+fingerprints identify the beta startup package.
+
+Compile only authored sources, without any firmware:
+
+```sh
+python3 -B sdk/runtime/startup/package.py --output src/engine/assets/beta-startup.json
+```
+
+The SDK host test covers MKI/MKII final pixels, frame bounds, LED choreography
+and colour restoration. With original firmware and the reviewed native tools,
+run the separate private composition and boot checks:
+
+```sh
+node scripts/verify-startup-beta-native.mjs /private/original.bin /private/new-beta-check
+python3 scripts/verify-startup-beta.py --image /private/new-beta-check/beta-MAIN.bin --stock /private/new-beta-check/stock-MAIN.bin --version 3.0.0 --emulator /private/ot_emu
+```
+
+The native verifier deliberately keeps test images only in the requested private
+directory. Never commit these images. See [the startup release record](../../../docs/STARTUP_ANIMATION.md)
+for evidence and limits of this port.
+
 ## Authorship and licence
 
 VAC logo and wordmark © Virtuous Audio Corporation. Encoders © 2026 Modwerk

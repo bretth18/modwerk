@@ -2,25 +2,37 @@
   "schemaVersion": 1,
   "machine": "digitakt",
   "moduleId": "digieq",
-  "moduleVersion": "1.0.1-experimental",
-  "capturedAt": "2026-10-07",
+  "moduleVersion": "1.0.2-experimental",
+  "capturedAt": "2026-10-11",
   "firmware": "1.53",
-  "imageSha256": "4542b2464429b97b77205ed7c793d39c94a5b3bce2116896411369f0e2a07e80",
+  "imageSha256": "d8717d1d10418c6833d8312ba266d96fa7e3ecb03c78c3a927f2e45caeb5b6c5",
   "stockSha256": "9bdd44bb6102fb25c143cfab97bc92b7a89c463f795d3112dce89771e29bcc92",
   "source": {
     "repository": "https://github.com/gdeo607/digi1_mods",
     "revision": "35bacb3730d108e4dc48a7bd6de4c99ae9b161e6",
-    "path": "mods/digieq"
+    "path": "mods/digieq",
+    "modwerkPatch": {
+      "version": "1.0.2-experimental",
+      "runtimeSourceSha256": "eeeb9242b68a5c0770403caee5feba821fe7960727215a701fe93426e60319af",
+      "files": {
+        "build.json": "eed127e49855b9d951ba174e94c45e59ef8f64383cac8f40a2a227bc0e659bec",
+        "src/eq.c": "78f8ab428d73081f466c92a1ea733eea0bcc71bdbe5d0c442ae8c436f14087d2",
+        "src/eq_dsp.s": "90cefaacc9c78655a413af394719a1db2989cc19bfcb6b6cc15cf4c6282ceda4",
+        "src/eq_glue.s": "2010f673c22d55bc600b6ab9f848b24a05881e1d30fc22d4ddeec49a81ad9451",
+        "src/eq_tables.h": "774601d4ea77b02e8aad6a8350d3fcc27d85d257217300e29d253483e472f15a",
+        "src/kitstore.h": "cbea4245b4af8cded9ab3ad7bb656a0df7c33681fcdbbf74954ce551ac880aec"
+      }
+    }
   },
   "kit": {
-    "version": "0.4.0",
-    "lockSha256": "b9bc224eee31d1fda75841ce78fe5a28d5cbfee79071385329ca2517a247c04c"
+    "version": "0.5.0",
+    "lockSha256": "3a73138c7383a2c5d4af01b5a5e5189ae8fc1e25c7027c9fe39717a461560689"
   },
   "catalog": {
-    "revision": "a1be3ce0c006ea0c46fa82c6f254c11a05d42beb",
-    "sha256": "e207c3ff58fc7f5608d1fced67115406408a4b6202076824cf82cb043dc2d2c1",
-    "cores": 5,
-    "mods": 21
+    "revision": "55fb4937fc92338acce5b2ef73cb783488d0acfd00f65e9d8c0bbf0311792825",
+    "sha256": "440e66a4e7579b4dc1965dfb31f3a3eb57201e72f068cd1b1eb0490249295d91",
+    "cores": 6,
+    "mods": 23
   },
   "build": {
     "modules": [
@@ -31,12 +43,23 @@
       },
       {
         "id": "digieq",
-        "version": "1.0b",
-        "sha256": "af5088bf444de4f1c269e56151805e196277568a96645cf216fc947091162969"
+        "version": "1.0.2-experimental",
+        "sha256": "0c1288ede65771b6a791e25f31f2917747e20bae83b76698839010a312425d3a"
+      },
+      {
+        "id": "digichain",
+        "version": "1.6",
+        "sha256": "819f6045b5ad4deaa720c74f0126d078cc15c019dfcb07710112ac453b65d47d"
+      },
+      {
+        "id": "digimono",
+        "version": "0.13.3-experimental",
+        "sha256": "2800a2b948c074346bfd5b9ba9c081c192c8778d463f358171ebb4d68f920388"
       }
     ],
-    "outputVersion": "D001",
-    "verified": true
+    "outputVersion": "D185",
+    "verified": true,
+    "localReleaseOverride": "Digi EQ compiled from the recorded Modwerk source; companions retain catalogue pins. Source-only export and private recipe materialization produce identical firmware."
   },
   "emulator": {
     "repository": "https://github.com/irpina/digiemu",
@@ -52,7 +75,7 @@
         "unicorn-2.1.4-m68k-fast-mem.patch": "7f79332f318352cbd8055386dbf5149efc801d0663ae2450e33f9f39fed53374",
         "unicorn-2.1.4-m68k-hook-ccr-sync.patch": "56de71acf2adbd5ca2f448095478e65e49fd79d378aeb5b5e4217d2c90f52f4e"
       },
-      "librarySha256": "a83b0d8a588cba2087c08712183df5106b3d2f1670af6024991eb85005e0f184"
+      "librarySha256": "7d4e027659f45c1f231551a3842e327c2329465ddbc28412a139babebd8f3209"
     },
     "python": "3.12.13",
     "platform": "macOS arm64",
@@ -74,47 +97,47 @@
       "press 1"
     ],
     [
-      1100.032,
+      1100.031,
       "press 23"
     ],
     [
-      1200.035,
+      1200.034,
       "release 23"
     ],
     [
-      1500.044,
+      1500.043,
       "release 1"
     ],
     [
-      1600.047,
+      1600.046,
       "press 1"
     ],
     [
-      1700.05,
+      1700.049,
       "press 23"
     ],
     [
-      1800.053,
+      1800.052,
       "release 23"
     ],
     [
-      2100.061,
+      2100.06,
       "release 1"
     ],
     [
-      2200.065,
+      2200.063,
       "press 40"
     ],
     [
-      2300.068,
+      2300.066,
       "release 40"
     ],
     [
-      2600.076,
+      2600.075,
       "press 41"
     ],
     [
-      2700.079,
+      2700.078,
       "release 41"
     ],
     [
@@ -122,7 +145,7 @@
       "press 42"
     ],
     [
-      3100.091,
+      3100.09,
       "release 42"
     ],
     [
@@ -130,59 +153,79 @@
       "press 43"
     ],
     [
-      3500.102,
+      3500.101,
       "release 43"
     ],
     [
-      3800.111,
+      3800.11,
       "press 44"
     ],
     [
-      3900.114,
+      3900.113,
       "release 44"
     ],
     [
-      4200.123,
+      4200.122,
       "press 45"
     ],
     [
-      4300.125,
+      4300.124,
       "release 45"
     ],
     [
-      4600.134,
+      4600.133,
       "press 46"
     ],
     [
-      4700.137,
+      4700.136,
       "release 46"
     ],
     [
-      5000.146,
+      5000.145,
       "press 47"
     ],
     [
-      5100.149,
+      5100.148,
       "release 47"
     ]
   ],
   "captures": [
     {
       "path": "media/eq.png",
-      "sha256": "41f20ad82b551220b5fb9cf3c25c3f1f89f097c04f4d1e7cec069cb7b21f4cbf",
-      "plan": "wait 1000\npress FUNC\ntap LFO\nrelease FUNC\nsnap compressor\npress FUNC\ntap LFO\nrelease FUNC\nsnap eq\ntap A\ntap B\ntap C\ntap D\ntap E\ntap F\ntap G\ntap H\nsnap q-type\n",
-      "atMs": 2083.3946581196583,
-      "requestedAtMs": 2200.06452991453
+      "sha256": "72a3ba9d7b65826c4680967ddfb99ba2ae36a3d0308d34e009ce604a1847eee7",
+      "atMs": 2108.5801282051284,
+      "requestedAtMs": 2200.063247863248,
+      "plan": "wait 1000\npress FUNC\ntap LFO\nrelease FUNC\nsnap compressor\npress FUNC\ntap LFO\nrelease FUNC\nsnap eq\ntap A\ntap B\ntap C\ntap D\ntap E\ntap F\ntap G\ntap H\nsnap q-type\n"
     },
     {
       "path": "media/q-type.png",
-      "sha256": "ecf9e88b553144fd3589c7d1437d14c2ae78c196a46271235eecc3471af3bbcf",
-      "plan": "wait 1000\npress FUNC\ntap LFO\nrelease FUNC\nsnap compressor\npress FUNC\ntap LFO\nrelease FUNC\nsnap eq\ntap A\ntap B\ntap C\ntap D\ntap E\ntap F\ntap G\ntap H\nsnap q-type\n",
-      "atMs": 5400.157051282052,
-      "requestedAtMs": 5400.157051282052
+      "sha256": "ca2960b3a36a2b01f7defb99448e37b7f64263162fba67055ecda30a1c1ae800",
+      "atMs": 5400.156410256411,
+      "requestedAtMs": 5400.156410256411,
+      "plan": "wait 1000\npress FUNC\ntap LFO\nrelease FUNC\nsnap compressor\npress FUNC\ntap LFO\nrelease FUNC\nsnap eq\ntap A\ntap B\ntap C\ntap D\ntap E\ntap F\ntap G\ntap H\nsnap q-type\n"
     }
   ],
   "limitations": [
     "UI-only documentation; no hardware, audio, timing, persistence or stress qualification."
-  ]
+  ],
+  "releaseCatalogVerification": {
+    "sourcePackageCommit": "1107d484c8d7ad84cfff14917b34acdcb83a53e6",
+    "catalogRevision": "94516877d374af1e7c14a69c6c7602773590e8045fd8f3b8c1fcaa47e155f6fc",
+    "catalogSha256": "59c8782d6d6df1a84ad883239da6762631b23ee01eacfcba2490f1d53856980f",
+    "lockSha256": "cc075e189426744a4e57a953c6ad8faf92eec90fa6ebc9c10d363de798535772",
+    "images": [
+      {
+        "os": "1.53",
+        "firmwareSha256": "d8717d1d10418c6833d8312ba266d96fa7e3ecb03c78c3a927f2e45caeb5b6c5",
+        "packageSha256": "0c1288ede65771b6a791e25f31f2917747e20bae83b76698839010a312425d3a",
+        "result": "byte-identical to tested candidate without overrides"
+      },
+      {
+        "os": "1.54",
+        "firmwareSha256": "255990b52f0c293a57c1c4d27b0deedd0a12ed78cc3cedae40f418f1147c67a6",
+        "packageSha256": "7de10c293647ccaa457dfde3b9b8353a35aef452051815869ae545fd07bd8e71",
+        "result": "byte-identical to tested candidate without overrides"
+      }
+    ]
+  }
 }

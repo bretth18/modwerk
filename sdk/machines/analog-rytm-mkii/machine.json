@@ -7,11 +7,26 @@
     "MKII"
   ],
   "status": "research",
-  "summary": "OS 1.74 file format documented; stock file rebuilds byte-identical; from-source replacement OS in progress.",
+  "summary": "OS 1.73 and 1.74 formats documented and rebuilt byte-identical; modified 1.73 and a from-source 1.74 replacement OS boot on hardware; stock recovers both over MIDI DIN.",
+  "firmware": {
+    "releases": [
+      {
+        "version": "1.73",
+        "files": [
+          {
+            "name": "Analog-Rytm_MKII_OS1.73.syx",
+            "sha256": "8ad671087ec30433d5407c7380d2396e0915ab931c5d3dd18a78bf284d3d1e52"
+          }
+        ]
+      }
+    ],
+    "flash": "Elektron Transfer over USB: set MIDI IN and OUT to the device, drop the .syx on and press YES on the device. It restarts by itself.",
+    "recovery": "Recovery mode is MIDI DIN ONLY — it does NOT work over USB: the startup menu never enumerates USB, so once a non-stock OS is on the unit a MIDI-DIN sender is REQUIRED (a USB-MIDI interface, or a hand-wired FT232RL serial adapter at 31250 baud: +5V/220 ohm to DIN 4, TXD/220 ohm to DIN 5, GND to DIN 2, raw .syx). Hold FUNC at power-on, TRIG 4 (OS UPGRADE), send the owner's stock .syx."
+  },
   "steps": {
     "format": "done",
     "rebuild": "done",
-    "boot": "started",
+    "boot": "done",
     "core": "open",
     "mods": "open"
   },
@@ -19,12 +34,22 @@
     {
       "label": "rytm-fw-re",
       "url": "https://github.com/ethernet8023/rytm-fw-re",
-      "note": "Static analysis of OS 1.74: container/transport format, boot contract, startup-menu recovery path, display pipeline (FPGA fifo bridge protocol), plus a from-source replacement OS that builds and wraps into a flashable syx. No firmware hosted."
+      "note": "Static analysis of OS 1.74: format, boot contract, startup-menu recovery, display pipeline, plus a from-source replacement OS. Hardware-verified: flashed over USB, booted (display + memory probe), recovered to stock 1.74 over MIDI DIN via a hand-wired FT232RL adapter. No firmware hosted."
     },
     {
       "label": "elektron-firmware-tool",
       "url": "https://github.com/mischa85/elektron-firmware-tool",
       "note": "Writer. Verified on OS 1.74: unchanged repack is byte-identical to the stock file (sysex re-encode and aPLib recompression included); section replacement round-trips exactly on re-extract."
+    },
+    {
+      "label": "rytm-mods-src",
+      "url": "https://github.com/ConnorWay32/rytm-mods-src",
+      "note": "MrScruff's OS 1.73 mod build, published with permission. make verify rebuilds the stock .syx byte for byte and asserts that only MAIN OS changes; eight of its twelve mods are marked hardware-verified by their author. No firmware hosted."
+    },
+    {
+      "label": "rytm-mods-boot-report",
+      "url": "https://github.com/ConnorWay32/rytm-mods-boot-report",
+      "note": "Stock OS 1.73 .syx rebuilt byte-identical by elektron-firmware-tool (matching SHA-256). A build of rytm-mods-src cf5ac006 then booted on an MKII with 0008-filter-hz working, and the stock .syx restored it. Also shows 1.74 to 1.73 over USB and DIN. Hashes and photos only."
     }
   ],
   "art": {

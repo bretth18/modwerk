@@ -13,7 +13,8 @@ async function hash(bytes: Uint8Array) {
 export function placementOrder<T extends { id: string }>(selected: readonly T[], leading: readonly string[] = []): T[] {
   return [...selected.filter(module => leading.includes(module.id)), ...selected.filter(module => !leading.includes(module.id))]
 }
-export async function composeDescriptors(original: Uint8Array, ids: readonly string[], leading: readonly string[] = []) {
+export async function composeDescriptors(original: Uint8Array, ids: readonly string[], leading: readonly string[] = [], startupReserveBytes = 0) {
+  if (![0,80].includes(startupReserveBytes)) throw new Error('Invalid startup cave reservation.')
   const selected = placementOrder(resolveSelection(ids).filter(module => module.fxId !== undefined), leading)
   if (recipes.schema !== 1 || recipes.revision !== CATALOG_SOURCE.revision || recipes.descriptorBytes !== 0x192 || recipes.cloneStride !== 0x1a0 || recipes.cloneBase !== 0x400d6b20 || recipes.safeCeiling !== 0x400d8000 || recipes.buildTag !== '79') throw new Error('Descriptor recipes do not match the pinned catalog layout.')
   if (await hash(original) !== recipes.sourceSha256) throw new Error('Descriptor composition needs the original OS fingerprint.')
@@ -21,7 +22,7 @@ export async function composeDescriptors(original: Uint8Array, ids: readonly str
   for (const [index, module] of selected.entries()) {
     const recipe = recipes.recipes.find(recipe => recipe.id === module.id)
     if (!recipe || recipe.key !== module.key || recipe.author !== module.author || recipe.fxId !== module.fxId) throw new Error('Descriptor attribution does not match the module catalog.')
-    const address = recipes.cloneBase + index * recipes.cloneStride, donorOffset = recipe.donorAddress - OS_LOAD_ADDRESS
+    const address = recipes.cloneBase + startupReserveBytes + index * recipes.cloneStride, donorOffset = recipe.donorAddress - OS_LOAD_ADDRESS
     if (address + recipes.descriptorBytes > 0x400d7bbc || donorOffset < 0 || donorOffset + recipes.descriptorBytes > original.length) throw new Error('The descriptor clone does not fit its reserved window.')
     const bytes = new Uint8Array(original.subarray(donorOffset, donorOffset + recipes.descriptorBytes))
     if (await hash(bytes) !== recipe.donorSha256) throw new Error('The local descriptor donor fingerprint does not match.')
@@ -50,5 +51,5 @@ export async function composeDescriptors(original: Uint8Array, ids: readonly str
     writes.push({ address: recipe.fx2Slot, guardLength: 4, guardSha256: recipe.slotSha256, bytes: pointer, note: module.name + ' FX2 descriptor pointer' })
     descriptors.push({ id: module.id, key: module.key, address, fxId: recipe.fxId, bytes })
   }
-  return { writes, descriptors, caveCursor: recipes.cloneBase + selected.length * recipes.cloneStride, buildTag: recipes.buildTag }
+  return { writes, descriptors, caveCursor: recipes.cloneBase + startupReserveBytes + selected.length * recipes.cloneStride, buildTag: recipes.buildTag }
 }

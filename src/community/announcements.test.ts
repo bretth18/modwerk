@@ -8,7 +8,7 @@ import { announcementLink } from '../../server/announcements'
 import { SUPPORT_URL } from '../config/support'
 import { notificationLines } from './notification-text'
 import type { BellItem } from './notification-contract'
-import { DEVELOPMENT_DISCORD_URL } from '../config/development-discord'
+import { DEVELOPMENT_DISCORD_URL, DISCORD_INVITE_CAMPAIGN } from '../config/development-discord'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { NotificationList } from './NotificationList'
@@ -189,6 +189,17 @@ describe('operator announcements in the bell', () => {
     expect(draft).toMatchObject({ url: DEVELOPMENT_DISCORD_URL, visibility: 'public' })
     expect((await announce(draft)).status).toBe(201)
     expect((await (await call('/announcements')).json()).items).toEqual([expect.objectContaining({ title: draft.title, excerpt: draft.body, url: DEVELOPMENT_DISCORD_URL })])
+  })
+
+  it('prepares the approved resend with the same copy and link under a fresh unique key', async () => {
+    const { announce, call } = await fixture()
+    const draft = JSON.parse(readFileSync(new URL('../../docs/announcements/discord-community-2026-10-12.draft.json', import.meta.url), 'utf8'))
+    const original = JSON.parse(readFileSync(new URL('../../docs/news/development-discord-announcement.json', import.meta.url), 'utf8'))
+    expect(draft).toEqual({ ...original, slug: DISCORD_INVITE_CAMPAIGN, visibility: 'public' })
+    expect((await (await call('/announcements')).json()).items).toEqual([])
+    expect((await announce(draft)).status).toBe(201)
+    expect((await announce(draft)).status).toBe(409)
+    expect((await (await call('/announcements')).json()).items).toEqual([expect.objectContaining({ title: original.title, excerpt: original.body, url: DEVELOPMENT_DISCORD_URL })])
   })
 
   it('counts public cards for everyone, signed in or not, without storing who saw them', async () => {
