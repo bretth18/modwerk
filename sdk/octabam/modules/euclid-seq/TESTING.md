@@ -344,7 +344,7 @@ VACEUCLID8 (copy, paste, clear, undo, Part save and reload; source
 SHA-256 `0ed556591dc2d081b43bc3608ac28d7800a2316588d1ffdd981c844761605384`,
 `.bin` `7315c9499ab35a6a3ebab3120f6e4c5758612c4acd39bae68514840029360bce`,
 `.syx` `0158e5eca9f877ee0d0e12145eb1344cc3e44d4d4d56c1978058e53e8aaf7e39`)
-has not run on hardware yet. In the emulator that exact image passed 34/34
+ran on one MKII (report below). In the emulator that exact image passed 34/34
 on the MKII and the MKI panel and 54/54 copy checks (MKII); it differs from
 the development image measured above only in the startup artwork. The
 `.syx` main section decodes back to the image.
@@ -362,6 +362,24 @@ slide checks. The `.syx` main section decodes back to the image.
 VACEUCLID6 (LFO destinations and live pulses; source `9bbac30`, main image
 SHA-256 `98de271410f821f006a5e4bd2cdfe4af9b92ac7c417f68e3390aa573e7e1bcc5`)
 did not run on hardware. It has the slide look-ahead defect above.
+
+### 13 October 2026, MKII, bretth18 (functional report, VACEUCLID8)
+
+Private image VACEUCLID8 (hashes above), OS 1.40C, Octatrack MKII. The
+tester was asked to check three things the emulator cannot show and
+reported that they "seem correct":
+
+- Project saves to the card, including one SAVE AS NEW: no save was
+  reported hanging on SAVING.
+- A copied Euclid track, a copied pattern and a copied Part with an EUC
+  LFO destination, then a save and a power cycle: they came back.
+- Pasted tracks playing in time, purple trig keys, and the EUCLID page
+  showing the pasted settings.
+
+Limitations: one unit and one session, a summary report rather than
+step-by-step results; the number of saves, the exact copies made and
+the MKI were not reported. The emulator-only card-write stall above was
+not seen, which does not show that it cannot occur.
 
 ### 9 October 2026, MKII, bretth18 (functional report, VACEUCLID5)
 
