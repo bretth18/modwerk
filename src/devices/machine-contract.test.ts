@@ -7,13 +7,14 @@ import GENERATED from './machines.generated.json'
 const folder = resolve('sdk/machines')
 const profiles = readdirSync(folder, { withFileTypes: true }).filter(entry => entry.isDirectory()).map(entry => JSON.parse(readFileSync(resolve(folder, entry.name, 'machine.json'), 'utf8')))
 const octatrack = () => structuredClone(profiles.find(profile => profile.id === 'octatrack'))
-const syntakt = () => structuredClone(profiles.find(profile => profile.id === 'syntakt'))
+// An open machine with no finished steps, kept independent of any profile's live progress.
+const syntakt = () => ({ ...structuredClone(profiles.find(profile => profile.id === 'syntakt')), status: 'open', steps: { format: 'open', rebuild: 'open', boot: 'open', core: 'open', mods: 'open' }, firmware: undefined, research: undefined })
 
 describe('machine profiles', () => {
   it('validates every machine and matches the generated registry', () => {
     const parsed = profiles.map(parseMachineProfile).sort((a, b) => a.order - b.order)
     expect(parsed.map(profile => profile.id)).toEqual(GENERATED.map(profile => profile.id))
-    expect(parsed.filter(profile => profile.sdk).map(profile => profile.id)).toEqual(['octatrack', 'digitakt', 'digitone'])
+    expect(parsed.filter(profile => profile.sdk).map(profile => profile.id)).toEqual(['octatrack', 'digitakt', 'digitone', 'digitakt-ii'])
   })
 
   it('keeps status, steps and SDK claims consistent', () => {

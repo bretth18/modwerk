@@ -1,0 +1,10 @@
+{
+  "version": "0.1.5-experimental",
+  "date": "2026-10-09",
+  "changes": [
+    "Restore stock FLEX playback and SETUP defaults in both working Part copies before removing the Analog BD marker, preventing invalid borrowed parameters from rejecting the retained bank after a machine switch.",
+    "Cover both SRC SETUP commit paths and the main machine chooser; preserve existing Analog BD patches on reselection and leave unsigned tracks and other Parts untouched.",
+    "808/909 DSP code is byte-identical to 0.1.4. Existing SRC locks, scene targets and LFO destinations remain assigned to their parameter slots and may require adjustment when changing machines.",
+    "Private candidate only. Physical reboot/persistence and the reported Output Matrix sequencer halt remain unverified; no earlier release waiver is extended to this source."
+  ]
+}

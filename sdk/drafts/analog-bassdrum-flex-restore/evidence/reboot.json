@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "candidateVersion": "0.1.5-experimental",
+  "emulatorSha256": "908a0f8deb76fc8ab3cc0968b924db68e108d9b4f54145e7a8facfe6cad0732c",
+  "cases": [
+    {
+      "case": "baseline-switch",
+      "mainOsSha256": "84c5a0fa1101dd531ea4e03cb60224c194cb9b5d8b77fae3754d9412a26b5c91",
+      "actualSrcPanelEvents": true,
+      "freshProcessCs1Boot": true,
+      "postedProjectReload": false,
+      "bankRestored": false,
+      "trackMachinesAfterBoot": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "case": "candidate-switch",
+      "mainOsSha256": "137580f326b6adc3b0d58f2183d530507f1b370c48911b38d5d0cf94d9e96898",
+      "actualSrcPanelEvents": true,
+      "freshProcessCs1Boot": true,
+      "postedProjectReload": false,
+      "bankRestored": true,
+      "trackMachinesAfterBoot": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "case": "baseline-retain-ab",
+      "mainOsSha256": "84c5a0fa1101dd531ea4e03cb60224c194cb9b5d8b77fae3754d9412a26b5c91",
+      "actualSrcPanelEvents": true,
+      "freshProcessCs1Boot": true,
+      "postedProjectReload": false,
+      "bankRestored": true,
+      "trackMachinesAfterBoot": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "physicalHardware": "not tested",
+  "outputMatrix": "not tested"
+}

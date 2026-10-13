@@ -1,0 +1,687 @@
+{
+  "schemaVersion": 1,
+  "kind": "poly8-guarded-builder-regression",
+  "baseCommit": "9ad562bdd9dadea9a72f72042e094592f8a490b6",
+  "historicalRecord": "octabam-7b2984c8.json",
+  "originalOsSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+  "nativeSourceSha256": "a32ed194a288c8847ad0ba110e8bca3bf266ada2227772ef813623b32a21421d",
+  "builderAdaptations": {
+    "tools/build/build_bus.py": {
+      "before": "d53381cb0b931319d62de1493c3292ac3a4b98afae4d64e9b715ed3f740e3289",
+      "after": "e5c96c308a4018c0d0c9cfd2bcc02d64802a1a3b3746c9797c26feb860a39d67"
+    },
+    "tools/remix/schema.py": {
+      "before": "4b66877893b41ea266518bc7fbfb577411735fdf103ff0a2e384173c22a5aaf9",
+      "after": "42630ee5119b7a63cafbc5909c98b43b7aa7e3b6a02fba412c97f251cad78354"
+    },
+    "tools/remix/ledger.py": {
+      "before": "6dedda5e1d9ecc9b812b64ec1265507aa94bfc853f0c8ccc78386b92d7149f68",
+      "after": "73407d159a965671da2255aef5864bd0c745dfa2a600575918f48c40fc170f83"
+    },
+    "tools/remix/platform_build.py": {
+      "before": "26f56a3daafc642fe394f11e86a3d560ebe799c9b2bc249c185536d58057483f",
+      "after": "e72b7a29b45851addecf135ad520db98b66f5e10c5cd354adf37fb52d6c2e42f"
+    }
+  },
+  "selections": [
+    {
+      "moduleIds": [
+        "spectrum"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "ab73c2eb7c658f39eaa5e9d45f91d57c013425153efb6b13c83a44c3040d39d8",
+        "maskedOsSha256": "ab73c2eb7c658f39eaa5e9d45f91d57c013425153efb6b13c83a44c3040d39d8"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "ab73c2eb7c658f39eaa5e9d45f91d57c013425153efb6b13c83a44c3040d39d8",
+        "maskedOsSha256": "ab73c2eb7c658f39eaa5e9d45f91d57c013425153efb6b13c83a44c3040d39d8"
+      }
+    },
+    {
+      "moduleIds": [
+        "spectrum"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "8bd5ffb3662b758f225207f46e56a64fe4430d745c6f2704330ad301de53b64c",
+        "maskedOsSha256": "8bd5ffb3662b758f225207f46e56a64fe4430d745c6f2704330ad301de53b64c"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "8bd5ffb3662b758f225207f46e56a64fe4430d745c6f2704330ad301de53b64c",
+        "maskedOsSha256": "8bd5ffb3662b758f225207f46e56a64fe4430d745c6f2704330ad301de53b64c"
+      }
+    },
+    {
+      "moduleIds": [
+        "modulation"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "e52c97fb39754c4d6845ab62ba7a586700d14e63cc5627b56f925dc7edd11b8a",
+        "maskedOsSha256": "e52c97fb39754c4d6845ab62ba7a586700d14e63cc5627b56f925dc7edd11b8a"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "e52c97fb39754c4d6845ab62ba7a586700d14e63cc5627b56f925dc7edd11b8a",
+        "maskedOsSha256": "e52c97fb39754c4d6845ab62ba7a586700d14e63cc5627b56f925dc7edd11b8a"
+      }
+    },
+    {
+      "moduleIds": [
+        "modulation"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "d2516f8383beb331f0e8ff7fc19ce9671f5e15a75076fca07c4f2611f2e90919",
+        "maskedOsSha256": "d2516f8383beb331f0e8ff7fc19ce9671f5e15a75076fca07c4f2611f2e90919"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "d2516f8383beb331f0e8ff7fc19ce9671f5e15a75076fca07c4f2611f2e90919",
+        "maskedOsSha256": "d2516f8383beb331f0e8ff7fc19ce9671f5e15a75076fca07c4f2611f2e90919"
+      }
+    },
+    {
+      "moduleIds": [
+        "character"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "3f4e38d100aeeaadde7c0f2b4e4e3390bc58c89dffb642cfa12e5af4bc93ee30",
+        "maskedOsSha256": "3f4e38d100aeeaadde7c0f2b4e4e3390bc58c89dffb642cfa12e5af4bc93ee30"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "3f4e38d100aeeaadde7c0f2b4e4e3390bc58c89dffb642cfa12e5af4bc93ee30",
+        "maskedOsSha256": "3f4e38d100aeeaadde7c0f2b4e4e3390bc58c89dffb642cfa12e5af4bc93ee30"
+      }
+    },
+    {
+      "moduleIds": [
+        "character"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "3c87a11a690e8f5dc85229fa91bd118ea1beade71cfc5bd94fb79774347351bd",
+        "maskedOsSha256": "3c87a11a690e8f5dc85229fa91bd118ea1beade71cfc5bd94fb79774347351bd"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "3c87a11a690e8f5dc85229fa91bd118ea1beade71cfc5bd94fb79774347351bd",
+        "maskedOsSha256": "3c87a11a690e8f5dc85229fa91bd118ea1beade71cfc5bd94fb79774347351bd"
+      }
+    },
+    {
+      "moduleIds": [
+        "miniverb"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "e35a2f029feac348391c6bd0666523c5efa443127530c72b90cadcef91a95789",
+        "maskedOsSha256": "e35a2f029feac348391c6bd0666523c5efa443127530c72b90cadcef91a95789"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "e35a2f029feac348391c6bd0666523c5efa443127530c72b90cadcef91a95789",
+        "maskedOsSha256": "e35a2f029feac348391c6bd0666523c5efa443127530c72b90cadcef91a95789"
+      }
+    },
+    {
+      "moduleIds": [
+        "miniverb"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "1ac34fbcd9150b74f67eb1e098ed73194a95d32cb3c172a75ece718643a156ba",
+        "maskedOsSha256": "1ac34fbcd9150b74f67eb1e098ed73194a95d32cb3c172a75ece718643a156ba"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "1ac34fbcd9150b74f67eb1e098ed73194a95d32cb3c172a75ece718643a156ba",
+        "maskedOsSha256": "1ac34fbcd9150b74f67eb1e098ed73194a95d32cb3c172a75ece718643a156ba"
+      }
+    },
+    {
+      "moduleIds": [
+        "tapeecho"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1215051,
+        "osSha256": "705825b260a43a0a69749ab0dc085dfe6130b7fb8d3862a6844e80093704b351",
+        "maskedOsSha256": "e805be5c86f63764631d15c7b1572246b7eac08e7b117df17471259a42a81473"
+      },
+      "after": {
+        "bytes": 1215051,
+        "osSha256": "705825b260a43a0a69749ab0dc085dfe6130b7fb8d3862a6844e80093704b351",
+        "maskedOsSha256": "e805be5c86f63764631d15c7b1572246b7eac08e7b117df17471259a42a81473"
+      }
+    },
+    {
+      "moduleIds": [
+        "tapeecho"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1215051,
+        "osSha256": "89cb8bac1d3c79bdd8f01c723f5160ec107036c64f083279dcdc59c1f0261b8c",
+        "maskedOsSha256": "b2cd596ab24fb142a30995235a116d57dff33ed3d2a4964bd58434c6e43e0e77"
+      },
+      "after": {
+        "bytes": 1215051,
+        "osSha256": "89cb8bac1d3c79bdd8f01c723f5160ec107036c64f083279dcdc59c1f0261b8c",
+        "maskedOsSha256": "b2cd596ab24fb142a30995235a116d57dff33ed3d2a4964bd58434c6e43e0e77"
+      }
+    },
+    {
+      "moduleIds": [
+        "euclid"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1114986,
+        "osSha256": "648c2faf296415e932237fbcffd3277dc03e6bb681ea03a43004db0b9cd2eb63",
+        "maskedOsSha256": "fe11a7d5f8b4250a6803e11d952e20843a281f91dc606fd41055dd6daf3eb27d"
+      },
+      "after": {
+        "bytes": 1114986,
+        "osSha256": "648c2faf296415e932237fbcffd3277dc03e6bb681ea03a43004db0b9cd2eb63",
+        "maskedOsSha256": "fe11a7d5f8b4250a6803e11d952e20843a281f91dc606fd41055dd6daf3eb27d"
+      }
+    },
+    {
+      "moduleIds": [
+        "euclid"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1114986,
+        "osSha256": "b39327052c92d526d5401a47333750c8c088f7892d4fcc8ed3c63a17412c21aa",
+        "maskedOsSha256": "13524ea309dc0cec57bf502d8244d2f97425db836eef7cd623210588d6e717b0"
+      },
+      "after": {
+        "bytes": 1114986,
+        "osSha256": "b39327052c92d526d5401a47333750c8c088f7892d4fcc8ed3c63a17412c21aa",
+        "maskedOsSha256": "13524ea309dc0cec57bf502d8244d2f97425db836eef7cd623210588d6e717b0"
+      }
+    },
+    {
+      "moduleIds": [
+        "repitch"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "0639f301725e13f76ffd11e8ba6dbc12945f77c46f7a1e6e9d906beb904ca182",
+        "maskedOsSha256": "0639f301725e13f76ffd11e8ba6dbc12945f77c46f7a1e6e9d906beb904ca182"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "0639f301725e13f76ffd11e8ba6dbc12945f77c46f7a1e6e9d906beb904ca182",
+        "maskedOsSha256": "0639f301725e13f76ffd11e8ba6dbc12945f77c46f7a1e6e9d906beb904ca182"
+      }
+    },
+    {
+      "moduleIds": [
+        "repitch"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "f2555851696a0da70e63d434fe6ca7d877061000c990dadde925014f17dc2482",
+        "maskedOsSha256": "f2555851696a0da70e63d434fe6ca7d877061000c990dadde925014f17dc2482"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "f2555851696a0da70e63d434fe6ca7d877061000c990dadde925014f17dc2482",
+        "maskedOsSha256": "f2555851696a0da70e63d434fe6ca7d877061000c990dadde925014f17dc2482"
+      }
+    },
+    {
+      "moduleIds": [
+        "tapehead"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "3e6e192dbd2ff26ecb2421e13fbdae14c896edd1ccc3743b227950efb46ded19",
+        "maskedOsSha256": "3e6e192dbd2ff26ecb2421e13fbdae14c896edd1ccc3743b227950efb46ded19"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "3e6e192dbd2ff26ecb2421e13fbdae14c896edd1ccc3743b227950efb46ded19",
+        "maskedOsSha256": "3e6e192dbd2ff26ecb2421e13fbdae14c896edd1ccc3743b227950efb46ded19"
+      }
+    },
+    {
+      "moduleIds": [
+        "tapehead"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "a1262231396fd46c228bb67f4a7c286dc3889ce20d2bcb0a9bdd5fcef061d24f",
+        "maskedOsSha256": "a1262231396fd46c228bb67f4a7c286dc3889ce20d2bcb0a9bdd5fcef061d24f"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "a1262231396fd46c228bb67f4a7c286dc3889ce20d2bcb0a9bdd5fcef061d24f",
+        "maskedOsSha256": "a1262231396fd46c228bb67f4a7c286dc3889ce20d2bcb0a9bdd5fcef061d24f"
+      }
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1266167,
+        "osSha256": "99d16c36d3acf79ef7729c0fdec5c1281598ae4435cf24ca0a13524aa57c0722",
+        "maskedOsSha256": "7e6045eac426f13710821daf6eda130c416d18cc2e6d05ca9144345cb46e4d26"
+      },
+      "after": {
+        "bytes": 1266167,
+        "osSha256": "99d16c36d3acf79ef7729c0fdec5c1281598ae4435cf24ca0a13524aa57c0722",
+        "maskedOsSha256": "7e6045eac426f13710821daf6eda130c416d18cc2e6d05ca9144345cb46e4d26"
+      }
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1266167,
+        "osSha256": "229c79c4b8fb00412e3407786353b16fcaa5eb890e5bfc97cee85df37aff6f9c",
+        "maskedOsSha256": "e955c44a5fa4de6356ab572a8e1d5fd7195120c6a45cd6d0176134a6e8d16dc1"
+      },
+      "after": {
+        "bytes": 1266167,
+        "osSha256": "229c79c4b8fb00412e3407786353b16fcaa5eb890e5bfc97cee85df37aff6f9c",
+        "maskedOsSha256": "e955c44a5fa4de6356ab572a8e1d5fd7195120c6a45cd6d0176134a6e8d16dc1"
+      }
+    },
+    {
+      "moduleIds": [
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1115534,
+        "osSha256": "559ebb7cf24a2e5723bb7acf6bab4c0e2efa3f75e25373483e48fe5d9ab99942",
+        "maskedOsSha256": "6b8571929e435b8a970d4e6f1890df94c8ac4cc9af6ed757f089fc2d952814d9"
+      },
+      "after": {
+        "bytes": 1115534,
+        "osSha256": "559ebb7cf24a2e5723bb7acf6bab4c0e2efa3f75e25373483e48fe5d9ab99942",
+        "maskedOsSha256": "6b8571929e435b8a970d4e6f1890df94c8ac4cc9af6ed757f089fc2d952814d9"
+      }
+    },
+    {
+      "moduleIds": [
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1115534,
+        "osSha256": "013330b92b2df592b9faa5d6e242ec70b3580d061bf6fb4045a45d5e591a8739",
+        "maskedOsSha256": "bd880d0069eab1ff42e6498d4bcd58af7764bd57d42ea96c96a179fc24261872"
+      },
+      "after": {
+        "bytes": 1115534,
+        "osSha256": "013330b92b2df592b9faa5d6e242ec70b3580d061bf6fb4045a45d5e591a8739",
+        "maskedOsSha256": "bd880d0069eab1ff42e6498d4bcd58af7764bd57d42ea96c96a179fc24261872"
+      }
+    },
+    {
+      "moduleIds": [
+        "quantizer"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1115052,
+        "osSha256": "4c1cb413507c74263cba2d5acb408487a257eab87de71cdad67ac0fe25e043c6",
+        "maskedOsSha256": "872df7bbe7fad641c23177484ed7d121c4b0374792d012e1c67b62b613f0d9ed"
+      },
+      "after": {
+        "bytes": 1115052,
+        "osSha256": "4c1cb413507c74263cba2d5acb408487a257eab87de71cdad67ac0fe25e043c6",
+        "maskedOsSha256": "872df7bbe7fad641c23177484ed7d121c4b0374792d012e1c67b62b613f0d9ed"
+      }
+    },
+    {
+      "moduleIds": [
+        "quantizer"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1115052,
+        "osSha256": "ac472c428b05c3fadfa6f992e80bf0f34b0dd8a6edc67c8dc6758db1f222a038",
+        "maskedOsSha256": "b004d5cab4414576b6a586ec047b61c048ca512a5a3e9ac64066a9de024056b1"
+      },
+      "after": {
+        "bytes": 1115052,
+        "osSha256": "ac472c428b05c3fadfa6f992e80bf0f34b0dd8a6edc67c8dc6758db1f222a038",
+        "maskedOsSha256": "b004d5cab4414576b6a586ec047b61c048ca512a5a3e9ac64066a9de024056b1"
+      }
+    },
+    {
+      "moduleIds": [
+        "previewvol"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "687b86044f3638644c44f63a2765af9241885a8d49796ab7af8c3f57cc43b643",
+        "maskedOsSha256": "687b86044f3638644c44f63a2765af9241885a8d49796ab7af8c3f57cc43b643"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "687b86044f3638644c44f63a2765af9241885a8d49796ab7af8c3f57cc43b643",
+        "maskedOsSha256": "687b86044f3638644c44f63a2765af9241885a8d49796ab7af8c3f57cc43b643"
+      }
+    },
+    {
+      "moduleIds": [
+        "previewvol"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "3900e54e9154d66df6001b0f96da2ca07c42bf5c7be7f1157ddd9a071601f2cc",
+        "maskedOsSha256": "3900e54e9154d66df6001b0f96da2ca07c42bf5c7be7f1157ddd9a071601f2cc"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "3900e54e9154d66df6001b0f96da2ca07c42bf5c7be7f1157ddd9a071601f2cc",
+        "maskedOsSha256": "3900e54e9154d66df6001b0f96da2ca07c42bf5c7be7f1157ddd9a071601f2cc"
+      }
+    },
+    {
+      "moduleIds": [
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "a5c97fe6734b9f39e4ba58d8b8ff61cb009fedea730697aa05e89d77b89f7429",
+        "maskedOsSha256": "a5c97fe6734b9f39e4ba58d8b8ff61cb009fedea730697aa05e89d77b89f7429"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "a5c97fe6734b9f39e4ba58d8b8ff61cb009fedea730697aa05e89d77b89f7429",
+        "maskedOsSha256": "a5c97fe6734b9f39e4ba58d8b8ff61cb009fedea730697aa05e89d77b89f7429"
+      }
+    },
+    {
+      "moduleIds": [
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812",
+        "maskedOsSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812",
+        "maskedOsSha256": "2ca87b1313e1f6a1776eb11314dfd2082ec273fad3fa8c0432dc23a35ab59812"
+      }
+    },
+    {
+      "moduleIds": [
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "a50b99cf373cca589f97e94d1ac8e6c9c777c5aa9a17777edbbba722d9dbcf4c",
+        "maskedOsSha256": "a50b99cf373cca589f97e94d1ac8e6c9c777c5aa9a17777edbbba722d9dbcf4c"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "a50b99cf373cca589f97e94d1ac8e6c9c777c5aa9a17777edbbba722d9dbcf4c",
+        "maskedOsSha256": "a50b99cf373cca589f97e94d1ac8e6c9c777c5aa9a17777edbbba722d9dbcf4c"
+      }
+    },
+    {
+      "moduleIds": [
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1112560,
+        "osSha256": "4fd5fcb49ed17cd4e707d407a6e42a64ec30b50aefaad3b1eeb1bb804493aef0",
+        "maskedOsSha256": "4fd5fcb49ed17cd4e707d407a6e42a64ec30b50aefaad3b1eeb1bb804493aef0"
+      },
+      "after": {
+        "bytes": 1112560,
+        "osSha256": "4fd5fcb49ed17cd4e707d407a6e42a64ec30b50aefaad3b1eeb1bb804493aef0",
+        "maskedOsSha256": "4fd5fcb49ed17cd4e707d407a6e42a64ec30b50aefaad3b1eeb1bb804493aef0"
+      }
+    },
+    {
+      "moduleIds": [
+        "spectrum",
+        "modulation",
+        "character",
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "error": "SIDECHAIN_COMPRESSOR sc_cf at 0x400d7c80 not free"
+      },
+      "after": {
+        "error": "SIDECHAIN_COMPRESSOR sc_cf at 0x400d7c80 not free"
+      }
+    },
+    {
+      "moduleIds": [
+        "spectrum",
+        "modulation",
+        "character",
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "error": "REPITCH repitch at 0x400d7980 not free"
+      },
+      "after": {
+        "error": "REPITCH repitch at 0x400d7980 not free"
+      }
+    },
+    {
+      "moduleIds": [
+        "spectrum",
+        "modulation",
+        "character",
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "error": "SIDECHAIN_COMPRESSOR sc_cf at 0x400d7c80 not free"
+      },
+      "after": {
+        "error": "SIDECHAIN_COMPRESSOR sc_cf at 0x400d7c80 not free"
+      }
+    },
+    {
+      "moduleIds": [
+        "spectrum",
+        "modulation",
+        "character",
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "error": "REPITCH repitch at 0x400d7980 not free"
+      },
+      "after": {
+        "error": "REPITCH repitch at 0x400d7980 not free"
+      }
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1114986,
+        "osSha256": "dd4ca2aa8fdff3273abe3dbed6b600d9bf7adf87895e6bca802cb3309383db90",
+        "maskedOsSha256": "671403e4ffe58cefd579f4a676fcc511e0f5083fe65288424b8795ae0550f7b0"
+      },
+      "after": {
+        "bytes": 1114986,
+        "osSha256": "dd4ca2aa8fdff3273abe3dbed6b600d9bf7adf87895e6bca802cb3309383db90",
+        "maskedOsSha256": "671403e4ffe58cefd579f4a676fcc511e0f5083fe65288424b8795ae0550f7b0"
+      }
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "repitch",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1114986,
+        "osSha256": "444476936d2c8082e2771a64c3d340f6b8222386db5536560f34c0e278ad5fbd",
+        "maskedOsSha256": "16db456c3a8176ebb062fae2985fc651f017c868c9a78d588743bf2c99f66ccd"
+      },
+      "after": {
+        "bytes": 1114986,
+        "osSha256": "444476936d2c8082e2771a64c3d340f6b8222386db5536560f34c0e278ad5fbd",
+        "maskedOsSha256": "16db456c3a8176ebb062fae2985fc651f017c868c9a78d588743bf2c99f66ccd"
+      }
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1115534,
+        "osSha256": "974bc21cd9a2ec9deeaf45f5618ad47fe8c9b8ab8d30fb18491fb8af5b80c517",
+        "maskedOsSha256": "d10454c6ca815d49cb3a9d2e80ce8a2832ba67dae17d31601df183fa17778ac4"
+      },
+      "after": {
+        "bytes": 1115534,
+        "osSha256": "974bc21cd9a2ec9deeaf45f5618ad47fe8c9b8ab8d30fb18491fb8af5b80c517",
+        "maskedOsSha256": "d10454c6ca815d49cb3a9d2e80ce8a2832ba67dae17d31601df183fa17778ac4"
+      }
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1115534,
+        "osSha256": "14bd6bacd86c2b2b0183917c5dd421843bb20a04232dce919606bae3c3aea7ea",
+        "maskedOsSha256": "0cd1e172e899f09f3466ce85f282873a64b0b12f89bf4facc615f3776dca68b7"
+      },
+      "after": {
+        "bytes": 1115534,
+        "osSha256": "14bd6bacd86c2b2b0183917c5dd421843bb20a04232dce919606bae3c3aea7ea",
+        "maskedOsSha256": "0cd1e172e899f09f3466ce85f282873a64b0b12f89bf4facc615f3776dca68b7"
+      }
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "before": {
+        "bytes": 1268839,
+        "osSha256": "e77d8a2f890e512d2c5232128e05eaa9263cc9276b4a823d3f5119eafb079caf",
+        "maskedOsSha256": "8756c64d7cd9b2643e8568660659a0c2bf40290296bbe07731e930416bbfa9ec"
+      },
+      "after": {
+        "bytes": 1268839,
+        "osSha256": "e77d8a2f890e512d2c5232128e05eaa9263cc9276b4a823d3f5119eafb079caf",
+        "maskedOsSha256": "8756c64d7cd9b2643e8568660659a0c2bf40290296bbe07731e930416bbfa9ec"
+      }
+    },
+    {
+      "moduleIds": [
+        "analog-bassdrum",
+        "usb-audio-out-tracks-main-cue",
+        "previewvol",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "before": {
+        "bytes": 1268839,
+        "osSha256": "0876b4666131d5a682b65251e8e593a873022e5e81df588a37ea81ab6c023aa4",
+        "maskedOsSha256": "c6bbfeb823d7c1ca2c5ade10ec48592d05f877cccc0f83fd165d47b53f72f89f"
+      },
+      "after": {
+        "bytes": 1268839,
+        "osSha256": "0876b4666131d5a682b65251e8e593a873022e5e81df588a37ea81ab6c023aa4",
+        "maskedOsSha256": "c6bbfeb823d7c1ca2c5ade10ec48592d05f877cccc0f83fd165d47b53f72f89f"
+      }
+    }
+  ],
+  "limitations": "38 fresh current-main and POLY8 builder native profiles are byte-identical or have identical refusal reasons. This preserves the non-POLY behavior; historical import hashes and historical module-version evidence remain unchanged. No hardware timing or stress claim."
+}

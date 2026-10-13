@@ -10,12 +10,14 @@ describe('device registry', () => {
     for (const device of DEVICES) for (const step of DEVICE_STEPS) expect(device.steps[step.id]).toMatch(/^(done|started|open)$/)
   })
 
-  it('only claims firmware details and finished steps for machines with mods', () => {
+  it('shows firmware identities independently from module availability', () => {
     for (const device of DEVICES) {
       const hasMods = device.status === 'available' || device.status === 'preview'
-      expect(!!device.firmware).toBe(hasMods)
+      if (hasMods) expect(device.firmware).toBeTruthy()
       if (!hasMods) expect(device.steps.mods).toBe('open')
     }
+    expect(DEVICES_BY_ID['digitakt-ii'].firmware?.releases).toEqual(['1.17'])
+    expect(DEVICES_BY_ID['digitakt-ii'].status).toBe('research')
   })
 
   it('lists digi mods only for digi machines in the registry', () => {

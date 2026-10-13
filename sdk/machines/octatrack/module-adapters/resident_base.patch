@@ -1,0 +1,346 @@
+--- a/dsp.c
++++ b/dsp.c
+@@ -908,6 +908,82 @@
+ /* Development (dev.c request 20): this many microseconds with interrupts masked on the next tick, timed by DTCN3
+  * (132 MHz), to find how long the frame chain survives a held-off frame interrupt. Off the USB request path. */
+ volatile uint32_t modwerk_dsp_mask_test;
++#if defined(MODWERK_RESIDENT_STOCK_HOOKS) && !defined(MODWERK_HOST)
++#include "stock_hook_driver.h"
++#include "stock_hook_resources.h"
++int modwerk_saved_set_busy(void);
++int dl_hook_buffer_ranges_idle(unsigned);
++int modwerk_stock_hook_fixed_ranges_idle(unsigned);
++int modwerk_stock_hook_buffer_policy(unsigned,unsigned,struct mw_hook_buffer_claim *);
++extern const struct mw_hook_boot_core modwerk_hook_boot[2];
++int dl_hook_reset_start(unsigned, unsigned, unsigned, unsigned, const uint32_t *);
++static struct mw_hook_driver stock_hook_driver;
++static unsigned stock_hook_initialized;
++static void stock_hook_init(void)
++{
++    if (!stock_hook_initialized) {
++        mw_hook_driver_init(&stock_hook_driver, modwerk_hook_boot);
++        stock_hook_initialized = 1;
++    }
++}
++/* This base only prepares dormant authored engines. The private package
++ * identity/foreign-root gate and the manager's live + target X/Y ownership
++ * oracle must be supplied and qualified before any controller is admitted.
++ * A closed gate is deliberate; an idle frame transport proves neither. */
++static int stock_hook_resources_idle(unsigned feature)
++{
++    return !modwerk_saved_set_busy() && dl_hook_buffer_ranges_idle(feature) &&
++           modwerk_stock_hook_fixed_ranges_idle(feature);
++}
++static int stock_hook_start(unsigned core, unsigned expected, unsigned desired)
++{
++    if (modwerk_saved_set_busy()) return 0;
++    if ((desired & ~expected) && !stock_hook_resources_idle(desired & ~expected)) return 0;
++    return dl_command_start(core, MW_HOOK_CAS, expected, desired, 0);
++}
++static const struct mw_hook_driver_transport stock_hook_transport = {
++    {stock_hook_start, dl_job_status, dl_job_release},
++    dl_hook_reset_start, stock_hook_resources_idle
++};
++int modwerk_stock_hook_export_idle(void)
++{
++    stock_hook_init();
++    return mw_hook_driver_export_idle(&stock_hook_driver);
++}
++int modwerk_dsp_buffer_permitted(unsigned core, unsigned kind, unsigned block, unsigned id)
++{
++    struct mw_hook_buffer_claim claim = {0};
++    stock_hook_init();
++    if (modwerk_saved_set_busy()) return 0;
++    if (!modwerk_stock_hook_buffer_policy(core, id, &claim)) return 0;
++    return mw_hook_buffer_permitted(&stock_hook_driver.leases, core, kind, block, &claim);
++}
++int modwerk_stock_hook_begin(unsigned feature, uint32_t module, uint32_t generation, int enable)
++{
++    stock_hook_init();
++    if (enable != 0 && enable != 1) return MW_HOOK_OWNER;
++    if (modwerk_saved_set_busy()) return MW_HOOK_BUSY;
++    /* No runtime controller is admitted by this preparation revision. */
++    if (enable) return MW_HOOK_STATE;
++    if (!dl_publication_idle() || rebinding || probing >= 0 || peeking >= 0 ||
++        modwerk_selftest.state == SELFTEST_RUNNING) return MW_HOOK_BUSY;
++    return mw_hook_driver_begin(&stock_hook_driver, feature, module, generation, 0);
++}
++int modwerk_stock_hook_retire(unsigned feature, uint32_t module, uint32_t generation, int roots_clear)
++{
++    stock_hook_init();
++    if (modwerk_saved_set_busy()) return MW_HOOK_BUSY;
++    return mw_hook_driver_retire(&stock_hook_driver, feature, module, generation, roots_clear);
++}
++static int stock_hook_tick(void)
++{
++    stock_hook_init();
++    mw_hook_driver_tick(&stock_hook_driver, &stock_hook_transport);
++    return mw_stock_hooks_busy(&stock_hook_driver.leases);
++}
++#elif !defined(MODWERK_HOST)
++static int stock_hook_tick(void) { return 0; }
++#endif
+ void modwerk_dsp_tick(void)
+ {
+     modwerk_dsp_watch_ticks = modwerk_dsp_watch_ticks + 1; /* the watchdog's heartbeat */
+@@ -920,9 +996,14 @@
+     }
+     static int unpacked;
+     if (!unpacked) unpacked = 1, modwerk_dsp_unpack();
+-    peek_tick();
+-    selftest_tick();
+-    compact_tick();
++    int hook_busy = stock_hook_tick();
++    /* One UI-task owner drains a resident reset/CAS job. Metering, tests and
++     * compaction cannot release or reuse its channel before its final ACK. */
++    if (!hook_busy) {
++        peek_tick();
++        selftest_tick();
++        compact_tick();
++    }
+     if (probing >= 0 && dl_job_status((unsigned)probing) != 0) {
+         if (dl_job_status((unsigned)probing) > 0) modwerk_dsp_probes_ok = modwerk_dsp_probes_ok + 1;
+         else modwerk_dsp_probes_failed = modwerk_dsp_probes_failed + 1;
+@@ -931,7 +1012,7 @@
+     }
+     if ((dl_phase || dl_c1_phase) && EDMA_ES >> 31 && !(EDMA_ES >> 8 & 0xfu)) recover(2); /* eDMA refused our transfer: at once */
+     else if (modwerk_dsp_stalled(dl_frames, dl_phase || !dl_job_status(0) || !dl_job_status(1))) recover(1);
+-    rebind_tick();
++    if (!hook_busy) rebind_tick();
+     fx_set dry = rebinding ? missing_shown : modwerk_dsp_dry(), say = {{0}};
+     missing_shown = dry;
+     /* Said whenever a track running a missing module is selected; the project's whole list is status.c's page. */
+--- a/dsp_loader.py
++++ b/dsp_loader.py
+@@ -29,7 +29,8 @@
+ INIT, PROC = 0x215, 0x235  # stock's dispatch table: init[32], then proc[32]
+ # Where the receiver keeps the dispatch tables (init[ids], then proc[ids]) and stock's six reads of them point: the
+ # start of X:$7a92-$7fff, which no payload record loads and nothing writes (docs/OCTATRACK_MORE_EFFECT_IDS.md step 1).
+-TABLE_HOME, TABLE_END = 0x7a92, 0x8000
++TABLE_HOME, TABLE_END = 0x7a92, 0x7fff  # exclusive: the final tested X word is the core-1 wait counter
++CORE1_IDLE = TABLE_END
+ TABLE_READ = 0x0a71d2      # the opcode word before each read's operand ($215 or $235), six per payload
+ SAVED = 64                 # the receiver keeps each id's original entries at the head of its table
+ 
+@@ -55,17 +56,18 @@
+           '        move    #>0,x0\n        bra     reply\n        move    x:(r0+2),a\n'),
+     # X (docs/OCTATRACK_MORE_EFFECT_IDS.md step 1): is X:$7a92-$7fff, the planned home of the 128-id init and proc
+     # tables, free on the unit with every effect running? The full loader, and in each frame hook: first fill the
+-    # region with its address xor $a5a5a5, 139 words a frame (10 frames, ending at $8000 exactly: the ESAI block is
+-    # not touched), then check 8 words a frame in turn. P words after the meter's window count what differs, keep
++    # region past the dispatch tables with its address xor $a5a5a5, whole chunks ending before the reserved
++    # wait counter at $7fff (the ESAI block is not touched), then check 8 words a frame in turn. P words after
++    # the meter's window count what differs, keep
+     # the first address and value that did, and the passes over the whole region (dsp.c reads them, dev.c 26).
+     'X': (('tallied:\n', '''tallied:
+-        move    #>xwfillpos,r1          ; probe X: fill, then watch X:@XWSTART@-$7fff (past the dispatch tables)
++        move    #>xwfillpos,r1          ; probe X: fill, then watch past the dispatch tables, below the wait counter
+         move    p:(r1),a
+         tst     a
+         bne     xwfrom
+         move    #>@XWSTART@,a
+ xwfrom:
+-        cmp     #>$8000,a
++        cmp     #>@XWEND@,a
+         bge     xwwatch
+         move    a1,r0
+         do      #@XWCHUNK@,xwfillend
+@@ -103,7 +105,7 @@
+ xwok:
+         move    (r0)+
+         move    r0,a
+-        cmp     #>$8000,a
++        cmp     #>@XWEND@,a
+         blt     xwnext
+         move    #>@XWSTART@,r0
+         move    #>xwpasses,r1
+@@ -140,10 +142,10 @@
+ 
+ 
+ CORE1_WAIT = (0x57, (0x0cd341, 0x000000))  # payload B: brclr #1,y:<<$ffffd3,* (core 1 waits for core 0)
+-CORE1_METER = ('        move    b1,x0\n', '        move    x:>$2840,x0\n        clr     a\n        move    a1,x:>$2840\n')
+-
+-
+-def receiver_source(text, null, table_words, probe=None, burn=0, tag='A', ids=32):
++CORE1_METER = ('        move    b1,x0\n', '        move    x:>@IDLECOUNTER@,x0\n        clr     a\n        move    a1,x:>@IDLECOUNTER@\n')
++
++
++def receiver_source(text, null, table_words, probe=None, burn=0, tag='A', ids=32, hook_control=None, hook_reset=None):
+     """The receiver with its table's size and stock's null stub (dry ids) filled in, its idle count
+     core 1's counted wait on payload B; `burn` (calibration builds) spends that many more cycles every
+     frame, so the load meter's idle count falls by a known amount."""
+@@ -166,12 +168,16 @@
+     fill = lambda value, label: ('        move    #>$%x,x0\n        do      #%d,%s\n        move    x0,x:(r1)+\n%s:\n' % (
+         value, ids - 32, label, label)) if ids > 32 else ''  # DO #0 would loop 65,536 times
+     watched = TABLE_END - TABLE_HOME - 2 * ids
+-    chunk = max(k for k in range(1, 141) if watched % k == 0)  # probe X fills it in whole chunks, ending at $8000
++    chunk = max(k for k in range(1, 141) if watched % k == 0)  # whole chunks, excluding the counter
+     for old, new, count in (('@INITFILL@', fill(null[0], 'initfilled'), 1), ('@PROCFILL@', fill(null[1], 'procfilled'), 1),
+                             ('@NULL_INIT@', '$%x' % null[0], 2), ('@NULL_PROC@', '$%x' % null[1], 2),
+                             ('@INITTABLE@', '$%x' % TABLE_HOME, 3), ('@IDS@', str(ids), 7), ('@IDMAX@', str(ids - 1), 1),
+-                            ('@XWSTART@', '$%x' % (TABLE_HOME + 2 * ids), 4 if probe == 'X' else 0),
++                            ('@XWSTART@', '$%x' % (TABLE_HOME + 2 * ids), 3 if probe == 'X' else 0),
+                             ('@XWCHUNK@', str(chunk), 1 if probe == 'X' else 0),
++                            ('@XWEND@', '$%x' % TABLE_END, 2 if probe == 'X' else 0),
++                            ('@IDLECOUNTER@', '$%x' % CORE1_IDLE, 5 if tag == 'B' else 3),
++                            ('@HOOK_CONTROL@', hook_control or '        bra     badsaved\n', 1),
++                            ('@HOOK_RESET@', hook_reset or '        bra     badsaved\n', 1),
+                             ('@DLWORDS@', str(table_words), 4)):
+         if text.count(old) != count:
+             raise ValueError('The DSP receiver changed (%s); review the port.' % old)
+@@ -229,7 +235,7 @@
+     return 1  # no rts reached: assume it reads, the side that reserves a block
+ 
+ 
+-def recipe(image, device, dsp, assemble, work, probe=None, burn=0, ids=32):
++def recipe(image, device, dsp, assemble, work, probe=None, burn=0, ids=32, resident=None):
+     """-> (sites, layout) for both payloads. `assemble(path)` is Elekloader's
+     sdk.build.dsp_assemble (octabam's dsp_asm at two origins)."""
+     metadata = json.loads(METADATA.read_text())
+@@ -291,10 +297,25 @@
+         path = Path(work) / ('receiver-%s.asm' % tag)
+         # One core at a time: with 2,000 more cycles a frame on both cores the unit hung at its logo (10 October 2026).
+         burned = abs(burn) if (tag == 'B') == (burn < 0) else 0  # a negative burn is core 1's
+-        path.write_text(receiver_source(RECEIVER.read_text(), null, 0, probe, burned, tag, ids))
++        hooks = resident(tag, hi) if resident else None
++        control, reset = None, None
++        if hooks:
++            import sys
++            sys.path.insert(0, str(APP / 'sdk/machines/octatrack/module-adapters'))
++            import resident_dsp
++            if hooks['tag'] != tag or hooks['origin'] + len(hooks['words']) != hi:
++                raise ValueError('Resident hooks do not end at this core\'s harvested P boundary')
++            control = resident_dsp.receiver_control(hooks)
++            reset = resident_dsp.receiver_reset(hooks)
++            for fx, effect in stock.items():
++                if effect['key'] == 'COMPRESSOR':
++                    updated, words = resident_dsp.compressor_bridge(effect, effect['words'], hooks)
++                    updated['words'] = words
++                    stock[fx] = updated
++        path.write_text(receiver_source(RECEIVER.read_text(), null, 0, probe, burned, tag, ids, control, reset))
+         size = len(assemble(str(path))[0])
+-        table = hi - origin - size
+-        path.write_text(receiver_source(RECEIVER.read_text(), null, table, probe, burned, tag, ids))
++        table = (hooks['origin'] if hooks else hi) - origin - size
++        path.write_text(receiver_source(RECEIVER.read_text(), null, table, probe, burned, tag, ids, control, reset))
+         code, labels, relocations = assemble(str(path))
+         # The least arena that still runs every stock effect on its own: the largest, DARK REV.
+         if len(code) != size or labels['dltable'] != size or table < SAVED + max(len(s['words']) for s in stock.values()):
+@@ -305,7 +326,7 @@
+             raise ValueError('Payload %s: the receiver\'s mismatch record is not three consecutive words.' % tag)
+         for index, offset in relocations:
+             code[index] = origin + offset
+-        words, covered, fills = shared + code + [0] * table, 0, []  # the saved entries must start empty
++        words, covered, fills = shared + code + [0] * table + (hooks['words'] if hooks else []), 0, []
+         for space, start, count, first in records:  # one site per payload record
+             a, b = max(lo, start), min(hi, start + count)
+             if space or a >= b:
+@@ -325,6 +346,16 @@
+         first = at(0, FRAME[tag]) - device.main_load
+         sites.append(dict(addr=hex(at(0, FRAME[tag])), stock=image[first:first + 6].hex(), op='bytes', kind='data',
+                           new=b''.join(w.to_bytes(3, 'little') for w in (0x0bf080, frame)).hex()))
++        if hooks:
++            for hook in hooks['guards']:
++                if hook['relocated']:
++                    continue  # COMP proc moves with its own normalized package
++                actual = [read(0, hook['site'] + k) for k in range(2)]
++                if words_sha(actual) != hook['expectedSha256']:
++                    raise ValueError('Payload %s: %s hook differs from its authored guard.' % (tag, hook['module']))
++                first = at(0, hook['site']) - device.main_load
++                sites.append(dict(addr=hex(at(0, hook['site'])), stock=image[first:first + 6].hex(), op='bytes', kind='data',
++                                  new=b''.join(w.to_bytes(3, 'little') for w in (0x0bf080, hook['entry'])).hex()))
+         if tag == 'B':  # core 1's wait for core 0, counted (c1wait)
+             if [read(0, CORE1_WAIT[0] + k) for k in range(2)] != list(CORE1_WAIT[1]):
+                 raise ValueError('Payload B: core 1 no longer waits for core 0 at P:$57.')
+@@ -350,6 +381,13 @@
+                            miss=origin + labels['missoffset'], meter=origin + labels['idlepub'], null=null, free=free,
+                            stock={fx: {k: v for k, v in s.items() if k != 'words'} for fx, s in stock.items()},
+                            reads=reads, words={fx: s['words'] for fx, s in stock.items()}, shared=routines, fills=fills)
++        if hooks:
++            layout[tag]['residentHooks'] = {k: hooks[k] for k in ('origin', 'descriptors', 'allowed', 'guards', 'resources', 'sources')}
++            layout[tag]['residentHookState'] = origin + labels['hookstate']
++            # The base builder must place these real records in boot uploads and
++            # exclude them from public/private proof metadata. They are not sites
++            # into nonexistent initial DSP RAM and not catalogue admission.
++            layout[tag]['residentUploadRecords'] = resident_dsp.initialization_records(hooks)
+     if layout['A']['free'] != layout['B']['free']:
+         raise ValueError('The two payloads leave different effect ids free.')
+     return sites, layout
+--- a/dsp_receiver.asm
++++ b/dsp_receiver.asm
+@@ -20,7 +20,11 @@
+ ; (two words per 24-bit word), 59-63 scratch. Opcodes: 1 PROBE, 3 WRITE, 4 BIND,
+ ; 5 UNBIND, 6 BYPASS (an id onto stock's null stub), 7 BASE (X:$255 entry),
+ ; 8 PEEK (one bit of a P word, answered in HF3), 9 SUM (HF3: the sum of 1-256 table words differs from the
+-; packet's, word 7 low 16 bits and word 56 high 8: the self-test's check of code where it runs).
++; packet's, word 7 low 16 bits and word 56 high 8: the self-test's check of code where it runs),
++; 10 resident hook CAS (private builds only): expected owner mask in word4,
++; desired mask in word5. The build names every writable branch operand.
++; 11 resident initialization: count word4, logical offset word5, feature word7.
++; Fixed owned X/Y ranges only, dormant feature only; every word is read back.
+ ; The first refused packet of a boot leaves a record (missoffset, then two words):
+ ;   $01rrrr: its halfwords sum to rrrr, not 0; the sequence that arrived; their
+ ;            position-weighted sum (each halfword times 64 - its index), mod 2^24.
+@@ -62,7 +66,7 @@
+ tblset:
+ ; Load meter: core 0's main loop (P:$4b) counts its idle iterations in b until a frame is due, and
+ ; this runs before stock stores that count (P:$92); b stays untouched. Core 1 counts its wait for
+-; core 0 in X:$2840 (c1wait), taken and cleared here (the build substitutes that for core 1).
++; core 0 in the base's reserved X wait-counter word (c1wait), taken and cleared here (the build substitutes that for core 1).
+ ; Each window of 1024 frames is published after its serial: the least and most idle
+ ; counts, their sum and the frames with none (missed). Core 1 keeps no such count.
+         move    b1,x0
+@@ -157,7 +161,15 @@
+         beq     peekbit
+         cmp     #>9,a
+         beq     summed
++        cmp     #>10,a
++        beq     hookcontrol
++        cmp     #>11,a
++        beq     hookreset
+         bra     refusewrite
++hookcontrol:
++@HOOK_CONTROL@
++hookreset:
++@HOOK_RESET@
+ summed:
+         ; SUM (9): WRITE's read-back over (r0+4) words, 1-256, from table offset (r0+5), nothing written.
+         move    x:(r0+4),a
+@@ -514,13 +526,16 @@
+ finish:
+         rts
+ ; Core 1's wait for core 0 (P:$57, brclr #1,y:<<$ffffd3) as a counted one: each pass adds one to
+-; X:$2840 (core 1's, untouched by stock), which its frame hook takes as its idle count (see frame).
++; The reserved X counter, outside the dispatch tables and Analog BD's coefficient/voice banks.
++; Reset at each wait entry, including boot, before reading otherwise uninitialized private X.
+ ; DO FOREVER and BRKCS, not a branch back: dsp_asm writes a backward brclr's target absolute.
+ c1wait:
++        move    #>0,a
++        move    a1,x:>@IDLECOUNTER@
+         do      forever,c1over
+-        move    x:>$2840,a
+-        add     #>1,a
+-        move    a1,x:>$2840
++        move    x:>@IDLECOUNTER@,a
++        add     #>1,a
++        move    a1,x:>@IDLECOUNTER@
+         btst    #1,y:<<$ffffd3
+         brkcs
+ c1over:
+@@ -534,6 +549,16 @@
+         nop
+ missactual:
+         nop
++hookstate:                             ; private resident owner mask, initialized dormant by the upload
++        nop
++hookready:                             ; a complete observed reset is required before any activation
++        nop
++hookpos1:
++        nop
++hookpos2:
++        nop
++hookpos4:
++        nop
+ idlewin:                                  ; never executed: the load meter (see frame): frames left,
+         nop                             ; least, most, sum and missed of this window
+         nop

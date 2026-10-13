@@ -2,7 +2,7 @@
   "schemaVersion": 3,
   "id": "digimono",
   "name": "Digi Mono",
-  "version": "0.13.1-experimental",
+  "version": "0.13.3-experimental",
   "machine": "digitakt",
   "category": "machines",
   "exclusive": false,
@@ -10,7 +10,9 @@
     "github": "gdeo607",
     "credits": [
       "gdeo607 (the digi1_mods authors) \u2014 Digi Mono\u2019s clean-room synth engine and elekloader mod",
-      "Machine and parameter names after the Monomachine manual; vowel formants from Peterson and Barney (1952)"
+      "Machine and parameter names after the Monomachine manual; vowel formants from Peterson and Barney (1952)",
+      "Modwerk \u2014 repeated-SRC page fix and source-built 0.13.2 packaging",
+      "Modwerk \u2014 consistent SAW/PULSE sub-oscillator encoder layout in 0.13.3"
     ]
   },
   "maintainers": [
@@ -76,31 +78,31 @@
     {
       "name": "Knob D",
       "default": null,
-      "doc": "Differs per machine, and does not open the sample list on these machines. PULSE: SUB2 (Sub 2 Oct Lev), the sub two octaves down. ENS: PW (Pulse Width), duty %, 0 = square. VO: VOIC (Breath), breath noise mixed into the source. POLY SIN: NOT3 (Note 3), the third sine in semitones from the note. Blank on SIN, NOISE and SAW.",
+      "doc": "Differs per machine, and does not open the sample list on these machines. PULSE: PW (Pulse Width), duty %. ENS: PW (Pulse Width), duty %, 0 = square. VO: VOIC (Breath), breath noise mixed into the source. POLY SIN: NOT3 (Note 3), the third sine in semitones from the note. Blank on SIN, NOISE and SAW.",
       "labels": null
     },
     {
       "name": "Knob E",
       "default": null,
-      "doc": "Differs per machine. NOISE: STON (Tuned Noise), a sample and hold at twice the note\u2019s pitch, which makes the noise pitched. SAW: UNIX (Unison Voices), 1 to 3 unison saws. PULSE: SUB1 (Sub 1 Oct Lev), the sub one octave down. ENS: PCH4 (Pitch Osc 4), oscillator 4 in semitones. VO: V-SW (Vowel Glide), the glide from VOC1 to VOC2, 5 ms..2 s; 0 keeps VOC1. POLY SIN: EDEP (Env Depth), the pitch envelope\u2019s depth in semitones, + or -. Blank on SIN.",
+      "doc": "Differs per machine. NOISE: STON (Tuned Noise), a sample and hold at twice the note\u2019s pitch, which makes the noise pitched. SAW: UNIX (Unison Voices), 1 to 3 unison saws. PULSE: PWAD (PWM Depth), the pulse width modulation depth. ENS: PCH4 (Pitch Osc 4), oscillator 4 in semitones. VO: V-SW (Vowel Glide), the glide from VOC1 to VOC2, 5 ms..2 s; 0 keeps VOC1. POLY SIN: EDEP (Env Depth), the pitch envelope\u2019s depth in semitones, + or -. Blank on SIN.",
       "labels": null
     },
     {
       "name": "Knob F",
       "default": null,
-      "doc": "Differs per machine. SAW: SUBX (Sub Shape), the subs from square to saw, in %. PULSE: PW (Pulse Width), duty %. ENS: WAVE (Saw-Pulse), saw to pulse, in %. VO: CONS (Consonant): none, S, SH, F, H, T, K or P at the note\u2019s start. POLY SIN: ESPD (Env Speed), the pitch envelope\u2019s speed: + glides back to the notes, - glides away, OFF in the middle. Blank on SIN and NOISE.",
+      "doc": "Differs per machine. SAW: SUBX (Sub Shape), the subs from square to saw, in %. PULSE: PWRS (PWM Rate), 0.05..20 Hz. ENS: WAVE (Saw-Pulse), saw to pulse, in %. VO: CONS (Consonant): none, S, SH, F, H, T, K or P at the note\u2019s start. POLY SIN: ESPD (Env Speed), the pitch envelope\u2019s speed: + glides back to the notes, - glides away, OFF in the middle. Blank on SIN and NOISE.",
       "labels": null
     },
     {
       "name": "Knob G",
       "default": null,
-      "doc": "Differs per machine. SAW: SUB1 (Sub 1 Oct Lev), the sub one octave down. PULSE: PWAD (PWM Depth), the pulse width modulation depth. ENS: CHRL (Chorus Level); it starts at 0, the chorus off. VO: CLEN (Cons. Length), the consonant\u2019s length, 2..400 ms (T, K and P at most 30-40 ms). Blank on SIN, NOISE and POLY SIN.",
+      "doc": "Differs per machine. SAW and PULSE: SUB1 (Sub 1 Oct Lev), the sub one octave down. ENS: CHRL (Chorus Level); it starts at 0, the chorus off. VO: CLEN (Cons. Length), the consonant\u2019s length, 2..400 ms (T, K and P at most 30-40 ms). Blank on SIN, NOISE and POLY SIN.",
       "labels": null
     },
     {
       "name": "Knob H",
       "default": null,
-      "doc": "Differs per machine. SAW: SUB2 (Sub 2 Oct Lev), the sub two octaves down. PULSE: PWRS (PWM Rate), 0.05..20 Hz. ENS: CHRW (Chorus Width). VO: CVOL (Cons. Level), the consonant\u2019s level. Blank on SIN, NOISE and POLY SIN. The volume is the track\u2019s LEVEL, AMP page and VOL, not this knob.",
+      "doc": "Differs per machine. SAW and PULSE: SUB2 (Sub 2 Oct Lev), the sub two octaves down. ENS: CHRW (Chorus Width). VO: CVOL (Cons. Level), the consonant\u2019s level. Blank on SIN, NOISE and POLY SIN. The volume is the track\u2019s LEVEL, AMP page and VOL, not this knob.",
       "labels": null
     }
   ],
@@ -147,7 +149,7 @@
     ]
   },
   "resources": {
-    "memoryBytes": 32235,
+    "memoryBytes": 32417,
     "fastBytes": 0,
     "load": {
       "display": "Not measured in Modwerk yet",
@@ -156,16 +158,18 @@
     }
   },
   "evidence": {
-    "tier": "none",
-    "moduleVersion": "0.13.0-experimental",
-    "sourceSha256": null,
-    "reports": [],
+    "tier": "emulator",
+    "moduleVersion": "0.13.3-experimental",
+    "sourceSha256": "6fa2c66f23d85458bd0655b40a0c2f5b820532e5e1f993cb92842fc06bf335db",
+    "reports": [
+      "evidence/encoder-layout-0.13.3.json"
+    ],
     "hardware": null,
     "verifiedBy": null
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Modwerk\u2019s builder linked and verified a build with core 2.1 and DIGICHAIN 1.6 on OS 1.53 and 1.54; nothing was flashed or tested on hardware, and the evidence tier is none. Documentation captures verify the listed UI pages on OS 1.53; audio, timing and hardware remain unqualified.",
+    "summary": "Native compilation, source-only package/materialization parity and builder verification pass on OS 1.53 and 1.54 with core 2.1, DIGICHAIN 1.6 and Digi EQ 1.0b. Firmware-native panel tests confirm consistent SAW/PULSE sub encoder positions and unchanged stored parameter slots; other tracks\u2019 tested SRC values are untouched. Hardware, audio, timing, complete memory bounds, persistence, reboot, played p-lock/LFO and stress qualification remain unverified.",
     "documentation": {
       "tutorial": {
         "title": "Quick tutorial: play a MONO SIN voice",
@@ -191,14 +195,14 @@
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "The author\u2019s source, imported unchanged from github.com/gdeo607/digi1_mods at commit 35bacb3730d1 under its MIT licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+    "declaration": "MIT source imported from gdeo607/digi1_mods at 35bacb3730d108e4dc48a7bd6de4c99ae9b161e6, with Modwerk SRC-page and encoder-layout fixes. Stock firmware is represented only by addresses, lengths and SHA-256 guards."
   },
   "media": [
     {
       "path": "media/thumbnail.svg",
       "kind": "thumbnail",
       "caption": "Digi Mono thumbnail",
-      "alt": "Abstract synthesis illustration for Digi Mono: seven small waveforms in a row",
+      "alt": "A source waveform and a decaying synthesized waveform.",
       "credit": "Modwerk",
       "license": "GPL-3.0-or-later",
       "source": "Original Modwerk illustration"
@@ -213,9 +217,9 @@
       "source": "original",
       "capture": {
         "type": "emulator",
-        "release": "1.53",
-        "moduleVersion": "0.13.1-experimental",
-        "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+        "release": "1.54",
+        "moduleVersion": "0.13.3-experimental",
+        "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
         "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
       }
     },
@@ -229,25 +233,25 @@
       "source": "original",
       "capture": {
         "type": "emulator",
-        "release": "1.53",
-        "moduleVersion": "0.13.1-experimental",
-        "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+        "release": "1.54",
+        "moduleVersion": "0.13.3-experimental",
+        "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
         "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
       }
     },
     {
       "path": "media/noise.png",
       "kind": "screenshot",
-      "caption": "MONO NOISE controls",
+      "caption": "MONO NOISE controls. This native frame omits the common track/level sidebar; full redraw is unverified.",
       "alt": "MONO NOISE controls on the Digitakt monochrome LCD",
       "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
       "license": "LicenseRef-Digi-UI-Documentation",
       "source": "original",
       "capture": {
         "type": "emulator",
-        "release": "1.53",
-        "moduleVersion": "0.13.1-experimental",
-        "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+        "release": "1.54",
+        "moduleVersion": "0.13.3-experimental",
+        "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
         "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
       }
     },
@@ -261,9 +265,9 @@
       "source": "original",
       "capture": {
         "type": "emulator",
-        "release": "1.53",
-        "moduleVersion": "0.13.1-experimental",
-        "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+        "release": "1.54",
+        "moduleVersion": "0.13.3-experimental",
+        "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
         "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
       }
     },
@@ -277,25 +281,25 @@
       "source": "original",
       "capture": {
         "type": "emulator",
-        "release": "1.53",
-        "moduleVersion": "0.13.1-experimental",
-        "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+        "release": "1.54",
+        "moduleVersion": "0.13.3-experimental",
+        "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
         "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
       }
     },
     {
       "path": "media/ens.png",
       "kind": "screenshot",
-      "caption": "MONO ENS controls",
+      "caption": "MONO ENS controls. This native frame omits common TUNE/sidebar fields; full redraw is unverified.",
       "alt": "MONO ENS controls on the Digitakt monochrome LCD",
       "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
       "license": "LicenseRef-Digi-UI-Documentation",
       "source": "original",
       "capture": {
         "type": "emulator",
-        "release": "1.53",
-        "moduleVersion": "0.13.1-experimental",
-        "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+        "release": "1.54",
+        "moduleVersion": "0.13.3-experimental",
+        "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
         "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
       }
     },
@@ -309,9 +313,9 @@
       "source": "original",
       "capture": {
         "type": "emulator",
-        "release": "1.53",
-        "moduleVersion": "0.13.1-experimental",
-        "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+        "release": "1.54",
+        "moduleVersion": "0.13.3-experimental",
+        "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
         "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
       }
     }

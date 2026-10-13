@@ -19,7 +19,9 @@ it('provides thread cards to crawlers and loads the app relative to the thread p
   expect(page).toContain('<meta name="description" content="Here is how it sounds &lt;with&gt; a long tail." />')
   expect(page).toContain('<meta name="twitter:description" content="Here is how it sounds &lt;with&gt; a long tail." />')
   expect(page).toContain('modwerk-social-preview-v2.jpg')
-  expect(page).toContain('<div id="root"></div>')
+  expect(page).toContain('<h1>Granular pad from &quot;Tapehead&quot;</h1>')
+  expect(page).toContain('<p>Here is how it sounds &lt;with&gt; a long tail.</p>')
+  expect(page.match(/rel="canonical"/g)).toHaveLength(1)
   expect(forumThreadPageHtml(html, thread, '/octamod/')).toContain('<base href="/octamod/" />')
   expect(forumThreadPageHtml(html, thread, '/octamod/')).toContain('content="https://modwerk.app/octamod/forum/thread/' + id + '-granular-pad-from-tapehead/"')
 })
@@ -52,7 +54,7 @@ it('wraps long titles on word boundaries and renders a 1200 × 630 card', async 
   expect([meta.width, meta.height, meta.format]).toEqual([1200, 630, 'jpeg'])
 })
 
-it('emits the canonical page, the plain ID alias and robots.txt, and skips the forum when the API is unreachable', async () => {
+it('emits the canonical page and plain ID alias, and skips the forum when the API is unreachable', async () => {
   vi.stubGlobal('fetch', vi.fn(async () => Response.json({ threads: [thread, { ...thread, id: 'module-miniverb', title: 'Miniverb discussion' }, { id: '../x', title: 'bad' }] })))
   const plugin = forumPages(api)
   plugin.configResolved({ root: new URL('../', import.meta.url).pathname, base: './' })
@@ -60,12 +62,11 @@ it('emits the canonical page, the plain ID alias and robots.txt, and skips the f
   await plugin.generateBundle.call({ emitFile(asset) { assets.push(asset) }, warn(message) { warnings.push(message) } }, {}, { 'index.html': { type: 'asset', source: html } })
   expect(String(fetch.mock.calls[0][0])).toBe('https://community.example.test/api/forum/pages.json')
   const names = assets.map(asset => asset.fileName)
-  expect(names.filter(name => !name.startsWith('forum-thumbnails/'))).toEqual(['robots.txt', 'forum/thread/' + id + '-granular-pad-from-tapehead/index.html', 'forum/thread/' + id + '/index.html', 'forum/thread/module-miniverb/index.html'])
+  expect(names.filter(name => !name.startsWith('forum-thumbnails/'))).toEqual(['forum/thread/' + id + '-granular-pad-from-tapehead/index.html', 'forum/thread/' + id + '/index.html', 'forum/thread/module-miniverb/index.html'])
   expect(names.filter(name => name.startsWith('forum-thumbnails/'))).toHaveLength(2)
   const pages = assets.filter(asset => asset.fileName.endsWith('index.html'))
   expect(pages[0].source).toBe(pages[1].source)
   expect(pages[0].source).toContain('forum-thumbnails/' + id + '-')
-  expect(assets[0].source).toBe('User-agent: *\nAllow: /\nSitemap: https://community.example.test/api/forum/sitemap.xml\n')
   expect(warnings).toEqual([])
 
   vi.stubGlobal('fetch', vi.fn(async () => { throw new Error('connect ECONNREFUSED') }))
@@ -73,6 +74,5 @@ it('emits the canonical page, the plain ID alias and robots.txt, and skips the f
   expect(warnings).toEqual(['Forum thread pages were skipped: connect ECONNREFUSED'])
   const offline = []
   await forumPages(undefined).generateBundle.call({ emitFile(asset) { offline.push(asset) }, warn() {} }, {}, { 'index.html': { type: 'asset', source: html } })
-  expect(offline.map(asset => asset.fileName)).toEqual(['robots.txt'])
-  expect(offline[0].source).toBe('User-agent: *\nAllow: /\n')
+  expect(offline).toEqual([])
 })

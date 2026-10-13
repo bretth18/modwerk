@@ -5,11 +5,12 @@ import { HttpError, jsonBody, required, response } from './security'
 import { FORUM_CATEGORIES, forumMachine, REQUEST_STATUSES, sharedConfiguration } from '../src/community/forum-contract'
 import { communityModule } from '../src/community/modules'
 import { ensureDiscussionThread, ensureModuleThreadsOnce, SYSTEM_AUTHOR } from './module-threads'
-import { notifyMentions, notifyPostLike, notifyReplies, notifyRequestStatus, RECIPIENTS } from './notifications'
+import { notifyMentions, notifyPostLike, notifyReplies, notifyRequestStatus } from './notifications'
 import { attachMedia, postAttachments } from './forum-media'
 import { shoutbox } from './shoutbox'
 import { FIRST_UNREAD_FIELDS, FIRST_UNREAD_JOIN, markForumRead, noteForumVisit, recordThreadRead, UNREAD, UNREAD_FIELDS, UNREAD_JOINS } from './forum-unread'
 import { forumHighlights, maintainerColumn, memberProfile } from './recognition'
+import { betaTesterIds } from './beta-testers'
 import { adminRoleRoutes, memberRoles } from './member-roles'
 import { worksReportCount } from './hardware-reports'
 
@@ -168,16 +169,6 @@ export async function forum(request: Request, db: Database, user: User|null, adm
   if (path === '/api/forum/machines' && request.method === 'GET') {
     return response((await db.prepare('SELECT machine,COUNT(*) AS threads,MAX(updated_at) AS updated_at FROM forum_threads WHERE hidden=0 AND user_id<>? AND machine IS NOT NULL GROUP BY machine').bind(SYSTEM_AUTHOR).all()).results)
   }
-  if (path === '/api/forum/notifications' && request.method === 'GET') {
-    const member = needMember(user)
-    // Superseded by /api/notifications; kept with its original shape for frontends deployed before the bell.
-    return response((await db.prepare(`SELECT n.id,n.thread_id,n.post_id,n.seen,n.created_at,t.title FROM notifications n JOIN forum_threads t ON t.id=n.thread_id JOIN forum_posts p ON p.id=n.post_id WHERE n.kind IN ('reply','mention','bug_report') AND n.user_id IN (${RECIPIENTS}) AND t.hidden=0 AND p.hidden=0 ORDER BY n.created_at DESC,n.id LIMIT 100`).bind(member.id,member.id).all()).results)
-  }
-  if (path === '/api/forum/notifications' && request.method === 'PATCH') {
-    const member = needMember(user)
-    await db.prepare(`UPDATE notifications SET seen=1 WHERE kind IN ('reply','mention','bug_report') AND user_id IN (${RECIPIENTS})`).bind(member.id,member.id).run()
-    return response({ok:true})
-  }
   if (path === '/api/forum/members' && request.method === 'GET') {
     // Name suggestions while typing @ in a composer: members only, by prefix, eight names, never the asker.
     const asker = needMember(user), prefix = (url.searchParams.get('q') ?? '').trim().toLowerCase()
@@ -211,8 +202,8 @@ export async function forum(request: Request, db: Database, user: User|null, adm
     if(reader&&last)await recordThreadRead(db,reader,thread.id,last.id).run()
     const request=(thread.section??thread.category)==='requests'
     const canSetRequestStatus=request&&!!user?.email_verified&&!user.suspended&&(admin||await maintainsModule(db,thread.module_id,user.id))
-    const [attachments,roles] = await Promise.all([postAttachments(db,posts.slice(0,30).filter(post=>admin||!post.hidden).map(post=>post.id)),memberRoles(db,posts.slice(0,30).filter(post=>!post.hidden&&post.user_id!==SYSTEM_AUTHOR).map(post=>post.user_id))])
-    return response({thread:summary,posts:posts.slice(0,30).map(post=>({attachments:attachments.get(post.id)??[],canRemoveMedia:!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,id:post.id,body:post.hidden&&!admin?'':post.body,username:post.hidden&&!admin?null:post.username,avatar:post.hidden&&!admin?null:post.avatar,displayName:post.hidden&&!admin?null:post.displayName,created_at:post.created_at,edited_at:post.edited_at,hidden:post.hidden,likes:post.hidden?0:post.likes,liked:!post.hidden&&!!post.liked,canEdit:!thread.locked&&!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,official:post.user_id===SYSTEM_AUTHOR,maintainer:!post.hidden&&!!post.maintainer,role:roles.get(post.user_id)??null,...(admin?{user_id:post.user_id}:{})})),configuration:thread.configuration_json?JSON.parse(thread.configuration_json):null,issue:thread.issue_json?JSON.parse(thread.issue_json):null,following,bookmarked,voted:!!voted,canSetRequestStatus,hasMore:posts.length>30,...(reader?{firstUnread:unreadId?{id:unreadId,page:unreadPage??0}:null}:{})})
+    const [attachments,roles,betaTesters] = await Promise.all([postAttachments(db,posts.slice(0,30).filter(post=>admin||!post.hidden).map(post=>post.id)),memberRoles(db,posts.slice(0,30).filter(post=>!post.hidden&&post.user_id!==SYSTEM_AUTHOR).map(post=>post.user_id)),betaTesterIds(db,posts.slice(0,30).filter(post=>!post.hidden&&post.user_id!==SYSTEM_AUTHOR).map(post=>post.user_id))])
+    return response({thread:summary,posts:posts.slice(0,30).map(post=>({attachments:attachments.get(post.id)??[],canRemoveMedia:!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,id:post.id,body:post.hidden&&!admin?'':post.body,username:post.hidden&&!admin?null:post.username,avatar:post.hidden&&!admin?null:post.avatar,displayName:post.hidden&&!admin?null:post.displayName,created_at:post.created_at,edited_at:post.edited_at,hidden:post.hidden,likes:post.hidden?0:post.likes,liked:!post.hidden&&!!post.liked,canEdit:!thread.locked&&!post.hidden&&post.user_id===user?.id&&!!user?.email_verified,official:post.user_id===SYSTEM_AUTHOR,maintainer:!post.hidden&&!!post.maintainer,role:roles.get(post.user_id)??null,betaTester:betaTesters.has(post.user_id),...(admin?{user_id:post.user_id}:{})})),configuration:thread.configuration_json?JSON.parse(thread.configuration_json):null,issue:thread.issue_json?JSON.parse(thread.issue_json):null,following,bookmarked,voted:!!voted,canSetRequestStatus,hasMore:posts.length>30,...(reader?{firstUnread:unreadId?{id:unreadId,page:unreadPage??0}:null}:{})})
   }
   const member = needMember(user)
   await throttle(db,'forum:'+member.id,60)

@@ -716,14 +716,17 @@ qz_od_cmp:
         cmp.l   OCT_WORD,%d1            | displaced
         jmp     0x40044970
 
-| 0x400449b8, the number beside the keyboard: `movel OCT_WORD,%d0; movel
-| %d0,%sp@-` (8 bytes) -> jmp qz_octnum; the value is printed by stock's own
+| 0x400449be, the common number/format argument pushes (8 bytes). The
+| MIDI branch targets this push with its octave already in d0; audio still
+| executes the stock OCT_WORD load at 0x400449b8. The number is printed by stock's own
 | "%d" (0x400b465d) at 0x400449c0 -- the formatter 0x40013904 takes (ctx,
 | font, x 0x44, y 9, 1, 0, buf 0x400b527d, fmt, value) and 0x400449ec pops
 | the nine -- so a synth track's -4..+4 prints as is. With a scale on (28 Sep
 | 2026) the format is this unit's qz_ofmt, ROOT's name + " %d" ("A %d"), pushed
 | in place of stock's, the continuation at 0x400449c6: same nine arguments.
 qz_octnum:
+        tst.l   0x80000012              | MIDI: stock already loaded its octave into d0
+        jbne    qz_on_stockfmt           | keep the MIDI value and stock format
         jbsr    qz_ui_synth
         jbeq    qz_on_stock
         mvs.b   qz_oct,%d0              | the synth track's octave (keys.s, pinned)
@@ -759,8 +762,11 @@ qz_on_copied:
         clr.b   (%a0)
         pea     qz_ofmt(%pc)            | the format, in place of stock's pea "%d" at 0x400449c0
         jmp     0x400449c6
+qz_on_stockfmt:
+        move.l  %d0,-(%sp)              | common argument push reached by stock MIDI
 qz_on_fmt:
-        jmp     0x400449c0
+        pea     0x400b465d              | displaced stock "%d" format
+        jmp     0x400449c6
 
 | ---- GLIDE legato: two jmp detours in the same handler --------------------------
 | 0x4004fb94 keeps ONE held key per track (HELD + track = key + 1). Stock, a

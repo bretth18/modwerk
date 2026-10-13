@@ -1,0 +1,42 @@
+{
+  "tested_version": "0.2.0-experimental",
+  "historical": true,
+  "results": [
+    {
+      "case": "pool-one",
+      "active_primary": 1,
+      "active_extensions": 31,
+      "audio_peak_signed24": 5968630,
+      "measured_instructions": 38260667,
+      "measured_frames": 500,
+      "instructions_per_16_samples": 76521.334
+    },
+    {
+      "case": "pool-many",
+      "active_primary": 8,
+      "active_extensions": 24,
+      "audio_peak_signed24": 8388608,
+      "measured_instructions": 95760131,
+      "measured_frames": 1200,
+      "instructions_per_16_samples": 79800.10916666666
+    },
+    {
+      "case": "pool-release",
+      "active_primary": 1,
+      "active_extensions": 0,
+      "audio_peak_signed24": 1539481,
+      "measured_instructions": 5611161,
+      "measured_frames": 130,
+      "instructions_per_16_samples": 43162.776923076926
+    }
+  ],
+  "voice_capacity": 32,
+  "allocations_on_note_on": 0,
+  "host_sanitizer_test": "PASS: 10,000 steals, oldest-primary stealing, independent release ownership and machine cleanup",
+  "native_stealing": "33rd same-track note and another-track note kept 32 total; stolen-note off did not stop replacement",
+  "limits": [
+    "Instruction count is not a hardware cycle budget.",
+    "Eight-track test can clip the main output at its fixture volume; per-track summing has separate headroom.",
+    "High-ratio 32-voice and physical deadlines unqualified."
+  ]
+}

@@ -1,4 +1,5 @@
 import { apiUrl } from '../hosting'
+import type { OctatrackCount } from './octatrack-diagnostics-contract'
 import type { AnnouncementCountEvent, UsageDevice, UsageEvent } from './usage-contract'
 import { usagePage } from './usage-pages'
 import { USAGE_CONSENT_VERSION } from '../legal/policy'
@@ -38,9 +39,11 @@ export function anonymousCountsAllowed() {
 export function setAnonymousCountsAllowed(enabled: boolean) {
   try { if(enabled)localStorage.removeItem(anonymousOffKey); else localStorage.setItem(anonymousOffKey,'1'); return true } catch { return false }
 }
-function countAnonymously(body: {event: UsageEvent; device?: UsageDevice; page?: string} | {event: 'module_download'; moduleId: string} | {event: AnnouncementCountEvent; announcementId: string}) {
+function countAnonymously(body: {event: UsageEvent; device?: UsageDevice; page?: string} | {event: OctatrackCount} | {event: 'module_download'; moduleId: string} | {event: AnnouncementCountEvent; announcementId: string}) {
   try {void fetch(apiUrl('/usage/count'),{method:'POST',credentials:'omit',redirect:'error',referrerPolicy:'no-referrer',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).catch(()=>{})} catch { /* Counts never block device work. */ }
 }
+/** A fixed action counter, independent of optional technical diagnostics. Never pass device data here. */
+export function countOctatrackAction(event: OctatrackCount) { if (anonymousCountsAllowed()) countAnonymously({event}) }
 function visitor() {
   const day = new Date().toISOString().slice(0,10)
   try {

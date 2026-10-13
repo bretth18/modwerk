@@ -90,6 +90,10 @@ describe('forum unread tracking', () => {
     const f = await fixture(), a = await f.member('alpha'), b = await f.member('bravo'), t = await f.thread(a.session, 'Long thread')
     const replies: string[] = []
     for (let index = 1; index <= 34; index++) replies.push(await f.reply(a.session, t, 'Reply ' + index))
+    await f.call('/forum/threads/' + t + '/follow', 'POST', { enabled: true }, b.session)
+    const now = Date.now()
+    await noteForumVisit(f.env.DB!, b.id, now - 60 * 60000)
+    expect(await noteForumVisit(f.env.DB!, b.id, now)).toMatchObject({ newThreads: 1, newReplies: 34, unreadFollowed: 1 })
     expect(state(await f.list(b.session), t)).toEqual({ unread: true, newReplies: 34 })
     const first = await f.view(b.session, t, 0)
     expect(first.firstUnread).toEqual({ id: replies[0], page: 0 })
@@ -97,14 +101,37 @@ describe('forum unread tracking', () => {
     // Page 0 holds the opening post and 29 replies; five replies remain unread on page 1.
     expect(f.marker(b.id, t)).toEqual({ last_read_post_id: replies[28] })
     expect(state(await f.list(b.session), t)).toEqual({ unread: true, newReplies: 5 })
+    expect(await noteForumVisit(f.env.DB!, b.id, now)).toMatchObject({ newThreads: 1, newReplies: 5, unreadFollowed: 1 })
     const second = await f.view(b.session, t, 1)
     expect(second.firstUnread).toEqual({ id: replies[29], page: 1 })
     expect(second.posts.map(post => post.id)).toEqual(replies.slice(29))
     expect(f.marker(b.id, t)).toEqual({ last_read_post_id: replies[33] })
     expect(state(await f.list(b.session), t)).toEqual({ unread: false, newReplies: 0 })
+    expect(await noteForumVisit(f.env.DB!, b.id, now)).toMatchObject({ newThreads: 0, newReplies: 0, unreadFollowed: 0 })
     await f.view(b.session, t, 0)
     expect(f.marker(b.id, t)).toEqual({ last_read_post_id: replies[33] })
     expect(state(await f.list(b.session), t)).toEqual({ unread: false, newReplies: 0 })
+  })
+
+  it('removes already-read activity from the visit summary and its unread link destinations', async () => {
+    const f = await fixture(), a = await f.member('alpha'), b = await f.member('bravo')
+    const followed = await f.thread(a.session, 'Followed thread'), other = await f.thread(a.session, 'Other thread')
+    await f.call('/forum/threads/' + followed + '/follow', 'POST', { enabled: true }, b.session)
+    await f.reply(a.session, followed, 'First followed reply'); await f.reply(a.session, followed, 'Second followed reply')
+    const now = Date.now()
+    await noteForumVisit(f.env.DB!, b.id, now - 60 * 60000)
+    const visit = await noteForumVisit(f.env.DB!, b.id, now)
+    expect(visit).toMatchObject({ newThreads: 2, newReplies: 2, unreadFollowed: 1 })
+    await f.view(b.session, followed)
+    expect(await noteForumVisit(f.env.DB!, b.id, now)).toEqual({ ...visit, newThreads: 1, newReplies: 0, unreadFollowed: 0 })
+    expect(await f.list(b.session, '?following=1&unread=1')).toEqual([])
+    expect((await f.list(b.session, '?sort=newest&unread=1')).map(thread => thread.id)).toEqual([other])
+    await f.view(b.session, other)
+    expect(await noteForumVisit(f.env.DB!, b.id, now)).toEqual({ ...visit, newThreads: 0, newReplies: 0, unreadFollowed: 0 })
+    // A later reply in the same second still counts thanks to the post marker's row ordering.
+    await f.reply(a.session, followed, 'New followed reply after reading')
+    expect(await noteForumVisit(f.env.DB!, b.id, now)).toEqual({ ...visit, newThreads: 1, newReplies: 1, unreadFollowed: 1 })
+    expect((await f.list(b.session, '?following=1&unread=1')).map(thread => thread.id)).toEqual([followed])
   })
 
   it('filters a list to unread threads, reports what happened since the last visit and marks everything read at once', async () => {

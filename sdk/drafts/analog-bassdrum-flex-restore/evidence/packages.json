@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "candidateVersion": "0.1.5-experimental",
+  "developmentOnly": true,
+  "published": false,
+  "stockRead": false,
+  "sourceTreeSha256": "3f67a4e5c09e11512fa3ea316576ec7d20425c9c46f4278bea83171a0a144ca0",
+  "nativeRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+  "files": {
+    "THIRD_PARTY_NOTICES.txt": "ff72142a7391fe844d4dba7f1ff4d2e54ef15e2524403cd69c7359373a5a3593",
+    "bootstrap-package.json": "ab7fa2661d10a6f2dd6afc8d3f62444076c7ec2991bb421805d4082a42cea781",
+    "coldfire-packages.json": "585eba9fe4dcf40d87c463192a8c1bd5f7a7f02ff2055c926c45010ae29ee38a",
+    "descriptor-recipes.json": "bef2f587fa06936798a7836c2efe9cc0aad82177302b4ca365c230644ff77005",
+    "dsp-packages.json": "afff28e70ca0402bbd6eedbf70be2e17f5ad204f2cf922a162a5c777502b32c3",
+    "menu-recipes.json": "4c440f89734f804c05664e3ff8f1f0f8ac676ef6f49de0ccc60b47c327ae1028",
+    "module-build.json": "7c3b90da4d961b7b65c9abd07ba038e22aa130769a80ae2937fa98631d8865ad",
+    "platform-writes.json": "0d46d763234d84442638e553c4a3404bfc4f6c355f9a49ff41d5e45e0940713b",
+    "requested-packages.json": "6218f2618fc3aa889b05b6f4e87c4ef96cbc88aae902355c457314523364ddc1",
+    "resident-dsp.json": "638d6c6b31562f62383b6defa120b94ed21307e3163ce5e83040e835e46e21c3",
+    "rom-packages.json": "900b76a716b0e2fd4fe588033f7461620d17444ac4bdb08f0fb8aea6da733a65",
+    "usb-audio-packages.json": "8e0e7fc87c8f7e6ee6156a5070b42d5310df1441a08085ebfb86e1ab110ed280",
+    "utility-packages.json": "516711fae9ffcea6c2734f3c010f23924fbc84c858985ef1ad763a41214c3a23"
+  },
+  "qualification": "assembly and relocation only; no new hardware, audio or stress qualification",
+  "cleanReleaseBuild": "pending physical gate and promotion",
+  "browserComposition": "pending promotion"
+}

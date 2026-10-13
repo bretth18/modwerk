@@ -1,14 +1,15 @@
 {
   "kind": "owner-approved-update",
   "id": "analog-bassdrum",
-  "version": "0.1.3-experimental",
+  "version": "0.1.5-experimental",
   "approvedBy": "repeat98",
-  "approvedOn": "2026-10-08",
-  "ownerStatement": "works great and stable, let's release",
-  "reason": "Owner approved release after testing the hash-bound private update, then confirmed MKII, distinct 808/909 instances, Part/project reload and normal power-off/on retaining settings and audible output (\"MK2 yes all\"). Worst-case chip timing and complete memory bounds remain unmeasured; this exact experimental update retains those explicit limits. Native/browser parity, stock isolation, packaging, licensing and current UI/documentation remain required.",
+  "approvedOn": "2026-10-09",
+  "ownerStatement": "flex persists. merge and update",
+  "reason": "After receiving exact AB015FIX01 and being told that the 0.1.4 waiver did not cover it, the owner reported FLEX persistence and directed merge/publication of this exact 0.1.5 source. This new scoped release approval accepts the remaining broader hardware/maximum-load, chip timing and complete memory limits. Only FLEX reboot persistence is reported; model, duration, audio, multiple-instance and Part/project test results were not supplied. Output Matrix halt remains unverified. Native/browser parity, exact packages, fresh UI, licensing and saved live download remain required.",
   "waived": [
+    "current-build-hardware",
     "chip-worst-case-cycles",
     "complete-memory-bounds"
   ],
-  "sourceSha256": "bab3bfd04090ae139330f6c1121e3570b80eaf6b6a0e83c3937df4a2c4696eaf"
+  "sourceSha256": "e741e4876ea3ae44eb54ddc93ff3b5bf5f65ebb3e9320cc5fd1f602f7925966d"
 }

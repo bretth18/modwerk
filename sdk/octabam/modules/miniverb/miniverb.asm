@@ -469,11 +469,16 @@ mv_left_band:
         sub     a,b
         move    b,a
 mv_left_mix:
+; Wet projection can reach +/-4 FS; dry is bounded to +/-1 FS.
+; Scale their wide difference before the 24-bit multiplier, then restore it
+; in the accumulator. Only the final store limits the mixed output.
         move    x:(r7+$2a),y1
         move    x:(r0),b
         sub     b,a
+        asr     #$3,a,a
         move    a,x0
         mpy     x0,y1,a
+        asl     #$3,a,a
         add     b,a
         move    a,x:(r0)+
         move    x:(r7+$34),a
@@ -507,8 +512,10 @@ mv_right_mix:
         move    x:(r7+$2a),y1
         move    x:(r0),b
         sub     b,a
+        asr     #$3,a,a
         move    a,x0
         mpy     x0,y1,a
+        asl     #$3,a,a
         add     b,a
         move    a,x:(r0)+
         move    (r5)+

@@ -13,7 +13,7 @@ Octamod becomes **Modwerk** (modwerk.app): custom firmware for every Elektron ma
   - Modwerk builds Digitakt/Digitone firmware with its own TypeScript engine, interoperable with `.elemod`; elekloader is only a local byte-comparison reference.
   - Module source lives in Modwerk module folders (or a pinned commit) and is compiled by Modwerk CI.
   - New machines use tiered evidence: author-hardware evidence to publish, and owner verification as a badge.
-  - Modwerk's own code is GPL-3.0-or-later.
+  - Modwerk's own code was GPL-3.0-or-later at this decision. The [9 October platform licensing decision](DECISIONS.md#independent-platform-backend-licensing--9-october-2026) supersedes this blanket statement: the independent backend uses ELv2, while the frontend and SDK/component licences remain as documented in [LICENSE](../LICENSE).
   - "Standalone firmware" is a shared library category for exclusive, uncombinable complete builds.
 
 ## Phases

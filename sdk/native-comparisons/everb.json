@@ -1,0 +1,5893 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "everb",
+  "moduleVersion": "0.1.1-experimental",
+  "moduleSourceSha256": "c06251e3744d0d9f66bc0d9622bf5ca3d00c8a69a52aedffdb49577d5bf2990a",
+  "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+  "originalOsSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+  "pool": [
+    "miniverb",
+    "tapeecho",
+    "euclid",
+    "repitch",
+    "tapehead",
+    "airwindows-chorus",
+    "everb",
+    "analog-bassdrum",
+    "usb-audio-out-tracks-main-cue",
+    "quantizer",
+    "synth",
+    "previewvol",
+    "cc-map",
+    "sidechain-compressor",
+    "vector",
+    "playmodes",
+    "mute-modes",
+    "recorder-loop-fix",
+    "poly8",
+    "output-matrix"
+  ],
+  "summary": {
+    "selections": 126,
+    "built": 48,
+    "identicalOutright": 18,
+    "identicalOutsidePlatformWrites": 30,
+    "refused": 78,
+    "mismatches": 0
+  },
+  "selections": [
+    {
+      "moduleIds": [
+        "everb"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "b525e4a42fdddaf6c6f381478bc54e56206e3d5df9be1c76272d8c36d84cdc7a",
+        "maskedOsSha256": "b525e4a42fdddaf6c6f381478bc54e56206e3d5df9be1c76272d8c36d84cdc7a"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "everb"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "00e1bce5e41af823303095cd0dac4aa902afa3ed1c195a2f0ced4ef085243a28",
+        "maskedOsSha256": "00e1bce5e41af823303095cd0dac4aa902afa3ed1c195a2f0ced4ef085243a28"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "everb"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "8787a3e3ed2f9b4686b7b8b51b1ff0332f34dea03ef5d7cc605e5e4b14fac04a",
+        "maskedOsSha256": "8787a3e3ed2f9b4686b7b8b51b1ff0332f34dea03ef5d7cc605e5e4b14fac04a"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "everb"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "ccceb9256fbf49b98ce7e006991ce5c90d9ff3bfef628c49bb65a3f6c3057dca",
+        "maskedOsSha256": "ccceb9256fbf49b98ce7e006991ce5c90d9ff3bfef628c49bb65a3f6c3057dca"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "everb"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "TAPE ECHO",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1215051,
+        "osSha256": "9594dc975af134ba4385279a68455ccc6e58abb54e8bc97003483b7ef33a0deb",
+        "maskedOsSha256": "f727829ed3ca031698a073353fe80635cc3d369e5f9addda6a3d9f17d860b601"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "everb"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1215051,
+        "osSha256": "0c9c0fd59842d124352b2d3502ad22d9294d3c8fbb90deaab8d766b369f546bf",
+        "maskedOsSha256": "8598f045664c756a5125f6a99c829826de537a84442efe471210b5f23255b988"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "everb"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EUCLID",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1114986,
+        "osSha256": "01462ce13c50899a97202b80e03b6abb207a9c963723e93f22dade2b67cd8bd8",
+        "maskedOsSha256": "d14289b6255c70aa09f6db99a14eab91c07d89425566d95fdd8829aaef33db0f"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "everb"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1114986,
+        "osSha256": "8c6d7cd2782b6208863a6b20b1ca65af342fdcc9675ed075cc82443a127c8e4f",
+        "maskedOsSha256": "356e99aa3184ff8b24668f2e495b20c087f662d45139b44f45925786fbb745b7"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "everb"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "cbe47850e3597e5526d63183e36859cdb929da575278c5241abc6ed294e93404",
+        "maskedOsSha256": "cbe47850e3597e5526d63183e36859cdb929da575278c5241abc6ed294e93404"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "repitch",
+        "everb"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "1e925027aca513e14b7355b8ca0a28be49b243741e971fab9eecc6a5f0c580ba",
+        "maskedOsSha256": "1e925027aca513e14b7355b8ca0a28be49b243741e971fab9eecc6a5f0c580ba"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "everb"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "TAPEHEAD",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "2e7b386ebf7412c7b50b9e2daf720b3c3412c933af82c0aff8cb4388c4a26dba",
+        "maskedOsSha256": "2e7b386ebf7412c7b50b9e2daf720b3c3412c933af82c0aff8cb4388c4a26dba"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "everb"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "ddd8a2af809e106b43648691a4cd338819d1bd003393fb289de505980602756f",
+        "maskedOsSha256": "ddd8a2af809e106b43648691a4cd338819d1bd003393fb289de505980602756f"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "everb"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "ec9c5ce1d30d4b205e7adf7f431b1348b1f281a2a152b1bd7602b286d8a34d2d",
+        "maskedOsSha256": "ec9c5ce1d30d4b205e7adf7f431b1348b1f281a2a152b1bd7602b286d8a34d2d"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "airwindows-chorus",
+        "everb"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "c1cee035c1c474c70140abf379318ae8b17c2fca53181f5578d6228f7183e50b",
+        "maskedOsSha256": "c1cee035c1c474c70140abf379318ae8b17c2fca53181f5578d6228f7183e50b"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "ANALOG BD cannot share DSP memory with EVERB"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "analog-bassdrum"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "ANALOG BD cannot share DSP memory with EVERB"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1115534,
+        "osSha256": "1a42722b9bd7df7f86bfd71a0a764266d070566b9bdd690674ffffafd5f63052",
+        "maskedOsSha256": "70e9232b545dc9aa0dd1b59650311af61cc2f6dbb876889ec716c38337b73777"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "usb-audio-out-tracks-main-cue"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1115534,
+        "osSha256": "1b1b8116d6db4e2b19faf7c91ae127f414e31259840dacc3929ff100a5ffe178",
+        "maskedOsSha256": "f8ff09bb35d85caa0c7fbbf4220695992435b3a9df5f1a1c7de612962a4ec07c"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "quantizer"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1115065,
+        "osSha256": "f1c7482067f06b830c5eb7439eadedcda450a8012a441985641eff1730cb309a",
+        "maskedOsSha256": "f008ea89bbbac8405965860804236b6099deb1666e67d649aa4dce4d0e5b0d69"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "quantizer"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1115065,
+        "osSha256": "f323deb4abcfddb81a2d472abc8ac86faebf0f1595cd2a292eb316b2de715486",
+        "maskedOsSha256": "9dd325b9893b7563657627bc429f93b52ecce12115867cea3ca077997503e831"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "synth"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1125240,
+        "osSha256": "4cc9ff33e24557b7dc589d73969a9bed6f831014374a035768bc2e93932fb793",
+        "maskedOsSha256": "f4273d24b9c8a414898a723861181fe5a251c92ab9b5688761990156bfd21c7c"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "synth"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1125240,
+        "osSha256": "6c872f2260613b44d7abe3a6c081947558d25b4da0dcdfd5e60aaab6a3d7e6f2",
+        "maskedOsSha256": "1c2081aab594c700bbe81e73ff40a73c80ab4f7def75399370df1423ffa89aa1"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "previewvol"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "53e8cec47a38925ed4e6e44eab721d0d5f760f3047f2a9ebb8afa807bc20548a",
+        "maskedOsSha256": "53e8cec47a38925ed4e6e44eab721d0d5f760f3047f2a9ebb8afa807bc20548a"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "previewvol"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "f295d18c3172b240e0401a96cf320395f2a1835c27c958fbe7b901e46a0f17ab",
+        "maskedOsSha256": "f295d18c3172b240e0401a96cf320395f2a1835c27c958fbe7b901e46a0f17ab"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "cc-map"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "ea2b8cbaecd7b1c50ee254c44409903298d76826fee0e019127ab51c173188bd",
+        "maskedOsSha256": "ea2b8cbaecd7b1c50ee254c44409903298d76826fee0e019127ab51c173188bd"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "cc-map"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "57e1c11125f60a1bfd4807ebd9a117feba8fe3a691ed17ed24b5744bcdb655d2",
+        "maskedOsSha256": "57e1c11125f60a1bfd4807ebd9a117feba8fe3a691ed17ed24b5744bcdb655d2"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "9b2c02abd0555b3cc2725d6898c3a9135f609d04ed5dc8a5877a5c81934002e1",
+        "maskedOsSha256": "9b2c02abd0555b3cc2725d6898c3a9135f609d04ed5dc8a5877a5c81934002e1"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "sidechain-compressor"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "59a3c605a087860750b2f8d6e6e6de1a60b58001de9319c12da91ea9fe574165",
+        "maskedOsSha256": "59a3c605a087860750b2f8d6e6e6de1a60b58001de9319c12da91ea9fe574165"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1121076,
+        "osSha256": "1478255163d23e94035b4abc10d26ca527d8c378ab040fb91459b3499882674d",
+        "maskedOsSha256": "594307e42867f085c2ff8e3bf537b54402ffb67e291643601c6e23345cd21567"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1121076,
+        "osSha256": "cf4f867ed7ef86266d25b99d3be9f13d49ac6448df9306cad09766c51f40bc2b",
+        "maskedOsSha256": "0eb75f7b53f44d3b6d1592a7062263723c42aba237160e9beffeed53b22bee4a"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "playmodes"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1118019,
+        "osSha256": "efe7c71a7ac2750bb790df79a82ecf583624bf717a8c7f9d9d4b361382c9db83",
+        "maskedOsSha256": "c95197bea1aefbb4a207ed176687168512e7b3a888e25bfd6d1339da792daeaf"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "playmodes"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1118019,
+        "osSha256": "7426013d99ffc0e46bd27f1648187f0dd1942e93abcd701f20fc9c001125e7e8",
+        "maskedOsSha256": "eefb77a29029e0565509ddcf124355fd5bed2135325d48fda422caa0300f9213"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "mute-modes"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "1053324b5d619147fdfd2bc5cdc179cd61af25fac814faf4d82316ccd539bd94",
+        "maskedOsSha256": "1053324b5d619147fdfd2bc5cdc179cd61af25fac814faf4d82316ccd539bd94"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "mute-modes"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "dd54653d37c74405843e877321471798bfcb9c4cbec94f5c5f8893ce3cb9354c",
+        "maskedOsSha256": "dd54653d37c74405843e877321471798bfcb9c4cbec94f5c5f8893ce3cb9354c"
+      },
+      "result": "identical"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "9129afff62ea0a4621600aca54d184390448e6719af25740731fd0ae8c1b6324",
+        "maskedOsSha256": "848044e0475e5fcd688d7c05bfb7c7a9f8411eaa66ed5693b1fdd5bc94aaf8fe",
+        "platformArena": true
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1112560,
+        "osSha256": "b8c9d2e22e56fbe8eaf3b5df8ee38bca796553d3ec05c89cfbd0989ec52bbeb8",
+        "maskedOsSha256": "4b0dc4d8f8a7a2b1d29ca2f69535f903d5732aa9c17d83973c1141d7c0a8ad4e",
+        "platformArena": true
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "poly8"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1125712,
+        "osSha256": "4827eabae0fd907312a5dc265ca83609fb9bace002fa38894103a75ec13f1551",
+        "maskedOsSha256": "11c0027a5499476420afc3fffd336c621f703cc9db316dde021f298f1ac3296b"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "poly8"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1125712,
+        "osSha256": "9ffe4d680e42aec1059581f137717da7e9b7881495e066f4eac6694dd15bed41",
+        "maskedOsSha256": "c23a24e86c82c799bee0365101aacd43fff0d2ba3afa21e547fa140b4a7d4e8d"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1114033,
+        "osSha256": "a10487e23d73609c54c68663f1f859b6422aaf264a10ccefb098eeb7b10e312f",
+        "maskedOsSha256": "671a3ba8040cd348fc00be1e59287203ed94ee2724d0efa922051dc79e94d1a4"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1114033,
+        "osSha256": "cce72aa32eaa6a16ac5c6d52f94281e20db028ec1539e81d8ea787e06e5820fa",
+        "maskedOsSha256": "77078262a3cde669491c4b6ebac4e3389160b10961c402f0f2a29a526ea2bcc9"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7a00) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7a00) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7900) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "seek-bind counter cave not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7a00) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7a00) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7a00) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7a00) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7a00) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7a00) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b00) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b00) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "seek-bind counter cave not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "spacing cave not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "seek-bind counter cave not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "spacing cave not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7a80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7a80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449be -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40002318 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first\n  poke site: quantizer (table ref SEQUENCER labels) and synth (table ref SEQUENCER labels) both claim 0x40065bd8 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER getters) and synth (table ref SEQUENCER getters) both claim 0x40065bde -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065cc4 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d3e -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d58 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d72 -- both rewrite the same bytes\n  poke site: quantizer (poke SEQUENCER window: 3 -> 6 rows (SCALE, ROOT, GLIDE; 3 visible, scrolls)) and synth (poke SEQUENCER window: 3 -> 6 rows (SCALE, ROOT, GLIDE; 3 visible, scrolls)) both claim 0x40065c7c -- both rewrite the same bytes\n  poke site: synth (poke machine chooser has six rows, FM SYNTH the last) and vector (poke VECTOR is machine chooser row six) both claim 0x40079248 -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP selector has six rows) and vector (poke VECTOR is machine chooser row six) both claim 0x400585fa -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP name lookup admits FM) and vector (poke VECTOR is machine chooser row six) both claim 0x4003c950 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser draws FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40078678 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser highlights FM) and vector (poke VECTOR is machine chooser row six) both claim 0x400786ce -- both rewrite the same bytes\n  poke site: synth (poke machine chooser persists FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40079904 -- both rewrite the same bytes\n  grown table: quantizer's SEQUENCER labels and synth's SEQUENCER labels both claim stock array 0x400b27d0 -- each would relocate its own copy and repoint different refs\n  grown table: quantizer's SEQUENCER getters and synth's SEQUENCER getters both claim stock array 0x400b27dc -- each would relocate its own copy and repoint different refs\n  grown table: quantizer's SEQUENCER setters and synth's SEQUENCER setters both claim stock array 0x400b282c -- each would relocate its own copy and repoint different refs"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449be -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40002318 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first\n  poke site: quantizer (table ref SEQUENCER labels) and synth (table ref SEQUENCER labels) both claim 0x40065bd8 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER getters) and synth (table ref SEQUENCER getters) both claim 0x40065bde -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065cc4 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d3e -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d58 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d72 -- both rewrite the same bytes\n  poke site: quantizer (poke SEQUENCER window: 3 -> 6 rows (SCALE, ROOT, GLIDE; 3 visible, scrolls)) and synth (poke SEQUENCER window: 3 -> 6 rows (SCALE, ROOT, GLIDE; 3 visible, scrolls)) both claim 0x40065c7c -- both rewrite the same bytes\n  poke site: synth (poke machine chooser has six rows, FM SYNTH the last) and vector (poke VECTOR is machine chooser row six) both claim 0x40079248 -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP selector has six rows) and vector (poke VECTOR is machine chooser row six) both claim 0x400585fa -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP name lookup admits FM) and vector (poke VECTOR is machine chooser row six) both claim 0x4003c950 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser draws FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40078678 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser highlights FM) and vector (poke VECTOR is machine chooser row six) both claim 0x400786ce -- both rewrite the same bytes\n  poke site: synth (poke machine chooser persists FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40079904 -- both rewrite the same bytes\n  grown table: quantizer's SEQUENCER labels and synth's SEQUENCER labels both claim stock array 0x400b27d0 -- each would relocate its own copy and repoint different refs\n  grown table: quantizer's SEQUENCER getters and synth's SEQUENCER getters both claim stock array 0x400b27dc -- each would relocate its own copy and repoint different refs\n  grown table: quantizer's SEQUENCER setters and synth's SEQUENCER setters both claim stock array 0x400b282c -- each would relocate its own copy and repoint different refs"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7900) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "SCALE QUANTIZER table SEQUENCER getters at 0x400d7c80 not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "quantizer",
+        "mute-modes"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1115065,
+        "osSha256": "d6efe0a90ff991fabeda41e92e4c95671aaa8a25809393de533ae420fa781e7b",
+        "maskedOsSha256": "95200e0483c5a9e910fb90e2fba1238f8702110c597501a6f85c85b69f64aafe"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "quantizer",
+        "mute-modes"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1115065,
+        "osSha256": "aaf8527c73464299c1b4f0d47f56b64df77dd9830208aca52027685d44cb9b10",
+        "maskedOsSha256": "81f1f1fbb5c0932d47089684d8703cd421de7131b134f11dacd545f4fd186f19"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7b80) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7a00) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7a00) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "MUTE_MODES table PERSONALIZE labels at 0x400d7b80 not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "MUTE_MODES table PERSONALIZE getters at 0x400d7c00 not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "everb",
+        "quantizer",
+        "synth",
+        "sidechain-compressor",
+        "mute-modes",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "label formatters do not fit: EUCLID slot 4 needs 352 B; the clone window ends at 0x400d7bbc and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "tapeecho",
+        "euclid",
+        "tapehead",
+        "everb",
+        "quantizer",
+        "synth",
+        "sidechain-compressor",
+        "mute-modes",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "label formatters do not fit: EUCLID slot 4 needs 352 B; the clone window ends at 0x400d7c3c and the overflow run at 0x400d2ce0 (next free 0x400d2ce0)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "MUTE_MODES mm_softmute at 0x400d7a80 not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "MUTE_MODES mm_softmute at 0x400d7a80 not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "spacing cave not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "spacing cave not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "past the stock zero run (or into the long chooser list)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "past the stock zero run (or into the long chooser list)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "quantizer",
+        "previewvol"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1115065,
+        "osSha256": "0275dcbb6b3bf8a848d3febde25db263f68f842625fa193ebb6cb4c2c782cc9b",
+        "maskedOsSha256": "46962f37689c7da87263602a16224a5673f4bbc1977e31cc4ec2b0da9f8ba5eb"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "quantizer",
+        "previewvol"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1115065,
+        "osSha256": "e1565e8ce27e35f9ddc558c6b5789691c94162c5284a27f8a4c8a3e097776f4e",
+        "maskedOsSha256": "a59150bcbc57540feee96d8ec0afd2e9443811d0d240c55653f9eec57018e0a7"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "everb",
+        "playmodes"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1118019,
+        "osSha256": "95fb7b7c9d42486e5b26b4a9d81a45622f2f1e73ff10e6f8bf24472283f58e48",
+        "maskedOsSha256": "0bf8747a9a593ec6bbb539623c99a0439b5ffd53e2006acfb55bf8034aa7d009"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "everb",
+        "playmodes"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1118019,
+        "osSha256": "7cfbdeae597aee68237d0d6d923ccd0d3a49fbdf5167256ad9d000bb708afbda",
+        "maskedOsSha256": "bdd3ce35703f2bf1155b9f8fbeadd0fe120b674762afff93c668de2e01392cc2"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "playmodes"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "TAPEHEAD",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1133034,
+        "osSha256": "29819ed61d7956e29e2b5df461b6dae832218fe2bb2f2f02d269230e34d6f9ae",
+        "maskedOsSha256": "adc9255dc505ec6368eb32a48591fa37e4148be73f7beda7aaf5ddab44a7bdef"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "playmodes"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1133034,
+        "osSha256": "375c7a9e59e0b61a742165fa52be102f88a247d924d6f98e1d37e59dc7f0796e",
+        "maskedOsSha256": "ae93e8d21afa95e8a1a62092a8cf13fa3703472f1094bf8c8e399be52980f57e"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "everb",
+        "cc-map",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "EUCLID",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "payload A: OUTPUT MATRIX overruns the region (2752 > 2724 words)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "euclid",
+        "everb",
+        "cc-map",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "EUCLID",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "payload A: OUTPUT MATRIX overruns the region (2752 > 2724 words)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "cc-map",
+        "sidechain-compressor",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7980) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "cc-map",
+        "sidechain-compressor",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7980) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "previewvol",
+        "sidechain-compressor",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "past the stock zero run (or into the long chooser list)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "previewvol",
+        "sidechain-compressor",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "hold cave (copy) not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449be -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40002318 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first\n  poke site: quantizer (table ref SEQUENCER labels) and synth (table ref SEQUENCER labels) both claim 0x40065bd8 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER getters) and synth (table ref SEQUENCER getters) both claim 0x40065bde -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065cc4 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d3e -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d58 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d72 -- both rewrite the same bytes\n  poke site: quantizer (poke SEQUENCER window: 3 -> 6 rows (SCALE, ROOT, GLIDE; 3 visible, scrolls)) and synth (poke SEQUENCER window: 3 -> 6 rows (SCALE, ROOT, GLIDE; 3 visible, scrolls)) both claim 0x40065c7c -- both rewrite the same bytes\n  poke site: synth (poke machine chooser has six rows, FM SYNTH the last) and vector (poke VECTOR is machine chooser row six) both claim 0x40079248 -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP selector has six rows) and vector (poke VECTOR is machine chooser row six) both claim 0x400585fa -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP name lookup admits FM) and vector (poke VECTOR is machine chooser row six) both claim 0x4003c950 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser draws FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40078678 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser highlights FM) and vector (poke VECTOR is machine chooser row six) both claim 0x400786ce -- both rewrite the same bytes\n  poke site: synth (poke machine chooser persists FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40079904 -- both rewrite the same bytes\n  grown table: quantizer's SEQUENCER labels and synth's SEQUENCER labels both claim stock array 0x400b27d0 -- each would relocate its own copy and repoint different refs\n  grown table: quantizer's SEQUENCER getters and synth's SEQUENCER getters both claim stock array 0x400b27dc -- each would relocate its own copy and repoint different refs\n  grown table: quantizer's SEQUENCER setters and synth's SEQUENCER setters both claim stock array 0x400b282c -- each would relocate its own copy and repoint different refs"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449be -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40002318 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first\n  poke site: quantizer (table ref SEQUENCER labels) and synth (table ref SEQUENCER labels) both claim 0x40065bd8 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER getters) and synth (table ref SEQUENCER getters) both claim 0x40065bde -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065cc4 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d3e -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d58 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d72 -- both rewrite the same bytes\n  poke site: quantizer (poke SEQUENCER window: 3 -> 6 rows (SCALE, ROOT, GLIDE; 3 visible, scrolls)) and synth (poke SEQUENCER window: 3 -> 6 rows (SCALE, ROOT, GLIDE; 3 visible, scrolls)) both claim 0x40065c7c -- both rewrite the same bytes\n  poke site: synth (poke machine chooser has six rows, FM SYNTH the last) and vector (poke VECTOR is machine chooser row six) both claim 0x40079248 -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP selector has six rows) and vector (poke VECTOR is machine chooser row six) both claim 0x400585fa -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP name lookup admits FM) and vector (poke VECTOR is machine chooser row six) both claim 0x4003c950 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser draws FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40078678 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser highlights FM) and vector (poke VECTOR is machine chooser row six) both claim 0x400786ce -- both rewrite the same bytes\n  poke site: synth (poke machine chooser persists FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40079904 -- both rewrite the same bytes\n  grown table: quantizer's SEQUENCER labels and synth's SEQUENCER labels both claim stock array 0x400b27d0 -- each would relocate its own copy and repoint different refs\n  grown table: quantizer's SEQUENCER getters and synth's SEQUENCER getters both claim stock array 0x400b27dc -- each would relocate its own copy and repoint different refs\n  grown table: quantizer's SEQUENCER setters and synth's SEQUENCER setters both claim stock array 0x400b282c -- each would relocate its own copy and repoint different refs"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "everb",
+        "synth",
+        "sidechain-compressor",
+        "poly8"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPEHEAD",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "bytes": 1137904,
+        "osSha256": "8c9c4f40573a955e726e2a1c97d62037643f75b54efe970a3e23ea74b00bb474",
+        "maskedOsSha256": "183e88b20cb691071682016949cc8c38f1e966bc84ee0c17f415019a103daff6"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "everb",
+        "synth",
+        "sidechain-compressor",
+        "poly8"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "bytes": 1137904,
+        "osSha256": "8f990cf3e0769697a7f087387731d2f2e65b7074b5db62b42e4d5bf6bb2bdf02",
+        "maskedOsSha256": "3a563b2f8d860ee575426bfc487f1fa3f9e10208aa6714f82566b63dde924cea"
+      },
+      "result": "masked"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "tapehead",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "past the stock zero run (or into the long chooser list)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "repitch",
+        "tapehead",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "TAPEHEAD",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "past the stock zero run (or into the long chooser list)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "everb",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "vector",
+        "playmodes",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EUCLID",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449be -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40002318 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first\n  poke site: quantizer (table ref SEQUENCER labels) and synth (table ref SEQUENCER labels) both claim 0x40065bd8 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER getters) and synth (table ref SEQUENCER getters) both claim 0x40065bde -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065cc4 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d3e -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d58 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d72 -- both rewrite the same bytes\n  poke site: quantizer (poke SEQUENCER window: 3 -> 6 rows (SCALE, ROOT, GLIDE; 3 visible, scrolls)) and synth (poke SEQUENCER window: 3 -> 6 rows (SCALE, ROOT, GLIDE; 3 visible, scrolls)) both claim 0x40065c7c -- both rewrite the same bytes\n  poke site: synth (poke machine chooser has six rows, FM SYNTH the last) and vector (poke VECTOR is machine chooser row six) both claim 0x40079248 -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP selector has six rows) and vector (poke VECTOR is machine chooser row six) both claim 0x400585fa -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP name lookup admits FM) and vector (poke VECTOR is machine chooser row six) both claim 0x4003c950 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser draws FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40078678 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser highlights FM) and vector (poke VECTOR is machine chooser row six) both claim 0x400786ce -- both rewrite the same bytes\n  poke site: synth (poke machine chooser persists FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40079904 -- both rewrite the same bytes\n  grown table: quantizer's SEQUENCER labels and synth's SEQUENCER labels both claim stock array 0x400b27d0 -- each would relocate its own copy and repoint different refs\n  grown table: quantizer's SEQUENCER getters and synth's SEQUENCER getters both claim stock array 0x400b27dc -- each would relocate its own copy and repoint different refs\n  grown table: quantizer's SEQUENCER setters and synth's SEQUENCER setters both claim stock array 0x400b282c -- each would relocate its own copy and repoint different refs"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "everb",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "vector",
+        "playmodes",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  ColdFire cave: quantizer's linked unit qzk and synth's linked unit fm_qzk both claim 0x400d2cb0\n  ColdFire cave: quantizer's linked unit qzs and synth's linked unit fm_qzs both claim 0x400d2ca8\n  hook site: quantizer and synth both claim 0x40055170 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050e60 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc58 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbde -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fbfe -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fc94 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fce0 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd06 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x4004fd20 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40050254 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40045918 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40044968 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400449be -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40065bca -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400866cc -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400867a2 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x400888aa -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40010212 -- the second jmp overwrites the first\n  hook site: quantizer and synth both claim 0x40025ac2 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40002318 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first\n  poke site: quantizer (table ref SEQUENCER labels) and synth (table ref SEQUENCER labels) both claim 0x40065bd8 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER getters) and synth (table ref SEQUENCER getters) both claim 0x40065bde -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065cc4 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d3e -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d58 -- both rewrite the same bytes\n  poke site: quantizer (table ref SEQUENCER setters) and synth (table ref SEQUENCER setters) both claim 0x40065d72 -- both rewrite the same bytes\n  poke site: quantizer (poke SEQUENCER window: 3 -> 6 rows (SCALE, ROOT, GLIDE; 3 visible, scrolls)) and synth (poke SEQUENCER window: 3 -> 6 rows (SCALE, ROOT, GLIDE; 3 visible, scrolls)) both claim 0x40065c7c -- both rewrite the same bytes\n  poke site: synth (poke machine chooser has six rows, FM SYNTH the last) and vector (poke VECTOR is machine chooser row six) both claim 0x40079248 -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP selector has six rows) and vector (poke VECTOR is machine chooser row six) both claim 0x400585fa -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP name lookup admits FM) and vector (poke VECTOR is machine chooser row six) both claim 0x4003c950 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser draws FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40078678 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser highlights FM) and vector (poke VECTOR is machine chooser row six) both claim 0x400786ce -- both rewrite the same bytes\n  poke site: synth (poke machine chooser persists FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40079904 -- both rewrite the same bytes\n  grown table: quantizer's SEQUENCER labels and synth's SEQUENCER labels both claim stock array 0x400b27d0 -- each would relocate its own copy and repoint different refs\n  grown table: quantizer's SEQUENCER getters and synth's SEQUENCER getters both claim stock array 0x400b27dc -- each would relocate its own copy and repoint different refs\n  grown table: quantizer's SEQUENCER setters and synth's SEQUENCER setters both claim stock array 0x400b282c -- each would relocate its own copy and repoint different refs"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "CC->FX2/FX1 page-2 cave + dispatch repoint: 724 B fits neither the clone window (from 0x400d7900) nor the overflow run"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "quantizer",
+        "synth",
+        "previewvol",
+        "cc-map",
+        "sidechain-compressor",
+        "vector",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "SIDECHAIN_COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB",
+          "SIDECHAIN_COMPRESSOR"
+        ]
+      },
+      "native": {
+        "refused": "seek-bind counter cave not free"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "previewvol",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "past the stock zero run (or into the long chooser list)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "tapeecho",
+        "euclid",
+        "repitch",
+        "tapehead",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "previewvol",
+        "cc-map",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "TAPE ECHO",
+          "EUCLID",
+          "TAPEHEAD",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "past the stock zero run (or into the long chooser list)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "playmodes",
+        "mute-modes",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "payload A: EVERB overruns the region (2805 > 2724 words)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "tapehead",
+        "airwindows-chorus",
+        "everb",
+        "playmodes",
+        "mute-modes",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "TAPEHEAD",
+          "AIR CHORUS",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "payload A: EVERB overruns the region (2805 > 2724 words)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "tapehead",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "payload A: EVERB overruns the region (2941 > 2724 words)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "miniverb",
+        "euclid",
+        "tapehead",
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix",
+        "poly8",
+        "output-matrix"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "EUCLID",
+          "TAPEHEAD"
+        ],
+        "fx2": [
+          "MINIVERB",
+          "EUCLID",
+          "TAPEHEAD",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "payload A: EVERB overruns the region (2941 > 2724 words)"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "cc-map",
+        "vector"
+      ],
+      "keepStockFx2": true,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI",
+          "DELAY",
+          "PLATE REV",
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  hook site: synth and vector both claim 0x40002318 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first\n  poke site: synth (poke machine chooser has six rows, FM SYNTH the last) and vector (poke VECTOR is machine chooser row six) both claim 0x40079248 -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP selector has six rows) and vector (poke VECTOR is machine chooser row six) both claim 0x400585fa -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP name lookup admits FM) and vector (poke VECTOR is machine chooser row six) both claim 0x4003c950 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser draws FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40078678 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser highlights FM) and vector (poke VECTOR is machine chooser row six) both claim 0x400786ce -- both rewrite the same bytes\n  poke site: synth (poke machine chooser persists FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40079904 -- both rewrite the same bytes"
+      },
+      "result": "refused"
+    },
+    {
+      "moduleIds": [
+        "everb",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "cc-map",
+        "vector"
+      ],
+      "keepStockFx2": false,
+      "menu": {
+        "fx1": [
+          "FILTER",
+          "EQUALIZER",
+          "DJ EQ",
+          "PHASER",
+          "FLANGER",
+          "CHORUS",
+          "SPATIALIZER",
+          "COMB FILTER",
+          "COMPRESSOR",
+          "LO-FI"
+        ],
+        "fx2": [
+          "EVERB"
+        ]
+      },
+      "native": {
+        "refused": "remix 'octamod-composition-proof' has colliding modules:\n  hook site: synth and vector both claim 0x40002318 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400334d8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c928 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003d718 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4004c36a -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003c980 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400786c8 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x400585dc -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005221e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x40078886 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4007981c -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a616 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4005a850 -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003a52e -- the second jmp overwrites the first\n  hook site: synth and vector both claim 0x4003cd98 -- the second jmp overwrites the first\n  poke site: synth (poke machine chooser has six rows, FM SYNTH the last) and vector (poke VECTOR is machine chooser row six) both claim 0x40079248 -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP selector has six rows) and vector (poke VECTOR is machine chooser row six) both claim 0x400585fa -- both rewrite the same bytes\n  poke site: synth (poke SRC SETUP name lookup admits FM) and vector (poke VECTOR is machine chooser row six) both claim 0x4003c950 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser draws FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40078678 -- both rewrite the same bytes\n  poke site: synth (poke machine chooser highlights FM) and vector (poke VECTOR is machine chooser row six) both claim 0x400786ce -- both rewrite the same bytes\n  poke site: synth (poke machine chooser persists FM) and vector (poke VECTOR is machine chooser row six) both claim 0x40079904 -- both rewrite the same bytes"
+      },
+      "result": "refused"
+    }
+  ]
+}

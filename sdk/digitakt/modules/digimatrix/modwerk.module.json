@@ -189,7 +189,7 @@
       "path": "media/thumbnail.svg",
       "kind": "thumbnail",
       "caption": "Digi Matrix thumbnail",
-      "alt": "Abstract modulation illustration for Digi Matrix: one LFO wave fanning out across a grid to several destinations at different depths",
+      "alt": "A modulation waveform over its reference signal.",
       "credit": "Modwerk",
       "license": "GPL-3.0-or-later",
       "source": "Original Modwerk illustration"

@@ -26,7 +26,7 @@ export function ReportConfiguration({ machine, moduleId, workspace, log, value, 
   const list = resolved.modules.map(item => item.id + ' ' + item.version).join(', ')
   if (log) return <div className="issue-report-configuration" role="group" aria-labelledby={headingId}>
     <p className="issue-report-heading" id={headingId}>Configuration <span>Read from OCTAMOD.LOG</span></p>
-    <p className="service-note">The log records the build exactly: {count(resolved.modules)}, base OS {log.os}{log.version === 2 && log.stockFx2 !== null ? (log.stockFx2 ? ', stock FX2 kept' : ', stock FX2 replaced') : ''}. Attached privately with the log.</p>
+    <p className="service-note">The log records the build exactly: {count(resolved.modules)}, base OS {log.os}{log.version === 2 && log.stockFx2 !== null ? (log.stockFx2 ? ', stock FX2 kept' : ', stock FX2 replaced') : ''}. Attached with the log.</p>
     {list && <p className="issue-report-module-list">{list}</p>}
     {missing && <p className="file-error">The log does not list this module. If the problem is in another build, attach that build’s log instead.</p>}
   </div>
@@ -44,7 +44,7 @@ export function ReportConfiguration({ machine, moduleId, workspace, log, value, 
       {saved.map(item => <option key={item.id} value={item.id}>{item.name}{item.id === workspace.activeId ? ' (active)' : ''} · {count(item.modules)}</option>)}
       <option value="">Not saved here: pick the modules</option>
     </select></label>}
-    {resolved.source === 'saved' ? <p className="service-note">Attached privately: configuration <strong>{resolved.name}</strong>{os ? ', base OS ' + os : ''}, {count(resolved.modules)}{resolved.build ? ', build fingerprint' : ''}.</p> : <>
+    {resolved.source === 'saved' ? <p className="service-note">Attached: configuration <strong>{resolved.name}</strong>{os ? ', base OS ' + os : ''}, {count(resolved.modules)}{resolved.build ? ', build fingerprint' : ''}.</p> : <>
       {saved.length === 0 && <p className="service-note">No configuration with modules is saved in this browser. Add the modules your {device} runs{machine === 'octatrack' ? ', or attach OCTAMOD.LOG, which records them exactly' : ''}.</p>}
       {chosen.length > 0 && <ul className="issue-report-chips" aria-label="Modules in the configuration">
         {chosen.map(module => <li key={module.moduleId}>{module.name} <span>{module.version}</span><button type="button" disabled={disabled} aria-label={'Remove ' + module.name} onClick={() => remove(module.moduleId)}>×</button></li>)}

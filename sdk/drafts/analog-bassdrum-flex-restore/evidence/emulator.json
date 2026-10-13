@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "source": {
+    "CMakeLists.txt": "7efb78233cd05bc8f7f210ba7bb84e19691ae558c83da51da020c77ec1f12d6c",
+    "card.cpp": "cdf0fa10c6e0acfb0d4641c5105c114028fb85e48f8ada96e6bcc03f57276bed",
+    "card.h": "7d1b0dc65a5f6c1e0a37e976945074c4e8bbbc0be0e719f627a9ad7f4e0b3806",
+    "dsp.cpp": "ab2943752313e1b9b1517068126335099fcf9779a1bb4d77dfc690202dff0edc",
+    "dsp.h": "47a4abf1b64bfbeef10b4422850488a0eabfc075ba5d859380a87fc3c0785793",
+    "machine.cpp": "d0a9f537ecd6c38b333db6420f4f42341fc45856b1a8a4067ed065df29ecdc04",
+    "machine.h": "00696336bab6ae649687b1e298f8efe690d8a851c51944b394b8c7f35dc0e543",
+    "main.cpp": "7c2a245dc295d9994dffb8314e791b96217b8f75107ec3715cd7f7b717d6ff99",
+    "periph.cpp": "312289a4d78d0d4fafbb7765078e21081b6bd67c48fba67c07a39d3019c80157",
+    "periph.h": "167a4806e30dd05810c20b4c7f2c45a351fffd1342e5e0310e8c680977390222",
+    "pgo.sh": "d9ed1836dc2412899e0f779eb42cb6b52869dd0c7ac5b96f173949a250d2a29d",
+    "rtos.cpp": "212c697106bf14a7beb79dbcd0a843ea528a3a20705c0acab49ace0cd8965546",
+    "rtos.h": "6ba69ad263800da378f4ccfd9d917dc85dc46904a4880cde01450ab0e126e4a4",
+    "stage_card.py": "7210866b6efd862ec31e05ee7db86330ca9bf76b8e4f70c48c95dd8d521201be",
+    "test_dsp.cpp": "f6d17c5c1a738fcf3f264cb728ef16d9241ad0eaebd8343944a9a26a58d401e6",
+    "test_emac.cpp": "777307bda5b750d5167f69396c7e92b0e75915d53ac46aab19ff1880c38a7c57",
+    "test_periph.cpp": "133e824c87e4dcdbfe46bdec428cc114fefe28b9bcf058f43394b48df8748ea7",
+    "test_rtos.cpp": "d89aec7ad09c77bb4b21bed870a7113914d3d3ceb8140a25eb75cfc411f73cf1",
+    "usb.cpp": "bfe2cc4ed5b92f9578290b919fab5e15e3d62402c40ff434c855744aaa796240",
+    "usb.h": "c5bb3163bf7fcdf006e5c7343fa67113b71d6e2607e1649ec3b7544947430691",
+    "v4e.cpp": "9bb520b465b167c8f24e09b36ea47a891fb07e88fe084b198ee4e384da23d5b1",
+    "v4e.h": "5e0b4c83b035654f4377ac9e3a792476ef7c3d6ac3732632d79fcb6c91955570",
+    "wav.h": "9b1298c912d5bfcb31b92005eff8d00d050e751fca772b65bdafe6adb79d1a67"
+  },
+  "toolchain": "octamod-tapehead-qualification-tools:local",
+  "cmake": {
+    "buildType": "Release",
+    "lto": false
+  },
+  "gates": {
+    "emac": "passed",
+    "periph": "passed"
+  },
+  "executableSha256": "908a0f8deb76fc8ab3cc0968b924db68e108d9b4f54145e7a8facfe6cad0732c"
+}

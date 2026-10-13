@@ -35,20 +35,20 @@ bench.OUT = output
 # three-minute timeout. Only this test's host calls get the longer deadline.
 bench.subprocess = SimpleNamespace(run=lambda command, **kw: subprocess.run(command, **{**kw, 'timeout': 900}))
 folder = Path(__file__).resolve().parent
-baseline = registry._load_one(folder / 'upstream/manifest-0.1.2.py')
-baseline_asm = folder / 'upstream/miniverb-0.1.2.asm'
+baseline = registry._load_one(folder / 'upstream/manifest-0.2.0.py')
+baseline_asm = folder / 'upstream/miniverb-0.2.0.asm'
 candidate = registry._load_one(folder / 'manifest.py')
 # Select the existing module profile just as the source-package compiler does.
 from remix.schema import Remix  # noqa: E402
 registry.remix = lambda _: Remix(name='miniverb-tone-test', doc='Private DSP regression.', modules=('MINIVERB',), fallback='NONE')
 import build_bus  # noqa: E402
 assert [p.name.decode() for p in candidate.params[:6]] == ['DECAY', 'DAMP', 'TONE', 'MOD', 'RATE', 'MIX']
-report = {'moduleVersion': '0.2.0-experimental', 'sampleRate': 44100,
+report = {'moduleVersion': '0.2.1-experimental', 'sampleRate': 44100,
           'framesPerBlock': 16, 'hardware': 'not tested', 'checks': [], 'loads': [],
           'sources': {name: hashlib.sha256((folder / name).read_bytes()).hexdigest()
                       for name in ('miniverb.asm', 'manifest.py', 'verify.py')},
           'stockMainSha256': hashlib.sha256(args.stock.read_bytes()).hexdigest(),
-          'baselineSources': {name: hashlib.sha256((folder / 'upstream' / {'miniverb.asm': 'miniverb-0.1.2.asm', 'manifest.py': 'manifest-0.1.2.py'}[name]).read_bytes()).hexdigest()
+          'baselineSources': {name: hashlib.sha256((folder / 'upstream' / {'miniverb.asm': 'miniverb-0.2.0.asm', 'manifest.py': 'manifest-0.2.0.py'}[name]).read_bytes()).hexdigest()
                               for name in ('miniverb.asm', 'manifest.py')}}
 
 def gate(name, ok, **detail):
@@ -96,8 +96,8 @@ def render(mod, mems, tag, blocks, values=None, **kw):
 def knobs(tone=64, mix=127):
     p = bench.knobs(candidate); p[2] = tone; p[5] = mix; return p
 
-# Exact neutral must hold with stereo input, wet/dry endpoints, moving old
-# controls and every split position. The old accepted tank stays the oracle.
+# Low-level neutral audio retains the tank and differs only by the bounded
+# three-bit multiplier quantization. The published 0.2.0 source is the oracle.
 blocks = 1400
 inputs = [bench.source(blocks, k) for k in range(8)]
 for split in (0, 1, 7, 15):
@@ -106,10 +106,11 @@ for split in (0, 1, 7, 15):
     for b in range(blocks):
         p = knobs(); p[0] = (b * 3) % 128; p[1] = (b * 5) % 128
         p[3] = (b * 7) % 128; p[4] = (b // 41) % 8; p[5] = (b * 11) % 128
-        events.append((b, p)); previous.append((b, [p[0], p[1], p[5], p[3], p[4], *([0] * 7)]))
+        events.append((b, p)); previous.append((b, p))
     _, a = render(candidate, new, f'neutral_new_{split}', blocks, events, instances=1, inputs=[inputs[0]], split=[split])
     _, b = render(baseline, old, f'neutral_old_{split}', blocks, previous, instances=1, inputs=[inputs[0]], split=[split])
-    gate(f'TONE 64: bit-identical accepted voice, split {split}', a == b)
+    error = max(abs(x-y) for x,y in zip(a[0],b[0]))
+    gate(f'TONE 64: low-level accepted voice within 8 LSB, split {split}', error <= 8, peakDifferenceLsb=error)
 
 # Full-range dry input must remain exact even at the colored endpoints.
 ramp = [round(-8388607 + i * 16777214 / (blocks * 16 - 1)) for i in range(blocks * 16)]
@@ -117,6 +118,51 @@ path = bench.raw(output / 'bipolar.raw', ramp)
 for tone in (0, 64, 127):
     _, a = render(candidate, new, f'dry_{tone}', blocks, [(0, knobs(tone, 0))], instances=1, inputs=[path])
     gate(f'MIX 0: exact dry at TONE {tone}', list(a[0][::2]) == ramp and list(a[0][1::2]) == ramp)
+
+# Measure wet audio before the mixer. Using a full-wet render of the old
+# mixer as the oracle hides its clipped wet-minus-dry difference and confounds
+# that with output clipping. The reference removes only the two mix bodies;
+# their final stores bound the measured wet output. Judge only samples where
+# that wet store did not limit, with the known dry input still within range.
+mix_body = '''        move    x:(r7+$2a),y1
+        move    x:(r0),b
+        sub     b,a
+        asr     #$3,a,a
+        move    a,x0
+        mpy     x0,y1,a
+        asl     #$3,a,a
+        add     b,a
+        move    a,x:(r0)+'''
+source = (folder / 'miniverb.asm').read_text()
+assert source.count(mix_body) == 2
+reference_source = source.replace(mix_body, '        nop\n' * 8 + '        move    a,x:(r0)+')
+reference_path = output / 'raw-wet-only.asm'
+reference_path.write_text(reference_source)
+report['rawWetMeasurementSourceSha256'] = hashlib.sha256(reference_source.encode()).hexdigest()
+wet_mems = assembled('rawWetMeasurement', reference_path)
+for amplitude in (.24, .9):
+    blocks = 8192
+    samples = [round(amplitude * 8388607 * math.sin(2 * math.pi * 733 * n / 44100))
+               for n in range(blocks * 16)]
+    path = bench.raw(output / f'hot_input_{amplitude}.raw', samples)
+    dry = [value for value in samples for _ in range(2)]
+    for core in (0, 1):
+        p = knobs(64, 32)
+        options = dict(instances=1, inputs=[path], positions=[core * 4], split=[7], extra=['-audio', '0'])
+        _, wet = render(candidate, wet_mems, f'raw_wet_{amplitude}_{core}', blocks, [(0, p)], **options)
+        _, before = render(baseline, old, f'old_mix_{amplitude}_{core}', blocks, [(0, p)], **options)
+        row, after = render(candidate, new, f'new_mix_{amplitude}_{core}', blocks, [(0, p)], **options)
+        indexes = [i for i in range(44100 * 2, len(dry)) if abs(wet[0][i]) < 8388600]
+        errors = [[track[0][i] - (.75 * dry[i] + .25 * wet[0][i]) for i in indexes]
+                  for track in (before, after)]
+        peaks = [max(map(abs, error)) for error in errors]
+        gate(f'{amplitude} FS, core {core}: raw wet and 25% mix stay affine',
+             bool(indexes) and peaks[1] <= 512 and row['clipped_samples'] == 0,
+             eligibleSamples=len(indexes), oldPeakErrorLsb=peaks[0], newPeakErrorLsb=peaks[1],
+             rawWetLimitedSamples=sum(abs(v) >= 8388600 for v in wet[0][44100 * 2:]),
+             mixedClippedSamples=row['clipped_samples'])
+        if amplitude == .9:
+            gate(f'core {core}: published mixer reproduces intermediate clipping', peaks[0] > 512)
 
 # Frequency ratios compare actual rendered reverberation with the accepted
 # neutral voice; equal parameters and stationary modulation isolate Tone.
@@ -177,7 +223,7 @@ base_row, _ = bench.run(baseline, old, 'baseline_load', 2048, automate=True, spl
 report['loads'].append(base_row)
 peak = max(c['peak_block'] for c in row['cores'])
 base_peak = max(c['peak_block'] for c in base_row['cores'])
-gate('colored processing stays within 16% of accepted voice cost', peak <= base_peak * 1.16,
+gate('processing stays within 2% of published 0.2.0 cost', peak <= base_peak * 1.02,
      candidatePeak=peak, baselinePeak=base_peak, extraPercent=100 * (peak / base_peak - 1))
 row, _ = bench.run(candidate, new, 'neutral_load', 2048)
 report['loads'].append(row)

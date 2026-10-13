@@ -50,13 +50,13 @@ export function validateChoosers(ids: readonly string[], profile: ChooserProfile
   if (selected.some(module => module.id === 'character') && !metadata.curveReaders.some(reader => kept.includes(reader))) throw new Error('This Character configuration needs the X-table placement engine. Keep DJ EQ available for now.')
   return { own, hidden: own.filter(module => module.fx1Only && profile.fx1.includes(module.key)).map(module => module.key) }
 }
-export async function composeChoosers(original: Uint8Array, ids: readonly string[], profile: ChooserProfile = defaultChoosers(ids), runtime: CfRuntimeLink | null = null) {
+export async function composeChoosers(original: Uint8Array, ids: readonly string[], profile: ChooserProfile = defaultChoosers(ids), runtime: CfRuntimeLink | null = null, betaStartup = false) {
   const { own, hidden } = validateChoosers(ids, profile), layout = metadata.layout
   if (await hash(original) !== metadata.sourceSha256) throw new Error('Chooser composition needs the original OS fingerprint.')
   const listAddress = (profile.fx2.length + 2) * 4 <= 32 ? layout.NEW_LIST : layout.LONG_LIST
   // A module replacing a stock effect takes that effect's FX2 slot while the stock rows stay, so it leads the placement order.
   const leading = profile.fx2.some(key => metadata.stockEffects.some(effect => effect.key === key)) ? own.filter(module => 'replaces' in module).map(module => module.id) : []
-  const menus = await composeModuleMenus(original, ids, listAddress === layout.NEW_LIST ? MENU_CAVE_END : MENU_LONG_LIST, runtime, leading)
+  const menus = await composeModuleMenus(original, ids, listAddress === layout.NEW_LIST ? MENU_CAVE_END : MENU_LONG_LIST, runtime, leading, betaStartup ? 80 : 0)
   const writes: OsWrite[] = [...menus.writes], view = new DataView(original.buffer, original.byteOffset, original.byteLength)
   const read = (address: number) => view.getUint32(address - OS_LOAD_ADDRESS)
   const pointerTable = (entries: readonly number[]) => {

@@ -1,0 +1,805 @@
+{
+  "file": "media/audio-preview.mp3",
+  "sha256": "b44fa27659fd947eacf5d0dfe186cddfeaf0ecef44b0cfe7d59b48e3ac185f7f",
+  "seconds": 12.06,
+  "encoding": {
+    "format": "MP3",
+    "sampleRateHz": 44100,
+    "channels": 2,
+    "bitrateKbps": 192,
+    "decodedPeakDbfs": -1.329,
+    "fadeInMs": 5,
+    "fadeOutMs": 35,
+    "gapSeconds": 0,
+    "loudnessMatch": "common gain",
+    "gainDb": 20.518,
+    "trailingQuietTrimThresholdDbfs": -48,
+    "trailingQuietMarginMs": 40,
+    "limiter": false
+  },
+  "passes": [
+    {
+      "label": "Vector-derived FM phrase with index and feedback modulation through Mini Verb",
+      "start": 0,
+      "duration": 12.06,
+      "sourceRecordingStartFrame": 12071157,
+      "sourceRecordingEndFrame": 12603003,
+      "sourceRecordingPcmSha256": "02a99cde8adceb3bf2fab23735f5778c1ff8113df8d2828e115c43f8d3d144b3"
+    }
+  ],
+  "validation": {
+    "nonzeroAudio": true,
+    "decodedPeakBelowMinus1Dbfs": true,
+    "clippedSamples": 0,
+    "maximumQuietRunSecondsBelowMinus48Dbfs": 0.06,
+    "sourceSampleFree": true,
+    "heldTrigPitchesVerifiedFromCaptures": true,
+    "nativeTempoAndModulationEndpointsVerifiedFromCaptures": true,
+    "controlsCaptureHashes": {
+      "fm-line-amp.pgm": "6c435e6b031568c1db260dd93969b26dbadd6e110e3d99b75586689fafa27539",
+      "fm-line-base.pgm": "5c560a8bedbf134df5663842e3cb1d2c52cf31b614bf175529cff37566aa63ce",
+      "fm-line-end.pgm": "40febedbaa2b172df2a33b122ccca51ce1b0bce9ee2bc619b66961c1fa78e8a6",
+      "fm-line-ready.pgm": "dc3c50a2ee4ad07cead51f01b5534a12d407c3de8fc76fc2b5128e9c7c861278",
+      "fm-line-reverb.pgm": "72447dfbc2243f15db460bec45b16e750f171199c8f522504f88217bc553cfb7",
+      "fm-line-step-1.pgm": "b22cf1b2bca256df2be5415b1807101d54643e2c10ea28d68205b408f73171ca",
+      "fm-line-step-10.pgm": "4727979a37c81caac3794c2a1c0170e9442a46ff73e179d22aa85d0e9a34b5c8",
+      "fm-line-step-12.pgm": "3eaa52eec0692e0d556700038456097851f58dd9fb3bfabbd20ad806d7313148",
+      "fm-line-step-14.pgm": "3eaa52eec0692e0d556700038456097851f58dd9fb3bfabbd20ad806d7313148",
+      "fm-line-step-2.pgm": "1b098f6488d7f856ab81932eb1b8d76a92cf3612a116e2e9a6a319bb0e176db7",
+      "fm-line-step-3.pgm": "12d8b9cc80cd9ebcb06f5b5f93520888d5802bdb12f450c04df7b85e554ac986",
+      "fm-line-step-5.pgm": "a2a599f6ccb9dc89b76d4b2be3c392164bd13d9e141a3feb974e4206fb29f1de",
+      "fm-line-step-6.pgm": "1fcfbea58354fe2c0da92c1b433079bcc43573d236289d38c5b221e626735ffd",
+      "fm-line-step-7.pgm": "4727979a37c81caac3794c2a1c0170e9442a46ff73e179d22aa85d0e9a34b5c8",
+      "fm-line-step-8.pgm": "a2a599f6ccb9dc89b76d4b2be3c392164bd13d9e141a3feb974e4206fb29f1de",
+      "fm-line-tempo.pgm": "d5816fa092e4d9a9aa43f2a9ec84bff870c9727adb86e8af404899116222cc35"
+    }
+  },
+  "schemaVersion": 2,
+  "moduleId": "synth",
+  "moduleVersion": "0.1.2-experimental",
+  "rendered": "2026-10-12",
+  "sourceCommit": "32ac46b0c7e8c11e48ebc41674695e033142b46e",
+  "limitations": [
+    "Offline emulator/native render, not a physical Octatrack recording or new hardware/performance qualification."
+  ],
+  "sourceFilesSha256": {
+    "machine.s": "de9d849bf0b6e5d5ad747df32ae5806e7f9516674a14ac74b1c15d73d30d280a",
+    "manifest.py": "7854330aca001d2841de2fb384f0ca8adb7497db49dacc56da2815c1f444c0e6",
+    "registration.c": "c7f969f6536ef3b03727c02a05ce48755662c2eae0fbb4aaba80708d02c06f76",
+    "registration.s": "d04e47d6d21287ea969e4d39d0fea8c90b262a577081ba8376915f96cd2d9d2d",
+    "upstream/quantizer/core.s": "2992b6c85cff440de03ae84eb22dee8b8a83a84f23e94b699404d28940b6f958",
+    "upstream/quantizer/keys.s": "e2ffdbfae34b0828794a4eb4cc229e3efcaed25dc953bf7c05c13f6e37f65587",
+    "upstream/quantizer/manifest.py": "e637e3718e4b65320b847ef0758e0d46800f8be6b8020290f89192c798c535ef",
+    "upstream/quantizer/quantizer.s": "d1737168a1750f540b3dfbefdd2a64b11084013b9f7b71b31aa4f189d33a24c5",
+    "upstream/quantizer/scale.s": "82242c407847ac61a6f60fe15bdc5b0b4fc852bac82c39745b5c838ec9389c64",
+    "upstream/synth/manifest.py": "58c7acd5684fe0b59c42501f7fdbfd1b288b3bfb71938dcadf43bc1774b3e5e8",
+    "upstream/synth/page.s": "25e2a0624fcc30ee3a8db5966954113119fb5942855042f765e664a2f8544a70",
+    "upstream/synth/poly.s": "ce21f5f7cddcd7268d27e25c500f1403cc59a9dff28044b1832cf2b45592d34c",
+    "verify-audio.py": "d02b7b916d9b198b9e10e34d21c7eb0242267ef8bdac5762b5958721c05b0283",
+    "verify-regressions.py": "86f6eb9e2a0c738212703bfcec2ad830910702e4064052b1b7e2bc10fbba444d",
+    "verify.py": "685d4aa146ed206caf8c9d78acf0f635e727f8eccc359167bb46205d647f3a75"
+  },
+  "method": "Actual sample-free FM Synth 0.1.2-experimental playback through Mini Verb 0.2.1-experimental in Octemu, with a browser-composed private OS 1.40C image. VECTOR 0.2.4 engine.c runs offline to supply note positions and semitone pitches, transferred through FM held-trig parameter locks; VECTOR does not run directly on the FM machine. The stock native sequencer runs the 16-step phrase at 128 BPM. INDX 44–92 and FDBK 0–28 sweep together over 7.5 seconds of requested guest-clock time. Trim boot/edit silence, retain the musical phrase and stopped tail, add 5/35 ms end fades, apply one common gain, and encode without a limiter. Not a physical Octatrack recording.",
+  "image": {
+    "moduleIds": [
+      "synth",
+      "miniverb"
+    ],
+    "mainOsSha256": "cae52a8c5b054ea52c8a0ccfb89df546452665cf3b5305f4a76ec65592ae1fe5",
+    "stockMainSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+    "bytes": 1129824,
+    "source": "browser composer, released synth 0.1.2 and miniverb 0.2.1 packages"
+  },
+  "sample": null,
+  "emulator": {
+    "name": "Octemu",
+    "sha256": "3ce6cebde0de2c61edc4228436338a1e115ce227373351a5ca84aefc9cf90acb",
+    "qemuSha256": "a7eecaeae877630879062afd6462b8b7b9f2ad4a0664e325c4edddc0a84950c0"
+  },
+  "fixture": {
+    "recipe": "Private copy of Octemu out/fx2 firmware-created card and battery, step-1 T1 trig and FX1/FX2 NONE; delete Set 260922/AUDIO/SINE440.WAV before boot. No audio files are used. Original fixture unchanged.",
+    "sampleFreeCardSha256": "dbe748ed445db9305ac3245204464dd730ac0611a2efef75cbeb7ba02dced9f8",
+    "initialBatterySha256": "5bd8f41de2f41b2ad63707e05ccc6b3a5e91f32ca8330f421f8f7469cb430ece",
+    "sourceRecordingSha256": "894723bfc0f94a996d3eb61d06da6978e7a26fdfe5e598f15daebb8d0a1f68e2"
+  },
+  "panelWalk": [
+    {
+      "record": 0
+    },
+    {
+      "wait_text": "PTCH",
+      "timeout_ms": 60000
+    },
+    {
+      "wait_guest_ms": 16000
+    },
+    {
+      "tap": "NO"
+    },
+    {
+      "tap": "T1"
+    },
+    {
+      "press": "FUNC"
+    },
+    {
+      "tap": "SRC"
+    },
+    {
+      "release": "FUNC"
+    },
+    {
+      "wait_guest_ms": 300
+    },
+    {
+      "tap": "DOWN"
+    },
+    {
+      "tap": "DOWN"
+    },
+    {
+      "tap": "DOWN"
+    },
+    {
+      "tap": "DOWN"
+    },
+    {
+      "tap": "DOWN"
+    },
+    {
+      "tap": "YES"
+    },
+    {
+      "tap": "SRC",
+      "until": "RAT0"
+    },
+    {
+      "encoder": 0,
+      "delta": -1,
+      "times": 12,
+      "over_ms": 1200
+    },
+    {
+      "encoder": 2,
+      "delta": 1,
+      "times": 12,
+      "over_ms": 1200
+    },
+    {
+      "encoder": 5,
+      "delta": 1,
+      "times": 16,
+      "over_ms": 1600
+    },
+    {
+      "tap": "AMP"
+    },
+    {
+      "encoder": 1,
+      "delta": -1,
+      "times": 127,
+      "over_ms": 12700
+    },
+    {
+      "encoder": 1,
+      "delta": 1,
+      "times": 24,
+      "over_ms": 2400
+    },
+    {
+      "encoder": 2,
+      "delta": -1,
+      "times": 127,
+      "over_ms": 12700
+    },
+    {
+      "encoder": 2,
+      "delta": 1,
+      "times": 72,
+      "over_ms": 7200
+    },
+    {
+      "encoder": 3,
+      "delta": 1,
+      "times": 127,
+      "over_ms": 12700
+    },
+    {
+      "wait_guest_ms": 500
+    },
+    {
+      "screenshot": "fm-line-amp.pgm"
+    },
+    {
+      "tap": "SRC"
+    },
+    {
+      "screenshot": "fm-line-base.pgm"
+    },
+    {
+      "press": "FUNC"
+    },
+    {
+      "tap": "FX2"
+    },
+    {
+      "release": "FUNC"
+    },
+    {
+      "encoder": 6,
+      "delta": 1,
+      "times": 30,
+      "over_ms": 3000
+    },
+    {
+      "tap": "YES"
+    },
+    {
+      "tap": "FX2",
+      "until": "DECAY"
+    },
+    {
+      "encoder": 0,
+      "delta": -1,
+      "times": 8,
+      "over_ms": 800
+    },
+    {
+      "encoder": 1,
+      "delta": -1,
+      "times": 12,
+      "over_ms": 1200
+    },
+    {
+      "encoder": 5,
+      "delta": -1,
+      "times": 5,
+      "over_ms": 500
+    },
+    {
+      "screenshot": "fm-line-reverb.pgm"
+    },
+    {
+      "tap": "TEMPO"
+    },
+    {
+      "encoder": 6,
+      "delta": 1,
+      "times": 8,
+      "over_ms": 800
+    },
+    {
+      "wait_guest_ms": 300
+    },
+    {
+      "screenshot": "fm-line-tempo.pgm"
+    },
+    {
+      "tap": "NO"
+    },
+    {
+      "tap": "SRC"
+    },
+    {
+      "tap": "REC"
+    },
+    {
+      "wait_guest_ms": 300
+    },
+    {
+      "press": "TRIG1"
+    },
+    {
+      "wait_guest_ms": 160
+    },
+    {
+      "encoder": 0,
+      "delta": -1,
+      "times": 127,
+      "over_ms": 12700
+    },
+    {
+      "encoder": 0,
+      "delta": 1,
+      "times": 62,
+      "over_ms": 6200
+    },
+    {
+      "wait_guest_ms": 400
+    },
+    {
+      "screenshot": "fm-line-step-1.pgm"
+    },
+    {
+      "release": "TRIG1"
+    },
+    {
+      "tap": "TRIG2",
+      "until_lamp": 2,
+      "lit": 1,
+      "settle_ms": 120,
+      "verify_ms": 8000
+    },
+    {
+      "press": "TRIG2"
+    },
+    {
+      "wait_guest_ms": 160
+    },
+    {
+      "encoder": 0,
+      "delta": -1,
+      "times": 127,
+      "over_ms": 12700
+    },
+    {
+      "encoder": 0,
+      "delta": 1,
+      "times": 50,
+      "over_ms": 5000
+    },
+    {
+      "wait_guest_ms": 400
+    },
+    {
+      "screenshot": "fm-line-step-2.pgm"
+    },
+    {
+      "release": "TRIG2"
+    },
+    {
+      "tap": "TRIG3",
+      "until_lamp": 4,
+      "lit": 1,
+      "settle_ms": 120,
+      "verify_ms": 8000
+    },
+    {
+      "press": "TRIG3"
+    },
+    {
+      "wait_guest_ms": 160
+    },
+    {
+      "encoder": 0,
+      "delta": -1,
+      "times": 127,
+      "over_ms": 12700
+    },
+    {
+      "encoder": 0,
+      "delta": 1,
+      "times": 55,
+      "over_ms": 5500
+    },
+    {
+      "wait_guest_ms": 400
+    },
+    {
+      "screenshot": "fm-line-step-3.pgm"
+    },
+    {
+      "release": "TRIG3"
+    },
+    {
+      "tap": "TRIG5",
+      "until_lamp": 8,
+      "lit": 1,
+      "settle_ms": 120,
+      "verify_ms": 8000
+    },
+    {
+      "press": "TRIG5"
+    },
+    {
+      "wait_guest_ms": 160
+    },
+    {
+      "encoder": 0,
+      "delta": -1,
+      "times": 127,
+      "over_ms": 12700
+    },
+    {
+      "encoder": 0,
+      "delta": 1,
+      "times": 59,
+      "over_ms": 5900
+    },
+    {
+      "wait_guest_ms": 400
+    },
+    {
+      "screenshot": "fm-line-step-5.pgm"
+    },
+    {
+      "release": "TRIG5"
+    },
+    {
+      "tap": "TRIG6",
+      "until_lamp": 10,
+      "lit": 1,
+      "settle_ms": 120,
+      "verify_ms": 8000
+    },
+    {
+      "press": "TRIG6"
+    },
+    {
+      "wait_guest_ms": 160
+    },
+    {
+      "encoder": 0,
+      "delta": -1,
+      "times": 127,
+      "over_ms": 12700
+    },
+    {
+      "encoder": 0,
+      "delta": 1,
+      "times": 54,
+      "over_ms": 5400
+    },
+    {
+      "wait_guest_ms": 400
+    },
+    {
+      "screenshot": "fm-line-step-6.pgm"
+    },
+    {
+      "release": "TRIG6"
+    },
+    {
+      "tap": "TRIG7",
+      "until_lamp": 12,
+      "lit": 1,
+      "settle_ms": 120,
+      "verify_ms": 8000
+    },
+    {
+      "press": "TRIG7"
+    },
+    {
+      "wait_guest_ms": 160
+    },
+    {
+      "encoder": 0,
+      "delta": -1,
+      "times": 127,
+      "over_ms": 12700
+    },
+    {
+      "encoder": 0,
+      "delta": 1,
+      "times": 52,
+      "over_ms": 5200
+    },
+    {
+      "wait_guest_ms": 400
+    },
+    {
+      "screenshot": "fm-line-step-7.pgm"
+    },
+    {
+      "release": "TRIG7"
+    },
+    {
+      "tap": "TRIG8",
+      "until_lamp": 14,
+      "lit": 1,
+      "settle_ms": 120,
+      "verify_ms": 8000
+    },
+    {
+      "press": "TRIG8"
+    },
+    {
+      "wait_guest_ms": 160
+    },
+    {
+      "encoder": 0,
+      "delta": -1,
+      "times": 127,
+      "over_ms": 12700
+    },
+    {
+      "encoder": 0,
+      "delta": 1,
+      "times": 59,
+      "over_ms": 5900
+    },
+    {
+      "wait_guest_ms": 400
+    },
+    {
+      "screenshot": "fm-line-step-8.pgm"
+    },
+    {
+      "release": "TRIG8"
+    },
+    {
+      "tap": "TRIG10",
+      "until_lamp": 18,
+      "lit": 1,
+      "settle_ms": 120,
+      "verify_ms": 8000
+    },
+    {
+      "press": "TRIG10"
+    },
+    {
+      "wait_guest_ms": 160
+    },
+    {
+      "encoder": 0,
+      "delta": -1,
+      "times": 127,
+      "over_ms": 12700
+    },
+    {
+      "encoder": 0,
+      "delta": 1,
+      "times": 52,
+      "over_ms": 5200
+    },
+    {
+      "wait_guest_ms": 400
+    },
+    {
+      "screenshot": "fm-line-step-10.pgm"
+    },
+    {
+      "release": "TRIG10"
+    },
+    {
+      "tap": "TRIG12",
+      "until_lamp": 22,
+      "lit": 1,
+      "settle_ms": 120,
+      "verify_ms": 8000
+    },
+    {
+      "press": "TRIG12"
+    },
+    {
+      "wait_guest_ms": 160
+    },
+    {
+      "encoder": 0,
+      "delta": -1,
+      "times": 127,
+      "over_ms": 12700
+    },
+    {
+      "encoder": 0,
+      "delta": 1,
+      "times": 60,
+      "over_ms": 6000
+    },
+    {
+      "wait_guest_ms": 400
+    },
+    {
+      "screenshot": "fm-line-step-12.pgm"
+    },
+    {
+      "release": "TRIG12"
+    },
+    {
+      "tap": "TRIG14",
+      "until_lamp": 26,
+      "lit": 1,
+      "settle_ms": 120,
+      "verify_ms": 8000
+    },
+    {
+      "press": "TRIG14"
+    },
+    {
+      "wait_guest_ms": 160
+    },
+    {
+      "encoder": 0,
+      "delta": -1,
+      "times": 127,
+      "over_ms": 12700
+    },
+    {
+      "encoder": 0,
+      "delta": 1,
+      "times": 60,
+      "over_ms": 6000
+    },
+    {
+      "wait_guest_ms": 400
+    },
+    {
+      "screenshot": "fm-line-step-14.pgm"
+    },
+    {
+      "release": "TRIG14"
+    },
+    {
+      "tap": "REC"
+    },
+    {
+      "screenshot": "fm-line-ready.pgm"
+    },
+    {
+      "record": 1
+    },
+    {
+      "mark": "FM line starts"
+    },
+    {
+      "tap": "PLAY",
+      "until_lamp": 1,
+      "lit": 1
+    },
+    {
+      "encoder": 2,
+      "delta": 1,
+      "times": 48,
+      "over_ms": 7500,
+      "wait_guest_ms": 0
+    },
+    {
+      "encoder": 4,
+      "delta": 1,
+      "times": 28,
+      "over_ms": 7500
+    },
+    {
+      "wait_guest_ms": 500
+    },
+    {
+      "screenshot": "fm-line-end.pgm"
+    },
+    {
+      "tap": "STOP",
+      "until_lamp": 1,
+      "lit": 0
+    },
+    {
+      "tap": "STOP",
+      "until_lamp": 1,
+      "lit": 0
+    },
+    {
+      "wait_guest_ms": 1800
+    },
+    {
+      "record": 0
+    }
+  ],
+  "sequence": {
+    "generator": "VECTOR 0.2.4 engine.c, native generator only",
+    "parameters": {
+      "type": 3,
+      "density": 10,
+      "root": 0,
+      "scale": "C minor",
+      "gate": 12,
+      "accent": 48,
+      "span": 9,
+      "offset": 15
+    },
+    "seed": 7,
+    "length": 16,
+    "notes": [
+      {
+        "step": 1,
+        "semitones": 10,
+        "vectorHold": 12,
+        "vectorVolume": 110,
+        "fmPitch": 62
+      },
+      {
+        "step": 2,
+        "semitones": -2,
+        "vectorHold": 6,
+        "vectorVolume": 110,
+        "fmPitch": 50
+      },
+      {
+        "step": 3,
+        "semitones": 3,
+        "vectorHold": 12,
+        "vectorVolume": 89,
+        "fmPitch": 55
+      },
+      {
+        "step": 5,
+        "semitones": 7,
+        "vectorHold": 9,
+        "vectorVolume": 110,
+        "fmPitch": 59
+      },
+      {
+        "step": 6,
+        "semitones": 2,
+        "vectorHold": 6,
+        "vectorVolume": 89,
+        "fmPitch": 54
+      },
+      {
+        "step": 7,
+        "semitones": 0,
+        "vectorHold": 12,
+        "vectorVolume": 89,
+        "fmPitch": 52
+      },
+      {
+        "step": 8,
+        "semitones": 7,
+        "vectorHold": 9,
+        "vectorVolume": 89,
+        "fmPitch": 59
+      },
+      {
+        "step": 10,
+        "semitones": 0,
+        "vectorHold": 6,
+        "vectorVolume": 110,
+        "fmPitch": 52
+      },
+      {
+        "step": 12,
+        "semitones": 8,
+        "vectorHold": 12,
+        "vectorVolume": 89,
+        "fmPitch": 60
+      },
+      {
+        "step": 14,
+        "semitones": 8,
+        "vectorHold": 9,
+        "vectorVolume": 110,
+        "fmPitch": 60
+      }
+    ],
+    "transfer": "Only note positions and semitone pitches are transferred through held-trig panel editing. Convert VECTOR sample pitch (64+5*semitones) to FM pitch (52+semitones). Hold/volume stay at fixed FM patch values.",
+    "scriptSha256": "8de5bab6b65156c29748d50faa942ab41727d8f4892b6d1f2a2f7face4c00123",
+    "sourceFilesSha256": {
+      "engine.c": "508448ef3897450877b2aa66de0f9305d6d8e950747774289aeeb7f09793a302",
+      "engine.h": "7191686c8fc62869a37aa27717c1d92460eea3c77debf154a482df1b913469b2"
+    },
+    "generatorDriverSha256": "6cf95f27b54153f53af8cb300569e0003f2b47b203aaaadda78985ef14dc61e6"
+  },
+  "settings": {
+    "tempoBpm": 128,
+    "FM": {
+      "RATO": 12,
+      "INDXStart": 44,
+      "INDXEnd": 92,
+      "FINE": 64,
+      "FDBKStart": 0,
+      "FDBKEnd": 28,
+      "DEC": 56,
+      "VOIC": 1,
+      "AMP_HOLD": 24,
+      "AMP_REL": 72,
+      "AMP_VOL": 127,
+      "FX1": "NONE"
+    },
+    "FX2": {
+      "module": "miniverb",
+      "version": "0.2.1-experimental",
+      "DECAY": 96,
+      "DAMP": 58,
+      "MOD": 80,
+      "RATE": 2,
+      "TONE": 64,
+      "MIX": 36
+    }
+  },
+  "companionSourceFilesSha256": {
+    "manifest.py": "e18af286c50d9778cb60ddbe8b9348c4b4a71c04cb45171419d4d2a6681cc31c",
+    "miniverb.asm": "54f718c47683c8620e2cbeef0fd814583eacfca31051ced637ced287bfbdb283",
+    "upstream/manifest-0.1.2.py": "ea8eb70ef4d9e374bdcd90ffcbc67263ec27b10883ceb120df7f22185f6788e3",
+    "upstream/manifest-0.2.0.py": "e18af286c50d9778cb60ddbe8b9348c4b4a71c04cb45171419d4d2a6681cc31c",
+    "upstream/miniverb-0.1.2.asm": "a9d582dff3405f709acfa9fe25bf4234146965a011dfbb31ca5dc75942b2ea30",
+    "upstream/miniverb-0.2.0.asm": "b41a3e8b159fd4594af3eada72e84933d067b0335a2b1adc786bfcadc95fd136",
+    "verify.py": "1322d1e5f5335de0a38a6a2067d5456aa95eaa3c42f9ec4836fa7f9b056bf752"
+  }
+}

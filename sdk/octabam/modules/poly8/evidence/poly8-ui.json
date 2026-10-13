@@ -1,0 +1,17 @@
+{
+  "image_sha256": "e0920b6d9f74822d000c335218bdf74d96a36984459c710553fe676293845546",
+  "new_loop": 0,
+  "loop_after_encoder": 1,
+  "loop_after_reselect": 1,
+  "reselect_part_unchanged": true,
+  "sample_slots_after_double_track": "46c7d34c",
+  "chooser_type": "00000005",
+  "right_pane": 1,
+  "right_machine": 1,
+  "marker_after_sample_yes": "504c01",
+  "loop_after_sample_yes": 1,
+  "flex_marker": "000000",
+  "reassigned_loop": 0,
+  "cancel_marker": "504c01",
+  "pipo_after_reselect": 3
+}

@@ -1,0 +1,33 @@
+{
+  "version": "0.2.5-experimental",
+  "baseline": "6ae17f687965e8953c898c862e29e9bc581b7e21",
+  "packages": [
+    {
+      "package": "requested-packages.json",
+      "existingObjects": 32,
+      "existingCodePlacementAndGuardsUnchanged": true,
+      "addedObjects": [
+        "polyphony",
+        "polyui"
+      ]
+    },
+    {
+      "package": "coldfire-packages.json",
+      "existingObjects": 11,
+      "existingCodePlacementAndGuardsUnchanged": true,
+      "addedObjects": []
+    },
+    {
+      "package": "dsp-packages.json",
+      "existingObjects": 8,
+      "existingCodePlacementAndGuardsUnchanged": true,
+      "addedObjects": []
+    },
+    {
+      "package": "rom-packages.json",
+      "existingObjects": 5,
+      "existingCodePlacementAndGuardsUnchanged": true,
+      "addedObjects": []
+    }
+  ]
+}

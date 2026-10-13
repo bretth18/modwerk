@@ -664,6 +664,31 @@
           "sha256": "4fdf4a515aa11f5569e1b7166f70907bcad463adce8c027e815a77819a8b50f3"
         }
       ]
+    },
+    {
+      "id": "everb",
+      "key": "EVERB",
+      "author": "user1303836",
+      "slot": 8,
+      "name": "REV",
+      "labels": [
+        "OFF",
+        "ON"
+      ],
+      "renames": {},
+      "wideMaximum": null,
+      "proofs": [
+        {
+          "namesAddress": 1074621238,
+          "bytes": 52,
+          "sha256": "ba4ba6ad69779d2df8e9a1c0cc8293c0b5698a75d0fa43798eb1dbb32f7b370a"
+        },
+        {
+          "namesAddress": 1074623350,
+          "bytes": 52,
+          "sha256": "ba4ba6ad69779d2df8e9a1c0cc8293c0b5698a75d0fa43798eb1dbb32f7b370a"
+        }
+      ]
     }
   ],
   "repitchPatches": [
@@ -1251,23 +1276,26 @@
     "spectrum": "0.1.1-experimental",
     "modulation": "0.1.1-experimental",
     "character": "0.1.1-experimental",
-    "miniverb": "0.2.0-experimental",
-    "tapeecho": "0.1.2-experimental",
+    "miniverb": "0.2.1-experimental",
+    "tapeecho": "0.1.3-experimental",
     "euclid": "0.1.4-experimental",
     "repitch": "0.1.2-experimental",
     "tapehead": "0.1.2-experimental",
-    "airwindows-chorus": "0.1.0-experimental",
-    "analog-bassdrum": "0.1.3-experimental",
-    "midi-scenes": "0.2.4-experimental",
+    "airwindows-chorus": "0.1.2-experimental",
+    "everb": "0.1.1-experimental",
+    "analog-bassdrum": "0.1.5-experimental",
+    "midi-scenes": "0.2.5-experimental",
     "usb-audio-out-tracks-main-cue": "0.2.0-experimental",
-    "quantizer": "0.1.2-experimental",
+    "quantizer": "0.1.3-experimental",
     "synth": "0.1.2-experimental",
     "previewvol": "0.1.2-experimental",
     "cc-map": "0.1.2-experimental",
-    "sidechain-compressor": "0.1.1-experimental",
-    "vector": "0.2.3-experimental",
+    "sidechain-compressor": "0.1.2-experimental",
+    "vector": "0.2.4-experimental",
     "playmodes": "0.1.1-experimental",
     "mute-modes": "0.1.0-experimental",
-    "recorder-loop-fix": "0.1.0-experimental"
+    "recorder-loop-fix": "0.1.0-experimental",
+    "poly8": "0.2.7-experimental",
+    "output-matrix": "0.1.0-experimental"
   }
 }

@@ -5,7 +5,8 @@ import { createHash } from 'node:crypto'
 import draft from '../../sdk/octabam/modules/vector/octamod.module.json'
 import capture from '../../sdk/octabam/modules/vector/media/capture.json'
 import coreTests from '../../sdk/octabam/modules/vector/media/core-tests.json'
-import behavior from '../../sdk/octabam/modules/vector/media/behavior.json'
+import behavior from '../../sdk/octabam/modules/vector/media/behavior-0.2.4.json'
+import persistence from '../../docs/vector-reboot-2026-10-09.json'
 import pools from '../../sdk/octabam/modules/vector/media/pool-behavior.json'
 import baseline from '../../sdk/module-qualification-baseline.json'
 import { parseModuleDocument, requireModuleUiForPublication, requireModuleQualificationForPublication } from './module-contract'
@@ -29,6 +30,18 @@ describe('VECTOR release', () => {
     expect(baseline.modules.some(module => module.id === document.id)).toBe(false)
   })
 
+  it('does not extend the 9 October owner exception to another version or source', async () => {
+    const document = parseModuleDocument(draft)
+    expect(document.tests.qualification!.hardware).toMatchObject({ kind: 'owner-waived', approvedOn: '2026-10-09' })
+    const future = structuredClone(document)
+    future.version = '0.2.5-experimental'
+    future.tests.qualification!.moduleVersion = future.version
+    expect(() => requireModuleQualificationForPublication(future)).toThrow('only exact approved releases')
+    const changed = structuredClone(document)
+    changed.tests.qualification!.sourceSha256 = 'a'.repeat(64)
+    await expect(requireFolderQualification(folder, changed, parseQualificationBaseline(baseline))).rejects.toThrow('source SHA-256 differs')
+  })
+
   it('binds reviewed monochrome captures and complete tutorial to the authored source', async () => {
     const document = parseModuleDocument(draft)
     expect(capture.moduleVersion).toBe(document.version)
@@ -46,7 +59,6 @@ describe('VECTOR release', () => {
       expect(sha(await readFile(resolve(folder, path)))).toBe(hash)
     }
     expect(sha(await readFile(resolve(folder, capture.panelWalk)))).toBe(capture.panelWalkSha256)
-    expect(sha(await readFile(resolve(folder, capture.poolPanelWalk)))).toBe(capture.poolPanelWalkSha256)
   })
 
   it('records sequence commits and advancing playback separately from UI captures', () => {
@@ -56,17 +68,16 @@ describe('VECTOR release', () => {
     expect(behavior.sourceSha256).toBe(capture.sourceSha256)
     expect(behavior.result).toBe('passed')
     expect(behavior.checks.stepsAdvanceAfterPlay).toBe(true)
-    expect(behavior.checks.stepsAdvanceAfterLiveEdit).toBe(true)
+    expect(behavior.checks.twelveSrcControlsEdited).toBe(true)
     expect(behavior.checks.otherSevenTracksUnchanged).toBe(true)
-    expect(pools.moduleVersion).toBe(draft.version)
-    expect(pools.imageSha256).toBe(capture.imageSha256)
-    expect(pools.sourceSha256).toBe(capture.sourceSha256)
-    expect(pools.result).toBe('passed')
-    expect(pools.checks.arrowsPreserveAssignedPool).toBe(true)
-    expect(pools.checks.rightOpensHighlightedPool).toBe(true)
-    expect(pools.checks.sampleConfirmationKeepsVector).toBe(true)
-    expect(pools.checks.stepsAdvanceWithFlex).toBe(true)
-    expect(pools.checks.stepsAdvanceWithStatic).toBe(true)
+    expect(behavior.checks.poolBrowsingPreservesSettings).toBe(true)
+    expect(persistence.moduleVersion).toBe(draft.version)
+    expect(persistence.sourceSha256).toBe(capture.sourceSha256)
+    expect(persistence.imageSha256).toBe(capture.imageSha256)
+    expect(Object.values(persistence.checks).every(Boolean)).toBe(true)
+    // Do not promote historical sample-confirmation/audio results to this source.
+    expect(pools.moduleVersion).toBe('0.2.3-experimental')
+    expect(pools.sourceSha256).not.toBe(capture.sourceSha256)
   })
 
   it('binds the recorded firmware-free tests without running native code in application checks', async () => {

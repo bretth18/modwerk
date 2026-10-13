@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 import { communityModule } from './modules'
 import type { BellItem } from './notification-contract'
 import { threadPath } from './forum-links'
@@ -46,10 +48,12 @@ export function notificationLines(items: BellItem[], link: (hash: string) => str
     else if (item.kind === 'bug_report') lines.push({ ...base, text: `New bug report for ${moduleName(item.module_id)} from ${actor}: ${quote(item.title)}`, excerpt: excerpt(item.excerpt), href: threadHref(item) })
     else if (item.kind === 'module_comment') lines.push({ ...base, text: `${actor} commented on ${moduleName(item.module_id)}`, excerpt: excerpt(item.excerpt), href: moduleHref(item.module_id) })
     else if (item.kind.startsWith('issue_')) {
-      const report = 'your bug report ' + quote(item.title), href = link('#account/report/' + item.issue_id)
+      const other = item.issueReporter === false, publicParticipant = other && item.issuePublic
+      const report = (publicParticipant ? item.issue_scope === 'configuration' ? 'the configuration report ' : 'the bug report ' : other ? 'the private report ' : item.issue_scope === 'configuration' ? 'your configuration report ' : 'your bug report ') + quote(item.title)
+      const href = publicParticipant ? moduleHref(item.module_id) + '?tab=issues' : other ? moduleHref(item.module_id) : link('#account/report/' + item.issue_id)
       const who = item.github_actor ? '@' + item.github_actor + ' on GitHub' : item.actor ? '@' + item.actor : 'A module developer'
       if (item.kind === 'issue_comment') lines.push({ ...base, text: `${who} replied to ${report}`, excerpt: excerpt(item.excerpt), href })
-      else lines.push({ ...base, text: `${who} ${item.kind === 'issue_resolved' ? 'marked' : item.kind === 'issue_closed' ? 'closed' : 'reopened'} ${report}${item.kind === 'issue_resolved' ? ' as fixed' : ''}`, excerpt: null, href })
+      else lines.push({ ...base, text: `${who} ${item.kind === 'issue_resolved' ? 'marked' : item.kind === 'issue_closed' ? 'closed' : 'reopened'} ${report}${item.kind === 'issue_resolved' ? ' as fixed' : ''}`, excerpt: excerpt(item.excerpt), href })
     }
     else if (item.kind === 'request_status') lines.push({ ...base, text: item.excerpt === 'open' ? `${actor} reopened the feature request ${quote(item.title)}` : `${actor} marked the feature request ${quote(item.title)} as ${item.excerpt ?? 'open'}`, excerpt: null, href: threadHref(item) })
     else if (item.kind === 'module_update') lines.push({ ...base, text: `${item.title ?? moduleName(item.module_id)} ${item.module_version ?? ''} is now available`.replace(/\s+/g, ' '), excerpt: 'Open the module to review the update.', href: link((item.url?.startsWith('#') ? item.url : (item.module_id && communityModule(item.module_id)?.href) || '#library') + '?tab=changelog') })

@@ -178,6 +178,8 @@ def runtime_write_spans(m) -> list[tuple[int, int, str]]:
 
 def check(selected) -> list[str]:
     """Return a list of collisions among these modules. Empty means clean."""
+    from remix.machine_composition import effective_modules
+    selected = effective_modules(selected)
     problems: list[str] = []
 
     def clash(what, owner_a, owner_b, detail):

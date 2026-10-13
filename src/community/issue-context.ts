@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 /**
  * Structured issue reports, shared by the report form and the Worker so both
  * enforce the same rules. With this many modules and configurations a free-text

@@ -485,7 +485,7 @@ static void put_q(char *p, int q10)                 /* "Q.3", "Q.9", "Q1.5", "Q8
 }
 
 /* screen: 128 x 64, bitmap row 0 = the bottom. The firmware draws the title bar ("Master EQ (2/4)").
- *   x 1..17      a box with "EQ" (as the other master pages' icons)
+ *   x 1..13      a box with "EQ", aligned with the pattern header
  *   rows 21..51  the graph: 0 dB dotted, +-12 dB, 20 Hz .. 20 kHz, the response, band points 1-4
  *   rows 11..19  knobs A-D: level (or Q, inverted while the knob is switched to it)
  *   rows 1..9    knobs E-H: frequency (or type, inverted while switched); the knob turned last underlined */
@@ -527,8 +527,8 @@ static void eq_body(void *bmp)
     int x, b, prev = -1;
     char v[12];
     FILLRECT(bmp, 0, 0, 127, 52, 0);
-    FRAMERECT(bmp, 1, 27, 17, 50, 1);               /* the page's box */
-    TEXT(bmp, FONT5, 5, 36, -1, "EQ");
+    FRAMERECT(bmp, 1, 27, 13, 50, 1);               /* the page's box */
+    TEXT(bmp, FONT5, 3, 36, -1, "EQ");
     FRAMERECT(bmp, GX0, GY0, GX1, GY1, 1);
     for (x = GX0 + 2; x < GX1; x += 3)
         FILLRECT(bmp, x, GMID, x, GMID, 1);         /* 0 dB */
@@ -611,4 +611,23 @@ int digieq_mkey(char *view, void *ev)
         INVALIDATE(view);
     }
     return 1;
+}
+
+/* The firmware dispatches FUNC + held LFO + PLAY to this page-clear slot.
+ * Its unused None page has no stock parameters, so clear our own bands after
+ * the stock handler has displayed its normal feedback. Other pages keep their
+ * existing clear path. Keep the global override and the selected knob modes. */
+int digieq_mclear(char *view, int page)
+{
+    int result = ((int (*)(char *, int))0x40039982)(view, page), i;
+    if (cur_kind(view) != 0 || (page != -1 && page != 0))
+        return result;
+    defaults();
+    for (i = 0; i < 9; i++)
+        eacc[i] = 0;
+    last = -1;
+    commit();
+    store(UI_KIT);
+    INVALIDATE(view);
+    return result;
 }

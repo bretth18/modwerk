@@ -27,6 +27,19 @@ describe('native selection conflicts', () => {
     expect(selectionConflicts(['repitch'], true)).toEqual([])
     expect(selectionConflicts(['analog-bassdrum'], true)[0].id).toBe('stock-fx2-space')
   })
+  it('allows reviewed shared seams with POLY8 while preserving other limits', () => {
+    const companions = ['vector', 'analog-bassdrum', 'synth', 'quantizer', 'repitch', 'mute-modes']
+    for (let mask = 0; mask < 1 << companions.length; mask++) {
+      const ids = ['poly8', ...companions.filter((_id, bit) => mask & (1 << bit))]
+      expect(selectionConflicts(ids)).toEqual([])
+    }
+    expect(selectionConflicts(['vector', 'analog-bassdrum'])[0].id).toBe('vector-analog-bd')
+    expect(selectionConflicts(['synth', 'quantizer'])[0].id).toBe('synth-machine-conflict')
+    expect(selectionConflicts(['poly8', 'analog-bassdrum', 'character'])[0].id).toBe('analog-bd-custom-dsp')
+    expect(selectionConflicts(['poly8', 'analog-bassdrum'], true)[0].id).toBe('stock-fx2-space')
+    expect(selectionConflicts(['poly8', ...seven])[0].id).toBe('module-menu-space')
+    expect(selectionConflicts(['poly8', 'previewvol'])).toEqual([])
+  })
   it('rejects unknown IDs and includes paused custom DSP modules in Analog BD conflicts', () => {
     expect(() => selectionConflicts(['unknown'])).toThrow()
     expect(selectionConflicts(['analog-bassdrum', 'character'])[0].moduleIds).toContain('character')

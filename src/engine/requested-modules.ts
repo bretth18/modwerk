@@ -7,6 +7,38 @@ import { linkRomText } from './rom-package.ts'
 import { OS_LOAD_ADDRESS, type OsWrite } from './os-patches.ts'
 import type { CfRuntimeLink } from './coldfire-link.ts'
 export { facts as requestedFacts }
+type Group = typeof facts.groups[number]
+type Package = typeof facts.objects[number]
+type Recipe = { schema: number; requires: string; machineIds: string[]; countSites: number[]; groups: { moduleId: string; replace: { detours: Record<string, unknown>[]; refs: Record<string, unknown>[]; pokes: Record<string, unknown>[] }; runtimeUnits: string[]; suppliedBy?: string; suppliedGroup?: Group }[] }
+const composition = facts.composition as Recipe
+function composedGroups(groups: Group[], selection: ReadonlySet<string>): Group[] {
+  if (!selection.has(composition.requires)) return groups
+  if (composition.schema !== 1 || composition.requires !== 'poly8') throw new Error('Invalid machine composition recipe.')
+  const count = 5 + composition.machineIds.filter(id => selection.has(id)).length
+  return groups.map(group => {
+    if (group.moduleId === 'poly8') return { ...group, pokes: group.pokes.map(row => composition.countSites.includes(row.address) ? { ...row, code: row.code.slice(0, -2) + (row.code.length === 8 ? count : count - 1).toString(16).padStart(2, '0') } : row) }
+    const rule = composition.groups.find(row => row.moduleId === group.moduleId)
+    if (!rule) return group
+    if (rule.suppliedBy && selection.has(rule.suppliedBy)) {
+      if (JSON.stringify(group) !== JSON.stringify(rule.suppliedGroup)) throw new Error('Bundled machine quantizer declaration drift.')
+      return { ...group, detours: [], refs: [], pokes: [], tables: [] }
+    }
+    const remove = <T extends { address: number }>(rows: T[], reviewed: Record<string, unknown>[]): T[] => rows.filter(row => {
+      const expected = reviewed.find(claim => claim.address === row.address)
+      if (!expected) return true
+      if (Object.entries(expected).some(([key, value]) => (row as Record<string, unknown>)[key] !== value)) throw new Error('Machine composition seam drift: ' + group.moduleId + '.')
+      return false
+    })
+    return { ...group, detours: remove(group.detours, rule.replace.detours), refs: remove(group.refs, rule.replace.refs), pokes: remove(group.pokes, rule.replace.pokes) }
+  })
+}
+export function requestedObjectSelected(pkg: Package, ids: readonly string[]) {
+  const rule = ids.includes('poly8') ? composition.groups.find(rule => rule.moduleId === pkg.moduleId) : undefined
+  return !(rule?.suppliedBy && ids.includes(rule.suppliedBy))
+}
+export function requestedObjectDram(pkg: Package, ids: readonly string[]) {
+  return pkg.dram || (ids.includes('poly8') && composition.groups.some(rule => rule.moduleId === pkg.moduleId && rule.runtimeUnits.includes(pkg.label)))
+}
 export async function bytesHash(bytes: Uint8Array) {
   return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new Uint8Array(bytes).buffer)), b => b.toString(16).padStart(2, '0')).join('')
 }
@@ -15,7 +47,7 @@ export function selectedRequestedGroups(ids: readonly string[]) {
   const selection = new Set(resolveSelection(ids).map(m => m.id))
   if (selection.has('usb-audio-out-tracks-main-cue')) selection.add('usb-midi')
   if (facts.schema !== 1 || facts.revision !== CATALOG_SOURCE.revision) throw new Error('The requested packages do not match the pinned catalog.')
-  const groups = facts.groups.filter(g => selection.has(g.moduleId))
+  const groups = composedGroups(facts.groups.filter(g => selection.has(g.moduleId) && (!g.activeWith || selection.has(g.activeWith))), selection)
   // Refuse overlapping native hooks before linking or placing either module.
   const claims: { start: number; end: number; owner: string }[] = []
   for (const group of groups) {
@@ -43,7 +75,10 @@ export async function readRequestedObject(label: string, original?: Uint8Array, 
   const pkg = facts.objects.find(p => p.label === label)
   if (!pkg || pkg.bytes < 52 || pkg.bytes > 8 * 1024 * 1024 || pkg.code.length !== pkg.bytes * 2 || !/^[0-9a-f]+$/.test(pkg.code)) throw new Error('Invalid requested object package.')
   if (pkg.moduleId !== 'usb-midi' && MODULES.find(m => m.id === pkg.moduleId)?.version !== pkg.version) throw new Error('Requested object version differs from the catalog.')
-  const variant = pkg.variants?.find(row => ids.includes(row.whenModule)) ?? pkg
+  const matches = pkg.variants.filter(row => row.whenModules.every(id => ids.includes(id)) && row.withoutModules.every(id => !ids.includes(id)))
+  if (matches.length > 1) throw new Error('Ambiguous requested object variants.')
+  const variant = matches[0] ?? pkg
+  if (!Number.isSafeInteger(variant.bytes) || variant.bytes < 52 || variant.bytes > 8 * 1024 * 1024 || variant.code.length !== variant.bytes * 2 || !/^[a-f0-9]+$/.test(variant.code)) throw new Error('Invalid conditional requested object.')
   const bytes = Uint8Array.from({ length: variant.bytes }, (_, i) => parseInt(variant.code.slice(i * 2, i * 2 + 2), 16))
   if (await bytesHash(bytes) !== variant.sha256) throw new Error('Requested object checksum does not match.')
   const object = parseColdFireObject(bytes)
@@ -59,7 +94,7 @@ export async function readRequestedObject(label: string, original?: Uint8Array, 
 }
 export async function requestedRom(ids: readonly string[], cursor: number, overflow: number, caveLimit: number, cave: (address: number, bytes: Uint8Array, note: string) => Promise<void>, late = false) {
   const groups = selectedRequestedGroups(ids).filter(group => (group.moduleId === 'mute-modes') === late), symbols = new Map<string, number>()
-  for (const group of groups) for (const pkg of facts.objects.filter(p => p.moduleId === group.moduleId && !p.dram && p.placement !== 'cave')) {
+  for (const group of groups) for (const pkg of facts.objects.filter(p => p.moduleId === group.moduleId && !requestedObjectDram(p, ids) && requestedObjectSelected(p, ids) && p.placement !== 'cave')) {
     const address = pkg.caveAddress ?? Math.ceil(cursor / 128) * 128
     const linked = linkRomText((await readRequestedObject(pkg.label, undefined, ids)).object, address, symbols)
     await cave(address, linked.bytes, group.moduleId + ' ' + pkg.label + ' ROM unit')
@@ -99,7 +134,7 @@ export async function requestedHooks(original: Uint8Array, ids: readonly string[
     for (const row of group.detours) {
       if (group.moduleId === 'usb-midi' && row.address === 0x4001e606 && selected.has('usb-audio-out-tracks-main-cue')) continue
       const at = row.target ?? target(row.symbol, row.unit)
-      if (row.target === null && ![...facts.objects.filter(p => !p.dram).map(p => p.label)].includes(row.unit) && (!runtime || at < runtime.sections[0].address || at >= runtime.sections[0].address + runtime.sections[0].size)) throw new Error('The requested hook points outside runtime code.')
+      if (row.target === null && ![...facts.objects.filter(p => !requestedObjectDram(p, ids)).map(p => p.label)].includes(row.unit) && (!runtime || at < runtime.sections[0].address || at >= runtime.sections[0].address + runtime.sections[0].size)) throw new Error('The requested hook points outside runtime code.')
       const bytes = new Uint8Array(row.writeLength)
       if (row.kind === 'lea') bytes.set(original.subarray(row.address - OS_LOAD_ADDRESS, row.address - OS_LOAD_ADDRESS + 2))
       else if (row.kind === 'jmp' || row.kind === 'jsr') bytes.set(row.kind === 'jmp' ? [0x4e, 0xf9] : [0x4e, 0xb9])
@@ -121,7 +156,7 @@ export async function requestedHooks(original: Uint8Array, ids: readonly string[
 export async function requestedCaves(ids: readonly string[], cursor: number, overflow: number, caveLimit: number, cave: (address: number, bytes: Uint8Array, note: string) => Promise<void>, poolBase: number) {
   const symbols = new Map<string, number>()
   for (const group of selectedRequestedGroups(ids)) for (const pkg of facts.objects.filter(row => row.moduleId === group.moduleId && row.placement === 'cave')) {
-    const object = (await readRequestedObject(pkg.label)).object
+    const object = (await readRequestedObject(pkg.label, undefined, ids)).object
     let address = Math.ceil(cursor / 128) * 128, linked = linkRomText(object, address)
     const inside = address + linked.bytes.length <= caveLimit
     if (!inside) { address = Math.ceil(overflow / 4) * 4; linked = linkRomText(object, address) }

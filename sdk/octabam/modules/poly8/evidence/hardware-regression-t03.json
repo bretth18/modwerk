@@ -1,0 +1,64 @@
+{
+  "image_sha256": "a1bf19d70ec8df03695758518feeab2ff4eb801878ea15e3bf3345fc223409c3",
+  "marker": "504c01",
+  "mirror": "504c01",
+  "machine": "01",
+  "loop": "00",
+  "chromatic_mode": 1,
+  "poly_sound": {
+    "frames": 8820,
+    "channel_peaks": [
+      361,
+      361
+    ]
+  },
+  "flex_sound": {
+    "frames": 8820,
+    "channel_peaks": [
+      3042,
+      3042
+    ]
+  },
+  "sample_preview": "not tested; use --preview for the unqualified probe",
+  "transport": "00000001",
+  "live_record": "00000001",
+  "play_start": "status sample=471356.754 ms=10688.362 frames=28946 frame=on idle=57230 wall=79.971",
+  "play_end": "status sample=507083.993 ms=11498.503 frames=31179 frame=on idle=61569 wall=85.703",
+  "records": [
+    {
+      "step": 2,
+      "root": 72,
+      "shape": 0
+    },
+    {
+      "step": 4,
+      "root": 76,
+      "shape": 0
+    },
+    {
+      "step": 6,
+      "root": 79,
+      "shape": 0
+    }
+  ],
+  "result": "POLY/FLEX key audio and advancing-step recording pass; sample preview not qualified",
+  "hardware_report": {
+    "build": "POLY8T03",
+    "symptom": "Transport stuck on step 1, no channel audio, sample preview silent.",
+    "stock_control": "Owner reports stock 1.40C restores playback and sample preview in the same project.",
+    "cause": "open",
+    "fixed_on_hardware": false
+  },
+  "qualification": "Native fixture only; does not reproduce physical MKII failure.",
+  "native_sdk_revision": "6d20796 (the exact shipped T03 build, not rebuilt after the later main rebase)",
+  "logs_sha256": {
+    "t03-warm-key-gate-protocol.log": "1ccd19071bd249fd03f2305bc4701bb5a5520f1f48ba6b503d9e88888530aad5",
+    "t02-warm-preview-protocol.log": "13b74d091d6fe1ddbeeb0998f03f88c2be23d0ced24e0f95224d45d98be10383",
+    "stock-warm-control-protocol.log": "0d6b58af860cf875027d8c8c3f10e8cae68bce16d9f75d2697b1c9840e1428f1"
+  },
+  "preview_probe": {
+    "stock_expected_tone_confirmed": false,
+    "t03_expected_tone_confirmed": false,
+    "status": "unqualified; not evidence of module preview failure or success"
+  }
+}

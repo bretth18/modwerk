@@ -1,0 +1,464 @@
+.status-dot.is-live { background: var(--accent); animation: link-pulse 1.5s ease-in-out infinite; }
+.link-hint { color: var(--muted); font-size: 12px; line-height: 1.7; }
+.usb-hint { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.7; }
+.usb-update .usb-identity { display: flex; align-items: center; gap: 7px; margin-bottom: 10px; color: var(--muted); font: 12px/1.5 var(--mono); }
+.usb-update .file-error, .usb-update .success-note { margin: 12px 0 0; }
+.usb-update .build-actions { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+.usb-update .build-actions .text-button { align-self: center; margin-top: 4px; }
+/* The machine in the sidebar, with the USB connection as a dot on its picture. */
+.instrument-item { margin: 4px 0 2px; }
+.instrument-item[aria-current="page"] { border-color: var(--accent-line); }
+.instrument-picture { position: relative; display: inline-flex; flex: 0 0 auto; } /* not the label's flex: 1 */
+.instrument-item small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.instrument-dot { position: absolute; right: -4px; bottom: -4px; width: 11px; height: 11px; border: 2px solid var(--surface-raised); border-radius: 50%; background: #8a8a98; }
+.instrument-dot.is-connected { background: #7fd39b; }
+.instrument-dot.is-busy { background: var(--accent); animation: link-pulse 1.5s ease-in-out infinite; }
+.instrument-dot.is-stock { background: #e0b26a; }
+.unit-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: -8px 0 18px; color: var(--muted); font-size: 13px; }
+.unit-strip.is-connected { color: var(--text-secondary); }
+.unit-tag { flex: none; margin-right: 6px; padding: 3px 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 11px; white-space: nowrap; }
+.unit-tag.is-on { border-color: #456354; background: #25332c; color: #bcd7c5; }
+.also-on-unit .selected-list .button { flex: none; min-height: 32px; padding: 5px 10px; }
+.stock-effect-toggles { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.stock-effect-toggles label { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); font-size: 13px; cursor: pointer; }
+.stock-effect-toggles label.is-on { border-color: var(--accent-line); background: var(--accent-soft); color: var(--text); }
+.stock-effect-toggles input { accent-color: var(--accent); }
+button.octatrack-status { width: 100%; border: 0; border-top: 1px solid var(--line); background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.octatrack-status-bar { display: flex; align-items: center; gap: 7px; }
+.octatrack-activity { position: fixed; right: 20px; bottom: 48px; z-index: 20; display: flex; align-items: center; gap: 10px; max-width: min(460px, calc(100vw - 40px)); padding: 10px 12px 10px 16px; border: 1px solid var(--accent-line); border-radius: 12px; background: var(--surface-raised); box-shadow: 0 12px 40px #0008; font-size: 13px; }
+.octatrack-activity.is-error { border-color: #6a4348; }
+.octatrack-activity .button { min-height: 30px; padding: 5px 10px; }
+.base-install-dialog { width: min(640px, calc(100% - 32px)); max-height: calc(100dvh - 32px); overflow-y: auto; padding: 28px 32px; border: 1px solid var(--control-border); border-radius: 14px; background: var(--surface); color: var(--text); box-shadow: 0 24px 90px #000a; outline: none; }
+.base-install-dialog::backdrop { background: #000b; backdrop-filter: blur(4px); }
+.base-install-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.base-install-header h2 { font-size: 24px; letter-spacing: -.4px; outline: none; }
+.base-install-kicker { margin-bottom: 6px; color: var(--accent); font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; }
+.base-install-intro { margin: 12px 0 26px; color: var(--text-secondary); font-size: 14px; line-height: 1.75; }
+.base-install-footer { position: sticky; bottom: -28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 22px -32px -28px; padding: 16px 32px; border-top: 1px solid var(--line); background: var(--surface); }
+.base-install-footer .button { min-width: 120px; }
+.base-install-actions { display: flex; gap: 8px; }
+.base-install-close { position: absolute; top: 14px; right: 14px; z-index: 1; }
+.base-install-header { padding-right: 40px; }
+.module-preview.link-hero { height: auto; margin: -28px -32px 26px; border-bottom: 1px solid var(--line); border-radius: 14px 14px 0 0; }
+.link-hero .link-hero-art { display: block; width: 100%; height: auto; aspect-ratio: 640 / 220; padding: 0 24px 16px; } /* without it Chrome sizes an inline SVG 150px high; two classes beat the shared .signal-art/.module-preview heights */
+.link-hero-art text { font-size: 9px; }
+.link-hero-pick { fill: rgba(var(--signal-rgb), .14); }
+.link-hero-flow { stroke-dasharray: 3 13; animation: link-flow 1s linear infinite; }
+.link-hero-screen { fill: rgba(var(--signal-rgb), .1); stroke: var(--signal); stroke-width: 1.6; }
+.signal-art .link-hero-name { opacity: .7; font-size: 5.5px; letter-spacing: .8px; }
+.signal-art .link-hero-word { opacity: 0; font-size: 10px; font-weight: 600; letter-spacing: 1.2px; animation: link-word 6s infinite; }
+.link-hero-trig { animation: link-trig 2.4s infinite; }
+.link-title { font-size: 30px; letter-spacing: -.8px; outline: none; }
+.base-install-dialog h2 .module-beta-badge, #usb-update-title .module-beta-badge { margin-left: 6px; vertical-align: middle; letter-spacing: normal; }
+.link-promises { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 28px; margin: 0 0 22px; padding: 0; list-style: none; color: var(--muted); font-size: 16px; line-height: 1.5; }
+.link-promises li { display: flex; align-items: center; gap: 14px; }
+.link-promises strong { color: var(--text); font-weight: 600; }
+.link-feature-icon { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); }
+.link-needs { color: var(--faint); font-size: 12px; line-height: 1.6; }
+.link-needs.is-missing { color: #e4b0b4; }
+@keyframes link-flow { to { stroke-dashoffset: -16; } }
+@keyframes link-word { 0%, 30% { opacity: 1; } 33.4%, 100% { opacity: 0; } }
+@keyframes link-trig { 0%, 6% { fill: #f0a07a; stroke: #f0a07a; opacity: 1; } 14%, 100% { fill: #2c2837; stroke: var(--signal); opacity: .4; } } /* lit trigs glow warm, as on the unit */
+@media (prefers-reduced-motion: reduce) { .link-hero * { animation: none !important; } .signal-art .link-hero-word.is-first { opacity: 1; } }
+.base-install-dialog .file-error { margin: 12px 0 0; }
+@media (max-width: 600px) { .base-install-dialog { padding: 22px 18px; } .base-install-footer { margin: 18px -18px -22px; padding: 14px 18px; bottom: -22px; } .base-install-footer .link-hint { display: none; } .base-install-actions, .base-install-footer .button { flex: 1; } .base-install-footer .button { min-width: 0; } .module-preview.link-hero { margin: -22px -18px 18px; } .link-hero .link-hero-art { padding: 0 6px 10px; } .link-title { font-size: 24px; letter-spacing: -.5px; } .base-install-dialog .base-install-intro { margin: 8px 0 18px; font-size: 14px; line-height: 1.55; } }
+/* Phones: the features as a 2×3 grid of small tiles, headline only, so the whole prompt fits on one screen. */
+@media (max-width: 600px) {
+  .link-promises { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; font-size: 13px; line-height: 1.3; }
+  .link-promises li { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 12px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-raised); }
+  .link-feature-icon { width: 30px; height: 30px; border-radius: 8px; }
+  .link-feature-rest { display: none; }
+  .link-hero .link-hero-art text:not(.link-hero-name, .link-hero-word) { font-size: 15px; }
+  .link-needs { font-size: 12px; line-height: 1.5; }
+}
+@keyframes link-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .status-dot.is-live, .instrument-dot.is-busy { animation: none; } }
+@media (max-width: 1100px) { .link-card { margin-bottom: 22px; } }
+/* The module set as a compact grid of tiles, with each module's state on the Octatrack. */
+.module-grid-section .section-title { flex-wrap: wrap; }
+.module-grid-summary { color: var(--muted); font-size: 12px; }
+.module-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(184px, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.module-tile { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-raised); }
+.module-tile-open { display: flex; flex-direction: column; align-items: stretch; width: 100%; padding: 0 0 10px; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.module-tile-open:hover strong { color: var(--accent-hover); }
+.module-tile .module-tile-open .compact-preview { width: 100%; height: 112px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; }
+.module-tile-open strong { margin: 8px 10px 0; font-size: 13px; }
+.module-tile-open small { overflow: hidden; margin: 2px 10px 0; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+/* Lit LED: on the Octatrack right now (the sidebar's connected green). Outlined: only in the module set. */
+.module-tile-state { position: absolute; top: 7px; left: 7px; display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px 3px 7px; border-radius: 999px; background: #000c; color: var(--text-secondary); font-size: 10px; line-height: 1.2; }
+.module-tile-state i { flex: none; width: 6px; height: 6px; border-radius: 50%; }
+.module-tile-state.is-on { color: #c4e6cf; }
+.module-tile-state.is-on i { background: #7fd39b; box-shadow: 0 0 6px #7fd39bcc; }
+.module-tile-state.is-load { color: var(--accent); }
+.module-tile-state.is-load i { box-shadow: inset 0 0 0 1.5px var(--accent); }
+.module-tile-state.is-leaving { color: #efb9bd; }
+.module-tile-state.is-leaving i { background: #e8868e; box-shadow: 0 0 6px #e8868ecc; }
+.module-tile-state.is-off { color: var(--muted); }
+.module-tile-state.is-off i { box-shadow: inset 0 0 0 1.5px #8a8a98; }
+.module-tile-state.is-set i { display: none; }
+.module-tile-state.is-legend { position: static; padding: 0; background: none; font-size: 12px; }
+.module-grid-summary:has(.is-legend) { display: flex; flex-wrap: wrap; gap: 4px 16px; }
+/* Keep the module's artwork at full colour in every sync state. The labels carry the change. */
+.module-tile.is-load { border-color: var(--accent-line); }
+.module-tile.is-leaving { border-color: #6a3f45; }
+.module-tile-controls { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 40px; padding: 0 8px 8px; }
+.module-tile-controls .module-tile-state { position: static; padding: 3px 2px; background: none; font-size: 11px; }
+.module-tile-action { flex: none; margin-left: auto; }
+.module-tile-action.icon-button, .module-tile-action.text-button { min-width: 32px; height: 32px; padding: 6px; border-radius: 6px; background: var(--surface); color: var(--text-secondary); }
+.module-tile-action.text-button { padding-inline: 10px; }
+.module-tile-action:hover { background: var(--surface-hover); color: var(--text); }
+.module-tile-action:active { background: var(--accent-soft); }
+.module-tile.is-add { border: 0; background: none; }
+.module-tile.is-add a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; height: 100%; min-height: 168px; border: 1px dashed var(--control-border); border-radius: 10px; color: var(--muted); font-size: 11px; }
+.module-tile.is-add a:hover { border-color: var(--accent-line); color: var(--accent); }
+.module-tile.is-add strong { color: var(--text); font-size: 13px; }
+.module-grid-save { margin-top: 14px; }
+@media (pointer: coarse), (max-width: 600px) { .module-tile-action.icon-button, .module-tile-action.text-button { min-width: 44px; height: 44px; } }
+.card-install { margin-bottom: 22px; }
+/* Full width while a unit with the base is connected: the grid, then the sticky sync bar. */
+.configuration-layout.is-usb { grid-template-columns: minmax(0, 1fr); }
+.sync-bar { position: sticky; bottom: 12px; z-index: 6; display: flex; align-items: center; gap: 18px; padding: 14px 18px; border: 1px solid var(--accent-line); border-radius: 12px; background: var(--surface-raised); box-shadow: 0 14px 44px #0009; }
+.sync-bar-status { flex: 1; min-width: 0; font-size: 13px; }
+.sync-bar-status > p { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); }
+.sync-bar-status .link-progress { margin-top: 8px; }
+.sync-bar-status .file-error, .sync-bar-status .success-note { margin: 8px 0 0; padding: 8px 12px; }
+.sync-bar-actions { display: flex; flex: none; align-items: center; gap: 8px; }
+.card-install-checkout { display: grid; gap: 16px; max-width: 460px; margin-top: 16px; }
+/* Stock effects as tiles like the modules': the effect's name as art, a click switches it in or out. */
+.stock-tiles { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.stock-tile-art { display: flex; align-items: flex-end; justify-content: center; height: 72px; padding-bottom: 14px; border-bottom: 1px solid var(--line); background: radial-gradient(ellipse at 60% 100%, #a5adff18, transparent 75%), var(--preview); color: var(--accent); font: 10px var(--mono); letter-spacing: 1.2px; }
+.stock-tile.is-off .module-tile-open { opacity: .45; }
+/* Most stock effects just stay: their LED alone says so (the label stays for screen readers), so changes stand out. */
+.stock-tile.is-on .module-tile-state { gap: 0; padding: 5px; font-size: 0; }
+.stock-tile:is(.is-off, .is-leaving) .stock-tile-art { color: var(--muted); background: var(--preview); }
+/* A module's page in a dialog over the module set: the panel in the middle, chevrons in the gutters beside it. */
+.module-dialog { position: fixed; inset: 0; width: 100%; max-width: none; height: 100%; max-height: none; margin: 0; padding: 24px 16px; border: 0; background: none; color: var(--text); overflow: hidden; }
+.module-dialog[open] { display: grid; grid-template-columns: minmax(76px, 1fr) minmax(0, 1120px) minmax(76px, 1fr); grid-template-rows: minmax(0, 1fr); align-items: center; animation: module-dialog-fade .2s ease-out; }
+.module-dialog::backdrop { background: radial-gradient(120% 100% at 50% 35%, #0b0b10b3, #050507eb); backdrop-filter: blur(6px) saturate(.85); animation: module-dialog-fade .2s ease-out; }
+/* The glow stays put at the top while the page scrolls under it. */
+.module-dialog-panel { grid-column: 2; max-height: 100%; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--line) transparent; padding: 0 32px 32px; border: 1px solid var(--line); border-radius: 18px; background: radial-gradient(70% 240px at 50% 0, #a5adff14, transparent), var(--background); box-shadow: inset 0 1px 0 #ffffff12, 0 30px 100px #000c; outline: none; animation: module-dialog-rise .3s cubic-bezier(.2, .8, .2, 1); }
+.module-dialog-bar { position: sticky; top: 0; z-index: 4; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 -18px; padding: 14px 0 12px; pointer-events: none; }
+.module-dialog-bar > * { pointer-events: auto; }
+/* Once the page scrolls, a shade fades in behind the bar so the pills don't sit on text. */
+.module-dialog-bar::before { content: ''; position: absolute; z-index: -1; inset: 0 -14px -22px; background: linear-gradient(var(--background) 58%, transparent); opacity: 0; animation: module-dialog-shade linear both; animation-timeline: scroll(nearest); animation-range: 0 90px; pointer-events: none; }
+@keyframes module-dialog-shade { to { opacity: 1; } }
+@supports not (animation-timeline: scroll()) { .module-dialog-bar::before { animation: none; opacity: 1; } }
+.module-dialog-meta { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.module-dialog-bar .module-tile-state, .load-change .module-tile-state { position: static; padding: 4px 10px 4px 9px; font-size: 11px; white-space: nowrap; }
+.module-dialog-position { display: inline-flex; align-items: center; gap: 11px; color: var(--muted); font: 11px var(--mono); letter-spacing: .08em; }
+.module-dialog-position em { margin: 0 3px; color: var(--line-hover); font-style: normal; }
+/* Where you are in the set, lit like the Octatrack's trig keys, in groups of four. */
+.module-dialog-trigs { display: flex; gap: 3px; }
+.module-dialog-trigs i { width: 10px; height: 4px; border-radius: 1px; background: var(--line); transition: background .2s, box-shadow .2s; }
+.module-dialog-trigs i:nth-child(4n + 1):not(:first-child) { margin-left: 4px; }
+.module-dialog-trigs i.is-on { background: var(--accent); box-shadow: 0 0 8px #a5adffaa; }
+.module-dialog-close { width: 44px; padding: 0; }
+.module-dialog-close svg { transition: transform .25s cubic-bezier(.2, .8, .2, 1); }
+.module-dialog-close:hover svg { transform: rotate(90deg); }
+/* The module page's chevrons, beside the panel: fixed size, so they never move while paging. */
+.module-dialog-step.is-previous { grid-column: 1; justify-self: end; margin-right: 16px; }
+.module-dialog-step.is-next { grid-column: 3; justify-self: start; margin-left: 16px; }
+.module-dialog-step { cursor: pointer; }
+.module-dialog-step > span { display: none; }
+.module-dialog-step:disabled { opacity: .35; cursor: default; }
+/* Paging slides the next page in from the side you went. */
+.module-dialog[data-step] .detail-page { animation: module-dialog-page .28s cubic-bezier(.2, .8, .2, 1); }
+.module-dialog[data-step="prev"] .detail-page { --module-dialog-from: -20px; }
+@keyframes module-dialog-fade { from { opacity: 0; } }
+@keyframes module-dialog-rise { from { opacity: 0; transform: translateY(14px) scale(.985); } }
+@keyframes module-dialog-page { from { opacity: 0; transform: translateX(var(--module-dialog-from, 20px)); } }
+@media (prefers-reduced-motion: reduce) { .module-dialog[open], .module-dialog::backdrop, .module-dialog-panel, .module-dialog .detail-page { animation: none; } .module-dialog-close svg { transition: none; } }
+/* Phones: the panel fills the screen, the chevrons sit under it. */
+@media (max-width: 768px) {
+  .module-dialog { height: 100dvh; padding: max(8px, env(safe-area-inset-top)) max(8px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); }
+  .module-dialog[open] { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
+  .module-dialog-panel { grid-column: 1; align-self: stretch; padding: 0 16px 24px; border-radius: 16px; }
+  .module-dialog-bar { margin: 0 -6px; }
+  .module-dialog-step.is-previous, .module-dialog-step.is-next { grid-row: 2; grid-column: 1; width: auto; height: 44px; gap: 8px; padding: 0 12px; margin: 8px 0 0; }
+  .module-dialog-step.is-previous { justify-self: start; }
+  .module-dialog-step.is-next { justify-self: end; }
+  .module-dialog-step.is-next > svg { order: 1; }
+  .module-dialog-step > span { display: inline; font-size: 13px; }
+  .module-dialog .detail-tabs { gap: 20px; scroll-padding-inline: 4px; }
+  .module-dialog .detail-tabs button { min-height: 44px; padding-bottom: 8px; }
+  .module-dialog-close { min-height: 44px; }
+  .module-dialog-trigs { display: none; }
+}
+/* The Octatrack's LED language, the same everywhere: lit green is on the unit, outlined is waiting to load,
+   red is leaving, a grey outline is off or last seen. Always next to words. */
+.unit-led { flex: none; display: inline-block; width: 7px; height: 7px; border-radius: 50%; }
+.unit-led.is-on { background: #7fd39b; box-shadow: 0 0 6px #7fd39bcc; }
+.unit-led.is-load { box-shadow: inset 0 0 0 1.5px var(--accent); }
+.unit-led.is-leaving { background: #e8868e; box-shadow: 0 0 6px #e8868ecc; }
+.unit-led.is-off { box-shadow: inset 0 0 0 1.5px #8a8a98; }
+/* The sidebar's Octatrack card: the unit, then the set you are editing. */
+.instrument-item.is-unit { flex-direction: column; align-items: stretch; gap: 0; padding: 0; overflow: hidden; }
+.instrument-head { display: flex; align-items: center; gap: 10px; padding: 8px 10px; }
+.instrument-head > span:nth-child(2) { flex: 1; min-width: 0; }
+.instrument-head > svg { color: var(--muted); }
+.instrument-editing { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 2px 8px; padding: 8px 10px 9px; border-top: 1px solid var(--line); background: var(--surface); }
+.instrument-editing em { grid-column: 1 / -1; color: var(--muted); font-size: 11px; font-style: normal; }
+.instrument-item .instrument-editing strong { margin: 0; font-size: 13px; }
+.instrument-editing b { color: var(--muted); font-size: 11px; font-weight: 500; white-space: nowrap; }
+.instrument-item .instrument-editing small { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; }
+.instrument-editing small.is-on { color: #c4e6cf; }
+.instrument-editing small.is-load { color: var(--accent); }
+.sidebar-build.is-connection { width: 100%; border-inline: 0; border-bottom: 0; background: none; color: var(--text); text-align: left; cursor: pointer; }
+.sidebar-build.is-connection strong { color: var(--accent); }
+.sidebar-build.is-connection:disabled { cursor: wait; }
+/* The Octatrack page: the unit's hero on top, then a list of its pages and your module sets beside the one open. */
+.octatrack-hub { container: hub / inline-size; }
+/* The page fits the window (--hub-height, measured by OctatrackHub): the hero and list stay put, a long page scrolls in its pane. */
+.hub-split { display: grid; grid-template-columns: minmax(228px, 268px) minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); height: var(--hub-height, auto); border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.hub-hero { grid-column: 1 / -1; display: flex; align-items: center; gap: 28px; padding: 14px 28px; border-bottom: 1px solid var(--line); }
+.hub-hero .device-photo { width: 260px; height: auto; flex: none; }
+.hub-hero > div { flex: 1; min-width: 0; }
+.hub-hero p { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 7px; margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+.hub-hero p b { color: var(--text-secondary); font-weight: 600; }
+.hub-hero > .button { flex: none; min-height: 40px; }
+.hub-facts { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 14px 0 0; }
+.hub-facts dt { color: var(--muted); font-size: 11px; }
+.hub-facts dd { margin: 2px 0 0; color: var(--text-secondary); font-size: 13px; }
+.hub-facts code { font-family: var(--mono); font-size: 12px; }
+.hub-nav { display: flex; flex-direction: column; gap: 20px; min-width: 0; min-height: 0; overflow: auto; padding: 14px 8px 16px; border-right: 1px solid var(--line); }
+.hub-nav-label { display: flex; align-items: center; gap: 8px; min-height: 28px; margin: 0 0 4px; padding: 0 4px 0 10px; color: var(--muted); font-size: 12px; font-weight: 600; }
+.hub-nav-label h2 { margin: 0; color: inherit; font: inherit; }
+.hub-nav-label .subtle { margin-right: auto; font-weight: 500; }
+.hub-nav-label .icon-button { padding: 6px; }
+.hub-nav-list, .hub-set-list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.hub-nav-item { display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 6px 10px; border-radius: 8px; color: var(--text-secondary); font-size: 14px; text-decoration: none; }
+.hub-nav-item > svg { color: var(--muted); }
+.hub-nav-item .samples-wip { margin-left: auto; padding: .1rem .35rem; }
+.hub-nav-item:hover, .hub-set:hover { background: var(--surface-hover); }
+.hub-nav-item[aria-current="page"], .hub-set:has(> [aria-current="page"]) { background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent-line); color: var(--text); }
+.hub-nav-item[aria-current="page"] > svg { color: var(--accent); }
+.hub-nav-item:focus-visible, .hub-set-open:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.hub-set { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; border-radius: 8px; }
+.hub-set-open { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 3px 10px; min-width: 0; padding: 9px 2px 9px 10px; border: 0; border-radius: 8px; background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.hub-set strong { overflow: hidden; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.hub-set b { color: var(--muted); font-size: 12px; font-weight: 500; }
+.hub-set small, .hub-set em { grid-column: 2 / -1; overflow: hidden; color: var(--muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.hub-set em { color: var(--accent); font-style: normal; }
+.hub-set-menu .icon-button { padding: 7px; }
+.hub-set-menu .configuration-menu-panel { width: 190px; }
+.hub-nav-foot { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: -8px 0 0; padding: 0 10px; }
+.hub-nav-foot .text-button { min-height: 32px; font-size: 13px; }
+.hub-set-picker { display: none; width: 100%; min-width: 0; min-height: 44px; padding: 10px 42px 10px 12px; border: 1px solid var(--control-border); border-radius: 8px; background-color: var(--field); color: var(--text); font: inherit; font-size: 16px; }
+.hub-pane { min-width: 0; min-height: 0; overflow: auto; padding: 24px 28px 28px; container: hub-pane / inline-size; }
+.hub-view[hidden] { display: none; }
+.hub-view-title { margin: 0; font-size: 22px; letter-spacing: -.3px; overflow-wrap: anywhere; }
+.hub-section, .hub-view .octatrack-diagnostics { margin: 22px 0 0; padding: 18px 0 0; border-top: 1px solid var(--line); }
+.hub-section h3, .hub-cell h3, .hub-view .card-install > h3 { margin: 0 0 10px; color: var(--muted); font-size: 12px; font-weight: 600; }
+.hub-section p { margin: 6px 0; color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
+.hub-section .button { min-height: 40px; }
+.hub-view p.hub-empty { margin: 4px 0 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+/* Status: a control room's panel, divided by hairlines. Its rows are fixed; long lists scroll in their cell. */
+.hub-pane:has(> .hub-view-status:not([hidden])) { display: flex; padding: 0; overflow: hidden; }
+.hub-view-status { display: flex; flex: 1; flex-direction: column; min-width: 0; min-height: 0; overflow: auto; }
+.hub-view-status > .usb-missing { margin: 12px 16px; }
+.hub-console { flex: 1 0 auto; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: auto minmax(150px, 1fr) minmax(130px, 1fr); grid-template-areas: "cpu cpu dsp1 dsp1 dsp2 dsp2" "chart chart chart chart health health" "unit unit history history history history"; gap: 1px; border-radius: 0 0 12px 0; overflow: hidden; background: var(--line); }
+.hub-cell { min-width: 0; min-height: 0; overflow: auto; padding: 14px 18px; background: var(--surface); }
+.hub-cell-cpu { grid-area: cpu; } .hub-cell-dsp1 { grid-area: dsp1; } .hub-cell-dsp2 { grid-area: dsp2; }
+.hub-cell-chart { grid-area: chart; } .hub-cell-health { grid-area: health; } .hub-cell-unit { grid-area: unit; } .hub-cell-history { grid-area: history; }
+.hub-cell-unit, .hub-cell-history { display: flex; flex-direction: column; }
+/* Modules the unit's project uses but the unit lacks: a yellow-edged note, one band wide where there is room. */
+.usb-missing { padding: 14px 16px; border: 1px solid var(--line); border-left: 3px solid #d4b663; border-radius: 8px; background: var(--surface-raised); }
+.usb-missing h3 { margin: 0; color: var(--text); font-size: 14px; font-weight: 600; line-height: 1.5; }
+.usb-missing ul { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 7px 0 0; padding: 0; list-style: none; color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
+.usb-missing li { min-width: 0; overflow-wrap: anywhere; }
+.usb-missing p { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.usb-missing-action { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-top: 10px; }
+.usb-missing-action p { margin: 0; }
+.usb-missing-action .button { min-height: 44px; }
+.hub-view .usb-missing { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; padding: 10px 14px; }
+.hub-view .usb-missing > [role="status"] { display: flex; flex: 1 1 320px; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; min-width: 0; }
+.hub-view .usb-missing ul { margin: 0; }
+.hub-view .usb-missing ul li + li::before { content: '·'; margin-right: 14px; color: var(--muted); }
+.hub-view .usb-missing [role="status"] > p { flex-basis: 100%; margin: 0; }
+.hub-view .usb-missing-action { margin: 0; }
+.hub-view .usb-missing-action .button { min-height: 36px; }
+/* A narrow pane keeps the meters in one row, the graph on its own and the rest in halves. */
+@container hub-pane (max-width: 640px) {
+  .hub-console { grid-template-rows: auto minmax(150px, 1fr) minmax(150px, 1fr) minmax(120px, 1fr); grid-template-areas: "cpu cpu dsp1 dsp1 dsp2 dsp2" "chart chart chart chart chart chart" "health health health unit unit unit" "history history history history history history"; }
+  .hub-console .load-meter { padding: 12px 14px; }
+  .hub-console .load-meter strong { font-size: 1.3rem; }
+  .hub-console .load-meter span, .hub-console .load-meter small { font-size: 11px; }
+}
+.hub-cell-health h3:not(:first-child) { margin-top: 16px; }
+.hub-test { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--text); font-size: 14px; line-height: 1.4; }
+.hub-peaks { display: grid; gap: 4px; margin: 10px 0 0; }
+.hub-peaks div { display: grid; grid-template-columns: 74px minmax(0, 1fr); align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+.hub-peaks dd { display: grid; grid-template-columns: minmax(0, 1fr) 34px; align-items: center; gap: 8px; margin: 0; color: var(--text-secondary); text-align: right; font-variant-numeric: tabular-nums; }
+.hub-peaks meter { width: 100%; height: 8px; accent-color: var(--accent); }
+.hub-cell-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 10px; }
+.hub-cell-head .text-button { white-space: nowrap; }
+.hub-cell-head .text-button { min-height: 28px; font-size: 12px; }
+.hub-cell-note { color: var(--muted); font-size: 11px; }
+.hub-unit-modules, .hub-history { flex: 1; min-height: 0; overflow: auto; margin: 0; padding: 0; list-style: none; }
+.hub-unit-modules li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; min-height: 32px; border-bottom: 1px solid var(--line); }
+.hub-unit-modules strong { overflow: hidden; font-size: 13px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.hub-unit-modules small { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.hub-history li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 2px 12px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+.hub-unit-modules li:last-child, .hub-history li:last-child { border-bottom: 0; }
+.hub-history-name { min-width: 0; }
+.hub-history-name strong { display: block; overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.hub-history-name small { display: block; overflow: hidden; color: var(--muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.hub-history-end { display: grid; justify-items: end; gap: 2px; }
+.hub-history time { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.hub-history .hub-report { min-height: 24px; color: #efd17c; font-size: 12px; }
+/* A module set: its name and menu, the sync row, then its modules. */
+.hub-editor-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.hub-editor-head .guide-eyebrow { display: block; margin-bottom: 4px; }
+.hub-sync { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin: 14px 0 20px; padding: 12px 0; border-block: 1px solid var(--line); }
+.hub-sync p { flex: 1 1 220px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+.hub-insync { display: flex; align-items: center; gap: 8px; }
+.hub-sync .button { min-height: 44px; }
+.hub-view-set .usb-missing, .hub-fill { margin: 0 0 16px; }
+.hub-fill { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 12px 16px; border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; background: var(--surface-raised); }
+.hub-fill p { margin: 0; color: var(--text-secondary); font-size: 13px; }
+.hub-fill .button { min-height: 40px; }
+.hub-view-set .module-tiles { margin-bottom: 4px; }
+.hub-empty-set p { color: var(--muted); }
+/* Setup: the base, the card route, diagnostics. */
+.hub-view .card-install.is-open { margin: 22px 0 0; padding-top: 18px; border-top: 1px solid var(--line); }
+.card-install-set { margin: 0 0 18px; color: var(--muted); font-size: 13px; }
+.card-install-set b { color: var(--text-secondary); }
+.hub-view .configuration-layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.hub-view .configuration-section, .hub-view .checkout-card { padding: 0; border: 0; background: none; }
+.hub-view .configuration-section { margin-bottom: 20px; }
+.hub-view .configuration-checkout { position: static; max-height: none; overflow: visible; }
+@container hub (max-width: 980px) { .hub-hero .device-photo { width: 240px; } }
+/* Short windows (a laptop's browser): a smaller hero and meters, and no page subtitle, so Status still fits. */
+@media (max-height: 920px) {
+  .octatrack-hub .configuration-heading p { display: none; }
+  .hub-hero { padding: 10px 24px; }
+  .hub-hero .device-photo { width: 200px; }
+  .hub-hero .hub-facts { margin-top: 8px; }
+  .hub-cell, .hub-console .load-meter { padding: 10px 16px; }
+  .hub-console .load-meter strong { margin: 2px 0 6px; font-size: 1.4rem; }
+  .hub-view-status > .usb-missing { margin: 8px 12px; padding: 6px 12px; }
+}
+/* Narrow: the hero gets smaller, the list becomes one picker, the panel one column with the meters side by side. */
+@container hub (max-width: 760px) {
+  .octatrack-hub .configuration-heading { flex-wrap: wrap; }
+  .octatrack-hub .configuration-heading > div:first-child { flex: 1 1 100%; }
+  .octatrack-hub .configuration-heading-actions .button { min-height: 44px; }
+  .hub-split { grid-template-columns: minmax(0, 1fr); }
+  .hub-hero { display: grid; grid-template-columns: minmax(96px, 120px) minmax(0, 1fr); gap: 12px 16px; padding: 16px; }
+  .hub-hero .device-photo { width: 100%; }
+  .hub-hero h2 { font-size: 20px; }
+  .hub-hero p { display: block; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+  .hub-hero p > .unit-led { margin-right: 7px; vertical-align: middle; }
+  .hub-hero > .button { grid-column: 1 / -1; justify-self: start; min-height: 44px; }
+  .hub-facts { gap: 8px 20px; }
+  .hub-nav { gap: 12px; padding: 14px 16px; border-right: 0; border-bottom: 1px solid var(--line); }
+  .hub-set-picker { display: block; }
+  .hub-nav-group { display: none; }
+  .hub-nav-foot { margin: 0; padding: 0; }
+  .hub-nav-foot .text-button { min-height: 44px; }
+  .hub-split { height: auto; }
+  .hub-pane { padding: 18px 16px 20px; overflow: visible; }
+  .hub-pane:has(> .hub-view-status:not([hidden])) { overflow: visible; }
+  .hub-console { flex: none; grid-template-rows: auto 260px auto 220px 240px; grid-template-areas: "cpu cpu dsp1 dsp1 dsp2 dsp2" "chart chart chart chart chart chart" "health health health health health health" "unit unit unit unit unit unit" "history history history history history history"; border-radius: 0 0 12px 12px; }
+  .hub-console .hub-cell { padding: 12px 14px; }
+  .hub-cell-head .text-button, .hub-console .load-heading .text-button, .hub-history .hub-report { min-height: 44px; }
+  .hub-set-menu .icon-button, .hub-nav-label .icon-button { min-width: 44px; min-height: 44px; }
+  .hub-view-set .module-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .hub-view-set .module-tile .compact-preview { height: 96px; }
+  .hub-view-set .module-tile-open strong { font-size: 14px; line-height: 1.35; overflow-wrap: anywhere; }
+  .hub-view-set .module-tile-controls { min-height: 52px; }
+  .hub-view-set .module-tile-action { min-width: 44px; height: 44px; }
+}
+@container hub (max-width: 340px) {
+  .hub-hero { grid-template-columns: minmax(0, 1fr); }
+  .hub-hero .device-photo { max-width: 160px; }
+  .hub-view-set .module-tiles { grid-template-columns: minmax(0, 1fr); }
+}
+/* The library's add control names the set it adds to (beta). */
+.unit-strip .button { min-height: 32px; margin-left: 6px; padding: 5px 12px; }
+.toolbar-load { flex-shrink: 0; height: 36px; padding: 0 12px; }
+/* The top bar names the selected set (beta): long names stop before they crowd the search. */
+.configuration-button > span:not(.toolbar-count) { max-width: 12em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 1180px) { .toolbar-load { width: 36px; padding: 0; justify-content: center; } .toolbar-load span { display: none; } }
+/* The guided load. */
+.load-dialog { width: min(560px, calc(100% - 32px)); }
+.load-dialog .guide-eyebrow { display: block; margin-bottom: 6px; }
+.load-dialog .base-install-intro { margin: 8px 0 20px; }
+.load-changes { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.load-summary { margin: 10px 0 0; color: var(--text); font-size: 14px; font-weight: 600; }
+.load-unchanged { margin-top: 14px; color: var(--muted); font-size: 13px; }
+.load-unchanged summary { cursor: pointer; padding: 8px 0; }
+.load-unchanged ul { margin: 4px 0 0; padding-left: 20px; line-height: 1.7; }
+.load-undo { white-space: normal; overflow-wrap: anywhere; }
+.octatrack-diagnostics { margin: 20px 0; padding: 16px 0; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.6; }
+.octatrack-diagnostics h3 { margin: 0 0 6px; font-size: 15px; }
+.octatrack-diagnostics p { margin: 8px 0; }
+.octatrack-diagnostics .load-check { min-height: 44px; }
+.octatrack-diagnostics summary { cursor: pointer; min-height: 44px; align-content: center; color: var(--muted); }
+.octatrack-diagnostics .text-button { min-height: 44px; }
+.diagnostic-json { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; }
+.load-change { display: flex; align-items: center; gap: 12px; padding: 8px 12px 8px 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-raised); }
+.load-change-name { flex: 1; min-width: 0; }
+.load-change strong { display: block; font-size: 14px; font-weight: 500; }
+.load-change small { display: block; margin-top: 3px; color: var(--muted); font-size: 12px; }
+.load-change.is-leaving { border-color: #6a3f45; }
+.load-change.is-on { background: none; }
+.load-change.is-card { border-color: #6b5a33; background: #2f2a20; }
+.load-change.is-card small { color: #e8cf9a; }
+.module-tile-state.is-card { color: #e8cf9a; }
+.module-tile-state.is-card i { box-shadow: inset 0 0 0 1.5px #e0b26a; }
+.load-blocked { margin: 14px 0 0; padding: 12px 14px; border: 1px solid #6b5a33; border-radius: 10px; background: #2f2a20; color: #f0dcae; font-size: 13px; line-height: 1.55; }
+.load-blocked p { margin: 0; }
+.load-blocked p + p { display: flex; gap: 16px; margin-top: 6px; }
+.load-blocked .text-button { color: #f4c978; font-size: 13px; }
+.load-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 18px 0 12px; padding: 0; list-style: none; }
+.load-steps li { display: flex; flex-direction: column; gap: 8px; color: var(--muted); font-size: 12px; }
+.load-steps li::before { content: ''; height: 4px; border-radius: 2px; background: var(--line); }
+.load-steps li.is-complete { color: var(--text-secondary); }
+.load-steps li.is-complete::before { background: #7fd39b; }
+.load-steps li.is-active { color: var(--text); font-weight: 600; }
+.load-steps li.is-active::before { background: var(--accent); }
+.load-progress { display: block; width: 100%; height: 6px; margin: 0 0 4px; accent-color: var(--accent); }
+.load-dialog .link-hint { margin: 0 0 12px; }
+.load-dialog .base-install-footer { flex-wrap: wrap; }
+.load-check { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 14px; cursor: pointer; }
+.load-check input { width: 16px; height: 16px; accent-color: var(--accent); }
+@media (max-width: 600px) {
+  .toolbar-load span { display: none; }
+  .toolbar-load { width: 36px; padding: 0; justify-content: center; }
+}
+
+/* One installation task at a time; actions remain reachable at large text sizes. */
+.base-install-dialog .base-install-close { width: 44px; height: 44px; top: 8px; right: 8px; }
+.base-install-dialog .base-install-footer .button { min-height: 44px; font-size: 14px; }
+.base-install-progress { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0 0 28px; padding: 0 0 20px; border-bottom: 1px solid var(--line); list-style: none; }
+.base-install-progress li { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 13px; }
+.base-install-progress li > span { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 23px; height: 23px; border: 1px solid var(--control-border); border-radius: 50%; font-size: 11px; }
+.base-install-progress [aria-current="step"] { color: var(--text); font-weight: 600; }
+.base-install-progress [aria-current="step"] > span { color: var(--field); background: var(--accent); border-color: var(--accent); }
+.base-install-progress .is-past > span { color: var(--accent); border-color: var(--accent-line); }
+.base-install-stage { min-height: 240px; font-size: 15px; line-height: 1.65; color: var(--text-secondary); }
+.base-install-stage h3 { margin: 0 0 10px; color: var(--text); font-size: 23px; line-height: 1.3; letter-spacing: -.35px; }
+.base-install-stage p { margin: 0 0 16px; }
+.base-install-stage .base-file-ready { display: flex; align-items: center; gap: 8px; color: var(--text); margin-top: 24px; }
+.base-install-stage .risk-acceptance { margin-top: 20px; font-size: 14px; }
+.base-install-stage .risk-acceptance p, .base-install-stage .risk-acceptance label { font-size: 14px; line-height: 1.65; }
+.base-install-stage .risk-acceptance label { min-height: 44px; }
+.base-install-stage .base-install-note { margin-top: 24px; padding: 16px; border-left: 2px solid var(--accent); background: var(--surface-raised); }
+.base-instructions { display: flex; flex-direction: column; gap: 22px; margin: 24px 0 0; padding-left: 22px; }
+.base-instructions li { padding-left: 7px; }
+.base-instructions li::marker { color: var(--accent); font-weight: 600; }
+.base-instructions strong { display: block; color: var(--text); margin-bottom: 4px; font-size: 16px; }
+.base-instructions p { margin: 0; }
+.base-install-recovery { margin-top: 24px; font-size: 14px; }
+.base-install-recovery summary { min-height: 44px; display: list-item; align-content: center; cursor: pointer; }
+.base-install-recovery p { margin-top: 8px; }
+@media (max-width: 600px) {
+  .base-install-progress { gap: 5px; margin-bottom: 24px; }
+  .base-install-progress li { flex-direction: column; gap: 6px; font-size: 12px; }
+  .base-install-progress li > span { flex-basis: auto; width: 23px; }
+  .base-install-stage h3 { font-size: 22px; }
+  .base-install-dialog .base-install-footer { gap: 10px; }
+  .base-install-dialog .base-install-footer > .button:first-child { flex: 0 1 auto; }
+  .base-install-dialog .base-install-footer > .button:last-child { flex: 1; }
+}

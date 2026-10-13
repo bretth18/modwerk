@@ -6,28 +6,33 @@ import { moduleStability } from './module-stability'
 
 const now = Date.parse('2026-12-31T12:00:00Z')
 const daysAgo = (days: number) => new Date(now - days * 86400000).toISOString()
-const stats = (extra: Partial<ModuleStatistics> = {}): ModuleStatistics => ({ module_id: 'miniverb', average: 0, count: 0, likes: 0, downloads: 0, downloadsStarted: null, firstDownloadAt: null, openIssues: 0, lastIssueAt: null, ...extra })
+const stats = (extra: Partial<ModuleStatistics> = {}): ModuleStatistics => ({ module_id: 'miniverb', average: 0, count: 0, likes: 0, downloads: 0, downloadsStarted: null, firstDownloadAt: null, confirmedIssues: 0, lastConfirmedIssueAt: null, ...extra })
 
 describe('module stability grade', () => {
   it('starts every module at limited real-world testing and says what moves it up', () => {
-    expect(moduleStability(stats(), {}, now)).toEqual({ level: 'limited', label: 'Limited real-world testing', detail: '0 downloads. No issue reports. Moves to “In regular use” after 100 downloads, 30 days in use and 30 days without a new report.' })
+    expect(moduleStability(stats(), {}, now)).toEqual({ level: 'limited', label: 'Limited real-world testing', detail: '0 downloads. No applicable confirmed bugs recorded. Moves to “In regular use” after 100 downloads, 30 days in use and 30 days without a newly confirmed bug.' })
     expect(moduleStability(undefined, { hardware: 'Tested in the emulator only.' }, now)).toMatchObject({ level: 'limited', detail: 'Usage figures are unavailable right now, so this module is treated as untried. Tested in the emulator only.' })
   })
 
   it('needs downloads, time in use and quiet time together for each grade', () => {
     expect(moduleStability(stats({ downloads: 99, firstDownloadAt: daysAgo(40) }), {}, now).level).toBe('limited')
     expect(moduleStability(stats({ downloads: 400, firstDownloadAt: daysAgo(29) }), {}, now).level).toBe('limited')
-    expect(moduleStability(stats({ downloads: 400, firstDownloadAt: daysAgo(40), lastIssueAt: daysAgo(10) }), {}, now)).toMatchObject({ level: 'limited', detail: expect.stringContaining('Latest issue report 10 days ago.') })
-    expect(moduleStability(stats({ downloads: 100, firstDownloadAt: daysAgo(30), lastIssueAt: daysAgo(31) }), {}, now)).toEqual({ level: 'in-use', label: 'In regular use', detail: '100 downloads, the first 30 days ago. Latest issue report 31 days ago. Moves to “Lots of use, no recent issues” after 500 downloads, 90 days in use and 60 days without a new report.' })
-    expect(moduleStability(stats({ downloads: 5000, firstDownloadAt: daysAgo(200), lastIssueAt: daysAgo(45) }), {}, now).level).toBe('in-use')
-    expect(moduleStability(stats({ downloads: 500, firstDownloadAt: daysAgo(90) }), { hardware: 'A hardware test of this version was reported.' }, now)).toEqual({ level: 'proven', label: 'Lots of use, no recent issues', detail: '500 downloads, the first 90 days ago. No issue reports. A hardware test of this version was reported.' })
+    expect(moduleStability(stats({ downloads: 400, firstDownloadAt: daysAgo(40), lastConfirmedIssueAt: daysAgo(10) }), {}, now)).toMatchObject({ level: 'limited', detail: expect.stringContaining('Latest applicable confirmed bug 10 days ago.') })
+    expect(moduleStability(stats({ downloads: 100, firstDownloadAt: daysAgo(30), lastConfirmedIssueAt: daysAgo(31) }), {}, now).level).toBe('in-use')
+    expect(moduleStability(stats({ downloads: 5000, firstDownloadAt: daysAgo(200), lastConfirmedIssueAt: daysAgo(45) }), {}, now).level).toBe('in-use')
+    expect(moduleStability(stats({ downloads: 500, firstDownloadAt: daysAgo(90) }), { hardware: 'A hardware test of this version was reported.' }, now)).toMatchObject({ level: 'proven', label: 'Lots of use, no recent confirmed bugs', detail: expect.stringContaining('A hardware test of this version was reported.') })
   })
 
-  it('shows open reports instead of any grade, and a pending build before anything else', () => {
+  it('shows applicable confirmed bugs instead of a grade, and a pending build before anything else', () => {
     const used = { downloads: 5000, firstDownloadAt: daysAgo(200) }
-    expect(moduleStability(stats({ ...used, openIssues: 1, lastIssueAt: daysAgo(100) }), {}, now)).toMatchObject({ level: 'reported', label: '1 open issue report' })
-    expect(moduleStability(stats({ openIssues: 3 }), {}, now).label).toBe('3 open issue reports')
-    expect(moduleStability(stats({ ...used, openIssues: 3 }), { buildPending: true }, now)).toMatchObject({ level: 'pending', label: 'Build verification pending' })
+    expect(moduleStability(stats({ ...used, confirmedIssues: 1, lastConfirmedIssueAt: daysAgo(100) }), {}, now)).toMatchObject({ level: 'reported', label: '1 confirmed bug' })
+    expect(moduleStability(stats({ confirmedIssues: 3 }), {}, now).label).toBe('3 confirmed bugs')
+    expect(moduleStability(stats({ ...used, confirmedIssues: 3 }), { buildPending: true }, now)).toMatchObject({ level: 'pending', label: 'Build verification pending' })
+  })
+
+  it('does not penalize unconfirmed or waiting reports, or interpret an old API response as no confirmed bugs', () => {
+    expect(moduleStability(stats({ downloads: 500, firstDownloadAt: daysAgo(90), openIssues: 4, lastIssueAt: daysAgo(0), unconfirmedIssues: 4, needsInfoIssues: 2 }), {}, now).level).toBe('proven')
+    expect(moduleStability(stats({ confirmedIssues: undefined, downloads: 500, firstDownloadAt: daysAgo(90) }), {}, now)).toMatchObject({ level: 'limited', detail: expect.stringContaining('triage is unavailable') })
   })
 
   it('treats a missing or unreadable first download as no time in use', () => {

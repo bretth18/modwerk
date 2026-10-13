@@ -1,0 +1,44 @@
+{
+  "firmware": "1.40C",
+  "version": "0.2.5-experimental",
+  "build_tag": "15",
+  "image_sha256": "499476227e73968f48ae9ee436d4205c33fd852b14e0097d7606d47d9840a344",
+  "native_sdk_revision": "ee8fd7299f4c267ff0473c3493537e32b26c9634",
+  "source_sha256": {
+    "polyphony.s": "a9b4801848eb900be5a360d5818ac82ea64b8d91e03e9899e362bdb1c89a46d4",
+    "pool.c": "4b33927f1fd4d79a543ccd49d30c02cdd9cf0f383d513bb435a64964f1190471",
+    "recording.c": "05d8ed1aaaff605dec7272366af078437b385943c42df6b0e6261bf7531a06c6",
+    "registration.c": "4b05dadc5c187c19ce39f80a05e5938cd8bf2ffffecb9956938cb0e697b2788d",
+    "registration-hooks.s": "27ab57d18594bf85a7bb603523a4c041ec40b91794448edfc22191b23f5aa937",
+    "registration.s": "6d2b95677377020b5eb5568ede2c60c3cd6c34e5a6f24468f171c65137fcd82c",
+    "diagnostics.c": "2dd0c0feb51343265aac759a27820668285facb42fad623c65878e7c4e5859d3",
+    "manifest.py": "5d299743e79e81c266cb5ffb365c1a4ec0af05c0380f1ab9327c95bd58973ec2",
+    "prepare-registration.py": "e74aade0251f7183a70851ebceaed21f9a8ac970f532f3c383b4cd643d637f7a",
+    "build-diagnostic.py": "b1e4d3846201c8cd5ef809b359b9f1b17f69fe7c7ace1909440423872995cb0c",
+    "remix.py": "50cef3ce9cc490aa39118bec35b1238e95a32752aed4fe3a023ac7ef7c00d079"
+  },
+  "core_logger_version": "0.2.0",
+  "core_source_sha256": "7d5ec61364803cc851e28f67d158661b04b4fb60bf99f6db0738c11d8c74c0ba",
+  "logger_source_identity": "e9e525ad855b07315ff242f436abeff5c88da01e0e16fd98f570c3dc46f28a64",
+  "reserve": {
+    "base": 1084839392,
+    "bytes": 10586112
+  },
+  "retained": 1095417312,
+  "static_stock": true,
+  "stock_dsp_payloads": {
+    "A": {
+      "address": 1074668324,
+      "bytes": 79563,
+      "sha256": "09684267438dbbb83163729b2509c5acab3c3d71124b50769d9105b5ce48cb39",
+      "original": true
+    },
+    "B": {
+      "address": 1074747887,
+      "bytes": 77061,
+      "sha256": "27c26cd3432580cb36c23e34f7dd97c99d668bac8b401df872d288f00074549e",
+      "original": true
+    }
+  },
+  "hardware": "T06 untested on hardware; T05 user observation: works in theory. Physical recording, reboot and CPU deadlines remain unqualified."
+}

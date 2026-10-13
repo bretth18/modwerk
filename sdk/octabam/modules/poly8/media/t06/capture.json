@@ -1,0 +1,66 @@
+{
+  "firmware": "1.40C",
+  "version": "0.2.5-experimental",
+  "imageSha256": "499476227e73968f48ae9ee436d4205c33fd852b14e0097d7606d47d9840a344",
+  "emulatorSha256": "89759d97c794f62b304dff1912a2ac1c7965289b4d019fbdbb0dbcf3c3d9f312",
+  "setup": "Actual native ColdFire/DSP MKII LCD from fresh unsigned FLEX fixture; real panel UART events; no hardware claim. LOOP AUTO is retained, LEFT selects POLY, RIGHT opens FLEX slots.",
+  "palette": {
+    "on": [
+      255,
+      255,
+      255
+    ],
+    "off": [
+      0,
+      0,
+      0
+    ]
+  },
+  "scale": 6,
+  "plan": "walk.jsonl",
+  "planSha256": "4d885b216166404fb473bcac5910cfdf93242aef3ca1d2bfa9ca9702fab0cb00",
+  "screenshots": [
+    {
+      "file": "left-machine-chooser.png",
+      "caption": "left machine chooser",
+      "sha256": "ee3be7d72a64418aad50d51c500723dac126d64e60430a6147ff10f12e026ec6",
+      "lcd_sha256": "e738477f224cebc6f214373603173ace376616b05933fc27a23dc25ce76148c6",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "loop-encoder.png",
+      "caption": "loop encoder",
+      "sha256": "e8ba773e649160ec317b38cd08ec4c56c9609ba22138b2eafed413dbd8d5d6f8",
+      "lcd_sha256": "fdf5d892b2fe63009ebc69bf26a7a73458fa384ea194b0a73e3b8ba82f0ebcfa",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "right-flex-pool.png",
+      "caption": "right flex pool",
+      "sha256": "17af57f9846c74536559abd8c439762e7b91d4eb0dda80d0c7704d7e6851feb9",
+      "lcd_sha256": "afba0b9f502f4e55ef76fc9e7e982d4fda4278c5f6ddf30a54e6decfa51ed1ca",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    }
+  ]
+}

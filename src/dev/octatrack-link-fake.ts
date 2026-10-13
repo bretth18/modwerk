@@ -1,0 +1,195 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// A pretend Octatrack for the link's tests and the dev previews
+// (`?preview=usb-link`, `?preview=base-install`): enumerates like the base, answers IDENTIFY with
+// real bytes, and runs the upload session's phases with no device behind them.
+import type { Inventory, InventoryTarget } from '../config/inventory.ts'
+import { sha } from '../../vendor/elekloader/kit/src/bytes.ts'
+import { OctatrackLink, type LinkDevice, type LinkSession, type LinkUsb } from '../engine/elekloader/octatrack-link.ts'
+import { UploadDeviceError } from '../engine/elekloader/upload-session.ts'
+import { SELFTEST_BYTES, VENDOR_CLASS, VENDOR_PROTOCOL, VENDOR_SUBCLASS } from '../engine/elekloader/upload-usb.ts'
+import type { UploadPhaseName, UploadResultName, UploadStatus } from '../engine/elekloader/upload-wire.ts'
+
+export const FAKE_BASE = '5b'.repeat(32)
+const ascii = (text: string) => Array.from(text, char => char.charCodeAt(0))
+/** IDENTIFY as sdk/runtime/upload/vendor.c sends it: version 1, can submit, limits, base, model. */
+const identity = Uint8Array.from([...ascii('MWUI'), 1, 1, 0, 1, 0x10, 0x34, 0, 0x98, 0, 0, 0, 0,
+  ...Array.from({ length: 32 }, () => 0x5b), ...ascii('OCTATRACK MKII'), 0, 0, ...new Array(8).fill(0)])
+
+type Listener = (event: { device: LinkDevice }) => void
+export interface FakeUnit {
+  usb: LinkUsb
+  plug(kind?: 'base' | 'stock'): void
+  unplug(): void
+  /** Another tab or app holds the interface. */
+  taken: boolean
+  playing: boolean
+  /** The kept set's digest; the base's own while nothing is loaded. */
+  active: string
+  /** What the unit has, and what a staged load would make it (taken on Keep). */
+  installed: Inventory
+  pending?: Inventory
+  /** Project references for the missing-module preview; resolved modules disappear after Keep. */
+  project?: { id: string; name: string }[]
+  /** A transaction a session left staged when its reply went missing: only a session that adopts it can cancel it. */
+  staged?: boolean
+  /** Previews only: a passed self-test with the set saved on the card, and live meters (requests 21 and 30). */
+  status?: boolean
+  /** The loader refuses the next load with this reason (loader.h runtime_refusal), as the base's record reports it. */
+  refusal?: number
+  /** Rollbacks the loader cannot switch yet (an effect's code still being published): the controller stays in recovery. */
+  stuck?: number
+  /** The runtime ids (hex) of the modules the kept runtime packages installed, as INVENTORY lists them, and each kept
+   * package in order: + installed, - removed. */
+  modules: string[]
+  kept: string[]
+}
+
+export function fakeUnit(kind: 'base' | 'stock' | 'none' = 'base'): FakeUnit {
+  const listeners = { connect: new Set<Listener>(), disconnect: new Set<Listener>() }
+  const make = (base: boolean): LinkDevice => {
+    const alternates = (interfaceClass: number, interfaceSubclass: number, interfaceProtocol: number, endpoints: unknown[] = []) =>
+      [{ interfaceClass, interfaceSubclass, interfaceProtocol, endpoints }]
+    const interfaces = [{ interfaceNumber: 0, alternates: alternates(8, 6, 0x50, [1, 2]) },
+      ...base ? [{ interfaceNumber: 5, alternates: alternates(VENDOR_CLASS, VENDOR_SUBCLASS, VENDOR_PROTOCOL) }] : []]
+    const device = {
+      opened: false, configuration: { interfaces },
+      async open() { device.opened = true }, async close() { device.opened = false },
+      async selectConfiguration() {},
+      async claimInterface() { if (unit.taken) throw new DOMException('Unable to claim interface.', 'NetworkError') },
+      async releaseInterface() {},
+      async controlTransferOut() { return { status: 'stall', bytesWritten: 0 } },
+      async controlTransferIn(setup: { request: number; value: number }) {
+        if (setup.request === 3) return { status: 'ok', data: new DataView(identity.buffer.slice(0)) }
+        if (setup.request === 14 && unit.project) {
+          const page = unit.project.filter(item => !unit.installed.moduleIds.includes(item.id)).slice(setup.value, setup.value + 13)
+          const data = new Uint8Array(4 + 24 * page.length), view = new DataView(data.buffer)
+          data.set([0x4d, 0x57, 0x4d, page.length])
+          page.forEach((item, i) => {
+            view.setUint32(8 + 24 * i, Number.parseInt(sha(new TextEncoder().encode(item.id)).slice(0, 8), 16))
+            data.set(new TextEncoder().encode(item.name).subarray(0, 16), 12 + 24 * i)
+          })
+          return { status: 'ok', data: view }
+        }
+        if (setup.request === 27) { // INVENTORY, 13 a page from wValue: no DSP code, no name
+          const page = unit.modules.slice(setup.value, setup.value + 13), list = new DataView(new ArrayBuffer(4 + 24 * page.length))
+          ;[0x4d, 0x57, 0x49, page.length].forEach((byte, i) => list.setUint8(i, byte))
+          page.forEach((id, i) => { list.setUint8(4 + 24 * i, 0xff); list.setUint32(8 + 24 * i, Number.parseInt(id, 16)) })
+          return { status: 'ok', data: list }
+        }
+        if (setup.request === 30 && unit.status) { // MWLD v1: CPU, tracks 5-8 and its peak, tracks 1-4 and its peak, per mille
+          const load = new DataView(new ArrayBuffer(48)), ticks = Math.floor(Date.now() / 20) >>> 0, wave = (phase: number) => Math.round(80 * Math.sin(Date.now() / 9000 + phase))
+          load.setUint32(0, 0x4d574c44); load.setUint8(4, 1); load.setUint8(5, 7); load.setUint16(6, 48); load.setUint32(8, ticks); load.setUint32(12, ticks * 3)
+          ;[16, 20, 24].forEach(offset => load.setUint32(offset, ticks))
+          ;[380 + wave(0), 520 + wave(2), 640, 260 + wave(4), 410].forEach((value, i) => load.setUint32(28 + 4 * i, value))
+          return { status: 'ok', data: load }
+        }
+        if (setup.request === 21 && unit.status && unit.refusal === undefined) { // passed, peaks, saved on the card and read back
+          const record = new DataView(new ArrayBuffer(SELFTEST_BYTES)), count = unit.installed.moduleIds.length
+          ;[[0, 2], [3, count], [7, 410], [8, 655], [9, 470], [14, 47900], [15, 7], [16, count], [17, count]].forEach(([at, value]) => record.setUint32(4 * at, value))
+          return { status: 'ok', data: record }
+        }
+        if (setup.request !== 21 || unit.refusal === undefined) return { status: 'stall' }
+        const record = new DataView(new ArrayBuffer(SELFTEST_BYTES)) // the base's record, idle, with its last refusal
+        record.setUint32(92, unit.refusal)
+        return { status: 'ok', data: record }
+      },
+    }
+    return device
+  }
+  let device: LinkDevice | undefined = kind === 'none' ? undefined : make(kind === 'base')
+  const unit: FakeUnit = {
+    taken: false, playing: false, installed: { moduleIds: [], removedStockFx: [] }, active: FAKE_BASE, modules: [], kept: [],
+    usb: {
+      async requestDevice() { if (!device) throw new DOMException('No device selected.', 'NotFoundError'); return device },
+      async getDevices() { return device ? [device] : [] },
+      addEventListener(type, listener) { listeners[type].add(listener) },
+      removeEventListener(type, listener) { listeners[type].delete(listener) },
+    },
+    plug(next = 'base') { device = make(next === 'base'); for (const listener of listeners.connect) listener({ device }) },
+    unplug() { const gone = device; device = undefined; if (gone) for (const listener of listeners.disconnect) listener({ device: gone }) },
+  }
+  return unit
+}
+
+/** The upload session's phases without frames. `delay` paces each step for the preview; tests use 0. */
+export function fakeSession(unit: FakeUnit, delay = 0) {
+  const wait = () => new Promise(resolve => setTimeout(resolve, delay))
+  return async (): Promise<LinkSession> => {
+    let status: UploadStatus = { command: 'hello', transaction: 0, result: 'ok', phase: unit.staged ? 'receiving' : 'normal', activeKnown: true, generation: 0,
+      lastTransaction: 0, currentTransaction: 0, received: 0, capacity: 262144, base: FAKE_BASE, session: '00'.repeat(32), active: unit.active }
+    let staged = unit.active, owned = false, data: Uint8Array | undefined
+    const step = async (phase: UploadPhaseName, refuse?: UploadResultName) => {
+      await wait()
+      if (refuse) throw new UploadDeviceError(status = { ...status, result: refuse })
+      status = { ...status, phase, result: 'ok' }
+      return status
+    }
+    await wait()
+    return {
+      get status() { return status }, connectionTrusted: true,
+      async stage(pkg, { signal, progress } = {}) {
+        if (unit.playing) return step('normal', 'unsafe')
+        if (unit.refusal) return step('normal', 'rejected')
+        staged = pkg.sha256; data = pkg.data
+        for (let sent = 0; sent < pkg.data.length;) {
+          if (signal?.aborted) { status = { ...status, phase: 'normal' }; throw new DOMException('Module staging cancelled.', 'AbortError') }
+          await wait()
+          sent = Math.min(pkg.data.length, sent + 4096); progress?.(sent, pkg.data.length)
+        }
+        return step('verified')
+      },
+      activate: () => step('pending'),
+      startTrial: async () => status = { ...await step('trial'), active: staged },
+      holdTrial: () => step('pending', unit.playing ? 'unsafe' : undefined),
+      accept: async () => {
+        await step('ready'); unit.active = status.active!; unit.installed = unit.pending ?? unit.installed; unit.pending = undefined
+        if (data && String.fromCharCode(...data.subarray(0, 4)) === 'MWRM') { // a runtime package: its module in or out
+          const view = new DataView(data.buffer, data.byteOffset), id = view.getUint32(28).toString(16).padStart(8, '0')
+          const removes = !view.getUint32(8) && !view.getUint32(20) && !view.getUint32(24) && (view.getUint16(4) < 5 || !view.getUint32(32))
+          unit.modules = unit.modules.filter(item => item !== id).concat(removes ? [] : [id]); unit.kept.push((removes ? '-' : '+') + id)
+        }
+        return status
+      },
+      rollback: async () => {
+        if (unit.stuck && unit.stuck-- > 0) return step('recovery', 'needs-recovery')
+        unit.pending = undefined; return status = { ...await step('ready'), active: unit.active }
+      },
+      adopt: () => owned ||= status.phase === 'receiving',
+      cancel: async () => {
+        if (unit.staged && !owned) throw new Error('This client does not own a staged transaction.')
+        unit.staged = false; return step('normal')
+      },
+      leaveUploadMode: () => step('normal'),
+    }
+  }
+}
+
+/**
+ * Dev previews (`?preview=usb-link|base-install&unit=base|stock|none|unsupported`): the link against a pretend
+ * unit, driven from the console through `modwerkUsbPreview`: plug('base' | 'stock'), unplug(),
+ * playing = true, taken = true. Add `inventory=empty` for a freshly installed base and `missing=project` for
+ * a project needing E-Verb, Euclid, Air Chorus and TapeHead, and `status=old` for a base without a self-test record or live load.
+ * There is no pretend base build: a preview must never save a file
+ * that looks like firmware.
+ */
+export function previewKit() {
+  const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+  const params = new URLSearchParams(window.location.search), kind = params.get('unit')
+  if (kind === 'unsupported') return { link: new OctatrackLink(null) }
+  const unit = fakeUnit(kind === 'stock' || kind === 'none' ? kind : 'base')
+  unit.installed = { moduleIds: params.get('inventory') === 'empty' ? [] : ['everb', 'airwindows-chorus', 'poly8'], removedStockFx: [] }
+  unit.status = params.get('status') !== 'old'
+  if (params.get('missing') === 'project') unit.project = [{ id: 'everb', name: 'E-Verb' }, { id: 'euclid', name: 'Euclid' }, { id: 'airwindows-chorus', name: 'Air Chorus' }, { id: 'tapehead', name: 'TapeHead' }]
+  Object.assign(window, { modwerkUsbPreview: unit })
+  return {
+    link: new OctatrackLink(unit.usb, fakeSession(unit, 60)),
+    // A pretend load, stress test and inventory, so the whole flow can be clicked through.
+    prepareUpdate: async (target: InventoryTarget) => {
+      await wait(400); unit.pending = { moduleIds: target.moduleIds, removedStockFx: target.removedStockFx ?? [] }
+      // Each load stages different bytes, so the unit's active digest (and the inventory read after Keep) changes.
+      return { name: target.name, changes: [{ module: target.name, data: new TextEncoder().encode(JSON.stringify(unit.pending).padEnd(160 * 1024)) }] }
+    },
+    readInventory: async () => { await wait(150); return structuredClone(unit.installed) },
+    stressTest: async () => { await wait(2500); return null },
+  }
+}

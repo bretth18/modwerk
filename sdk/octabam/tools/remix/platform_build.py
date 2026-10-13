@@ -65,6 +65,16 @@ def redefined(obj, defs) -> list[str]:
 
 
 
+def promote_symbols(obj, names):
+    """Expose reviewed, already defined section symbols; never change code bytes."""
+    if not names: return
+    rows = [line.split() for line in _run(["m68k-elf-nm", "--defined-only", obj], ROOT).splitlines()]
+    defined = {row[2]: row[1] for row in rows if len(row) == 3}
+    if any(defined.get(name) not in ("t", "d", "b", "T", "D", "B") for name in names):
+        raise ValueError("A composition export must be an existing section symbol")
+    _run(["m68k-elf-objcopy", *["--globalize-symbol=" + name for name in names], obj], ROOT)
+
+
 def link_runtime(units, work: pathlib.Path, defsyms: dict, base: int, includes=None, region_symbols=(), unit_defs=None) -> tuple[bytes, dict]:
     """Assemble every (module key, Linked) unit and link them together at
     `base`. Returns (raw image, symbols). `includes` = {unit label: text}
@@ -92,6 +102,7 @@ def link_runtime(units, work: pathlib.Path, defsyms: dict, base: int, includes=N
             assemble_coldfire(ROOT / u.source, '54455', obj, incdir=inc[1] if inc else None, cwd=work, defsyms=mine)
         except subprocess.CalledProcessError as error:
             sys.exit(f"platform build: m68k-elf-as failed\n{error.stderr[-3000:]}")
+        promote_symbols(obj, u.exports)
         own = redefined(obj, mine) if mine else []
         if own:
             sys.exit(f"platform build: {u.source} defines {own}, also declared by Linked.defsyms")

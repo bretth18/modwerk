@@ -1,13 +1,15 @@
 {
   "kind": "owner-approved-update",
   "id": "miniverb",
-  "version": "0.2.0-experimental",
+  "version": "0.2.1-experimental",
   "approvedBy": "repeat98",
-  "approvedOn": "2026-10-08",
+  "approvedOn": "2026-10-11",
   "waived": [
-    "current-build-hardware"
+    "current-build-hardware",
+    "chip-worst-case-cycles",
+    "complete-memory-bounds"
   ],
-  "sourceSha256": "b2bc62ed7a4371dc6c765536e12f7fb9abb76183a5ac8ec3fda9191b96a891d2",
-  "ownerStatement": "ok it works well and is stable, release it. I explicitely allow no hardware evidence in this case",
-  "reason": "Owner accepted sound and stability in Octemu and explicitly authorized the published update. Physical hardware evidence alone is waived; native/browser parity, source-only reproduction, software resource bounds and release documentation remain required."
+  "sourceSha256": "c68e43ca208d50214273845bb0a980a44d715a9f5e5a4c0e537fedabf444723d",
+  "ownerStatement": "Approve this exact experimental release with limits disclosed; keep #428 open until the reporter confirms (Recommended)",
+  "reason": "Owner approved only this native source and the two I428 private updates recorded in TESTING.md, after reviewing the disclosed absence of current hardware, chip timing, complete runtime memory bounds, played automation, Part/project persistence, physical reboot and maximum-load evidence. The original THRU noise in #428 remains unconfirmed; the report must stay open until reporter confirmation. Native/browser parity, source-only reproduction, software resource accounting, actual UI and documentation remain required. No unobserved behavior is verified and no earlier waiver is extended."
 }

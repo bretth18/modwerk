@@ -1,0 +1,170 @@
+{
+  "version": "0.2.3-experimental",
+  "image_sha256": "792dde58d775fc7dcb8de7bd00c9e9fdd1e47fe909ef8d21dae898bea409a549",
+  "native_warm": {
+    "image_sha256": "792dde58d775fc7dcb8de7bd00c9e9fdd1e47fe909ef8d21dae898bea409a549",
+    "marker": "504c01",
+    "mirror": "504c01",
+    "machine": "01",
+    "loop": "00",
+    "chromatic_mode": 1,
+    "poly_sound": {
+      "frames": 8820,
+      "channel_peaks": [
+        361,
+        361
+      ]
+    },
+    "flex_sound": {
+      "frames": 8820,
+      "channel_peaks": [
+        3042,
+        3042
+      ]
+    },
+    "sample_preview": "not tested; use --preview for the unqualified probe",
+    "transport": "00000001",
+    "live_record": "00000001",
+    "play_start": "status sample=471356.754 ms=10688.362 frames=28946 frame=on idle=57162 wall=121.807",
+    "play_end": "status sample=507084.430 ms=11498.513 frames=31179 frame=on idle=61512 wall=131.940",
+    "records": [
+      {
+        "step": 2,
+        "root": 72,
+        "shape": 0
+      },
+      {
+        "step": 4,
+        "root": 76,
+        "shape": 0
+      },
+      {
+        "step": 6,
+        "root": 79,
+        "shape": 0
+      }
+    ],
+    "result": "POLY/FLEX key audio and advancing-step recording pass; sample preview not qualified",
+    "sparse_slot_sound": {
+      "frames": 8820,
+      "channel_peaks": [
+        712,
+        712
+      ]
+    },
+    "sparse_slot_31": "audio passes; adjacent tuning cache unchanged",
+    "logger_ring": {
+      "magic": "0x4f4c4f47",
+      "version": 2,
+      "head": 41,
+      "count": 41,
+      "flushed": 20
+    }
+  },
+  "rapid_panel": {
+    "hold_release": "MAX/MAX",
+    "presses": 128,
+    "max_active": 8,
+    "recorded_chords": [
+      {
+        "step": 3,
+        "root": 72,
+        "shape": 67
+      }
+    ],
+    "start": "status sample=672709.288 ms=15254.179 frames=8389 frame=on idle=61585 wall=29.927",
+    "end": "status sample=785861.640 ms=17819.992 frames=15461 frame=on idle=73871 wall=58.680"
+  },
+  "modal": {
+    "src_refusal_preserves_part": true,
+    "chooser_refusal_preserves_part": true,
+    "automatic_dismissal": "pass",
+    "retained_marker": "PL/1",
+    "new_loop_default": "OFF",
+    "timeout_ticks": 120
+  },
+  "private_log_sha256": {
+    "t04-final-protocol.log": "9c15d581930d49846ea5457890a87a3ace6f89d8b8854d3ae3610c9740f36080",
+    "t04-stress-protocol.log": "901564809f45c8221f08444ae7aecfbe7894adb45a05e691517cbe56b037457d",
+    "t04-limit-protocol.log": "6d2b831ff28c2c4fd768db9234df31efd4af8a80a3aa3241cdfbcbcb3a338100",
+    "t04-checkpoint-protocol.log": "eb7935094330261a5873d2399b1c10478760dd0fb5e55b6c17b8b189bbaae83b"
+  },
+  "checkpoint": {
+    "method": "Actual native panel SAVE job after advancing stock UI counter by 2100 ticks to satisfy existing backoff; wait for flush/readback completion. This does not measure real-time checkpoint duration.",
+    "target_head": 51,
+    "head": 53,
+    "flushed": 53,
+    "card_status": "card ok rw=1 path=/work/t04-checkpoint.img written=22754 through=22754 errors=0",
+    "logs": [
+      {
+        "name": "OCTAMOD.LOG",
+        "bytes": 32768,
+        "sha256": "1a5fe1765d8aba1c568711ab853b1c8e46d834cdd2d6acff2ca07bd4f4317591",
+        "records": 28,
+        "polyCodes": [
+          4,
+          1,
+          2,
+          3,
+          5,
+          6
+        ]
+      },
+      {
+        "name": "OCTAMOD1.LOG",
+        "bytes": 32768,
+        "sha256": "5e700ec02d56aed81ba0ca7f39695e983fc52de6696316b8c0248d604cb8459c",
+        "records": 53,
+        "polyCodes": [
+          4,
+          1,
+          2,
+          3,
+          5,
+          6
+        ]
+      }
+    ],
+    "strict_parser_crc": "pass",
+    "recent_recording_counters_present": true
+  },
+  "hardware": {
+    "tested": false,
+    "recording_failure_resolved": false,
+    "transport_audio_failure_resolved": false
+  },
+  "limits": [
+    "Native sample preview remains unqualified: stock control also did not confirm expected tone.",
+    "Native instruction/sample scheduling is not physical CPU/deadline proof.",
+    "No RAM reset-retention or hard-lockup durability claim."
+  ],
+  "artifacts": {
+    "OCTATRACK_POLY8T04.bin": {
+      "bytes": 479760,
+      "sha256": "eb8a8bab4ac741d7769d03ae6903cfadd66dbd0f6d6fc3a78a0e64ccc90d43e2"
+    },
+    "OCTATRACK_OS1.40C_POLY8T04.syx": {
+      "bytes": 670138,
+      "sha256": "e2c42ba9bfff48d1d4623d1cfcdce69d6f0178a1c38f32e46c93af786a28a58c"
+    },
+    "recovery/OCTATRACK_OS1.40C.bin": {
+      "bytes": 469852,
+      "sha256": "34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad"
+    },
+    "recovery/OCTATRACK_OS1.40C.syx": {
+      "bytes": 656304,
+      "sha256": "0a8d2d2b35c2cc78fa338576adc1af0cbc094cef973255103165c73edd87f2b6"
+    }
+  },
+  "repository_check": {
+    "command": "npm run check -- --base origin/main",
+    "node": "24.21.0",
+    "vitest_max_workers": 1,
+    "result": "pass",
+    "files": 189,
+    "tests": 1275,
+    "all_assertions_and_original_timeouts_preserved": true,
+    "log_sha256": "220bd938939746aee933c1c97b9da8754427d615613c0769130f0eaa840e5e2c",
+    "earlier_default_runs": "Existing test timeouts under machine contention; not counted as passes."
+  }
+}

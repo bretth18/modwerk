@@ -14,6 +14,7 @@ import { accountRequest } from './account-requests'
 import { accountExport } from './account-export'
 import { COMMUNITY_RULES_VERSION } from '../src/legal/policy'
 import { googleTokenBinding, socialOptions, suggestUsername, validUsername } from './social-config'
+import { discordInvitationClaim } from './discord-invitations'
 
 export function authReady(env: Env) { return !!env.AUTH_SECRET && env.AUTH_SECRET.length >= 32 }
 const authInstances = new AsyncLocalStorage<Map<Database, { settings: string; auth: ReturnType<typeof createAccountAuth> }>>()
@@ -85,7 +86,7 @@ function createAccountAuth(env: Env, db: Database) {
       },after:async(user,ctx)=>{
         await syncPublicUser(user)
         // New members get Discord inline in their signup welcome, so never queue a second popup.
-        await db.prepare('INSERT OR IGNORE INTO member_discord_invites(user_id) VALUES(?)').bind(user.id).run()
+        await discordInvitationClaim(db,user.id).run()
         if(ctx?.path==='/callback/:id'){
           const state=await getOAuthState<{flowHash?:string}>()
           const flow=state?.flowHash?await db.prepare("SELECT username,rules_version,newsletter FROM social_flows WHERE token_hash=? AND stage='started'").bind(state.flowHash).first<{username:string|null;rules_version:string|null;newsletter:number}>():null
@@ -118,7 +119,7 @@ export async function accountUser(request: Request, env: Env, db: Database): Pro
   const user=(async()=>{
     const session=await accountAuth(env,db).api.getSession({headers:request.headers})
     if(!session?.user.emailVerified)return null
-    return db.prepare('SELECT id,display_name,username,avatar_id,email_verified,suspended,is_admin FROM users WHERE id=? AND suspended=0 AND NOT EXISTS(SELECT 1 FROM social_pending_accounts p WHERE p.user_id=users.id)').bind(session.user.id).first<User>()
+    return db.prepare('SELECT id,display_name,username,avatar_id,email_verified,suspended,is_admin,beta_tester FROM users WHERE id=? AND suspended=0 AND NOT EXISTS(SELECT 1 FROM social_pending_accounts p WHERE p.user_id=users.id)').bind(session.user.id).first<User>()
   })()
   accountUsers.set(request,{db,settings,user})
   return user
@@ -176,7 +177,7 @@ export async function accountRoutes(request: Request, env: Env, db: Database, pa
         // Verifying proves the inbox and the password together, so it also starts the member session.
         const verified=await auth.api.verifyEmail({query:{token:body.token.split('~')[0]},headers,returnHeaders:true})
         // Also covers registrations begun before the inline welcome was introduced.
-        await db.prepare('INSERT OR IGNORE INTO member_discord_invites(user_id) VALUES(?)').bind(record.user_id).run()
+        await discordInvitationClaim(db,record.user_id).run()
         return sessionResponse(env,verified.headers,{ok:true,message:'Email verified. Welcome to Modwerk.'},'Verification could not be completed.')
       }
       await auth.api.resetPassword({body:{token:body.token,newPassword:body.password},headers})

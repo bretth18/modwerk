@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { DISCORD_INVITE_CAMPAIGN } from '../config/development-discord'
 
 let values: Map<string, string>, claims: typeof import('./discord-invite'), request: ReturnType<typeof vi.fn>
 beforeEach(async () => {
-  vi.resetModules(); values = new Map(); request = vi.fn(async () => Response.json({ show: true }))
+  vi.resetModules(); values = new Map(); request = vi.fn(async () => Response.json({ show: true, campaign: DISCORD_INVITE_CAMPAIGN }))
   vi.stubGlobal('fetch', request)
   vi.stubGlobal('localStorage', { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => values.set(key, value) })
   claims = await import('./discord-invite')
@@ -20,7 +21,7 @@ describe('invitation delivery in the browser', () => {
     expect(await nextVisit.claimDiscordInvite(null)).toEqual({ show: false })
     expect(request).not.toHaveBeenCalled()
     await nextVisit.claimDiscordInvite('signed-in')
-    expect(JSON.parse(request.mock.calls[0][1].body)).toEqual({ alreadyShown: true })
+    expect(JSON.parse(request.mock.calls[0][1].body)).toEqual({ campaign: DISCORD_INVITE_CAMPAIGN, alreadyShown: true })
   })
   it('keeps a displayed visitor card quiet for this visit when storage is blocked', async () => {
     vi.stubGlobal('localStorage', { getItem() { throw new Error('Blocked') }, setItem() { throw new Error('Blocked') } })
@@ -44,13 +45,29 @@ describe('invitation delivery in the browser', () => {
     const nextVisit = await import('./discord-invite')
     expect(nextVisit.discordInviteHandledHere()).toBe(true)
     await nextVisit.claimDiscordInvite('signed-in')
-    expect(JSON.parse(request.mock.calls[0][1].body)).toEqual({ alreadyShown: true })
+    expect(JSON.parse(request.mock.calls[0][1].body)).toEqual({ campaign: DISCORD_INVITE_CAMPAIGN, alreadyShown: true })
   })
   it('does not consume a browser invitation when the member claim fails', async () => {
     request.mockRejectedValueOnce(new Error('Offline'))
     await expect(claims.claimDiscordInvite('member')).rejects.toThrow('community service')
     expect(values.has(claims.VISITOR_DISCORD_INVITE_KEY)).toBe(false)
     await claims.claimDiscordInvite('member')
+    expect(request).toHaveBeenCalledTimes(2)
+  })
+  it('allows the approved resend after a former invitation, then suppresses reloads', async () => {
+    values.set('modwerk.discord-invite.visitor', '1')
+    values.set('modwerk.discord-invite.visitor:development-discord-2026-10-07', '1')
+    expect(await claims.claimDiscordInvite(null)).toEqual({ show: true })
+    vi.resetModules()
+    const nextVisit = await import('./discord-invite')
+    expect(await nextVisit.claimDiscordInvite(null)).toEqual({ show: false })
+    expect(values.get('modwerk.discord-invite.visitor')).toBe('1')
+  })
+  it('retries after the Worker update instead of consuming the round through an older Worker', async () => {
+    request.mockResolvedValueOnce(Response.json({ show: false }))
+    await expect(claims.claimDiscordInvite('member')).rejects.toThrow('not available yet')
+    expect(values.has(claims.VISITOR_DISCORD_INVITE_KEY)).toBe(false)
+    expect(await claims.claimDiscordInvite('member')).toEqual({ show: true })
     expect(request).toHaveBeenCalledTimes(2)
   })
   it('remembers a handled invitation for this visit when storage is unavailable', () => {

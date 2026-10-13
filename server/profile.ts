@@ -5,6 +5,7 @@ import { needMember, throttle } from './auth'
 import { cookie, HttpError, jsonBody, response } from './security'
 import { validUsername } from './social-config'
 import { avatarKey } from './avatars'
+import { normalizeProfileLink, type ProfileLinks } from '../src/community/profile-links'
 
 export async function profileRoutes(request: Request, env: Env, db: Database, path: string): Promise<Response | null> {
   if (path !== '/api/auth/profile' && path !== '/api/auth/account') return null
@@ -14,7 +15,7 @@ export async function profileRoutes(request: Request, env: Env, db: Database, pa
   const credential = await db.prepare("SELECT password FROM auth_accounts WHERE userId=? AND providerId='credential'").bind(owner.id).first<{password: string | null}>()
   const freshLogin = Date.now() - new Date(session.session.createdAt).getTime() < 10 * 60 * 1000
   if (path === '/api/auth/profile' && request.method === 'GET') {
-    const profile = await db.prepare('SELECT display_name AS displayName,username,profile_bio AS bio,show_online AS showOnline FROM users WHERE id=?').bind(owner.id).first<{displayName: string; username: string; bio: string; showOnline: number}>()
+    const profile = await db.prepare('SELECT display_name AS displayName,username,profile_bio AS bio,show_online AS showOnline,instagram_url AS instagramUrl,soundcloud_url AS soundcloudUrl,bandcamp_url AS bandcampUrl FROM users WHERE id=?').bind(owner.id).first<{displayName: string; username: string; bio: string; showOnline: number} & ProfileLinks>()
     const methods = (await db.prepare('SELECT providerId FROM auth_accounts WHERE userId=?').bind(owner.id).all()).results
     return response({ ...profile, showOnline: !!profile?.showOnline, email: session.user.email, passwordRequired: !!credential?.password, freshLogin, methods: methods.map(method => method.providerId) })
   }
@@ -26,11 +27,15 @@ export async function profileRoutes(request: Request, env: Env, db: Database, pa
     if (typeof body.displayName !== 'string' || !body.displayName.trim() || body.displayName.trim().length > 60 || typeof body.bio !== 'string' || body.bio.length > 500) throw new HttpError(400, 'Choose a display name up to 60 characters and a bio up to 500 characters.')
     if (body.showOnline !== undefined && typeof body.showOnline !== 'boolean') throw new HttpError(400, 'Choose whether to appear in the online list.')
     const showOnline = typeof body.showOnline === 'boolean' ? Number(body.showOnline) : null
+    const links: ProfileLinks = {}
+    try {
+      for (const key of ['instagramUrl', 'soundcloudUrl', 'bandcampUrl'] as const) if (body[key] !== undefined) links[key] = normalizeProfileLink(key, body[key])
+    } catch (error) { throw new HttpError(400, error instanceof Error ? error.message : 'Choose valid profile URLs.') }
     const duplicate = await db.prepare('SELECT id FROM users WHERE username=? COLLATE NOCASE AND id<>?').bind(username, owner.id).first()
     if (duplicate) throw new HttpError(409, 'This username is already in use.')
     try {
       await db.batch([
-        db.prepare('UPDATE users SET username=?,display_name=?,profile_bio=?,show_online=COALESCE(?,show_online) WHERE id=? AND suspended=0').bind(username, body.displayName.trim(), body.bio.trim(), showOnline, owner.id),
+        db.prepare('UPDATE users SET username=?,display_name=?,profile_bio=?,show_online=COALESCE(?,show_online),instagram_url=COALESCE(?,instagram_url),soundcloud_url=COALESCE(?,soundcloud_url),bandcamp_url=COALESCE(?,bandcamp_url) WHERE id=? AND suspended=0').bind(username, body.displayName.trim(), body.bio.trim(), showOnline, links.instagramUrl ?? null, links.soundcloudUrl ?? null, links.bandcampUrl ?? null, owner.id),
         db.prepare('UPDATE auth_users SET username=?,displayUsername=?,name=?,updatedAt=? WHERE id=? AND EXISTS(SELECT 1 FROM users WHERE id=? AND suspended=0)').bind(username, username, body.displayName.trim(), Date.now(), owner.id, owner.id),
       ])
     } catch { throw new HttpError(409, 'Your profile could not be saved. Check whether the username is available and try again.') }
@@ -43,18 +48,23 @@ export async function profileRoutes(request: Request, env: Env, db: Database, pa
   } else if (!freshLogin) throw new HttpError(403, 'Sign in again before deleting your account. This confirmation requires a sign-in within the last ten minutes.')
   // One transaction revokes access and removes private account data. Public
   // discussion keeps a non-signing-in tombstone to preserve other replies.
-  const tables = [['messages','user_id'],['conversation_members','user_id'],['message_blocks','user_id'],['message_blocks','blocked_id'],['message_reports','user_id'],['account_tokens','user_id'],['auth_verifications','value'],['sessions','user_id'],['configurations','user_id'],['developer_sessions','user_id'],['developer_auth_codes','user_id'],['module_creator_support','user_id'],['module_maintainers','user_id'],['issue_replies','user_id'],['developer_events','actor_id'],['issues','reporter_id'],['ratings','user_id'],['likes','user_id'],['forum_reactions','user_id'],['forum_follows','user_id'],['forum_bookmarks','user_id'],['push_subscriptions','user_id'],['signup_events','user_id'],['notifications','user_id'],['notification_preferences','user_id'],['forum_reports','user_id'],['forum_shout_reports','user_id'],['forum_shouts','user_id'],['account_removal_requests','user_id'],['account_policy_acceptances','user_id'],['member_presence','user_id'],['forum_thread_reads','member_id'],['forum_visits','member_id']] as const
+  const tables = [['messages','user_id'],['conversation_members','user_id'],['message_blocks','user_id'],['message_blocks','blocked_id'],['message_reports','user_id'],['account_tokens','user_id'],['auth_verifications','value'],['sessions','user_id'],['configurations','user_id'],['developer_sessions','user_id'],['developer_auth_codes','user_id'],['module_creator_support','user_id'],['module_maintainers','user_id'],['issue_replies','user_id'],['developer_events','actor_id'],['issue_triage_events','actor'],['issues','reporter_id'],['ratings','user_id'],['likes','user_id'],['forum_reactions','user_id'],['forum_follows','user_id'],['forum_bookmarks','user_id'],['push_subscriptions','user_id'],['signup_events','user_id'],['notifications','user_id'],['notification_preferences','user_id'],['forum_reports','user_id'],['forum_shout_reports','user_id'],['forum_shouts','user_id'],['account_removal_requests','user_id'],['account_policy_acceptances','user_id'],['member_presence','user_id'],['site_presence','user_id'],['site_presence','signed_out_user_id'],['forum_thread_reads','member_id'],['forum_visits','member_id']] as const
   const picture = await db.prepare('SELECT avatar_id FROM users WHERE id=?').bind(owner.id).first<{avatar_id: string | null}>()
   await db.batch([
+    db.prepare('DELETE FROM octatrack_diagnostic_events WHERE user_id=?').bind(owner.id),
+    db.prepare('DELETE FROM octatrack_diagnostic_consent WHERE user_id=?').bind(owner.id),
     db.prepare('DELETE FROM module_working_reports WHERE user_id=?').bind(owner.id),
     db.prepare('DELETE FROM module_update_subscriptions WHERE user_id=?').bind(owner.id),
     db.prepare('DELETE FROM module_update_opt_outs WHERE user_id=?').bind(owner.id),
+    // GitHub action receipts reference reports without a cascade, so they go before the member's reports do.
+    db.prepare('DELETE FROM github_actions WHERE actor=? OR issue_id IN (SELECT id FROM issues WHERE reporter_id=?)').bind(owner.id, owner.id),
     ...tables.map(([table, column]) => db.prepare(`DELETE FROM ${table} WHERE ${column}=?`).bind(owner.id)),
     db.prepare('DELETE FROM conversations WHERE NOT EXISTS(SELECT 1 FROM conversation_members cm WHERE cm.conversation_id=conversations.id)'),
     db.prepare('DELETE FROM auth_users WHERE id=?').bind(owner.id),
     // Posted text stays as anonymous discussion; images and sound clips are removed (the hourly job purges the files).
     db.prepare('UPDATE forum_media SET removed=1 WHERE user_id=?').bind(owner.id),
-    db.prepare("UPDATE users SET username=NULL,display_name='Deleted member',profile_bio='',avatar_id=NULL,avatar_mime=NULL,email_verified=0,suspended=1,github_id=NULL,github_login=NULL WHERE id=?").bind(owner.id),
+    db.prepare('UPDATE module_audio_previews SET removed=1 WHERE user_id=?').bind(owner.id),
+    db.prepare("UPDATE users SET username=NULL,display_name='Deleted member',profile_bio='',instagram_url='',soundcloud_url='',bandcamp_url='',avatar_id=NULL,avatar_mime=NULL,email_verified=0,suspended=1,github_id=NULL,github_login=NULL WHERE id=?").bind(owner.id),
   ])
   if (picture?.avatar_id && env.MEDIA) await env.MEDIA.delete(avatarKey(picture.avatar_id))
   const out = response({ ok: true }); out.headers.set('X-Octamod-Session', '')

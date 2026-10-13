@@ -5,10 +5,16 @@ export type {
   Device as BuilderDevice, Stock as BuilderStock, Mod as BuilderMod, Added as BuilderAdded, Check as BuilderCheck,
   VersionField as BuilderVersion, Output as BuilderFile, Log as BuilderLog, BuildResult as BuilderResult,
 } from '../../../vendor/elekloader/kit/src/kit/protocol.ts'
-export type BuilderMachine = 'digitakt' | 'digitone'
+export type BuilderMachine = 'digitakt' | 'digitakt-ii' | 'digitone'
 
-// Owner decision, 4 October 2026: Digitakt/Digitone builds use the vendored elekloader builder.
-// Owner approved downloads on 4 October after the pinned builder passed 27/27 native parity cases; the TypeScript
-// engine that replaced it on 5 October builds the same bytes and refuses the same sets, and so does elekloader's kit,
-// which runs that engine (docs/VERIFICATION.md).
-export const DIGI_DOWNLOADS_ENABLED = true
+// Digitakt/Digitone mk1 downloads retain their owner-approved parity gate. Digitakt II is a separate OS 1.17
+// research preview: its builder is wired for local checks, but downloads remain disabled pending qualification/review.
+export const DIGI_DOWNLOADS_ENABLED: Readonly<Record<BuilderMachine, boolean>> = {
+  digitakt: true,
+  'digitakt-ii': false,
+  digitone: true,
+}
+
+export function digiDownloadsEnabled(machine: string): boolean {
+  return Object.hasOwn(DIGI_DOWNLOADS_ENABLED, machine) && DIGI_DOWNLOADS_ENABLED[machine as BuilderMachine] === true
+}

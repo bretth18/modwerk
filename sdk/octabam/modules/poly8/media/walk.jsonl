@@ -1,0 +1,67 @@
+{"wait_text": "PTCH", "timeout_ms": 60000}
+{"wait_guest_ms": 3000}
+{"tap": "SRC", "double": 1, "until": "PICKUP", "timeout_ms": 10000}
+{"tap": "DOWN"}
+{"wait_guest_ms": 400}
+{"tap": "DOWN"}
+{"wait_guest_ms": 400}
+{"tap": "DOWN"}
+{"wait_guest_ms": 400}
+{"tap": "DOWN"}
+{"wait_guest_ms": 400}
+{"tap": "DOWN"}
+{"wait_guest_ms": 400}
+{"wait_guest_ms": 350}
+{"tap": "YES"}
+{"wait_guest_ms": 800}
+{"wait_text": "FREE MEM", "timeout_ms": 6000}
+{"mark": "flex-direct"}
+{"wait_ms": 500}
+{"screenshot": "CAPTURE_DIR/flex-direct.ppm"}
+{"tap": "RIGHT", "until": "L0AD FILE T0 FLEX", "timeout_ms": 10000}
+{"screenshot": "CAPTURE_DIR/browser.ppm"}
+{"tap": "YES", "until_gone": "L0AD FILE", "settle_ms": 1000, "verify_ms": 4000, "timeout_ms": 20000}
+{"wait_guest_ms": 2000}
+{"screenshot": "CAPTURE_DIR/file-loaded.ppm"}
+{"tap": "YES"}
+{"wait_guest_ms": 500}
+{"tap": "NO"}
+{"wait_guest_ms": 650}
+{"tap": "NO"}
+{"wait_guest_ms": 400}
+{"tap": "SRC", "until": "PTCH", "timeout_ms": 8000}
+{"wait_guest_ms": 500}
+{"mark": "assigned"}
+{"wait_ms": 500}
+{"screenshot": "CAPTURE_DIR/assigned.ppm"}
+{"press": "FUNC"}
+{"wait_guest_ms": 500}
+{"tap": "DOWN"}
+{"wait_guest_ms": 350}
+{"tap": "DOWN"}
+{"wait_guest_ms": 350}
+{"release": "FUNC"}
+{"wait_guest_ms": 500}
+{"press": "TRIG1"}
+{"wait_guest_ms": 300}
+{"press": "TRIG5"}
+{"wait_guest_ms": 300}
+{"press": "TRIG8"}
+{"wait_guest_ms": 400}
+{"mark": "sound-chord"}
+{"wait_ms": 500}
+{"screenshot": "CAPTURE_DIR/sound-chord.ppm"}
+{"encoder": 0, "delta": 10}
+{"wait_guest_ms": 400}
+{"mark": "tuned-chord"}
+{"wait_ms": 500}
+{"screenshot": "CAPTURE_DIR/tuned-chord.ppm"}
+{"release": "TRIG1"}
+{"release": "TRIG5"}
+{"release": "TRIG8"}
+{"wait_guest_ms": 400}
+{"tap": "TRACK1", "double": 1}
+{"wait_guest_ms": 600}
+{"mark": "reopen"}
+{"wait_ms": 500}
+{"screenshot": "CAPTURE_DIR/reopen.ppm"}

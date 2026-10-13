@@ -1,0 +1,34 @@
+/* The Status panel's load cells: three meters and the last five minutes as a graph or a table. */
+.load-heading { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0 0 8px; }
+.octatrack-load .load-heading h3 { margin: 0; }
+.load-heading .text-button { min-height: 28px; font-size: 12px; }
+.load-heading .text-button:first-of-type { margin-left: auto; }
+.load-heading [aria-pressed="true"] { color: var(--text); text-decoration: underline; }
+.load-highest { color: var(--text-secondary); font-size: 12px; }
+.load-meter { padding: 14px 18px; }
+.load-meter span, .load-meter small { display: block; color: var(--muted); font-size: 12px; }
+.load-meter strong { display: block; margin: 4px 0 8px; font-size: 1.75rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.load-meter meter { width: 100%; accent-color: var(--accent); }
+.load-meter-unavailable { height: 16px; background: var(--line); border-radius: 3px; }
+.load-meter small { margin-top: 6px; }
+.octatrack-load { display: flex; flex-direction: column; }
+.load-chart { display: flex; flex: 1; flex-direction: column; min-height: 0; margin: 0; }
+.load-chart[hidden], .load-table[hidden] { display: none; }
+.load-plot { display: flex; flex: 1; gap: 10px; min-height: 0; }
+.load-y-labels { display: flex; flex-direction: column; justify-content: space-between; flex-shrink: 0; color: var(--muted); font-size: 11px; }
+.load-chart svg { flex: 1 1 0; width: 100%; min-width: 0; overflow: visible; }
+.load-chart path { stroke-width: 2; vector-effect: non-scaling-stroke; }
+.load-grid { stroke: var(--line); stroke-width: 1 !important; }
+.load-cpu { color: var(--accent); stroke: var(--accent); }
+.load-core1 { color: var(--text); stroke: var(--text); stroke-dasharray: 6 3; }
+.load-core0 { color: var(--muted); stroke: var(--muted); stroke-dasharray: 2 3; }
+.load-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+.load-legend span::before { content: ''; display: inline-block; border-top: 2px solid currentColor; width: 18px; margin-right: 6px; vertical-align: middle; }
+.load-legend .load-core1::before { border-top-style: dashed; }
+.load-legend .load-core0::before { border-top-style: dotted; }
+.load-legend .load-time { margin-left: auto; }
+.load-legend .load-time::before { display: none; }
+.load-table { flex: 1; min-height: 0; overflow: auto; font-size: 12px; }
+.load-table table { width: 100%; text-align: left; font-variant-numeric: tabular-nums; }
+.load-table th, .load-table td { padding: 4px 6px; }
+.load-note { margin: 6px 0 0; color: var(--muted); font-size: 11px; }

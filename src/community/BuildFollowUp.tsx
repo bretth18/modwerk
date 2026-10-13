@@ -1,5 +1,9 @@
 import { useId, useRef, useState } from 'react'
 import { Icon } from '../components/Icon'
+import { ModulePreview } from '../components/ModulePreview'
+import { MODULE_DOCUMENTS_BY_ID } from '../catalog/documents'
+import { DigiModPreview } from '../devices/DigiModPreview'
+import { DIGI_MODS } from '../devices/digi-mods'
 import type { BuiltModule } from './build-follow-up'
 import { useCommunity } from './context'
 import { feedbackId, updateHardwareFeedback } from './hardware-feedback'
@@ -43,7 +47,7 @@ function BuildFeedback({ machine, os, modules, pendingIds, onSaved, onReportOpen
     <p className="service-note">{!embedded && <>Tried {modules.length > 1 ? 'these modules' : 'this module'} on your {machine}? </>}“Works for me” saves your confirmation with the build details. No forum post.</p>
     <ul className="build-follow-up-list">{shown.map(module => <li key={module.id} className="build-follow-up-module">
       <div className="build-follow-up-row">
-        <span className="build-follow-up-name"><strong>{module.name}</strong><span className="subtle">{module.version}</span></span>
+        <div className="build-follow-up-identity"><FeedbackThumbnail id={module.id}/><span className="build-follow-up-name"><strong>{module.name}</strong><span className="subtle">{module.version}</span></span></div>
         <div className="reporting-actions">
           <button type="button" className={'button module-works-action ' + (reported.includes(module.id) ? 'module-works-reported' : 'button-quiet')} disabled={busy || reported.includes(module.id)} aria-label={module.name + (reported.includes(module.id) ? ': reported working' : ': report works on my ' + machine)} onClick={() => void submit([module.id])}><Icon name={reported.includes(module.id) ? 'check' : 'plus'} size={16}/>{reported.includes(module.id) ? 'Reported working' : busy ? 'Saving…' : 'Works for me'}</button>
           <button type="button" className="button button-quiet module-issue-action" aria-haspopup="dialog" aria-label={'Report an issue with ' + module.name} onClick={() => { setReporting(module.id); onReportOpenChange?.(true) }}><Icon name="message" size={16}/>Report an issue</button>
@@ -61,4 +65,12 @@ function BuildFeedback({ machine, os, modules, pendingIds, onSaved, onReportOpen
       if (!(import.meta.env.DEV && preview)) updateHardwareFeedback(memberId, { machine, os, modules }, { completed: reporting })
     }} onClose={() => { setReporting(''); onReportOpenChange?.(false) }}/>}
   </section>
+}
+
+/** Decorative catalogue artwork identifies the module; the row retains its downloaded version. */
+function FeedbackThumbnail({ id }: { id: string }) {
+  const digi = DIGI_MODS.find(module => module.device + '-' + module.id === id)
+  return <div className="build-follow-up-thumbnail" aria-hidden="true">
+    {MODULE_DOCUMENTS_BY_ID[id] ? <ModulePreview id={id} compact/> : digi ? <DigiModPreview mod={digi} compact/> : <Icon name="file" size={22}/>}
+  </div>
 }

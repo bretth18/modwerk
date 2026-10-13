@@ -3,11 +3,37 @@
   "modules": {
     "analog-bassdrum": [
       {
+        "version": "0.1.5-experimental",
+        "date": "2026-10-09",
+        "changes": [
+          "Restore stock FLEX playback and SETUP defaults in both working Part copies before removing the Analog BD marker, preventing invalid borrowed parameters from rejecting the retained bank after a machine switch.",
+          "Cover both SRC SETUP commit paths and the main machine chooser; preserve existing Analog BD patches on reselection and leave unsigned tracks and other Parts untouched.",
+          "808/909 DSP code is byte-identical to 0.1.4. Existing SRC locks, scene targets and LFO destinations remain assigned to their parameter slots and may require adjustment when changing machines.",
+          "Owner reports physical FLEX reboot persistence on exact AB015FIX01 and authorizes this experimental release. Broader hardware/maximum-load, worst-case chip timing and complete memory bounds remain unverified under a new exact-source approval; Output Matrix sequencer halt remains unverified.",
+          "Documentation/media-only: add an offline audio preview rendered through 0.1.5-experimental, with sample credits, settings and provenance; firmware is unchanged.",
+          "Documentation/media-only (12 October 2026): replace the preview with five isolated 808/909 hits, longer tail windows, clean/attack/long 909 comparisons and one common gain; retain the released 0.1.5 engine source identity. Firmware and its version are unchanged; these offline previews add no physical-hardware or performance qualification.",
+          "Documentation/media-only (12 October 2026): replace the isolated-hit preview with a 22.5-second four-on-the-floor groove at 128 BPM: default 808, one-bar 909 TUNE endpoints and slow TUNE/built-in Mackie SAT sweeps. Keep Tune Depth at default 64 and PITCH at 49; hold 909 ATK at 0 so the envelope bend is clearer. Use a common gain and remove added silence. Include exact trigger/automation/render provenance. Firmware behavior and hardware/performance qualification are unchanged."
+        ]
+      },
+      {
+        "version": "0.1.4-experimental",
+        "date": "2026-10-09",
+        "changes": [
+          "Match the 909 body’s harmonic phase/asymmetry and complete envelope/DC response more closely to the supplied direct-out recordings.",
+          "Refit minimum/maximum Attack at LPF bypass and correct both Tune endpoints, including their small settled-pitch difference. Intermediate physical knob positions remain a design interpolation.",
+          "Add subtle attack strength/noise differences between hits, without random pitch or trigger delay. Transient-shape variation remains more consistent than in the recordings.",
+          "Many thanks to Skee Mask, who kindly recorded his TR-909 so we could match Analog BD more closely. His instrument has a decay modification; its full modified-decay range is not reproduced.",
+          "Preserve 808, saved controls, assignment defaults, shared desk and existing TDEP/SAT smoothing. 909 executed instruction counts increase about 6.2%; 808 cost and X/Y/ColdFire allocations are unchanged.",
+          "Owner-approved experimental release with fresh physical hardware/persistence testing, worst-case chip timing and complete memory bounds explicitly waived for this source. Maximum FX load remains untested; high ACCNT/LOW settings can still reach the output limiter."
+        ]
+      },
+      {
         "version": "0.1.3-experimental",
         "date": "2026-10-08",
         "changes": [
           "Smooth 909 TDEP and both engines' SAT modulation to reduce audible zipper noise while preserving fixed-control sound and saved parameter layouts.",
-          "Owner reports stable MKII operation with distinct 808/909 instances and Part/project reload and power-cycle persistence. Worst-case chip timing and maximum FX load remain unmeasured."
+          "Owner reports stable MKII operation with distinct 808/909 instances and Part/project reload and power-cycle persistence. Worst-case chip timing and maximum FX load remain unmeasured.",
+          "Development note (9 October 2026): many thanks to Skee Mask, who kindly recorded his TR-909 so we could match Analog BD more closely. The new 909 reference candidate is awaiting hardware qualification; the public 0.1.3 sound is unchanged."
         ]
       },
       {
@@ -71,7 +97,9 @@
         "date": "2026-10-07",
         "changes": [
           "Protect clock reset when playback starts: preserve the CPU status register and mask interrupts while resetting timing state.",
-          "Clear the initialized flag before the reset and publish it after the new state is ready, preventing an interrupt from seeing a partial reset. Existing timing, swing and controls are unchanged."
+          "Clear the initialized flag before the reset and publish it after the new state is ready, preventing an interrupt from seeing a partial reset. Existing timing, swing and controls are unchanged.",
+          "Documentation/media-only: add an offline audio preview rendered through 0.1.4-experimental, with sample credits, settings and provenance; firmware is unchanged.",
+          "Documentation/media-only (12 October 2026): replace the abrupt, short-decay demo with the owner-supplied modpad.wav preview at 128 BPM. Use its eight-bar middle (22.5–37.5 seconds), excluding the render-error ends and preserving its supplied sound/decay. Record source permission, hashes, crop and encoding. Capture setup and recorded module version are unverified; firmware and existing hardware/performance status are unchanged."
         ],
         "sourceCommit": "e027bea0fcaed334ef69c11be4474627814a2e21"
       },
@@ -109,6 +137,16 @@
       }
     ],
     "midi-scenes": [
+      {
+        "version": "0.2.5-experimental",
+        "date": "2026-10-09",
+        "changes": [
+          "Fix #329: muting Scene A or B (FUNC + SCENE A/B) now stops that scene's MIDI locks, as stock scene mute does for audio tracks. With one scene muted the crossfader morphs between the base value and the other scene. Muting the last scene sends the CC back to its base or trig-lock value, and the crossfader then leaves it unchanged.",
+          "Editing scene locks while holding a muted scene's key still works, as in stock.",
+          "This is a small Modwerk patch on top of the author's unchanged MIDISC2.0 release recipe. It also corrects an unassigned-scene fallback in the crossfader mix that produced out-of-range values. The reporter tested this build on an Octatrack MKII, including Part, project and reboot persistence. MIDI Scenes must still be selected alone.",
+          "Known limitation, unchanged from 0.2.4: editing a scene lock while holding its key does not send the CC until the crossfader moves."
+        ]
+      },
       {
         "version": "0.2.4-experimental",
         "date": "2026-10-03",
@@ -153,6 +191,16 @@
       }
     ],
     "miniverb": [
+      {
+        "version": "0.2.1-experimental",
+        "date": "2026-10-11",
+        "changes": [
+          "Fix intermediate dry/wet clipping at hot input levels by preserving the wet-minus-dry headroom before multiplication. MIX 32 remains 25% and MIX 0 remains exact dry.",
+          "Keep the feedback tank, controls, defaults, effect ID and memory allocation unchanged. Multiplier quantization can change otherwise unclipped output by up to 8 of the 24-bit least significant bits.",
+          "The mixer defect is reproduced in native DSP tests on both cores. The original THRU noise in #428 has not been confirmed on hardware; chip timing, complete runtime memory bounds, played automation, persistence and physical reboot remain unverified.",
+          "Documentation/media-only: add an offline audio preview rendered through 0.2.0-experimental, with sample credits, settings and provenance; firmware is unchanged. The clip predates the 0.2.1 mixer fix and does not verify it."
+        ]
+      },
       {
         "version": "0.2.0-experimental",
         "date": "2026-10-08",
@@ -218,6 +266,14 @@
     ],
     "quantizer": [
       {
+        "version": "0.1.3-experimental",
+        "date": "2026-10-11",
+        "changes": [
+          "Fix MIDI trig-mode popup freezes caused by the octave display hook skipping a stack argument. MIDI keeps its stock octave value and formatting; audio scale/root behavior is preserved.",
+          "Physical hardware, chip worst-case timing and complete memory bounds have not been verified for this update."
+        ]
+      },
+      {
         "version": "0.1.2-experimental",
         "date": "2026-10-01",
         "changes": [
@@ -272,6 +328,16 @@
     ],
     "sidechain-compressor": [
       {
+        "version": "0.1.2-experimental",
+        "date": "2026-10-10",
+        "changes": [
+          "A COMPRESSOR saved before the module was installed (on stock firmware) now comes up with its side-chain off: KEY OFF, KFLT and KGN centred, MON OFF. Stock firmware leaves 127/0/0/0 in the hidden page-2 slots, which 0.1.1 read as KEY \"T127\" with the key filter shut and the key gain at minimum, so the key barely reached the detector after KEY was turned down (Modwerk report #321).",
+          "A KEY already set to OFF or T1..T8 is never changed, so projects saved with 0.1.1 load as before. The check runs once per audio frame over the sixteen FX slots and never marks the Part as edited.",
+          "The ColdFire code grows by 204 bytes. 12 selections that 0.1.1 built now run out of effect-menu space, each holding Euclid with Scale Quantizer or eight or more modules; every selection of one or two other modules still builds.",
+          "Hardware: author-reported functional test on an MKI with two instances across both DSP cores, Part/project save and reload and a power cycle. Duration was not reported and no stress or maximum-load test was made."
+        ]
+      },
+      {
         "version": "0.1.1-experimental",
         "date": "2026-10-05",
         "changes": [
@@ -314,7 +380,8 @@
         "changes": [
           "correct the MIDI chromatic drawer’s argument stack so changing MIDI trig mode keeps the instrument responsive (#264).",
           "add 18.06 dB of source headroom before mono output and paraphonic summing, preserving envelopes and relative voice levels (#273). Sounds are quieter at unchanged mixer settings; effect and multi-track mix clipping remains possible.",
-          "Owner-approved experimental release without current hardware validation. Chip timing and complete memory bounds remain unmeasured; the original static symptom is not hardware-confirmed."
+          "Owner-approved experimental release without current hardware validation. Chip timing and complete memory bounds remain unmeasured; the original static symptom is not hardware-confirmed.",
+          "Documentation/media-only (12 October 2026): add a sample-free melodic preview using VECTOR’s native generator offline to supply FM note locks, with native 128 BPM sequencing, index/feedback sweeps and actual Mini Verb in FX2. Remove boot/edit silence and added gaps; include exact generator, source/image, controls, recording and decoded peak provenance. Firmware and hardware/performance qualification are unchanged."
         ]
       },
       {
@@ -328,6 +395,14 @@
       }
     ],
     "tapeecho": [
+      {
+        "version": "0.1.3-experimental",
+        "date": "2026-10-12",
+        "changes": [
+          "Documentation/media-only: retain the exact 0.1.2-experimental runtime and historical UI, source and test evidence while adding a 7.85-second Legowelt Juno 106 chord-pluck preview: dry, clean eighth-note repeats and worn dotted-eighth echoes at 128 BPM, without added gaps. Include pack permission, source/excerpt hashes and offline render settings; refresh monochrome exports from the existing LCD captures.",
+          "Retain the approved 0.1.2-experimental runtime and evidence. No DSP behavior, hardware freeze mitigation, timing headroom or new physical-hardware qualification is claimed."
+        ]
+      },
       {
         "version": "0.1.2-experimental",
         "date": "2026-10-01",
@@ -359,7 +434,8 @@
         "date": "2026-10-05",
         "changes": [
           "Correct the input drive level to compensate for the stock AMP volume scaling, bringing saturation closer to the original DAW effect.",
-          "Apply +12 dB before the saturation stage and compensate by −12 dB afterward."
+          "Apply +12 dB before the saturation stage and compensate by −12 dB afterward.",
+          "Documentation/media-only: add an offline audio preview rendered through 0.1.2-experimental, with sample credits, settings and provenance; firmware is unchanged."
         ],
         "sourceCommit": "177df636fde9419cba2fcb42ddaacdc14a736458"
       },
@@ -428,6 +504,14 @@
     ],
     "vector": [
       {
+        "version": "0.2.4-experimental",
+        "date": "2026-10-09",
+        "changes": [
+          "Prevent packed VECTOR settings from making stock Part validation reject the saved bank at startup, which reset machines to STATIC and left PLAY stuck on the first step. Preserve existing S2 version 1/2 settings while retaining stock validation of other data.",
+          "Two-instance Part/project save-reload, saved-card fresh load and battery-RAM-only restart pass in the emulator. Physical reboot/audio remain unverified under the owner-approved exception for this exact version. Already reset projects require restoration from a backup."
+        ]
+      },
+      {
         "version": "0.2.3-experimental",
         "date": "2026-10-06",
         "changes": [
@@ -442,6 +526,7 @@
         "version": "1.6.1-experimental",
         "date": "2026-10-07",
         "changes": [
+          "Media-only: match the saved SVG thumbnail to the library’s existing signal illustration, including its grid, palette and typography; update the illustration alt text.",
           "Documentation-only: explain the shared hooks, machine icons, Digi Mono/Digi Poly integration and refused combinations. Add guide screenshots; pinned firmware code is unchanged."
         ],
         "sourceCommit": "3d437d1747ed0821a132cd6576b8a2fdff01e72c"
@@ -457,6 +542,17 @@
       }
     ],
     "digitakt-digieq": [
+      {
+        "version": "1.0.2-experimental",
+        "date": "2026-10-11",
+        "changes": [
+          "Media-only: match the saved SVG thumbnail to the library’s existing signal illustration, including its grid, palette and typography; update the illustration alt text.",
+          "Fix page Clear: hold FUNC and LFO, then press PLAY (CLEAR) to restore every EQ band’s default gain, frequency, Q and type. Preserve selected knob modes, global override and other master pages.",
+          "Align the left EQ box with the pattern header and center its label. Filter DSP and stored EQ layout are unchanged.",
+          "Owner-approved experimental release for this exact source and both D185 images. Native panel regressions and current UI captures pass; hardware, audio, DSP timing, complete runtime memory bounds, persistence, physical reboot and stress remain unverified. Global override preservation is source-reviewed only; page Copy/Paste and Undo Clear are unqualified."
+        ],
+        "sourceCommit": "1107d484c8d7ad84cfff14917b34acdcb83a53e6"
+      },
       {
         "version": "1.0.1-experimental",
         "date": "2026-10-07",
@@ -479,6 +575,7 @@
         "version": "1.0.2-experimental",
         "date": "2026-10-07",
         "changes": [
+          "Media-only: match the saved SVG thumbnail to the library’s existing signal illustration, including its grid, palette and typography; update the illustration alt text.",
           "Documentation-only: explain FAST AUDIO, top-bar indicators and SYSTEM INFO, with real menu and diagnostics captures. Pinned firmware code is unchanged."
         ],
         "sourceCommit": "259c2a105d2267c8bad6fc38d832ddfb6059753a"
@@ -497,6 +594,7 @@
         "version": "1.0.1-experimental",
         "date": "2026-10-07",
         "changes": [
+          "Media-only: match the saved SVG thumbnail to the library’s existing signal illustration, including its grid, palette and typography; update the illustration alt text.",
           "Documentation-only: explain route source/destination, OWN selection and bipolar depth, with real matrix-page captures. Pinned firmware code is unchanged."
         ],
         "sourceCommit": "a6af902335302572a4623216a167c8ad8e1560e1"
@@ -511,6 +609,28 @@
       }
     ],
     "digitakt-digimono": [
+      {
+        "version": "0.13.3-experimental",
+        "date": "2026-10-11",
+        "changes": [
+          "Media-only: match the saved SVG thumbnail to the library’s existing signal illustration, including its grid, palette and typography; update the illustration alt text.",
+          "Align MONO PULSE SUB1 and SUB2 with MONO SAW on encoders G and H. PULSE PW, PWAD and PWRS move to D, E and F; TUNE and unison stay on A, B and C.",
+          "Reorder the page descriptors without changing saved parameter slots, defaults, synth code, parameter locks or LFO destination meanings. Existing sounds need no parameter migration.",
+          "Current-build native encoder and LCD checks are recorded separately from hardware, audio, DSP timing, complete runtime memory bounds, persistence, physical reboot, parameter-lock/LFO execution and stress qualification, which remain unverified.",
+          "The owner approved this exact experimental source and both D182 images for release and #182 closure after live-download verification with those qualification limits and NOISE/ENS common-region capture omissions disclosed. No hardware pass is recorded."
+        ],
+        "sourceCommit": "20ce6bcc910741ab2bc49fd288ee57dd13d7900f"
+      },
+      {
+        "version": "0.13.2-experimental",
+        "date": "2026-10-11",
+        "changes": [
+          "Fix repeated SRC presses opening a label-only sample-detail page on Digi Mono synth tracks. Preserve the normal controls, track number and level display; stock sample tracks keep their detail page.",
+          "Preserve all seven engines, parameter positions and saved sound settings. Current-build physical hardware, audio, timing and project/power-cycle persistence remain unverified.",
+          "Owner-approved experimental release with hardware, audio, timing, complete runtime memory bounds, persistence, reboot and stress unverified."
+        ],
+        "sourceCommit": "48a9b5ade88052d4fb0130d87a79be64935d4d9d"
+      },
       {
         "version": "0.13.1-experimental",
         "date": "2026-10-07",
@@ -533,6 +653,7 @@
         "version": "0.6.1-experimental",
         "date": "2026-10-07",
         "changes": [
+          "Media-only: match the saved SVG thumbnail to the library’s existing signal illustration, including its grid, palette and typography; update the illustration alt text.",
           "Documentation-only: explain source-track selection, pitch/gain, AMP gating and the upstream prototype limitations, with real page captures. Pinned firmware code is unchanged."
         ],
         "sourceCommit": "8fe05a8f9b22e35e409dec99bf99933865d2be13"
@@ -551,6 +672,7 @@
         "version": "2.0.1-experimental",
         "date": "2026-10-07",
         "changes": [
+          "Media-only: match the saved SVG thumbnail to the library’s existing signal illustration, including its grid, palette and typography; update the illustration alt text.",
           "Documentation-only: explain NOT1–NOT4, borrowed voice tracks and voice-pool settings, with real page captures. Pinned firmware code is unchanged."
         ],
         "sourceCommit": "0bc09b7a4ef53477b897951fdf851e42a4f140dd"
@@ -569,6 +691,7 @@
         "version": "2.1.1-experimental",
         "date": "2026-10-07",
         "changes": [
+          "Media-only: match the saved SVG thumbnail to the library’s existing signal illustration, including its grid, palette and typography; update the illustration alt text.",
           "Documentation-only: explain waveform/slice editing, up to 64 slices, multi-slice loops and trig controls, with real page captures. Pinned firmware code is unchanged."
         ],
         "sourceCommit": "f690e95fdd52a91a9e4f5919d4ad790efe3d7b65"
@@ -587,6 +710,7 @@
         "version": "1.1.13-experimental.2",
         "date": "2026-10-07",
         "changes": [
+          "Media-only: match the saved SVG thumbnail to the library’s existing signal illustration, including its grid, palette and typography; update the illustration alt text.",
           "Documentation-only: add the model and control guide, including SWEEP, METAL, COLOR, FBK and FOLD, with real page captures. Pinned firmware code is unchanged."
         ],
         "sourceCommit": "c886095a7931e34c8a0e43268ce5d399f092382c"
@@ -613,6 +737,7 @@
         "version": "1.9.1-experimental",
         "date": "2026-10-07",
         "changes": [
+          "Media-only: match the saved SVG thumbnail to the library’s existing signal illustration, including its grid, palette and typography; update the illustration alt text.",
           "Documentation-only: expand access and display controls, fullscreen/close behaviour and real utility-page captures. Pinned firmware code is unchanged."
         ],
         "sourceCommit": "27995ac9dfcc1fd507a7a47962d6cdf7e06795f4"
@@ -631,6 +756,7 @@
         "version": "1.1.2-experimental",
         "date": "2026-10-07",
         "changes": [
+          "Media-only: match the saved SVG thumbnail to the library’s existing signal illustration, including its grid, palette and typography; update the illustration alt text.",
           "Documentation-only: explain Digitone-specific load indicators and read-only diagnostics, with real menu/page captures. Pinned firmware code is unchanged."
         ],
         "sourceCommit": "f45b5b7d3271acd363dbe75c60b802b0f9c4a6d5"
@@ -649,6 +775,7 @@
         "version": "1.3.1-experimental",
         "date": "2026-10-07",
         "changes": [
+          "Media-only: match the saved SVG thumbnail to the library’s existing signal illustration, including its grid, palette and typography; update the illustration alt text.",
           "Documentation-only: explain table editing, TBL/SPD, loops and trig/chord controls, with real table-page captures. Pinned firmware code is unchanged."
         ],
         "sourceCommit": "26211d72aa4eb4dd6081be88c0bf63e5ba19cb2e"
@@ -706,6 +833,26 @@
     ],
     "airwindows-chorus": [
       {
+        "version": "0.1.2-experimental",
+        "date": "2026-10-09",
+        "changes": [
+          "Media-only: redraw the Air Chorus thumbnail with phase-offset signal curves using the library’s shared grid, lavender palette and typography.",
+          "Protect stock T3 inter-core mailbox and T7 parameter staging data by keeping the first 72 virtual ring words in safe per-instance X state. Preserve stock track state, full stereo delay range, smoothing, controls and saved parameter layout.",
+          "Losslessly pack all original sine values into 256 DSP words and reduce code/table storage from 1,425 to 795 words per core. Air Chorus now combines with E-Verb and Analog BD, including more DSP companions; larger selections remain limited by available program space.",
+          "The shared-data corruption is reproduced and checked in software. The tester still reported T3 clicking in 0.1.1; whether this update fixes that audible hardware symptom remains unverified. Current hardware timing, multi-instance audio and Part/project/reboot persistence are owner-waived for this exact beta source/version.",
+          "Documentation/media-only: add an offline audio preview rendered through 0.1.2-experimental, with sample credits, settings and provenance; firmware is unchanged."
+        ]
+      },
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-09",
+        "changes": [
+          "Beta release for beta testers: reduces measured DSP work by 35.80% with the original full stereo delay range, smoothing and control meanings retained. Thirty recorded comparison fixtures are bit-identical to 0.1.0.",
+          "Targets the reported multi-instance clicking by reducing DSP load. The T3/T4 emulator reproduction did not reproduce the hardware symptom, so this is a mitigation pending beta hardware results, not a confirmed clicking fix.",
+          "FX2 only. Current hardware testing is owner-waived for this exact version/source; physical timing, multi-instance audio and Part/project/reboot persistence remain unverified. Existing control values and saved parameter layout are unchanged."
+        ]
+      },
+      {
         "version": "0.1.0-experimental",
         "date": "2026-10-08",
         "changes": [
@@ -713,6 +860,133 @@
           "Smooth SPD, RNG and MIX per sample, preserve the original air compensation and three-point delay read, and initialize dirty rings without a long synchronous clear.",
           "Owner reports 50 minutes of successful MKII use with several instances and full knob sweeps on the first image. Fresh hardware testing of the bounded-init image is waived; eight-track timing, locks/scenes/LFOs and physical persistence remain unverified.",
           "Delay precision is approximately 16 bits; extreme modulation retains pitch and aliasing artifacts."
+        ]
+      }
+    ],
+    "poly8": [
+      {
+        "version": "0.2.7-experimental",
+        "date": "2026-10-12",
+        "changes": [
+          "Media-only: replace the POLY8 thumbnail with an original eight-voice sample diagram using the library’s shared grid, lavender signal palette and typography.",
+          "Release the previous sequenced chord once before the next native sample trig, so finite AMP REL can end its tails even with HOLD INF. Preserve all notes in the new chord and independently owned panel/MIDI notes. Related to https://github.com/repeat98/modwerk/issues/447.",
+          "Keep finite HOLD, intentional REL INF sustain and native STOP behavior. Recorded key-up timing remains unsupported; the final chord with HOLD INF sustains until another trig or STOP.",
+          "The owner approved this scoped experimental release with current-build hardware, chip worst-case timing and complete memory qualification waived. Native playback tests pass; physical MKI confirmation remains pending. Keep issue 447 open until the exact published download is verified on the affected unit."
+        ]
+      },
+      {
+        "version": "0.2.6-experimental",
+        "date": "2026-10-09",
+        "changes": [
+          "Combine POLY8 with Repitch, Mute Modes and Scale Quantizer through guarded shared hooks; other configurations retain their original build paths.",
+          "Add a bounded native chooser for POLY8, Analog BD, VECTOR and FM Synth together. Each machine retains its own saved Part marker, controls and playback engine.",
+          "Use FM Synth’s bundled signature-aware quantizer when both quantizers are selected; preserve its complete helper-pointer ABI and refuse changed or unknown overlapping claims.",
+          "Keep the pitch cache within signed ColdFire PC-relative addressing range; prevent silent assembler displacement wrap from overwriting preceding companion-machine code. Add a firmware-free check of all 121 compiled local PC-relative addresses.",
+          "Restore NO dismissal of the one-POLY8 refusal using stock’s modal input layer while retaining its automatic native timeout.",
+          "Retain eight POLY8 voices, one POLY8 assignment per Part, LOOP OFF on new assignments and fixed 1/8 gain. Existing DSP memory and menu-space limits still apply; Octakit remains incompatible.",
+          "Load the shared chooser initialization flag explicitly instead of relying on uncleared BSS. Nonzero RAM reproduces an odd widget target at the T07/T08 boot-failure call; add a compiled-section startup-state gate. T07/T08 are withdrawn; the owner reports corrected T09 works on MKII, without a separate test checklist.",
+          "The owner reports exact T10 “works like a charm” on MKII and approves this scoped experimental release. Separately reported recording/load/persistence cases, chip worst-case timing and complete memory bounds remain unverified; combined-machine results are emulator evidence.",
+          "Preserve current VECTOR 0.2.4 packed-setting validation through the shared machine bridge; a sanitizer regression covers all 256 mixed AB/FM/VECTOR signature masks. The exact T10 selection flow is checked against stock FLEX/STATIC controls and the earlier T09 regression.",
+          "Match FLEX/STATIC selection: POLY8 assignment and reselection stay on the current page. Double-TRACK opens FLEX samples; LEFT/RIGHT and sample confirmation remain available."
+        ]
+      },
+      {
+        "version": "0.2.5-experimental",
+        "date": "2026-10-08",
+        "changes": [
+          "Publish as POLY8, including the machine chooser and refusal dialog, while preserving PL/1 saved-Part identity.",
+          "First public experimental release: eight shared sample voices, one POLY per Part, independent envelopes and fixed 1/8 gain.",
+          "POLY8T06 preserves an existing POLY track’s LOOP setting when reselecting the machine; newly assigned tracks still default to OFF.",
+          "Returning LEFT from POLY’s sample slots restores the POLY machine cursor and title; RIGHT opens FLEX samples again.",
+          "Reduce ColdFire interpolation and held-voice mixing instructions without changing eight-voice admission, envelopes or fixed 1/8 gain. Skip redundant peak measurement while the limiter is at unity, retaining defensive output saturation.",
+          "Retain the original DSP payloads and existing core logger. Native load comparisons and panel flows are emulator evidence; physical CPU deadlines, recording and reboot qualification remain pending.",
+          "Panel recording supports at most four notes spanning eleven semitones; recorded duration follows AMP HOLD. Extended MIDI recording and grid root editing remain incomplete."
+        ]
+      },
+      {
+        "version": "0.2.4-experimental",
+        "date": "2026-10-08",
+        "changes": [
+          "POLY8T05 private test preserves both original 1.40C DSP uploads byte for byte and bypasses the SDK automatic stock-effect dynamic loader. The build refuses DSP drift or an implicit loader. This isolates a dependency candidate after T04 hardware logs showed no sample-render entries; it is not a confirmed hardware fix.",
+          "Add bounded counts for native command-consumer and AMP-builder calls, including stock tracks. The existing core logger snapshots them outside audio callbacks.",
+          "Retain eight voices, one POLY per Part, fixed 1/8 gain, LOOP OFF for new assignments, scratch bounds, timed modal and marker persistence correction. Physical recording, reboot and transport/audio results remain unverified on this version."
+        ]
+      },
+      {
+        "version": "0.2.3-experimental",
+        "date": "2026-10-08",
+        "changes": [
+          "POLY8T04 private diagnostic candidate includes the existing core OCTAMOD.LOG logger and bounded once-per-second POLY transport, render/fetch, key/record, voice and modal snapshots. No filesystem work occurs in audio or UI callbacks.",
+          "Reserve scratch buffers for all 32 physical selectors while retaining the eight-active-voice cap; sparse extension indices can no longer address beyond scratch storage. This is a defensive bounds correction, not a confirmed cause of the MKII stall.",
+          "Keep the one-POLY refusal modal but automatically dismiss it after 120 native UI ticks, so an overlooked dialog cannot indefinitely capture panel input.",
+          "Retain fixed 1/8 gain, LOOP OFF for new assignments and the battery-RAM marker copy correction. MKII recording and transport/audio failures remain open until this exact build is tested on hardware."
+        ]
+      },
+      {
+        "version": "0.2.2-experimental",
+        "date": "2026-10-08",
+        "changes": [
+          "Retain the eight-head cap and pitch-work budget; allow one POLY assignment per Part. Refuse a second machine before any settings/sample writes, with a native NO-dismissed modal.",
+          "Apply fixed 1/8 (-18.06 dB) gain in both the single-voice fast path and envelope-weighted mix; leave headroom for eight coherent full-scale voices without voice-count pumping.",
+          "Correct the PL/1 marker copy into battery RAM by staging its reads before writes; normal restart can retain POLY identity.",
+          "Fresh-assignment native REC+PLAY succeeds, but the previous image also succeeds in that emulator path. The reported MKII recording failure remains unresolved on hardware; do not claim this gain/persistence update fixes it. LOOP OFF default remains unchanged."
+        ]
+      },
+      {
+        "version": "0.2.1-experimental",
+        "date": "2026-10-08",
+        "changes": [
+          "Restore the native panel recorder for up to four-note chords spanning eleven semitones; consume encoded roots before normal PTCH locks, retaining native SAMPLE locks.",
+          "Limit this hardware test to eight shared voices with pitch-weighted admission; steal released tails before held notes and ignore duplicate held-key presses.",
+          "New POLY assignments default to LOOP OFF. Browser confirmations and existing saved LOOP choices retain their value.",
+          "Recorded duration follows AMP HOLD; wider chords, extended MIDI recording, grid root editing and physical MKII deadlines remain unqualified."
+        ]
+      },
+      {
+        "version": "0.2.0-experimental",
+        "date": "2026-10-07",
+        "changes": [
+          "32 active POLY voices share one global pool; one track can use all free voices.",
+          "Independent preallocated AMP envelopes with shared per-track filters and FX.",
+          "PTCH tuning is independent of chromatic and MIDI notes, with ten panel octave positions and dedicated-route MIDI 0–127.",
+          "Selecting POLY opens native FLEX samples directly; STATIC is excluded.",
+          "Hardware deadlines, broad lifecycle combinations, note recording and public packaging remain unqualified."
+        ]
+      }
+    ],
+    "everb": [
+      {
+        "version": "0.1.1-experimental",
+        "date": "2026-10-11",
+        "changes": [
+          "Holding FUNC while turning SIZE, DCY, ABSB or SPD now steps through 0, the centre (64) and 127, as MIX and DPTH already did and as on the stock reverbs' MIX. In 0.1.0 those four knobs jumped only between 0 and 127, an editor inherited from the stock reverb that E-Verb's page is cloned from (#438).",
+          "Plain turns and every stored value are unchanged: only four editor words in E-Verb's FX2 descriptor change. The DSP code and memory are byte-identical to 0.1.0, so the sound and cycle cost are unchanged, and the knob values a project stores mean the same.",
+          "Measured on the ColdFire emulator only: 0.1.1 has not run on hardware. The owner's MKII report (two simultaneous instances, Part/project reload, physical reboot) covers 0.1.0; MKI, full-load chip timing and broader hardware coverage remain unverified.",
+          "Documentation/media-only: add an offline audio preview rendered through 0.1.0-experimental, with sample credits, settings and provenance; firmware is unchanged.",
+          "Documentation/media-only (12 October 2026): replace the old preview with an original chord stab at dry, hall and shimmer settings, give shimmer a 7.5-second pass, match first-hit RMS and retain exact 0.1.1 DSP/source provenance. Firmware and its version are unchanged; these offline previews add no physical-hardware or performance qualification.",
+          "Documentation/media-only (12 October 2026): use Legowelt’s bright Juno 106 chord for an 11.4-second dry/long-hall/sustaining-shimmer comparison, with audible extended tails, stronger settings, 80 ms first-hit matching and no added gaps. Include pack permission, credit, excerpt/settings hashes and decoded peak validation. Firmware and hardware/performance qualification are unchanged."
+        ]
+      },
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-09",
+        "changes": [
+          "First E-Verb release: original Erbe-Verb-inspired FX2 feedback-delay reverb with size, saturation/sustain, absorption, chorus/grains/shimmer, reverse pre-delay, tilt and envelope routings.",
+          "The six main-page controls support locks, LFOs, scenes and MIDI CC; SETUP controls are per Part. MIX 0 is exact dry passthrough.",
+          "Uses the shared native/browser builder; alone, replaces Spring Rev and Dark Rev while preserving Plate Rev and other stock effects.",
+          "Owner reports working MKII sound, two distinct simultaneous T1/T5 instances, Part/project save/reload and physical reboot on exact EVRB01T01. Full-load silicon timing and broader hardware modulation/recovery coverage remain unverified."
+        ]
+      }
+    ],
+    "output-matrix": [
+      {
+        "version": "0.1.0-experimental",
+        "date": "2026-10-09",
+        "changes": [
+          "First release: the CUE CFG box, titled OUT CFG with the module, gains MATRIX, which makes the headphone jack a third assignable output beside MAIN and CUE. CUE + LEVEL picks each track's outputs (any combination of MAIN, CUE and PHONES, or one of six mono jacks); the routing lives in the Part. MIX becomes the PHONES level, and the metronome also plays on PHONES.",
+          "Switching to or from MATRIX converts every Part's LEVEL and cue bytes by documented rules, and switching into NORMAL also sets the project's cue settings.",
+          "Builds with the stock DSP code built in: its core-0 code takes a given-up stock reverb's space (SPRING REV first), which leaves the FX2 menu. It cannot be combined with Analog BD yet.",
+          "Author's functional MKII report (7–9 Oct 2026) covers routing, levels, everyday flows, saving and power; no timed stress run or chip timing."
         ]
       }
     ],

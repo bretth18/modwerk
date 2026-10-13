@@ -1,4 +1,7 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 import { compareModuleVersions } from './versions.ts'
+import { parseModuleContributors, type ModuleContributor } from './module-authors.ts'
 // Shared by the web catalog and stock-free PR validation. No Python is evaluated.
 export type EvidenceMethod = 'unmeasured' | 'static' | 'emulator' | 'hardware'
 export type ModuleMetric = { label: string; display: string; value: number | null; unit: string; method: EvidenceMethod; conditions: string; source: string }
@@ -10,7 +13,7 @@ export type ModuleUiCapture = { page: string; shows: 'location' | 'controls' | '
 export type QualificationConditions = { parameterExtremes: string; parameterModulation: string; modeSwitching: string; maxLoad: string; inputConditions: string }
 export type DetailedHardwareQualification = { status: 'pending' | 'failed' | 'passed'; model: 'MKI' | 'MKII'; testedOn: string; tester: string; project: { name: string; sha256: string; recipe: string }; durationMinutes: number; audioTracks: number; midiTracks: number; maxInstances: number; conditions: QualificationConditions; checks: { audioContinuity: 'passed' | 'failed'; transport: 'passed' | 'failed'; controls: 'passed' | 'failed'; memoryIntegrity: 'passed' | 'failed'; recovery: 'passed' | 'failed' }; report: string }
 export type FunctionalHardwareQualification = { kind: 'functional'; status: 'reported'; model: 'MKI' | 'MKII' | null; testedOn: string; tester: string; sourceRevision: string; imageSha256: string; summary: string; limitations: string[]; report: string }
-export type OwnerWaivedHardwareQualification = { kind: 'owner-waived'; status: 'waived'; approvedBy: 'repeat98'; approvedOn: '2026-10-05' | '2026-10-06'; reason: string; report: string }
+export type OwnerWaivedHardwareQualification = { kind: 'owner-waived'; status: 'waived'; approvedBy: 'repeat98'; approvedOn: '2026-10-05' | '2026-10-06' | '2026-10-09'; reason: string; report: string }
 export type ModuleQualification = {
   documentation: { tutorial: { title: string; steps: string[] }; screenshots: string[]; screenshotStyle: 'black-and-white' }
   moduleVersion: string; sourceSha256: string; imageSha256: string
@@ -30,7 +33,7 @@ export type ModuleDocument = {
   schemaVersion: 2; id: string; key: string; name: string; version: string; category: typeof MODULE_CATEGORIES[number]
   source?: { repository: string; revision: string; path: string }
   build?: { status: 'pending'; reason: string }
-  author: { github: string; name?: string; credits: string[] }; nativeManifest: string
+  author: { github: string; name?: string; contributors?: ModuleContributor[]; credits: string[] }; nativeManifest: string
   presentation: { label: string; family: string; summary: string; overview: string; highlights: string[]; usage: string[] }
   access?: { location: string; steps: string[]; screenshots: string[]; noUiReason?: string }
   controls: ModuleControl[]
@@ -118,7 +121,7 @@ function qualification(value: unknown): ModuleQualification {
   const result={documentation,moduleVersion,sourceSha256:sha256(q.sourceSha256,path+'.sourceSha256'),imageSha256:sha256(q.imageSha256,path+'.imageSha256'),cycles,memory:{regions,perInstanceBytes,sharedBytes,maxInstances,totalBytes,conditions:text(m.conditions,p+'.conditions'),report:qualificationReport(m.report,p+'.report')}}
   if(q.hardware && typeof q.hardware==='object' && 'kind' in q.hardware && q.hardware.kind==='owner-waived') {
     const hpath=path+'.hardware',h=object(q.hardware,hpath,['kind','status','approvedBy','approvedOn','reason','report'])
-    return {...result,hardware:{kind:'owner-waived',status:enumeration(h.status,hpath+'.status',['waived']),approvedBy:enumeration(h.approvedBy,hpath+'.approvedBy',['repeat98']),approvedOn:enumeration(h.approvedOn,hpath+'.approvedOn',['2026-10-05','2026-10-06']),reason:text(h.reason,hpath+'.reason'),report:qualificationReport(h.report,hpath+'.report')}}
+    return {...result,hardware:{kind:'owner-waived',status:enumeration(h.status,hpath+'.status',['waived']),approvedBy:enumeration(h.approvedBy,hpath+'.approvedBy',['repeat98']),approvedOn:enumeration(h.approvedOn,hpath+'.approvedOn',['2026-10-05','2026-10-06','2026-10-09']),reason:text(h.reason,hpath+'.reason'),report:qualificationReport(h.report,hpath+'.report')}}
   }
   if(q.hardware && typeof q.hardware==='object' && 'kind' in q.hardware && q.hardware.kind==='functional') {
     const hpath=path+'.hardware',h=object(q.hardware,hpath,['kind','status','model','testedOn','tester','sourceRevision','imageSha256','summary','limitations','report'])
@@ -174,9 +177,9 @@ export function parseModuleDocument(value: unknown): ModuleDocument {
     build={status:enumeration(b.status,'build.status',['pending']),reason:text(b.reason,'build.reason',400)}
     if(!source) fail('build','pending imports require an exact source pin')
   }
-  const a=object(d.author,'author',['github','credits'],['name']), github=text(a.github,'author.github',39)
+  const a=object(d.author,'author',['github','credits'],['name','contributors']), github=text(a.github,'author.github',39)
   if(!/^[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/.test(github)) fail('author.github','invalid GitHub login')
-  const authorName='name' in a ? { name:text(a.name,'author.name',100) } : {}
+  const authorName={...('name' in a ? { name:text(a.name,'author.name',100) } : {}),...('contributors' in a ? {contributors:parseModuleContributors(a.contributors,github,'author.contributors')} : {})}
   const p=object(d.presentation,'presentation',['label','family','summary','overview','highlights','usage'])
   const c=object(d.compatibility,'compatibility',['firmware','effectId','location','conflicts','limitations'])
   if(c.effectId!==null&&(typeof c.effectId!=='number'||!Number.isInteger(c.effectId)||c.effectId<4||c.effectId>31))fail('compatibility.effectId','expected a valid effect ID or null for contributions without an effect slot')
@@ -262,7 +265,7 @@ export function requireModuleQualificationForPublication(document: ModuleDocumen
   if('kind' in q.hardware && q.hardware.kind==='owner-waived') {
     if(document.id==='sidechain-compressor' && document.version==='0.1.1-experimental' && document.tests.hardwareStatus==='historical' && q.hardware.approvedOn==='2026-10-05') {
       if(document.tests.hardwareStatus!=='historical'||q.cycles.length!==2||!q.cycles.some(c=>c.processor==='coldfire')||!q.cycles.some(c=>c.processor==='dsp')||q.memory.maxInstances!==16) fail(path,'hardware-only approval still requires both processor bounds and complete sixteen-instance memory')
-    } else if(document.id==='vector' && document.version==='0.2.3-experimental' && q.hardware.approvedOn==='2026-10-06') {
+    } else if(document.id==='vector' && ((document.version==='0.2.3-experimental' && q.hardware.approvedOn==='2026-10-06') || (document.version==='0.2.4-experimental' && q.hardware.approvedOn==='2026-10-09'))) {
       if(document.tests.hardwareStatus!=='untested'||q.cycles.length!==1||q.cycles[0].processor!=='coldfire'||q.cycles[0].maxInstances!==8||q.memory.maxInstances!==8) fail(path,'VECTOR hardware-only approval requires honest untested status, ColdFire bounds and complete eight-track memory')
     } else fail(path+'.hardware','hardware-only owner approval covers only exact approved releases')
   } else if('kind' in q.hardware) {

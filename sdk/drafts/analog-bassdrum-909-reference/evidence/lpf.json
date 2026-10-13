@@ -1,0 +1,285 @@
+{
+  "schema": 1,
+  "candidateVersion": "0.1.4-experimental",
+  "privateFirmwareLabel": "AB014REF04",
+  "method": "Historical unchanged AB014REF04 firmware, TUNE 0 / ATK 127, only LPF changes. Causal fourth-order bandpass energy over 512 pre-roll plus 4096 post-edge samples, DC-initialized filters. Median final-four direct-out reference energy versus the second actual emulator hit, with natural carried-state pre-roll. One fixed common tail-RMS listening gain after measured stock AMP compensation.",
+  "referenceSha256": "5cb6d0917c8119e6675a1034bbfe55a532a113d958d12a7ce0c8f6b1406533cf",
+  "bandsHz": [
+    [
+      2000,
+      4000
+    ],
+    [
+      4000,
+      8000
+    ],
+    [
+      8000,
+      12000
+    ],
+    [
+      12000,
+      18000
+    ],
+    [
+      18000,
+      21500
+    ]
+  ],
+  "referenceEnergy": [
+    0.19051111243724422,
+    0.14709067724570907,
+    0.0028732683813875665,
+    0.00013719947959591651,
+    1.3831817021170069e-05
+  ],
+  "commonTailRmsGain": 1.0389716103291589,
+  "results": [
+    {
+      "lpf": 48,
+      "nominalHz": 3413.7991735659407,
+      "mode": "low-pass",
+      "relativeBandEnergyDb": [
+        0.8194573015883764,
+        -0.5411026829050518,
+        -10.483793436143841,
+        -6.381115315503447,
+        0.26893113662167917
+      ],
+      "peak": 0.7056061592298911,
+      "portReport": {
+        "schema": 1,
+        "date": "2026-10-09",
+        "candidateVersion": "0.1.4-experimental",
+        "sourceFiles": {
+          "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+          "fit909.json": "a56751b8d1de88d6a4f7c729b51e5fbab60c73fe7b03df547a896a6a56ba2c6b",
+          "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+        },
+        "mainOsSha256": "4d18dbebb6278e24beb5d4be7867494a1864c2f1d3ca109c4fa4abc079de2f60",
+        "controls": [
+          49,
+          100,
+          0,
+          127,
+          64,
+          0,
+          1,
+          72,
+          48,
+          64,
+          64,
+          0
+        ],
+        "bpm": 70,
+        "frames": 5000,
+        "core": 0,
+        "bothEnginesHavePostAmpAudio": true,
+        "mainStereoNonzero": true,
+        "triggerCount": 6,
+        "sourceReferenceErrorDb": -73.84700465595014,
+        "stockAmpGain": 0.2539310458651288,
+        "stockAmpDelaySamples": 48,
+        "stockAmpSourceResidualDb": -118.62665414839802,
+        "sourcePeak": 0.687014102935791,
+        "actualTrackPeak": 0.17245447635650635,
+        "listeningCompensationGain": 3.9380769554705535,
+        "listeningWavSha256": "edbf53872f922ac9d7d63efd577a9d7902adaf956ad884f2530c500c510fa12d",
+        "physicalHardware": "untested",
+        "maximumFxLoad": "untested"
+      },
+      "listeningWavSha256": "ecc1b31d1870b4b9853c66161d0d33f29256d5cbd09d295d01eadfc3f5c6660c"
+    },
+    {
+      "lpf": 64,
+      "nominalHz": 6565.141402540683,
+      "mode": "low-pass",
+      "relativeBandEnergyDb": [
+        2.367057720808175,
+        2.347158387164619,
+        -6.357243620928177,
+        -1.404763180701114,
+        5.490117029161326
+      ],
+      "peak": 0.8104730063575188,
+      "portReport": {
+        "schema": 1,
+        "date": "2026-10-09",
+        "candidateVersion": "0.1.4-experimental",
+        "sourceFiles": {
+          "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+          "fit909.json": "a56751b8d1de88d6a4f7c729b51e5fbab60c73fe7b03df547a896a6a56ba2c6b",
+          "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+        },
+        "mainOsSha256": "4d18dbebb6278e24beb5d4be7867494a1864c2f1d3ca109c4fa4abc079de2f60",
+        "controls": [
+          49,
+          100,
+          0,
+          127,
+          64,
+          0,
+          1,
+          72,
+          64,
+          64,
+          64,
+          0
+        ],
+        "bpm": 70,
+        "frames": 5000,
+        "core": 1,
+        "bothEnginesHavePostAmpAudio": true,
+        "mainStereoNonzero": true,
+        "triggerCount": 6,
+        "sourceReferenceErrorDb": -73.92453707423903,
+        "stockAmpGain": 0.25393104592863597,
+        "stockAmpDelaySamples": 48,
+        "stockAmpSourceResidualDb": -118.65007641807061,
+        "sourcePeak": 0.7887415885925293,
+        "actualTrackPeak": 0.19808459281921387,
+        "listeningCompensationGain": 3.938076954485656,
+        "listeningWavSha256": "b8fe02447305f0d8e0ab573b2b08a8412037df072a3c53c36c2be109f0ca9967",
+        "physicalHardware": "untested",
+        "maximumFxLoad": "untested"
+      },
+      "listeningWavSha256": "2f8fb0e8b146a9b20191c357154ec10e9c2753b0dbb62709dbfc26a287cce878"
+    },
+    {
+      "lpf": 127,
+      "nominalHz": 18000.0,
+      "mode": "low-pass",
+      "relativeBandEnergyDb": [
+        3.043889456032329,
+        3.935704059351985,
+        -3.2279219804224595,
+        3.684236680764625,
+        11.26742914643505
+      ],
+      "peak": 0.8681827796532111,
+      "portReport": {
+        "schema": 1,
+        "date": "2026-10-09",
+        "candidateVersion": "0.1.4-experimental",
+        "sourceFiles": {
+          "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+          "fit909.json": "a56751b8d1de88d6a4f7c729b51e5fbab60c73fe7b03df547a896a6a56ba2c6b",
+          "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+        },
+        "mainOsSha256": "4d18dbebb6278e24beb5d4be7867494a1864c2f1d3ca109c4fa4abc079de2f60",
+        "controls": [
+          49,
+          100,
+          0,
+          127,
+          64,
+          0,
+          1,
+          72,
+          127,
+          64,
+          64,
+          0
+        ],
+        "bpm": 70,
+        "frames": 5000,
+        "core": 0,
+        "bothEnginesHavePostAmpAudio": true,
+        "mainStereoNonzero": true,
+        "triggerCount": 6,
+        "sourceReferenceErrorDb": -73.97389210539173,
+        "stockAmpGain": 0.2539310450252318,
+        "stockAmpDelaySamples": 48,
+        "stockAmpSourceResidualDb": -118.6180666071827,
+        "sourcePeak": 0.8447275161743164,
+        "actualTrackPeak": 0.2121891975402832,
+        "listeningCompensationGain": 3.938076968496055,
+        "listeningWavSha256": "f76f879edaeb76f8fe832de60876df6c38471303f1427a9ff2da96a87deb100a",
+        "physicalHardware": "untested",
+        "maximumFxLoad": "untested"
+      },
+      "listeningWavSha256": "052426bf114059a16ee1d1ca53fb4251ef2716cdb06396ced41c03fd1d0e5fe0"
+    },
+    {
+      "lpf": 0,
+      "nominalHz": null,
+      "mode": "bypass",
+      "relativeBandEnergyDb": [
+        3.1145988455053515,
+        4.1216659265078945,
+        -2.763507280323356,
+        4.7228936651027436,
+        12.565370559654438
+      ],
+      "peak": 0.8712614450668235,
+      "portReport": {
+        "schema": 1,
+        "date": "2026-10-09",
+        "candidateVersion": "0.1.4-experimental",
+        "sourceFiles": {
+          "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+          "fit909.json": "a56751b8d1de88d6a4f7c729b51e5fbab60c73fe7b03df547a896a6a56ba2c6b",
+          "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+        },
+        "mainOsSha256": "4d18dbebb6278e24beb5d4be7867494a1864c2f1d3ca109c4fa4abc079de2f60",
+        "controls": [
+          49,
+          100,
+          0,
+          127,
+          64,
+          0,
+          1,
+          72,
+          0,
+          64,
+          64,
+          0
+        ],
+        "bpm": 70,
+        "frames": 5000,
+        "core": 0,
+        "bothEnginesHavePostAmpAudio": true,
+        "mainStereoNonzero": true,
+        "triggerCount": 6,
+        "sourceReferenceErrorDb": -73.98015912442905,
+        "stockAmpGain": 0.2539310433068396,
+        "stockAmpDelaySamples": 48,
+        "stockAmpSourceResidualDb": -118.65341895883475,
+        "sourcePeak": 0.8477139472961426,
+        "actualTrackPeak": 0.21294164657592773,
+        "listeningCompensationGain": 3.938076995145655,
+        "listeningWavSha256": "a13a2fe9ace460c191b874239f8f3ca9ad5eac8fef99c32a2c30e6f7e3d6468e",
+        "physicalHardware": "untested",
+        "maximumFxLoad": "untested"
+      },
+      "listeningWavSha256": "57bcd20cae0131ec35a530ab8cc92a7a2d442eeeb79e8a443acd46dba6c8e85d"
+    }
+  ],
+  "dspSourceChanged": false,
+  "additionalInstructions": 0,
+  "additionalMemory": 0,
+  "limits": [
+    "Direct-out capture confirmed by owner: the 909 main-out LPF is not in these reference recordings.",
+    "Bypass removes the audition filter mismatch but AB014REF04 then has excess 12–21.5 kHz energy as well as an 8–12 kHz shortfall; it is not a complete timbre match.",
+    "This diagnostic is historical AB014REF04; current AB014REF05 pulse is refitted at bypass and measured in neighbors.json.",
+    "No physical-device timing or circuit cause is established."
+  ],
+  "lpfOnlyComparison": {
+    "order": [
+      48,
+      127,
+      0
+    ],
+    "hitsPerSetting": 2,
+    "wavSha256": "8b324e04e8ce55d9ba7fd08f5f36d1fbac35a12878fe266bb539b1d82e6eaeec"
+  },
+  "sourceFiles": {
+    "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+    "fit909.json": "a56751b8d1de88d6a4f7c729b51e5fbab60c73fe7b03df547a896a6a56ba2c6b",
+    "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+  },
+  "probeToolSha256ForNewRuns": "0c561da5222d4aded823baf54804166fca2e1c7f651b85228883141501f24494",
+  "scopeNote": "LPF48 is the original baseline capture in port.json; LPF64/127/0 are new exact-image runs using the selectable LPF probe. No DSP source, firmware, default or parameter mapping changed.",
+  "supersededAnalysis": "The initial measurement cut the reference partway into its attack (about -0.12 at the steepest slope), creating artificial high-frequency energy. Its upper-band conclusions are withdrawn; the complete-onset measurement above supersedes them. Listening WAVs contained full hits and were unaffected."
+}

@@ -8,9 +8,10 @@ from pathlib import Path
 import argparse, hashlib, importlib.util, json, os, re, shutil, struct, subprocess, sys, tempfile
 
 APP = Path(__file__).resolve().parents[1]
-ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', 'airwindows-chorus']
-HOOKED = ['sidechain-compressor']
-REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer', 'synth', 'vector', 'playmodes', 'mute-modes', 'recorder-loop-fix', 'euclid-seq']
+ORDER = ['spectrum', 'modulation', 'character', 'miniverb', 'tapeecho', 'euclid', 'repitch', 'tapehead', 'airwindows-chorus', 'everb']
+# DSP code that stock code reaches through hooks. Output Matrix has no FX menu entry and is also a requested ColdFire module.
+HOOKED = ['sidechain-compressor', 'output-matrix']
+REQUESTED = ['analog-bassdrum', 'midi-scenes', 'usb-audio-out-tracks-main-cue', 'quantizer', 'synth', 'vector', 'playmodes', 'mute-modes', 'recorder-loop-fix', 'poly8', 'output-matrix', 'euclid-seq']
 UTILITIES = ['previewvol', 'cc-map']
 ASSET_NAMES = ['dsp-packages.json', 'coldfire-packages.json', 'resident-dsp.json', 'rom-packages.json',
                'bootstrap-package.json', 'menu-recipes.json', 'descriptor-recipes.json', 'platform-writes.json', 'requested-packages.json', 'utility-packages.json', 'usb-audio-packages.json']
@@ -83,7 +84,8 @@ def fingerprint(reference, address):
 
 def requested_release_scope(buildable):
     """Permit the reviewed scope; MIDISC2.0 is a standalone local-stock recipe."""
-    ordinary = [id for id in buildable if id not in UTILITIES + HOOKED]
+    hooked_only = [id for id in HOOKED if id not in REQUESTED]
+    ordinary = [id for id in buildable if id not in UTILITIES + hooked_only]
     if [id for id in buildable if id in UTILITIES] not in ([], UTILITIES):
         raise ValueError('Unsupported utility module scope')
     scopes = (ORDER, ORDER + REQUESTED, ORDER + [id for id in REQUESTED if id != 'midi-scenes'])
@@ -113,8 +115,10 @@ def retain_pending_requested(compiled, baseline, ids, standalone=False):
 def compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler, ids):
     """Authored objects and runtime recipes only; inherited USB spans are masked."""
     byid = {m.name: m for m in known.values()}
-    selected = [byid[id] for id in ids] + [known['USB MIDI']]
+    selected = [byid[id] for id in ids + (['repitch'] if 'poly8' in ids else [])] + [known['USB MIDI']]
     selection = {m.key: m for m in selected}
+    from remix.machine_composition import POLICY
+    composition = json.loads(json.dumps(POLICY))
     objects, groups = [], []
     for m in selected:
         author = documents[m.name]['author']['github'] if m.name in documents else 'markandrus'
@@ -147,6 +151,37 @@ def compile_requested(root, known, documents, versions, revision, provenance, na
                     copies.append(dict(section=section, offset=value+9, source=address+9, bytes=23, sha256=HASH(inherited)))
             manifest = 'platform/usb-midi/manifest.py' if m.name == 'usb-midi' else f'modules/{m.name}/manifest.py'
             objects.append(dict(label=u.label,moduleId=m.name,version=documents[m.name]['version'] if m.name in documents else None,key=m.key,author=author,nativeAuthor=m.author,cpu=cpu,dram=u.dram,caveAddress=u.cave_addr,source=u.source,sources={q:sources[q] for q in [u.source,manifest]},bytes=len(data),code=data.hex(),sha256=HASH(data),stockCopies=copies,placement="linked",poolBaseLiterals=0,variants=[]))
+        if m.name in ('repitch', 'mute-modes'):
+            for unit in m.linked:
+                if unit.label not in ('repitch','mm_softmute'): continue
+                work = root / 'requested' / unit.label
+                pkg = next(row for row in objects if row['label'] == unit.label)
+                for sidechain in ([False,True] if m.name=='mute-modes' else [False]):
+                    extra=[]
+                    if unit.include:
+                        includes=dict(selection)
+                        if sidechain: includes['SIDECHAIN_COMPRESSOR']=known['SIDECHAIN_COMPRESSOR']
+                        (work/'remix.inc').write_text(unit.include(includes));extra=['-I',work]
+                    obj=work/('poly-sidechain.o' if sidechain else 'poly.o')
+                    run(['m68k-elf-as','-mcpu=54455',*extra,'-o',obj,root/unit.source],root)
+                    from remix.platform_build import promote_symbols
+                    recipe=next(r for r in composition['groups'] if r['moduleId']==m.name)
+                    exports=recipe.get('runtimeExports',{}).get(unit.label,{})
+                    promote_symbols(obj,exports.get('symbols',[]) if sidechain and exports.get('whenModule')=='sidechain-compressor' else [])
+                    raw=obj.read_bytes()
+                    pkg['variants'].append(dict(whenModules=['poly8']+(['sidechain-compressor'] if sidechain else []),withoutModules=[] if sidechain or m.name=='repitch' else ['sidechain-compressor'],bytes=len(raw),code=raw.hex(),sha256=HASH(raw)))
+        if m.name == 'synth' and 'poly8' in ids:
+            recipe=next(r for r in composition['groups'] if r['moduleId']==m.name)
+            for unit in m.linked:
+                exports=recipe.get('runtimeExports',{}).get(unit.label,{})
+                if not exports: continue
+                pkg=next(row for row in objects if row['label']==unit.label)
+                work=root/'requested'/unit.label;obj=work/'poly8-exported.o'
+                obj.write_bytes(bytes.fromhex(pkg['code']))
+                from remix.platform_build import promote_symbols
+                promote_symbols(obj,exports['symbols'])
+                raw=obj.read_bytes()
+                pkg['variants'].append(dict(whenModules=['poly8'],withoutModules=[],bytes=len(raw),code=raw.hex(),sha256=HASH(raw)))
         if m.name == 'mute-modes':
             unit = next(u for u in m.linked if u.label == 'mm_softmute')
             work = root / 'requested' / unit.label
@@ -155,7 +190,7 @@ def compile_requested(root, known, documents, versions, revision, provenance, na
             run(['m68k-elf-as', '-mcpu=' + unit.cpu, '-I', work, '-o', obj, root / unit.source], root)
             raw = obj.read_bytes()
             pkg = next(row for row in objects if row['label'] == unit.label)
-            pkg['variants'] = [dict(whenModule='sidechain-compressor', bytes=len(raw), code=raw.hex(), sha256=HASH(raw))]
+            pkg['variants'].append(dict(whenModules=['sidechain-compressor'],withoutModules=['poly8'],bytes=len(raw),code=raw.hex(),sha256=HASH(raw)))
         for index, patch in enumerate(m.cf_patches if m.name == 'recorder-loop-fix' else ()):
             label = 'recorder_cave_' + str(index)
             work = root / 'requested' / label; work.mkdir(parents=True)
@@ -183,7 +218,9 @@ def compile_requested(root, known, documents, versions, revision, provenance, na
             pokes.append(dict(address=q.addr,guardLength=length,guardSha256=digest,code=q.write.hex(),note=q.note))
         for t in m.tables:
             tables.append(dict(label=t.label,old=t.old,count=t.count,symbols=[dict(unit=u,symbol=n) for u,n in t.symbols],refs=[dict(address=a,old=o) for a,o in t.refs],insertAt=t.count if t.insert_at is None else t.insert_at))
-        groups.append(dict(moduleId=m.name,key=m.key,author=author,nativeAuthor=m.author,detours=detours,refs=refs,pokes=pokes,tables=tables))
+        groups.append(dict(moduleId=m.name,key=m.key,author=author,nativeAuthor=m.author,activeWith="poly8" if m.name=="repitch" else None,detours=detours,refs=refs,pokes=pokes,tables=tables))
+        rule=next((r for r in composition["groups"] if r["moduleId"]==m.name and "suppliedBy" in r),None)
+        if rule is not None: rule["suppliedGroup"]=groups[-1]
     import ab_image, dsp909
     ab_image.OUT = root / 'requested/analog'; dsp909.DSP_ASM=assembler; dsp909.DISASM=disassembler
     lay,vbase=ab_image.layout(); variants=[]
@@ -200,7 +237,7 @@ def compile_requested(root, known, documents, versions, revision, provenance, na
     obj=work/'loader.o';run(['m68k-elf-as','-mcpu=5475','-I',work,'--defsym','PREBOOT=1','-o',obj,work/'loader.S'],root)
     raw=obj.read_bytes(); bootstrap=dict(bytes=len(raw),code=raw.hex(),sha256=HASH(raw))
     print(f'Compiled {len(objects)} requested ColdFire objects, both Analog BD engines and stock-free pre-boot skeleton.',flush=True)
-    return dict(schema=1,revision=revision,**provenance,objects=objects,groups=groups,analog=analog,bootstrap=bootstrap)
+    return dict(schema=1,revision=revision,**provenance,objects=objects,groups=groups,composition=composition,analog=analog,bootstrap=bootstrap)
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -236,8 +273,22 @@ def main():
     except ValueError as error:
         parser.error(str(error))
     standalone = 'midi-scenes' in [module['id'] for module in buildable]
-    if standalone and catalog_documents['midi-scenes']['version'] != '0.2.4-experimental': parser.error('Unknown standalone MIDI Scenes release')
+    if standalone and catalog_documents['midi-scenes']['version'] != '0.2.5-experimental': parser.error('Unknown standalone MIDI Scenes release')
     requested_ids = [id for id in REQUESTED if id != 'midi-scenes'] if args.include_requested else approved_requested
+    if "poly8" in requested_ids:
+        # Local PC16 operands can wrap before ELF relocations exist. Run the
+        # compiled-address gate in this isolated source-build environment.
+        print(run([sys.executable, "-B", sdk / "modules/poly8/verify-addressing.py"], APP).strip(), flush=True)
+        print(run([sys.executable, "-B", sdk / "modules/poly8/verify-initialization.py"], APP).strip(), flush=True)
+        with tempfile.TemporaryDirectory(prefix="poly8-shared-validation-", dir=destination.parent) as test_dir:
+            executable = Path(test_dir) / "shared-validation-test"
+            run(["gcc", "-std=c11", "-Wall", "-Wextra", "-Werror",
+                 "-fsanitize=address,undefined", "-ffunction-sections", "-fdata-sections",
+                 sdk / "modules/poly8/shared-machine.c",
+                 sdk / "modules/poly8/shared-validation-test.c",
+                 sdk / "modules/vector/persistence.c", "-Wl,--gc-sections",
+                 "-o", executable], APP)
+            print(run([executable], APP).strip(), flush=True)
     include_requested = bool(requested_ids)
     versions = {module['id']: module['version'] for module in buildable}
     hooked_ids = [id for id in HOOKED if id in versions]
@@ -250,7 +301,7 @@ def main():
         root = Path(temporary)
         # Pending imports stay in the source fingerprint, but are never evaluated or compiled.
         (root / 'modules').mkdir()
-        for id in ORDER + requested_ids + utility_ids + hooked_ids:
+        for id in dict.fromkeys(ORDER + requested_ids + utility_ids + hooked_ids):
             shutil.copytree(sdk / 'modules' / id, root / 'modules' / id, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '.DS_Store'))
         for group in ['platform', 'tools', 'dsp']:
             shutil.copytree(sdk / group, root / group, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '.DS_Store'))
@@ -268,7 +319,7 @@ def main():
         known = registry.modules()
         byid = {module.name: module for module in known.values()}
         public = sorted(module.name for module in known.values() if not module.is_stock and module.name not in registry.PLATFORM_NAMES)
-        if public != sorted(ORDER + requested_ids + utility_ids + hooked_ids): raise ValueError('Unexpected module scope')
+        if public != sorted(set(ORDER + requested_ids + utility_ids + hooked_ids)): raise ValueError('Unexpected module scope')
         for id in ORDER + hooked_ids:
             module, doc = byid[id], documents[id]
             if doc['version'] != versions[id] or doc['key'] != module.key or doc['author']['github'] != module.author or doc['compatibility']['effectId'] != (module.menu.fx2_id if module.menu else None):
@@ -289,10 +340,23 @@ def main():
                 fresh, _ = native.assemble_syms(text.replace(native.PTABLE_LITERAL, f'${base:x}'), base + len(module.dsp.ptable), label=module.key)
                 proofs.append({'base': base, 'sha256': HASH(code_bytes(list(module.dsp.ptable) + fresh))})
             code = code_bytes(words)
+            split = {}
+            if module.dsp.split_ptable:
+                table_words = len(module.dsp.ptable)
+                if any(offset < table_words for offset in relocations) or min(init, proc) < table_words:
+                    raise ValueError(module.name + ': table contains code references or entry points')
+                split_proofs = []
+                for table_base, program_base in ((0x1000, 0x5000), (0x2407, 0x1100), (0x1801, 0x7003), (0x1400, 0x1400 + table_words)):
+                    fresh, syms = native.assemble_syms(text.replace(native.PTABLE_LITERAL, f'${table_base:x}'), program_base, label=module.key)
+                    relocated = [word + (table_base if word < table_words else program_base - table_words) if offset in relocations else word for offset, word in enumerate(words)]
+                    if relocated != list(module.dsp.ptable) + fresh or (syms['init'], syms['proc']) != (program_base + init - table_words, program_base + proc - table_words):
+                        raise ValueError(module.name + ': separate table/code relocation differs from fresh assembly')
+                    split_proofs.append({'tableBase': table_base, 'programBase': program_base, 'sha256': HASH(code_bytes(relocated))})
+                split = {'splitTableWords': table_words, 'splitProofs': split_proofs}
             return {'id': module.name, 'version': versions[module.name], 'key': module.key, 'author': module.author,
                     'sources': hashes(module.dsp.asm, f'modules/{module.name}/manifest.py'), 'fxId': module.menu.fx2_id,
                     'words': len(words), 'code': code.hex(), 'sha256': HASH(code), 'relocations': relocations,
-                    'init': init, 'proc': proc, 'proofs': proofs}
+                    'init': init, 'proc': proc, 'proofs': proofs, **split}
 
         packages = []
         for id in sorted(ORDER):
@@ -304,7 +368,8 @@ def main():
 
         for id in hooked_ids:
             module = byid[id]
-            if not module.menu.stock_dsp or not module.dsp.hooks:
+            # A menu entry, when there is one, must preserve its stock dispatch; with none, the hooks are the only way in.
+            if module.menu is not None and not module.menu.stock_dsp or not module.dsp.hooks:
                 raise ValueError(id + ': stock DSP hook package requires a preserved dispatch and hooks')
             text = (root / module.dsp.asm).read_text()
             for tag in sorted(module.dsp.payloads):
@@ -326,8 +391,8 @@ def main():
                           'entry':symbols[h.label],'note':h.note} for h in module.dsp.hooks]
                 code = code_bytes(words)
                 packages.append({'id':id,'version':versions[id],'key':module.key,'author':module.author,
-                    'sources':hashes(module.dsp.asm,f'modules/{id}/manifest.py'),'fxId':module.menu.fx2_id,
-                    'tag':tag,'stockDsp':True,'stockKey':module.menu.replaces,
+                    'sources':hashes(module.dsp.asm,f'modules/{id}/manifest.py'),'fxId':module.menu.fx2_id if module.menu else None,
+                    'tag':tag,'stockDsp':True,**({'stockKey':module.menu.replaces} if module.menu else {}),
                     'words':len(words),'code':code.hex(),'sha256':HASH(code),'relocations':relocations,
                     'init':hooks[0]['entry'],'proc':hooks[1]['entry'],'hooks':hooks,'proofs':proofs})
 
@@ -449,6 +514,14 @@ def main():
             donor = next(row for row in descriptor_guards if row['id'] == 'character')
             descriptor_guards.append(dict(donor, id='airwindows-chorus', key='AIR CHORUS',
                 author='repeat98', fxId=0x1e, fx2Slot=0x400d6054))
+        if not any(row['id'] == 'everb' for row in descriptor_guards):
+            # Locally verified on private OS 1.40C: DARK REV descriptor and
+            # stock NONE at unused FX2 id 0x1b. Never retain stock bytes.
+            descriptor_guards.append(dict(id='everb', key='EVERB', author='user1303836',
+                fxId=0x1b, donorAddress=0x400d58f0,
+                donorSha256='3b3f9b15f2f6addfea9fc281f5b9fdf054bf305778059b8d43db41d390f0401f',
+                fx2Slot=0x400d6048,
+                slotSha256='79bc740214b4d029e385d06d21e224d04e8f91b53fb26ea08ffa4e5d70964b7a'))
         for old in descriptor_guards:
             module = byid[old['id']]
             if module.menu.donor_desc + 0x38 != old['donorAddress'] or module.menu.fx2_id != old['fxId']:
@@ -480,6 +553,13 @@ def main():
             lo, hi = native.penable(module.active_params, module.linked_params)
             integer(native.P_PENABLE_LO, 4, lo); integer(native.P_PENABLE_HI, 4, hi)
             extra = {'inheritedEnable': list(module.inherited_enable), 'rawPointers':raw, 'replaces':module.menu.replaces} if module.menu.stock_dsp else {}
+            if module.menu.stock_dsp and module.detours:
+                rows = []
+                for detour in module.detours:
+                    length, sha = fingerprint(detour.expect, detour.site)
+                    if detour.kind not in ('jmp', 'jsr') or detour.target is not None or detour.unit not in {pointer['unit'] for pointer in raw}: raise ValueError('Unsupported stock-DSP module detour')
+                    rows.append({'address': detour.site, 'guardLength': length, 'guardSha256': sha, 'unit': detour.unit, 'symbol': detour.symbol, 'kind': detour.kind, 'bytes': detour.pad_to or 6, 'note': detour.note})
+                extra['detours'] = rows
             descriptors.append(dict(old, sourceSha256=sources[f'modules/{module.name}/manifest.py'], integers=integers, strings=strings, **extra))
         products['descriptor-recipes.json'] = dict(baseline['descriptor-recipes.json'], **provenance, recipes=descriptors)
         groups = []
@@ -495,7 +575,7 @@ def main():
         products['platform-writes.json'] = dict(baseline['platform-writes.json'], **provenance, groups=groups)
         if include_requested:
             requested = compile_requested(root, known, documents, versions, revision, provenance, native, sources, assembler, disassembler, requested_ids)
-            products['requested-packages.json'] = retain_pending_requested(requested, baseline['requested-packages.json'], requested_ids, standalone=standalone) if not args.include_requested else requested
+            products['requested-packages.json'] = retain_pending_requested(requested, baseline['requested-packages.json'], requested_ids + (['repitch'] if 'poly8' in requested_ids else []), standalone=standalone) if not args.include_requested else requested
         if stock_guard._cache is not None: raise RuntimeError('Stock must never be read during source compilation')
         if native._SCRATCH is not None: shutil.rmtree(native._SCRATCH, ignore_errors=True)
 

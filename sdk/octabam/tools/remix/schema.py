@@ -379,6 +379,9 @@ class DspSection:
     # its limits). ⚠️ So a module with a table may read P for NOTHING
     # ELSE: every `p:(` in its code is the table.
     ptable: tuple[int, ...] = ()
+    # Permit separate P table/code runs when a contiguous package cannot fit.
+    # Source packages prove both origins independently; no X table rewrite.
+    split_ptable: bool = False
     # Build-time integers for `@NAME@` markers in the source, as (NAME, value):
     # each marker must occur, and none may survive the substitution. Written
     # in decimal (dsp_asm takes decimal immediates).
@@ -403,6 +406,8 @@ class DspSection:
     subst: Mapping[str, Mapping[str, str]] = field(default_factory=dict)
 
     def __post_init__(self):
+        if self.split_ptable and (not self.ptable or self.arena):
+            raise ValueError("split_ptable needs a fixed nonempty ptable")
         if self.max_per_core is not None and not 1 <= self.max_per_core <= 4:
             raise ValueError("max_per_core must be in 1..4")
         object.__setattr__(self, "subst", MappingProxyType(
@@ -865,9 +870,13 @@ class Linked:
     # refused. DRAM units share one link, so two declaring one name must
     # resolve it to one value.
     stock_copies: tuple = ()
+    exports: tuple[str, ...] = ()  # explicit existing local symbols shared by a composition
     defsyms: tuple[tuple[str, int], ...] = ()
 
     def __post_init__(self):
+        import re
+        if not isinstance(self.exports, tuple) or any(not isinstance(name,str) for name in self.exports) or len(self.exports) != len(set(self.exports)) or any(not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", name) or name in ("_end", "_edata", "__bss_start") for name in self.exports):
+            raise ValueError(f"Linked({self.label!r}): invalid explicit local exports")
         names = [n for n, _v in self.defsyms]
         if len(names) != len(set(names)):
             raise ValueError(f"Linked({self.label!r}): a defsym name declared twice")

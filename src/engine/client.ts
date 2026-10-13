@@ -51,17 +51,24 @@ export function createFirmwareClient() {
   }
   return {
     inspect,
-    async validate(moduleIds: string[], keepStockFx2: boolean, usbAudio?: UsbAudioConfiguration) {
+    async validate(moduleIds: string[], keepStockFx2: boolean, usbAudio?: UsbAudioConfiguration, betaAccess = false) {
       await recovering
-      const response = await send({ id: ++nextId, type: 'validate', moduleIds, keepStockFx2, usbAudio })
+      const response = await send({ id: ++nextId, type: 'validate', moduleIds, keepStockFx2, usbAudio, ...(betaAccess ? { betaAccess: true } : {}) })
       if (response.type !== 'validated') throw new Error('The local firmware worker returned an unexpected result.')
       return response.report
     },
-    async build(moduleIds: string[], keepStockFx2: boolean, progress: (phase: BuildProgress) => void, usbAudio?: UsbAudioConfiguration) {
+    async build(moduleIds: string[], keepStockFx2: boolean, progress: (phase: BuildProgress) => void, usbAudio?: UsbAudioConfiguration, betaAccess = false) {
       await recovering
-      const response = await send({ id: ++nextId, type: 'build', moduleIds, keepStockFx2, usbAudio }, [], progress)
+      const response = await send({ id: ++nextId, type: 'build', moduleIds, keepStockFx2, usbAudio, ...(betaAccess ? { betaAccess: true } : {}) }, [], progress)
       if (response.type !== 'built') throw new Error('The local firmware worker returned an unexpected result.')
       return response
+    },
+    /** The Modwerk base's .bin, built from the verified OS file. */
+    async buildBase() {
+      await recovering
+      const response = await send({ id: ++nextId, type: 'base' })
+      if (response.type !== 'base') throw new Error('The local firmware worker returned an unexpected result.')
+      return { buffer: response.buffer, sha256: response.sha256, base: response.base }
     },
     cancelBuild() {
       const file = rememberedFile; restart('The firmware build was cancelled.')

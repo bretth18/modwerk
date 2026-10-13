@@ -1,12 +1,14 @@
 # Digi Mono
 
-Modwerk metadata version: `0.13.1-experimental`.
+Modwerk release version: `0.13.3-experimental`.
 
 ## Overview
 
 Digi Mono adds seven synth machines to the FUNC+SRC list, after the Monomachine’s GND and SWAVE machines: MONO SIN, MONO NOISE, MONO SAW, MONO PULSE, MONO ENS, MONO VO and POLY SIN. They need no sample: the engine’s output takes the sample’s place in the voice, so the track’s filter, amp, LFOs, sends, p-locks and level work on it as on a sample. Knob A stays TUNE; B to H are the machine’s own parameters, named and shown in their units. The engine is a clean-room rewrite from the Monomachine manual, with no Monomachine code or data.
 
 ## Controls
+
+Repeated SRC presses keep Digi Mono on its normal control page. These synth machines have no sample waveform page; sample tracks retain their stock detail view.
 
 Knobs B to H mean something different on each machine. Each shows its short name and its value in its units; the pop-up gives the long name.
 
@@ -15,23 +17,25 @@ Knobs B to H mean something different on each machine. Each shows its short name
 | Knob A | TUNE on every Digi Mono machine. With the note it sets the pitch; note locks, TUNE locks and pitch LFOs work. |
 | Knob B | NOISE: ST (Sample Hold Rate), sample and hold, 0 = white, higher = fewer new values a second. SAW and PULSE: UNIL (Unison Level), the unison oscillators’ level. ENS: PCH2 (Pitch Osc 2), oscillator 2 in semitones from oscillator 1, -36..+36. VO: VOC1 (Vowel 1): OO, U, AW, AH, UH, AE, EH, IH, EE or ER. POLY SIN: NOT1 (Note 1), the first sine in semitones from the note, -36..+36. Blank on SIN. |
 | Knob C | NOISE: RED (Red Noise), darker noise. SAW and PULSE: UNIW (Unison Detune), the unison detune, 0..50 cents. ENS: PCH3 (Pitch Osc 3), oscillator 3 in semitones. VO: VOC2 (Vowel 2), the vowel V-SW glides to. POLY SIN: NOT2 (Note 2), the second sine in semitones from the note. Blank on SIN. |
-| Knob D | Does not open the sample list on these machines. PULSE: SUB2 (Sub 2 Oct Lev), the sub two octaves down. ENS: PW (Pulse Width), duty %, 0 = square. VO: VOIC (Breath), breath noise mixed into the source. POLY SIN: NOT3 (Note 3), the third sine in semitones from the note. Blank on SIN, NOISE and SAW. |
-| Knob E | NOISE: STON (Tuned Noise), a sample and hold at twice the note’s pitch, which makes the noise pitched. SAW: UNIX (Unison Voices), 1 to 3 unison saws. PULSE: SUB1 (Sub 1 Oct Lev), the sub one octave down. ENS: PCH4 (Pitch Osc 4), oscillator 4 in semitones. VO: V-SW (Vowel Glide), the glide from VOC1 to VOC2, 5 ms..2 s; 0 keeps VOC1. POLY SIN: EDEP (Env Depth), the pitch envelope’s depth in semitones, + or -. Blank on SIN. |
-| Knob F | SAW: SUBX (Sub Shape), the subs from square to saw, in %. PULSE: PW (Pulse Width), duty %. ENS: WAVE (Saw-Pulse), saw to pulse, in %. VO: CONS (Consonant): none, S, SH, F, H, T, K or P at the note’s start. POLY SIN: ESPD (Env Speed), the pitch envelope’s speed: + glides back to the notes, - glides away, OFF in the middle. Blank on SIN and NOISE. |
-| Knob G | SAW: SUB1 (Sub 1 Oct Lev), the sub one octave down. PULSE: PWAD (PWM Depth), the pulse width modulation depth. ENS: CHRL (Chorus Level); it starts at 0, the chorus off. VO: CLEN (Cons. Length), the consonant’s length, 2..400 ms (T, K and P at most 30-40 ms). Blank on SIN, NOISE and POLY SIN. |
-| Knob H | SAW: SUB2 (Sub 2 Oct Lev), the sub two octaves down. PULSE: PWRS (PWM Rate), 0.05..20 Hz. ENS: CHRW (Chorus Width). VO: CVOL (Cons. Level), the consonant’s level. Blank on SIN, NOISE and POLY SIN. The volume is the track’s LEVEL, AMP page and VOL, not this knob. |
+| Knob D | Does not open the sample list on these machines. PULSE: PW (Pulse Width), duty %. ENS: PW (Pulse Width), duty %, 0 = square. VO: VOIC (Breath), breath noise mixed into the source. POLY SIN: NOT3 (Note 3), the third sine in semitones from the note. Blank on SIN, NOISE and SAW. |
+| Knob E | NOISE: STON (Tuned Noise), a sample and hold at twice the note’s pitch, which makes the noise pitched. SAW: UNIX (Unison Voices), 1 to 3 unison saws. PULSE: PWAD (PWM Depth), the pulse width modulation depth. ENS: PCH4 (Pitch Osc 4), oscillator 4 in semitones. VO: V-SW (Vowel Glide), the glide from VOC1 to VOC2, 5 ms..2 s; 0 keeps VOC1. POLY SIN: EDEP (Env Depth), the pitch envelope’s depth in semitones, + or -. Blank on SIN. |
+| Knob F | SAW: SUBX (Sub Shape), the subs from square to saw, in %. PULSE: PWRS (PWM Rate), 0.05..20 Hz. ENS: WAVE (Saw-Pulse), saw to pulse, in %. VO: CONS (Consonant): none, S, SH, F, H, T, K or P at the note’s start. POLY SIN: ESPD (Env Speed), the pitch envelope’s speed: + glides back to the notes, - glides away, OFF in the middle. Blank on SIN and NOISE. |
+| Knob G | SAW and PULSE: SUB1 (Sub 1 Oct Lev), the sub one octave down. ENS: CHRL (Chorus Level); it starts at 0, the chorus off. VO: CLEN (Cons. Length), the consonant’s length, 2..400 ms (T, K and P at most 30-40 ms). Blank on SIN, NOISE and POLY SIN. |
+| Knob H | SAW and PULSE: SUB2 (Sub 2 Oct Lev), the sub two octaves down. ENS: CHRW (Chorus Width). VO: CVOL (Cons. Level), the consonant’s level. Blank on SIN, NOISE and POLY SIN. The volume is the track’s LEVEL, AMP page and VOL, not this knob. |
 
-The same knobs by machine, as the author lays them out (a dash is a blank knob):
+The same physical encoders by machine (a dash is a blank knob):
 
 | Machine | B | C | D | E | F | G | H |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | MONO SIN | - | - | - | - | - | - | - |
 | MONO NOISE | ST | RED | - | STON | - | - | - |
 | MONO SAW | UNIL | UNIW | - | UNIX | SUBX | SUB1 | SUB2 |
-| MONO PULSE | UNIL | UNIW | SUB2 | SUB1 | PW | PWAD | PWRS |
+| MONO PULSE | UNIL | UNIW | PW | PWAD | PWRS | SUB1 | SUB2 |
 | MONO ENS | PCH2 | PCH3 | PW | PCH4 | WAVE | CHRL | CHRW |
 | MONO VO | VOC1 | VOC2 | VOIC | V-SW | CONS | CLEN | CVOL |
 | POLY SIN | NOT1 | NOT2 | NOT3 | EDEP | ESPD | - | - |
+
+PULSE now matches SAW: SUB1 is G and SUB2 is H, with PW/PWAD/PWRS on D/E/F. This changes the page descriptors, leaving saved parameter slots, defaults, parameter locks and LFO destinations unchanged. Existing sounds need no value migration; use the new encoder positions when editing them.
 
 The FLTR, AMP and LFO pages, p-locks on these knobs, the sends and the track level work as usual. On the LFO page, DEST names the machine’s own knobs, for example MSAW:Unison Level.
 
@@ -71,18 +75,19 @@ SRC machine list, after SLICE and any other mod’s machines
 
 ## Tests and measurements
 
-See [TESTING.md](TESTING.md) for the documentation capture run and the separate pinned author evidence. UI captures do not qualify audio, timing, stress behaviour, persistence or hardware. Imported object memory estimates remain separate from measured runtime cost.
+See [TESTING.md](TESTING.md) for the documentation capture run and the separate pinned author evidence. UI captures do not qualify audio, timing, stress behaviour, persistence or hardware. The compiled module occupies 32,417 bytes before shared core/dependency overhead and alignment; measured runtime cost remains unknown.
 
 ## Authorship and licences
 
 - gdeo607 (the digi1_mods authors) — Digi Mono’s clean-room synth engine and elekloader mod
+- Modwerk — the SRC-page fix for #180 and consistent sub-oscillator positions for #182, retaining the original parameter slots and synthesis code
 - Machine and parameter names after the Monomachine manual; vowel formants from Peterson and Barney (1952)
 
 The source is pinned to [35bacb3730d108e4dc48a7bd6de4c99ae9b161e6](https://github.com/gdeo607/digi1_mods/tree/35bacb3730d108e4dc48a7bd6de4c99ae9b161e6). The full MIT licence is in [LICENSE](LICENSE). Capture rights are declared separately in [media/LICENSE.md](media/LICENSE.md).
 
 ## Screens and audio
 
-Real firmware-rendered emulator captures on OS 1.53. The [capture record](media/capture.json) includes source/build identities, panel inputs, timestamps and PNG hashes. [Capture rights](media/LICENSE.md) preserve the underlying interface rights. The [thumbnail](media/thumbnail.svg) is an illustration. No audio demonstration is claimed.
+Real firmware-rendered emulator captures on OS 1.54. The [capture record](media/capture.json) includes source/build identities, panel inputs, timestamps and PNG hashes. [Capture rights](media/LICENSE.md) preserve the underlying interface rights. The [thumbnail](media/thumbnail.svg) is an illustration. No audio demonstration is claimed.
 
 ![MONO SIN in the machine chooser](media/chooser.png)
 

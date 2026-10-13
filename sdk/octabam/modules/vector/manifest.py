@@ -21,6 +21,7 @@ MODULE=Module(
         SymbolRef(0x400cf714, 0x4007909c, "vector", "st_pool_right", note="RIGHT on VECTOR opens its pool-choice modal"),
     ),
     detours=(
+        Detour(0x40002318, stock_guard(0x40002318, 8, "3d25d06bf11f3a7bccef894d0016b52adbb4ae468a0f475dd497d7b5966e2694"), "vector", "st_validate", "Preserve signed VECTOR settings through stock Part validation", pad_to=8),
         Detour(0x40077b5c, stock_guard(0x40077b5c, 6, "fc4b77b1c83703e8c61dda0b64b9ec139541c633433304b843f270cd461c6370"), "vector", "st_pool_title", "VECTOR machine title offers native menu navigation"),
         Detour(0x4006d784, stock_guard(0x4006d784, 8, "74c9188127d3241e9b2f750392fda1550a0be1780b7e06291e415aaa6d20de19"), "vector", "st_list_draw", "VECTOR backing pools in the stock list window", pad_to=8),
         Detour(0x400791e4, stock_guard(0x400791e4, 8, "fa7132fac15d6e498fd0e73744e1f94218824f3f54d5b3bad6083b60363e9f14"), "vector", "st_pool_open", "Double-tap TRACK opens VECTOR pool choice", pad_to=8),

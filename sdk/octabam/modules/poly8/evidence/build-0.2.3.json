@@ -1,0 +1,28 @@
+{
+  "firmware": "1.40C",
+  "version": "0.2.3-experimental",
+  "build_tag": "13",
+  "image_sha256": "792dde58d775fc7dcb8de7bd00c9e9fdd1e47fe909ef8d21dae898bea409a549",
+  "native_sdk_revision": "f7ba0d1f3acba70cb91a403eb27338a65fe796ff",
+  "source_sha256": {
+    "polyphony.s": "e4dc12c2624715ca8c5e040c811163ff9f22f01e56e80f4dc4b0ed3dd11feb37",
+    "pool.c": "4b33927f1fd4d79a543ccd49d30c02cdd9cf0f383d513bb435a64964f1190471",
+    "recording.c": "05d8ed1aaaff605dec7272366af078437b385943c42df6b0e6261bf7531a06c6",
+    "registration.c": "4618e21f28648b232dfc8ed9d61452cf613a071cca4c7efc48bfe4906fa30980",
+    "registration-hooks.s": "27ab57d18594bf85a7bb603523a4c041ec40b91794448edfc22191b23f5aa937",
+    "registration.s": "66307be9c9d833a053a35731fc22b2b2a1311b04abe6c3db01a18f26c32a53c1",
+    "diagnostics.c": "3c5c9c454c0127752564612111973d7bfdd03e73bf0ad01aa305bd23a260af34",
+    "manifest.py": "5d299743e79e81c266cb5ffb365c1a4ec0af05c0380f1ab9327c95bd58973ec2",
+    "prepare-registration.py": "e74aade0251f7183a70851ebceaed21f9a8ac970f532f3c383b4cd643d637f7a",
+    "build-diagnostic.py": "4a795ef3d94b875743f6b87d1113d705e4ba53fb01db7cc807bb5557b4b3aa1e"
+  },
+  "core_logger_version": "0.2.0",
+  "core_source_sha256": "7d5ec61364803cc851e28f67d158661b04b4fb60bf99f6db0738c11d8c74c0ba",
+  "logger_source_identity": "10fb299f2abbd67cd799406e10d6f8a51c77d0887e0c69c06682574f563b813d",
+  "reserve": {
+    "base": 1084839392,
+    "bytes": 10586112
+  },
+  "retained": 1095417312,
+  "hardware": "MKII recording/transport/audio failures remain open; T04 diagnostic candidate untested on physical hardware."
+}

@@ -65,6 +65,8 @@ if (passed) {
     console.log(`Module changelogs: ${notes.modules} modules, ${notes.releases} releases`)
   } catch (error) { console.error(error.message); passed = false }
 }
+// Documentation uses the same import policy as publication without running firmware gates.
+if (passed && documentationOnly) passed = await run('sdk:imports:check')
 if (passed && !documentationOnly) {
   const results = buildOnly
     ? [await build()]

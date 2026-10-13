@@ -20,8 +20,9 @@ function pointer(value: number) {
   if (!Number.isInteger(value) || value < 0 || value > 0xffffffff) throw new Error('A module menu pointer is outside its address range.')
   const bytes = new Uint8Array(4); new DataView(bytes.buffer).setUint32(0, value); return bytes
 }
-export async function composeModuleMenus(original: Uint8Array, ids: readonly string[], caveLimit = MENU_CAVE_END, runtime: CfRuntimeLink | null = null, leading: readonly string[] = []) {
-  const modules = placementOrder(resolveSelection(ids), leading), baseline = await composeDescriptors(original, ids, leading)
+export async function composeModuleMenus(original: Uint8Array, ids: readonly string[], caveLimit = MENU_CAVE_END, runtime: CfRuntimeLink | null = null, leading: readonly string[] = [], startupReserveBytes = 0) {
+  if (![0,80].includes(startupReserveBytes)) throw new Error('Invalid startup cave reservation.')
+  const modules = placementOrder(resolveSelection(ids), leading), baseline = await composeDescriptors(original, ids, leading, startupReserveBytes)
   if (recipes.schema !== 1 || recipes.revision !== CATALOG_SOURCE.revision || ![MENU_CAVE_END, MENU_LONG_LIST].includes(caveLimit)) throw new Error('The module menus do not match the pinned placement profile.')
   if (baseline.caveCursor > caveLimit) throw new Error('The descriptor clones run into the chooser list.')
   const writes: OsWrite[] = [...baseline.writes], regions: { address: number; bytes: number; note: string }[] = []
@@ -56,9 +57,17 @@ export async function composeModuleMenus(original: Uint8Array, ids: readonly str
       if (address === undefined || !Number.isInteger(field.offset) || field.offset < 0 || field.offset + 4 > descriptor.bytes.length) throw new Error('A raw descriptor pointer has no linked symbol.')
       new DataView(descriptor.bytes.buffer).setUint32(field.offset, address)
     }
+    // A stock-DSP module's ColdFire detours reach its own linked units (Sidechain Compressor's sc_norm).
+    for (const detour of (recipe as { detours?: { address: number; guardLength: number; guardSha256: string; unit: string; symbol: string; kind: string; bytes: number; note: string }[] }).detours ?? []) {
+      const target = symbols.get(detour.unit + ':' + detour.symbol)
+      if (target === undefined || target % 2 || !['jmp', 'jsr'].includes(detour.kind) || !Number.isInteger(detour.bytes) || detour.bytes < 6 || detour.bytes % 2) throw new Error('A stock-DSP module detour has no linked symbol or an unsupported kind.')
+      const bytes = new Uint8Array(detour.bytes); bytes.set([0x4e, detour.kind === 'jsr' ? 0xb9 : 0xf9]); bytes.set(pointer(target), 2)
+      for (let i = 6; i < bytes.length; i += 2) bytes.set([0x4e, 0x71], i)
+      writes.push({ address: detour.address, guardLength: detour.guardLength, guardSha256: detour.guardSha256, bytes, note: detour.note }); regions.push({ address: detour.address, bytes: bytes.length, note: detour.note })
+    }
   }
   for (const descriptor of baseline.descriptors) if (leading.includes(descriptor.id)) await placeRawPointers(descriptor)
-  if (modules.some(module => module.id === 'repitch')) {
+  if (!ids.includes('poly8') && modules.some(module => module.id === 'repitch')) {
     const address = align(cursor, 128), linked = linkRomText(await readRomPackage('repitch'), address)
     await cave(address, linked.bytes, 'Repitch ROM unit'); cursor = address + linked.bytes.length
     for (const patch of recipes.repitchPatches) {

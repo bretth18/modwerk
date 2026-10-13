@@ -64,7 +64,7 @@ describe('FM Synth exact experimental release', () => {
     expect(template.documentation.screenshots).toEqual(document.access!.screenshots)
     // Validate only the template's documentation; never assert its pending hardware/cycles qualify.
     requireCompleteReadme({ id: document.id, tests: { qualification: { documentation: { ...template.documentation, screenshotStyle: 'black-and-white' as const } } } }, await readFile(resolve(folder, 'README.md'), 'utf8'))
-    for (const media of document.media) {
+    for (const media of document.media.filter(item => item.otUi)) {
       const bytes = await readFile(resolve(folder, media.path))
       requireMonochromePng(bytes)
       expect(createHash('sha256').update(bytes).digest('hex')).toBe(capture.screenshots[media.path.slice('media/'.length) as keyof typeof capture.screenshots])

@@ -4,6 +4,16 @@ import { resolve } from 'node:path'
 export const NOTICE_NAME = 'THIRD_PARTY_NOTICES.txt'
 export const NOTICE_PAGE = 'THIRD_PARTY_NOTICES.html'
 
+/** Platform terms belong in the site's notices, never the native SDK bundle. */
+export async function renderPlatformNotices(root) {
+  const scope = (await readFile(resolve(root, 'LICENSE'), 'utf8')).trimEnd()
+  const elastic = (await readFile(resolve(root, 'LICENSES/Elastic-2.0.txt'), 'utf8')).trimEnd()
+  const gpl = (await readFile(resolve(root, 'LICENSES/GPL-3.0-or-later.txt'), 'utf8')).trimEnd()
+  const manifest = JSON.parse(await readFile(resolve(root, 'LICENSES/platform.json'), 'utf8'))
+  return [scope, 'Shared helpers (GPL-3.0-or-later OR Elastic-2.0):', ...manifest.sharedFiles,
+    '', 'Full Elastic License 2.0 terms:', elastic, '', 'Full GPL-3.0-or-later terms:', gpl].join('\n') + '\n'
+}
+
 export function renderLicensePage(notices) {
   const escaped = notices.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
   return '<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Copyright &amp; licence notices · Octamod</title><style>body{max-width:80ch;margin:40px auto;padding:0 20px;font:16px/1.6 system-ui,sans-serif;background:#19191c;color:#e5e4e9}a{color:#c4baff}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.7 ui-monospace,monospace}</style></head><body><main><h1>Copyright &amp; licence notices</h1><p><a href="THIRD_PARTY_NOTICES.txt" download>Download the full text bundle</a></p><pre>' + escaped + '</pre></main></body></html>\n'

@@ -1,0 +1,29 @@
+{
+  "fast_tau": 3.0000000000000004e-05,
+  "fast_gain": 0.6264905072063514,
+  "outputHz": 3936.0511266304297,
+  "k0": 0.2899999999999999,
+  "pulseGainScale": 1.499668910499779,
+  "RMS": 0.02899279932191139,
+  "method": "Fit the same low/high aligned Attack medians with a fast onset plus longer discharge. Resonance, output pole and body shaper fixed to the first audition. Initial VCA rise restored.",
+  "bounds": {
+    "fastTauSeconds": [
+      3e-05,
+      0.0005
+    ],
+    "fastGain": [
+      0,
+      1.28
+    ],
+    "minimumLongPulseGain": [
+      0,
+      0.29
+    ],
+    "longPulseScale": [
+      0.5,
+      1.5
+    ]
+  },
+  "limit": "Fast duration, minimum long-pulse gain and long-pulse scale reach bounds; these are model choices. Fits informed by the same medians are not independent validation.",
+  "historicalScope": "Earlier AB014REF02 sharpened-onset fit. Initial acceptance was subsequently withdrawn; this does not describe the current whole-hit/endpoints revision."
+}

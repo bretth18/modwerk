@@ -3,6 +3,7 @@ import ast
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 import unittest
 
 APP = Path(__file__).resolve().parents[2]
@@ -14,10 +15,9 @@ REPORT = json.loads((APP / 'sdk/imports/octabam-363861e.json').read_text())
 
 class RequestedImports(unittest.TestCase):
     def test_sources_match_the_recorded_import_without_gitlinks_or_binaries(self):
+        # Node and publication share one import policy; local guides are editable.
+        subprocess.run(['node', 'scripts/sdk-imports.mjs'], cwd=APP, check=True)
         for item in REPORT['files']:
-            path = imported_path(item['path'])
-            self.assertFalse(path.is_symlink())
-            self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), item['vendoredSha256'], item['path'])
             self.assertRegex(item['revision'], r'^[a-f0-9]{40}$')
         roots = [SDK / 'modules' / id for id in REPORT['modules']] + [SDK / 'platform/usb-midi']
         for root in roots:
@@ -63,12 +63,12 @@ class RequestedImports(unittest.TestCase):
             self.assertEqual(doc['source']['revision'], '4f9a89453fdcdd39a3cd57f010ffa489cac721cd' if id == 'midi-scenes' else '6f9e5bc9db0ae9fa99fa2f2a0f4de1fdb8e9a136' if id == 'usb-audio-out-tracks-main-cue' else REPORT['revision'])
             self.assertTrue((SDK / 'modules' / id / 'LICENSE').is_file())
             if id == 'midi-scenes':
-                self.assertEqual(doc['version'], '0.2.4-experimental')
+                self.assertEqual(doc['version'], '0.2.5-experimental')
                 self.assertNotIn('build', doc)
             else:
                 self.assertNotIn('build', doc)
                 # USB Audio 0.2 retains the classic lifecycle and MIDI clock sources beside selectable layouts.
-                self.assertEqual(doc['version'], '0.2.0-experimental' if id == 'usb-audio-out-tracks-main-cue' else '0.1.3-experimental' if id == 'analog-bassdrum' else '0.1.2-experimental')
+                self.assertEqual(doc['version'], '0.2.0-experimental' if id == 'usb-audio-out-tracks-main-cue' else '0.1.5-experimental' if id == 'analog-bassdrum' else '0.1.3-experimental' if id == 'quantizer' else '0.1.2-experimental')
         for id, pin in REPORT['authorPins'].items():
             sources = [item for item in REPORT['files'] if item['path'].startswith('modules/' + id + '/upstream/')]
             self.assertTrue(sources)

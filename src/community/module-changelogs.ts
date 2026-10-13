@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 import data from './module-changelogs.json' with { type: 'json' }
 import { compareModuleVersions } from '../catalog/versions.ts'
 import { parseReleaseNotes, type ReleaseNotes } from './module-release-notes.ts'

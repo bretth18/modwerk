@@ -1,6 +1,184 @@
 # Verification record
 
+## Digi EQ 1.0.2-experimental — 11 October 2026
+
+For issue [#185](https://github.com/repeat98/modwerk/issues/185), the native page-clear callback now resets all sixteen EQ band parameters; the EQ box aligns with the pattern header at x=13. Filter DSP and stored EQ layout are unchanged. Source-only packages from commit `1107d484c8d7ad84cfff14917b34acdcb83a53e6` replace the two 1.0b pins through `npm run elekloader:update`; kit 0.5.0 remains unchanged and the catalogue revision is `94516877d374af1e7c14a69c6c7602773590e8045fd8f3b8c1fcaa47e155f6fc`.
+
+Native panel regressions on OS 1.53 and 1.54 reset all band parameters and preserve EQ-unowned bytes across all eight sound records. Repeat Clear, pressed Q mode, FUNC+PLAY and Internal Mixer Clear isolation pass. Current native screenshots show complete EQ/Q-type pages. Exported packages, private recipe materialization and final pinned builds save the same D185 images. Static module memory is 9,146 B before shared dependencies/alignment. [The source-bound evidence](../sdk/digitakt/modules/digieq/evidence/clear-1.0.2.json) and [physical test steps](../sdk/digitakt/modules/digieq/TESTING.md) state exact images and unverified hardware, audio, DSP timing, complete runtime memory bounds, persistence, physical reboot, stress and clipboard/undo coverage. Owner repeat98 approved this exact version/source and both D185 images for experimental publication and #185 closure after saved live-download verification, with those limits disclosed. The literal statement and exact scope are in the evidence JSON; this records no hardware pass.
+
 **Owner-approved logger release (3 October 2026):** the owner explicitly lifted the logger addition’s qualification restrictions, authorized local firmware/DSP checks, approved the current module versions and logger for release, and waived hardware testing. Downloads are enabled with the logger included. This exception does not claim measured chip timing, complete stress qualification or new hardware evidence. Existing firmware isolation, original-source provenance, compatibility checks, stock fingerprint guards and packaging integrity remain in force. MIDI Scenes keeps its pinned standalone code and 12-page reservation; the logger occupies the top 16 pages of the arena, and a one-page guard separates it from the sample arena; guarded arena updates reserve all 29 pages. Mixed MIDI Scenes configurations remain incompatible. The earlier full-image proofs below predate logger integration; local verification of this change is recorded separately. See [logger evidence and limitations](../sdk/runtime/logging/TESTING.md).
+
+## Digi Mono 0.13.3-experimental — 11 October 2026
+
+For issue [#182](https://github.com/repeat98/modwerk/issues/182), the PULSE page moves descriptors so SUB1/SUB2 use G/H as on SAW. Stored slots and synthesis sources are unchanged. Two source-only packages from commit `20ce6bcc910741ab2bc49fd288ee57dd13d7900f` replace the 0.13.2 download pins through `npm run elekloader:update`; the kit remains 0.5.0 and catalogue revision is `55fb4937fc92338acce5b2ef73cb783488d0acfd00f65e9d8c0bbf0311792825`. The precise generated revision and package hashes are authoritative in [the encoder evidence](../sdk/digitakt/modules/digimono/evidence/encoder-layout-0.13.3.json).
+
+Native panel encoder regressions pass on OS 1.53 and 1.54. Exported packages match private materialized recipes byte for byte. Static memory is 32,417 B before shared dependencies/alignment. The current gallery has a complete SAW/PULSE view and documents common-region omissions on NOISE/ENS. Node 24 checks pass: 1,698 app tests, 88 SDK tests, lint, type checks, catalogue/licence/capture checks and production bundle. The owner approved this exact source and both D182 images for experimental release/#182 closure after live-download verification, with all qualification and NOISE/ENS capture limits disclosed. This records no hardware pass; [TESTING.md](../sdk/digitakt/modules/digimono/TESTING.md) records exact D182 images, required physical steps and all limits.
+
+## Sidechain Compressor 0.1.2 — 10 October 2026
+
+0.1.2 adds `sc_norm` (ColdFire unit 134 → 338 B) and two guarded `jsr` detours over the page-2 copiers' first instruction, so a COMPRESSOR saved on stock firmware (page-2 slots `0x7f/0/0/0`) comes up with KEY OFF, KFLT and KGN centred and MON OFF. DSP source and tables are unchanged. Source: octabam `9228782`, author pin `329b801`. [TESTING.md](../sdk/octabam/modules/sidechain-compressor/TESTING.md) has the details.
+
+**Native and browser.** `npm run module:verify -- sidechain-compressor` built all 122 coverage selections natively and compared the composer against them. The two native suites were regenerated with `export-composition-proofs.py`: the original eight modules build 200 of 512 and the nine visible modules 786 of 1,024. 16 original-suite selections built in the 0.1.1 record now refuse for core A DSP space; all hold Spectrum or Character, and unchanged `main` refuses the same 16 with the same word counts. 12 visible-suite selections that `main` builds are refused by 0.1.2's larger unit, for ColdFire cave space; every selection of one or two other modules still builds. The Analog BD suite (22 refusals, stock effects only) is unchanged and was not regenerated.
+
+**Packages.** Rebuilt in the pinned image with `scripts/build-modules-isolated.sh`; only the sidechain ROM unit's bytes change, the DSP package's code words are identical and the other packages move only their version labels.
+
+**Hardware.** The author flashed the module-alone native image (MAIN OS `2816f0bc…`) on an MKI and reported a functional pass: a stock-saved compressor reset, two instances across both cores, MON, Part/project reload and a power cycle. No stress, timing or maximum-load test.
+
+## Output Matrix 0.1.0 and hooked DSP without a menu entry — 9 October 2026
+
+Output Matrix is the first module whose DSP code is reached only through stock-code hooks, with no FX menu entry, beside a ColdFire unit. The packager compiles it as a requested ColdFire module and as a hooked DSP module; a hooked package without a menu entry carries no effect id or stock key. The browser's static placer puts hooked code only on the payloads its packages name, as native `build_bus.py` does (core 0 here), and the loader path refuses the module. Native octabam needed no change.
+
+- **Other modules unchanged.** Every compiled package is byte-identical outside provenance labels; the only additions are Output Matrix's DSP package, ColdFire object and patch group. `npm run module:verify -- --all --check` gives the same results for every other module on this branch as on untouched main.
+- **Native comparison.** 126 selections: 44 builds match native outside the platform writes, 82 refusals match, 0 mismatches. The first run differed in seven stock pointers to the module's constant AUDIO page tables, which were in `.data`, where the browser runtime's logger moves them; the tables moved into `.text`.
+- **Gate and hardware.** The module's `verify.py` passes 117 checks on the native image of the final source, which the author also ran on an MKII (OUTMTX13; [TESTING.md](../sdk/octabam/modules/output-matrix/TESTING.md)). `dsp_host -guard -dirty` runs dispatched effects, not the mixdown these hooks are in, so the stress run is the whole image under `ot_emu` with the stress project playing A01–A04 for 32.65 s: no hang, no late DSP read-back. `perf-audit` accepts such a run (`stress.harness: "ot_emu"`, `guard`/`dirty` null) only for code reached through stock hooks, and `module:doctor` only for a module without an effect id.
+
+## elekloader kit 0.5.0 — 9 October 2026
+
+The vendored kit moved from 0.4.0 (`a1be3ce`) to 0.5.0 (`3acac10`), elekloader's [kit-v0.5.0](https://github.com/irpina/elekloader/releases/tag/kit-v0.5.0) pre-release, with `npm run elekloader:update -- elekloader-kit-0.5.0.zip --sha256 <the release's>`. The catalog is unchanged (`a1be3ce`).
+- **The zip:** `elekloader-kit-0.5.0.zip`, sha256 `f630b0fc9e03fb3a8fc729937e8aafa4849492d438359451d89515bb1e2344ad`, the release's own, built by elekloader's kit-build workflow from `3acac10` with Node 24.19.
+- **What changed:** 10 of 32 vendored files: `README.md`, `kit.json`, the engine's `devices.ts`, `elemod.ts`, `link.ts`, `model.ts` and `version.ts`, the new `dsp.ts`, `kit/catalog.ts` and `tools/kit.ts`. The kit's worker, client, `prepare`, build steps, build log and protocol (1) are unchanged, so `digi-build.ts` is too. The engine gained the Octatrack's DSP linking, its sized RAM reserve and the Digitone's `bulk` area, which no module of the library uses. `planBuild` now takes the newest core of the oldest major line a selection allows; with this catalog's cores that is the core it took before, for every OS. The lock, the elekloader licence entry and both notices name `3acac10`. The kit's worker bundle grows from 84.1 kB to 92.0 kB.
+- **Builds:** every selection of the library, each module alone and every pair, on Digitakt 1.53 and 1.54 and Digitone 1.43 and 1.44 (116), planned and built by the 0.4.0 kit and by the 0.5.0 kit on this catalog: for all 116 the same core and mods, and the same file or the same refusal, byte for byte.
+- **Browser:** Digitakt 1.53, digihealth + NEIGHBOR + DIGISLICER built `5031993c…eebe6b`, the identity recorded for 0.4.0, and the file identity names elekloader `3acac10`. Adding SOPHIE is still refused for its conflicts with NEIGHBOR and DIGISLICER.
+- **Checks (Node 24, Windows 11):** `elekloader:check`, `licenses:check`, `modules:check`, `machines:check`, `lint`, `typecheck` and the production build pass. Vitest: 1,490 pass, and the same 7 fail as on main `335f38d` on this PC (the forum, module and site page generators, the module-source fingerprint, publication and scaffold tests). `sdk:check` fails on main too: `test_requested_imports` for `sdk/octabam/modules/analog-bassdrum/README.md`, which #367 changed without its import record. Not run: no firmware, DSP or hardware test. Stock files and builds stayed local and temporary.
+- **The catalog stays at `a1be3ce`.** elekloader's 0.5.0 catalog brings DIGISLICER 2.2 and core-dn1 2.3: taking it changes 20 Digitakt selections (DIGISLICER) and the three buildable Digitone 1.43 ones (the Mod Menu becomes a grid), and DIGISLICER's module (its imported 2.1 source, captures and memory) has to be updated first. That is a change of its own. It must not land before this kit: the 0.4.0 kit's core rule would take core 3.0, which that catalog lists, for every Digitakt build.
+
+## Analog BD 0.1.4 — 9 October 2026
+
+The owner accepted actual AB014REF05 firmware-emulator audio, then explicitly
+waived fresh physical hardware/persistence, worst-case chip timing and complete
+memory bounds for this exact source. Current hardware remains untested. The
+909 body, Tune endpoints and direct-out Attack response follow Skee Mask's
+private recordings more closely; transient-shape variation remains smaller than
+the reference and intermediate knob positions are an interpolation.
+
+Native and browser composition agree across 112 configurations: 36 matching
+builds outside existing shared platform writes, 76 matching refusals and zero
+mismatches. Both-core DSP gates cover all 128 values of ten controls, moving
+controls, all 16 trigger offsets, distinct interleaved voices and exact-image
+source/stock AMP output. Matched 909 executed instructions increase by 6.22%
+on average, with unchanged 808 output/cost and unchanged memory allocation.
+Counts are not measured chip timing. Fresh DSP-enabled control/assignment
+captures were opened and reviewed. The required Node 24 check passes 1,402
+app tests in 200 files and 86 SDK tests, catalogue/licences, lint, types and the
+production bundle. Firmware and reference audio remain private.
+See [the exact-source approval](../sdk/analog-bassdrum-build-approval.json) and
+[the testing record](../sdk/octabam/modules/analog-bassdrum/TESTING.md).
+
+## Digitakt II browser-builder preview — 10 October 2026
+
+This work adds a local, non-downloadable Modwerk preview for the Digitakt II;
+it does not mark the machine available or publish its mods. The profile stays
+`research`, the `mods` step stays `open`, and the device-specific download gate
+is false. The exact stock file remains local and no output firmware was saved
+by the browser test.
+
+The pinned source is elekloader kit 0.5.0 (`3acac10`) plus the stock-free
+site-owned overlay `sdk/imports/elekloader-digitakt2-perform-v1.0.json`, from
+toonst's v1.0 release. `npm run elekloader:update -- --overlay
+sdk/imports/elekloader-digitakt2-perform-v1.0.json` fetched the three release
+assets by their source pins, checked SHA-256, updated the generated catalog and
+lock transactionally, and passed the Elekloader vendor and licence checks.
+Catalog revision is `49b6059bec17c74170e1a09467b776ab3d556d0c8e9a6ee3f32905463f81e307`
+(six cores, 23 mods); all pre-existing package pins remain present.
+
+Modwerk's adapter maps `digitakt-ii` to `digitakt-mk2`; the catalogue importer
+retains that device, and the Elekloader planner selects only OS 1.17's DTII
+core/mod packages. Modwerk's local ELE3 reader recognizes the exact stock
+file/hash and uses a separate browser-storage key. Its legacy, unsealed ELE3
+writer and verifier explicitly refuse HMAC-sealed device profiles. The app
+offers a research-stage core preview, while the `DigiBuildPanel` test confirms
+there is no DTII download action. Existing mk1 download approvals are unchanged.
+
+The real stock OS 1.17 file was selected through the local page and identified
+as Digitakt II 1.17 by full-file hash. In the same browser, Modwerk's
+`createDigiBuilder`/`prepareBuild` worker path built `core-1.0`,
+`perform-direct-1.0` and `perform-levels-1.0` as `PB10`; SHA-256
+`9b86f3f5208d96e359cb226eed6e2e9d3df4ebb14be7e0e21213456f4cec6566`,
+2,184,480 bytes. This exactly matches the independent Elekloader build. Its
+log reports 261,380 bytes of DDR spare and 3,840 bytes of fast SRAM spare;
+sections 2, 4, 5, 7 and 8 are unchanged, with 2,303,048 bytes minimum
+in-place depack gap and 1,422,112 bytes flash headroom. The browser engine
+verified the output in memory. The app's visible build button still requires
+sign-in; this check invoked the same worker API directly in the browser.
+
+Focused checks passed: Elekloader DTII suite 18/18 without skips, required
+Elekloader unit suite 17/17, Modwerk builder/planner, profile, reader, writer
+refusal, storage isolation, catalog overlay, library-preview and download-gate
+tests (90 tests total). On current main `b51143f`, Modwerk typecheck and
+production bundle pass; lint has no errors and six warnings in existing
+community/bootstrap files. `machines:check` validates 17 profiles, including
+four SDKs, and `elekloader:check` verifies the 0.5.0 kit and 49b6059 catalog.
+
+The full app run reports 1,680 passed and 11 failed tests across seven files.
+The failures concern the current MIDI Scenes 0.2.5 qualification/source
+records, utility release fingerprints, module changelog checks and checks that
+cascade from those records; none names DTII. `npm run check -- --base
+origin/main` and `modules:generate` stop at `modules:check` because MIDI Scenes
+0.2.5 lacks the current required worst-case cycle, exact-memory and hardware
+qualification record. With Python 3.12, `sdk:check` reports 87 passed and one
+failure: `test_catalog_and_author_dependencies_remain_exact` still expects
+MIDI Scenes 0.2.4 while the current catalog pins 0.2.5. No MIDI Scenes or
+utility-release files were changed here.
+
+Remaining before public module availability: import reviewed Modwerk module
+folders with complete tutorials/screenshots and exact source provenance; add
+them to the SDK catalog only after qualification; test the exact combined
+source on a DTII unit (the author does not report the current pair tested
+together); receive owner review. No hardware was flashed, and no firmware
+download was enabled or produced.
+
+## Digitakt II integration preparation - 9 October 2026
+
+This is upstream package/build verification, not approval to enable Digitakt II
+downloads in Modwerk. The machine remains `research`, without a Modwerk SDK or
+module listing. No unit was flashed and no new emulator run was made.
+
+Inputs: elekloader `3acac10` (0.5.0), digitakt2-perform source
+`09688a6ca194dd8a9f07130a30545c6ec3816d11`, and the owner's stock OS 1.17,
+SHA-256 `26c22f6652625ac2cfd47f7ee970d388ed8b6427dae3563c0a6a2f2d334350d5`.
+The source build used `m68k-elf-*` and Python 3.9.6 on macOS.
+
+The packages downloaded from [toonst's v1.0 release](https://github.com/toonst/digitakt2-perform/releases/tag/v1.0)
+passed elekloader's shop loader checks for hashes, device identity, format and
+redistributable licence:
+
+| Package | SHA-256 |
+| --- | --- |
+| core-1.0.elemod | `95303655a9358f581b485acb68b884b394a577f5d0b373f0a3e5957c8d0ca72c` |
+| perform-direct-1.0.elemod | `601b187f5af3025234c83e8c077b1e8f4ac755a8f1a8c929ab03aff331f30732` |
+| perform-levels-1.0.elemod | `bb100389f2800401495ca3fa3a52d5974bb00434a8a70fd6f89978ec6b25d9e6` |
+
+Both mod packages reproduced byte-for-byte from source. The locally built core
+had SHA-256 `4bfb84c9f553edede11846d08eabcca815977b7fe6c4305eeacd895b9cc9854d`;
+its parsed package differed from the released core only in the `build` metadata.
+The three locally built packages linted together at 764/262144 bytes RAM and
+0/3840 bytes fast SRAM. The output checks below used the released core and mods,
+not a substituted local core.
+
+| Selection, always including core | Version | Verified SysEx SHA-256 |
+| --- | --- | --- |
+| perform-direct | PD10 | `d9a7d90d2f9750c04942d99238aeba9134d1739ab9cbc834102c169365690db1` |
+| perform-levels | PL10 | `72748884eab12062031ae1a830db067e1702d4f2216b122cfb3d293702cb92eb` |
+| Both mods | PB10 | `9b86f3f5208d96e359cb226eed6e2e9d3df4ebb14be7e0e21213456f4cec6566` |
+
+Each in-memory build passed elekloader's output verification and preserved
+stored sections 5, 2, 4, 7 and 8 exactly; only MAIN changed. The required
+`tests/test_units.py` passed 17 tests. With `ELEKLOADER_CROSS=m68k-elf-` and
+`ELEKLOADER_DT2_SYX` set to the owner's stock file, `tests/test_digitakt2.py`
+passed all 18 tests without skips, including the byte-exact stock writer check.
+
+Reproduce package creation with digitakt2-perform's `build.sh`, then use
+`python -m elekloader.patch` with the released core, each selection above,
+the corresponding `--version`, and the owner's `--stock` file. Keep all
+packages and output firmware outside tracked source.
+
+The author reports individual hardware results, with perform-direct's report
+covering an earlier version with a PERSONALIZE row. The pair is not reported
+tested on a unit. No historical hardware waiver elsewhere in this document
+applies to DTII. This initial record predates the catalog, reader and
+browser-builder preview documented above. Reviewed module records, screenshots,
+exact-version hardware qualification or an explicit owner waiver, and owner
+review remain outstanding before Modwerk can offer downloads.
 
 ## USB Audio 0.2 / Outbox 8 — 8 October 2026
 
@@ -1028,3 +1206,185 @@ still reports 111 stale mismatch rows after earlier module updates; running the
 same check on untouched current main produces exactly the same rows and result
 summaries. Air Chorus adds no mismatch to those historical records; its new
 114-profile record matches current source independently.
+
+## Sidechain Compressor's table stays in P memory: native XTABLE guard — 9 October 2026
+
+A native remix with Analog BD, Mini Verb, TapeHead and Sidechain Compressor froze the
+sequencer after one step on an Octatrack MKII. It used static stock DSP and gave up the
+three reverbs, LO-FI and DJ EQ. Because DJ EQ was given up, XTABLE had moved Sidechain's
+48-word table into the stock curve bank at X:0x4840. The identical image with the table
+left in P memory runs on the same unit. Each image was flashed once. The cause is
+open; `sdk/octabam/docs/remixer/FAILURE_MODES.md` records what was ruled out.
+
+`build_bus.py` now keeps a `stock_dsp` module's table in P memory. Such a module is
+reached only through hooks, and Sidechain Compressor is the only one with a table. The
+build log says why. Tables of dispatched effects still move to X memory. The web
+composer places module tables in P memory only, so it is unaffected.
+
+- **The remix that froze.** With the guard, it builds DSP uploads byte-identical on both
+  cores to the image that runs on the unit.
+- **A dispatched effect beside Sidechain.** A local remix with Spectrum and Sidechain, DJ
+  EQ given up, parks Spectrum's table in X and keeps Sidechain's in P.
+- **The native Analog BD matrix.** All 136 profiles were rebuilt in the pinned toolchain
+  container, one SDK copy per shard. All 130 build identities and six refusals are
+  unchanged. The 38 current-main profiles of the octabam infrastructure record were
+  rebuilt the same way: 34 images and four refusals are unchanged. Only the
+  `build_bus.py` source fingerprint moves, in both records and the import record.
+
+No new hardware run of the guarded build is claimed. Images and firmware stayed local.
+
+## VECTOR reboot regression — 9 October 2026
+
+VECTOR 0.2.4-experimental protects signed packed settings from stock Part validation while leaving selected-machine and other data checks intact. Source SHA-256 `1255e99133cbd8d6d2587c95f93462ea80fccbd169462a2acb02aedbd346cbd3`; tested five-module MAIN `cabcc2967a23a0ef719a38de444aec1b68662c12bb9057093d475b89424d0026`. All 256 host and native instance masks pass. The 3,840-case generator/writer probe retains its bounds; native commit peaks at 472,500 executed instructions/1,048 stack bytes, validation at 64,241/252. Neither is chip timing. Part/project save-reload, fresh saved-card load and battery-only restart preserve two distinct instances; transport advances. Fresh monochrome UI captures cover both SRC pages, sample editing and both backing lists.
+
+The 110-profile VECTOR matrix has 46 matching builds and 64 matching refusals. All 11 compiled artifact payloads/recipes outside VECTOR are byte-identical to current main outside global provenance/version labels. The existing Analog BD matrix, which excludes VECTOR, was rechecked against its unchanged native facts: 130 OS/GNU-loader matches, six matching refusals and five complete firmware round trips. The common worker initially saved a 466,760-byte ELEKLOADER update matching the tested private MAIN. After incorporating main `32e27ef` and Analog BD 0.1.4, the rebuilt common-worker update is 466764 bytes, SHA-256 `3e98ee1f5a1a71b674b682bef496b6fbe73e6df8a67d4b049ce07abfb3b7177a`. Its MAIN `fc8c24c97ffd5ae7b613c8fcff10caf2f9ce62d03ca4014c2a9c14262f628125` passes the original failing and saved battery-state regressions; the solo profile also passes. Only shared inventory/logger provenance differs from the qualified private image. The full local suite passes 1,406 application tests in 200 files, 86 SDK checks, lint, TypeScript and the production bundle. See [the sanitized regression record](vector-reboot-2026-10-09.json). Physical reboot/audio remain unverified under the explicit exact-version owner exception. Published deployment/download/report/notification completion is verified separately after merge.
+
+## POLY8 0.2.5 approved candidate — 8 October 2026
+
+POLY8 0.2.5-experimental uses the standard loader-free Modwerk builder, eight shared voices, one machine per Part, fixed 1/8 per-voice headroom and LOOP OFF on new assignments. The native/browser comparison records 114 selections (30 matching builds, 84 matching refusals, zero mismatches). The supported declaration matrix adds 8,192 clean combinations. The owner checked the standard-builder image in Octemu and reported “it worked”; the exact image and test limitations are in [the release evidence](../sdk/octabam/modules/poly8/evidence/release.md).
+
+The owner approved the exact experimental version with current physical hardware, chip worst-case cycles and complete memory-bound qualification waived. The historical approval retained in [the owner release record](../sdk/octabam/modules/poly8/evidence/owner-release-t10.md#historical-025-approval) binds that candidate’s native-source hash; unknown measurements remain null. Both original stock DSP uploads are unchanged. T06 results and earlier MKII failures retain their original image identities; no emulator observation is presented as a hardware or power-cycle result.
+
+
+## POLY8 0.2.6 release qualification — 9 October 2026
+
+POLY8 now shares the bounded machine chooser with Analog BD, VECTOR and FM Synth and composes with Repitch, Mute Modes, Scale Quantizer and Sidechain Compressor within native memory/menu limits. Assignment follows FLEX/STATIC: the current page remains open, and double-TRACK opens samples. Eight voices, one POLY per Part, LOOP OFF defaults and fixed 1/8 voice gain remain. The native source is `a32ed194a288c8847ad0ba110e8bca3bf266ada2227772ef813623b32a21421d`.
+
+The fresh 240-profile native/browser matrix has 186 matching builds, 54 matching refusals and zero mismatches. All 65,536 declaration selections containing POLY8 pass the native ledger; these declaration checks are not complete firmware builds. Remaining refusals in the firmware matrix reflect stock menu and code-space limits. Non-POLY shared-builder coverage preserves all 38 current-main complete images/refusals; Analog BD’s 130 builds and six refusals are unchanged. Another 143 unique retained companion profiles were rebuilt and match the browser before their stale records were refreshed.
+
+Production catalog compositions reproduce the exact tested solo T10 MAIN `0271c801ad8b77cd5890d112f72e4a14438520138dc3b587624e703f1950248e` and full eight-module MAIN `280361c83057c82a092a2d051e2468f2672e95cb1b3f90d611980a160076bc4e`. Seven current-main emulator replays pass: solo/full selection flow, LOOP/cancellation, solo/full dirty-memory retained-SRAM boot without CF, chord recording/playback/STOP/128 rapid keys, and four-machine audio/modal/128 rapid keys. Stock FLEX/STATIC controls and the earlier T09 selection-flow negative control retain their original identities. Compiled gates check 121 local PC-relative addresses, loaded startup state and all 256 mixed AB/FM/VECTOR signatures under ASAN/UBSAN. Both original stock DSP uploads remain unchanged; the dynamic DSP loader is disabled.
+
+The owner reports exact T10 “works like a charm” on MKII and approves the exact 0.2.6 source exception. Separately reported Part/project/reboot and hardware load cases, chip worst-case timing and complete memory bounds remain unverified. See [the actual owner report and exception](../sdk/octabam/modules/poly8/evidence/owner-release-t10.md) and [the sanitized exact-image software evidence](../sdk/octabam/modules/poly8/evidence/selection-flow-t10.md). The earlier 0.2.5 candidate is historical and was not publicly listed; publication and saved live-worker output are verified after the owner merge.
+
+The complete release check on main `6545261` passes 1,564 application tests in 214 files and 87 SDK checks, plus lint, TypeScript, module/catalog/licence/source checks and the production bundle. The exact owner exception and compiled source remain unchanged after that rebase.
+
+Two exhaustive compatibility cases exceeded CI’s five-second per-test limit after the larger native declaration matrix was added. Each is now partitioned into 16 disjoint groups covering the same complete selection/order assertions; the timeout is unchanged. The full local check passes again. Native compilation and Windows checks already passed for the unchanged firmware source.
+
+The catalogue-wide qualification replay is also split by module after its single sequential case reached 5.04 seconds in CI. Every source/folder/version/waiver assertion remains; each module now has an independent unchanged deadline. The full local check passes 1,564 app tests and 87 SDK checks.
+
+### Analog BD pre-boot capacity in the logger-bearing builder
+
+Native octabam omits the mandatory browser core logger. At the pre-boot staging boundary, its smaller runtime can fit a crowded Analog BD selection while the browser correctly refuses the logger-bearing image. Native comparison still requires byte-identical module-owned OS/DSP writes and non-overlapping platform/logger writes for these selections. Only the exact Analog BD boot-memory guard is accepted as this separate platform limit; unknown errors remain mismatches. Records retain `browserPlatformRefused` per selection and in the summary, distinct from matching native refusals and downloadable builds. The guard remains enabled; no unsafe firmware is generated.
+
+
+## Air Chorus 0.1.1 beta access — 9 October 2026
+
+The owner approved the optimized Air Chorus candidate for the independent Beta tester class and waived current hardware testing for its exact 0.1.1 source. Regular members still cannot browse or build it. Session-based eligibility, server build checks, revocation, audited grants, forum/profile badges and eligible-only follower notifications are covered by regression tests. The UI marks the module Beta and states that the historical T3/T4 rhythmic clicking has not been confirmed fixed.
+
+The current native/browser matrix has 118 profiles: 47 matching builds (16 identical outright, 31 outside platform writes), 71 matching refusals and zero mismatches. All 31,744 newly enabled allowed declaration selections pass the actual native ledger. Existing refused selections remain blocked; declaration records are not complete firmware builds. The exporter now accepts an explicit list of missing canonical keys and memoizes immutable source scans, while retaining all cross-module checks. Complete cached/uncached ledger results agree for 64 clean and 64 refused controls; an eight-selection exhaustive/explicit-key matrix agrees; duplicate, out-of-scope, noncanonical and native-refused requested keys fail without writing evidence.
+
+Actual-DSP parity covers 30 fixtures and 983,040 stereo frames. The matched maximum net executed instruction count falls from 524.5 to 336.75 per sample (35.80%); stock Spring is 314 under the matched benchmark. The conservative source model and unmeasured chip timing remain separate. The two-track ColdFire/DSP playback comparison remains bit-identical over 8,192 blocks without reproducing the hardware symptom. Current physical multi-instance audio, deadlines and persistence are untested. The supplied historical checkpoints do not provide current-source audio evidence. See the exact source exception and limitations in the module's TESTING.md.
+
+A normal beta member saved a 452,208-byte solo browser firmware update, SHA-256 814b5733cdd91b8ed88d45ebea865475047929c5483dc46c9fbd395455b315f9. Its decoded MAIN matches the current composer. The existing Analog BD browser matrix retains 130 native image matches, six matching refusals and five complete firmware round trips. The module doctor is green. Production deployment, the requested membership assignment, saved live output and notification counts are verified after the owner merge.
+
+The complete local check passes 1,592 application tests and 87 SDK checks, lint, TypeScript, catalogue/licence/capture-provenance checks and the production bundle. All public and beta compatibility subsets retain their assertions and deadlines; 32 disjoint groups preserve the previous work per case after adding the beta effect.
+
+## E-Verb 0.1.0-experimental — 9 October 2026
+
+E-Verb moves from the author's draft into the published FX2 catalogue. Its DSP,
+generator, native manifest and render/performance runners remain byte-identical
+to PR #376 at `e3047c0`: native source SHA-256
+`f96217aa81947846579dfe8b40aaef5624959ac13c10ae4e3b4a61050adeab7a`.
+All 26 native-image emulator render gates were independently rerun and pass.
+The browser's default solo module-owned image matches the tested MAIN
+`b776efe203efecd0ceda90f68d7fe109cc8fc13a1f07bed00303f81af2769195`
+byte for byte: Spring and Dark Reverb give up their code, while Plate Reverb's
+helper and all other stock effects remain. The browser adds its separate core
+logger and platform writes.
+
+The owner reports a positive MKII audition of `EVRB01T01`, two simultaneous
+instances on T1/T5 with distinct settings, Part/project save and reload, and a
+physical reboot. These are attributed reported passes, not agent-observed
+hardware results. Duration, eight-instance hardware load, full modulation/MIDI/
+USB coverage, recovery and chip timing remain unreported. See
+[the exact-image hardware report](../sdk/octabam/modules/everb/evidence/owner-hardware.md).
+
+[The release bounds](../sdk/octabam/modules/everb/evidence/release-bounds.md)
+supplement the author's loop-only cost with a conservative full-call assembled
+word model: 11,920 cycles per instance per 16-frame block, 47,680 per core with
+four instances and trigger splits, within the SDK's 49,920 module allowance.
+This models neither bus contention nor whole-chip wall-clock timing. Exact
+reserved memory, including stock X padding, totals 409,380 bytes for eight
+instances. The original matched Spring/DJ EQ instruction benchmarks and
+32-second eight-instance software stress retain their original limits.
+
+Native-generated placement facts include E-Verb's priority and free effect ID
+27. That omitted ID already resolves to OFF/null on both stock cores, so the
+extra omitted-ID writes are no-ops for other selections. All existing compiled
+payloads and recipes are unchanged outside global provenance/version metadata.
+Before main advanced, the broader browser replay of 12 retained native records
+reported the same 80 stale comparisons with identical output on untouched main
+`306e3dc`; those rows involve earlier Analog BD companion images. The release
+subsequently integrates main `f684770`, preserving Air Chorus 0.1.1 beta access
+and its freshly compiled payload. All 36 existing payload/recipe/placement asset
+files match that main after excluding E-Verb additions and global provenance.
+The broader 12-record browser replay is also byte-identical to the replay on
+untouched `f684770`, with the same 80 pre-existing Analog BD companion mismatches.
+
+The fresh E-Verb native comparison covers 122 profiles: 44 matching module-owned
+images (16 identical outright and 28 outside separately verified platform
+writes), 78 matching refusals, and zero mismatches. Changed stock firmware is
+refused. The exhaustive 131,072-selection native declaration scan finds 94,208
+clean and 36,864 refused combinations; immutable source-fact memoization matches
+uncached checks on 529 varied selections. After the main update, the production
+exporter additionally verifies all 51,712 missing allowed E-Verb/Air Chorus beta
+combinations as clean. Existing declaration records are preserved.
+
+## Digi Mono repeated-SRC release preparation — 11 October 2026
+
+PR [#424](https://github.com/repeat98/modwerk/pull/424) replaces only Digi Mono's two 0.13b catalog pins with source-built 0.13.2-experimental objects from Modwerk source/package commit `48a9b5ade88052d4fb0130d87a79be64935d4d9d`. The upstream author and MIT notice are preserved. The transactional catalog updater verifies both package hashes; kit 0.5.0, cores and other module pins are unchanged. Evidence and exact private-image identities are recorded in [Digi Mono testing](../sdk/digitakt/modules/digimono/TESTING.md).
+
+Owner repeat98 explicitly approved this exact 0.13.2-experimental source and the two D180 private images on 11 October 2026, with issue #180 closure gated on live-download verification. The scope and literal approval are in Digi Mono’s evidence JSON. Physical hardware, audio, timing, complete runtime memory bounds, persistence, reboot and stress remain unverified. A passing PR does not establish a saved live download.
+
+## Mini Verb mixer regression — 11 October 2026
+
+Mini Verb 0.2.1-experimental fixes clipping when the wide wet-minus-dry
+difference entered a 24-bit multiplier register. A measured raw-wet oracle
+reproduces the 0.2.0 error at 0.9 FS / MIX 32 on both DSP cores without final
+mixed-output clipping. Scaling the difference before multiplication and
+restoring it in the accumulator passes the regression. All 53 DSP checks pass,
+including exact dry, bounded low-level quantization, eight-instance isolation,
+dirty-state guards and a 30-second moving render. The change adds four program
+words, no state and 1.096% executed instructions with eight moving instances.
+
+The current native/browser matrix has 126 selections: 52 matching builds,
+74 matching refusals and zero mismatches; a modified original is refused.
+Both chooser profiles of #428's saved six-module selection also match native
+module-owned writes outside platform differences. Exact candidate images,
+source hashes and packaging identities are in the module's TESTING.md. Real
+LCD captures match that candidate. Separate native T1/T5 THRU runs produce
+nonzero audio without output clipping or emulator failure; their private
+diagnostic emulator extends the bounded checksum watchdog. Those moderate
+input runs do not confirm the reporter's hardware noise.
+
+Physical hardware, played automation, Part/project/reboot persistence, chip
+timing and complete runtime bounds remain unverified. The original noise
+symptom is unconfirmed. The owner explicitly approved this exact 0.2.1 source and the two I428
+private updates with those limits disclosed on 11 October 2026. This is a new
+source-bound exception, not an extension of 0.2.0. Report #428 remains open
+until reporter confirmation; publication and saved live-download verification
+are separate steps.
+
+## E-Verb FUNC stops — 11 October 2026
+
+E-Verb 0.1.1-experimental fixes #438: holding FUNC and turning SIZE, DCY, ABSB
+or SPD jumped between 0 and 127 only. The FX page word at P+0x12a is a knob's
+edit handler, and E-Verb's clone of DARK REV's page inherited stock's two-stop
+editor on those four slots. 0.1.1 writes stock's three-stop editor (0, 64, 127,
+as on the stock reverbs' MIX and BAL) on all six plain knobs. The private
+image differs from 0.1.0's tested `b776efe2…` in exactly four descriptor bytes;
+both DSP memory images are byte-identical, all 27 render gates pass and the
+matched benchmark reproduces 0.1.0's figures.
+
+Driven through the firmware's own panel code on the ColdFire emulator with FUNC
+held, all six main-page knobs step through 0, 64 and 127 on 0.1.1; the same run
+on 0.1.0 reproduces the report on the four knobs. The native/browser matrix has
+126 selections: 48 matching module-owned images (18 identical outright, 30
+outside platform writes), 78 matching refusals and zero mismatches; a modified
+original is refused. The rebuilt packages change only E-Verb's version, its
+descriptor recipe and source provenance. The Analog BD composition proofs,
+re-exported natively on this tree, are identical apart from the source-tree pin;
+E-Verb is in none of them.
+
+No hardware result exists for 0.1.1; the owner's MKII report covers 0.1.0.
+Publication needs the owner's approval of this exact source.

@@ -20,6 +20,7 @@ describe('elemod SDK scaffold', () => {
         expect(() => requireModwerkPublication(document)).toThrow()
         for (const file of ['README.md', 'TESTING.md', 'LICENSE', 'src/main.c', 'media/thumbnail.svg']) expect(existsSync(resolve(folder, file))).toBe(true)
         expect(readFileSync(resolve(folder, 'LICENSE'), 'utf8')).toContain('GNU GENERAL PUBLIC LICENSE')
+        expect(readFileSync(resolve(folder, 'LICENSE'), 'utf8')).not.toContain('Elastic License')
       }
       const refused = spawnSync(process.execPath, ['scripts/scaffold-module.mjs', 'proof-x', '--machine', 'syntakt', '--author', 'example-author', '--output', output], { encoding: 'utf8' })
       expect(refused.status).not.toBe(0)

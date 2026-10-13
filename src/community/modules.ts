@@ -1,22 +1,29 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 import { MODULES } from '../catalog/modules'
 import { moduleSlug } from '../catalog/module-links'
 import { MODULE_DOCUMENTS_BY_ID } from '../catalog/documents'
 import MACHINE_MODULES from '../catalog/machine-modules.json'
 import type { ModwerkModule } from '../catalog/module-contract-v3'
-import { deviceHref } from '../devices/registry'
+
+// Reviewed maintainer opt-outs apply independently of authorship and source credits.
+// Sam Banks asked to be removed as a maintainer on 12 October 2026.
+const MAINTAINER_OPT_OUTS: ReadonlySet<string> = new Set(['sambanks'])
+const activeMaintainers = (logins: readonly string[]) => logins.filter(login => !MAINTAINER_OPT_OUTS.has(login.toLowerCase()))
 
 /** Community IDs are unique across machines; configuration IDs stay native to each SDK. */
 export const COMMUNITY_MODULES = [
   ...MODULES.map(module => ({
     id: module.id, moduleId: module.id, machine: 'octatrack', name: module.name,
-    version: module.version, author: module.author, maintainers: [module.author],
+    version: module.version, author: module.author, maintainers: activeMaintainers([module.author]),
     href: '#module/' + moduleSlug(module.id), sourcePath: 'sdk/octabam/modules/' + module.id, summary: module.description,
     evidence: MODULE_DOCUMENTS_BY_ID[module.id].tests.summary,
   })),
   ...(MACHINE_MODULES.modules as ModwerkModule[]).map(module => ({
     id: module.machine + '-' + module.id, moduleId: module.id, machine: module.machine,
     name: module.name, version: module.version, author: module.author.github,
-    maintainers: module.maintainers, href: deviceHref(module.machine, 'module/' + module.id),
+    // Internal account-return and notification routes retain hashes; routing upgrades public navigation to paths.
+    maintainers: activeMaintainers(module.maintainers), href: '#' + module.machine + '/module/' + module.id,
     sourcePath: 'sdk/' + module.machine + '/modules/' + module.id, summary: module.presentation.summary,
     evidence: module.evidence.tier,
   })),

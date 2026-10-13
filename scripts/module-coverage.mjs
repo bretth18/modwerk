@@ -57,6 +57,12 @@ export function coverageSelections(id, pool, { sample = 24 } = {}) {
   for (const other of others) add([other])
   add(light)
   for (const left of light) add(light.filter(module => module !== left))
+  // POLY8 owns a shared chooser and dispatch bridge. Exercise every requested
+  // companion subset, including FM's bundled quantizer and sidechain mute key.
+  if (id === 'poly8') {
+    const companions = ['analog-bassdrum', 'vector', 'synth', 'quantizer', 'repitch', 'mute-modes'].filter(module => pool.includes(module))
+    for (let mask = 0; mask < 1 << companions.length; mask++) add([...companions.filter((_module, bit) => mask & (1 << bit)), ...(pool.includes('sidechain-compressor') ? ['sidechain-compressor'] : [])])
+  }
   const next = random(id + ':' + pool.join(','))
   let added = 0
   for (let tries = 0; added < sample && tries < sample * 50; tries++) {

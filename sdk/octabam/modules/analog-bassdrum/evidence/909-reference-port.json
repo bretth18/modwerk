@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "candidateVersion": "0.1.4-experimental",
+  "privateFirmwareLabel": "AB014REF05",
+  "conditions": [
+    "LPF bypass: TUNE 0 / ATK 0 on core A",
+    "LPF bypass: TUNE 0 / ATK 127 on core A, eight complete repeated hits",
+    "LPF bypass: TUNE 127 / ATK 0 on core B"
+  ],
+  "toolFiles": {
+    "port.py": "701876d0fd8ee26eb798d743cffd4d18fad1e603994a78b80bb359e17046a4f9",
+    "source_probe.py": "dc3e3411243a8b0b293b25702ae32a17942cd048699e0fb77618d60bd4008488"
+  },
+  "reports": [
+    {
+      "schema": 1,
+      "date": "2026-10-09",
+      "candidateVersion": "0.1.4-experimental",
+      "sourceFiles": {
+        "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+        "fit909.json": "6917d613b5033069f226b9f6a440f6eefd935e596452546d5bc27b73c5e3dd08",
+        "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+      },
+      "mainOsSha256": "84c5a0fa1101dd531ea4e03cb60224c194cb9b5d8b77fae3754d9412a26b5c91",
+      "controls": [
+        49,
+        100,
+        0,
+        0,
+        64,
+        0,
+        1,
+        72,
+        0,
+        64,
+        64,
+        0
+      ],
+      "bpm": 70,
+      "frames": 5000,
+      "core": 0,
+      "bothEnginesHavePostAmpAudio": true,
+      "mainStereoNonzero": true,
+      "triggerCount": 6,
+      "sourceReferenceErrorDb": -72.10684175297072,
+      "stockAmpGain": 0.2539310425334204,
+      "stockAmpDelaySamples": 48,
+      "stockAmpSourceResidualDb": -118.58422149334157,
+      "sourcePeak": 0.3517417907714844,
+      "actualTrackPeak": 0.08835399150848389,
+      "listeningCompensationGain": 3.938077007140188,
+      "listeningWavSha256": "6a99877c1ff185859d0056cb4969cfb7c99620aa26322899bdc00716f9baf75c",
+      "physicalHardware": "untested",
+      "maximumFxLoad": "untested"
+    },
+    {
+      "schema": 1,
+      "date": "2026-10-09",
+      "candidateVersion": "0.1.4-experimental",
+      "sourceFiles": {
+        "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+        "fit909.json": "6917d613b5033069f226b9f6a440f6eefd935e596452546d5bc27b73c5e3dd08",
+        "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+      },
+      "mainOsSha256": "84c5a0fa1101dd531ea4e03cb60224c194cb9b5d8b77fae3754d9412a26b5c91",
+      "controls": [
+        49,
+        100,
+        0,
+        127,
+        64,
+        0,
+        1,
+        72,
+        0,
+        64,
+        64,
+        0
+      ],
+      "bpm": 70,
+      "frames": 20000,
+      "core": 0,
+      "bothEnginesHavePostAmpAudio": true,
+      "mainStereoNonzero": true,
+      "triggerCount": 18,
+      "sourceReferenceErrorDb": -72.70344993406172,
+      "stockAmpGain": 0.25393104270333433,
+      "stockAmpDelaySamples": 48,
+      "stockAmpSourceResidualDb": -118.13428784024711,
+      "sourcePeak": 0.6597061157226562,
+      "actualTrackPeak": 0.16751980781555176,
+      "listeningCompensationGain": 3.9380770045050864,
+      "listeningWavSha256": "e7a9a79a37c0043dbd89beed11062354a21c812466bd904c8b8cc4adc681db3f",
+      "physicalHardware": "untested",
+      "maximumFxLoad": "untested"
+    },
+    {
+      "schema": 1,
+      "date": "2026-10-09",
+      "candidateVersion": "0.1.4-experimental",
+      "sourceFiles": {
+        "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+        "fit909.json": "6917d613b5033069f226b9f6a440f6eefd935e596452546d5bc27b73c5e3dd08",
+        "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+      },
+      "mainOsSha256": "84c5a0fa1101dd531ea4e03cb60224c194cb9b5d8b77fae3754d9412a26b5c91",
+      "controls": [
+        49,
+        100,
+        127,
+        0,
+        64,
+        0,
+        1,
+        72,
+        0,
+        64,
+        64,
+        0
+      ],
+      "bpm": 70,
+      "frames": 5000,
+      "core": 1,
+      "bothEnginesHavePostAmpAudio": true,
+      "mainStereoNonzero": true,
+      "triggerCount": 6,
+      "sourceReferenceErrorDb": -72.08661099430805,
+      "stockAmpGain": 0.25393104671623895,
+      "stockAmpDelaySamples": 48,
+      "stockAmpSourceResidualDb": -118.56408286263093,
+      "sourcePeak": 0.35181713104248047,
+      "actualTrackPeak": 0.08835470676422119,
+      "listeningCompensationGain": 3.9380769422711546,
+      "listeningWavSha256": "6ffbbef2786e35813ac92eaa65fc1bcc6d2c508172f4f3f7571d5a7d5350dde9",
+      "physicalHardware": "untested",
+      "maximumFxLoad": "untested"
+    }
+  ]
+}

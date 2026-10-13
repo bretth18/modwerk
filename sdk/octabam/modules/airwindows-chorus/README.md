@@ -65,6 +65,8 @@ a successful 50-minute test with several distinct instances and full knob
 sweeps on the earlier image. The initialization update has a current-image
 hardware waiver; its software renders match the tested version.
 
+**Audio preview.** [Listen](media/audio-preview.mp3). One pad, played three times: dry, then the plugin defaults (SPD 64, RNG 64, MIX 64), then faster and wider (SPD 84, RNG 92, MIX 96). Each pass is level-matched to the dry one. It is an offline render on a computer through the module's own code, not a recording of an Octatrack. The sample, settings and method are in [audio-preview.json](media/audio-preview.json); rights are in [media rights](media/LICENSE.md).
+
 ## Compatibility and limitations
 
 - Target: original Octatrack OS 1.40C, MKI/MKII architecture;
@@ -111,3 +113,28 @@ fixture private. Only sanitized text evidence and actual UI exports belong here.
 See [TESTING.md](TESTING.md) for full cycle, memory, stock-comparison and sound-quality results. No shareable hardware audio recording was supplied.
 
 [Initial dry controls](media/ot-controls.png) · [Return to dry](media/ot-dry.png)
+
+## Beta 0.1.1 — 9 October 2026
+
+The owner requested publication of the staged full-range optimization for beta testers and explicitly waived current hardware evidence: “also bring the air chorus fix live with it. no hardware evidence is fine, that's exactly what the beta tester tier is for”. This exception is bound to 0.1.1 and its exact source in `sdk/airwindows-chorus-build-approval.json`. The earlier 0.1.0 measurements and hardware report above remain historical.
+
+The optimization retains the original arithmetic, delay range, smoothing and parameter layout. Recorded actual-DSP parity covers 30 fixtures and 983,040 stereo frames. The matched observed maximum is 336.75 net executed instructions/sample, down from 524.5 (35.80%); matched Spring is 314 and stock Chorus is 292.875. Both cores, fixed/moving settings and all trigger splits are covered. The conservative source-word/call model is 495 units/sample and 32,044 units for four instances plus initialization per core/block; these are not chip cycles or a deadline guarantee. Shared code/table is 1,425 P words per core; per-instance state and stereo ring are unchanged.
+
+The real ColdFire/DSP playback fixture exercised T3/T4 MIX delivery over 8,192 blocks; published and optimized per-track output was bit-identical, without output rails. It did not reproduce the reported hardware clicking. This release reduces load as a mitigation; it does not establish a confirmed fix. Current physical timing, multi-instance audio, Part/project reload and reboot are **not tested**. Keep the clicking report open pending actual beta results. Begin with a disposable project and low monitoring volume.
+
+## Beta 0.1.2 — 9 October 2026
+
+Protects stock shared data in the T3/T7 FX2 buffers by keeping the first 72
+virtual delay words in safe per-instance X offsets 60..131. Stock track state
+at offset 132 and above remains untouched. The old collision is reproduced
+and the regression passes; the audible hardware symptom still needs
+confirmation. Physical tests remain owner-waived for this beta.
+
+All 1,026 original sine values are reconstructed exactly from 256 packed
+second-difference words. The full delay range, sound, controls and saved
+parameter layout stay the same. The code/table total drops from 1,425 to 795
+words per core, enabling E-Verb and more Analog BD companion combinations.
+The builder can place table and code separately, removes stock reverb donors
+as needed and still refuses combinations that exceed available memory.
+See [the current test record](TESTING.md#beta-012--shared-word-protection-and-wider-compatibility)
+for matched DSP cost, native composition evidence and remaining limits.

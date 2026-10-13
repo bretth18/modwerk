@@ -33,21 +33,20 @@ import { moveDiscussionIssueDraft, saveDiscussionIssueDraft } from './discussion
 import { profileHref } from '../routing'
 import { GetStarted } from './GetStarted'
 function errorText(error:unknown){return error instanceof Error?error.message:'The request could not be completed.'}
-/** The forum home's reason to click: what other people posted since the member's previous visit. Hidden on the first visit. */
+/** Unread activity since the member's previous visit. Hidden on the first visit and once everything is read. */
 function SinceVisit({onReadAll}:{onReadAll:()=>void}){
   const [visit,setVisit]=useState<ForumVisit|null>(null),[busy,setBusy]=useState(false)
   useEffect(()=>{let cancelled=false;void api<ForumVisit>('/forum/visit').then(value=>{if(!cancelled)setVisit(value)}).catch(()=>{});return()=>{cancelled=true}},[])
-  if(!visit?.since)return null
-  const quiet=!visit.newThreads&&!visit.newReplies&&!visit.unreadFollowed
+  if(!visit?.since||(!visit.newThreads&&!visit.newReplies&&!visit.unreadFollowed))return null
   async function readAll(){setBusy(true);try{await post('/forum/read-all',{});setVisit(current=>current&&{...current,newThreads:0,newReplies:0,unreadFollowed:0});onReadAll()}catch{/* the list keeps its markers; the next visit tries again */}finally{setBusy(false)}}
   return <section className="forum-since-visit" aria-labelledby="forum-since-title">
     <div className="forum-since-copy"><h2 id="forum-since-title">Since your last visit</h2><p><ForumTime value={visit.since} relative/></p></div>
-    {quiet?<p className="forum-since-quiet">You’re all caught up.</p>:<ul>
-      <li><a href="#forum?sort=newest"><strong>{visit.newThreads}</strong>new {visit.newThreads===1?'thread':'threads'}</a></li>
-      <li><a href="#forum?following=1&unread=1"><strong>{visit.newReplies}</strong>new {visit.newReplies===1?'reply':'replies'} in threads you follow</a></li>
+    <ul>
+      {!!visit.newThreads&&<li><a href="#forum?sort=newest&unread=1"><strong>{visit.newThreads}</strong>new {visit.newThreads===1?'thread':'threads'}</a></li>}
+      {!!visit.newReplies&&<li><a href="#forum?following=1&unread=1"><strong>{visit.newReplies}</strong>new {visit.newReplies===1?'reply':'replies'} in threads you follow</a></li>}
       {!!visit.unreadFollowed&&<li><a href="#forum?following=1&unread=1"><strong>{visit.unreadFollowed}</strong>unread followed {visit.unreadFollowed===1?'thread':'threads'}</a></li>}
-    </ul>}
-    {!quiet&&<button type="button" className="button button-quiet" disabled={busy} onClick={()=>void readAll()}><Icon name="check" size={14}/>Mark all as read</button>}
+    </ul>
+    <button type="button" className="button button-quiet" disabled={busy} onClick={()=>void readAll()}><Icon name="check" size={14}/>Mark all as read</button>
   </section>
 }
 function ForumList({query,profile,machineHint}:{query:URLSearchParams;profile?:string;machineHint?:string}){

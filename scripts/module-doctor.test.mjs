@@ -3,7 +3,8 @@ import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
-const doctor = (...args) => spawnSync(process.execPath, ['scripts/module-doctor.mjs', ...args], { cwd: root, encoding: 'utf8' })
+const catalogCheckTimeout = 30_000
+const doctor = (...args) => spawnSync(process.execPath, ['scripts/module-doctor.mjs', ...args], { cwd: root, encoding: 'utf8', timeout: catalogCheckTimeout })
 
 // Owner requirement, 6 October 2026: every module always integrates with the existing workflows. This is that requirement, enforced.
 describe('module doctor', () => {
@@ -12,10 +13,11 @@ describe('module doctor', () => {
     expect(result.stdout + result.stderr).not.toContain('✗')
     expect(result.status).toBe(0)
     for (const id of ['miniverb', 'sidechain-compressor', 'analog-bassdrum', 'midi-scenes', 'digihealth']) expect(result.stdout).toContain(id)
-  })
+  // The full catalogue shares CPU with app checks; this is an integration check, not a five-second performance gate.
+  }, catalogCheckTimeout + 5000)
   it('names the failing integration point and the command that fixes it', () => {
     const result = doctor('no-such-module')
     expect(result.status).toBe(2)
     expect(result.stderr).toContain('No module named no-such-module')
-  })
+  }, catalogCheckTimeout + 5000)
 })

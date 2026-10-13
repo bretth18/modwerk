@@ -12,7 +12,8 @@ export function renderActivityEmail(items: ActivityEmailItem[], urls: { app: str
   const lines = notificationLines(items, target => new URL(target, app).href)
   const notesById = new Map(items.filter(item => item.kind === 'module_update' && item.releaseNotes?.version === item.module_version).map(item => [item.id, item.releaseNotes!]))
   const total = items.length + more
-  const subject = (lines.length === 1 && !more ? lines[0].text : `${total} new ${total === 1 ? 'notification' : 'notifications'} on Modwerk`).replace(/[\r\n]+/g, ' ').slice(0, 150)
+  const releasesOnly = items.every(item => item.kind === 'module_update')
+  const subject = (releasesOnly ? `Your daily Modwerk module updates (${total})` : lines.length === 1 && !more ? lines[0].text : `${total} new ${total === 1 ? 'notification' : 'notifications'} on Modwerk`).replace(/[\r\n]+/g, ' ').slice(0, 150)
   const footer = `You receive activity email because it is on for your Modwerk account.`
   const text = [`What's new on Modwerk`, '', ...lines.flatMap(line => {
     const notes = notesById.get(line.ids[0])

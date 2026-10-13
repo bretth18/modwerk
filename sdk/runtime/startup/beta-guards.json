@@ -1,0 +1,12 @@
+{
+  "loop": {
+    "address": 1074092486,
+    "length": 6,
+    "sha256": "cc2d247377b56d94b8b365271908c601688b8c982ff5feb87b3d3b74e407c4c6"
+  },
+  "draw": {
+    "address": 1073822894,
+    "length": 6,
+    "sha256": "7bab736d872b498c877bc8fff13026ea365d5ed1f2b355ffb839d5465dd96457"
+  }
+}

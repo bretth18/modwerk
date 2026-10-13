@@ -1,4 +1,4 @@
-import { createStartupAnimationWrites } from './startup-animation.ts'
+import { installStartup, BETA_STARTUP_IDENTITY, MIDI_SCENES_STARTUP_ROM_ADDRESS } from './beta-startup.ts'
 // Keep the pinned standalone MIDI Scenes code and its 12-page reservation intact.
 // The core logger takes the top 16 pages, separated from the sample arena by
 // one guard page. All MIDI Scenes base pointers stay intact.
@@ -41,15 +41,16 @@ export async function extendMidiScenesArena(author: Uint8Array, writes: readonly
   return adjusted.filter((write): write is OsWrite => write !== null)
 }
 
-export async function composeLoggedMidiScenes(original: Uint8Array) {
+export async function composeLoggedMidiScenes(original: Uint8Array, betaAccess = false) {
   const author = await reconstructMidiScenes(original, recipe as MidiScenesPatch)
   // Do not ask the legacy native module inventory to load the standalone image.
-  const runtime = await createStaticColdFireRuntime([], original, MIDI_SCENES_LOGGER_BASE)
+  const runtime = await createStaticColdFireRuntime([], original, MIDI_SCENES_LOGGER_BASE, undefined, betaAccess, MIDI_SCENES_STARTUP_ROM_ADDRESS)
   const chooser = defaultChoosers([], true), reservedBytes = MIDI_SCENES_RESERVE_BYTES + MIDI_SCENES_LOGGER_GUARD_BYTES + runtime.reserveBytes
-  const logging = await installCoreLogger(runtime, original, ['midi-scenes'], { ...chooser, hidden: [] })
+  const logging = await installCoreLogger(runtime, original, ['midi-scenes'], { ...chooser, hidden: [] }, betaAccess ? BETA_STARTUP_IDENTITY : undefined)
   const plan = createPlatformOsWrites(runtime, [], { loader: false, reserveBytes: reservedBytes, runtimeBase: runtime.base })
   const writes = await extendMidiScenesArena(author, plan)
-  const patched = await applyGuardedOsWrites(author, [...writes, ...logging.writes, ...createStartupAnimationWrites()])
+  const startup = await installStartup(runtime, original, betaAccess, MIDI_SCENES_STARTUP_ROM_ADDRESS)
+  const patched = await applyGuardedOsWrites(author, [...writes, ...logging.writes, ...startup])
   const bootstrap = await createRuntimeBootstrap(runtime.bytes, runtime.reserveBytes - LOGGER_RETAINED_BYTES, runtime.base, runtime)
   const bytes = new Uint8Array(patched.length + bootstrap.append.length)
   bytes.set(patched); bytes.set(bootstrap.append, patched.length)

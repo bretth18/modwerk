@@ -1,0 +1,254 @@
+{
+  "version": "0.2.1-experimental",
+  "moduleSources": {
+    "miniverb.asm": "54f718c47683c8620e2cbeef0fd814583eacfca31051ced637ced287bfbdb283",
+    "manifest.py": "e18af286c50d9778cb60ddbe8b9348c4b4a71c04cb45171419d4d2a6681cc31c",
+    "verify.py": "1322d1e5f5335de0a38a6a2067d5456aa95eaa3c42f9ec4836fa7f9b056bf752"
+  },
+  "images": [
+    {
+      "name": "miniverb",
+      "ids": [
+        "miniverb"
+      ],
+      "bytes": 1117498,
+      "dsp": [
+        {
+          "core": 0,
+          "tag": "A",
+          "region": {
+            "base": 4690,
+            "words": 1063
+          },
+          "placed": [
+            {
+              "key": "MINIVERB",
+              "address": 4690,
+              "words": 536
+            }
+          ],
+          "nulledDonors": [
+            "SPRING REV"
+          ]
+        },
+        {
+          "core": 1,
+          "tag": "B",
+          "region": {
+            "base": 4114,
+            "words": 1063
+          },
+          "placed": [
+            {
+              "key": "MINIVERB",
+              "address": 4114,
+              "words": 536
+            }
+          ],
+          "nulledDonors": [
+            "SPRING REV"
+          ]
+        }
+      ],
+      "mainOsSha256": "2a517bc54a92fbf811a3f7366ce27713fdcbdb1aeb2ebbd9bd9c2368ba317cfa",
+      "update": {
+        "firmwareLabel": "ELEKLOADER",
+        "bytes": 450376,
+        "sha256": "f0c5f31449f5b6c16d1a88e6c52f3687f4c8d11b4e4335fac2b365632fa516dc",
+        "privateFilename": "I428-miniverb-0.2.1-experimental.bin"
+      }
+    },
+    {
+      "name": "reported",
+      "ids": [
+        "miniverb",
+        "tapeecho",
+        "tapehead",
+        "usb-audio-out-tracks-main-cue",
+        "synth",
+        "sidechain-compressor"
+      ],
+      "bytes": 1234850,
+      "dsp": [
+        {
+          "core": 0,
+          "tag": "A",
+          "region": {
+            "base": 4096,
+            "words": 1657
+          },
+          "placed": [
+            {
+              "key": "TAPE ECHO",
+              "address": 4096,
+              "words": 5
+            },
+            {
+              "key": "MINIVERB",
+              "address": 4101,
+              "words": 536
+            },
+            {
+              "key": "TAPEHEAD",
+              "address": 4637,
+              "words": 422
+            },
+            {
+              "key": "SIDECHAIN_COMPRESSOR",
+              "address": 5059,
+              "words": 388
+            }
+          ],
+          "nulledDonors": [
+            "PLATE REV",
+            "SPRING REV"
+          ]
+        },
+        {
+          "core": 1,
+          "tag": "B",
+          "region": {
+            "base": 3520,
+            "words": 1657
+          },
+          "placed": [
+            {
+              "key": "TAPE ECHO",
+              "address": 3520,
+              "words": 5
+            },
+            {
+              "key": "MINIVERB",
+              "address": 3525,
+              "words": 536
+            },
+            {
+              "key": "TAPEHEAD",
+              "address": 4061,
+              "words": 422
+            },
+            {
+              "key": "SIDECHAIN_COMPRESSOR",
+              "address": 4483,
+              "words": 388
+            }
+          ],
+          "nulledDonors": [
+            "PLATE REV",
+            "SPRING REV"
+          ]
+        }
+      ],
+      "mainOsSha256": "af3dddc8263846bcd63e6487e753730d77b1c1c372b893bab143c252c4b0f3b8",
+      "update": {
+        "firmwareLabel": "ELEKLOADER",
+        "bytes": 580116,
+        "sha256": "72dab691058497b1ac2e429aa6e639d2b2887e6ddb57abbe2de539df43467f49",
+        "privateFilename": "I428-reported-0.2.1-experimental.bin"
+      }
+    }
+  ],
+  "stockMainSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+  "toolchainImage": "sha256:445effdc2b5446de89bd70ba0f7632222e98cd29e749c3f059668cb246c060a5",
+  "preparation": "Source-only development packages; normal composeSelection with only the pending Mini Verb version adjusted in process memory. Catalogue generation and release approval remain gated. Normal post-approval composition must reproduce these exact hashes.",
+  "qualification": "Composition, packaging decode integrity and reviewed current LCD only; hardware, chip timing and complete runtime bounds unverified. Mini Verb has no per-module boot version tag.",
+  "nativeSavedSelectionComparison": {
+    "moduleVersion": "0.2.1-experimental",
+    "summary": {
+      "selections": 2,
+      "built": 2,
+      "mismatches": 0
+    },
+    "selections": [
+      {
+        "moduleIds": [
+          "miniverb",
+          "tapeecho",
+          "tapehead",
+          "usb-audio-out-tracks-main-cue",
+          "synth",
+          "sidechain-compressor"
+        ],
+        "keepStockFx2": true,
+        "menu": {
+          "fx1": [
+            "FILTER",
+            "EQUALIZER",
+            "DJ EQ",
+            "PHASER",
+            "FLANGER",
+            "CHORUS",
+            "SPATIALIZER",
+            "COMB FILTER",
+            "SIDECHAIN_COMPRESSOR",
+            "LO-FI",
+            "TAPEHEAD"
+          ],
+          "fx2": [
+            "FILTER",
+            "EQUALIZER",
+            "DJ EQ",
+            "PHASER",
+            "FLANGER",
+            "CHORUS",
+            "SPATIALIZER",
+            "COMB FILTER",
+            "SIDECHAIN_COMPRESSOR",
+            "LO-FI",
+            "DELAY",
+            "DARK REV",
+            "MINIVERB",
+            "TAPE ECHO",
+            "TAPEHEAD"
+          ],
+          "hidden": []
+        },
+        "bytes": 1230129,
+        "sha256": "445194cbfacf27bbb6f7b6d575c90da2bc4b078ea15a31e5137195ba2b187d10",
+        "osSha256": "60dc6150eda9ad844e629914a4ce065a9edcbaec83e05100b521523bb93a7381",
+        "maskedOsSha256": "a7e3a9c0ac6005b343d97d37d9c92013fc0aa60a89ff80cb519d937f1c46b212",
+        "appendSha256": "00168d2fdb71c7273215ebf27f7758b8712c57d77e99ef9c992e6a1be36597d8",
+        "result": "masked"
+      },
+      {
+        "moduleIds": [
+          "miniverb",
+          "tapeecho",
+          "tapehead",
+          "usb-audio-out-tracks-main-cue",
+          "synth",
+          "sidechain-compressor"
+        ],
+        "keepStockFx2": false,
+        "menu": {
+          "fx1": [
+            "FILTER",
+            "EQUALIZER",
+            "DJ EQ",
+            "PHASER",
+            "FLANGER",
+            "CHORUS",
+            "SPATIALIZER",
+            "COMB FILTER",
+            "SIDECHAIN_COMPRESSOR",
+            "LO-FI",
+            "TAPEHEAD"
+          ],
+          "fx2": [
+            "MINIVERB",
+            "TAPE ECHO",
+            "TAPEHEAD",
+            "SIDECHAIN_COMPRESSOR"
+          ],
+          "hidden": []
+        },
+        "bytes": 1230129,
+        "sha256": "7d32842f4aa80c4f5e77c101e576237c1ee4c31c9ef90decebbc7ebfcd8bca64",
+        "osSha256": "e545f7c39f07df3ac89b2af5a9def7c5b41e3e6a8791107d58d64f3ba9a6fc0f",
+        "maskedOsSha256": "1ca7698d90aabceae85bc4fe6eddf497d896977f026a3fc07fb8032df6b8dff8",
+        "appendSha256": "00168d2fdb71c7273215ebf27f7758b8712c57d77e99ef9c992e6a1be36597d8",
+        "result": "masked"
+      }
+    ]
+  }
+}

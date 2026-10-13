@@ -10,6 +10,15 @@ const entry = { version: '1.0.0-experimental', date: '2026-10-07', changes: ['Co
 const fixture = (entries = [entry]) => ({ schemaVersion: 1, modules: { euclid: entries } })
 
 describe('module release notes', () => {
+  it('preserves an explicit announcement choice without enabling it by default', () => {
+    expect(parseModuleChangelogs(fixture()).euclid[0].announce).toBeUndefined()
+    for (const announce of [true, false]) {
+      const notes = parseModuleChangelogs({ schemaVersion: 1, modules: { euclid: [{ ...entry, announce }] } })
+      expect(notes.euclid[0].announce).toBe(announce)
+    }
+    expect(() => parseModuleChangelogs({ schemaVersion: 1, modules: { euclid: [{ ...entry, announce: 'true' }] } })).toThrow('Invalid announcement opt-in')
+  })
+
   it('covers every current catalog release across all three instruments', () => {
     const notes = parseModuleChangelogs(data, COMMUNITY_MODULES)
     expect(Object.keys(notes).length).toBe(COMMUNITY_MODULES.length)
@@ -50,7 +59,9 @@ describe('module release notes', () => {
     expect(html).toContain('module-release-notes')
     expect(html).toContain('Current version')
     expect(html).toContain('View changes')
-    expect(html).toContain(moduleChangelogs[id][0].sourceCommit)
+    const sourceCommit = moduleChangelogs[id][0].sourceCommit
+    if (sourceCommit) expect(html).toContain(sourceCommit)
+    expect(html).toContain(moduleChangelogs[id][0].changes[0])
     expect(html).not.toContain('Loading changelog')
     expect(html).not.toContain('No release history')
   })

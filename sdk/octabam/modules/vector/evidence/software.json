@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "id": "vector",
-  "moduleVersion": "0.2.3-experimental",
-  "sourceSha256": "34151c0e360314dd50d25ae8447cfa175838d7eddfd80cba13bc26dc4513668e",
-  "imageSha256": "48c0ec735bc9fcc7f050b448b15b3204fa5b968812f4a2aacdf6a4a2c0b1c6e2",
+  "moduleVersion": "0.2.4-experimental",
+  "sourceSha256": "1255e99133cbd8d6d2587c95f93462ea80fccbd169462a2acb02aedbd346cbd3",
+  "imageSha256": "cabcc2967a23a0ef719a38de444aec1b68662c12bb9057093d475b89424d0026",
   "hardwareStatus": "untested",
   "currentBuildHardware": "owner-waived",
   "chipWallClockCycles": null,
@@ -21,22 +21,30 @@
     "measuredInstructions": {
       "generator": 65099,
       "writer": 25380,
-      "nativeCommit": 472499
+      "nativeCommit": 472500
     },
     "cases": 3840,
-    "notClaimed": "The instruction probe uses synthetic state and stock callees without RTOS/audio boot. The conditional model is not physical timing, a continuous knob-rate guarantee or a maximum-audio-load headroom measurement."
+    "notClaimed": "The instruction probe uses synthetic state and stock callees without RTOS/audio boot. The conditional model is not physical timing, a continuous knob-rate guarantee or a maximum-audio-load headroom measurement.",
+    "partValidation": {
+      "instanceMasks": 256,
+      "maximumExecutedInstructionsIncludingStock": 64241,
+      "maximumObservedStackBytes": 252,
+      "addedAdapterInstructionBound": 8192,
+      "modeledAddedCyclesPerPartAt32CyclesPerInstruction": 262144,
+      "chipTiming": null
+    }
   },
   "memory": {
-    "totalBytes": 11096779,
+    "totalBytes": 11204989,
     "perInstanceBytes": 74656,
-    "sharedBytes": 10499531,
+    "sharedBytes": 10607741,
     "maxInstances": 8,
-    "linkedRuntimeBytes": 24604,
+    "linkedRuntimeBytes": 90780,
     "sections": {
-      "text": 12650,
-      "rodata": 391,
-      "data": 3368,
-      "padding": 8195
+      "vectorText": 13000,
+      "vectorRodata": 398,
+      "vectorData": 3368,
+      "vectorBss": 0
     },
     "newHeapBytes": 0,
     "stack": {
@@ -45,9 +53,24 @@
       "nativeCommitObserved": 1048,
       "capacityCeiling": 1216
     },
-    "hardwareCanaries": null
+    "hardwareCanaries": null,
+    "vectorAllocatedSectionBytes": 16766,
+    "profileFlashAppendBytes": 18153,
+    "sharedArenaBytes": 10586112
   },
-  "commonWorker": {
+  "persistence": {
+    "report": "../../../../../docs/vector-reboot-2026-10-09.json",
+    "partSaveReload": "passed",
+    "projectSaveReload": "passed",
+    "freshSavedProjectLoad": "passed",
+    "batteryRamOnlyRestart": "passed",
+    "multipleInstances": "T1 and T5 with distinct TYPE/SEED settings",
+    "physicalReboot": "untested",
+    "audiblePlayback": "untested",
+    "instanceResetReplacement": "untested",
+    "stockValidation": "retained; signed reserved slots only are masked temporarily"
+  },
+  "historicalCommonWorker": {
     "result": "passed",
     "moduleVersion": "0.2.3-experimental",
     "mainSha256": "9ecf5b58e489a0bd59bb4e6f6ab88c2487ecd874bfa0a7af3f795c2189d75e61",
@@ -58,6 +81,112 @@
     "stockSeedAndTailPreserved": true,
     "conflictsRefused": true,
     "changedBaseRefused": true,
-    "staleSessionRefused": true
+    "staleSessionRefused": true,
+    "scope": "Historical 0.2.3 result; not new-version evidence"
+  },
+  "commonWorker": {
+    "result": "passed",
+    "moduleVersion": "0.2.4-experimental",
+    "mainSha256": "cabcc2967a23a0ef719a38de444aec1b68662c12bb9057093d475b89424d0026",
+    "updateSha256": "7c2142998a9d16a243873732911dcdd57541a1a704b8112fbb171eefeef08964",
+    "bytes": 466760,
+    "report": {
+      "version": "ELEKLOADER",
+      "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+      "sourceCommit": null,
+      "sourceTreeSha256": "653a45c3b1a322f5c5fef02d59103bd8b42d4f2e4090d415260720a7af6ae337",
+      "moduleIds": [
+        "repitch",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "moduleVersions": {
+        "repitch": "0.1.2-experimental",
+        "vector": "0.2.4-experimental",
+        "playmodes": "0.1.1-experimental",
+        "mute-modes": "0.1.0-experimental",
+        "recorder-loop-fix": "0.1.0-experimental"
+      },
+      "keepStockFx2": true,
+      "osBytes": 1130713,
+      "runtimeBytes": 90780,
+      "reservedBytes": 10586112,
+      "fx1Rows": 10,
+      "fx2Rows": 14,
+      "omittedStockFx2": []
+    },
+    "containerRoundTrip": true
+  },
+  "currentBaseWorker": {
+    "result": "passed",
+    "moduleVersion": "0.2.4-experimental",
+    "mainSha256": "fc8c24c97ffd5ae7b613c8fcff10caf2f9ce62d03ca4014c2a9c14262f628125",
+    "updateSha256": "3e98ee1f5a1a71b674b682bef496b6fbe73e6df8a67d4b049ce07abfb3b7177a",
+    "bytes": 466764,
+    "report": {
+      "version": "ELEKLOADER",
+      "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+      "sourceCommit": null,
+      "sourceTreeSha256": "fc49304b8a713a37f14fa616179ceca176a3f4e01e9ff1f3dc9c1e4bd8f0747f",
+      "moduleIds": [
+        "repitch",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "moduleVersions": {
+        "repitch": "0.1.2-experimental",
+        "vector": "0.2.4-experimental",
+        "playmodes": "0.1.1-experimental",
+        "mute-modes": "0.1.0-experimental",
+        "recorder-loop-fix": "0.1.0-experimental"
+      },
+      "keepStockFx2": true,
+      "osBytes": 1130719,
+      "runtimeBytes": 90780,
+      "reservedBytes": 10586112,
+      "fx1Rows": 10,
+      "fx2Rows": 14,
+      "omittedStockFx2": []
+    },
+    "containerRoundTrip": true
+  },
+  "sourcePinnedWorker": {
+    "result": "passed",
+    "moduleVersion": "0.2.4-experimental",
+    "mainSha256": "e2fa4176afe4d7f8b1cf0f5eed456d338d47acb212973e99d7bcc476c75f9ce3",
+    "updateSha256": "198f9a4a8b2529e43b60ba9f16fbc4ba9b84afcfc7ae53487c2009c2c234b88e",
+    "bytes": 466756,
+    "report": {
+      "version": "ELEKLOADER",
+      "revision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
+      "sourceCommit": null,
+      "sourceTreeSha256": "b43202fc97da4cab96a04a52f7aa8ee87fa63090ffd3184a977717de841128ec",
+      "moduleIds": [
+        "repitch",
+        "vector",
+        "playmodes",
+        "mute-modes",
+        "recorder-loop-fix"
+      ],
+      "moduleVersions": {
+        "repitch": "0.1.2-experimental",
+        "vector": "0.2.4-experimental",
+        "playmodes": "0.1.1-experimental",
+        "mute-modes": "0.1.0-experimental",
+        "recorder-loop-fix": "0.1.0-experimental"
+      },
+      "keepStockFx2": true,
+      "osBytes": 1130712,
+      "runtimeBytes": 90780,
+      "reservedBytes": 10586112,
+      "fx1Rows": 10,
+      "fx2Rows": 14,
+      "omittedStockFx2": []
+    },
+    "containerRoundTrip": true
   }
 }

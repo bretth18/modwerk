@@ -1,0 +1,97 @@
+{
+  "firmware": "1.40C",
+  "version": "0.2.6-experimental",
+  "imageSha256": "872ef1dacbead0b7f2977fe8945a46fe8d6bcce31787279d33b480f948b373d5",
+  "emulatorSha256": "89759d97c794f62b304dff1912a2ac1c7965289b4d019fbdbb0dbcf3c3d9f312",
+  "setup": "Actual native ColdFire/DSP MKII LCD on POLY8 0.2.6; battery-RAM fixture, real panel UART events and stock DSP. New assignments start with LOOP OFF. AUTO/PIPO reselect, LEFT chooser, RIGHT FLEX pool, YES/cancel and replacement checks pass in this native emulator. Physical hardware remains untested.",
+  "palette": {
+    "on": [
+      255,
+      255,
+      255
+    ],
+    "off": [
+      0,
+      0,
+      0
+    ]
+  },
+  "scale": 6,
+  "plan": "walk.jsonl",
+  "planSha256": "7ad7463f393d66506975e43314fc511abbda136adb2c8556bd874fac779bede7",
+  "nativeUiGateSha256": "3597f3d3b510b2e0c0e50e1f7bba534d31f81ea2003f8e412f07a9f5f29f68d4",
+  "privateProtocolSha256": "914a32b96f95fc7831f8b4da2363c01564efc4362eba7a8d59d991fdbef97cf3",
+  "reportSha256": "634795615ecc049e7d8338858d1cc31c2b1732b0b5a38c209f6e3ec3a7ae6e8c",
+  "screenshots": [
+    {
+      "file": "setup-poly.png",
+      "sha256": "e8c1774ade3a87f0ed460f6f17664c888020337965ef42c94a63ff2a00bd76e2",
+      "caption": "SRC SETUP with POLY8 selected and LOOP OFF",
+      "lcd_sha256": "2ec6c01e5e8c239d1c0fbc248caef920c3f8d17651225018c67943da7c0a546f",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "right-flex-pool.png",
+      "sha256": "fe76223cf1cab801bbeb8666bbd271150e4c5cddd1a55cf0c0a7aeb159399baa",
+      "caption": "FLEX slots with REPITCH_440 selected",
+      "lcd_sha256": "c1c72964641175494a3d2ff4d86b8ef3abe2385986608a56941b5c38ac47091f",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "main-poly.png",
+      "sha256": "86e2a46a1d7460d1da4f385922b770f4183d6fd8228bf55e25d46d3fdf642dfe",
+      "caption": "SRC POLY8 page with PTCH, STRT, LEN, RATE, RTRG and RTIM",
+      "lcd_sha256": "83d8f5180211f33dc95af823a6f79bcb5ea91715f510ccdaaa06772a52187634",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "loop-encoder.png",
+      "sha256": "f736f248965cb5fb39dcf6d0b4bba30c8272ba70231ad3168efaac861fc038c8",
+      "caption": "SRC SETUP with POLY8 selected and LOOP AUTO",
+      "lcd_sha256": "1dc49fe1ea1480a52d165049afaeafe644420a4ec8ae3124d47e4dc50dcd8052",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "left-machine-chooser.png",
+      "sha256": "5f3bbb0a95ae6cd22385d0dfdbccc1957ff027348eda6f97c68bce44d1f96a20",
+      "caption": "Machine chooser with POLY8 selected below the stock machines",
+      "lcd_sha256": "0a621ed1bec809a6820d7db1de3222d6e65bb2d09c2aa0490ade133c2f88f8ac",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import { FORUM_MEDIA, type ForumAttachment } from '../src/community/forum-contra
 type MediaRow = {id:string;user_id:string;post_id:string|null;kind:'image'|'audio';mime:string;bytes:number;object_key:string;post_hidden:number|null;thread_hidden:number|null}
 const notFound = () => new HttpError(404,'File not found.')
 // One satisfiable "bytes=" range; anything else is ignored and the whole file is sent. Safari needs ranges to play audio.
-function byteRange(header: string|null, size: number) {
+export function byteRange(header: string|null, size: number) {
   const match = header?.match(/^bytes=(\d*)-(\d*)$/)
   if (!match || (!match[1] && !match[2])) return null
   const start = match[1] ? Number(match[1]) : Math.max(size - Number(match[2]), 0)

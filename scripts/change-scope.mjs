@@ -83,15 +83,18 @@ function workerCatalog(value) {
     author: module.author, maintainers: module.maintainers, summary: module.presentation?.summary, evidence: module.evidence?.tier,
     testSummary: module.tests?.summary })).sort((a, b) => String(a.id).localeCompare(String(b.id)))
 }
+// Whole trees the Worker compiles from: a test checks that every file worker.ts imports falls under these, so a new
+// import cannot silently miss the deploy. A few frontend-only files here only cause a harmless extra deploy.
+const workerTrees = /^(server|migrations|src\/(community|catalog|devices|config|legal))\//
+const workerFiles = ['worker.ts', 'wrangler.worker.jsonc', 'package-lock.json', 'src/hosting.ts', 'src/support.ts', 'sdk/catalog.json', '.github/workflows/worker.yml', '.github/module-authors.json']
 function workerChange({ path, before, after }) {
   if (catalogs.has(path) && before !== null && after !== null) return canonical(workerCatalog(json(before))) !== canonical(workerCatalog(json(after)))
-  if (/\.test\.ts$/.test(path) || /\.tsx$/.test(path)) return false
-  return /^(server\/|migrations\/|src\/legal\/|src\/catalog\/|src\/devices\/)/.test(path)
-    || ['worker.ts', 'wrangler.worker.jsonc', 'package-lock.json', 'src/community/modules.ts', 'src/community/module-release-contract.ts', 'src/community/module-release-notes.ts', 'src/community/creator-support.ts', 'src/community/usage-pages.ts', 'src/config/support.ts', '.github/workflows/worker.yml', '.github/module-authors.json'].includes(path)
+  if (/\.test\.ts$/.test(path) || /\.tsx$/.test(path) || isDocumentationPath(path)) return false
+  return workerTrees.test(path) || workerFiles.includes(path)
 }
 
 export function classifyChanges(changes) {
-  const scope = { documentation: changes.every(isDocumentationChange), modules: false, elemod: false, windows: false, worker: false, logger: false }
+  const scope = { documentation: changes.length > 0 && changes.every(isDocumentationChange), modules: false, elemod: false, windows: false, worker: false, logger: false }
   for (const change of changes) {
     scope.modules ||= nativeChange(change, 'octatrack')
     scope.elemod ||= nativeChange(change, 'elemod')
@@ -103,6 +106,8 @@ export function classifyChanges(changes) {
     scope.worker ||= workerChange(change)
     scope.logger ||= change.path.startsWith('sdk/runtime/logging/') && !isDocumentationPath(change.path)
     scope.windows ||= /^src\/catalog\/module-folder\.|^scripts\/(modules|module-qualification)\.mjs$/.test(change.path)
+      || /^scripts\/(prepare-runtime-spans|runtime_private_paths)\.py$|^sdk\/tests\/test_runtime_spans\.py$/.test(change.path)
+      || /^scripts\/frontend-mcp(?:-private-host)?\.mjs$|^sdk\/tests\/test_frontend_mcp_host\.py$/.test(change.path)
   }
   scope.windows ||= scope.modules || scope.elemod
   return scope

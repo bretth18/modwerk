@@ -1,0 +1,42 @@
+{
+ "kind": "modwerk-base-startup-emulator",
+ "version": "0.3.1",
+ "imageSha256": "ca8a514b3642cc6b866cd65d28ee27469d07235c260e260172239bf689f6ebc8",
+ "emulatorSha256": "2e388ae83925016f06785a4f62728c9e33ed5a1ea9be976c0be719f706e26e4b",
+ "captureMethod": "--boot-logo --ms 50 --main-level off --interactive --rtc off (+ --mkii); run 10 ms, read the panel UART with tx",
+ "results": {
+  "MKI": {
+   "finalFramePixels": 887,
+   "missing": 0,
+   "extra": 0,
+   "lampsLit": 44,
+   "oddChannelLevels": 0,
+   "outOfRange": 0,
+   "darkBeforeReset": true,
+   "handsOverToUi": true,
+   "ledStateAfterwardsAsStock": true,
+   "coloursAfterwardsAsStock": true
+  },
+  "MKII": {
+   "finalFramePixels": 887,
+   "missing": 0,
+   "extra": 0,
+   "lampsLit": 67,
+   "oddChannelLevels": 0,
+   "outOfRange": 0,
+   "darkBeforeReset": true,
+   "handsOverToUi": true,
+   "ledStateAfterwardsAsStock": true,
+   "coloursAfterwardsAsStock": true
+  }
+ },
+ "hardware": "untested",
+ "sourceSha256": {
+  "sdk/machines/octatrack/elekloader/boot_anim.c": "8c485cec64b0886775a028a44fabd050c7476a9a4973d6a695d28817a6e74d6c",
+  "sdk/machines/octatrack/elekloader/boot_anim.s": "c1abdf728b67ee9a1b5509b197edc6592c17baf35200634311765686e4ab839d",
+  "sdk/runtime/startup/base_art.py": "caf5d5a1c34f0bf868696cc8e1f4973dd46176be5cb1371b7858c1c07333e193",
+  "sdk/runtime/startup/base.json": "148d6ac08cd2593e305e74a5cec0be685d9d32e675ceb26847afa92d32f0f31f",
+  "sdk/runtime/startup/artwork.json": "191f28c9870db93bccebb2c9f81723213f3f8f7e3a679ba286a16522d4ea7e6f",
+  "scripts/verify-startup-base.py": "76ed4d68ed42837ac62c71c525e0ad8c74a11894714fe46c43ba3210fda2697e"
+ }
+}

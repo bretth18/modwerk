@@ -48,6 +48,45 @@ class AssemblyAudit(unittest.TestCase):
             with self.subTest(decode=decode), self.assertRaises(SystemExit):
                 self.audit(source, decode)
 
+class XTablePlacement(unittest.TestCase):
+    def candidates(self, texts, stock_dsp):
+        # Execute the actual candidate-selection block without booting the
+        # firmware-dependent builder. The boundary stops before any image read.
+        candidates = next(node for node in ast.walk(tree) if isinstance(node, ast.Assign)
+                          and any(isinstance(target, ast.Name) and target.id == '_xt_tables'
+                                  for target in node.targets))
+        parent = next(nodes for node in ast.walk(tree)
+                      for _, nodes in ast.iter_fields(node)
+                      if isinstance(nodes, list) and candidates in nodes)
+        start = parent.index(candidates)
+        stop = next(index for index in range(start + 1, len(parent))
+                    if isinstance(parent[index], ast.Assign)
+                    and any(isinstance(target, ast.Name) and target.id == '_pristine'
+                            for target in parent[index].targets))
+        fixture = {'CARRIED': list(reversed(texts)), '_texts': texts,
+                   '_MODS': {key: types.SimpleNamespace(dsp=types.SimpleNamespace(priority=index))
+                             for index, key in enumerate(texts)},
+                   'PTABLE_MARK': '$fab1e0', 'STOCK_DSP': stock_dsp}
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            exec(compile(ast.Module(body=parent[start:stop], type_ignores=[]),
+                         'xtable_selection_fixture', 'exec'), fixture)
+        return fixture['_xt_tables'], output.getvalue()
+
+    def test_hook_tables_stay_in_p_beside_dispatched_effects(self):
+        texts = {'Spectrum': 'move #$facade,r1', 'Sidechain': 'move #$fab1e0,r1',
+                 'Character': 'move #$facade,r1', 'Air Chorus': 'move #$fab1e0,r1',
+                 'No table': 'rts'}
+        candidates, output = self.candidates(texts, {'Sidechain', 'No table'})
+        self.assertEqual(candidates, ['Spectrum', 'Character', 'Air Chorus'])
+        self.assertIn("Sidechain's table stays in P", output)
+        self.assertNotIn("No table's", output)
+
+    def test_hook_only_selection_never_parks_a_table(self):
+        candidates, output = self.candidates({'Sidechain': '$fab1e0'}, {'Sidechain'})
+        self.assertEqual(candidates, [])
+        self.assertIn('not hardware-proven', output)
+
 class DirtyStateCoverage(unittest.TestCase):
     def test_fill_targets_the_actual_fx2_block(self):
         with tempfile.TemporaryDirectory() as d:
@@ -110,6 +149,44 @@ class ToolSyntax(unittest.TestCase):
                 ast.parse(source.read_text(encoding='utf-8'), str(source))
 
 class SelectiveImport(unittest.TestCase):
+    def assert_current_builder_identity(self, path, historical):
+        import hashlib, json
+        record = json.loads((ROOT.parent / 'infrastructure-verification/poly8-shared-builder.json').read_text())
+        adaptation = record['builderAdaptations'].get(path)
+        if adaptation:
+            self.assertEqual(adaptation['before'], historical)
+        current = adaptation['after'] if adaptation else historical
+        # Keep the earlier import and Poly8 records historical. Each later
+        # opt-in extension proves its own exact before/after transition.
+        extension = json.loads((ROOT.parent / 'infrastructure-verification/air-chorus-split-builder.json').read_text())
+        adaptation = extension['builderAdaptations'].get(path)
+        if adaptation:
+            self.assertEqual(adaptation['before'], current)
+            current = adaptation['after']
+        self.assertEqual(hashlib.sha256((ROOT / path).read_bytes()).hexdigest(), current)
+
+    def test_air_chorus_extension_preserves_existing_native_builds(self):
+        import hashlib, json
+        record = json.loads((ROOT.parent / 'infrastructure-verification/air-chorus-split-builder.json').read_text())
+        self.assertEqual(record['kind'], 'air-chorus-opt-in-builder-regression')
+        self.assertEqual(set(record['builderAdaptations']), {'tools/build/build_bus.py', 'tools/build/ab_image.py', 'tools/remix/schema.py'})
+        self.assertEqual(len(record['selections']), 38)
+        for path, change in record['builderAdaptations'].items():
+            self.assertEqual(hashlib.sha256((ROOT / path).read_bytes()).hexdigest(), change['after'])
+        for row in record['selections']:
+            self.assertNotIn('airwindows-chorus', row['moduleIds'])
+            self.assertEqual(row['before'], row['after'])
+
+    def test_poly8_builder_preserves_current_main_without_poly8(self):
+        import json
+        record = json.loads((ROOT.parent / 'infrastructure-verification/poly8-shared-builder.json').read_text())
+        self.assertEqual(record['kind'], 'poly8-guarded-builder-regression')
+        self.assertEqual(set(record['builderAdaptations']), {'tools/build/build_bus.py', 'tools/remix/ledger.py', 'tools/remix/platform_build.py', 'tools/remix/schema.py'})
+        self.assertEqual(len(record['selections']), 38)
+        for row in record['selections']:
+            self.assertNotIn('poly8', row['moduleIds'])
+            self.assertEqual(row['before'], row['after'])
+
     def test_exact_adapted_file_identities_and_scope(self):
         import hashlib, json
         sdk = ROOT.parent
@@ -120,7 +197,7 @@ class SelectiveImport(unittest.TestCase):
         for file in record['files']:
             with self.subTest(path=file['path']):
                 self.assertFalse(file['path'].startswith('modules/'))
-                self.assertEqual(hashlib.sha256((ROOT / file['path']).read_bytes()).hexdigest(), file['vendoredSha256'])
+                self.assert_current_builder_identity(file['path'], file['vendoredSha256'])
 
     def test_native_comparison_keeps_images_and_refusals_exact(self):
         import hashlib, json
@@ -129,4 +206,4 @@ class SelectiveImport(unittest.TestCase):
         for row in record['selections']:
             self.assertEqual(row['before'], row['after'])
         for path, fingerprint in record['builderSourcesAfter'].items():
-            self.assertEqual(hashlib.sha256((ROOT / path).read_bytes()).hexdigest(), fingerprint)
+            self.assert_current_builder_identity(path, fingerprint)

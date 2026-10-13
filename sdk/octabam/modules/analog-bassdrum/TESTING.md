@@ -1,3 +1,50 @@
+# Analog BD 0.1.5 — FLEX restore regression
+
+Date: 9 October 2026. Tester and approving owner: repeat98 (Jannik Aßfalg).
+
+The exact private candidate offered for the hardware check was **AB015FIX01**, module 0.1.5-experimental. After the request to switch Analog BD to FLEX without SRC + PLAY and power-cycle, the owner replied:
+
+> flex persists. merge and update
+
+This is a reported physical FLEX reboot-persistence result, limited to that statement. Model, duration, audio/transport behavior, number of instances, Part/project save/reload results and maximum load were not supplied. It does not establish the Output Matrix sequencer-halt fix. The owner directed this exact release after being informed that 0.1.4 approval did not cover it and broader checks remained missing. The separate sdk/analog-bassdrum-build-approval.json records the new version/source approval and its remaining qualification limits.
+
+The candidate machine source was copied byte-for-byte into the public module. Native source SHA-256: `e741e4876ea3ae44eb54ddc93ff3b5bf5f65ebb3e9320cc5fd1f602f7925966d`. Private MAIN OS SHA-256: `137580f326b6adc3b0d58f2183d530507f1b370c48911b38d5d0cf94d9e96898`. Saved private upgrade SHA-256: `5737e32c4823fffa3236469e82425b3eb53ba75da1d8d0a690b824eaefeb63e2` (568,928 bytes); its decoded MAIN OS equals the native image.
+
+## Software regression
+
+The compiled ColdFire hook restores six playback and six SETUP bytes from the owned stock defaults at runtime before clearing a valid AB/1 marker. All four callers, eight tracks and four Parts pass 512 marked/unsigned/malformed cases; 32 Analog BD reselection cases and all five other machine destination rows pass. Both volatile and battery-backed Part copies are checked, along with unchanged unrelated bytes and register/stack behavior. The 0.1.4 writer fails the restore assertion.
+
+Current-source DSP-enabled ot_emu receives actual panel assignment and switching. A separate process then restarts with only the captured battery RAM and saved card, `--cs1-in --no-post`; no LOAD PROJECT is posted. 0.1.4 switch rejects the bank and restores all eight STATIC machines. The candidate switch restores all eight FLEX machines. Leaving 0.1.4 assigned Analog BD restores its marked track as a control. Sanitized records and reproducible gates are in sdk/drafts/analog-bassdrum-flex-restore/evidence/chooser.json and evidence/reboot.json, verify.py and reboot.py. These are emulator results, distinct from the owner report.
+
+Both cores' DSP code and complete DSP uploads are byte-identical to 0.1.4. The ColdFire runtime grows from 14,016 to 14,052 bytes (36 bytes). No new DSP state allocation is introduced; the copy occurs during machine assignment, not in the audio loop. Historical DSP instruction measurements below remain historical, not new chip-cycle measurements. Complete memory/stack lifetime bounds, maximum FX load and broader current-build hardware checks remain unverified under the exact owner-approved experimental release.
+
+## 0.1.5 common-builder comparison
+
+116 selections: 46 native module-owned OS/DSP images match, 70 matching native/browser refusals, zero byte mismatches. Four of the 46 native images fit the smaller logger-free runtime but are refused by the browser’s mandatory logger boot-memory guard; these are explicitly recorded as additional browser platform refusals, leaving 42 buildable matched selections. No guard is disabled and no firmware is generated for those crowded layouts. The standalone native image remains identical to tested AB015FIX01; the downloadable image additionally carries the mandatory core logger and is checked independently by saved-download identity.
+
+## Historical 0.1.4 reference qualification
+
+# Analog BD 0.1.4 — 909 direct-out reference update
+
+Current release uses the owner-auditioned **AB014REF05** DSP/fit source. The owner replied “it's ok, let's release it”, then explicitly confirmed “Yes—waive those limits and release” for fresh physical hardware/persistence, worst-case chip timing and complete memory bounds. This is a new exact-source approval; the 0.1.3 physical report below remains historical. Current hardware status is **untested**, not reported or verified.
+
+The 909 body phase/asymmetry, envelope/DC and both Tune endpoints are fitted to Skee Mask's 70 BPM direct-out recordings. Attack is fitted at LPF bypass; the real 909 main-out LPF was not in the recording path. The reference instrument has a decay modification; its complete modified range is not modeled. Intermediate recorded knob positions remain unknown, and endpoint repeats may still contain knob motion.
+
+Current evidence lives in `evidence/909-reference-*.json`; the full analysis/methods are in [the reference testing report](../../../drafts/analog-bassdrum-909-reference/TESTING.md). The exact pre-promotion native gates were run from commit `d96ae7f` against the approved 0.1.3 SDK snapshot, then these three DSP/fit files were copied byte-for-byte into the release folder. Their individual hashes and the tested private MAIN OS are recorded in port/private-build evidence. Tests do not play captured samples.
+
+- Native min/max, SAT 0/64/127, moving controls, rapid retriggers and all 16 trigger offsets pass. All 128 values of ten audible controls are fraction-bounded and pass model comparison. Quiet all-minimum cases pass explicit absolute quantization limits rather than relative error.
+- Four interleaved distinct voices/core pass control/reset isolation; both combined code origins match standalone audio. Tested 808 audio and instruction counts remain bit-identical to 0.1.3.
+- Actual complete-image source/control/stock AMP output passes at TUNE/ATK 0/0 and 0/127 on core A and 127/0 on core B, with 808 on the other core. Eight complete repeated high-Attack hits were captured. Source/model error is −72.1 to −72.7 dB; AMP/source residual −118.1 to −118.6 dB. The saved private upgrade decodes exactly to the tested image.
+- Matched both-core 2048-block instruction runs give 909 mean 6524.07/peak 6563 per block versus 6141.77/6176 for 0.1.3: +6.22% mean and +6.27% maximum matched-block increase. 808 mean 4268.47/peak 4294 remains unchanged. These are executed instructions, not modeled chip cycles or hardware timing.
+- Code occupies 997 P words/core plus the separate 35-word stock helper, within the existing reservation. X upload remains 3776 words/core, four 64-word voices/core; Y and ColdFire allocation are unchanged. Complete lifetime/stack bounds remain unmeasured.
+- The original treble analysis clipped the reference partway into the attack, creating an artificial discontinuity. Corrected full-onset measurements include 512 samples of natural pre-roll. Current upper-band deficits and neighboring-shape mismatch remain explicit; the private listening clips always contained full hits.
+- Eight native equal-control hits have 2.23% peak spread, down from 3.42%. Seven carried-state firmware-emulator hits have 1.81% tail-normalized peak spread. After fitted level/alignment removal, reference final-four shape spread is 3.12%/3.01% over 0–10/10–30 ms, versus 0.86%/0.24% in the emulator. Faithful individual-hit reproduction is not established.
+- Current-source physical audio, Part/project/reboot persistence, demanding FX load, worst-case chip timing and complete memory bounds remain untested/unmeasured. The exact owner exception does not convert them to passes. High ACCNT/LOW can still reach the existing output limiter.
+
+Fresh DSP-enabled UI capture passes on AB014REF05: source assignment, engine browser and 808/909 pages were captured with the disposable loaded project, then all four PNGs were opened and reviewed. The 808 shared page reads TUNE for its third encoder; its underlying TONE behavior is unchanged. Current media metadata documents the displayed label. The isolated pinned source toolchain compiled all current source-only packages without firmware. Development import validates their complete source inventory and version pins. Native/browser parity passes all 112 configurations: 36 matching builds outside existing platform writes, 76 matching refusals, zero mismatches. Node 24.21.0 `npm run check -- --base origin/main` passes after integration with main `d1e38bc`: 1,402 app tests in 200 files, 86 SDK tests, catalogue/licence checks, lint, types and the production bundle. Existing lint/bundle warnings remain. The broader 136-profile interaction matrix is regenerated from the current source; its native/bootstrap verification and clean-commit package reproduction are completed before publication.
+
+## Historical 0.1.3 qualification — retained without relabelling
+
 # Analog BD modulation fix — testing
 
 Release: `0.1.3-experimental`; approved base: `0.1.2-experimental`.

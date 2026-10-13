@@ -1,12 +1,12 @@
 {
   "kind": "owner-approved-update",
   "id": "airwindows-chorus",
-  "version": "0.1.0-experimental",
+  "version": "0.1.2-experimental",
   "approvedBy": "repeat98",
-  "approvedOn": "2026-10-08",
-  "ownerStatement": "After being asked to test AIR_CHORUS_0.1.0_RELEASE_TEST.bin (AIRC0R1), the owner replied: no, it's ok, let's release.",
-  "reason": "Fresh physical testing of the bounded initialization is waived for AIRC0R1, MAIN SHA-256 8ecec31ef7511756e17aaba2cd569a32e4471bcebe0dd0738615327fb850a6df, update SHA-256 7985646631d8eece5b421246b50b62f33d00818d77cba5a9dd240b766ed4017c. The earlier 50-minute MKII result remains historical; omissions and current-image limits are recorded in the attributed hardware report. Other release checks remain required.",
-  "sourceSha256": "c5c61254d24f91c977648e6ef0f6a1773d5ab477f1a3bd215653b58f2a60fd9a",
+  "approvedOn": "2026-10-09",
+  "ownerStatement": "also bring the air chorus fix live with it. no hardware evidence is fine, that's exactly what the beta tester tier is for",
+  "reason": "Owner-authorized continuation of the beta Air Chorus fix and explicitly requested wider module compatibility, including Analog BD. Current hardware testing is waived for this exact source/version. The shared-data collision is reproduced in actual DSP software execution; fixing the audible T3 symptom is still unverified. Lossless table decoding and protection cost 17.2% more executed DSP instructions than 0.1.1, still 24.8% below the original. Physical timing, multi-instance hardware audio and Part/project/reboot persistence remain unverified. Source/native/browser checks and live saved-download verification remain required.",
+  "sourceSha256": "2312319e9e009839dbfc135de2f76fa438a82957d62d67aec4e7c47238517fe1",
   "waived": [
     "current-build-hardware"
   ]

@@ -4,12 +4,14 @@ import { useSheetScrollLock } from '../hooks/useSheetScrollLock'
 import { Icon } from './Icon'
 import type { IconName } from './Icon'
 import { SupportButton } from './SupportDialog'
+import { useSetWords } from '../community/beta-ui'
 
 type MenuLink = { href: string; label: string; icon: IconName; current: boolean; count?: number; online?: number | null }
 
-// Phone-width home for the destinations the desktop sidebar lists under Configurations, Community and Help.
+// Phone-width home for the destinations the desktop sidebar lists under Configurations (Module sets in the beta), Community and Help.
 // It opens as a bottom sheet, within thumb reach, and renders outside the app bar so the bar's stacking never clips it.
 export function MobileMenu({ route, online, selectedCount, configurationHref, admin, developer, onSupport, onConfigurations }: { route: string; online?: number | null; selectedCount: number; configurationHref?: string; admin: boolean; developer?: boolean; onSupport?: () => void; onConfigurations?: () => void }) {
+  const w = useSetWords()
   const [open, setOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
   useSheetScrollLock(open)
@@ -24,10 +26,11 @@ export function MobileMenu({ route, online, selectedCount, configurationHref, ad
   const groups: MenuLink[][] = [
     [
       { href: '#all', label: 'All modules', icon: 'grid', current: route === 'all' },
-      ...(configurationHref ? [{ href: configurationHref, label: 'Configuration', icon: 'sliders' as const, current: route === 'configuration' || route.endsWith('/configuration'), count: selectedCount }] : []),
+      ...(configurationHref ? [{ href: configurationHref, label: w.Set, icon: 'sliders' as const, current: route === 'configuration' || route.endsWith('/configuration'), count: selectedCount }] : []),
     ],
     [
       { href: '#forum', label: 'Forum', icon: 'message', current: route.startsWith('forum'), online },
+      { href: '#projects', label: 'Other projects', icon: 'external', current: route.split('?')[0] === 'projects' },
       { href: '#account', label: 'Account / sign in', icon: 'shield', current: route.startsWith('account') },
       ...(developer ? [{ href: '#developer', label: 'Creator settings', icon: 'sliders' as const, current: route.startsWith('developer') }] : []),
       { href: '#submit', label: 'Start developing', icon: 'plus', current: route.startsWith('submit') },
@@ -46,7 +49,7 @@ export function MobileMenu({ route, online, selectedCount, configurationHref, ad
         <div className="mobile-menu-scrim" aria-hidden="true" onClick={() => setOpen(false)} />
         <nav id="mobile-menu-panel" className="mobile-menu-panel" aria-label="Menu">
           <div className="sheet-head"><span className="sheet-handle" aria-hidden="true" /><strong>Menu</strong><button type="button" className="sheet-close" aria-label="Close menu" onClick={() => { setOpen(false); buttonRef.current?.focus() }}><Icon name="close" size={18} /></button></div>
-          {groups.map((links, index) => <div key={index} className="mobile-menu-group">{links.map(link => <a key={link.href} href={link.href} aria-current={link.current ? 'page' : undefined} onClick={() => setOpen(false)}><Icon name={link.icon} size={18} /><span>{link.label}</span>{link.count !== undefined && <small>{link.count}</small>}{link.online ? <small className="menu-online"><span className="online-dot" aria-hidden="true"/>{link.online} online</small> : null}</a>)}{index === 0 && onConfigurations && <button type="button" onClick={() => { setOpen(false); buttonRef.current?.focus(); onConfigurations() }}><Icon name="file" size={18} /><span>Saved configurations</span></button>}</div>)}
+          {groups.map((links, index) => <div key={index} className="mobile-menu-group">{links.map(link => <a key={link.href} href={link.href} aria-current={link.current ? 'page' : undefined} onClick={() => setOpen(false)}><Icon name={link.icon} size={18} /><span>{link.label}</span>{link.count !== undefined && <small>{link.count}</small>}{link.online ? <small className="menu-online"><span className="online-dot" aria-hidden="true"/>{link.online} online</small> : null}</a>)}{index === 0 && onConfigurations && <button type="button" onClick={() => { setOpen(false); buttonRef.current?.focus(); onConfigurations() }}><Icon name="file" size={18} /><span>{'Saved ' + w.sets}</span></button>}</div>)}
 
           {onSupport && <div className="mobile-menu-support"><SupportButton onClick={() => { setOpen(false); buttonRef.current?.focus(); onSupport() }} /></div>}
         </nav>

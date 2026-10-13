@@ -3,7 +3,7 @@
   "id": "miniverb",
   "key": "MINIVERB",
   "name": "Mini Verb",
-  "version": "0.2.0-experimental",
+  "version": "0.2.1-experimental",
   "category": "effects",
   "author": {
     "github": "repeat98",
@@ -18,7 +18,7 @@
     "label": "DIFFUSED SPACE",
     "family": "Reverb",
     "summary": "A compact diffused reverb with wet-output tone and modulation.",
-    "overview": "Tone darkens or brightens the wet signal with one pole per stereo channel, while DAMP controls high-frequency decay inside the unchanged tank.",
+    "overview": "Tone darkens or brightens the wet signal while DAMP controls high-frequency decay inside the unchanged tank. The dry/wet mixer preserves headroom for hot inputs and opposite-polarity wet audio.",
     "highlights": [
       "Diffused, modulated reverb tail",
       "Independent tail damping and output tone",
@@ -26,7 +26,7 @@
     ],
     "usage": [
       "Choose MINI VERB in FX2. DECAY and DAMP set the tail; TONE colors the wet output.",
-      "Turn TONE below 64 for darker reverb or above 64 for brighter reverb. At 64 the accepted voice is unchanged.",
+      "Turn TONE below 64 for darker reverb or above 64 for brighter reverb. At 64 the tone stage is bypassed.",
       "MOD and RATE add movement. MIX is now encoder F, below TONE; set MIX to 0 to bypass."
     ]
   },
@@ -89,25 +89,25 @@
     "conflicts": [],
     "limitations": [
       "Stored projects, locks, scenes and LFO destinations use parameter slots: old MIX in slot C becomes TONE. Reassign Mix to slot F and set Tone to 64.",
-      "Physical hardware and power-cycle persistence remain untested; the owner explicitly waived hardware evidence for this exact update after accepting sound and stability in Octemu.",
+      "Physical hardware, chip timing, complete runtime memory bounds, played automation, Part/project persistence and physical reboot remain unverified for this source. The noise in report #428 has not been reproduced on hardware.",
       "Cycle bounds use a static software model and inherited stock reserve; whole-instrument contention, maximum streaming/USB load and arbitrary companion FX are not measured."
     ],
     "effectId": 23
   },
   "resources": {
-    "recorded": "2026-10-08",
+    "recorded": "2026-10-11",
     "storage": {
       "label": "DSP program / buffer",
-      "display": "532 words / 16K ring",
+      "display": "536 words / 16K ring",
       "value": null,
       "unit": "see display",
       "method": "static",
-      "conditions": "532 assembled program words; unchanged 16K Y ring and 32-word X scalar allocation. Four additional scalar words use previously empty slots inside that block.",
+      "conditions": "536 assembled DSP program words; unchanged 16K Y ring and 32-word X scalar allocation. Mixer adds four program words and no state.",
       "source": "TESTING.md"
     },
     "processing": {
       "label": "DSP instruction peak",
-      "display": "23,360 instructions/core/block",
+      "display": "23,616 instructions/core/block",
       "value": null,
       "unit": "see display",
       "method": "emulator",
@@ -125,27 +125,27 @@
       "dsp": {
         "level": "moderate",
         "basis": "source-estimate",
-        "rationale": "411 modeled loop cycles/sample; 8,192 conservative modeled cycles/instance/block. Eight moving instances peak at 23,360 executed instructions/core/block.",
+        "rationale": "415 modeled loop cycles/sample; conservative 8,192 modeled cycles/instance/block. Eight moving instances add 256 executed instructions/core/block over 0.2.0; chip timing and full-instrument contention are unmeasured.",
         "source": "TESTING.md"
       },
       "memory": {
         "level": "moderate",
         "basis": "source-estimate",
-        "rationale": "Existing 16K ring and X reservation unchanged; 402,936 logical bytes for eight instances including both programs and full hardware stack capacity.",
+        "rationale": "Existing 16K ring and X reservation unchanged; 402,960 logical bytes for eight instances including both programs and full hardware stack capacity. Complete runtime bounds and hardware canaries remain unverified.",
         "source": "TESTING.md"
       }
     }
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "46 current-source native DSP regressions and real emulator LCD layout pass. Owner accepted sound and stability in Octemu and explicitly approved this release without physical hardware evidence. Software bounds and memory reservations are recorded in TESTING.md.",
+    "summary": "53 current-source native DSP checks and 126 native/browser selections passed: 52 matching builds, 74 matching refusals, zero mismatches. The mixer clipping defect is reproduced on both cores and fixed; hardware and the original THRU noise remain unverified. Current source, private images and reviewed LCD captures are recorded in TESTING.md.",
     "hardwareStatus": "untested",
     "gates": [
-      "verify.py: exact neutral and dry, endpoint spectra, eight-instance isolation, dirty-state guards and 30-second moving render",
+      "verify.py: exact dry, bounded neutral quantization, raw-wet mixer regression, endpoint spectra, eight-instance isolation, dirty-state guards and 30-second moving render",
       "Native/browser composition parity and changed-original refusal",
       "Reproducible source-only packages"
     ],
-    "evidenceRevision": "80b6b5444ab57e8eb05cecfb372557d0ed567b1d",
+    "evidenceRevision": "89d189e53192c76d8d3c5e26495578f61316fdf4",
     "documentation": {
       "tutorial": {
         "title": "Quick tutorial",
@@ -180,8 +180,8 @@
         "page": "FX2 SETUP",
         "shows": "location",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.0-experimental",
-        "imageSha256": "fd42fa81ee3cf23a47381a96d2e70be3efbaab250f5c3aedb5a1e11cd4a2529e",
+        "moduleVersion": "0.2.1-experimental",
+        "imageSha256": "2a517bc54a92fbf811a3f7366ce27713fdcbdb1aeb2ebbd9bd9c2368ba317cfa",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6."
       }
     },
@@ -197,10 +197,19 @@
         "page": "FX2 main",
         "shows": "controls",
         "firmware": "1.40C",
-        "moduleVersion": "0.2.0-experimental",
-        "imageSha256": "fd42fa81ee3cf23a47381a96d2e70be3efbaab250f5c3aedb5a1e11cd4a2529e",
+        "moduleVersion": "0.2.1-experimental",
+        "imageSha256": "2a517bc54a92fbf811a3f7366ce27713fdcbdb1aeb2ebbd9bd9c2368ba317cfa",
         "setup": "Headless ot_emu; MKII panel; stopped transport; 128\u00d764 LCD at integer scale 6."
       }
+    },
+    {
+      "path": "media/audio-preview.mp3",
+      "captureType": "audio",
+      "caption": "One clap, played three times: dry, then Mini Verb as a room (DECAY 104, DAMP 70, TONE 64, MOD 80, RATE 2, MIX 76), then a long, bright tail (DECAY 122, DAMP 40, TONE 96, MOD 110, RATE 5, MIX 90). Rendered offline through version 0.2.0-experimental on a computer, not recorded on an Octatrack.",
+      "alt": "A single clap heard dry, then with Mini Verb as a room, then with a longer, brighter tail.",
+      "credit": "Modwerk contributors (offline render). Sample: MGFW-01 Sample Pack V1.",
+      "license": "Render MIT; sample per its pack terms (media/LICENSE.md)",
+      "source": "original"
     }
   ],
   "access": {

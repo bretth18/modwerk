@@ -126,7 +126,7 @@
           "path": "media/thumbnail.svg",
           "kind": "thumbnail",
           "caption": "digichain thumbnail",
-          "alt": "Abstract framework illustration for digichain: two chain links route several inputs to several machines",
+          "alt": "Four connected blocks representing shared source-page integration.",
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
@@ -324,7 +324,7 @@
       "schemaVersion": 3,
       "id": "digieq",
       "name": "Digi EQ",
-      "version": "1.0.1-experimental",
+      "version": "1.0.2-experimental",
       "machine": "digitakt",
       "category": "effects",
       "exclusive": false,
@@ -354,7 +354,7 @@
           "Use a build containing Digi EQ. Press FUNC + LFO twice to reach Master EQ (2/4). Start a pattern with audio already loaded.",
           "Turn band 1 level with A and its frequency with E to compare a small low-frequency cut with the initial 0 dB setting.",
           "Press A to edit the band’s Q and E to edit its type; press them again to return to level and frequency.",
-          "Return every band to 0 dB and use the original shelf/bell types for the starting response, then stop playback. A zero-level HP, LP, BP or notch still filters."
+          "Hold FUNC and LFO, then press PLAY (CLEAR) for the flat default response; stop playback. A zero-level HP, LP, BP or notch still filters until its type is reset."
         ]
       },
       "access": {
@@ -363,6 +363,7 @@
           "Press FUNC + LFO for the master pages; FUNC + LFO steps through Compressor (1/4), Master EQ (2/4), Internal Mixer (3/4) and External Mixer (4/4).",
           "Turn knobs A-D for the bands’ levels and E-H for their frequencies; bands 1-4 are the columns A/E, B/F, C/G and D/H.",
           "Press a knob to switch it to its band’s Q (A-D) or type (E-H); press it again to go back.",
+          "Hold FUNC and LFO, then press PLAY (CLEAR) to reset all four bands to their default gain, frequency, Q and type. Knob modes and the global override stay as they were.",
           "For one EQ on every pattern, turn on SETTINGS > GLOBAL FX/MIX > MASTER EQ."
         ],
         "screenshots": [
@@ -441,7 +442,7 @@
         ]
       },
       "resources": {
-        "memoryBytes": 9090,
+        "memoryBytes": 9146,
         "fastBytes": 0,
         "load": {
           "display": "Not measured in Modwerk yet",
@@ -451,15 +452,17 @@
       },
       "evidence": {
         "tier": "none",
-        "moduleVersion": "1.0.0-experimental",
-        "sourceSha256": null,
-        "reports": [],
+        "moduleVersion": "1.0.2-experimental",
+        "sourceSha256": "eeeb9242b68a5c0770403caee5feba821fe7960727215a701fe93426e60319af",
+        "reports": [
+          "evidence/clear-1.0.2.json"
+        ],
         "hardware": null,
         "verifiedBy": null
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Modwerk’s elekloader builder linked and verified a build of Digi EQ 1.0b with core 2.1 for OS 1.53 and 1.54; nothing was flashed or tested on hardware, and the evidence tier is none. Documentation captures verify the listed UI pages on OS 1.53; audio, timing and hardware remain unqualified.",
+        "summary": "Native compilation, source-only package/materialization parity and builder verification pass on OS 1.53 and 1.54 with core 2.1, DIGICHAIN 1.6 and Digi Mono 0.13.3. Native panel regressions confirm all sixteen band parameters reset and other sound bytes remain unchanged. Hardware, audio, timing, complete memory bounds, persistence, physical reboot and stress remain unverified.",
         "documentation": {
           "tutorial": {
             "title": "Quick tutorial: shape the master mix",
@@ -467,7 +470,7 @@
               "Use a build containing Digi EQ. Press FUNC + LFO twice to reach Master EQ (2/4). Start a pattern with audio already loaded.",
               "Turn band 1 level with A and its frequency with E to compare a small low-frequency cut with the initial 0 dB setting.",
               "Press A to edit the band’s Q and E to edit its type; press them again to return to level and frequency.",
-              "Return every band to 0 dB and use the original shelf/bell types for the starting response, then stop playback. A zero-level HP, LP, BP or notch still filters."
+              "Hold FUNC and LFO, then press PLAY (CLEAR) for the flat default response; stop playback. A zero-level HP, LP, BP or notch still filters until its type is reset."
             ]
           },
           "screenshots": [
@@ -480,14 +483,14 @@
       "license": {
         "spdx": "MIT",
         "file": "LICENSE",
-        "declaration": "The author’s source, imported unchanged from github.com/gdeo607/digi1_mods at commit 35bacb3730d1 under its MIT licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+        "declaration": "MIT source imported from gdeo607/digi1_mods at 35bacb3730d108e4dc48a7bd6de4c99ae9b161e6, with Modwerk page-clear and display-alignment fixes. Stock firmware is represented only by addresses, lengths and SHA-256 guards."
       },
       "media": [
         {
           "path": "media/thumbnail.svg",
           "kind": "thumbnail",
           "caption": "Digi EQ thumbnail",
-          "alt": "Abstract mixing illustration for Digi EQ: a four-band EQ response curve with its band points",
+          "alt": "An equalizer response curve with four band positions.",
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
@@ -503,8 +506,8 @@
           "capture": {
             "type": "emulator",
             "release": "1.53",
-            "moduleVersion": "1.0.1-experimental",
-            "imageSha256": "4542b2464429b97b77205ed7c793d39c94a5b3bce2116896411369f0e2a07e80",
+            "moduleVersion": "1.0.2-experimental",
+            "imageSha256": "d8717d1d10418c6833d8312ba266d96fa7e3ecb03c78c3a927f2e45caeb5b6c5",
             "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
           }
         },
@@ -519,8 +522,8 @@
           "capture": {
             "type": "emulator",
             "release": "1.53",
-            "moduleVersion": "1.0.1-experimental",
-            "imageSha256": "4542b2464429b97b77205ed7c793d39c94a5b3bce2116896411369f0e2a07e80",
+            "moduleVersion": "1.0.2-experimental",
+            "imageSha256": "d8717d1d10418c6833d8312ba266d96fa7e3ecb03c78c3a927f2e45caeb5b6c5",
             "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
           }
         }
@@ -551,6 +554,10 @@
           {
             "addr": "0x401846bc",
             "len": 4
+          },
+          {
+            "addr": "0x40184698",
+            "len": 4
           }
         ],
         "1.54": [
@@ -572,6 +579,10 @@
           },
           {
             "addr": "0x401849bc",
+            "len": 4
+          },
+          {
+            "addr": "0x40184998",
             "len": 4
           }
         ]
@@ -713,7 +724,7 @@
           "path": "media/thumbnail.svg",
           "kind": "thumbnail",
           "caption": "digihealth thumbnail",
-          "alt": "Abstract performance illustration for digihealth",
+          "alt": "Four conceptual diagnostic meters over reference tracks.",
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
@@ -1117,7 +1128,7 @@
           "path": "media/thumbnail.svg",
           "kind": "thumbnail",
           "caption": "Digi Matrix thumbnail",
-          "alt": "Abstract modulation illustration for Digi Matrix: one LFO wave fanning out across a grid to several destinations at different depths",
+          "alt": "A modulation waveform over its reference signal.",
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
@@ -1203,7 +1214,7 @@
       "schemaVersion": 3,
       "id": "digimono",
       "name": "Digi Mono",
-      "version": "0.13.1-experimental",
+      "version": "0.13.3-experimental",
       "machine": "digitakt",
       "category": "machines",
       "exclusive": false,
@@ -1211,7 +1222,9 @@
         "github": "gdeo607",
         "credits": [
           "gdeo607 (the digi1_mods authors) — Digi Mono’s clean-room synth engine and elekloader mod",
-          "Machine and parameter names after the Monomachine manual; vowel formants from Peterson and Barney (1952)"
+          "Machine and parameter names after the Monomachine manual; vowel formants from Peterson and Barney (1952)",
+          "Modwerk — repeated-SRC page fix and source-built 0.13.2 packaging",
+          "Modwerk — consistent SAW/PULSE sub-oscillator encoder layout in 0.13.3"
         ]
       },
       "maintainers": [
@@ -1272,31 +1285,31 @@
         {
           "name": "Knob D",
           "default": null,
-          "doc": "Differs per machine, and does not open the sample list on these machines. PULSE: SUB2 (Sub 2 Oct Lev), the sub two octaves down. ENS: PW (Pulse Width), duty %, 0 = square. VO: VOIC (Breath), breath noise mixed into the source. POLY SIN: NOT3 (Note 3), the third sine in semitones from the note. Blank on SIN, NOISE and SAW.",
+          "doc": "Differs per machine, and does not open the sample list on these machines. PULSE: PW (Pulse Width), duty %. ENS: PW (Pulse Width), duty %, 0 = square. VO: VOIC (Breath), breath noise mixed into the source. POLY SIN: NOT3 (Note 3), the third sine in semitones from the note. Blank on SIN, NOISE and SAW.",
           "labels": null
         },
         {
           "name": "Knob E",
           "default": null,
-          "doc": "Differs per machine. NOISE: STON (Tuned Noise), a sample and hold at twice the note’s pitch, which makes the noise pitched. SAW: UNIX (Unison Voices), 1 to 3 unison saws. PULSE: SUB1 (Sub 1 Oct Lev), the sub one octave down. ENS: PCH4 (Pitch Osc 4), oscillator 4 in semitones. VO: V-SW (Vowel Glide), the glide from VOC1 to VOC2, 5 ms..2 s; 0 keeps VOC1. POLY SIN: EDEP (Env Depth), the pitch envelope’s depth in semitones, + or -. Blank on SIN.",
+          "doc": "Differs per machine. NOISE: STON (Tuned Noise), a sample and hold at twice the note’s pitch, which makes the noise pitched. SAW: UNIX (Unison Voices), 1 to 3 unison saws. PULSE: PWAD (PWM Depth), the pulse width modulation depth. ENS: PCH4 (Pitch Osc 4), oscillator 4 in semitones. VO: V-SW (Vowel Glide), the glide from VOC1 to VOC2, 5 ms..2 s; 0 keeps VOC1. POLY SIN: EDEP (Env Depth), the pitch envelope’s depth in semitones, + or -. Blank on SIN.",
           "labels": null
         },
         {
           "name": "Knob F",
           "default": null,
-          "doc": "Differs per machine. SAW: SUBX (Sub Shape), the subs from square to saw, in %. PULSE: PW (Pulse Width), duty %. ENS: WAVE (Saw-Pulse), saw to pulse, in %. VO: CONS (Consonant): none, S, SH, F, H, T, K or P at the note’s start. POLY SIN: ESPD (Env Speed), the pitch envelope’s speed: + glides back to the notes, - glides away, OFF in the middle. Blank on SIN and NOISE.",
+          "doc": "Differs per machine. SAW: SUBX (Sub Shape), the subs from square to saw, in %. PULSE: PWRS (PWM Rate), 0.05..20 Hz. ENS: WAVE (Saw-Pulse), saw to pulse, in %. VO: CONS (Consonant): none, S, SH, F, H, T, K or P at the note’s start. POLY SIN: ESPD (Env Speed), the pitch envelope’s speed: + glides back to the notes, - glides away, OFF in the middle. Blank on SIN and NOISE.",
           "labels": null
         },
         {
           "name": "Knob G",
           "default": null,
-          "doc": "Differs per machine. SAW: SUB1 (Sub 1 Oct Lev), the sub one octave down. PULSE: PWAD (PWM Depth), the pulse width modulation depth. ENS: CHRL (Chorus Level); it starts at 0, the chorus off. VO: CLEN (Cons. Length), the consonant’s length, 2..400 ms (T, K and P at most 30-40 ms). Blank on SIN, NOISE and POLY SIN.",
+          "doc": "Differs per machine. SAW and PULSE: SUB1 (Sub 1 Oct Lev), the sub one octave down. ENS: CHRL (Chorus Level); it starts at 0, the chorus off. VO: CLEN (Cons. Length), the consonant’s length, 2..400 ms (T, K and P at most 30-40 ms). Blank on SIN, NOISE and POLY SIN.",
           "labels": null
         },
         {
           "name": "Knob H",
           "default": null,
-          "doc": "Differs per machine. SAW: SUB2 (Sub 2 Oct Lev), the sub two octaves down. PULSE: PWRS (PWM Rate), 0.05..20 Hz. ENS: CHRW (Chorus Width). VO: CVOL (Cons. Level), the consonant’s level. Blank on SIN, NOISE and POLY SIN. The volume is the track’s LEVEL, AMP page and VOL, not this knob.",
+          "doc": "Differs per machine. SAW and PULSE: SUB2 (Sub 2 Oct Lev), the sub two octaves down. ENS: CHRW (Chorus Width). VO: CVOL (Cons. Level), the consonant’s level. Blank on SIN, NOISE and POLY SIN. The volume is the track’s LEVEL, AMP page and VOL, not this knob.",
           "labels": null
         }
       ],
@@ -1343,7 +1356,7 @@
         ]
       },
       "resources": {
-        "memoryBytes": 32235,
+        "memoryBytes": 32417,
         "fastBytes": 0,
         "load": {
           "display": "Not measured in Modwerk yet",
@@ -1352,16 +1365,18 @@
         }
       },
       "evidence": {
-        "tier": "none",
-        "moduleVersion": "0.13.0-experimental",
-        "sourceSha256": null,
-        "reports": [],
+        "tier": "emulator",
+        "moduleVersion": "0.13.3-experimental",
+        "sourceSha256": "6fa2c66f23d85458bd0655b40a0c2f5b820532e5e1f993cb92842fc06bf335db",
+        "reports": [
+          "evidence/encoder-layout-0.13.3.json"
+        ],
         "hardware": null,
         "verifiedBy": null
       },
       "tests": {
         "report": "TESTING.md",
-        "summary": "Modwerk’s builder linked and verified a build with core 2.1 and DIGICHAIN 1.6 on OS 1.53 and 1.54; nothing was flashed or tested on hardware, and the evidence tier is none. Documentation captures verify the listed UI pages on OS 1.53; audio, timing and hardware remain unqualified.",
+        "summary": "Native compilation, source-only package/materialization parity and builder verification pass on OS 1.53 and 1.54 with core 2.1, DIGICHAIN 1.6 and Digi EQ 1.0b. Firmware-native panel tests confirm consistent SAW/PULSE sub encoder positions and unchanged stored parameter slots; other tracks’ tested SRC values are untouched. Hardware, audio, timing, complete memory bounds, persistence, reboot, played p-lock/LFO and stress qualification remain unverified.",
         "documentation": {
           "tutorial": {
             "title": "Quick tutorial: play a MONO SIN voice",
@@ -1387,14 +1402,14 @@
       "license": {
         "spdx": "MIT",
         "file": "LICENSE",
-        "declaration": "The author’s source, imported unchanged from github.com/gdeo607/digi1_mods at commit 35bacb3730d1 under its MIT licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+        "declaration": "MIT source imported from gdeo607/digi1_mods at 35bacb3730d108e4dc48a7bd6de4c99ae9b161e6, with Modwerk SRC-page and encoder-layout fixes. Stock firmware is represented only by addresses, lengths and SHA-256 guards."
       },
       "media": [
         {
           "path": "media/thumbnail.svg",
           "kind": "thumbnail",
           "caption": "Digi Mono thumbnail",
-          "alt": "Abstract synthesis illustration for Digi Mono: seven small waveforms in a row",
+          "alt": "A source waveform and a decaying synthesized waveform.",
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
@@ -1409,9 +1424,9 @@
           "source": "original",
           "capture": {
             "type": "emulator",
-            "release": "1.53",
-            "moduleVersion": "0.13.1-experimental",
-            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "release": "1.54",
+            "moduleVersion": "0.13.3-experimental",
+            "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
             "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
           }
         },
@@ -1425,25 +1440,25 @@
           "source": "original",
           "capture": {
             "type": "emulator",
-            "release": "1.53",
-            "moduleVersion": "0.13.1-experimental",
-            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "release": "1.54",
+            "moduleVersion": "0.13.3-experimental",
+            "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
             "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
           }
         },
         {
           "path": "media/noise.png",
           "kind": "screenshot",
-          "caption": "MONO NOISE controls",
+          "caption": "MONO NOISE controls. This native frame omits the common track/level sidebar; full redraw is unverified.",
           "alt": "MONO NOISE controls on the Digitakt monochrome LCD",
           "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
           "license": "LicenseRef-Digi-UI-Documentation",
           "source": "original",
           "capture": {
             "type": "emulator",
-            "release": "1.53",
-            "moduleVersion": "0.13.1-experimental",
-            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "release": "1.54",
+            "moduleVersion": "0.13.3-experimental",
+            "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
             "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
           }
         },
@@ -1457,9 +1472,9 @@
           "source": "original",
           "capture": {
             "type": "emulator",
-            "release": "1.53",
-            "moduleVersion": "0.13.1-experimental",
-            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "release": "1.54",
+            "moduleVersion": "0.13.3-experimental",
+            "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
             "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
           }
         },
@@ -1473,25 +1488,25 @@
           "source": "original",
           "capture": {
             "type": "emulator",
-            "release": "1.53",
-            "moduleVersion": "0.13.1-experimental",
-            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "release": "1.54",
+            "moduleVersion": "0.13.3-experimental",
+            "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
             "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
           }
         },
         {
           "path": "media/ens.png",
           "kind": "screenshot",
-          "caption": "MONO ENS controls",
+          "caption": "MONO ENS controls. This native frame omits common TUNE/sidebar fields; full redraw is unverified.",
           "alt": "MONO ENS controls on the Digitakt monochrome LCD",
           "credit": "Modwerk documentation capture; Elektron interface; gdeo607 module",
           "license": "LicenseRef-Digi-UI-Documentation",
           "source": "original",
           "capture": {
             "type": "emulator",
-            "release": "1.53",
-            "moduleVersion": "0.13.1-experimental",
-            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "release": "1.54",
+            "moduleVersion": "0.13.3-experimental",
+            "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
             "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
           }
         },
@@ -1505,9 +1520,9 @@
           "source": "original",
           "capture": {
             "type": "emulator",
-            "release": "1.53",
-            "moduleVersion": "0.13.1-experimental",
-            "imageSha256": "734d97eee93237736fbeea07a756ed04af28ad6840b2e6fb9953e69423b8274e",
+            "release": "1.54",
+            "moduleVersion": "0.13.3-experimental",
+            "imageSha256": "0d54f54eb4691530faa0b839cf0b9cfa21cdd5e5412ccd09af5eb05e8cf15f27",
             "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
           }
         }
@@ -1566,6 +1581,14 @@
           {
             "addr": "0x40065e68",
             "len": 6
+          },
+          {
+            "addr": "0x401848dc",
+            "len": 4
+          },
+          {
+            "addr": "0x40184900",
+            "len": 4
           }
         ],
         "1.54": [
@@ -1616,6 +1639,14 @@
           {
             "addr": "0x40065e68",
             "len": 6
+          },
+          {
+            "addr": "0x40184bdc",
+            "len": 4
+          },
+          {
+            "addr": "0x40184c00",
+            "len": 4
           }
         ]
       }
@@ -1769,7 +1800,7 @@
           "path": "media/thumbnail.svg",
           "kind": "thumbnail",
           "caption": "NEIGHBOR thumbnail",
-          "alt": "Abstract sampling illustration for NEIGHBOR",
+          "alt": "A sample waveform divided by slice boundaries.",
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
@@ -2110,7 +2141,7 @@
           "path": "media/thumbnail.svg",
           "kind": "thumbnail",
           "caption": "Digi Poly thumbnail",
-          "alt": "Abstract illustration for Digi Poly: chords on a piano roll, their notes routed to a column of voices",
+          "alt": "Layered note bars representing chords and voices.",
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
@@ -2503,7 +2534,7 @@
           "path": "media/thumbnail.svg",
           "kind": "thumbnail",
           "caption": "DIGISLICER thumbnail",
-          "alt": "Abstract sampling illustration for DIGISLICER",
+          "alt": "A sample waveform divided by slice boundaries.",
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
@@ -2922,7 +2953,7 @@
           "path": "media/thumbnail.svg",
           "kind": "thumbnail",
           "caption": "SOPHIE thumbnail",
-          "alt": "Abstract synthesis illustration for SOPHIE",
+          "alt": "A source waveform and a decaying synthesized waveform.",
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
@@ -3237,7 +3268,7 @@
           "path": "media/thumbnail.svg",
           "kind": "thumbnail",
           "caption": "Digi utilities thumbnail",
-          "alt": "Abstract utility illustration for Digi utilities: a waveform, a stereo X-Y trace, spectrum bars and eight activity boxes",
+          "alt": "A scope waveform beside a spectrum display.",
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
@@ -3494,7 +3525,7 @@
           "path": "media/thumbnail.svg",
           "kind": "thumbnail",
           "caption": "digihealth thumbnail",
-          "alt": "Abstract performance illustration for digihealth",
+          "alt": "Four conceptual diagnostic meters over reference tracks.",
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"
@@ -3778,7 +3809,7 @@
           "path": "media/thumbnail.svg",
           "kind": "thumbnail",
           "caption": "digitables thumbnail",
-          "alt": "Abstract pitch-table illustration for digitables: step bars around a zero line, some drawn hollow",
+          "alt": "Sixteen pitched steps over a shared sequence baseline.",
           "credit": "Modwerk",
           "license": "GPL-3.0-or-later",
           "source": "Original Modwerk illustration"

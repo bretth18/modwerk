@@ -1,7 +1,7 @@
 {
   "firmware": "1.40C",
-  "imageSha256": "fd42fa81ee3cf23a47381a96d2e70be3efbaab250f5c3aedb5a1e11cd4a2529e",
-  "emulatorSha256": "89759d97c794f62b304dff1912a2ac1c7965289b4d019fbdbb0dbcf3c3d9f312",
+  "imageSha256": "2a517bc54a92fbf811a3f7366ce27713fdcbdb1aeb2ebbd9bd9c2368ba317cfa",
+  "emulatorSha256": "3e04ecbfb9f00a45d7f8a832215241f3832443cd485d5cc58b3b5b97cfd7a4f0",
   "setup": "Headless ot_emu; MKII panel; stopped transport; 128×64 LCD at integer scale 6.",
   "palette": {
     "on": [
@@ -42,13 +42,8 @@
     {
       "encoder": {
         "name": "LEVEL",
-        "delta": -30
+        "delta": 30
       }
-    },
-    {
-      "press": [
-        "DOWN"
-      ]
     },
     {
       "press": [
@@ -68,14 +63,14 @@
     }
   ],
   "screenshots": {
-    "ot-location.png": "9a07060ecddf8f0f1563a3609e4c9ad0aae220c8df959f96486d262d59c5cb53",
+    "ot-location.png": "85a8ddddfff6d37547ea1c713286ba51b4fdcaca0161872966dc696f96632ba8",
     "ot-controls.png": "eba744d308c1e461bff0b2e7b8f995d4a6e0d2d098868309dd9acbf6f35e6ab9"
   },
   "schemaVersion": 1,
-  "captured": "2026-10-08",
+  "captured": "2026-10-11",
   "moduleId": "miniverb",
-  "moduleVersion": "0.2.0-experimental",
-  "captureMethod": "scripts/capture-module-ui.py in offline Linux container, ot_emu --interactive --dsp --frame --mkii; actual 128x64 LCD, scale 6.",
+  "moduleVersion": "0.2.1-experimental",
+  "captureMethod": "scripts/capture-module-ui.py in offline Linux container; actual 128x64 LCD, monochrome scale 6.",
   "imageProfile": {
     "modules": [
       "miniverb"
@@ -84,11 +79,11 @@
       "dsp-dynload-stock",
       "dsp-dynload-stock-b"
     ],
-    "baseCommit": "2899ff214b51004ecb70b10dba519556740a0f65",
-    "draftRuntimeSha256": "b41a3e8b159fd4594af3eada72e84933d067b0335a2b1adc786bfcadc95fd136"
+    "baseCommit": "c9cae4ae0013b9fbce5a262c0865e4a0b29c3041",
+    "draftRuntimeSha256": "54f718c47683c8620e2cbeef0fd814583eacfca31051ced637ced287bfbdb283"
   },
   "limitations": [
-    "Emulator UI only; transport stopped, empty scratch card, no sample playback or hardware evidence.",
-    "Private common-builder image is not a qualified published release."
+    "Emulator UI only; stopped transport, empty scratch card, no hardware evidence.",
+    "Private development candidate; diagnostic emulator watchdog extended from four to eight stalled windows, not a firmware change."
   ]
 }

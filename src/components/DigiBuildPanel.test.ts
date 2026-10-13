@@ -2,6 +2,7 @@ import { createElement, isValidElement, type ReactNode } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { DigiBuildPanel } from './DigiBuildPanel'
+import type { DigiMachine } from '../devices/digi-mods'
 import type { useDigiFirmware } from '../hooks/useDigiFirmware'
 
 const mocks = vi.hoisted(() => ({track: vi.fn(), moduleIds: ['digihealth'], phase: 'built'}))
@@ -14,7 +15,7 @@ vi.mock('../hooks/useDigiBuild', () => ({useDigiBuild: () => ({
 })}))
 afterEach(() => {vi.unstubAllGlobals();mocks.track.mockClear();mocks.moduleIds = ['digihealth'];mocks.phase = 'built'})
 
-function downloadAction(machine: 'digitakt' | 'digitone') {
+function downloadAction(machine: DigiMachine) {
   let action: (() => void) | undefined
   function inspect(node: ReactNode) {
     if (Array.isArray(node)) {node.forEach(inspect);return}
@@ -24,7 +25,7 @@ function downloadAction(machine: 'digitakt' | 'digitone') {
   }
   function Capture() {
     const tree = DigiBuildPanel({device: {id: machine, name: machine}, firmware: {state: 'empty'} as ReturnType<typeof useDigiFirmware>,
-      moduleIds: ['digislicer'], onExport: vi.fn(), exported: false, canExport: false})
+      moduleIds: ['digislicer'], onExport: vi.fn(), exported: false, canExport: false, results: null})
     inspect(tree)
     return tree
   }
@@ -57,5 +58,10 @@ describe('Digi firmware download statistics', () => {
     vi.stubGlobal('window', {setTimeout: (callback: () => void) => callback()})
     downloadAction('digitone')!()
     expect(mocks.track).toHaveBeenCalledExactlyOnceWith([], 'digitone')
+  })
+
+  it('never exposes a Digitakt II download before its machine-specific qualification', () => {
+    expect(downloadAction('digitakt-ii')).toBeUndefined()
+    expect(mocks.track).not.toHaveBeenCalled()
   })
 })

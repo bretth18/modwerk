@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "id": "analog-bassdrum",
+  "version": "0.1.4-experimental",
+  "status": "owner-approved-public-promotion",
+  "approvedVersion": "0.1.3-experimental",
+  "baseFiles": {
+    "modules/analog-bassdrum/control.s": "644f10fbc534d8351424e55ee96c2d0ff2f39a1b691ad8a695422d1c05e37a3f",
+    "modules/analog-bassdrum/engine.s": "c86a6ac24326fb52f71dd766b1ccc25e5dfd8511028b162459447c279da48425",
+    "modules/analog-bassdrum/machine.s": "07dc37b1c0bd0f061aabe27782c67df9dcd22769e9c080efbfdf354530d83b8d",
+    "modules/analog-bassdrum/manifest.py": "20fa1f744630354b3986a3ad82ac6a41744345796dc783891a4c9f0bd81c787e",
+    "modules/analog-bassdrum/ab_glue.asm": "c78dc31dfcfc7a0c6f10ae24b39744a88bed5211346bcae4f6931e2e6489223c",
+    "modules/analog-bassdrum/dsp808.py": "3d61ba9c258c319d90d7beb47f6cbc7dafb7336c49d8386912478d284cef603d",
+    "modules/analog-bassdrum/dsp909.py": "480a064a304380079019125eef98e9c68da26bd5408bbe38845563ccac94d2e4",
+    "modules/analog-bassdrum/octamod.module.json": "9c3df5028dbf4e604b4c4523555ccddebb9eac42a2ec4dee6ff87d8647d0c8a0",
+    "modules/analog-bassdrum/fit909.json": "e1e97b493b6c232bf6602ca224212e19f2aef3cff65fff404e7876648d228390",
+    "modules/analog-bassdrum/control.c": "29f392c7e007aaa695076eff0c897729a941676ff582e4bb17957074d56ceac5",
+    "modules/analog-bassdrum/bd909.asm": "66f1abde9715b49a145daa1868d00b1ea73989bee2a8e904b9c44149a4d4afc8",
+    "modules/analog-bassdrum/bd808.asm": "e7306bd284e9bca067cffc54dcbfb18ae7a0fc7b3a27253a246e58898ae9ee92",
+    "tools/harness/bd909.py": "a317bf0aab93a1465cb8e9900b6672ed72e6d91a5b4eee1778e481d8b863d534",
+    "tools/harness/bd808.py": "540f2ee7c4d79bca0970abe2937ffd294c695aa623e711875778295252017598",
+    "tools/harness/bd909_host/bd909_host.cpp": "1c25ff9be510d6941efe504a6eae7ebbcd9028a555a2b8c160290fcf02ad3195",
+    "tools/build/ab_image.py": "d51e8face61e0642f24743cc8081b1d258943f5040a3b34d003cf34a4f797c14",
+    "tools/build/ab_records.py": "71f44c4c54b281b5c813ffbab3abb98501620ad980582367004a1daeb2eeca45"
+  },
+  "candidateFiles": {
+    "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+    "fit909.json": "6917d613b5033069f226b9f6a440f6eefd935e596452546d5bc27b73c5e3dd08",
+    "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f",
+    "apply.py": "c4e2db723e9a70aacd4c915bdf73efdb76ce057914b6b25c614d126aa5626ce8",
+    "run.py": "360660d8e74c7fe8d0fa4496660235a9d5a28e2f2a4dde7baa3cba47d599e3da",
+    "calibrate.py": "4af41b490ee41579ed5fc794ae22c8f0f381920b3a0c8848acd7412a7018c7aa",
+    "qualification/multi_host.cpp": "c49d11ead0705bd9b3f92f8e22735f1ff22fdd430ab3cbe1e03355641cb71888",
+    "qualification/multi-test.py": "e209ed619bfc1ff9e2c44a2914ed59e2d96ebb144aca677886b658cb9065cfd9",
+    "compare.py": "303b7de19c4c00e35c6d5233211bb0bb5aa788250900c0b53aa2d965d5eb781a",
+    "qualification/port.py": "701876d0fd8ee26eb798d743cffd4d18fad1e603994a78b80bb359e17046a4f9",
+    "qualification/source_probe.py": "dc3e3411243a8b0b293b25702ae32a17942cd048699e0fb77618d60bd4008488",
+    "qualification/ranges.py": "91f5e1ec30ab9dd7ba67e7a090960d1e2c9f0b5fb8aebabb6b26c5bd59b3a0b1",
+    "qualification/costs.py": "f27f6519324670caaca87bdad71fe18cea791e150e2becff47a3624b1eedc916",
+    "qualification/reference.py": "099c14968b3efe1699fc30bfd6853997010b85f10dd146a159587e83469afd27"
+  },
+  "publication": "AB014REF05 DSP/fit files promoted byte-for-byte to public 0.1.4. This development folder remains excluded from discovery. The new exact-source owner exception waives fresh physical hardware/persistence, worst-case chip timing and complete memory bounds; no missing hardware result is inferred.",
+  "audition": {
+    "firstRevision": "Owner liked the direction, body and resonance in the bundled preview; attack sounded smoother. Attack/Tune were then split for an unambiguous audition.",
+    "secondRevision": "Owner initially accepted the Attack-only clip, then withdrew that assessment: the full sound and attack do not sound sufficiently like the 909.",
+    "bundledClipClarification": "The first clip bundled Attack and Tune. Separate fixed-control sweeps supplied for review.",
+    "thirdRevision": "Owner describes the AB014REF04 whole-hit/endpoints revision as pretty close, with the high end of Attack still sounding cut off.",
+    "lpfInvestigation": "AB014REF04 tested at LPF48/64/127/0. Owner confirms real 909 direct-out reference with main-out LPF excluded, and rejects a 1:1 match. Full-onset analysis corrects the earlier cropped-onset upper-band measurements. AB014REF05 refits pulse for bypass.",
+    "directOutRevision": "AB014REF05 refits only pulse coefficients and minimum pulse gain for LPF bypass, and reduces strength range to 0.92..1.0; body/Tune and DSP instructions unchanged from AB014REF04. Owner accepted actual complete-image emulator audio and explicitly authorized release with named physical/timing/memory limits waived."
+  }
+}

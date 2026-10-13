@@ -3,7 +3,8 @@ import { DIGI_MODS } from '../../devices/digi-mods'
 import MACHINES from '../../devices/machines.generated.json'
 import LOCK from '../../../vendor/elekloader/elekloader.lock.json'
 import { BUILDER_CATALOG, BUILDER_SOURCE, buildLogText, buildStep, builderReleases, planBuild, prepareBuild, type Builder } from './digi-build'
-import { DIGI_DOWNLOADS_ENABLED } from './protocol'
+import type { Catalog } from '../../../vendor/elekloader/kit/src/kit/catalog'
+import { DIGI_DOWNLOADS_ENABLED, digiDownloadsEnabled } from './protocol'
 
 describe('the vendored elekloader catalog', () => {
   it('pins a core for every supported Digitakt and Digitone release', () => {
@@ -17,11 +18,45 @@ describe('the vendored elekloader catalog', () => {
     expect(BUILDER_CATALOG.mods.every(item => /^[a-f0-9]{64}$/.test(item.sha256) && /^[\w.-]+\.elemod$/.test(item.file))).toBe(true)
     expect(BUILDER_CATALOG.revision).toBe(LOCK.catalog.revision)       // saved backups name it
   })
+  it('plans the released Digitakt II mods only for OS 1.17 with their DTII core', () => {
+    expect(planBuild('digitakt-ii', '1.17', ['perform-direct', 'perform-levels'])).toMatchObject({
+      core: { file: 'core-1.0.elemod', device: 'digitakt-mk2', os: '1.17' },
+      mods: [
+        { id: 'perform-direct', file: 'perform-direct-1.0.elemod', device: 'digitakt-mk2', os: '1.17' },
+        { id: 'perform-levels', file: 'perform-levels-1.0.elemod', device: 'digitakt-mk2', os: '1.17' },
+      ],
+      missing: [],
+    })
+    expect(planBuild('digitakt-ii', '1.16', ['perform-direct']).missing).toEqual(['perform-direct'])
+  })
   it('reports modules without a file for the chosen release', () => {
     expect(planBuild('digitakt', '1.54', ['digisophie', 'digihealth'])).toMatchObject({ missing: ['digisophie'], mods: [{ id: 'digihealth', os: '1.54' }] })
   })
-  it('enables the owner-approved, native-parity-verified Digitakt/Digitone downloads', () => {
-    expect(DIGI_DOWNLOADS_ENABLED).toBe(true)
+  it('plans Digitakt II OS 1.17 using its own core and mod pins', () => {
+    const catalog: Catalog = {
+      ...BUILDER_CATALOG,
+      cores: [...BUILDER_CATALOG.cores, {
+        file: 'core-1.0.elemod', sha256: 'a'.repeat(64), id: 'core', version: '1.0', device: 'digitakt-mk2', os: '1.17',
+        license: 'GPL-2.0-or-later', source: { repo: 'toonst/digitakt2-perform', tag: 'v1.0' },
+      }],
+      mods: [...BUILDER_CATALOG.mods, {
+        file: 'perform-direct-1.0.elemod', sha256: 'b'.repeat(64), id: 'perform-direct', version: '1.0', device: 'digitakt-mk2', os: '1.17',
+        license: 'GPL-2.0-or-later', source: { repo: 'toonst/digitakt2-perform', tag: 'v1.0' }, title: 'Direct perform', requires: ['core'], conflicts: [], needs_core: '1.0',
+      }],
+    }
+
+    expect(planBuild('digitakt-ii', '1.17', ['perform-direct'], catalog)).toMatchObject({
+      core: { file: 'core-1.0.elemod', device: 'digitakt-mk2', os: '1.17' },
+      mods: [{ id: 'perform-direct', file: 'perform-direct-1.0.elemod', device: 'digitakt-mk2', os: '1.17' }],
+      missing: [],
+    })
+    expect(builderReleases('digitakt-ii', 'perform-direct', catalog)).toEqual(['1.17'])
+  })
+  it('keeps download approval specific to each device', () => {
+    expect(DIGI_DOWNLOADS_ENABLED).toEqual({ digitakt: true, 'digitakt-ii': false, digitone: true })
+    expect(digiDownloadsEnabled('digitakt-ii')).toBe(false)
+    expect(digiDownloadsEnabled('unknown-device')).toBe(false)
+    expect(digiDownloadsEnabled('constructor')).toBe(false)
   })
 })
 

@@ -6,9 +6,9 @@ import { DIGI_MODS } from '../devices/digi-mods'
 import { COMMUNITY_MODULES } from './modules'
 import { moduleChangelogs } from './module-changelogs'
 const modules=[{id:'a',name:'Alpha',authorName:'Zed'},{id:'b',name:'Beta',authorName:'Amy'},{id:'c',name:'Gamma',authorName:'Amy'}]
-const statistics:ModuleStatistics[]=[{module_id:'a',average:5,count:1,likes:2,downloads:7,downloadsStarted:null},{module_id:'b',average:0,count:0,likes:8,downloads:1,downloadsStarted:null},{module_id:'c',average:4,count:1,likes:8,downloads:15,downloadsStarted:null}]
+const statistics:ModuleStatistics[]=[{module_id:'a',average:5,count:1,likes:2,downloads:7,worksReports:3,downloadsStarted:null},{module_id:'b',average:0,count:0,likes:8,downloads:1,worksReports:0,downloadsStarted:null},{module_id:'c',average:4,count:1,likes:8,downloads:15,worksReports:3,downloadsStarted:null}]
 describe('module discovery ordering',()=>{
- it.each([['downloaded',['c','a','b']],['liked',['b','c','a']],['rated',['a','c','b']],['author',['b','c','a']],['name',['a','b','c']],['collection',['a','b','c']]])('orders modules by %s with stable alphabetical ties',(sort,expected)=>{
+ it.each([['downloaded',['c','a','b']],['liked',['b','c','a']],['working',['c','a','b']],['author',['b','c','a']],['name',['a','b','c']],['collection',['a','b','c']]])('orders modules by %s with stable alphabetical ties',(sort,expected)=>{
   expect([...modules].sort((a,b)=>compareModules(a,b,sort as string,statistics)).map(module=>module.id)).toEqual(expected)
  })
  it('handles missing statistics and unrated modules without changing the selection or input catalog',()=>{
@@ -17,29 +17,13 @@ describe('module discovery ordering',()=>{
   expect([...filtered].sort((a,b)=>compareModules(a,b,'liked',null)).map(module=>module.id)).toEqual(['a','c'])
   expect(filtered.map(module=>module.id)).toEqual(['c','a'])
  })
- it('ranks by Bayesian score using the full statistics even when the catalog is filtered', () => {
-  const stats: ModuleStatistics[] = [
-   { ...statistics[0], average: 5, count: 1 },
-   { ...statistics[1], average: 4.5, count: 20 },
-   { ...statistics[2], average: 1, count: 20 },
-  ]
+ it('ranks by working reports, then likes, then name, and keeps the unreported last', () => {
   const missing = { id: 'missing', name: 'A missing module', authorName: 'Amy' }
-  const unrated = { id: 'unrated', name: 'An unrated module', authorName: 'Amy' }
-  stats.push({ ...statistics[0], module_id: unrated.id, average: 5, count: 0 })
-  const order = (items: typeof modules) => [...items].sort((a,b) => compareModules(a,b,'rated',stats)).map(module => module.id)
-  expect(order([...modules, unrated, missing])).toEqual(['b','a','c','missing','unrated'])
-  expect(order(modules.slice(0,2))).toEqual(['b','a'])
-  expect(stats[0]).toMatchObject({ average: 5, count: 1 })
+  const order = (items: typeof modules, stats: ModuleStatistics[] | null = statistics) => [...items].sort((a,b) => compareModules(a,b,'working',stats)).map(module => module.id)
+  expect(order([...modules, missing])).toEqual(['c','a','b','missing'])
+  expect(order(modules.slice(0,2))).toEqual(['a','b'])
+  expect(order(modules, null)).toEqual(['a','b','c'])
   expect(modules.map(module => module.id)).toEqual(['a','b','c'])
-  expect([...modules].sort((a,b) => compareModules(a,b,'rated',null)).map(module => module.id)).toEqual(['a','b','c'])
- })
- it('breaks equal Bayesian scores by vote count, then name and ID, without rounding scores', () => {
-  const stats = statistics.map((item,index) => ({ ...item, average: 5, count: index === 0 ? 1 : 20 }))
-  expect([...modules].sort((a,b) => compareModules(a,b,'rated',stats)).map(module => module.id)).toEqual(['b','c','a'])
-  const sameNames = modules.map(module => ({ ...module, name: 'Same' })).reverse()
-  expect(sameNames.sort((a,b) => compareModules(a,b,'rated',stats)).map(module => module.id)).toEqual(['b','c','a'])
-  const close = [{ ...stats[0], average: 4.99, count: 20 }, { ...stats[1], average: 5, count: 20 }]
-  expect(modules.slice(0,2).sort((a,b) => compareModules(a,b,'rated',close)).map(module => module.id)).toEqual(['b','a'])
  })
 })
 

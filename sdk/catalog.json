@@ -19,12 +19,12 @@
     },
     {
       "id": "miniverb",
-      "version": "0.2.0-experimental",
+      "version": "0.2.1-experimental",
       "addedAt": "2026-10-01T06:53:41Z"
     },
     {
       "id": "tapeecho",
-      "version": "0.1.2-experimental",
+      "version": "0.1.3-experimental",
       "addedAt": "2026-10-01T06:53:41Z"
     },
     {
@@ -44,17 +44,22 @@
     },
     {
       "id": "airwindows-chorus",
-      "version": "0.1.0-experimental",
+      "version": "0.1.2-experimental",
       "addedAt": "2026-10-08T21:00:00Z"
     },
     {
+      "id": "everb",
+      "version": "0.1.1-experimental",
+      "addedAt": "2026-10-09T18:16:15Z"
+    },
+    {
       "id": "analog-bassdrum",
-      "version": "0.1.3-experimental",
+      "version": "0.1.5-experimental",
       "addedAt": "2026-10-01T09:19:37Z"
     },
     {
       "id": "midi-scenes",
-      "version": "0.2.4-experimental",
+      "version": "0.2.5-experimental",
       "addedAt": "2026-10-01T09:19:37Z"
     },
     {
@@ -64,7 +69,7 @@
     },
     {
       "id": "quantizer",
-      "version": "0.1.2-experimental",
+      "version": "0.1.3-experimental",
       "addedAt": "2026-10-01T09:19:37Z"
     },
     {
@@ -84,12 +89,12 @@
     },
     {
       "id": "sidechain-compressor",
-      "version": "0.1.1-experimental",
+      "version": "0.1.2-experimental",
       "addedAt": "2026-10-05T12:00:00Z"
     },
     {
       "id": "vector",
-      "version": "0.2.3-experimental",
+      "version": "0.2.4-experimental",
       "addedAt": "2026-10-06T08:02:00Z"
     },
     {
@@ -106,6 +111,16 @@
       "id": "recorder-loop-fix",
       "version": "0.1.0-experimental",
       "addedAt": "2026-10-07T20:00:00Z"
+    },
+    {
+      "id": "poly8",
+      "version": "0.2.7-experimental",
+      "addedAt": "2026-10-08T12:00:00Z"
+    },
+    {
+      "id": "output-matrix",
+      "version": "0.1.0-experimental",
+      "addedAt": "2026-10-08T21:55:32Z"
     },
     {
       "id": "euclid-seq",

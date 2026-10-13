@@ -30,6 +30,8 @@ For Octatrack modules, write DSP effects in **DSP56300 assembly** or playback an
 
 Third-party copyright notices and full licence terms are preserved in the [SDK notice bundle](sdk/octabam/licenses/THIRD_PARTY_NOTICES.txt) and included in the published app and compiled module artifacts. See [component provenance](sdk/octabam/THIRD_PARTY.md).
 
+The independent Modwerk API/backend is source available under **Elastic License 2.0**, which restricts providing its substantial functionality as a hosted or managed service to third parties. The browser frontend remains **GPL-3.0-or-later**; SDKs, modules and third-party components retain their respective licences. See [licence scope](LICENSE) and the [platform licensing audit and limits](docs/PLATFORM_LICENSING.md). Earlier GPL revisions retain their GPL rights.
+
 ## Get started
 
 Requires **Git, Node.js 24 and Python 3.10+**. Clone the repository, or your fork when contributing:

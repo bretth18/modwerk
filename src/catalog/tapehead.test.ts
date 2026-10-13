@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { verifyImportedFile } from '../../scripts/sdk-imports.mjs'
 import manifest from '../../sdk/octabam/modules/tapehead/octamod.module.json'
 import capture from '../../sdk/octabam/modules/tapehead/media/capture.json'
 import provenance from '../../sdk/imports/tapehead-f890330.json'
@@ -41,7 +42,7 @@ describe('published TapeHead evidence', () => {
     }
     expect(provenance.authorPins.algorithm.repository).toBe('https://github.com/JClones/JSFXClones')
     expect(sha(readFileSync(resolve(folder, 'JCLONES_NOTICE.md')))).toBe(provenance.authorPins.algorithm.noticeSha256)
-    for (const file of provenance.files) expect(sha(readFileSync(resolve('sdk/octabam', file.path)))).toBe(file.vendoredSha256)
+    for (const file of provenance.files) verifyImportedFile(resolve('sdk/octabam', file.path), file.vendoredSha256, folder)
     const license = readFileSync(resolve(folder, 'LICENSE'), 'utf8')
     expect(license).toContain('Copyright (c) 2026 JClones')
     expect(license).toContain('Copyright (c) 2026 devilfish707')

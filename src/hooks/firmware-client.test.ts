@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createLazyFirmwareClient } from './firmware-client'
+import { createLazyFirmwareClient, createObservedDigiFirmwareClient } from './firmware-client'
+import { subscribeSiteDiagnosticEvents } from '../community/site-diagnostic-events'
+import type { FirmwareClient } from '../engine/client'
 import type { EngineRequest, EngineResponse } from '../engine/protocol'
 import { USB_AUDIO_MODULE, usbAudioPreset } from '../config/usb-audio'
 class FakeWorker {
@@ -70,5 +72,71 @@ describe('lazy firmware client', () => {
     for (const worker of FakeWorker.created) expect(worker.terminated).toBe(true)
     expect(() => client.validate([], false)).toThrow('closed')
     expect(() => client.inspect(new File([], 'x.bin'))).toThrow('closed')
+  })
+})
+
+describe('safe firmware failure observations', () => {
+  it('reports inspect, selection, base and the last fixed build phase without private error details', async () => {
+    const receive = vi.fn(), stop = subscribeSiteDiagnosticEvents(receive)
+    const original = new Error('PRIVATE filename.bin https://private.test'), buffer = new ArrayBuffer(3)
+    const underlying = {
+      inspect: vi.fn(() => Promise.reject(original)), validate: vi.fn(() => Promise.reject(original)),
+      buildBase: vi.fn(() => Promise.reject(original)), build: vi.fn((_ids, _stock, progress) => { progress('packing'); return Promise.reject(original) }),
+      clear: vi.fn(async () => {}), dispose: vi.fn(), cancelBuild: vi.fn(),
+    } as unknown as FirmwareClient
+    const client = createLazyFirmwareClient(() => underlying), progress = vi.fn()
+    try {
+      await expect(client.inspect(new File([buffer], 'PRIVATE.bin'))).rejects.toBe(original)
+      await expect(client.validate(['PRIVATE'], false)).rejects.toBe(original)
+      await expect(client.buildBase()).rejects.toBe(original)
+      await expect(client.build(['PRIVATE'], false, progress)).rejects.toBe(original)
+      expect(progress).toHaveBeenCalledWith('packing')
+      expect(receive.mock.calls.map(([event]) => event)).toEqual([
+        {event:'build_failed',phase:'preparing',buildKind:'octatrack-firmware',error:'input'},
+        {event:'build_failed',phase:'preparing',buildKind:'octatrack-firmware',error:'selection'},
+        {event:'build_failed',phase:'building',buildKind:'octatrack-base',error:'build'},
+        {event:'build_failed',phase:'packing',buildKind:'octatrack-firmware',error:'build'},
+      ])
+      expect(JSON.stringify(receive.mock.calls)).not.toContain('PRIVATE')
+    } finally { client.dispose(); stop() }
+  })
+  it('keeps expected cancel, clear and dispose rejections out of diagnostics', async () => {
+    const receive = vi.fn(), stop = subscribeSiteDiagnosticEvents(receive)
+    try {
+      for (const action of ['cancelBuild', 'clear', 'dispose'] as const) {
+        const client = createLazyFirmwareClient()
+        const build = client.build(['miniverb'], false, () => {})
+        const result = expect(build).rejects.toThrow()
+        await flush(); await client[action](); await result
+        client.dispose()
+      }
+      expect(receive).not.toHaveBeenCalled()
+    } finally { stop() }
+  })
+})
+
+
+describe('safe Digi reader observations', () => {
+  it('keeps the existing eager reader, exact inputs and rejection while recording only a fixed category', async () => {
+    const original = new Error('PRIVATE.syx'), inspect = vi.fn(() => Promise.reject(original)), dispose = vi.fn(), create = vi.fn(() => ({ inspect, dispose }))
+    const receive = vi.fn(), stop = subscribeSiteDiagnosticEvents(receive), file = new File(['PRIVATE'], 'PRIVATE.syx')
+    const client = createObservedDigiFirmwareClient(create)
+    try {
+      expect(create).toHaveBeenCalledTimes(1)
+      await expect(client.inspect('digitakt', file)).rejects.toBe(original)
+      expect(inspect).toHaveBeenCalledWith('digitakt', file)
+      expect(receive).toHaveBeenCalledWith({ event: 'build_failed', phase: 'preparing', buildKind: 'elekloader', error: 'input' })
+    } finally { client.dispose(); stop() }
+    expect(dispose).toHaveBeenCalledTimes(1)
+  })
+  it('does not report a pending reader disposed by a page change', async () => {
+    let reject!: (error: Error) => void
+    const original = new Error('PRIVATE reader disposed'), receive = vi.fn(), stop = subscribeSiteDiagnosticEvents(receive)
+    const client = createObservedDigiFirmwareClient(() => ({ inspect: () => new Promise((_, fail) => { reject = fail }), dispose: () => reject(original) }))
+    try {
+      const pending = client.inspect('digitakt', new File(['PRIVATE'], 'PRIVATE.syx')), failed = expect(pending).rejects.toBe(original)
+      client.dispose(); await failed
+      expect(receive).not.toHaveBeenCalled()
+    } finally { stop() }
   })
 })

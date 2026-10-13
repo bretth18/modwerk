@@ -1,0 +1,462 @@
+{
+  "schema": 1,
+  "scope": "Executed private FM consumer cases with an authored initialized input layer; no full boot, exhaustive coverage or runtime admission.",
+  "hardware": false,
+  "boot": false,
+  "audio": false,
+  "publicAdmission": false,
+  "receipts": [
+    {
+      "schema": 1,
+      "scope": "FM consumers and known UI-root native observation",
+      "stockSha256": "34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad",
+      "stockMainSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+      "packageSha256": "9a7622263ef5a77ef73e78265826560cebbb38af028edaa0fd1c079d6fe850d5",
+      "captureSha256": "ee07e035066065070990bb591727db662770bd790d112cda5bcef41f77615d01",
+      "sources": {
+        "sdk/machines/octatrack/module-adapters/machine_composition.py": "4cfa5ae146e1b93c16b478af5882072e3ddefb1bd32960dde577a3f1cb5b3d3e",
+        "sdk/machines/octatrack/module-adapters/fm_runtime.py": "ecf39c395bd8231d1dda340e1c6bc26e8473ba548cfa422f9a4ae4ff2bd6807e",
+        "sdk/machines/octatrack/module-adapters/vector_runtime.py": "9f0a0ffe8c0e3bacef6e6aad057f8f454b43b5daef32e9adb8fa2def0937ea39",
+        "sdk/machines/octatrack/module-adapters/stock_recipe.py": "662b79d9dc612845cf85e5051fa2d711cad4f98244194357fdaaabca092d5ca5",
+        "sdk/octabam/modules/synth/manifest.py": "7854330aca001d2841de2fb384f0ca8adb7497db49dacc56da2815c1f444c0e6",
+        "sdk/octabam/modules/synth/upstream/synth/poly.s": "ce21f5f7cddcd7268d27e25c500f1403cc59a9dff28044b1832cf2b45592d34c",
+        "sdk/octabam/modules/synth/upstream/quantizer/keys.s": "e2ffdbfae34b0828794a4eb4cc229e3efcaed25dc953bf7c05c13f6e37f65587",
+        "sdk/octabam/modules/synth/upstream/quantizer/core.s": "2992b6c85cff440de03ae84eb22dee8b8a83a84f23e94b699404d28940b6f958",
+        "sdk/octabam/modules/synth/upstream/quantizer/scale.s": "82242c407847ac61a6f60fe15bdc5b0b4fc852bac82c39745b5c838ec9389c64",
+        "sdk/octabam/modules/synth/upstream/quantizer/quantizer.s": "d1737168a1750f540b3dfbefdd2a64b11084013b9f7b71b31aa4f189d33a24c5",
+        "sdk/octabam/modules/synth/upstream/synth/page.s": "25e2a0624fcc30ee3a8db5966954113119fb5942855042f765e664a2f8544a70",
+        "sdk/octabam/modules/synth/machine.s": "de9d849bf0b6e5d5ad747df32ae5806e7f9516674a14ac74b1c15d73d30d280a",
+        "sdk/octabam/modules/synth/registration.s": "d04e47d6d21287ea969e4d39d0fea8c90b262a577081ba8376915f96cd2d9d2d",
+        "sdk/octabam/modules/poly8/shared-machine.c": "74dd81c5f3bd1bf3474350989655ea76f5e1b52e7919fa8b11b2e1423e79317c",
+        "sdk/octabam/modules/poly8/shared-machine-hooks.s": "dc9b3eaaa0883c68a36bd34999420ab38b10bc1b43a513518963e01ce8479cd8",
+        "sdk/octabam/modules/poly8/composition.json": "d9e3237001672e6349f69337f71bc3c1b069577fb7215c9a4f55a2c4bc722122",
+        "sdk/octabam/modules/quantizer/composition.json": "d5662ed9972ef629dbaa6120d25fdc1ff7a2d5351b25f32f73fe3a06394531cc"
+      },
+      "compiledImageSha256": "fda04d7f6173b7d0b2b30c1ec6459d814c8b103d24e7b94e1d424c301300fc6b",
+      "encodedImageSha256": "9d7db16eaad5ed897e279b26ffdb09194479d662d6b0cda27a035ae125e945f2",
+      "reviewedRecipeSha256": "8ded4c5d344d14f19a729f84b5080e50f85e13811fca3faaecb4ec62d11cab69",
+      "probeSources": {
+        "fm_consumer_fixture.cpp": "c0be55efcb12afe929ea3ceeeb0d4d2f9aca00659a1711e961677f2134191ae2",
+        "fm_consumer_scanner.c": "7cb82a9bcd3855945e38b1396158da33a077884cab6aa83656c4b9beed28e015",
+        "probe_fm_consumers.py": "3858030b1e67fdfab70e6fc22824418ee484b3125fb743a5f20a25551b44fc6f",
+        "machine_lifetime.c": "8bf0a66c8113f2e608c6e4115aef67e056e13f8395f67b172342d9d296496f5a",
+        "machine_lifetime.h": "6fb7713aa06d01e52ac5bd32a6057038efb4717f1635662f47c8595803d3cf11",
+        "machine_layout.py": "d394ddf37a025fa77609bc9ca5e1b0091e9cca714e64fc461fad6a613687b35c",
+        "stock_recipe.py": "662b79d9dc612845cf85e5051fa2d711cad4f98244194357fdaaabca092d5ca5"
+      },
+      "nativeArchives": {
+        "out/emu/libot_machine.a": "15a867f7589ac891ff5b20cdfe4c1709298975de15342d5c3434f008988bef02",
+        "out/emu/mc68k/lib68kEmu.a": "451b2f6c7455b00f5b7b0462ed38c71ac5cccc93fb0bbd58e0fa93c1e391701b",
+        "out/emu/dsp56300/dsp56kEmu/libdsp56kEmu.a": "37224756f1622024e36443cdb6d67ee1cd8ab5b366c92442d3983fb35ffea0bc",
+        "out/emu/dsp56300/dsp56kBase/libdsp56kBase.a": "dea1c15cb6bb6cc3f126f64107e454d24aaa2f17ce04753956ac0f341ccc48f4",
+        "out/emu/dsp56300/asmjit/libasmjit.a": "39b4923646d12bb3285a1d0634cf84fc53ee558811d7b4670bea3fc77e721a39"
+      },
+      "origins": [
+        {
+          "observations": [
+            {
+              "origin": 1191706624,
+              "calls": 2803,
+              "widgets": 23,
+              "writes": 628641,
+              "privateReads": 435094,
+              "consumerPCs": 838,
+              "escapedPointers": 0,
+              "maxNonzeroPixelBytes": 51,
+              "numericRasterCollisions": 3,
+              "resetDescriptorStages": 40,
+              "randomizeDescriptorStages": 40,
+              "initializedInputLayer": true,
+              "stockNotificationTailExecuted": true
+            },
+            {
+              "injectedEscapeDetected": true,
+              "splitWordEscapeDetected": true,
+              "actualUIRootCollectorPassed": true,
+              "rasterExclusionIsBounded": true
+            }
+          ],
+          "stockImageSha256": "cbfe185e2364545103da0a757b1abc247225865f0a5bd6f85cf7afa2c6d26a87",
+          "runtimeImageSha256": "99cd25f5c4509b48414e1e0a4a3b5dcf8272d1c16e76113be9fdda62ac2a55cf"
+        },
+        {
+          "observations": [
+            {
+              "origin": 1192230912,
+              "calls": 2803,
+              "widgets": 23,
+              "writes": 628641,
+              "privateReads": 435094,
+              "consumerPCs": 838,
+              "escapedPointers": 0,
+              "maxNonzeroPixelBytes": 51,
+              "numericRasterCollisions": 0,
+              "resetDescriptorStages": 40,
+              "randomizeDescriptorStages": 40,
+              "initializedInputLayer": true,
+              "stockNotificationTailExecuted": true
+            },
+            {
+              "injectedEscapeDetected": true,
+              "splitWordEscapeDetected": true,
+              "actualUIRootCollectorPassed": true,
+              "rasterExclusionIsBounded": true
+            }
+          ],
+          "stockImageSha256": "fcc214dda313ac93e0e7d9c596aeeb44ccd09b18302513a0e8f9fe2871e8860c",
+          "runtimeImageSha256": "718fe42586684a417cce6f55989fb3c869dd66e2aee6d90b3ec73f6322f4330d"
+        }
+      ],
+      "hardware": false,
+      "boot": false,
+      "dsp": false,
+      "audio": false,
+      "exhaustiveConsumerCoverage": false,
+      "admission": false,
+      "memberMask": 4,
+      "privateReceiptSha256": "b3f2e8362c162165b746c855cf37c749b777c00a1a10534c914f80bd76f8cf85"
+    },
+    {
+      "schema": 1,
+      "scope": "FM consumers and known UI-root native observation",
+      "stockSha256": "34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad",
+      "stockMainSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+      "packageSha256": "dc3cb20ccab99d7619a7c00c38aecd95c88771a8dc8efe94e871193b00f69d44",
+      "captureSha256": "65482e35ecbee5872f128aaeee2282d5714fa9ba84b4f1e9e539938c47792917",
+      "sources": {
+        "sdk/machines/octatrack/module-adapters/machine_composition.py": "4cfa5ae146e1b93c16b478af5882072e3ddefb1bd32960dde577a3f1cb5b3d3e",
+        "sdk/machines/octatrack/module-adapters/fm_runtime.py": "ecf39c395bd8231d1dda340e1c6bc26e8473ba548cfa422f9a4ae4ff2bd6807e",
+        "sdk/machines/octatrack/module-adapters/vector_runtime.py": "9f0a0ffe8c0e3bacef6e6aad057f8f454b43b5daef32e9adb8fa2def0937ea39",
+        "sdk/machines/octatrack/module-adapters/stock_recipe.py": "662b79d9dc612845cf85e5051fa2d711cad4f98244194357fdaaabca092d5ca5",
+        "sdk/octabam/modules/poly8/manifest.py": "1b9dfc90a6d5901ee3e453b7c3854363aad82f7267edc090b5f4439a57f12ddb",
+        "sdk/octabam/modules/synth/manifest.py": "7854330aca001d2841de2fb384f0ca8adb7497db49dacc56da2815c1f444c0e6",
+        "sdk/octabam/modules/poly8/polyphony.s": "ec18d6aed032b684d3c73e1cad63fb72d578e6ea5bcfe2a46655747b5a5ad281",
+        "sdk/octabam/modules/poly8/registration.s": "c88815f9b16befe01fd9070f7d39120268936fef11a8d9a8d7706092cf55d987",
+        "sdk/octabam/modules/poly8/shared-machine.s": "e49d47ed22aa70a770e5738e69225106219b0337eabe67351d2e09150220ee80",
+        "sdk/octabam/modules/synth/upstream/synth/poly.s": "ce21f5f7cddcd7268d27e25c500f1403cc59a9dff28044b1832cf2b45592d34c",
+        "sdk/octabam/modules/synth/upstream/quantizer/keys.s": "e2ffdbfae34b0828794a4eb4cc229e3efcaed25dc953bf7c05c13f6e37f65587",
+        "sdk/octabam/modules/synth/upstream/quantizer/core.s": "2992b6c85cff440de03ae84eb22dee8b8a83a84f23e94b699404d28940b6f958",
+        "sdk/octabam/modules/synth/upstream/quantizer/scale.s": "82242c407847ac61a6f60fe15bdc5b0b4fc852bac82c39745b5c838ec9389c64",
+        "sdk/octabam/modules/synth/upstream/quantizer/quantizer.s": "d1737168a1750f540b3dfbefdd2a64b11084013b9f7b71b31aa4f189d33a24c5",
+        "sdk/octabam/modules/synth/upstream/synth/page.s": "25e2a0624fcc30ee3a8db5966954113119fb5942855042f765e664a2f8544a70",
+        "sdk/octabam/modules/synth/machine.s": "de9d849bf0b6e5d5ad747df32ae5806e7f9516674a14ac74b1c15d73d30d280a",
+        "sdk/octabam/modules/synth/registration.s": "d04e47d6d21287ea969e4d39d0fea8c90b262a577081ba8376915f96cd2d9d2d",
+        "sdk/octabam/modules/poly8/shared-machine.c": "74dd81c5f3bd1bf3474350989655ea76f5e1b52e7919fa8b11b2e1423e79317c",
+        "sdk/octabam/modules/poly8/shared-machine-hooks.s": "dc9b3eaaa0883c68a36bd34999420ab38b10bc1b43a513518963e01ce8479cd8",
+        "sdk/octabam/modules/poly8/composition.json": "d9e3237001672e6349f69337f71bc3c1b069577fb7215c9a4f55a2c4bc722122",
+        "sdk/octabam/modules/quantizer/composition.json": "d5662ed9972ef629dbaa6120d25fdc1ff7a2d5351b25f32f73fe3a06394531cc"
+      },
+      "compiledImageSha256": "b7f15699913ae5f90ca00fb5f3acb919ac0646ba796e123e39d46927f0f287ee",
+      "encodedImageSha256": "fa6b5bd5cd2b7092655a59a10f0956f754adbd4d4b3ab578b7c4823b8e3171aa",
+      "reviewedRecipeSha256": "6d25cf9cbef60ddbcfc8bb4aa9c0aa9fcc68b1be0a90ccc1e1e7f80fb9850324",
+      "probeSources": {
+        "fm_consumer_fixture.cpp": "c0be55efcb12afe929ea3ceeeb0d4d2f9aca00659a1711e961677f2134191ae2",
+        "fm_consumer_scanner.c": "7cb82a9bcd3855945e38b1396158da33a077884cab6aa83656c4b9beed28e015",
+        "probe_fm_consumers.py": "3858030b1e67fdfab70e6fc22824418ee484b3125fb743a5f20a25551b44fc6f",
+        "machine_lifetime.c": "8bf0a66c8113f2e608c6e4115aef67e056e13f8395f67b172342d9d296496f5a",
+        "machine_lifetime.h": "6fb7713aa06d01e52ac5bd32a6057038efb4717f1635662f47c8595803d3cf11",
+        "machine_layout.py": "d394ddf37a025fa77609bc9ca5e1b0091e9cca714e64fc461fad6a613687b35c",
+        "stock_recipe.py": "662b79d9dc612845cf85e5051fa2d711cad4f98244194357fdaaabca092d5ca5"
+      },
+      "nativeArchives": {
+        "out/emu/libot_machine.a": "15a867f7589ac891ff5b20cdfe4c1709298975de15342d5c3434f008988bef02",
+        "out/emu/mc68k/lib68kEmu.a": "451b2f6c7455b00f5b7b0462ed38c71ac5cccc93fb0bbd58e0fa93c1e391701b",
+        "out/emu/dsp56300/dsp56kEmu/libdsp56kEmu.a": "37224756f1622024e36443cdb6d67ee1cd8ab5b366c92442d3983fb35ffea0bc",
+        "out/emu/dsp56300/dsp56kBase/libdsp56kBase.a": "dea1c15cb6bb6cc3f126f64107e454d24aaa2f17ce04753956ac0f341ccc48f4",
+        "out/emu/dsp56300/asmjit/libasmjit.a": "39b4923646d12bb3285a1d0634cf84fc53ee558811d7b4670bea3fc77e721a39"
+      },
+      "origins": [
+        {
+          "observations": [
+            {
+              "origin": 1191706624,
+              "calls": 2803,
+              "widgets": 23,
+              "writes": 629721,
+              "privateReads": 453301,
+              "consumerPCs": 915,
+              "escapedPointers": 0,
+              "maxNonzeroPixelBytes": 51,
+              "numericRasterCollisions": 3,
+              "resetDescriptorStages": 40,
+              "randomizeDescriptorStages": 40,
+              "initializedInputLayer": true,
+              "stockNotificationTailExecuted": true
+            },
+            {
+              "injectedEscapeDetected": true,
+              "splitWordEscapeDetected": true,
+              "actualUIRootCollectorPassed": true,
+              "rasterExclusionIsBounded": true
+            }
+          ],
+          "stockImageSha256": "6ad2447e3ea0bdd220a3aa9081f9fe1a57515019a0a9624fd17306efd2919d7f",
+          "runtimeImageSha256": "2d8846ecf30ffe729379ef593bc4cdc2d346317a691e28201f92ccb0645ab296"
+        },
+        {
+          "observations": [
+            {
+              "origin": 1192230912,
+              "calls": 2803,
+              "widgets": 23,
+              "writes": 629721,
+              "privateReads": 453301,
+              "consumerPCs": 915,
+              "escapedPointers": 0,
+              "maxNonzeroPixelBytes": 51,
+              "numericRasterCollisions": 0,
+              "resetDescriptorStages": 40,
+              "randomizeDescriptorStages": 40,
+              "initializedInputLayer": true,
+              "stockNotificationTailExecuted": true
+            },
+            {
+              "injectedEscapeDetected": true,
+              "splitWordEscapeDetected": true,
+              "actualUIRootCollectorPassed": true,
+              "rasterExclusionIsBounded": true
+            }
+          ],
+          "stockImageSha256": "d4c43fbfb31b173c2eff414571c82a90e84413ed183a0351845770c5c8ee4e28",
+          "runtimeImageSha256": "17aa7b74fa6adfb564b3b01410a8522659279fa8182a266ba6b4517d855341e0"
+        }
+      ],
+      "hardware": false,
+      "boot": false,
+      "dsp": false,
+      "audio": false,
+      "exhaustiveConsumerCoverage": false,
+      "admission": false,
+      "memberMask": 5,
+      "privateReceiptSha256": "9644c3bce321e413d0f9eb07b0c68899e9d262d4fbd8dd1bd043263a6617cec2"
+    },
+    {
+      "schema": 1,
+      "scope": "FM consumers and known UI-root native observation",
+      "stockSha256": "34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad",
+      "stockMainSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+      "packageSha256": "55aa05df7e8b74fd111156a20eadae24fb87b02f04ab3d1ae7679be53d7bff1f",
+      "captureSha256": "2b5441fa500ddae441130724ceb93dcf23c9de70b88141dcaf9297393c0285cd",
+      "sources": {
+        "sdk/machines/octatrack/module-adapters/machine_composition.py": "4cfa5ae146e1b93c16b478af5882072e3ddefb1bd32960dde577a3f1cb5b3d3e",
+        "sdk/machines/octatrack/module-adapters/fm_runtime.py": "ecf39c395bd8231d1dda340e1c6bc26e8473ba548cfa422f9a4ae4ff2bd6807e",
+        "sdk/machines/octatrack/module-adapters/vector_runtime.py": "9f0a0ffe8c0e3bacef6e6aad057f8f454b43b5daef32e9adb8fa2def0937ea39",
+        "sdk/machines/octatrack/module-adapters/stock_recipe.py": "662b79d9dc612845cf85e5051fa2d711cad4f98244194357fdaaabca092d5ca5",
+        "sdk/octabam/modules/synth/manifest.py": "7854330aca001d2841de2fb384f0ca8adb7497db49dacc56da2815c1f444c0e6",
+        "sdk/octabam/modules/vector/manifest.py": "4d921f24256038797a99671534885b0bb9a27eaa79261b11136cf0a95a75af21",
+        "sdk/octabam/modules/synth/upstream/synth/poly.s": "ce21f5f7cddcd7268d27e25c500f1403cc59a9dff28044b1832cf2b45592d34c",
+        "sdk/octabam/modules/synth/upstream/quantizer/keys.s": "e2ffdbfae34b0828794a4eb4cc229e3efcaed25dc953bf7c05c13f6e37f65587",
+        "sdk/octabam/modules/synth/upstream/quantizer/core.s": "2992b6c85cff440de03ae84eb22dee8b8a83a84f23e94b699404d28940b6f958",
+        "sdk/octabam/modules/synth/upstream/quantizer/scale.s": "82242c407847ac61a6f60fe15bdc5b0b4fc852bac82c39745b5c838ec9389c64",
+        "sdk/octabam/modules/synth/upstream/quantizer/quantizer.s": "d1737168a1750f540b3dfbefdd2a64b11084013b9f7b71b31aa4f189d33a24c5",
+        "sdk/octabam/modules/synth/upstream/synth/page.s": "25e2a0624fcc30ee3a8db5966954113119fb5942855042f765e664a2f8544a70",
+        "sdk/octabam/modules/synth/machine.s": "de9d849bf0b6e5d5ad747df32ae5806e7f9516674a14ac74b1c15d73d30d280a",
+        "sdk/octabam/modules/synth/registration.s": "d04e47d6d21287ea969e4d39d0fea8c90b262a577081ba8376915f96cd2d9d2d",
+        "sdk/octabam/modules/vector/control.s": "c4f829e437ffbde1275c00827031b694a86011013d37269077e4696818323471",
+        "sdk/octabam/modules/poly8/shared-machine.c": "74dd81c5f3bd1bf3474350989655ea76f5e1b52e7919fa8b11b2e1423e79317c",
+        "sdk/octabam/modules/poly8/shared-machine-hooks.s": "dc9b3eaaa0883c68a36bd34999420ab38b10bc1b43a513518963e01ce8479cd8",
+        "sdk/octabam/modules/poly8/composition.json": "d9e3237001672e6349f69337f71bc3c1b069577fb7215c9a4f55a2c4bc722122",
+        "sdk/octabam/modules/quantizer/composition.json": "d5662ed9972ef629dbaa6120d25fdc1ff7a2d5351b25f32f73fe3a06394531cc"
+      },
+      "compiledImageSha256": "56984b174b1fc7ed7820fd57f03f4504f1c3f9645079ad6030acbcfbd99ef5e5",
+      "encodedImageSha256": "1eff3e77f4ce932b5d944e7cdbb901a7d8589d9914e4bc52e505e083b89a53d9",
+      "reviewedRecipeSha256": "3e11451d0a2948fa3ee252fbfee1c2c1a8b1db722b6c35e2bff0379268be9479",
+      "probeSources": {
+        "fm_consumer_fixture.cpp": "c0be55efcb12afe929ea3ceeeb0d4d2f9aca00659a1711e961677f2134191ae2",
+        "fm_consumer_scanner.c": "7cb82a9bcd3855945e38b1396158da33a077884cab6aa83656c4b9beed28e015",
+        "probe_fm_consumers.py": "3858030b1e67fdfab70e6fc22824418ee484b3125fb743a5f20a25551b44fc6f",
+        "machine_lifetime.c": "8bf0a66c8113f2e608c6e4115aef67e056e13f8395f67b172342d9d296496f5a",
+        "machine_lifetime.h": "6fb7713aa06d01e52ac5bd32a6057038efb4717f1635662f47c8595803d3cf11",
+        "machine_layout.py": "d394ddf37a025fa77609bc9ca5e1b0091e9cca714e64fc461fad6a613687b35c",
+        "stock_recipe.py": "662b79d9dc612845cf85e5051fa2d711cad4f98244194357fdaaabca092d5ca5"
+      },
+      "nativeArchives": {
+        "out/emu/libot_machine.a": "15a867f7589ac891ff5b20cdfe4c1709298975de15342d5c3434f008988bef02",
+        "out/emu/mc68k/lib68kEmu.a": "451b2f6c7455b00f5b7b0462ed38c71ac5cccc93fb0bbd58e0fa93c1e391701b",
+        "out/emu/dsp56300/dsp56kEmu/libdsp56kEmu.a": "37224756f1622024e36443cdb6d67ee1cd8ab5b366c92442d3983fb35ffea0bc",
+        "out/emu/dsp56300/dsp56kBase/libdsp56kBase.a": "dea1c15cb6bb6cc3f126f64107e454d24aaa2f17ce04753956ac0f341ccc48f4",
+        "out/emu/dsp56300/asmjit/libasmjit.a": "39b4923646d12bb3285a1d0634cf84fc53ee558811d7b4670bea3fc77e721a39"
+      },
+      "origins": [
+        {
+          "observations": [
+            {
+              "origin": 1191706624,
+              "calls": 2803,
+              "widgets": 23,
+              "writes": 632710,
+              "privateReads": 513787,
+              "consumerPCs": 1023,
+              "escapedPointers": 0,
+              "maxNonzeroPixelBytes": 51,
+              "numericRasterCollisions": 3,
+              "resetDescriptorStages": 40,
+              "randomizeDescriptorStages": 40,
+              "initializedInputLayer": true,
+              "stockNotificationTailExecuted": true
+            },
+            {
+              "injectedEscapeDetected": true,
+              "splitWordEscapeDetected": true,
+              "actualUIRootCollectorPassed": true,
+              "rasterExclusionIsBounded": true
+            }
+          ],
+          "stockImageSha256": "37170c5970cdf6cdb8407996853fc8da9d2f001b3d88373a48d5fd9588ba2970",
+          "runtimeImageSha256": "454407fc3add91e46d8bb3b0e76b4e433748754a45f2d5a5b3c51aeeb3fa4985"
+        },
+        {
+          "observations": [
+            {
+              "origin": 1192230912,
+              "calls": 2803,
+              "widgets": 23,
+              "writes": 632710,
+              "privateReads": 513787,
+              "consumerPCs": 1023,
+              "escapedPointers": 0,
+              "maxNonzeroPixelBytes": 51,
+              "numericRasterCollisions": 0,
+              "resetDescriptorStages": 40,
+              "randomizeDescriptorStages": 40,
+              "initializedInputLayer": true,
+              "stockNotificationTailExecuted": true
+            },
+            {
+              "injectedEscapeDetected": true,
+              "splitWordEscapeDetected": true,
+              "actualUIRootCollectorPassed": true,
+              "rasterExclusionIsBounded": true
+            }
+          ],
+          "stockImageSha256": "d5996e17b95fde085c6b3c74bdc6f159d90fb1f9cabc7f57c3cf9c1562348055",
+          "runtimeImageSha256": "a7c640d479b0d6d9a9c010471f66861e0ff46e557a98d8ff9da9a9b88eeacaea"
+        }
+      ],
+      "hardware": false,
+      "boot": false,
+      "dsp": false,
+      "audio": false,
+      "exhaustiveConsumerCoverage": false,
+      "admission": false,
+      "memberMask": 6,
+      "privateReceiptSha256": "2be6cb3fab5c501931cd2d29803abfd60398c66217d802955371921a6ccf8118"
+    },
+    {
+      "schema": 1,
+      "scope": "FM consumers and known UI-root native observation",
+      "stockSha256": "34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad",
+      "stockMainSha256": "164f31224bf61181e3f50e7dec40df9afcae5b16dbf6e4c0d0cc5e986af0a84e",
+      "packageSha256": "f0cdc7e37e83fc844a85355f658b4889dc00895dba759e06143978392363d413",
+      "captureSha256": "39c5cb738faa36f97f8def73f8a601c0f0415a6d0cf7438ed1fe0927e819230c",
+      "sources": {
+        "sdk/machines/octatrack/module-adapters/machine_composition.py": "4cfa5ae146e1b93c16b478af5882072e3ddefb1bd32960dde577a3f1cb5b3d3e",
+        "sdk/machines/octatrack/module-adapters/fm_runtime.py": "ecf39c395bd8231d1dda340e1c6bc26e8473ba548cfa422f9a4ae4ff2bd6807e",
+        "sdk/machines/octatrack/module-adapters/vector_runtime.py": "9f0a0ffe8c0e3bacef6e6aad057f8f454b43b5daef32e9adb8fa2def0937ea39",
+        "sdk/machines/octatrack/module-adapters/stock_recipe.py": "662b79d9dc612845cf85e5051fa2d711cad4f98244194357fdaaabca092d5ca5",
+        "sdk/octabam/modules/poly8/manifest.py": "1b9dfc90a6d5901ee3e453b7c3854363aad82f7267edc090b5f4439a57f12ddb",
+        "sdk/octabam/modules/synth/manifest.py": "7854330aca001d2841de2fb384f0ca8adb7497db49dacc56da2815c1f444c0e6",
+        "sdk/octabam/modules/vector/manifest.py": "4d921f24256038797a99671534885b0bb9a27eaa79261b11136cf0a95a75af21",
+        "sdk/octabam/modules/poly8/polyphony.s": "ec18d6aed032b684d3c73e1cad63fb72d578e6ea5bcfe2a46655747b5a5ad281",
+        "sdk/octabam/modules/poly8/registration.s": "c88815f9b16befe01fd9070f7d39120268936fef11a8d9a8d7706092cf55d987",
+        "sdk/octabam/modules/poly8/shared-machine.s": "e49d47ed22aa70a770e5738e69225106219b0337eabe67351d2e09150220ee80",
+        "sdk/octabam/modules/synth/upstream/synth/poly.s": "ce21f5f7cddcd7268d27e25c500f1403cc59a9dff28044b1832cf2b45592d34c",
+        "sdk/octabam/modules/synth/upstream/quantizer/keys.s": "e2ffdbfae34b0828794a4eb4cc229e3efcaed25dc953bf7c05c13f6e37f65587",
+        "sdk/octabam/modules/synth/upstream/quantizer/core.s": "2992b6c85cff440de03ae84eb22dee8b8a83a84f23e94b699404d28940b6f958",
+        "sdk/octabam/modules/synth/upstream/quantizer/scale.s": "82242c407847ac61a6f60fe15bdc5b0b4fc852bac82c39745b5c838ec9389c64",
+        "sdk/octabam/modules/synth/upstream/quantizer/quantizer.s": "d1737168a1750f540b3dfbefdd2a64b11084013b9f7b71b31aa4f189d33a24c5",
+        "sdk/octabam/modules/synth/upstream/synth/page.s": "25e2a0624fcc30ee3a8db5966954113119fb5942855042f765e664a2f8544a70",
+        "sdk/octabam/modules/synth/machine.s": "de9d849bf0b6e5d5ad747df32ae5806e7f9516674a14ac74b1c15d73d30d280a",
+        "sdk/octabam/modules/synth/registration.s": "d04e47d6d21287ea969e4d39d0fea8c90b262a577081ba8376915f96cd2d9d2d",
+        "sdk/octabam/modules/vector/control.s": "c4f829e437ffbde1275c00827031b694a86011013d37269077e4696818323471",
+        "sdk/octabam/modules/poly8/shared-machine.c": "74dd81c5f3bd1bf3474350989655ea76f5e1b52e7919fa8b11b2e1423e79317c",
+        "sdk/octabam/modules/poly8/shared-machine-hooks.s": "dc9b3eaaa0883c68a36bd34999420ab38b10bc1b43a513518963e01ce8479cd8",
+        "sdk/octabam/modules/poly8/composition.json": "d9e3237001672e6349f69337f71bc3c1b069577fb7215c9a4f55a2c4bc722122",
+        "sdk/octabam/modules/quantizer/composition.json": "d5662ed9972ef629dbaa6120d25fdc1ff7a2d5351b25f32f73fe3a06394531cc"
+      },
+      "compiledImageSha256": "052aea04b61448611bdbdbe385fca0e8048eb0fdee50710c28422f47f3c31b3f",
+      "encodedImageSha256": "fbe4310478cb3e37ecbcbb75c6c4162507e18258b1f07b8805546bc2305efba1",
+      "reviewedRecipeSha256": "3338229e33d04825858d9d5350db4567fbbe609b3d4f50a0a35161df92f5bb7a",
+      "probeSources": {
+        "fm_consumer_fixture.cpp": "c0be55efcb12afe929ea3ceeeb0d4d2f9aca00659a1711e961677f2134191ae2",
+        "fm_consumer_scanner.c": "7cb82a9bcd3855945e38b1396158da33a077884cab6aa83656c4b9beed28e015",
+        "probe_fm_consumers.py": "3858030b1e67fdfab70e6fc22824418ee484b3125fb743a5f20a25551b44fc6f",
+        "machine_lifetime.c": "8bf0a66c8113f2e608c6e4115aef67e056e13f8395f67b172342d9d296496f5a",
+        "machine_lifetime.h": "6fb7713aa06d01e52ac5bd32a6057038efb4717f1635662f47c8595803d3cf11",
+        "machine_layout.py": "d394ddf37a025fa77609bc9ca5e1b0091e9cca714e64fc461fad6a613687b35c",
+        "stock_recipe.py": "662b79d9dc612845cf85e5051fa2d711cad4f98244194357fdaaabca092d5ca5"
+      },
+      "nativeArchives": {
+        "out/emu/libot_machine.a": "15a867f7589ac891ff5b20cdfe4c1709298975de15342d5c3434f008988bef02",
+        "out/emu/mc68k/lib68kEmu.a": "451b2f6c7455b00f5b7b0462ed38c71ac5cccc93fb0bbd58e0fa93c1e391701b",
+        "out/emu/dsp56300/dsp56kEmu/libdsp56kEmu.a": "37224756f1622024e36443cdb6d67ee1cd8ab5b366c92442d3983fb35ffea0bc",
+        "out/emu/dsp56300/dsp56kBase/libdsp56kBase.a": "dea1c15cb6bb6cc3f126f64107e454d24aaa2f17ce04753956ac0f341ccc48f4",
+        "out/emu/dsp56300/asmjit/libasmjit.a": "39b4923646d12bb3285a1d0634cf84fc53ee558811d7b4670bea3fc77e721a39"
+      },
+      "origins": [
+        {
+          "observations": [
+            {
+              "origin": 1191706624,
+              "calls": 2803,
+              "widgets": 23,
+              "writes": 633790,
+              "privateReads": 532594,
+              "consumerPCs": 1107,
+              "escapedPointers": 0,
+              "maxNonzeroPixelBytes": 51,
+              "numericRasterCollisions": 3,
+              "resetDescriptorStages": 40,
+              "randomizeDescriptorStages": 40,
+              "initializedInputLayer": true,
+              "stockNotificationTailExecuted": true
+            },
+            {
+              "injectedEscapeDetected": true,
+              "splitWordEscapeDetected": true,
+              "actualUIRootCollectorPassed": true,
+              "rasterExclusionIsBounded": true
+            }
+          ],
+          "stockImageSha256": "31add3302b82928a432772df04e86fa522a2c2d50c1c5c53bf8f493b81b23934",
+          "runtimeImageSha256": "e9bb0b83b9922a237b801a39eeed4560c35e95b1e3ce113fd3b6fc578a47fcb3"
+        },
+        {
+          "observations": [
+            {
+              "origin": 1192230912,
+              "calls": 2803,
+              "widgets": 23,
+              "writes": 633790,
+              "privateReads": 532594,
+              "consumerPCs": 1107,
+              "escapedPointers": 0,
+              "maxNonzeroPixelBytes": 51,
+              "numericRasterCollisions": 0,
+              "resetDescriptorStages": 40,
+              "randomizeDescriptorStages": 40,
+              "initializedInputLayer": true,
+              "stockNotificationTailExecuted": true
+            },
+            {
+              "injectedEscapeDetected": true,
+              "splitWordEscapeDetected": true,
+              "actualUIRootCollectorPassed": true,
+              "rasterExclusionIsBounded": true
+            }
+          ],
+          "stockImageSha256": "4e75cd669ed23d0e0f44512ca90e0ee72e57383448fe072cd7d4b5abb16ff62f",
+          "runtimeImageSha256": "96776e721f761049b7b03e00d21b9e0553d327bdc5780cfd6fe64c11acfab83f"
+        }
+      ],
+      "hardware": false,
+      "boot": false,
+      "dsp": false,
+      "audio": false,
+      "exhaustiveConsumerCoverage": false,
+      "admission": false,
+      "memberMask": 7,
+      "privateReceiptSha256": "7cb4536a3e0476bf2f2a71ab1f018b3e0452fcab7999ca7216aad6f5eaa9502c"
+    }
+  ]
+}

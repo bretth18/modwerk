@@ -3,7 +3,7 @@
   "id": "tapeecho",
   "key": "TAPE ECHO",
   "name": "Tape Echo",
-  "version": "0.1.2-experimental",
+  "version": "0.1.3-experimental",
   "category": "effects",
   "author": {
     "github": "repeat98",
@@ -114,7 +114,26 @@
     "evidenceRevision": "b8deefc88b2c3e5f3c6158e364eb741df1924e1d",
     "gates": [
       "tools/verify/verify_tapeecho_cpu.py"
-    ]
+    ],
+    "retainedEvidence": {
+      "commit": "32ac46b0c7e8c11e48ebc41674695e033142b46e",
+      "moduleVersion": "0.1.2-experimental",
+      "documentation": {
+        "tutorial": {
+          "title": "Quick tutorial",
+          "steps": [
+            "In a backed-up test project, select an audio track, hold FUNC and press FX2, then choose Tape Echo with LEVEL and YES.",
+            "Press FX2 to leave SETUP. Set SYNC to BEAT, TIME to 80 (1/8), FDBK to 64, WOW and AGE to 0, and MIX to 64; play a short sound at 120 BPM.",
+            "Listen for clean eighth-note repeats, then raise WOW to 72 and AGE to 100 for drifting, darker repeats. Set MIX to 0 to compare dry audio and stop transport when finished."
+          ]
+        },
+        "screenshots": [
+          "media/ot-setup-mono.png",
+          "media/ot-controls-mono.png"
+        ],
+        "screenshotStyle": "black-and-white"
+      }
+    }
   },
   "license": {
     "spdx": "MIT",
@@ -123,9 +142,9 @@
   },
   "media": [
     {
-      "path": "media/ot-controls.png",
+      "path": "media/ot-controls-mono.png",
       "captureType": "emulator",
-      "caption": "Tape Echo main controls on FX2: TIME, FDBK, WOW, AGE, SYNC and MIX.",
+      "caption": "On the main FX2 page, adjust TIME and FDBK for repeats, WOW and AGE for tape character, and SYNC for timing. MIX 0 returns to dry audio.",
       "alt": "Tape Echo main controls on FX2: TIME, FDBK, WOW, AGE, SYNC and MIX.",
       "credit": "Octamod contributors (headless capture)",
       "license": "LicenseRef-OT-UI-Documentation",
@@ -136,13 +155,13 @@
         "firmware": "1.40C",
         "moduleVersion": "0.1.2-experimental",
         "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
-        "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+        "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6. Monochrome palette-only export of the original captured pixels; no LCD content changed."
       }
     },
     {
-      "path": "media/ot-setup.png",
+      "path": "media/ot-setup-mono.png",
       "captureType": "emulator",
-      "caption": "Tape Echo selected in the FX2 SETUP chooser. Its six active controls are on the main FX2 page.",
+      "caption": "Select Tape Echo with LEVEL in audio-track FX2 SETUP, then press YES. Press FX2 to reach its six active controls.",
       "alt": "Tape Echo selected in the FX2 SETUP chooser. Its six active controls are on the main FX2 page.",
       "credit": "Octamod contributors (headless capture)",
       "license": "LicenseRef-OT-UI-Documentation",
@@ -153,8 +172,17 @@
         "firmware": "1.40C",
         "moduleVersion": "0.1.2-experimental",
         "imageSha256": "5162680d8bc342deb623cef00307f2a343f539a90f0bfcef59b59ceb4c60bb83",
-        "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6."
+        "setup": "ot_emu with MKII panel, original 1.40C plus the original seven source modules; empty scratch card; transport stopped; actual 128x64 LCD pixels at integer scale 6. Monochrome palette-only export of the original captured pixels; no LCD content changed."
       }
+    },
+    {
+      "path": "media/audio-preview.mp3",
+      "captureType": "audio",
+      "caption": "Legowelt Juno 106 chord pluck: dry (0 s), clean 1/8 repeats (0.85 s; FDBK 78, WOW 10, AGE 20), worn dotted-1/8 repeats (3.85 s; FDBK 94, WOW 80, AGE 70). BEAT, 128 BPM, MIX 75. 7.85 s, no added gaps; tails edited short. First-hit RMS matched (20 ms). Offline computer render through Tape Echo 0.1.2's unchanged CPU engine, not recorded on an Octatrack.",
+      "alt": "A warm Legowelt chord pluck moves from dry to clean eighth-note repeats and worn dotted-eighth echoes.",
+      "credit": "Legowelt — 106 Synth Chord Short Blue Synth 2.wav. Modwerk contributors (offline processing).",
+      "license": "LicenseRef-Legowelt-Juno106-Sample-Permission",
+      "source": "https://legowelt.org/samples/"
     }
   ],
   "access": {
@@ -166,8 +194,8 @@
       "Press FX2 to close SETUP, then adjust TIME, FDBK, WOW, AGE, SYNC and MIX. All six active controls are on this main page."
     ],
     "screenshots": [
-      "media/ot-controls.png",
-      "media/ot-setup.png"
+      "media/ot-setup-mono.png",
+      "media/ot-controls-mono.png"
     ]
   }
 }

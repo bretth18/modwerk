@@ -31,8 +31,38 @@ function recorderSignal() {
   }).join(' ')
 }
 
+function polyVoice(voice: number) {
+  const center = 47 + voice * 14
+  const periods = 2.5 * 2 ** (voice / 7)
+  return Array.from({ length: 81 }, (_, i) => {
+    const x = 125 + i * 2
+    const envelope = Math.min(i / 7, 1, (80 - i) / 9)
+    const y = center + Math.sin(i / 80 * Math.PI * 2 * periods) * 4.2 * envelope
+    return (i ? 'L' : 'M') + x.toFixed(1) + ' ' + y.toFixed(1)
+  }).join(' ')
+}
+
 // Hand-drawn art for the catalog modules. A module without an entry shows its presentation/thumbnail.svg.
 const ART: Readonly<Record<string, () => ReactElement>> = {
+  poly8: () => <g>
+    <path className="signal-main" d="M27 96H33C36 96 37 79 41 79S46 113 50 113 55 84 59 84 63 106 67 106 71 96 75 96H81" />
+    <path className="signal-ghost" d="M81 96H97Q103 96 103 90V53Q103 47 109 47H111M103 90V139Q103 145 109 145H111M103 61H111M103 75H111M103 89H111M103 103H111M103 117H111M103 131H111" />
+    {Array.from({ length: 8 }, (_, voice) => <g key={voice}>
+      <circle className="signal-dot" cx="111" cy={47 + voice * 14} r="2.2" opacity={voice % 3 === 0 ? 1 : .65} />
+      <path className={voice % 3 === 0 ? 'signal-main' : 'signal-secondary'} d={'M113.2 ' + (47 + voice * 14) + 'H125 ' + polyVoice(voice)} />
+    </g>)}
+    <text x="25" y="27">SAMPLE</text><text x="211" y="27">UP TO 8 VOICES</text>
+    <text x="25" y="177">ONE SAMPLE → CHORDS</text>
+  </g>,
+  'airwindows-chorus': () => <g>
+    <path className="signal-ghost" d="M28 97H292" />
+    <path className="signal-ghost" d={sine(0, 36, 2.5)} />
+    <path className="signal-secondary" d={sine(.42, 30, 2.5)} />
+    <path className="signal-main" d={sine(.85, 30, 2.5)} />
+    <path className="signal-secondary" d="M124 48H139M134 44L139 48L134 52M160 143H179M174 139L179 143L174 147" />
+    <text x="25" y="27">DRY / DELAY</text><text x="233" y="27">CHORUS</text>
+    <text x="25" y="177">SPD / RNG / MIX</text>
+  </g>,
   'mute-modes': () => <g>
     <path className="signal-secondary" d="M160 33V155" strokeDasharray="3 5" />
     <text x="147" y="25">MUTE</text>

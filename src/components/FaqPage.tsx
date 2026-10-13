@@ -264,17 +264,32 @@ const SECTIONS: FaqSection[] = [
         title: 'Can I share my configuration or a finished firmware file?',
         keywords: 'export import json backup send copyright redistribute bin syx modules',
         answer: <>
-          <p>For Octatrack, share the JSON file from <strong>Export configuration</strong>. Another Octatrack owner can use <strong>Import JSON</strong> in Configuration and supply their own original OS {BASE_FIRMWARE.version} file. Your browser’s saved configurations do not sync between devices automatically.</p>
+          <p>For Octatrack, share the JSON file from <strong>Export configuration</strong>. Another Octatrack owner can use <strong>Import JSON</strong> from the actions menu (<strong>⋯</strong>) in Configuration and supply their own original OS {BASE_FIRMWARE.version} file. Your browser’s saved configurations do not sync between devices automatically.</p>
           <p>Do not redistribute original or built firmware .bin or .syx files: they contain Elektron’s copyrighted OS. Share your module choices instead.</p>
         </>,
       },
       {
         id: 'community',
         title: 'Do I need an account? How do I report a module issue?',
-        keywords: 'guest comments ratings likes email sign in bug author community github contribution',
+        keywords: 'guest comments likes working reports email sign in bug author community github contribution',
         answer: <>
-          <p>Browsing and the configurator work without an account. To post in the forum, comment, rate, like or use <strong>Report an issue</strong>, register and verify your email. Your email address stays private. New issue reports become public GitHub issues, where the module developers track and fix bugs. You don’t need a GitHub account: their replies and fixes appear in your notifications. Manage private configuration details and logs in <a href="#account">Your account</a>.</p>
+          <p>Browsing and the configurator work without an account. To post in the forum, comment, like, confirm a module works or use <strong>Report an issue</strong>, register and verify your email. Your email address stays private. New issue reports become public GitHub issues, where the module developers track and fix bugs. You don’t need a GitHub account: their replies and fixes appear in your notifications. When the problem comes from a combination of modules, use <strong>Report a problem</strong> on your configuration: every module’s developers see it. Manage private configuration details and logs in <a href="#account">Your account</a>.</p>
           <p>Describe the module, your machine and model, the displayed OS version and how to reproduce the problem. Never attach firmware. Module contributions and updates go through GitHub pull requests and owner review; see <a href="#submit">Start developing</a>.</p>
+        </>,
+      },
+      {
+        id: 'audio-previews',
+        title: 'How do I add an audio preview?',
+        keywords: 'audio recording upload sound wav mp3 ogg credit caption samples permission preview',
+        answer: <>
+          <ol>
+            <li>Find the module in <a href="#all">the module library</a> and open its page.</li>
+            <li>Choose <strong>Add preview</strong> beside the main player or in the <strong>Previews</strong> tab. Sign in when prompted. You need a verified account; if you are new, create an account and verify your email first.</li>
+            <li>Choose a <strong>WAV, MP3 or Ogg</strong> recording, up to <strong>90 seconds</strong> and <strong>12 MB</strong>. Listen to the preview before sharing.</li>
+            <li>Add a <strong>credit</strong> and, optionally, a <strong>caption</strong> describing what the recording demonstrates. Confirm that you have permission to share the recording, including any samples.</li>
+            <li>Press <strong>Add preview</strong> to upload. Your recording appears on the module page and in its Previews tab with your username, credit and caption.</li>
+          </ol>
+          <p>To remove your recording later, open the module’s <strong>Previews</strong> tab and choose <strong>Remove preview</strong> under your clip.</p>
         </>,
       },
     ],
@@ -293,34 +308,36 @@ const SEARCH_TEXT = new Map(SECTIONS.flatMap(section => section.questions.map(qu
   (section.title + ' ' + question.title + ' ' + question.keywords + ' ' + answerText(question.answer)).toLowerCase(),
 ])))
 
-export function FaqPage() {
+export function FaqPage({ previewGuide = false }: { previewGuide?: boolean }) {
   const [query, setQuery] = useState('')
   const terms = query.toLowerCase().trim().split(/\s+/).filter(Boolean)
   const searching = terms.length > 0
   const sections = SECTIONS.map(section => ({
     ...section,
-    questions: section.questions.filter(question => terms.every(term =>
+    questions: section.questions.filter(question => (!previewGuide || question.id === 'audio-previews') && terms.every(term =>
       SEARCH_TEXT.get(question.id)!.includes(term),
     )),
   })).filter(section => section.questions.length > 0)
   const count = sections.reduce((total, section) => total + section.questions.length, 0)
 
-  return <div className="faq-page"><BackLink href="#library">Module library</BackLink>
-    <div className="page-heading"><div><p className="page-kicker">MODWERK / HELP</p><h1>Frequently asked questions</h1><p>Choose the right firmware for your machine, understand preview status and find its flashing and recovery steps.</p></div></div>
-    {!DOWNLOADS_ENABLED && <aside className="risk-note" role="note"><strong>Octatrack firmware downloads are paused</strong><p>The built-in logger is undergoing verification. You can explore modules and check supported configurations while the updated builds await review. The official Elektron OS remains available from Elektron.</p></aside>}
+  return <div className="faq-page"><BackLink href={previewGuide ? '#all' : '#library'}>Module library</BackLink>
+    <div className="page-heading"><div><p className="page-kicker">MODWERK / HELP</p><h1>{previewGuide ? 'Add an audio preview' : 'Frequently asked questions'}</h1><p>{previewGuide ? 'Share a short recording so others can hear what a module does.' : 'Choose the right firmware for your machine, understand preview status and find its flashing and recovery steps.'}</p></div></div>
+    {!previewGuide && !DOWNLOADS_ENABLED && <aside className="risk-note" role="note"><strong>Octatrack firmware downloads are paused</strong><p>The built-in logger is undergoing verification. You can explore modules and check supported configurations while the updated builds await review. The official Elektron OS remains available from Elektron.</p></aside>}
     <div className="faq-tools">
+      {previewGuide ? <><a className="button button-primary" href="#all">Browse modules <Icon name="arrow" size={15}/></a><a className="button button-quiet" href="#faq">All FAQs</a></> : <>
       <label className="faq-search"><Icon name="search" size={17} /><input type="search" aria-label="Search FAQ" placeholder="Search machines, firmware, flashing…" value={query} onChange={event => setQuery(event.target.value)} /></label>
       <a className="button button-quiet" href="#configuration">Octatrack configuration <Icon name="arrow" size={15} /></a>
+      </>}
     </div>
     {searching && <p className="faq-results" role="status">{count} {count === 1 ? 'answer' : 'answers'} found</p>}
     {sections.map(section => <section className="faq-section" key={section.title} aria-label={section.title}>
       <h2>{section.title}</h2>
-      <div className="faq-questions">{section.questions.map(question => <details className="faq-question" key={question.id + (searching ? '-search' : '')} open={searching || question.id === 'base-firmware'}>
+      <div className="faq-questions">{section.questions.map(question => <details className="faq-question" key={question.id + (searching ? '-search' : '')} open={previewGuide || searching || question.id === 'base-firmware'}>
         <summary>{question.title}<Icon name="plus" size={17} /></summary>
         <div className="faq-answer">{question.answer}</div>
       </details>)}</div>
     </section>)}
     {!count && <div className="no-results"><Icon name="search" size={28} /><h2>No answers found</h2><p>Try “.bin”, “MIDI” or “backup”.</p><button className="button button-quiet" onClick={() => setQuery('')}>Clear search</button></div>}
-    <p className="faq-footer">Follow Elektron’s official instructions for your exact machine. Octatrack owners should read the <OfficialLink href={RELEASE_NOTES}>OS 1.40C instructions</OfficialLink>; Digitakt and Digitone owners should read the <OfficialLink href="https://support.elektron.se/support/solutions/articles/43000662890-how-to-update-your-device">Transfer update guide</OfficialLink> and their model’s manual.</p>
+    {!previewGuide && <p className="faq-footer">Follow Elektron’s official instructions for your exact machine. Octatrack owners should read the <OfficialLink href={RELEASE_NOTES}>OS 1.40C instructions</OfficialLink>; Digitakt and Digitone owners should read the <OfficialLink href="https://support.elektron.se/support/solutions/articles/43000662890-how-to-update-your-device">Transfer update guide</OfficialLink> and their model’s manual.</p>}
   </div>
 }

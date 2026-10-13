@@ -1,0 +1,237 @@
+{
+  "schema": 1,
+  "candidateVersion": "0.1.4-experimental",
+  "date": "2026-10-09",
+  "kind": "Owner audition of a native DSP WAV; not a physical hardware test",
+  "ownerReply": "Yes, keep this attack",
+  "priorFeedback": "The body and resonance sound bang on though",
+  "reviewedAudio": {
+    "sha256": "d639aa46acb33b8c57d773ce42feb9e11c7859a151848cd21d2ef5e9bd81d476",
+    "sampleRate": 44100,
+    "frames": 491400,
+    "bpm": 70,
+    "tune": 0,
+    "attackValues": [
+      0,
+      32,
+      64,
+      96,
+      127,
+      127,
+      127,
+      127,
+      127,
+      127,
+      127,
+      127,
+      127
+    ],
+    "sourceFullPreviewSha256": "434a4a9587ac88667cccbfd7a9cece1d0f9a2567b8c00d3b1c0c28632e142f65"
+  },
+  "sourceFiles": {
+    "dsp909.py": "e1202c3e43f25fd3a745152a0e6226f2a48dd6deb42ad8e8c060ef83fd4d038a",
+    "bd909.asm": "966ccb67b2e55eda7645056fd05ac3f88240fbdb048b114b03cd62fff5578b54",
+    "fit909.json": "ef56a49a47281a96e9bd335ee95f8eb69fb1d28a83f392742e5160765d17d70d"
+  },
+  "privateFirmware": {
+    "label": "AB014REF02",
+    "bytes": 571280,
+    "sha256": "bbc8b7a42a2ecfa6bc18fb74d22d9abed5d3d1a70f9829953acc5a5e381dffc7",
+    "stockUpgradeSha256": "34695b606eb00e1b4dded5fd0c4b66f3a460522a632e47d7416dbd220599e1ad",
+    "savedFileDecodedMainOsMatchesNative": true
+  },
+  "physicalHardware": "untested",
+  "remaining": [
+    "Part/project/physical-reboot persistence",
+    "Distinct track/core/FX isolation on a physical unit",
+    "Full-chain/maximum-FX load and worst-case chip timing"
+  ],
+  "note": "The earlier reply remains as history for its exact AB014REF02 audio/source. Later feedback withdrew that assessment. Current AB014REF05 acceptance is recorded separately; no physical hardware result is inferred.",
+  "subsequentOwnerFeedback": [
+    "hm I feel like it doesn't really sound like a 909 anymore now weirdly. check the emulator output",
+    "the attack is quite good, but everything else...",
+    "actually not even the attack sounds that good lol"
+  ],
+  "currentStatus": "Owner accepted AB014REF05 actual firmware-emulator comparison and authorized release with fresh physical hardware/persistence, worst-case chip timing and complete memory bounds waived. Transient-shape variation remains smaller than the reference; physical hardware remains untested.",
+  "historyAB014REF04": {
+    "privateFirmwareLabel": "AB014REF04",
+    "sourceFiles": {
+      "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+      "fit909.json": "a56751b8d1de88d6a4f7c729b51e5fbab60c73fe7b03df547a896a6a56ba2c6b",
+      "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+    },
+    "status": "Owner reports sound is pretty close; high-frequency Attack concern under LPF investigation. No physical qualification.",
+    "endpointClips": [
+      {
+        "name": "minimum",
+        "listeningReferenceHitsOneBased": [
+          6,
+          7
+        ],
+        "auditionWavSha256": "9ba02c7d7046386c269340b4ccb29941fe0bf30971fe2fbbf8b8c31438c18272"
+      },
+      {
+        "name": "attack-maximum",
+        "listeningReferenceHitsOneBased": [
+          47,
+          48
+        ],
+        "auditionWavSha256": "ecc1b31d1870b4b9853c66161d0d33f29256d5cbd09d295d01eadfc3f5c6660c"
+      },
+      {
+        "name": "tune-maximum",
+        "listeningReferenceHitsOneBased": [
+          63,
+          64
+        ],
+        "auditionWavSha256": "a3ca9591db7e1b85d4fb71e8f2494e60515a4015151ef218521498206f7a9bd6"
+      }
+    ],
+    "ownerFeedback": [
+      "attack now only seems a bit cutoff in the high end, other than that,it's pretty close",
+      "maybe it's because of the lpf in the chain?? look at it",
+      "idk need to compare with the real 909",
+      "not a 1:1 match, also the lpf only sits in the main out path ptw, and we recorded it direct out",
+      "also are you capturing the sublte differnces between hits faithfully?"
+    ],
+    "lpfComparison": {
+      "originalPatchLpf": 48,
+      "assignmentDefaultLpf": 127,
+      "bypassLpf": 0,
+      "lpfOnlyComparison": {
+        "order": [
+          48,
+          127,
+          0
+        ],
+        "hitsPerSetting": 2,
+        "wavSha256": "8b324e04e8ce55d9ba7fd08f5f36d1fbac35a12878fe266bb539b1d82e6eaeec"
+      },
+      "referenceThenEmulatorClips": [
+        {
+          "lpf": 127,
+          "listeningWavSha256": "052426bf114059a16ee1d1ca53fb4251ef2716cdb06396ced41c03fd1d0e5fe0"
+        },
+        {
+          "lpf": 0,
+          "listeningWavSha256": "57bcd20cae0131ec35a530ab8cc92a7a2d442eeeb79e8a443acd46dba6c8e85d"
+        }
+      ],
+      "status": "Owner confirms direct-out reference and says the bypass/default comparison is not a 1:1 match."
+    }
+  },
+  "currentCandidate": {
+    "privateFirmwareLabel": "AB014REF05",
+    "sourceFiles": {
+      "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+      "fit909.json": "6917d613b5033069f226b9f6a440f6eefd935e596452546d5bc27b73c5e3dd08",
+      "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+    },
+    "status": "Owner accepted the exact repeated-hit clip and authorized release with the stated qualification limits.",
+    "endpointClips": [
+      {
+        "name": "minimum",
+        "referenceFilename": "BD Attack Rise.wav",
+        "listeningReferenceHitsOneBased": [
+          6,
+          7
+        ],
+        "comparisonReferenceHitsOneBased": [
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "referenceSha256": "5cb6d0917c8119e6675a1034bbfe55a532a113d958d12a7ce0c8f6b1406533cf",
+        "emulatorSourceWavSha256": "6a99877c1ff185859d0056cb4969cfb7c99620aa26322899bdc00716f9baf75c",
+        "auditionWavSha256": "4e3a5092799bc3f920be007b548303f5ab0401bd73ea3f0009702ccc13e89eed",
+        "fullHitRmsError": {
+          "0-10ms": 0.01865671889097472,
+          "20-700ms": 0.005096652946699171
+        },
+        "referenceTailFrequencyHz": 45.640663514334584,
+        "emulatorTailFrequencyHz": 45.637176425660016,
+        "referenceTailDecaySeconds": 0.2529509267003443,
+        "emulatorTailDecaySeconds": 0.246705358319576
+      },
+      {
+        "name": "attack-maximum",
+        "referenceFilename": "BD Attack Rise.wav",
+        "listeningReferenceHitsOneBased": [
+          47,
+          48
+        ],
+        "comparisonReferenceHitsOneBased": [
+          45,
+          46,
+          47,
+          48
+        ],
+        "referenceSha256": "5cb6d0917c8119e6675a1034bbfe55a532a113d958d12a7ce0c8f6b1406533cf",
+        "emulatorSourceWavSha256": "e7a9a79a37c0043dbd89beed11062354a21c812466bd904c8b8cc4adc681db3f",
+        "auditionWavSha256": "de7f59aab9123736e1eb301eeda20f7a04d53d0299eafbe757a9e1039828509f",
+        "fullHitRmsError": {
+          "0-10ms": 0.020626820275657008,
+          "20-700ms": 0.007910479536767274
+        },
+        "referenceTailFrequencyHz": 45.59868113992095,
+        "emulatorTailFrequencyHz": 45.637176425660016,
+        "referenceTailDecaySeconds": 0.2529831706170258,
+        "emulatorTailDecaySeconds": 0.246705358319576
+      },
+      {
+        "name": "tune-maximum",
+        "referenceFilename": "BD Tune Rise.wav",
+        "listeningReferenceHitsOneBased": [
+          63,
+          64
+        ],
+        "comparisonReferenceHitsOneBased": [
+          61,
+          62,
+          63,
+          64
+        ],
+        "referenceSha256": "4326aa2649bbfd55439d3ba28a5cb19e0f513258ce635848a6defafe2d83eff4",
+        "emulatorSourceWavSha256": "6ffbbef2786e35813ac92eaa65fc1bcc6d2c508172f4f3f7571d5a7d5350dde9",
+        "auditionWavSha256": "884bce4a3deee034ecd606fb67128893e7774d35291b1d05a70f614e0fe12e22",
+        "fullHitRmsError": {
+          "0-10ms": 0.029674142647626595,
+          "20-700ms": 0.008991360800475995
+        },
+        "referenceTailFrequencyHz": 46.288838392884486,
+        "emulatorTailFrequencyHz": 46.29938679329241,
+        "referenceTailDecaySeconds": 0.2512036007248805,
+        "emulatorTailDecaySeconds": 0.2462020677854066
+      }
+    ],
+    "repeatedHitClip": {
+      "referenceHitsOneBased": [
+        45,
+        46,
+        47,
+        48
+      ],
+      "emulatorHitsOneBased": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "wavSha256": "069836e899edd3e00368a2a3663132cea79018f30ea3563d13ffb7720f5fdf18",
+      "order": "four original direct-out reference hits, pause, four actual firmware-emulator hits, LPF bypass"
+    },
+    "variationAssessment": "Improved strength spread, but neighboring transient shapes remain too consistent. See neighbors.json; possible endpoint knob motion and ADC/interpolation phase remain confounders.",
+    "ownerReply": "it's ok, let's release it",
+    "ownerWaiverReply": "Yes\u2014waive those limits and release",
+    "waived": [
+      "current-build-hardware",
+      "chip-worst-case-cycles",
+      "complete-memory-bounds"
+    ]
+  }
+}

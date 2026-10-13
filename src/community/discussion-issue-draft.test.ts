@@ -20,6 +20,18 @@ function renderReport(id: string) {
 }
 
 describe('discussion drafts in issue reports', () => {
+  it('restores a stored draft with a stable snapshot for already mounted subscribers', () => {
+    const draft = { title: 'Stored title', body: 'A reply copied before the page reloaded.' }
+    sessionStorage.setItem('modwerk-discussion-issue-draft:miniverb', JSON.stringify(draft))
+    const restored = readDiscussionIssueDraft('miniverb')
+    expect(restored).toEqual(draft)
+    expect(readDiscussionIssueDraft('miniverb')).toBe(restored)
+    saveDiscussionIssueDraft('miniverb', { title: '', body: 'A later reply from the discussion.' })
+    expect(readDiscussionIssueDraft('miniverb')?.body).toBe('A later reply from the discussion.')
+    clearDiscussionIssueDraft('miniverb')
+    expect(readDiscussionIssueDraft('miniverb')).toBeNull()
+  })
+
   it('keeps drafts isolated between machines, retains them until success and clears only the reported module', () => {
     saveDiscussionIssueDraft('digitakt-digihealth', { title: 'Digitakt display', body: 'Digitakt details' })
     saveDiscussionIssueDraft('digitone-digihealth', { title: 'Digitone display', body: 'Digitone details' })

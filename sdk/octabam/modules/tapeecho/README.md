@@ -227,3 +227,41 @@ Audio track FX2 SETUP: Tape Echo in the effect chooser.
 
 These are actual headless-emulator LCD captures. See [TESTING.md](TESTING.md),
 [capture provenance](media/capture.json) and [media rights](media/LICENSE.md).
+
+## Overview
+
+Published editorial version: **0.1.3-experimental**. The original record above, including its older version label and all measured resource figures, is preserved verbatim. This release adds documentation and an isolated audio comparison; it keeps the 0.1.2-experimental runtime and historical hardware status.
+
+Tape Echo is a mono single-head echo in Octatrack 1.40C FX2, with stereo dry output, tempo-synced or free timing, pitch movement and tape-age texture. The Controls section above describes every active control and the disabled detail page.
+
+## Usage
+
+Use a backed-up test project and a short transient to hear the repeats clearly. Assign Tape Echo in FX2, choose BEAT timing for musical divisions, and begin with moderate feedback. Increasing WOW moves repeat pitch; increasing AGE darkens the repeats and adds flutter and hiss. MIX 0 gives exact dry audio. Review old HEADS locks when migrating projects, as described above.
+
+### Quick tutorial
+
+1. In a backed-up test project, select an audio track, hold FUNC and press FX2, then choose Tape Echo with LEVEL and YES.
+2. Press FX2 to leave SETUP. Set SYNC to BEAT, TIME to 80 (1/8), FDBK to 64, WOW and AGE to 0, and MIX to 64; play a short sound at 120 BPM.
+3. Listen for clean eighth-note repeats, then raise WOW to 72 and AGE to 100 for drifting, darker repeats. Set MIX to 0 to compare dry audio and stop transport when finished.
+
+## Compatibility and limitations
+
+Tape Echo targets Octatrack OS 1.40C FX2 and keeps stock DELAY and SPRING REV available. It uses the shared 10 MiB DRAM arena and existing stock delay rings; the original CPU integration and resource figures above remain the evidence for these costs. The pinned historical record reports six instances running and a seventh freezing the unit; other historical builds froze during edits. The current candidate is not a hardware-confirmed fix. Timing headroom, cache/bus behavior and live-set reliability remain unqualified. Do not interpret this editorial release or its preview as resolving those limits.
+
+## Tests and measurements
+
+See the unchanged [TESTING.md](TESTING.md), Local gates and audition, and Status sections above for the original revision, executed-instruction figures and hardware limitations. Executed instructions are distinct from hardware cycles. This editorial update retains the original approved 0.1.2-experimental evidence; it adds no stress or physical-hardware results. The audio render verifies nonzero output, exact MIX 0, pass timing and decoded MP3 peaks below −1 dBFS without clipped samples. Its settings, source hashes and method are in [audio preview provenance](docs/audio-preview.md).
+
+## Authorship and licences
+
+Module author: [Jannik Aßfalg](https://github.com/repeat98). Octabam attribution includes Sam Banks; component-specific credits and terms remain in [SDK THIRD_PARTY.md](../../THIRD_PARTY.md) and the original [LICENSE](LICENSE). Existing LCD capture rights remain in [media/LICENSE.md](media/LICENSE.md). The synth-pluck input is from Legowelt’s Juno 106 kit and uses the pack’s unrestricted free-use permission; source audio remains under those terms. Credits, permission and source identity are in [audio preview provenance](docs/audio-preview.md).
+
+## Screens and audio
+
+The original real emulator captures above show the FX2 chooser and the six active controls. Their monochrome exports below preserve every captured pixel, with only a two-color palette change. Their version/build identity remains 0.1.2-experimental because the checked runtime is unchanged; see [capture provenance](media/capture.json) and [pixel-mask comparison](docs/monochrome-captures.md).
+
+![Tape Echo selected in FX2 SETUP.](media/ot-setup-mono.png)
+
+![Tape Echo main controls: TIME, FDBK, WOW, AGE, SYNC and MIX.](media/ot-controls-mono.png)
+
+**Audio preview.** [Listen](media/audio-preview.mp3). Legowelt Juno 106 chord pluck: dry (0 s), clean 1/8 repeats (0.85 s; FDBK 78, WOW 10, AGE 20), worn dotted-1/8 repeats (3.85 s; FDBK 94, WOW 80, AGE 70). BEAT, 128 BPM, MIX 75. 7.85 s, no added gaps; tails edited short. First-hit RMS matched (20 ms). Offline computer render through Tape Echo 0.1.2's unchanged CPU engine, not recorded on an Octatrack. Source credits, permission, excerpt preparation, settings, hashes and render details are in [audio preview provenance](docs/audio-preview.md).

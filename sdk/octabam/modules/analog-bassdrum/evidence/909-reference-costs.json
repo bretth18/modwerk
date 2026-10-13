@@ -1,0 +1,115 @@
+{
+  "schema": 1,
+  "date": "2026-10-09",
+  "candidateVersion": "0.1.4-experimental",
+  "sourceFiles": {
+    "dsp909.py": "d31d2fd1340e9c5055389a37f20959ebccd78d45636daec824ae3e1e84f4d67d",
+    "fit909.json": "6917d613b5033069f226b9f6a440f6eefd935e596452546d5bc27b73c5e3dd08",
+    "bd909.asm": "9c86c3bd06e95a998fbe4e0db5a05b9ff65e988686c81f98f6d6c9f4c3b8ee2f"
+  },
+  "baselineFiles": {
+    "dsp909.py": "480a064a304380079019125eef98e9c68da26bd5408bbe38845563ccac94d2e4",
+    "bd909.asm": "66f1abde9715b49a145daa1868d00b1ea73989bee2a8e904b9c44149a4d4afc8",
+    "fit909.json": "e1e97b493b6c232bf6602ca224212e19f2aef3cff65fff404e7876648d228390"
+  },
+  "matchedConditions": "2048 16-sample blocks per engine/core; identical moving controls, all-controls-minimum/maximum patches and all 16 trigger splits.",
+  "measure": "Executed DSP instructions; neither modeled chip cycles nor hardware timing",
+  "results": [
+    {
+      "revision": "approved013",
+      "core": "A",
+      "engine": "909",
+      "codeWords": 946,
+      "meanInstructionsPerBlock": 6141.77197265625,
+      "maxInstructionsPerBlock": 6176
+    },
+    {
+      "revision": "approved013",
+      "core": "A",
+      "engine": "808",
+      "codeWords": 946,
+      "meanInstructionsPerBlock": 4268.474609375,
+      "maxInstructionsPerBlock": 4294
+    },
+    {
+      "revision": "approved013",
+      "core": "B",
+      "engine": "909",
+      "codeWords": 946,
+      "meanInstructionsPerBlock": 6141.77197265625,
+      "maxInstructionsPerBlock": 6176
+    },
+    {
+      "revision": "approved013",
+      "core": "B",
+      "engine": "808",
+      "codeWords": 946,
+      "meanInstructionsPerBlock": 4268.474609375,
+      "maxInstructionsPerBlock": 4294
+    },
+    {
+      "revision": "candidate014",
+      "core": "A",
+      "engine": "909",
+      "codeWords": 997,
+      "meanInstructionsPerBlock": 6524.0673828125,
+      "maxInstructionsPerBlock": 6563
+    },
+    {
+      "revision": "candidate014",
+      "core": "A",
+      "engine": "808",
+      "codeWords": 997,
+      "meanInstructionsPerBlock": 4268.474609375,
+      "maxInstructionsPerBlock": 4294
+    },
+    {
+      "revision": "candidate014",
+      "core": "B",
+      "engine": "909",
+      "codeWords": 997,
+      "meanInstructionsPerBlock": 6524.0673828125,
+      "maxInstructionsPerBlock": 6563
+    },
+    {
+      "revision": "candidate014",
+      "core": "B",
+      "engine": "808",
+      "codeWords": 997,
+      "meanInstructionsPerBlock": 4268.474609375,
+      "maxInstructionsPerBlock": 4294
+    }
+  ],
+  "changes": [
+    {
+      "core": "A",
+      "engine": "909",
+      "maximumMatchedBlockIncreasePercent": 6.273301993840175,
+      "meanIncreasePercent": 6.224513248916841
+    },
+    {
+      "core": "A",
+      "engine": "808",
+      "maximumMatchedBlockIncreasePercent": 0.0,
+      "meanIncreasePercent": 0.0
+    },
+    {
+      "core": "B",
+      "engine": "909",
+      "maximumMatchedBlockIncreasePercent": 6.273301993840175,
+      "meanIncreasePercent": 6.224513248916841
+    },
+    {
+      "core": "B",
+      "engine": "808",
+      "maximumMatchedBlockIncreasePercent": 0.0,
+      "meanIncreasePercent": 0.0
+    }
+  ],
+  "investigationThresholdPercent": 10,
+  "thresholdNote": "A regression investigation threshold for this revision, not a hardware headroom guarantee.",
+  "xAllocationChanged": false,
+  "maximumFxLoad": "untested",
+  "physicalHardwareTiming": "unmeasured",
+  "privateFirmwareLabel": "AB014REF05"
+}

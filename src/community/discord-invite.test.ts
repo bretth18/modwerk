@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { COMMUNITY_RULES_VERSION, USAGE_CONSENT_VERSION } from '../legal/policy'
 import { testServer } from './test-server'
+import { DISCORD_INVITE_CAMPAIGN } from '../config/development-discord'
+import { DatabaseSync } from 'node:sqlite'
+import { readFileSync } from 'node:fs'
 
 const databases: Array<{ close(): void }> = []
 const password = 'a Discord invitation test password'
@@ -23,6 +26,39 @@ async function fixture() {
 }
 
 describe('once-per-account Discord invitation', () => {
+  it('resends once to a previously invited account across simultaneous devices and later sessions', async () => {
+    const { call, member, db } = await fixture(), owner = await member('resendmember')
+    db.prepare("INSERT INTO member_discord_invites(user_id,shown_at) VALUES(?,'2026-10-07 12:00:00')").run(owner.id)
+    const campaign = { campaign: DISCORD_INVITE_CAMPAIGN }
+    const results = await Promise.all([owner.token, await owner.login()].map(async token => (await call('/auth/discord-invite', 'POST', campaign, token)).json()))
+    expect(results.filter(result => result.show)).toHaveLength(1)
+    expect(results.every(result => result.campaign === DISCORD_INVITE_CAMPAIGN)).toBe(true)
+    expect(await (await call('/auth/discord-invite', 'POST', campaign, await owner.login())).json()).toEqual({ show: false, ...campaign })
+    expect(db.prepare('SELECT campaign FROM member_discord_invites WHERE user_id=?').get(owner.id)).toEqual(campaign)
+    expect(db.prepare('SELECT COUNT(*) AS count FROM member_discord_invites').get()).toEqual({ count: 1 })
+  })
+  it('keeps older frontend claims separate and refuses stale rounds without resetting the current claim', async () => {
+    const { call, member, db } = await fixture(), owner = await member('mixedversions')
+    const campaign = { campaign: DISCORD_INVITE_CAMPAIGN }
+    expect(await (await call('/auth/discord-invite', 'POST', {}, owner.token)).json()).toEqual({ show: true })
+    expect((await call('/auth/discord-invite', 'POST', { campaign: 'development-discord-2026-10-07' }, owner.token)).status).toBe(400)
+    expect(await (await call('/auth/discord-invite', 'POST', campaign, owner.token)).json()).toEqual({ show: true, ...campaign })
+    expect(await (await call('/auth/discord-invite', 'POST', {}, owner.token)).json()).toEqual({ show: false })
+    expect((await call('/auth/discord-invite', 'POST', { campaign: null }, owner.token)).status).toBe(400)
+    expect(await (await call('/auth/discord-invite', 'POST', campaign, owner.token)).json()).toEqual({ show: false, ...campaign })
+    expect(db.prepare('SELECT campaign FROM member_discord_invites WHERE user_id=?').get(owner.id)).toEqual(campaign)
+  })
+  it('carries the new visitor round into the account without inviting it again on another device', async () => {
+    const { call, member } = await fixture(), owner = await member('resendvisitor')
+    const campaign = { campaign: DISCORD_INVITE_CAMPAIGN }
+    expect(await (await call('/auth/discord-invite', 'POST', { ...campaign, alreadyShown: true }, owner.token)).json()).toEqual({ show: false, ...campaign })
+    expect(await (await call('/auth/discord-invite', 'POST', campaign, await owner.login())).json()).toEqual({ show: false, ...campaign })
+  })
+  it('reserves the current round for a fresh signup’s inline welcome', async () => {
+    const { call, member } = await fixture(), owner = await member('newroundsignup', false)
+    const campaign = { campaign: DISCORD_INVITE_CAMPAIGN }
+    expect(await (await call('/auth/discord-invite', 'POST', campaign, owner.token)).json()).toEqual({ show: false, ...campaign })
+  })
   it('allows one of simultaneous visits, and remembers it across independent sessions and members', async () => {
     const { call, member, db } = await fixture(), first = await member('inviteone'), other = await member('invitetwo')
     const secondDevice = await first.login()
@@ -59,14 +95,25 @@ describe('once-per-account Discord invitation', () => {
   })
   it('exports the invitation marker privately and removes it with the account', async () => {
     const { call, member, db } = await fixture(), owner = await member('inviteexport')
-    await call('/auth/discord-invite', 'POST', {}, owner.token)
+    await call('/auth/discord-invite', 'POST', { campaign: DISCORD_INVITE_CAMPAIGN }, owner.token)
     const exported = await call('/auth/data-export', 'POST', { password }, owner.token)
     expect(exported.status).toBe(200)
-    expect((await exported.json()).data.discordInvitation).toEqual([{ shown_at: expect.any(String) }])
+    expect((await exported.json()).data.discordInvitation).toEqual([{ campaign: DISCORD_INVITE_CAMPAIGN, shown_at: expect.any(String) }])
     db.prepare('DELETE FROM account_tokens WHERE user_id=?').run(owner.id)
     db.prepare('DELETE FROM auth_users WHERE id=?').run(owner.id)
     expect(db.prepare('SELECT COUNT(*) AS count FROM member_discord_invites').get()).toEqual({ count: 0 })
   })
+})
+
+it('upgrades existing invitation records without changing their timestamps or breaking old inserts', () => {
+  const db = new DatabaseSync(':memory:'); databases.push(db)
+  db.exec('CREATE TABLE auth_users(id TEXT PRIMARY KEY)')
+  db.exec(readFileSync(new URL('../../migrations/0054_discord_invitation.sql', import.meta.url), 'utf8').split('-- Additive counters')[0])
+  db.exec("INSERT INTO auth_users(id) VALUES('previous'),('oldworker'); INSERT INTO member_discord_invites(user_id,shown_at) VALUES('previous','2026-10-07 12:00:00')")
+  db.exec(readFileSync(new URL('../../migrations/0069_discord_invite_campaign.sql', import.meta.url), 'utf8'))
+  expect(db.prepare('SELECT * FROM member_discord_invites').get()).toEqual({ user_id: 'previous', campaign: 'development-discord-2026-10-07', shown_at: '2026-10-07 12:00:00' })
+  db.exec("INSERT OR IGNORE INTO member_discord_invites(user_id) VALUES('oldworker')")
+  expect(db.prepare("SELECT campaign FROM member_discord_invites WHERE user_id='oldworker'").get()).toEqual({ campaign: 'development-discord-2026-10-07' })
 })
 
 describe('invitation action statistics', () => {

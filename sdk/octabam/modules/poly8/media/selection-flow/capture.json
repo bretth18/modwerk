@@ -1,0 +1,71 @@
+{
+  "firmware": "1.40C",
+  "version": "0.2.6-experimental",
+  "testFirmware": "POLY8T10",
+  "imageSha256": "0271c801ad8b77cd5890d112f72e4a14438520138dc3b587624e703f1950248e",
+  "nativeSourceSha256": "a32ed194a288c8847ad0ba110e8bca3bf266ada2227772ef813623b32a21421d",
+  "emulatorSha256": "eb6edf981e382516897a24de70512da9ddcc29d69db052b8d504367d138aa776",
+  "setup": "Actual native ColdFire/DSP MKII LCD from private POLY8T10, with the runtime arena filled with 0xff before loading. SRC SETUP assignment stays on SRC SETUP. Double-TRACK opens FLEX slots; LEFT restores the POLY8 machine list and RIGHT reopens slots. Stock FLEX/STATIC controls were run separately. Physical testing of this selection-flow update is not yet reported.",
+  "palette": {
+    "on": [
+      255,
+      255,
+      255
+    ],
+    "off": [
+      0,
+      0,
+      0
+    ]
+  },
+  "scale": 6,
+  "plan": "walk.jsonl",
+  "planSha256": "b2a147f1e86aff753dc635639aaeb36bf9f25b2dbfad253e78e2ecc734f171ea",
+  "nativeUiGateSha256": "84252472b82ce2ec0dbe51d814bd181c59827ecd9b5e0259a721ede251df5fcc",
+  "privateProtocolSha256": "90b5010f72de8a5fd75dc1431db4c1b76da09fdbfc959ba8b3b60bce1ed5d178",
+  "reportSha256": "e312316be79becf7c19b56d06f9d9218b03324b92b6e49f11d617467476f221c",
+  "screenshots": [
+    {
+      "file": "assigned-src.png",
+      "sha256": "e8c1774ade3a87f0ed460f6f17664c888020337965ef42c94a63ff2a00bd76e2",
+      "caption": "SRC SETUP remains visible after POLY8 assignment; LOOP OFF",
+      "lcd_sha256": "1bb82ac4b6df68e02c11de9f74cec6069e49c51d79e528708a0729f84e5b4056",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "left-machine-chooser.png",
+      "sha256": "5f3bbb0a95ae6cd22385d0dfdbccc1957ff027348eda6f97c68bce44d1f96a20",
+      "caption": "Machine chooser with POLY8 selected",
+      "lcd_sha256": "8a6ab23de943d693f2234829706299e7737ce074a1c6bf9dcaf06ee37987be80",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    },
+    {
+      "file": "right-flex-pool.png",
+      "sha256": "17af57f9846c74536559abd8c439762e7b91d4eb0dda80d0c7704d7e6851feb9",
+      "caption": "FLEX sample slots opened explicitly",
+      "lcd_sha256": "6da3a57927e08802028061bf281c2e3c4aba39c95e48f160ba88c339c27e60a3",
+      "source_dimensions": [
+        128,
+        64
+      ],
+      "dimensions": [
+        768,
+        384
+      ]
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "date": "2026-10-09",
+  "method": "Joint low/high Attack fit at LPF bypass, matching the owner-confirmed real TR-909 direct-out reference. Body, pitch, Tune, envelope/DC, noise and desk held fixed. Weighted edge-aligned time residual, 8 kHz high-pass residual (x5), and 0.3-weighted log-band-energy residual against full-onset reference windows. Design-model onset has zero pre-roll; actual carried-state full-image energy is measured independently in neighbors.json. Existing pulse/filter structure and coefficient-only implementation.",
+  "parameters": {
+    "f_hp": 156.4321571330062,
+    "f0": 4782.764505445681,
+    "q": 1.5638021720075013,
+    "k_w": 32.37103901058115,
+    "k_u": 12.72490950682746,
+    "f_u": 1260.8417814341421,
+    "tau_decay": 0.004720122620248985,
+    "f_output": 21999.999999999996,
+    "jitter_base": 0.96,
+    "jitter_depth": 0.04,
+    "_note": "Joint minimum/maximum Attack fit to the owner-confirmed TR-909 direct-out recording at LPF bypass. Complete body/Tune model held fixed. Full-onset spectral energy includes pre-roll; edge-aligned time residual is a fit metric, not measured trigger alignment. Existing long/fast discharge and filter structure retained. Input/filter gain scale 16 preserves fixed-point headroom. Jitter strength range is 0.92..1.0; it is an approximation, not a measured circuit mechanism.",
+    "fast_tau": 0.0003961454201205716,
+    "fast_gain": -13.522104134308124,
+    "gain_scale": 16,
+    "fast_depth": 3.9989999999999997
+  },
+  "minimumPulseGain": 3.651396927791929,
+  "linearGains": [
+    0.1682839398476761,
+    0.04976681998884097,
+    0.046087550374711156
+  ],
+  "weightedRmsError": 0.01726174900640437,
+  "bounds": {
+    "lower": [
+      5e-05,
+      5e-06,
+      30,
+      1500,
+      0.45,
+      20,
+      1000,
+      0,
+      -3.999
+    ],
+    "upper": [
+      0.012,
+      0.001,
+      8000,
+      18000,
+      8,
+      22000,
+      22000,
+      1,
+      3.999
+    ]
+  },
+  "sourceReferenceInputSha256": "5cb6d0917c8119e6675a1034bbfe55a532a113d958d12a7ce0c8f6b1406533cf",
+  "sourceBodySha256": "a56751b8d1de88d6a4f7c729b51e5fbab60c73fe7b03df547a896a6a56ba2c6b",
+  "privateFirmwareLabel": "AB014REF05",
+  "implementedPulse": {
+    "f_hp": 156.4321571330062,
+    "f0": 4782.764505445681,
+    "q": 1.5638021720075013,
+    "k_w": 32.37103901058115,
+    "k_u": 12.72490950682746,
+    "f_u": 1260.8417814341421,
+    "tau_decay": 0.004720122620248985,
+    "f_output": 21999.999999999996,
+    "jitter_base": 0.96,
+    "jitter_depth": 0.04,
+    "_note": "Joint minimum/maximum Attack fit to the owner-confirmed TR-909 direct-out recording at LPF bypass. Complete body/Tune model held fixed. Full-onset spectral energy includes pre-roll; edge-aligned time residual is a fit metric, not measured trigger alignment. Existing long/fast discharge and filter structure retained. Input/filter gain scale 16 preserves fixed-point headroom. Jitter strength range is 0.92..1.0; it is an approximation, not a measured circuit mechanism.",
+    "fast_tau": 0.0003961454201205716,
+    "fast_gain": -13.522104134308124,
+    "gain_scale": 16,
+    "fast_depth": 3.9989999999999997
+  },
+  "seedGainCompensation": 0.9940475896085353,
+  "implementedBodyPulseBaseline": 3.651396927791929,
+  "additionalDspInstructions": 0,
+  "additionalStateWords": 0,
+  "limits": [
+    "Only endpoint windows are fit; exact intermediate physical knob positions are unknown.",
+    "Full-onset energy does not use a reference abruptly cut at its steepest negative slope.",
+    "The peak-strength distribution is only an approximation: the final 2–4 reference hits may have held the endpoint, and possible knob motion remains a confounder.",
+    "Body parameters except pulse-baseline k0 and all Tune parameters are byte-for-byte numerically unchanged from AB014REF04."
+  ]
+}

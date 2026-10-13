@@ -27,7 +27,7 @@ export const MODULE_MEDIA_GUIDES: Readonly<Record<string, ScreenshotGuide>> = {
     ],
   },
   miniverb: {
-    version: '0.1.2-experimental',
+    version: '0.2.1-experimental',
     screenshots: [
       {
         path: 'media/ot-location.png',
@@ -36,8 +36,8 @@ export const MODULE_MEDIA_GUIDES: Readonly<Record<string, ScreenshotGuide>> = {
       },
       {
         path: 'media/ot-controls.png',
-        caption: 'Raise DECAY for a longer tail and DAMP for a darker one. MOD adds movement; RATE sets its speed. Start with a little MIX, then raise it to bring the reverb forward, or set it to 0 for the dry sample.',
-        alt: 'Mini Verb main FX2 page with DECAY, DAMP, MIX, MOD and RATE.',
+        caption: 'Raise MIX on encoder F to hear the reverb. DECAY sets the tail length, DAMP darkens its decay and TONE on encoder C colors the wet output; TONE 64 is neutral. MOD and RATE add movement. MIX 0 gives dry playback.',
+        alt: 'Mini Verb main FX2 page with DECAY, DAMP and TONE above MOD, RATE and MIX.',
       },
     ],
   },
@@ -128,7 +128,7 @@ export const MODULE_MEDIA_GUIDES: Readonly<Record<string, ScreenshotGuide>> = {
     ],
   },
   'midi-scenes': {
-    version: '0.2.4-experimental',
+    version: '0.2.5-experimental',
     screenshots: [
       {
         path: 'media/ot-channel.png',
@@ -466,7 +466,7 @@ export const MODULE_MEDIA_GUIDES: Readonly<Record<string, ScreenshotGuide>> = {
     ]
   },
   "digitakt-digieq": {
-    "version": "1.0.1-experimental",
+    "version": "1.0.2-experimental",
     "screenshots": [
       {
         "path": "media/eq.png",
@@ -475,7 +475,7 @@ export const MODULE_MEDIA_GUIDES: Readonly<Record<string, ScreenshotGuide>> = {
       },
       {
         "path": "media/q-type.png",
-        "caption": "Press A–D to edit band Q, or E–H to choose the filter type; press again to return to level and frequency. For the starting response, restore 0 dB with low/high shelves on bands 1/4 and bells on 2/3. HP, LP, BP and notch still filter at 0 dB.",
+        "caption": "Press A–D to edit band Q, or E–H to choose the filter type; press again to return to level and frequency. Hold FUNC and LFO, then press PLAY (CLEAR) to restore all four bands to the flat defaults. HP, LP, BP and notch still filter at 0 dB until their types are reset.",
         "alt": "Master EQ with pressed knobs displaying Q and LSHF, BELL, BELL and HSHF types."
       }
     ]
@@ -526,7 +526,7 @@ export const MODULE_MEDIA_GUIDES: Readonly<Record<string, ScreenshotGuide>> = {
     ]
   },
   "digitakt-digimono": {
-    "version": "0.13.1-experimental",
+    "version": "0.13.3-experimental",
     "screenshots": [
       {
         "path": "media/chooser.png",
@@ -545,19 +545,19 @@ export const MODULE_MEDIA_GUIDES: Readonly<Record<string, ScreenshotGuide>> = {
       },
       {
         "path": "media/noise.png",
-        "caption": "Choose MONO NOISE for noise synthesis. ST reduces the rate of new noise values, RED makes it darker and STON ties the noise to note pitch; use AMP to make a short percussion hit.",
+        "caption": "Choose MONO NOISE for noise synthesis. ST reduces the rate of new noise values, RED makes it darker and STON ties the noise to note pitch; use AMP to make a short percussion hit. The current emulator frame omits the common track/level sidebar.",
         "alt": "MONO NOISE page with TUNE, ST, RED and STON.",
         "additional": true
       },
       {
         "path": "media/pulse.png",
-        "caption": "Choose MONO PULSE and turn PW to change pulse width. PWAD and PWRS add moving pulse-width modulation; UNIL/UNIW add unison and SUB1/SUB2 add lower octaves.",
+        "caption": "Choose MONO PULSE and use D (PW) to change pulse width, with E/F (PWAD/PWRS) for modulation depth and rate. G/H add SUB1/SUB2, matching MONO SAW; B/C retain the unison controls.",
         "alt": "MONO PULSE page with unison, sub-octave and pulse-width controls.",
         "additional": true
       },
       {
         "path": "media/ens.png",
-        "caption": "Choose MONO ENS and set PCH2–4 to tune its extra oscillators. WAVE blends saw and pulse; raise CHRL from 0 for chorus and use CHRW for its width.",
+        "caption": "Choose MONO ENS and set PCH2–4 to tune its extra oscillators. WAVE blends saw and pulse; raise CHRL from 0 for chorus and use CHRW for its width. The current emulator frame omits the common TUNE/sidebar regions; their full redraw is unverified.",
         "alt": "MONO ENS page with PCH2, PCH3, PCH4, PW, WAVE, CHRL and CHRW.",
         "additional": true
       },

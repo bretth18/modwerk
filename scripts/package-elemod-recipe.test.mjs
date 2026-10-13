@@ -1,0 +1,31 @@
+import { test } from 'vitest'
+import assert from 'node:assert/strict'
+import { packageRecipe } from './package-elemod-recipe.mjs'
+import { readFile } from 'node:fs/promises'
+
+const original = JSON.parse(await readFile(new URL('../sdk/imports/packages/digimono/digimono-0.13.2-experimental-os1.53.elemod', import.meta.url), 'utf8'))
+const plan = { schemaVersion: 1, machine: 'digitakt', id: original.id, version: original.version, release: original.target.os, module: { ...original, sites: [] }, sites: [], derive: null }
+
+test('refuses recipes that depend on local stock data', () => {
+  for (const extra of [{ derive: {} }, { stockResumes: [{}] }, { stockRoutineBindings: {} }]) assert.throws(() => packageRecipe({ ...plan, ...extra }), /source-only/)
+  assert.throws(() => packageRecipe({ ...plan, sites: [{ op: 'keep2' }] }), /remain local/)
+})
+
+test('explicit calls and pointer replacements retain hash guards and relocation offsets', () => {
+  const sites = [
+    { addr: '0x40030daa', len: 6, stockSha256: original.sites[1].stock_sha256, op: 'jsr', target: 'digimono_sname' },
+    { addr: '0x401848dc', len: 4, stockSha256: '0'.repeat(64), op: 'ptr', target: 'digimono_sname' },
+  ]
+  const module = packageRecipe({ ...plan, sites })
+  assert.equal(module.sites[0].new, '4eb900000000')
+  assert.deepEqual(module.sites[0].relocs, [[2, 'abs32', 'sym:digimono_sname', 0]])
+  assert.equal(module.sites[0].stock_sha256, sites[0].stockSha256)
+  assert.deepEqual(module.sites[1].relocs, [[0, 'abs32', 'sym:digimono_sname', 0]])
+  assert.throws(() => packageRecipe({ ...plan, sites: [{ ...sites[0], len: 4 }] }), /length/)
+  assert.throws(() => packageRecipe({ ...plan, sites: [{ ...sites[0], stockSha256: 'bad' }] }))
+})
+
+test('refuses a module from another version or OS', () => {
+  assert.throws(() => packageRecipe({ ...plan, version: '0.14.0-experimental' }), /identity/)
+  assert.throws(() => packageRecipe({ ...plan, release: '1.54' }), /identity/)
+})

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 import { LIBRARY_CATEGORIES } from '../catalog/modules'
 import { DEVICES, parseDeviceRoute } from '../devices/registry'
 import { COMMUNITY_MODULES, nativeModule } from './modules'
@@ -6,7 +8,7 @@ const sections = {
   forum: 'Forum', 'forum-thread': 'Forum · discussions', 'forum-profile': 'Forum · profiles',
   'forum-messages': 'Private messages', 'forum-compose': 'New discussion', 'forum-shoutbox': 'Shoutbox archive',
   account: 'Account', developer: 'Creator settings', 'module-sets': 'Module sets', 'module-set': 'Module set details',
-  'community-module': 'Community module details', submit: 'Submit a module', faq: 'FAQ', credits: 'Credits',
+  'community-module': 'Community module details', submit: 'Submit a module', faq: 'FAQ', credits: 'Credits', projects: 'Other projects',
   privacy: 'Privacy notice', impressum: 'Impressum', 'community-rules': 'Community rules',
   'report-content': 'Report content', 'page-not-found': 'Page not found',
 }

@@ -19,7 +19,7 @@ To add, port or update a module, follow [Add or port a module](../docs/ADD_A_MOD
 | `digitakt/`, `digitone/`, `elemod/` | Digitakt and Digitone cores and modules |
 | `drafts/<id>/` | modules staged outside the catalog until they qualify |
 | `catalog.json` | the Octatrack modules the site offers, each at an exact version |
-| `imports/` | one record per ported source: repository, commit, every file and its SHA-256 |
+| `imports/` | ported source history: repository, commit and file hashes; code and preserved upstream files stay exact, while local module README, TESTING and CPU guides can be edited without checksum updates |
 | `templates/` | what `npm run module:new` copies |
 | `build/Dockerfile` | the pinned, firmware-free toolchain that compiles module packages |
 | `module-qualification-baseline.json`, `module-release-waivers.json`, `*-build-approval.json` | owner-approved exceptions, each bound to exact versions and hashes ([qualification](../docs/MODULE_QUALIFICATION.md)) |
@@ -28,7 +28,7 @@ The shared builder now admits Analog BD with Mini Verb, Tape Echo, Euclid, TapeH
 
 ## Octatrack native development
 
-Native work needs Python 3.10+, CMake, the patched DSP56300 assembler and disassembler, GNU `m68k-elf` tools and your own original OS 1.40C, kept outside the repository. Read `octabam/docs/remixer/MODULES.md` and `PLACEMENT.md` before changing memory claims. Do not run unreviewed manifests on a trusted computer: compile them in isolation, without credentials.
+Native work needs Python 3.12+, CMake, the patched DSP56300 assembler and disassembler, GNU `m68k-elf` tools and your own original OS 1.40C, kept outside the repository. Read `octabam/docs/remixer/MODULES.md` and `PLACEMENT.md` before changing memory claims. Do not run unreviewed manifests on a trusted computer: compile them in isolation, without credentials. The current preserved upstream sources use newer f-string syntax: the full SDK suite ran with Homebrew Python 3.14 here, while macOS system Python 3.9 cannot parse them. Helpers that temporarily add adapter directories to `sys.path` must restore it before the separate Octabam tests import their own `build` module.
 
 Stock code that modules depend on is described by address, length and SHA-256 guards. `stock_guard.py` reads your own extraction and fails closed when it is missing or altered. `npm run sdk:check` covers those guards with synthetic fixtures, without firmware or an emulator.
 

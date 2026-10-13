@@ -19,7 +19,8 @@ import { availableParallelism, homedir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { decodeFirmware } from '../src/engine/elek.ts'
-import { AVAILABLE_MODULES } from '../src/catalog/availability.ts'
+import { availableModules } from '../src/catalog/availability.ts'
+const AVAILABLE_MODULES = availableModules(true)
 import { selectionConflicts } from '../src/catalog/selection-conflicts.ts'
 import { parseModuleDocument } from '../src/catalog/module-contract.ts'
 import { CATALOG_SOURCE } from '../src/catalog/modules.ts'
@@ -50,7 +51,7 @@ if (originalSha !== expectedSha) throw new Error('This is not the original Octat
 async function compareRecord(id, selections) {
   const { defaultChoosers } = await import('../src/engine/choosers.ts')
   const { compareSelection } = await import('./native-comparison.mjs')
-  const counts = { identical: 0, masked: 0, refused: 0 }, failures = []
+  const counts = { identical: 0, masked: 0, refused: 0, browserPlatformRefused: 0 }, failures = []
   for (const row of selections) {
     const label = selectionKey(row.moduleIds, row.keepStockFx2)
     const menus = defaultChoosers(row.moduleIds, row.keepStockFx2)
@@ -58,10 +59,14 @@ async function compareRecord(id, selections) {
     const proof = row.native.refused !== undefined ? { moduleIds: row.moduleIds, error: row.native.refused } : { moduleIds: row.moduleIds, ...row.native }
     const result = await compareSelection(original, proof, menus)
     if (result.failure) failures.push(label + ': ' + result.failure)
-    else { counts[result.verdict]++; row.result = result.verdict }
+    else {
+      counts[result.verdict]++; row.result = result.verdict
+      delete row.browserPlatformRefused
+      if (result.browserPlatformRefused) { counts.browserPlatformRefused++; row.browserPlatformRefused = result.browserPlatformRefused }
+    }
   }
   if (sha(original) !== originalSha) throw new Error('The original OS changed during composition.')
-  console.log(`${id}: ${counts.identical + counts.masked} built and matching native (${counts.identical} identical outright, ${counts.masked} outside the platform writes), ${counts.refused} matching refusals, ${failures.length} mismatches, of ${selections.length} selections.`)
+  console.log(`${id}: ${counts.identical + counts.masked} native module-owned images match (${counts.identical} identical outright, ${counts.masked} outside the platform writes), ${counts.refused} matching refusals, ${counts.browserPlatformRefused} additional browser logger-memory refusals, ${failures.length} mismatches, of ${selections.length} selections.`)
   if (failures.length) console.error(failures.slice(0, 40).map(line => '  ' + line).join('\n'))
   return { counts, failures }
 }
@@ -160,7 +165,8 @@ if (check) {
   const unrecorded = Array.from({ length: 2 ** others.length }, (_, mask) => [...others.filter((_, bit) => mask >> bit & 1), id].sort()).filter(ids => !selectionConflicts(ids).length).map(ids => ids.join('+')).filter(key => !(key in checks))
   if (unrecorded.length) {
     console.log(`Recording native declaration checks for ${unrecorded.length} selections …`)
-    await container('checks', ['python3', '-B', '/app/scripts/export-native-checks.py', '/native/octabam', '--app', '/app', '--include', id, '--scope', others.join(','), '--write', '--output', '/native/runs/' + process.pid + '/native-metadata.json'])
+    writeFileSync(join(run, 'declaration-selections.json'), JSON.stringify(unrecorded))
+    await container('checks', ['python3', '-B', '/app/scripts/export-native-checks.py', '/native/octabam', '--app', '/app', '--include', id, '--scope', others.join(','), '--selections', '/native/runs/' + process.pid + '/declaration-selections.json', '--write', '--output', '/native/runs/' + process.pid + '/native-metadata.json'])
     const written = join(run, 'native-metadata.json')
     if (existsSync(written)) writeFileSync(join(root, 'src/catalog/native-metadata.json'), readFileSync(written))
   }
@@ -179,7 +185,7 @@ if (check) {
     writeFileSync(recordPath(id), JSON.stringify({
       schemaVersion: 1, moduleId: id, moduleVersion: document.version, moduleSourceSha256: await moduleNativeSourceSha256(join(root, 'sdk/octabam/modules', id), document),
       revision: CATALOG_SOURCE.revision, originalOsSha256: originalSha, pool,
-      summary: { selections: rows.length, built: counts.identical + counts.masked, identicalOutright: counts.identical, identicalOutsidePlatformWrites: counts.masked, refused: counts.refused, mismatches: 0 },
+      summary: { selections: rows.length, built: counts.identical + counts.masked, identicalOutright: counts.identical, identicalOutsidePlatformWrites: counts.masked, refused: counts.refused, ...(counts.browserPlatformRefused ? { browserPlatformRefused: counts.browserPlatformRefused } : {}), mismatches: 0 },
       selections: rows,
     }, null, 2) + '\n')
     console.log('Recorded sdk/native-comparisons/' + id + '.json. A changed original OS is refused; no firmware written to this checkout.')

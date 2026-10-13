@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "id": "vector",
-  "version": "0.2.3-experimental",
+  "version": "0.2.4-experimental",
   "approvedBy": "repeat98",
-  "approvedOn": "2026-10-06",
+  "approvedOn": "2026-10-09",
   "waived": [
     "current-build-hardware"
   ],
-  "reason": "Owner explicitly approved release using the current emulator evidence on 6 October 2026 because their Octatrack is in repair. This waives current-build physical hardware testing only; software behavior, source packaging, resource accounting and browser/native parity remain required.",
-  "sourceSha256": "34151c0e360314dd50d25ae8447cfa175838d7eddfd80cba13bc26dc4513668e",
-  "imageSha256": "48c0ec735bc9fcc7f050b448b15b3204fa5b968812f4a2aacdf6a4a2c0b1c6e2"
+  "reason": "Owner explicitly approved release and closure with hardware reboot/audio unverified on 9 October 2026: \"Approve release and closure with hardware reboot/audio unverified\". This exception binds VECTOR 0.2.4-experimental to its tested native source and image. Physical reboot, audible playback and hardware stress remain untested; software checks remain required.",
+  "sourceSha256": "1255e99133cbd8d6d2587c95f93462ea80fccbd169462a2acb02aedbd346cbd3",
+  "imageSha256": "cabcc2967a23a0ef719a38de444aec1b68662c12bb9057093d475b89424d0026"
 }

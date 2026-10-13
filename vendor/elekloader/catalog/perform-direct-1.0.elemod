@@ -1,0 +1,72 @@
+{
+ "elemod": 2,
+ "id": "perform-direct",
+ "version": "1.0",
+ "title": "Direct perform",
+ "description": "[PRESET] toggles PERFORM without [FUNC], quicker to reach live; [FUNC] + [PRESET] opens the PRESET/KIT menu.",
+ "category": "Performance",
+ "author": "toonst",
+ "license": "GPL-2.0-or-later",
+ "target": {
+  "device": "digitakt-mk2",
+  "product": "Digitakt II",
+  "os": "1.17",
+  "syx_sha256": "26c22f6652625ac2cfd47f7ee970d388ed8b6427dae3563c0a6a2f2d334350d5",
+  "section3_sha256": "a1e7b657b705eba1a19d81c33c1e11ba9c409816447ad74005d7bbf36da6d964",
+  "section3_len": 3275616
+ },
+ "sections": {
+  ".run": {
+   "align": 4,
+   "len": 28,
+   "parts": [
+    [
+     "hex",
+     "206f00087007b0a8000c670442804e757002b1a8001042804e750000"
+    ]
+   ]
+  }
+ },
+ "symbols": {
+  "pd_key": [
+   ".run",
+   0
+  ]
+ },
+ "exports": [
+  "pd_key"
+ ],
+ "imports": [],
+ "weak": [],
+ "relocs": [],
+ "sites": [],
+ "collections": {},
+ "contribute": [
+  {
+   "to": "ev_key",
+   "order": 10,
+   "data": "00000000",
+   "relocs": [
+    [
+     0,
+     "abs32",
+     "sym:pd_key",
+     0
+    ]
+   ],
+   "claims": []
+  }
+ ],
+ "copied": [],
+ "resources": {},
+ "requires": [
+  "core"
+ ],
+ "conflicts": [],
+ "build": {
+  "sources": {
+   "perform.c": "b6e65876707f8012fe1dd5f03bdaf57712b8bbcf216aa073b066d6ac01a19572"
+  }
+ },
+ "signature": null
+}

@@ -1,0 +1,16 @@
+{
+  "boundary_notes": [
+    0,
+    127,
+    71,
+    72,
+    84,
+    96,
+    97,
+    126
+  ],
+  "velocity_zero_off": true,
+  "independent_tuning": true,
+  "ptch_lock_unchanged": true,
+  "finite_release_reclaims_voices": true
+}

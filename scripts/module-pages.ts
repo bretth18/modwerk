@@ -11,10 +11,11 @@ import type { FirmwareModule } from '../src/catalog/modules.ts'
 import { DETAILS } from '../src/catalog/details.ts'
 import { MODULE_DOCUMENTS_BY_ID } from '../src/catalog/documents.ts'
 import { ModulePreview } from '../src/components/ModulePreview.tsx'
-
-function escapeHtml(value: string) {
-  return value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!)
-}
+import { DIGI_MODS, type DigiMod } from '../src/devices/digi-mods.ts'
+import { DEVICES_BY_ID } from '../src/devices/registry.ts'
+import { escapeHtml, pageMetadataHtml, pageContentHtml } from './page-html.ts'
+import { digiContent, octatrackContent } from './seo-content.ts'
+import { socialCard } from './social-cards.ts'
 
 /** Rasterize the same artwork and CSS used by the module cards, without browser or firmware input. */
 export async function moduleThumbnail(id: string, stylesheet: string): Promise<Buffer> {
@@ -60,6 +61,7 @@ export function siteUrls(html: string, base: string) {
 export function notFoundPageHtml(html: string, base: string): string {
   const { appUrl } = siteUrls(html, base)
   return html
+    .replace(/\s*<link rel="canonical" href="[^"]*"\s*\/>/g, '')
     .replace(/<base href="[^"]*"\s*\/>/, `<base href="${escapeHtml(base.startsWith('/') ? base : appUrl.href)}" />`)
     .replace(/<title>/, '<meta name="robots" content="noindex" />\n    <title>')
 }
@@ -68,7 +70,7 @@ export function modulePageHtml(html: string, module: FirmwareModule, imagePath: 
   const { appUrl, siteName } = siteUrls(html, base)
   const pageUrl = new URL(modulePath(module.id), appUrl).href
   const imageUrl = new URL(imagePath, appUrl).href
-  const title = module.name + ' — ' + siteName
+  const title = module.name + ' for Elektron Octatrack — ' + siteName
   const alt = module.name + ' module thumbnail'
   const values: Record<string, string> = {
     description: module.description,
@@ -77,10 +79,21 @@ export function modulePageHtml(html: string, module: FirmwareModule, imagePath: 
     'twitter:title': title, 'twitter:description': module.description,
     'twitter:image': imageUrl, 'twitter:image:alt': alt,
   }
-  return html
-    .replace(/<base href="[^"]*"\s*\/>/, `<base href="${escapeHtml(base === './' || base === '' ? '../../' : base)}" />`)
-    .replace(/(<meta (?:property|name)="([^"]+)" content=")[^"]*("\s*\/>)/g, (tag, start, key: string, end) => key in values ? start + escapeHtml(values[key]) + end : tag)
-    .replace(/<title>[\s\S]*?<\/title>/, `<title>${escapeHtml(title)}</title>\n    <link rel="canonical" href="${escapeHtml(pageUrl)}" />`)
+  const page = pageMetadataHtml(html, title, pageUrl, values)
+    .replace(/<base href="[^"]*"\s*\/>/, `<base href="${escapeHtml(base.startsWith('/') ? base : '../../')}" />`)
+  return pageContentHtml(page, octatrackContent(module, appUrl))
+}
+
+export function digiModulePageHtml(html: string, mod: DigiMod, imagePath: string, base: string): string {
+  const { appUrl, siteName } = siteUrls(html, base)
+  const pageUrl = new URL(`${mod.device}/module/${mod.id}/`, appUrl).href
+  const title = `${mod.title} for Elektron ${DEVICES_BY_ID[mod.device].name} — ${siteName}`
+  const imageUrl = new URL(imagePath, appUrl).href, alt = mod.title + ' for ' + DEVICES_BY_ID[mod.device].name
+  const page = pageMetadataHtml(html, title, pageUrl, {
+    description: mod.summary, 'og:title': title, 'og:description': mod.summary, 'og:url': pageUrl, 'og:image': imageUrl, 'og:image:alt': alt,
+    'twitter:title': title, 'twitter:description': mod.summary, 'twitter:image': imageUrl, 'twitter:image:alt': alt,
+  }).replace(/<base href="[^"]*"\s*\/>/, `<base href="${escapeHtml(base.startsWith('/') ? base : '../../../')}" />`)
+  return pageContentHtml(page, digiContent(mod, appUrl))
 }
 
 export function modulePages(): Plugin {
@@ -107,6 +120,12 @@ export function modulePages(): Plugin {
         if (modulePath(module.id) !== `module/${module.id}/`) {
           this.emitFile({ type: 'asset', fileName: `module/${module.id}/index.html`, source: page })
         }
+      }
+      for (const mod of DIGI_MODS) {
+        const card = await socialCard(config.root, { kicker: 'Elektron ' + DEVICES_BY_ID[mod.device].name, title: mod.title, left: 'modwerk.app', right: mod.category })
+        const imagePath = `module-thumbnails/${mod.device}-${mod.id}-${createHash('sha256').update(card).digest('hex').slice(0, 12)}.jpg`
+        this.emitFile({ type: 'asset', fileName: imagePath, source: card })
+        this.emitFile({ type: 'asset', fileName: `${mod.device}/module/${mod.id}/index.html`, source: digiModulePageHtml(html, mod, imagePath, config.base) })
       }
     },
   }

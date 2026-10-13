@@ -15,9 +15,24 @@ import './reporting-preview.css'
 
 const build = { machine: 'Octatrack', os: '1.40C', modules: builtModules(['miniverb', 'tapehead']) }
 const digi = { machine: 'Digitakt', os: '1.54', modules: builtModules(['digitakt-digihealth']) }
+const digiReminder = { machine: 'Digitakt', os: '1.54', modules: builtModules(['digitakt-digieq', 'digitakt-digimono'], { digieq: '1.0.1-experimental', digimono: '0.13.2-experimental' }) }
 
 export default function ReportingPreview({ modulePage = false }: { modulePage?: boolean }) {
-  return <ReportingPreviewContext>{modulePage ? <App/> : <ReportingComparison/>}</ReportingPreviewContext>
+  const reminder = new URLSearchParams(window.location.search).get('reminder')
+  return <ReportingPreviewContext>{modulePage ? <App/> : reminder ? <main className="reporting-reminder-preview"><ReminderPreview machine={reminder}/></main> : <ReportingComparison/>}</ReportingPreviewContext>
+}
+
+function ReminderPreview({ machine = 'digitakt', pendingIds }: { machine?: string; pendingIds?: string[] }) {
+  const [notice, setNotice] = useState('')
+  const reminder = machine === 'octatrack' ? build : digiReminder
+  return <>
+    <section className="configuration-section hardware-feedback-reminder">
+      <div className="section-title"><h2>Tried your {reminder.machine} modules?</h2><button type="button" className="icon-button" aria-label="Dismiss reminder preview" onClick={() => setNotice('Preview reminder dismissed.')}><Icon name="close" size={16}/></button></div>
+      <BuildFollowUp {...reminder} pendingIds={pendingIds} embedded preview/>
+      <button type="button" className="text-button hardware-feedback-later" onClick={() => setNotice('Preview snoozed until tomorrow. Nothing was scheduled.')}>Not yet — remind me tomorrow</button>
+    </section>
+    {notice && <p className="reporting-preview-notice" role="status">{notice}</p>}
+  </>
 }
 
 function ReportingComparison() {
@@ -33,7 +48,7 @@ function ReportingComparison() {
         <BuildFollowUp {...build} preview/>
       </PreviewPanel>
       <PreviewPanel number="03" title="On a return visit" description="Only modules still waiting for feedback.">
-        <section className="hardware-feedback-reminder"><div className="section-title"><h2>Tried your Octatrack modules?</h2><button className="icon-button" aria-label="Dismiss reminder preview" onClick={() => setNotice('Preview reminder dismissed.')}><Icon name="close" size={16}/></button></div><BuildFollowUp {...build} pendingIds={['tapehead']} embedded preview/><button className="text-button hardware-feedback-later" onClick={() => setNotice('Preview snoozed until tomorrow. Nothing was scheduled.')}>Not yet — remind me tomorrow</button></section>
+        <ReminderPreview machine="octatrack" pendingIds={['tapehead']}/>
       </PreviewPanel>
       <PreviewPanel number="04" title="Delayed check-in modal" description="The same actions, with a flashing guide below.">
         <FirmwareFeedbackDialog build={build} inline onConfirm={async () => { setNotice('Preview working confirmation. Nothing was sent.') }} onReport={setReporting} onLater={() => setNotice('Preview snoozed until tomorrow. Nothing was scheduled.')} onClose={() => setNotice('Preview check-in dismissed.')}/>

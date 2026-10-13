@@ -37,7 +37,7 @@ document.querySelector<HTMLInputElement>('#firmware')!.onchange = async event =>
       mainSha = await sha(decodeFirmware(new Uint8Array(built.buffer)).mainOs)
       assert(built.sha256 === expected && await sha(new Uint8Array(built.buffer)) === expected, 'Native update mismatch')
       assert(mainSha === 'a5af848dfcb3d4b9e060e8385666330cb2f1e5b0dcbb0531e555b6417b7e7805', 'Native logged MAIN mismatch')
-      assert(built.report.version === 'MIDISC2.0' && built.report.moduleVersions['midi-scenes'] === '0.2.4-experimental', 'Release version mismatch')
+      assert(built.report.version === 'MIDISC2.0' && built.report.moduleVersions['midi-scenes'] === '0.2.5-experimental', 'Release version mismatch')
       assert(built.report.runtimeBytes === 60572 && built.report.reservedBytes === 178176, 'Logger runtime or protected reservation mismatch')
       assert(built.report.omittedStockFx2.length === 0 && built.report.fx1Rows === 10 && built.report.fx2Rows === 14, 'Stock effects changed')
       builtReport = built.report

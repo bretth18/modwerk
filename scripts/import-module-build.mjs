@@ -64,9 +64,32 @@ for (const variant of packages.get('resident-dsp.json').variants) {
   if (variant.nullInit !== variant.stockCopy.sourceAddress || variant.nullProc !== variant.stockCopy.sourceAddress + 1) throw new Error('Compiled receiver must keep stock null dispatch entries')
 }
 const requested = packages.get('requested-packages.json')
+const composition = await json(resolve(native, 'modules/poly8/composition.json'))
+const quantizerRule = await json(resolve(native, 'modules/quantizer/composition.json'))
+if (quantizerRule.moduleId !== 'quantizer') throw new Error('Expected Quantizer composition rule')
+composition.groups = composition.groups.map(rule => rule.moduleId === 'quantizer' ? quantizerRule : rule)
+const importedComposition = structuredClone(requested.composition)
+for (const rule of importedComposition.groups) {
+  if (rule.suppliedBy) {
+    const group = requested.groups.find(group => group.moduleId === rule.moduleId)
+    if (!isDeepStrictEqual(rule.suppliedGroup, group)) throw new Error('Bundled quantizer package differs from its exact reviewed group')
+  }
+  delete rule.suppliedGroup
+}
+if (!isDeepStrictEqual(importedComposition, composition)) throw new Error('Machine composition recipe differs from authored source')
+
 for (const pkg of requested.objects) {
-  if (!Array.isArray(pkg.stockCopies) || pkg.stockCopies.length !== (['usbmidi_cfg', 'vector'].includes(pkg.label) ? 4 : 0)) throw new Error('Invalid inherited stock placeholder inventory')
+  if (!Array.isArray(pkg.stockCopies) || pkg.stockCopies.length !== (['usbmidi_cfg', 'vector', 'polyui'].includes(pkg.label) ? 4 : 0)) throw new Error('Invalid inherited stock placeholder inventory')
   if (!hash(pkg.sha256) || !/^[a-f0-9]+$/.test(pkg.code) || pkg.code.length !== pkg.bytes * 2 || sha(Buffer.from(pkg.code, 'hex')) !== pkg.sha256) throw new Error('Invalid requested authored object')
+  for (const variant of pkg.variants) {
+    const conditions = [...variant.whenModules, ...variant.withoutModules]
+    if (!Array.isArray(variant.whenModules) || !Array.isArray(variant.withoutModules) || !variant.whenModules.length || conditions.length > 8 || new Set(conditions).size !== conditions.length || conditions.some(id => !(id in versions)) || !Number.isSafeInteger(variant.bytes) || variant.bytes < 52 || variant.bytes > 8 * 1024 * 1024 || !hash(variant.sha256) || !/^[a-f0-9]+$/.test(variant.code) || variant.code.length !== variant.bytes * 2 || sha(Buffer.from(variant.code, 'hex')) !== variant.sha256) throw new Error('Invalid requested conditional object')
+    validateStockCopies(parseColdFireObject(new Uint8Array(Buffer.from(variant.code, 'hex'))), pkg.stockCopies)
+  }
+  for (let a = 0; a < pkg.variants.length; a++) for (let b = a + 1; b < pkg.variants.length; b++) {
+    const left = pkg.variants[a], right = pkg.variants[b]
+    if (!left.whenModules.some(id => right.withoutModules.includes(id)) && !right.whenModules.some(id => left.withoutModules.includes(id))) throw new Error('Overlapping requested object predicates')
+  }
   const object = parseColdFireObject(new Uint8Array(Buffer.from(pkg.code, 'hex')))
   validateStockCopies(object, pkg.stockCopies)
   const group = requested.groups.find(group => group.moduleId === pkg.moduleId)

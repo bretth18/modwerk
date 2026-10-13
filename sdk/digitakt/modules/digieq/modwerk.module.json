@@ -2,14 +2,14 @@
   "schemaVersion": 3,
   "id": "digieq",
   "name": "Digi EQ",
-  "version": "1.0.1-experimental",
+  "version": "1.0.2-experimental",
   "machine": "digitakt",
   "category": "effects",
   "exclusive": false,
   "author": {
     "github": "gdeo607",
     "credits": [
-      "gdeo607 \u2014 Digi EQ design and code, part of digi1_mods"
+      "gdeo607 — Digi EQ design and code, part of digi1_mods"
     ]
   },
   "maintainers": [
@@ -24,28 +24,29 @@
     "label": "Digi EQ",
     "family": "Mixing",
     "summary": "A 4-band master EQ on every output (main outs, headphones and USB), per pattern.",
-    "overview": "Digi EQ is a 4-band EQ on the master mix, before the render hands it to the analog outputs and to the USB stream, so main outs, headphones and USB audio all carry it, as they do the compressor. It is a master page (FUNC + LFO) between Compressor and Internal Mixer: knobs A-D set the bands\u2019 levels and E-H their frequencies, and a press switches a knob to its band\u2019s Q or type. The response curve is drawn above the knobs. The settings live in the pattern\u2019s kit, so every pattern has its own EQ, saved with the project and kept over a power-off. SETTINGS > GLOBAL FX/MIX > MASTER EQ makes the EQ you can hear override every pattern\u2019s own.",
+    "overview": "Digi EQ is a 4-band EQ on the master mix, before the render hands it to the analog outputs and to the USB stream, so main outs, headphones and USB audio all carry it, as they do the compressor. It is a master page (FUNC + LFO) between Compressor and Internal Mixer: knobs A-D set the bands’ levels and E-H their frequencies, and a press switches a knob to its band’s Q or type. The response curve is drawn above the knobs. The settings live in the pattern’s kit, so every pattern has its own EQ, saved with the project and kept over a power-off. SETTINGS > GLOBAL FX/MIX > MASTER EQ makes the EQ you can hear override every pattern’s own.",
     "highlights": [
       "A 4-band EQ on the master mix: main outs, headphones and USB audio all carry it.",
       "Its own master page, Master EQ (2/4), between Compressor and Internal Mixer, with the response curve drawn above the knobs.",
       "Seven band types: HP, low shelf, bell, notch, band pass, high shelf and LP.",
       "Each pattern has its own EQ, kept in its kit, saved with the project and kept over a power-off.",
-      "SETTINGS > GLOBAL FX/MIX > MASTER EQ makes the EQ you can hear override every pattern\u2019s own.",
+      "SETTINGS > GLOBAL FX/MIX > MASTER EQ makes the EQ you can hear override every pattern’s own.",
       "Bell and shelf bands at 0 dB cost nothing."
     ],
     "usage": [
       "Use a build containing Digi EQ. Press FUNC + LFO twice to reach Master EQ (2/4). Start a pattern with audio already loaded.",
       "Turn band 1 level with A and its frequency with E to compare a small low-frequency cut with the initial 0 dB setting.",
-      "Press A to edit the band\u2019s Q and E to edit its type; press them again to return to level and frequency.",
-      "Return every band to 0 dB and use the original shelf/bell types for the starting response, then stop playback. A zero-level HP, LP, BP or notch still filters."
+      "Press A to edit the band’s Q and E to edit its type; press them again to return to level and frequency.",
+      "Hold FUNC and LFO, then press PLAY (CLEAR) for the flat default response; stop playback. A zero-level HP, LP, BP or notch still filters until its type is reset."
     ]
   },
   "access": {
     "location": "Master pages (FUNC + LFO): Master EQ (2/4), between Compressor and Internal Mixer",
     "steps": [
       "Press FUNC + LFO for the master pages; FUNC + LFO steps through Compressor (1/4), Master EQ (2/4), Internal Mixer (3/4) and External Mixer (4/4).",
-      "Turn knobs A-D for the bands\u2019 levels and E-H for their frequencies; bands 1-4 are the columns A/E, B/F, C/G and D/H.",
-      "Press a knob to switch it to its band\u2019s Q (A-D) or type (E-H); press it again to go back.",
+      "Turn knobs A-D for the bands’ levels and E-H for their frequencies; bands 1-4 are the columns A/E, B/F, C/G and D/H.",
+      "Press a knob to switch it to its band’s Q (A-D) or type (E-H); press it again to go back.",
+      "Hold FUNC and LFO, then press PLAY (CLEAR) to reset all four bands to their default gain, frequency, Q and type. Knob modes and the global override stay as they were.",
       "For one EQ on every pattern, turn on SETTINGS > GLOBAL FX/MIX > MASTER EQ."
     ],
     "screenshots": [
@@ -56,7 +57,7 @@
     {
       "name": "Knobs A-D",
       "default": 0,
-      "doc": "Band 1-4 level, -12 to +12 dB in 0.5 dB steps (band 1 on A, band 4 on D); every band starts at 0 dB. For BELL and the shelves it is the boost or cut; for HP, LP, BP and NTCH it is that band\u2019s output level, and the band is always on. Press the knob for the band\u2019s Q.",
+      "doc": "Band 1-4 level, -12 to +12 dB in 0.5 dB steps (band 1 on A, band 4 on D); every band starts at 0 dB. For BELL and the shelves it is the boost or cut; for HP, LP, BP and NTCH it is that band’s output level, and the band is always on. Press the knob for the band’s Q.",
       "labels": null
     },
     {
@@ -68,7 +69,7 @@
     {
       "name": "Knobs E-H",
       "default": null,
-      "doc": "Band 1-4 frequency, 20 Hz to 20 kHz in 128 steps, about a semitone a notch (band 1 on E, band 4 on H). Defaults: band 1 78 Hz, band 2 398 Hz, band 3 2.5 kHz, band 4 9.9 kHz. Press the knob for the band\u2019s type.",
+      "doc": "Band 1-4 frequency, 20 Hz to 20 kHz in 128 steps, about a semitone a notch (band 1 on E, band 4 on H). Defaults: band 1 78 Hz, band 2 398 Hz, band 3 2.5 kHz, band 4 9.9 kHz. Press the knob for the band’s type.",
       "labels": null
     },
     {
@@ -88,7 +89,7 @@
     {
       "name": "MASTER EQ",
       "default": null,
-      "doc": "SETTINGS \u203a GLOBAL FX/MIX \u203a MASTER EQ, beside the firmware\u2019s own entries. On: the EQ you can hear overrides every pattern\u2019s own, and each pattern you reach is given these settings, so save the project if you want them kept. Off: every pattern goes back to its own saved EQ.",
+      "doc": "SETTINGS › GLOBAL FX/MIX › MASTER EQ, beside the firmware’s own entries. On: the EQ you can hear overrides every pattern’s own, and each pattern you reach is given these settings, so save the project if you want them kept. Off: every pattern goes back to its own saved EQ.",
       "labels": null
     }
   ],
@@ -100,13 +101,13 @@
     "requires": [],
     "conflicts": [],
     "limitations": [
-      "The builder refuses no pairing: in elekloader\u2019s check Digi EQ combines with every other Modwerk mod for its OS, NEIGHBOR, DIGISLICER and SOPHIE among them.",
+      "The builder refuses no pairing: in elekloader’s check Digi EQ combines with every other Modwerk mod for its OS, NEIGHBOR, DIGISLICER and SOPHIE among them.",
       "Built for OS 1.53 and 1.54.",
-      "Four active bands cost about 5 % of the audio time, by the author\u2019s estimate; in a very busy project that could push the audio over its budget and cause clicks. Bell and shelf bands at 0 dB cost nothing; HP, LP, BP and NTCH bands are always on.",
+      "Four active bands cost about 5 % of the audio time, by the author’s estimate; in a very busy project that could push the audio over its budget and cause clicks. Bell and shelf bands at 0 dB cost nothing; HP, LP, BP and NTCH bands are always on.",
       "Boosts can clip the main output, which is limited to full scale.",
-      "The settings are kept in bytes of the first four tracks\u2019 sound records that the firmware saves and loads but does not use itself. If the firmware used them somewhere the author\u2019s emulator tests did not reach, a setting could be lost or a sound could change.",
-      "With MASTER EQ on, every pattern the unit reaches is given the current EQ settings, which changes those patterns\u2019 kits; the change becomes permanent only when you save the project.",
-      "The page is an extra entry in the firmware\u2019s master view (its unused \u201cNone\u201d page, renamed); the author notes that an untested path of that view could treat it differently.",
+      "The settings are kept in bytes of the first four tracks’ sound records that the firmware saves and loads but does not use itself. If the firmware used them somewhere the author’s emulator tests did not reach, a setting could be lost or a sound could change.",
+      "With MASTER EQ on, every pattern the unit reaches is given the current EQ settings, which changes those patterns’ kits; the change becomes permanent only when you save the project.",
+      "The page is an extra entry in the firmware’s master view (its unused “None” page, renamed); the author notes that an untested path of that view could treat it differently.",
       "Its author reports Digi EQ 1.0b is not yet tested on a unit; it passes their emulator tests on OS 1.53 and 1.54."
     ]
   },
@@ -124,33 +125,35 @@
     ]
   },
   "resources": {
-    "memoryBytes": 9090,
+    "memoryBytes": 9146,
     "fastBytes": 0,
     "load": {
       "display": "Not measured in Modwerk yet",
       "method": "unmeasured",
-      "conditions": "Measure with every track playing, parameters modulated and all four EQ bands active (away from 0 dB, or set to HP, LP, BP or NTCH), the mod\u2019s heaviest setting, on OS 1.53 and 1.54."
+      "conditions": "Measure with every track playing, parameters modulated and all four EQ bands active (away from 0 dB, or set to HP, LP, BP or NTCH), the mod’s heaviest setting, on OS 1.53 and 1.54."
     }
   },
   "evidence": {
     "tier": "none",
-    "moduleVersion": "1.0.0-experimental",
-    "sourceSha256": null,
-    "reports": [],
+    "moduleVersion": "1.0.2-experimental",
+    "sourceSha256": "eeeb9242b68a5c0770403caee5feba821fe7960727215a701fe93426e60319af",
+    "reports": [
+      "evidence/clear-1.0.2.json"
+    ],
     "hardware": null,
     "verifiedBy": null
   },
   "tests": {
     "report": "TESTING.md",
-    "summary": "Modwerk\u2019s elekloader builder linked and verified a build of Digi EQ 1.0b with core 2.1 for OS 1.53 and 1.54; nothing was flashed or tested on hardware, and the evidence tier is none. Documentation captures verify the listed UI pages on OS 1.53; audio, timing and hardware remain unqualified.",
+    "summary": "Native compilation, source-only package/materialization parity and builder verification pass on OS 1.53 and 1.54 with core 2.1, DIGICHAIN 1.6 and Digi Mono 0.13.3. Native panel regressions confirm all sixteen band parameters reset and other sound bytes remain unchanged. Hardware, audio, timing, complete memory bounds, persistence, physical reboot and stress remain unverified.",
     "documentation": {
       "tutorial": {
         "title": "Quick tutorial: shape the master mix",
         "steps": [
           "Use a build containing Digi EQ. Press FUNC + LFO twice to reach Master EQ (2/4). Start a pattern with audio already loaded.",
           "Turn band 1 level with A and its frequency with E to compare a small low-frequency cut with the initial 0 dB setting.",
-          "Press A to edit the band\u2019s Q and E to edit its type; press them again to return to level and frequency.",
-          "Return every band to 0 dB and use the original shelf/bell types for the starting response, then stop playback. A zero-level HP, LP, BP or notch still filters."
+          "Press A to edit the band’s Q and E to edit its type; press them again to return to level and frequency.",
+          "Hold FUNC and LFO, then press PLAY (CLEAR) for the flat default response; stop playback. A zero-level HP, LP, BP or notch still filters until its type is reset."
         ]
       },
       "screenshots": [
@@ -163,14 +166,14 @@
   "license": {
     "spdx": "MIT",
     "file": "LICENSE",
-    "declaration": "The author\u2019s source, imported unchanged from github.com/gdeo607/digi1_mods at commit 35bacb3730d1 under its MIT licence. Stock firmware bytes in the upstream build manifest were replaced with length and SHA-256 guards."
+    "declaration": "MIT source imported from gdeo607/digi1_mods at 35bacb3730d108e4dc48a7bd6de4c99ae9b161e6, with Modwerk page-clear and display-alignment fixes. Stock firmware is represented only by addresses, lengths and SHA-256 guards."
   },
   "media": [
     {
       "path": "media/thumbnail.svg",
       "kind": "thumbnail",
       "caption": "Digi EQ thumbnail",
-      "alt": "Abstract mixing illustration for Digi EQ: a four-band EQ response curve with its band points",
+      "alt": "An equalizer response curve with four band positions.",
       "credit": "Modwerk",
       "license": "GPL-3.0-or-later",
       "source": "Original Modwerk illustration"
@@ -186,8 +189,8 @@
       "capture": {
         "type": "emulator",
         "release": "1.53",
-        "moduleVersion": "1.0.1-experimental",
-        "imageSha256": "4542b2464429b97b77205ed7c793d39c94a5b3bce2116896411369f0e2a07e80",
+        "moduleVersion": "1.0.2-experimental",
+        "imageSha256": "d8717d1d10418c6833d8312ba266d96fa7e3ecb03c78c3a927f2e45caeb5b6c5",
         "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
       }
     },
@@ -202,8 +205,8 @@
       "capture": {
         "type": "emulator",
         "release": "1.53",
-        "moduleVersion": "1.0.1-experimental",
-        "imageSha256": "4542b2464429b97b77205ed7c793d39c94a5b3bce2116896411369f0e2a07e80",
+        "moduleVersion": "1.0.2-experimental",
+        "imageSha256": "d8717d1d10418c6833d8312ba266d96fa7e3ecb03c78c3a927f2e45caeb5b6c5",
         "setup": "Pinned digiemu, firmware-native drawing, disposable first-boot project. No audio or cycle-timing qualification."
       }
     }

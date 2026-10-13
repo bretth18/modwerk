@@ -2,6 +2,11 @@
 ; Copyright (c) 2016 Chris Johnson; port (c) 2026 Jannik Assfalg.
 ; Upstream revision and full MIT licence: upstream/, LICENSE.
 ; FX2 only: two 8192-word rings in the slot's 16384-word Y allocation.
+; The first 72 virtual words use X:(r7+$3c)..X:(r7+$83) instead:
+; T3's Y:$38000 prefix aliases stock's live cross-core mailbox, and T7's
+; Y:$30000 prefix aliases per-frame parameter staging. Never touch those
+; Y words. Stay within the safe $00..$83 instance block; $84+ belongs
+; to stock track state. No new RAM is allocated.
 ; Original ring length 8176 is safely replaced by a wrapped 8192 ring:
 ; the greatest referenced age is ceil(2*4079.824)+2 = 8162.
 ; 8 guard bits keep the alternating air states and buffer writes bounded
@@ -11,20 +16,22 @@
 ; 00 allocator, 01 FX1 guard, 02 ring cursor, 03 phase high, 04 flip,
 ; 05 seeded, 06..08 targets, 09..0b final smoothed high words,
 ; 0c..0e smoothed low words, 10 tap offset, 11 fraction, 12 age,
-; 13 dry input, 14 interpolated wet, 15 L previous,16/17 L even hi/lo,
+; 15 L previous,16/17 L even hi/lo,
 ; 18/19 L odd hi/lo,1a R previous,1b/1c R even,1d/1e R odd,
-; 20/21 RANGE first slew stage,22/23 MIX first stage,28/29 tap scratch,
-; 2a sine scratch,30 table base,31 sine scratch,32 phase low,
-; 33 speed-target low,34/35 air delta hi/lo,36 selected air factor.
+; 20/21 RANGE first slew stage,22/23 MIX first stage,
+; 30 table base,32 phase low,
+; 33 speed-target low,35 dry coefficient. Other offsets are reserved.
 ; 37 count of valid ring history (0..8192); initial history is logically zero.
-; Init clears the complete 56-word state span, including reserved gaps.
+; 38 sine index,39 value,3a next value,3b temporary first difference.
+; Init clears the complete 60-word control state, including reserved gaps.
+; Ring history guards every unwritten X shadow word just like the Y ring.
 ; init preserves r1/n1/m1. Proc never reads the allocator pointer again.
 ; CYCLES_FORWARD_BRANCHES
 init:
         move    r7,r5
         move    #>$ffffff,m5
         clr     a
-        do      #56,>ac_zero
+        do      #60,>ac_zero
         move    a,x:(r5)+
 ac_zero:
         nop
@@ -39,10 +46,17 @@ ac_zero:
         tst     a
         tmi     x0,b
         move    b,x:(r7+$01)
- ; Unwritten history reads as zero until each ring position has been filled.
+; Unwritten history reads as zero until each ring position has been filled.
 ; This avoids a 16384-word clear inside the effect-change dispatcher block.
         move    #>$200000,x0
         move    x0,x:(r7+$03)
+; Initial phase is at the quarter-sine endpoint. Subsequent folded indices
+; change by at most one (maximum phase step is <1 table point/sample).
+        move    #>1024,x0
+        move    x0,x:(r7+$38)
+        move    #>$7fffff,x0
+        move    x0,x:(r7+$39)
+        move    x0,x:(r7+$3a)
         rts
 proc:
         move    x:(r7+$01),a
@@ -51,6 +65,10 @@ proc:
         move    #>$ffffff,m5
         move    #>$ffffff,m4
         move    #>$ffffff,m3
+; Keep MIX addressable by an indirect move so arithmetic can load it in
+; parallel. n1 reaches the shared dry coefficient. Init still preserves r1.
+        lua     (r7+$0b),r1
+        move    #>$2a,n1
 ; Warm rings use the original tap body. Choose once per processing call;
 ; a call that finishes filling history keeps the masked path until next call.
         move    #>ac_maskedread,r2
@@ -127,6 +145,13 @@ ac_sample:
         add     b,a
         move    a1,x:(r7+$20)
         move    a0,x:(r7+$21)
+        move    x:(r7+$0a),b
+        move    x:(r7+$0d),b0
+        sub     b,a
+        asr     #10,a,a
+        add     b,a
+        move    a1,x:(r7+$0a)
+        move    a0,x:(r7+$0d)
         move    x:(r7+$08),a
         move    x:(r7+$22),b
         move    x:(r7+$23),b0
@@ -135,6 +160,13 @@ ac_sample:
         add     b,a
         move    a1,x:(r7+$22)
         move    a0,x:(r7+$23)
+        move    x:(r1),b
+        move    x:(r7+$0e),b0
+        sub     b,a
+        asr     #10,a,a
+        add     b,a
+        move    a1,x:(r7+$0b)
+        move    a0,x:(r7+$0e)
         move    x:(r7+$06),a
         move    x:(r7+$33),a0
         move    x:(r7+$09),b
@@ -144,33 +176,19 @@ ac_sample:
         add     b,a
         move    a1,x:(r7+$09)
         move    a0,x:(r7+$0c)
-        move    x:(r7+$20),a
-        move    x:(r7+$21),a0
-        move    x:(r7+$0a),b
-        move    x:(r7+$0d),b0
-        sub     b,a
-        asr     #10,a,a
-        add     b,a
-        move    a1,x:(r7+$0a)
-        move    a0,x:(r7+$0d)
-        move    x:(r7+$22),a
-        move    x:(r7+$23),a0
-        move    x:(r7+$0b),b
-        move    x:(r7+$0e),b0
-        sub     b,a
-        asr     #10,a,a
-        add     b,a
-        move    a1,x:(r7+$0b)
-        move    a0,x:(r7+$0e)
+; The dry coefficient is shared by both channels.
+        move    x:(r1),b
+        neg     b
+        add     #>$7fffff,b
+        move    b,y0
+        move    y0,x:(r7+$35)
 ; Sine of shared L/R phase, from a linearly interpolated 1025-point quarter.
         move    x:(r7+$03),a
         bsr     ac_sine
-        move    a,x:(r7+$2a)
         move    a,y1
         move    x:(r7+$0a),x0
-        mpy     x0,y1,a
+        mpy     x0,y1,a    x:(r1),y1
         move    a,x0
-        move    x:(r7+$0b),y1
         mpy     x0,y1,a
         move    x:(r7+$0a),x0
         add     x0,a
@@ -230,14 +248,12 @@ ac_endpoint:
 
 ac_sine:
 ; Q23 phase 0..1 -> first quarter position; explicit a1 transfers drop
-; masked accumulator extension bits. Indices never exceed the 1026 words, including the duplicate endpoint.
+; masked accumulator extension bits. The cached endpoints reconstruct the
+; exact original 1026 Q23 values from a lossless 256-word table.
         move    a1,b
         and     #>$1fffff,b
         move    b1,y0
-        move    x:(r7+$03),b
-        and     #>$200000,b
-        tst     b
-        beq     ac_unfold
+        jclr    #21,a1,ac_unfold
         move    #>$200000,b
         move    y0,x0
         sub     x0,b
@@ -245,222 +261,295 @@ ac_sine:
 ac_unfold:
         move    y0,a
         asr     #11,a,a
-        move    a1,n5
-        move    x:(r7+$30),r5
-        move    (r5)+n5
-        move    p:(r5)+,x0
-        move    p:(r5),b
+        move    a1,x1
+        bsr     ac_lookup
         sub     x0,b
         move    b,y1
         move    y0,a
         and     #>$7ff,a
         asl     #12,a,a
         move    a1,y0
-        move    x0,x:(r7+$31)
+        move    x0,x1
         move    y0,x0
         mpy     x0,y1,a
-        move    x:(r7+$31),x0
-        add     x0,a
+        add     x1,a
         move    a,x0
+        move    x0,a
         move    x:(r7+$03),b
-        and     #>$400000,b
-        tst     b
-        beq     ac_positive
-        move    x0,a
+        jclr    #22,b1,ac_positive
         neg     a
-        move    a,x0
 ac_positive:
+        rts
+
+ac_lookup:
+; x1=index, y0=original quarter position (both preserved). Endpoints are
+; cached per instance; a changed index advances or reverses one exact delta.
+        move    x:(r7+$38),a
+        sub     x1,a
+        beq     ac_cachedsine
+        bgt     ac_backwardsine
+ac_advancesine:
+        move    x:(r7+$3a),a
+        move    x:(r7+$39),b
+        sub     b,a
+        move    a1,x:(r7+$3b)
+        move    x1,a
+        add     #>1,a
+        bsr     ac_seconddiff
+        move    x:(r7+$3b),a
+        add     x0,a
+        move    x:(r7+$3a),b
+        move    b1,x:(r7+$39)
+        add     b,a
+        move    a1,x:(r7+$3a)
+        bra     ac_cachefinish
+ac_backwardsine:
+        move    x:(r7+$3a),a
+        move    x:(r7+$39),b
+        sub     b,a
+        move    a1,x:(r7+$3b)
+        move    x:(r7+$38),a
+        add     #>1,a
+        bsr     ac_seconddiff
+        move    x:(r7+$3b),a
+        sub     x0,a
+        move    x:(r7+$39),b
+        move    b1,x:(r7+$3a)
+        sub     a,b
+        move    b1,x:(r7+$39)
+ac_cachefinish:
+        move    x1,x:(r7+$38)
+ac_cachedsine:
+        move    x:(r7+$39),x0
+        move    x:(r7+$3a),b
+        rts
+
+ac_seconddiff:
+; a=global second-difference index 2..1025. Four signed six-bit values
+; share each P word. Preserve x1/y0; return the sign-extended value in x0.
+        sub     #>2,a
+        move    a,b
+        and     #>3,b
+        move    b1,y1
+        asr     #2,a,a
+        move    a1,n5
+        move    x:(r7+$30),r5
+        move    (r5)+n5
+        move    y1,a
+        asl     #1,a,a
+        move    a,x0
+        asl     #1,a,a
+        add     x0,a
+        move    a1,y1
+        move    p:(r5),a
+        asr     y1,a,a
+        and     #>63,a
+        asl     #18,a,a
+        move    a1,x0
         move    x0,a
+        asr     #18,a,a
+        move    a1,x0
         rts
 
 ac_channel:
 ; Previous is full Q23; even/odd states are Q23 + a 24-bit low word, with
 ; eight guard bits. Rounding never accumulates inside the air recurrences.
-        move    a,x:(r7+$13)
         move    a,x1
         move    x:(r3),b
-        move    x1,x:(r3)+
-        sub     x1,b
+        sub     x1,b      x1,x:(r3)+
         asr     #8,b,b
-        move    b1,x:(r7+$34)
-        move    b0,x:(r7+$35)
+; Sign the air delta once; the even and odd updates use opposite signs.
+        move    x:(r7+$04),a
+        tst     a
+        beq     ac_deltaready
+        neg     b
+ac_deltaready:
         move    x:(r3),a
         move    x:(r3+1),a0
-        move    x:(r7+$04),x0
-        move    x0,b
-        tst     b
-        bne     ac_evenminus
-        move    x:(r7+$34),b
-        move    x:(r7+$35),b0
         add     b,a
-        bra     ac_evenstore
-ac_evenminus:
-        move    x:(r7+$34),b
-        move    x:(r7+$35),b0
-        sub     b,a
-ac_evenstore:
         move    a1,x:(r3)
         move    a0,x:(r3+1)
-        move    x:(r7+$04),b
-        tst     b
-        bne     ac_notfactor
-        move    a1,x:(r7+$36)
-ac_notfactor:
+        move    a1,y0
         move    x:(r3+2),a
         move    x:(r3+3),a0
-        move    x:(r7+$04),b
-        tst     b
-        bne     ac_oddplus
-        move    x:(r7+$34),b
-        move    x:(r7+$35),b0
         sub     b,a
-        bra     ac_oddstore
-ac_oddplus:
-        move    x:(r7+$34),b
-        move    x:(r7+$35),b0
-        add     b,a
-ac_oddstore:
         move    a1,x:(r3+2)
         move    a0,x:(r3+3)
+        move    a1,x0
         move    x:(r7+$04),b
         tst     b
-        beq     ac_factorready
-        move    a1,x:(r7+$36)
-ac_factorready:
-; odd -= (odd-even)/256 in the full accumulator.
-        move    x:(r3+2),a
-        move    x:(r3+3),a0
+        move    y0,b
+        tne     x0,b
+        move    b1,y0
+; Keep the 48-bit recurrences in the accumulators instead of spilling
+; each difference and loading it back. Arithmetic order/rounding is unchanged.
         move    x:(r3),b
         move    x:(r3+1),b0
         sub     b,a
         asr     #8,a,a
-        move    a1,x:(r7+$34)
-        move    a0,x:(r7+$35)
-        move    x:(r3+2),a
-        move    x:(r3+3),a0
-        move    x:(r7+$34),b
-        move    x:(r7+$35),b0
-        sub     b,a
-; A -= A.high * (1 - 1/1.0001). The neglected low-word contribution
-; to the leak is < 1.2e-11 in guarded units. Preserve the entire result.
-        move    a1,x0
+        move    x:(r3+2),b
+        move    x:(r3+3),b0
+        sub     a,b
+        move    b1,x0
         move    #>839,y1
-        mpy     x0,y1,b
-        sub     b,a
-        move    a1,x:(r3+2)
-        move    a0,x:(r3+3)
+        mpy     x0,y1,a
+        sub     a,b
+        move    b1,x:(r3+2)
+        move    b0,x:(r3+3)
 ; even -= (even-updatedOdd)/256, then the same full-precision leak.
         move    x:(r3),a
         move    x:(r3+1),a0
-        move    x:(r3+2),b
-        move    x:(r3+3),b0
         sub     b,a
         asr     #8,a,a
-        move    a1,x:(r7+$34)
-        move    a0,x:(r7+$35)
-        move    x:(r3),a
-        move    x:(r3+1),a0
-        move    x:(r7+$34),b
-        move    x:(r7+$35),b0
-        sub     b,a
-        move    a1,x0
-        move    #>839,y1
-        mpy     x0,y1,b
-        sub     b,a
-        move    a1,x:(r3)
-        move    a0,x:(r3+1)
-; The selected factor is captured BEFORE either state decays, as upstream.
-        move    x:(r7+$36),x0
-        move    x:(r7+$0b),y1
+        move    x:(r3),b
+        move    x:(r3+1),b0
+        sub     a,b
+        move    b1,x0
         mpy     x0,y1,a
-        move    x1,b
+        sub     a,b
+        move    b1,x:(r3)
+        move    b0,x:(r3+1)
+; The selected factor is captured BEFORE either state decays, as upstream.
+        move    x:(r1),x0
+        mpy     y0,x0,a    x1,b
         asr     #8,b,b
         add     b,a
         rnd     a
         move    x:(r7+$02),n5
         move    r4,r5
         move    (r5)+n5
+; Shadow the slot's first 72 words in its own unused X state. This also
+; works on private-Y slots, preserving one identical virtual ring layout.
+        move    r5,b
+        and     #>$3fff,b
+        cmp     #>72,b
+        bge     ac_writey
+ac_writeshadow:
+        add     #>60,b
+        move    b1,n4
+        move    r7,r4
+        move    (r4)+n4
+        move    a,x:(r4)
+        bra     ac_writeend
+ac_writey:
         move    a,y:(r5)
-; read at write + age, wrapping the OFFSET, not the allocator address.
-        move    x:(r7+$02),a
-        move    x:(r7+$12),x0
-        add     x0,a
-        and     #>$1fff,a
-        move    a1,n5
+ac_writeend:
+; Advance from the write address to age with the hardware modulo AGU.
+; Allocator bases are 8192-word aligned. Restore linear mode for the sine.
+        move    x:(r7+$12),n5
+        move    #>8191,m5
+        move    (r5)+n5
         jsr     (r2)
-        move    a,x:(r7+$28)
-        move    n5,a
-        add     #>1,a
-        and     #>$1fff,a
-        move    a1,n5
-        jsr     (r2)
-        move    a,x:(r7+$29)
-        move    n5,a
-        add     #>1,a
-        and     #>$1fff,a
-        move    a1,n5
-        jsr     (r2)
-        move    a,y1
-        move    x:(r7+$28),x0
+        move    #>$ffffff,m5
+; Preserve the three tap words in registers through interpolation and
+; correction, keeping the original truncations at the same arithmetic points.
+        move    y1,b
+        move    y1,a
         sub     x0,a
+        move    x0,x1
         move    a,x0
         move    x:(r7+$11),y1
         mpy     x0,y1,a
-        move    x:(r7+$28),x0
-        add     x0,a
-        move    x:(r7+$29),x0
-        add     x0,a
+        add     x1,a
+        add     x1,b
+        add     y0,a
         asr     #1,a,a
-        move    a,x:(r7+$14)
+        move    a,x1
 ; Correction -0.01 * (s0 - 2*s1 + s2), after the 0.5 normalization.
-        jsr     (r2)
-        move    a,b
-        move    x:(r7+$28),x0
-        add     x0,b
-        move    x:(r7+$29),a
+        move    y0,a
         asl     #1,a,a
         sub     a,b
         move    b,y1
         move    #>83886,x0
         mpy     x0,y1,a
         move    a,b
-        move    x:(r7+$14),a
+        move    x1,a
         sub     b,a
 ; Blend in the full accumulator: no intermediate clipping of wet.
         move    a,x0
-        move    x:(r7+$0b),y1
-        mpy     x0,y1,a
+        move    x:(r1),y1
+        mpy     x0,y1,a    x:(r0),x0
         asl     #8,a,a
-        move    x:(r7+$13),x0
-        move    x:(r7+$0b),b
-        neg     b
-        add     #>$7fffff,b
-        move    b,y1
-        mac     x0,y1,a
+        move    x:(r1+n1),y1
+        mac     x0,y1,a    x:(r1),b
 ; MIX 0 preserves every original input bit.
-        move    x:(r7+$0b),b
         tst     b
         teq     x0,a
         rts
 
 ac_maskedread:
-; Read only written history. Offset subtraction is wrapped within this ring;
-; at 8192 valid samples every position is live. MOVE preserves the CMP flags.
-        move    n5,a
-        move    x:(r7+$02),x0
-        sub     x0,a
-        and     #>$1fff,a
-        move    a1,b
-        move    x:(r7+$37),x0
-        cmp     x0,b
-        move    r4,r5
-        move    (r5)+n5
-        move    y:(r5),a
+; Return s0/s1/s2 in x0/y0/y1. The valid count includes the new sample.
+; age+2 <= 8161, so only the last zero, one or two taps can be unwritten.
+; Fully valid triplets use the same three reads even before the ring fills.
+        move    x:(r7+$12),b
+        move    x:(r7+$37),a
+        sub     b,a
+        cmp     #>2,a
+        bgt     ac_warmread
+        tst     a
+        ble     ac_emptyread
+        cmp     #>1,a
+        beq     ac_oneread
+ac_tworead:
+        bsr     ac_readword
+        move    x0,y0
+        bsr     ac_readword
+        move    x0,y1
+        move    y0,x0
+        move    y1,y0
+        move    #>0,y1
+        rts
+ac_emptyread:
         move    #>0,x0
-        tge     x0,a
+        move    #>0,y0
+        move    #>0,y1
+        rts
+ac_oneread:
+        bsr     ac_readword
+        move    #>0,y0
+        move    #>0,y1
         rts
 ac_warmread:
-        move    r4,r5
-        move    (r5)+n5
-        move    y:(r5),a
+; Most triplets remain entirely in Y. Only left-ring prefix/boundary
+; triplets need the virtual-word helper; right-ring wrapping stays in Y.
+        move    r5,a
+        and     #>$3fff,a
+        cmp     #>72,a
+        blt     ac_shadowread
+        cmp     #>8190,a
+        blt     ac_yread
+        cmp     #>8192,a
+        bge     ac_yread
+ac_shadowread:
+        bsr     ac_readword
+        move    x0,y0
+        bsr     ac_readword
+        move    x0,y1
+        bsr     ac_readword
+        move    x0,x1
+        move    y0,x0
+        move    y1,y0
+        move    x1,y1
+        rts
+ac_yread:
+        move    y:(r5)+,x0
+        move    y:(r5)+,y0
+        move    y:(r5)+,y1
+        rts
+
+ac_readword:
+        move    r5,a
+        and     #>$3fff,a
+        cmp     #>72,a
+        bge     ac_ready
+ac_readshadow:
+        add     #>60,a
+        move    a1,n4
+        move    r7,r4
+        move    (r4)+n4
+        move    x:(r4),x0
+        move    (r5)+
+        rts
+ac_ready:
+        move    y:(r5)+,x0
         rts

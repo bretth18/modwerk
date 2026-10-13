@@ -1,0 +1,17 @@
+.audio-prototype-toolbar { position: fixed; inset: 0 0 auto; z-index: 50; min-height: 56px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px 24px; padding: 8px 20px; border-bottom: 1px solid var(--line); background: #242427; }
+.audio-prototype-toolbar > div { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; }
+.audio-prototype-toolbar strong { font-size: 12px; }
+.audio-prototype-toolbar span { color: var(--muted); font-size: 11px; }
+.audio-prototype-toolbar nav { display: flex; gap: 12px; align-items: center; }
+.audio-prototype-toolbar nav a, .audio-prototype-toolbar nav button { display: flex; align-items: center; min-height: 36px; padding: 0 8px; border: 0; background: transparent; color: var(--accent); font-size: 12px; }
+.audio-prototype-root .app-shell { top: 56px; }
+.audio-prototype-notice { flex-basis: 100%; }
+.audio-prototype-toolbar:has(.audio-prototype-notice) { min-height: 76px; }
+.audio-prototype-root:has(.audio-prototype-notice) .app-shell { top: 76px; }
+@media (max-width: 600px) {
+  .audio-prototype-toolbar { position: static; min-height: 84px; padding: 8px 12px; }
+  .audio-prototype-toolbar > div { width: 100%; justify-content: space-between; }
+  .audio-prototype-toolbar nav { width: 100%; justify-content: space-between; gap: 0; }
+  .audio-prototype-toolbar nav a, .audio-prototype-toolbar nav button { min-height: 40px; padding: 0 4px; }
+  .audio-prototype-root .app-shell, .audio-prototype-root:has(.audio-prototype-notice) .app-shell { top: auto; }
+}

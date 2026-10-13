@@ -6,6 +6,11 @@ import type { BellItem } from './notification-contract'
 import type { NotificationLine } from './notification-text'
 import { SUPPORT_URL } from '../config/support'
 import { DEVELOPMENT_DISCORD_URL } from '../config/development-discord'
+import audioPreviewAnnouncement from '../../docs/announcements/audio-previews-2026-10-13.draft.json'
+import { AUDIO_PREVIEW_GUIDE_HREF, AUDIO_PREVIEW_GUIDE_ROUTE, LEGACY_AUDIO_PREVIEW_GUIDE_HREF } from '../components/audio-preview-guide'
+import { FaqPage } from '../components/FaqPage'
+import { routeFromUrl } from '../routing'
+import { announcementLink } from '../../server/announcements'
 
 let storage: Map<string, string>, news: typeof import('./public-announcement')
 const id = (character: string) => 'announcement-' + character.repeat(32)
@@ -18,6 +23,25 @@ beforeEach(async () => {
 afterEach(() => vi.unstubAllGlobals())
 
 describe('quiet public announcements', () => {
+  it('opens a module upload walkthrough from new and already-published announcements', () => {
+    expect(audioPreviewAnnouncement.visibility).toBe('public')
+    expect(announcementLink(audioPreviewAnnouncement.url)).toBe(AUDIO_PREVIEW_GUIDE_HREF)
+    const line = news.publicAnnouncementLine({ ...item('a'), title: audioPreviewAnnouncement.title, excerpt: audioPreviewAnnouncement.body, url: audioPreviewAnnouncement.url, module_id: null })
+    const card = renderToStaticMarkup(createElement(PublicAnnouncementCard, { line, onDismiss() {}, onOpen() {} }))
+    expect(card).toContain('Show me how')
+    expect(card).toContain(`href="${AUDIO_PREVIEW_GUIDE_HREF}"`)
+    expect(card).not.toContain('target="_blank"')
+    expect(routeFromUrl(new URL('https://modwerk.app/' + LEGACY_AUDIO_PREVIEW_GUIDE_HREF), new URL('https://modwerk.app/'))).toBe(AUDIO_PREVIEW_GUIDE_ROUTE)
+    const oldCard = renderToStaticMarkup(createElement(PublicAnnouncementCard, { line: { ...line, href: LEGACY_AUDIO_PREVIEW_GUIDE_HREF }, onDismiss() {}, onOpen() {} }))
+    expect(oldCard).toContain(`href="${AUDIO_PREVIEW_GUIDE_HREF}"`)
+    expect(oldCard).toContain('Show me how')
+    const guide = renderToStaticMarkup(createElement(FaqPage, { previewGuide: true }))
+    expect(guide).toContain('Add an audio preview')
+    expect(guide).toContain('class="faq-question" open=""')
+    for (const instruction of ['Previews', 'verified account', 'WAV, MP3 or Ogg', '90 seconds', '12 MB', 'credit', 'caption', 'permission', 'Remove preview']) expect(guide).toContain(instruction)
+    expect(guide).not.toContain('How do I flash an Octatrack')
+    expect(renderToStaticMarkup(createElement(FaqPage))).toContain('How do I add an audio preview?')
+  })
   it('keeps the complete public message and paragraph breaks so the hosting explanation is visible', () => {
     const body = 'A'.repeat(180) + '\n\nOptional support helps cover hosting costs. Modwerk stays free.'
     const line = news.publicAnnouncementLine({ ...item('a'), excerpt: body, url: SUPPORT_URL })

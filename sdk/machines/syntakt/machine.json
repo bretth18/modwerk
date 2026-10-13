@@ -3,15 +3,61 @@
   "id": "syntakt",
   "order": 60,
   "name": "Syntakt",
-  "status": "open",
-  "summary": "Twelve analog and digital tracks. No public firmware research yet.",
+  "status": "research",
+  "summary": "OS 1.40A and 1.42 files documented and rebuilt byte-identical; modified builds boot on a unit and the stock 1.42 file returns it to stock. No shared core yet.",
+  "firmware": {
+    "releases": [
+      {
+        "version": "1.40A",
+        "files": [
+          {
+            "name": "Syntakt_OS1.40A.syx",
+            "sha256": "266a5a3022ff565bf470173147b7f3005b7da8ef80724b6271836818ac2b5828"
+          }
+        ]
+      },
+      {
+        "version": "1.42",
+        "files": [
+          {
+            "name": "Syntakt_OS1.42.syx",
+            "sha256": "ded3c59fdb909eb9e2c3307b30a486452c8fa6947b12c14e0ce35a187b7f37c1"
+          }
+        ]
+      }
+    ],
+    "flash": "Elektron Transfer over USB: set MIDI IN and OUT to the device, drop the .syx on and confirm on the device.",
+    "recovery": "Hold FUNC while powering on to open the STARTUP menu, choose TRIG 4 (OS UPGRADE), then send the owner's stock .syx from Transfer's SysEx Transfer / OS Upgrade via device startup menu over MIDI DIN; USB does not work there. Documented by Synthack-OS; this startup-menu path is not yet tested on our unit."
+  },
   "steps": {
-    "format": "open",
-    "rebuild": "open",
-    "boot": "open",
+    "format": "done",
+    "rebuild": "done",
+    "boot": "done",
     "core": "open",
     "mods": "open"
   },
+  "research": [
+    {
+      "label": "elektron-firmware-tool",
+      "url": "https://github.com/mischa85/elektron-firmware-tool",
+      "note": "Writer. Reads Syntakt OS files (device 0x16). Unchanged -r repack is byte-identical (cmp) to stock OS 1.40A and 1.42, checked 2026-10-12."
+    },
+    {
+      "label": "Synthack-OS",
+      "url": "https://github.com/Angelo-politek/Synthack-OS",
+      "note": "MIT mods for OS 1.41 as patch.json with expected-byte hashes, plus modarea/vparams infrastructure. The project states seven mods run on hardware, and it documents recovery over MIDI DIN. No firmware hosted."
+    },
+    {
+      "label": "Synthack-OS 1.42 port",
+      "url": "https://github.com/Rxuting/Synthack-OS/tree/os-1.42",
+      "note": "master-comp ported to OS 1.42; the build booted and ran on the author's Syntakt (2026-10-11). No firmware hosted."
+    },
+    {
+      "label": "digiemu Syntakt port",
+      "url": "https://github.com/irpina/digiemu/pull/33",
+      "note": "Emulator boots OS 1.40A to the live UI with the second ColdFire rendering its digital machines; analog tracks and the FPGA are not modelled. Open PR."
+    }
+  ],
   "art": {
     "body": "wide",
     "encoders": 8,

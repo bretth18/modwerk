@@ -9,11 +9,13 @@ import { CHUNK_SIZE, FIRST_COUNTER, contentChecksum, decodeDataMessages, encodeS
 const COUNT_OFFSET = 0x1c, TABLE_OFFSET = 0x20, ENTRY_SIZE = 16, VERSION_FIELD = [0x14, 0x18] as const
 const OFFSET_BIAS = 767, FAR_OFFSET = 3328
 
-export type Ele3Device = { mainSection: number; mainLoad: number; stage: number; flashAt: number; flashLimit: number; sysexId: number }
+export type DigiMachine = 'digitakt' | 'digitakt-ii' | 'digitone'
+export type Ele3Device = { mainSection: number; mainLoad: number; stage: number; flashAt: number; flashLimit: number; sysexId: number; seal?: 'hmac' }
 
 // Facts about each machine's container and loader, from public research (elekloader device profiles).
-export const ELE3_DEVICES: Record<'digitakt' | 'digitone', Ele3Device> = {
+export const ELE3_DEVICES: Record<DigiMachine, Ele3Device> = {
   digitakt: { mainSection: 3, mainLoad: 0x40000400, stage: 0x40200000, flashAt: 0x80000, flashLimit: 0x380000, sysexId: 0x0a },
+  'digitakt-ii': { mainSection: 3, mainLoad: 0x40000400, stage: 0x40400000, flashAt: 0x80000, flashLimit: 0x380000, sysexId: 0x14, seal: 'hmac' },
   digitone: { mainSection: 3, mainLoad: 0x40000400, stage: 0x40200000, flashAt: 0x80000, flashLimit: 0x380000, sysexId: 0x0d },
 }
 
@@ -89,6 +91,7 @@ export function mainImage(file: Ele3File, device: Ele3Device): Uint8Array {
 
 /** The stock file with the main OS section's stored bytes replaced and, optionally, a new 4-character version. */
 export function writeEle3Syx(stock: Ele3File, storedMain: Uint8Array, device: Ele3Device, version?: string): Uint8Array {
+  if (device.seal === 'hmac') throw new Error('This writer cannot rebuild a sealed HMAC OS.')
   const parts: Uint8Array[] = [stock.container.slice(0, stock.dataStart)]
   const head = parts[0], view = new DataView(head.buffer)
   if (version !== undefined) {
@@ -155,6 +158,7 @@ export type Ele3BuildFacts = { bytes: number; messages: number; containerLength:
 
 /** Refuses unless `output` is `stock` with only the main OS changed, depacking in place to `wantMain`. */
 export function verifyEle3Build(output: Uint8Array, stock: Ele3File, wantMain: Uint8Array, device: Ele3Device, version?: string): Ele3BuildFacts {
+  if (device.seal === 'hmac') throw new Error('This verifier cannot qualify a sealed HMAC OS build.')
   const built = readEle3Syx(output)
   if (built.dataMessages.some(message => message[4] !== stock.deviceId)) throw new Error('A data message carries another device id.')
   built.dataMessages.forEach((message, index) => {

@@ -1,18 +1,15 @@
 import type { Database, Env } from './platform'
 import { digest, HttpError, jsonBody, response } from './security'
 import { throttle } from './auth'
+import { mailLimits, reserveMailBudget } from './mail-budget'
 import { emailReady, recordMail } from './email'
 import { SUPPORT_EMAIL } from '../src/support'
 import { NEWS_CONSENT_VERSION, saveNewsPreference } from './news-preferences'
 import { NEWS_EMAIL_VERSION, renderNewsEmail } from './news-email-template'
 import { adminText } from './announcements'
+import { unsubscribeRoute, unsubscribeToken } from './unsubscribe'
 
-/** News mail has its own daily cap beside the 80 account sends and the activity digests. The free Resend tier allows
- * 100 a day, so the default of 5 keeps the three within it; raise NEWS_MAIL_DAILY_LIMIT after upgrading. */
-export function newsMailLimit(env: Env) {
-  const value = Number(env.NEWS_MAIL_DAILY_LIMIT ?? 5)
-  return Number.isInteger(value) && value >= 0 && value <= 100000 ? value : 5
-}
+export function newsMailLimit(env: Env) { return mailLimits(env, 'news').daily }
 const MESSAGES_PER_RUN = 20, RETRY_SECONDS = 300, MAX_ATTEMPTS = 3, LISTED = 50
 const newId = 'lower(hex(randomblob(16)))'
 /** Members whose news consent is current and who can receive mail: verified, not suspended, sign-up complete. */
@@ -22,39 +19,14 @@ const RECIPIENTS = `SELECT a.id,a.email FROM auth_users a JOIN users u ON u.id=a
 type Campaign = { id: string; subject: string; body: string; status: string }
 type Content = { subject: string; body: string }
 
-async function unsubscribeMac(secret: string, userId: string) {
-  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
-  return Array.from(new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode('modwerk-news-unsubscribe-v1:' + userId))), byte => byte.toString(16).padStart(2, '0')).join('')
-}
-/** A long-lived, single-purpose link: it can only withdraw news consent. Rotating AUTH_SECRET invalidates it. */
-export async function newsUnsubscribeToken(secret: string, userId: string) { return userId + '.' + await unsubscribeMac(secret, userId) }
-async function unsubscribeUser(secret: string, value: unknown) {
-  if (typeof value !== 'string' || value.length > 200) return null
-  const split = value.lastIndexOf('.'), userId = value.slice(0, split), mac = value.slice(split + 1)
-  if (split < 1 || !/^[a-f0-9]{64}$/.test(mac)) return null
-  const expected = await unsubscribeMac(secret, userId)
-  let difference = 0
-  for (let index = 0; index < 64; index++) difference |= expected.charCodeAt(index) ^ mac.charCodeAt(index)
-  return difference ? null : userId
-}
-/** One-click unsubscribe (RFC 8058): mail clients post here without an Origin or session; the signed token authorizes it. */
-export async function newsUnsubscribe(request: Request, env: Env, db: Database) {
-  if (!env.AUTH_SECRET) throw new HttpError(503, 'Email settings are not available yet.')
-  await throttle(db, 'unsubscribe-ip:' + (request.headers.get('CF-Connecting-IP') ?? 'local'), 30)
-  const query = new URL(request.url).searchParams.get('token')
-  const token = query ?? (request.headers.get('Content-Type')?.includes('application/json') ? (await jsonBody(request)).token : null)
-  const userId = await unsubscribeUser(env.AUTH_SECRET, token)
-  if (!userId) throw new HttpError(400, 'This unsubscribe link is not valid. Change news settings in your account instead.')
-  // A deleted account has nothing left to unsubscribe and must not regain a stored preference.
-  if (await db.prepare('SELECT id FROM auth_users WHERE id=?').bind(userId).first()) await saveNewsPreference(db, userId, false)
-  return response({ ok: true })
-}
+/** Withdraws news consent from a signed mail link. */
+export function newsUnsubscribe(request: Request, env: Env, db: Database) { return unsubscribeRoute(request, env, db, 'news', userId => saveNewsPreference(db, userId, false)) }
 
 /** Posts one rendered message to the provider. Never logs addresses, content or provider bodies. */
 async function deliver(env: Env, campaign: Content, member: { id: string; email: string }, idempotencyKey: string) {
   const app = new URL(env.APP_URL!), settings = new URL(app); settings.hash = 'account/notifications'
   const message = renderNewsEmail(campaign, { app: app.href, settings: settings.href })
-  const token = await newsUnsubscribeToken(env.AUTH_SECRET!, member.id)
+  const token = await unsubscribeToken(env.AUTH_SECRET!, 'news', member.id)
   const oneClick = env.AUTH_BASE_URL ? new URL('/api/news/unsubscribe?token=' + encodeURIComponent(token), env.AUTH_BASE_URL).href : null
   const result = await fetch('https://api.resend.com/emails', {
     method: 'POST', signal: AbortSignal.timeout(10000),
@@ -64,10 +36,8 @@ async function deliver(env: Env, campaign: Content, member: { id: string; email:
   return !!result?.ok
 }
 async function withinBudget(env: Env, db: Database) {
-  const limit = newsMailLimit(env)
   try {
-    await throttle(db, 'news-mail:daily', limit, 86400)
-    await throttle(db, 'news-mail:monthly', limit * 30, 30 * 86400)
+    await reserveMailBudget(env, db, 'news')
     return true
   } catch (error) {
     if (!(error instanceof HttpError) || error.status !== 429) throw error

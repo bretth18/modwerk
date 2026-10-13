@@ -16,6 +16,8 @@ A new machine must be a first-class entry wherever the instrument lists machines
 - [ ] **The machine chooser.** The track's machine list opens on your machine for a track that uses it, highlights it, and admits it when the choice is committed (`ab_chooser_open`, `ab_chooser_row`, `ab_main_commit`).
 - [ ] **SRC SETUP.** The same machine is selectable there, with its row highlighted, and every commit path admits it (`ab_src_names`, `ab_setup_open`, `ab_setup_row`, `ab_src_commit`, `ab_src_commit2`, `ab_setup_edit6`, `ab_setup_draw6`).
 - [ ] **Its name everywhere the stock machine names appear,** including the main page (`ab_machine_name`, `ab_name_a`, `ab_name_b`).
+- [ ] **Closing a window does not clear its retained callbacks.** Snapshot the exact original handler, label and destination roots; fence current and paused consumers, then restore those roots before retiring the outgoing image. A null window handle alone is not a lifetime proof.
+- [ ] **Analog BD lifetime gate.** Its Part, whole-image and UI foreign-root closure is an independent gate before a generation may be retired. A bounded root observer never reports semantic completeness: scan completion or zero matches is insufficient, and unknown, partial or overflow results retain both owners. The same coherent snapshot and entry context must stay valid across chunks (rereading endpoints cannot exclude ABA). Persistent and temporary Part producers and consumers must be source-proven before retirement. Native instruction counts are not physical interrupt timing.
 - [ ] **A model list** if you have several engines, drawn in the stock pool layout (`ab_pool_open`, `ab_list_draw`, `ab_pool_title`).
 - [ ] **Its parameter pages are published through the descriptor,** so the page the panel draws is the page the DSP reads (`ab_tick_hook`).
 - [ ] **Other tracks are untouched.** Analog BD resolves its page "without changing other FLEX tracks" (`ab_resolve_pb`). Prove that a neighbouring Flex track plays and edits as stock.
@@ -32,13 +34,16 @@ Test in layers, as Analog BD does: the DSP engine, the ColdFire glue, the port (
 - [ ] It lives in the stock menu where the setting belongs. Scale Quantizer's rows are PROJ → CONTROL → SEQUENCER.
 - [ ] **OFF restores stock behaviour** exactly (SCALE OFF is stock pitch behaviour). Test it.
 - [ ] It works on every track type it claims, and the README lists the ones it does not (Flex, Static and Pickup are covered; synth behaviour depends on a machine outside this catalog).
+- [ ] **Shared audio/MIDI drawers keep their calling convention.** Before replacing a ColdFire span, inspect every branch target inside it, including MIDI paths that enter after an audio-only load. Reproduce the displaced argument pushes on every entry path. Exercise FUNC+UP/DOWN on MIDI tracks while holding the popup through a redraw; brief taps can miss stack corruption. Quantizer 0.1.3 moves its octave detour to the common argument push for this reason ([#181](https://github.com/repeat98/modwerk/issues/181)).
 - [ ] It acts on everything that makes pitch, not only live edits. Scale Quantizer snaps the PTCH knob, chromatic trig keys **and parameter locks** to the scale. **Verify** locked values at both ends of the range.
 - [ ] **Persistence.** A setting and its defaults survive Part Save and project save and load, or the README says they do not. Settings storage today is "nowhere, or a private file" ([MODULES.md](../../sdk/octabam/docs/remixer/MODULES.md#settings-on-the-card)); do not invent a file format.
+- [ ] **Runtime retirement.** Before a physical machine Trial, read-only preflight must show that the dropped-Part guard permits Undo. Retained LEG/legacy SYNTH references, including conservative stock TRIG matches, can hold an outgoing image; never clear the owner's Parts to make a trial pass. Admission and retirement also check current/paused consumers and RAM aliases.
+- [ ] **Full descriptor notifications.** A reset/randomize observation stopped before its notification tail does not verify the complete list/window path. Execute that tail and preserve the stock input layer and window baseline. A bounded stock window pool does not by itself prove full boot, resource exhaustion or hardware UI behavior.
 
 ## Integrate
 
 - [ ] `sdk/catalog.json` entry, thumbnail, `resources.impact`, README sections, tutorial and screenshots as in [Add or port a module](../ADD_A_MODULE.md).
-- [ ] Conflicts are declared. Analog BD runs with stock effects only and is refused beside every module with an effect ID. A machine that brings its own DSP engine needs the same, in `compatibility.conflicts` and in the ledger.
+- [ ] Conflicts are declared with actual ownership and placement reasons, in `compatibility.conflicts` and in the ledger. Analog BD supports reviewed custom DSP companions (`analogBdCompanions`), subject to space; inspect both cores rather than inheriting a blanket effect exclusion. A machine that brings its own DSP engine needs the same review. Follow the [base/USB lifecycle requirements](../ADD_A_MODULE.md#octatrack-base-and-usb-lifecycle), including shared machine registration, missing-module behaviour and Keep/Undo. Unavoidable limits require owner review.
 - [ ] `npm run module:verify -- <id> --os <your 1.40C>` and `npm run module:doctor -- <id>` are green.
 
 ## Digitakt and Digitone

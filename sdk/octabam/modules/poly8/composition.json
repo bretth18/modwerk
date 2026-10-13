@@ -1,0 +1,910 @@
+{
+  "schema": 1,
+  "requires": "poly8",
+  "machineIds": [
+    "poly8",
+    "analog-bassdrum",
+    "vector",
+    "synth"
+  ],
+  "countSites": [
+    1073989968,
+    1074103802,
+    1074235000,
+    1074235086,
+    1074238024,
+    1074239748
+  ],
+  "groups": [
+    {
+      "moduleId": "analog-bassdrum",
+      "replace": {
+        "detours": [
+          {
+            "address": 1074232156,
+            "guardLength": 6,
+            "guardSha256": "fc4b77b1c83703e8c61dda0b64b9ec139541c633433304b843f270cd461c6370",
+            "unit": "abmachine",
+            "symbol": "ab_pool_title",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074190212,
+            "guardLength": 8,
+            "guardSha256": "74c9188127d3241e9b2f750392fda1550a0be1780b7e06291e415aaa6d20de19",
+            "unit": "abmachine",
+            "symbol": "ab_list_draw",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1074237924,
+            "guardLength": 8,
+            "guardSha256": "fa7132fac15d6e498fd0e73744e1f94218824f3f54d5b3bad6083b60363e9f14",
+            "unit": "abmachine",
+            "symbol": "ab_pool_open",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1073951960,
+            "guardLength": 6,
+            "guardSha256": "d6c9f1f60272197a17511f496fc19dd21ddd7df5f1f1ec0cab7a16cad60b0609",
+            "unit": "abmachine",
+            "symbol": "ab_machine_name",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1073989928,
+            "guardLength": 6,
+            "guardSha256": "237cd1acd4da7acb61dc7fda7c88e648a5186b36732f433b4dd91966c5a669af",
+            "unit": "abmachine",
+            "symbol": "ab_src_names",
+            "target": null,
+            "kind": "lea",
+            "writeLength": 6
+          },
+          {
+            "address": 1073993496,
+            "guardLength": 6,
+            "guardSha256": "53b8d23acf2c3fe0f794c0a5f37475b17c3433bc6a466e0e1861515989cfecda",
+            "unit": "abmachine",
+            "symbol": "ab_name_a",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074053994,
+            "guardLength": 6,
+            "guardSha256": "53b8d23acf2c3fe0f794c0a5f37475b17c3433bc6a466e0e1861515989cfecda",
+            "unit": "abmachine",
+            "symbol": "ab_name_b",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1073990016,
+            "guardLength": 6,
+            "guardSha256": "237e017ccd95444195ca390a3e6ca6076fbfa1f0931f2e7dfbdbee8c5ec72ca3",
+            "unit": "abmachine",
+            "symbol": "ab_setup_row",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074235080,
+            "guardLength": 4,
+            "guardSha256": "f829e3570d9d9e95b7d7b9b0433b1aad2f13c0ac087873dbf981482521301309",
+            "unit": "abmachine",
+            "symbol": "ab_chooser_row",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074103772,
+            "guardLength": 10,
+            "guardSha256": "22fb6e2bea4520003d2fae7035c0cd57bcd6fe6f2cfdd5b70580a3f6f2a68034",
+            "unit": "abmachine",
+            "symbol": "ab_setup_open",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 10
+          },
+          {
+            "address": 1074078238,
+            "guardLength": 10,
+            "guardSha256": "8f0fa4f7d6db857f695996b185b38b788fa6af0eacd86d7dd01e2ff61201ffed",
+            "unit": "abmachine",
+            "symbol": "ab_tick_hook",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 10
+          },
+          {
+            "address": 1074235526,
+            "guardLength": 10,
+            "guardSha256": "fe6cb52458c7d968dc467c1cd7721d832baf6bc2fac1826c8c10ed07fee2e7f8",
+            "unit": "abmachine",
+            "symbol": "ab_chooser_open",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 10
+          },
+          {
+            "address": 1073946228,
+            "guardLength": 8,
+            "guardSha256": "bba32826863751ec568719c202735da1ba8f06560e4d375a80637ae6653caa8f",
+            "unit": "abmachine",
+            "symbol": "ab_resolve_pb",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 10
+          },
+          {
+            "address": 1074239516,
+            "guardLength": 6,
+            "guardSha256": "89c50ac3ca041fdf5647ec5ee2c3580f9a67dd79f0b5cc15ceadda4b9e9bede0",
+            "unit": "abmachine",
+            "symbol": "ab_main_commit",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074112022,
+            "guardLength": 6,
+            "guardSha256": "7a7350a69423ec41ec468a189ba167059626cb7f499d9862394d2388a23c8b59",
+            "unit": "abmachine",
+            "symbol": "ab_src_commit",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074112592,
+            "guardLength": 6,
+            "guardSha256": "7a7350a69423ec41ec468a189ba167059626cb7f499d9862394d2388a23c8b59",
+            "unit": "abmachine",
+            "symbol": "ab_src_commit2",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1073980718,
+            "guardLength": 8,
+            "guardSha256": "cae34bf50383462ed4f92d8044e3021247edb8bf69c17a9c7ead62f6edf79510",
+            "unit": "abmachine",
+            "symbol": "ab_setup_edit6",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1073991064,
+            "guardLength": 8,
+            "guardSha256": "ed71ef874312890edc87cef7e19cd8c0f8ac4ac9b90182c2364f78d3a4567f45",
+            "unit": "abmachine",
+            "symbol": "ab_setup_draw6",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1073750808,
+            "guardLength": 8,
+            "guardSha256": "3d25d06bf11f3a7bccef894d0016b52adbb4ae468a0f475dd497d7b5966e2694",
+            "unit": "abmachine",
+            "symbol": "ab_validate",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          }
+        ],
+        "refs": [
+          {
+            "address": 1074585870,
+            "guardLength": 4,
+            "guardSha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+            "unit": "abcontrol",
+            "symbol": "ab_engine_left",
+            "addend": 0
+          },
+          {
+            "address": 1074591508,
+            "guardLength": 4,
+            "guardSha256": "6e883be7dc9df41d93523a4cec3b965133de531510ed56e23aa54a73414ee97b",
+            "unit": "abcontrol",
+            "symbol": "ab_engine_right",
+            "addend": 0
+          },
+          {
+            "address": 1074619448,
+            "guardLength": 4,
+            "guardSha256": "97f0e8a3a010d3298daa5af020a86806f3390bf4b5843ef4db6c3e02da79bfa8",
+            "unit": "abcontrol",
+            "symbol": "ab_render",
+            "addend": 0
+          }
+        ],
+        "pokes": [
+          {
+            "address": 1074238024,
+            "guardLength": 4,
+            "guardSha256": "8fbd3190028fe564c11b56e3e73e8eaf36925cbabf94164176eeb4c4f57bc6ac",
+            "code": "48780006"
+          },
+          {
+            "address": 1074103802,
+            "guardLength": 4,
+            "guardSha256": "8fbd3190028fe564c11b56e3e73e8eaf36925cbabf94164176eeb4c4f57bc6ac",
+            "code": "48780006"
+          },
+          {
+            "address": 1073989968,
+            "guardLength": 2,
+            "guardSha256": "74d01dadcbe6a57ef61bc53a5a65404cd8446c6738ff0ac86b1b1a78d8ae7d41",
+            "code": "7205"
+          },
+          {
+            "address": 1074235000,
+            "guardLength": 2,
+            "guardSha256": "04cd1c6d463ba6752ff68f9125991b1c4af983ae355b62366122ba2d47eee3b2",
+            "code": "7005"
+          },
+          {
+            "address": 1074235086,
+            "guardLength": 2,
+            "guardSha256": "04cd1c6d463ba6752ff68f9125991b1c4af983ae355b62366122ba2d47eee3b2",
+            "code": "7005"
+          },
+          {
+            "address": 1074239748,
+            "guardLength": 2,
+            "guardSha256": "577d7ba37f9786ab02a7dc9eeb612bb55936018179b550b14f4b9f000a89bf20",
+            "code": "7605"
+          }
+        ]
+      },
+      "runtimeUnits": []
+    },
+    {
+      "moduleId": "vector",
+      "replace": {
+        "detours": [
+          {
+            "address": 1074232156,
+            "guardLength": 6,
+            "guardSha256": "fc4b77b1c83703e8c61dda0b64b9ec139541c633433304b843f270cd461c6370",
+            "unit": "vector",
+            "symbol": "st_pool_title",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074190212,
+            "guardLength": 8,
+            "guardSha256": "74c9188127d3241e9b2f750392fda1550a0be1780b7e06291e415aaa6d20de19",
+            "unit": "vector",
+            "symbol": "st_list_draw",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1074237924,
+            "guardLength": 8,
+            "guardSha256": "fa7132fac15d6e498fd0e73744e1f94218824f3f54d5b3bad6083b60363e9f14",
+            "unit": "vector",
+            "symbol": "st_pool_open",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1073951960,
+            "guardLength": 6,
+            "guardSha256": "d6c9f1f60272197a17511f496fc19dd21ddd7df5f1f1ec0cab7a16cad60b0609",
+            "unit": "vector",
+            "symbol": "st_machine_name",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1073989928,
+            "guardLength": 6,
+            "guardSha256": "237cd1acd4da7acb61dc7fda7c88e648a5186b36732f433b4dd91966c5a669af",
+            "unit": "vector",
+            "symbol": "st_src_names",
+            "target": null,
+            "kind": "lea",
+            "writeLength": 6
+          },
+          {
+            "address": 1073993496,
+            "guardLength": 6,
+            "guardSha256": "53b8d23acf2c3fe0f794c0a5f37475b17c3433bc6a466e0e1861515989cfecda",
+            "unit": "vector",
+            "symbol": "st_name_a",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074053994,
+            "guardLength": 6,
+            "guardSha256": "53b8d23acf2c3fe0f794c0a5f37475b17c3433bc6a466e0e1861515989cfecda",
+            "unit": "vector",
+            "symbol": "st_name_b",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1073990016,
+            "guardLength": 6,
+            "guardSha256": "237e017ccd95444195ca390a3e6ca6076fbfa1f0931f2e7dfbdbee8c5ec72ca3",
+            "unit": "vector",
+            "symbol": "st_setup_row",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074235080,
+            "guardLength": 4,
+            "guardSha256": "f829e3570d9d9e95b7d7b9b0433b1aad2f13c0ac087873dbf981482521301309",
+            "unit": "vector",
+            "symbol": "st_chooser_row",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074103772,
+            "guardLength": 10,
+            "guardSha256": "22fb6e2bea4520003d2fae7035c0cd57bcd6fe6f2cfdd5b70580a3f6f2a68034",
+            "unit": "vector",
+            "symbol": "st_setup_open",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 10
+          },
+          {
+            "address": 1074078238,
+            "guardLength": 10,
+            "guardSha256": "8f0fa4f7d6db857f695996b185b38b788fa6af0eacd86d7dd01e2ff61201ffed",
+            "unit": "vector",
+            "symbol": "st_tick_hook",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 10
+          },
+          {
+            "address": 1074235526,
+            "guardLength": 10,
+            "guardSha256": "fe6cb52458c7d968dc467c1cd7721d832baf6bc2fac1826c8c10ed07fee2e7f8",
+            "unit": "vector",
+            "symbol": "st_chooser_open",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 10
+          },
+          {
+            "address": 1074239516,
+            "guardLength": 6,
+            "guardSha256": "89c50ac3ca041fdf5647ec5ee2c3580f9a67dd79f0b5cc15ceadda4b9e9bede0",
+            "unit": "vector",
+            "symbol": "st_main_commit",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074112022,
+            "guardLength": 6,
+            "guardSha256": "7a7350a69423ec41ec468a189ba167059626cb7f499d9862394d2388a23c8b59",
+            "unit": "vector",
+            "symbol": "st_src_commit",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074112592,
+            "guardLength": 6,
+            "guardSha256": "7a7350a69423ec41ec468a189ba167059626cb7f499d9862394d2388a23c8b59",
+            "unit": "vector",
+            "symbol": "st_src_commit2",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1073980718,
+            "guardLength": 8,
+            "guardSha256": "cae34bf50383462ed4f92d8044e3021247edb8bf69c17a9c7ead62f6edf79510",
+            "unit": "vector",
+            "symbol": "st_setup_edit6",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1073991064,
+            "guardLength": 8,
+            "guardSha256": "ed71ef874312890edc87cef7e19cd8c0f8ac4ac9b90182c2364f78d3a4567f45",
+            "unit": "vector",
+            "symbol": "st_setup_draw6",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1073750808,
+            "guardLength": 8,
+            "guardSha256": "3d25d06bf11f3a7bccef894d0016b52adbb4ae468a0f475dd497d7b5966e2694",
+            "unit": "vector",
+            "symbol": "st_validate",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          }
+        ],
+        "refs": [
+          {
+            "address": 1074585870,
+            "guardLength": 4,
+            "guardSha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119",
+            "unit": "vector",
+            "symbol": "st_pool_choice_left",
+            "addend": 0
+          },
+          {
+            "address": 1074591482,
+            "guardLength": 4,
+            "guardSha256": "34a9c46c59fd21b2521e3cdb179f2388808d2f49e6aaa0d368fbe6961da0d179",
+            "unit": "vector",
+            "symbol": "st_pool_left",
+            "addend": 0
+          },
+          {
+            "address": 1074591490,
+            "guardLength": 4,
+            "guardSha256": "34a9c46c59fd21b2521e3cdb179f2388808d2f49e6aaa0d368fbe6961da0d179",
+            "unit": "vector",
+            "symbol": "st_pool_left",
+            "addend": 0
+          },
+          {
+            "address": 1074591508,
+            "guardLength": 4,
+            "guardSha256": "6e883be7dc9df41d93523a4cec3b965133de531510ed56e23aa54a73414ee97b",
+            "unit": "vector",
+            "symbol": "st_pool_right",
+            "addend": 0
+          }
+        ],
+        "pokes": [
+          {
+            "address": 1074238024,
+            "guardLength": 4,
+            "guardSha256": "8fbd3190028fe564c11b56e3e73e8eaf36925cbabf94164176eeb4c4f57bc6ac",
+            "code": "48780006"
+          },
+          {
+            "address": 1074103802,
+            "guardLength": 4,
+            "guardSha256": "8fbd3190028fe564c11b56e3e73e8eaf36925cbabf94164176eeb4c4f57bc6ac",
+            "code": "48780006"
+          },
+          {
+            "address": 1073989968,
+            "guardLength": 2,
+            "guardSha256": "74d01dadcbe6a57ef61bc53a5a65404cd8446c6738ff0ac86b1b1a78d8ae7d41",
+            "code": "7205"
+          },
+          {
+            "address": 1074235000,
+            "guardLength": 2,
+            "guardSha256": "04cd1c6d463ba6752ff68f9125991b1c4af983ae355b62366122ba2d47eee3b2",
+            "code": "7005"
+          },
+          {
+            "address": 1074235086,
+            "guardLength": 2,
+            "guardSha256": "04cd1c6d463ba6752ff68f9125991b1c4af983ae355b62366122ba2d47eee3b2",
+            "code": "7005"
+          },
+          {
+            "address": 1074239748,
+            "guardLength": 2,
+            "guardSha256": "577d7ba37f9786ab02a7dc9eeb612bb55936018179b550b14f4b9f000a89bf20",
+            "code": "7605"
+          }
+        ]
+      },
+      "runtimeUnits": []
+    },
+    {
+      "moduleId": "repitch",
+      "replace": {
+        "detours": [
+          {
+            "address": 1073758464,
+            "guardLength": 8,
+            "guardSha256": "cfb51026afa59069c37a05dce3ec521567135c112d210e4a0f29129e3e353df7",
+            "unit": "repitch",
+            "symbol": "rate_hook",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          }
+        ],
+        "refs": [],
+        "pokes": []
+      },
+      "runtimeUnits": [
+        "repitch"
+      ]
+    },
+    {
+      "moduleId": "mute-modes",
+      "replace": {
+        "detours": [
+          {
+            "address": 1073768480,
+            "guardLength": 8,
+            "guardSha256": "87faf47c9893d1a9506259f68551bf06eb1ce723ac12cfae49a5b10b8b169fb6",
+            "unit": "mm_softmute",
+            "symbol": "fresh_bind",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          }
+        ],
+        "refs": [],
+        "pokes": []
+      },
+      "runtimeUnits": [
+        "mm_softmute"
+      ],
+      "runtimeExports": {
+        "mm_softmute": {
+          "whenModule": "sidechain-compressor",
+          "symbols": [
+            "KEYMASK"
+          ]
+        }
+      }
+    },
+    {
+      "moduleId": "quantizer",
+      "replace": {
+        "detours": [
+          {
+            "address": 1074026776,
+            "guardLength": 8,
+            "guardSha256": "112b7d2434bae65950506429fa2e8d01b20316d7ab6d1848ba91f10c451e11ac",
+            "unit": "qz",
+            "symbol": "qz_octkey",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1074022840,
+            "guardLength": 8,
+            "guardSha256": "ba228773be7f5a27bf35390c81bc6b1947b642d5fd23ea9b5153ad3b48b54ff6",
+            "unit": "qz",
+            "symbol": "qz_octnum",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          }
+        ],
+        "refs": [],
+        "pokes": []
+      },
+      "runtimeUnits": [],
+      "suppliedBy": "synth",
+      "supplied": {
+        "signature": "df1c11de9f4faa684dc196370091d65521b627ce9e6a81f18957d8b0b6ec67be"
+      }
+    },
+    {
+      "moduleId": "synth",
+      "replace": {
+        "detours": [
+          {
+            "address": 1073801030,
+            "guardLength": 6,
+            "guardSha256": "c1891b97a86df058cd89d4808e381ecdcf3303e96b08c5e0fd525ea46ffe4d69",
+            "unit": "poly",
+            "symbol": "po_mon",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1073799124,
+            "guardLength": 8,
+            "guardSha256": "85d5478797bd0d879fe58aa4de88956a8f8fbacdd65ac8faa8a28da95e9c14f4",
+            "unit": "poly",
+            "symbol": "po_moff",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1074026776,
+            "guardLength": 8,
+            "guardSha256": "112b7d2434bae65950506429fa2e8d01b20316d7ab6d1848ba91f10c451e11ac",
+            "unit": "fm_qz",
+            "symbol": "qz_octkey",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1073951960,
+            "guardLength": 6,
+            "guardSha256": "d6c9f1f60272197a17511f496fc19dd21ddd7df5f1f1ec0cab7a16cad60b0609",
+            "unit": "fmmachine",
+            "symbol": "fm_machine_name",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1073989928,
+            "guardLength": 6,
+            "guardSha256": "237cd1acd4da7acb61dc7fda7c88e648a5186b36732f433b4dd91966c5a669af",
+            "unit": "fmmachine",
+            "symbol": "fm_src_names",
+            "target": null,
+            "kind": "lea",
+            "writeLength": 6
+          },
+          {
+            "address": 1073993496,
+            "guardLength": 6,
+            "guardSha256": "53b8d23acf2c3fe0f794c0a5f37475b17c3433bc6a466e0e1861515989cfecda",
+            "unit": "fmmachine",
+            "symbol": "fm_name_a",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074053994,
+            "guardLength": 6,
+            "guardSha256": "53b8d23acf2c3fe0f794c0a5f37475b17c3433bc6a466e0e1861515989cfecda",
+            "unit": "fmmachine",
+            "symbol": "fm_name_b",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1073990016,
+            "guardLength": 6,
+            "guardSha256": "237e017ccd95444195ca390a3e6ca6076fbfa1f0931f2e7dfbdbee8c5ec72ca3",
+            "unit": "fmmachine",
+            "symbol": "fm_setup_row",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074235080,
+            "guardLength": 4,
+            "guardSha256": "f829e3570d9d9e95b7d7b9b0433b1aad2f13c0ac087873dbf981482521301309",
+            "unit": "fmmachine",
+            "symbol": "fm_chooser_row",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074103772,
+            "guardLength": 10,
+            "guardSha256": "22fb6e2bea4520003d2fae7035c0cd57bcd6fe6f2cfdd5b70580a3f6f2a68034",
+            "unit": "fmmachine",
+            "symbol": "fm_setup_open",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 10
+          },
+          {
+            "address": 1074078238,
+            "guardLength": 10,
+            "guardSha256": "8f0fa4f7d6db857f695996b185b38b788fa6af0eacd86d7dd01e2ff61201ffed",
+            "unit": "fmmachine",
+            "symbol": "fm_tick_hook",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 10
+          },
+          {
+            "address": 1074235526,
+            "guardLength": 10,
+            "guardSha256": "fe6cb52458c7d968dc467c1cd7721d832baf6bc2fac1826c8c10ed07fee2e7f8",
+            "unit": "fmmachine",
+            "symbol": "fm_chooser_open",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 10
+          },
+          {
+            "address": 1073946228,
+            "guardLength": 8,
+            "guardSha256": "bba32826863751ec568719c202735da1ba8f06560e4d375a80637ae6653caa8f",
+            "unit": "fmmachine",
+            "symbol": "fm_resolve_pb",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 10
+          },
+          {
+            "address": 1074239516,
+            "guardLength": 6,
+            "guardSha256": "89c50ac3ca041fdf5647ec5ee2c3580f9a67dd79f0b5cc15ceadda4b9e9bede0",
+            "unit": "fmmachine",
+            "symbol": "fm_main_commit",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074112022,
+            "guardLength": 6,
+            "guardSha256": "7a7350a69423ec41ec468a189ba167059626cb7f499d9862394d2388a23c8b59",
+            "unit": "fmmachine",
+            "symbol": "fm_src_commit",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074112592,
+            "guardLength": 6,
+            "guardSha256": "7a7350a69423ec41ec468a189ba167059626cb7f499d9862394d2388a23c8b59",
+            "unit": "fmmachine",
+            "symbol": "fm_src_commit2",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1073980718,
+            "guardLength": 8,
+            "guardSha256": "cae34bf50383462ed4f92d8044e3021247edb8bf69c17a9c7ead62f6edf79510",
+            "unit": "fmmachine",
+            "symbol": "fm_setup_edit6",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1073991064,
+            "guardLength": 8,
+            "guardSha256": "ed71ef874312890edc87cef7e19cd8c0f8ac4ac9b90182c2364f78d3a4567f45",
+            "unit": "fmmachine",
+            "symbol": "fm_setup_draw6",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1073750808,
+            "guardLength": 8,
+            "guardSha256": "3d25d06bf11f3a7bccef894d0016b52adbb4ae468a0f475dd497d7b5966e2694",
+            "unit": "fmmachine",
+            "symbol": "fm_validate",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          },
+          {
+            "address": 1073946318,
+            "guardLength": 6,
+            "guardSha256": "5aed68f7498659f87e414631493741e91f3442c5319f46e6893b567c423ce24f",
+            "unit": "fmpage",
+            "symbol": "pg_resolve",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 6
+          },
+          {
+            "address": 1074022846,
+            "guardLength": 8,
+            "guardSha256": "494435e3f72313a14453f642bdba5b064022c657c63c015752fe23092eabd19f",
+            "unit": "fm_qz",
+            "symbol": "qz_octnum",
+            "target": null,
+            "kind": "jmp",
+            "writeLength": 8
+          }
+        ],
+        "refs": [
+          {
+            "address": 1074619448,
+            "guardLength": 4,
+            "guardSha256": "97f0e8a3a010d3298daa5af020a86806f3390bf4b5843ef4db6c3e02da79bfa8",
+            "unit": "poly",
+            "symbol": "sy_render",
+            "addend": 0
+          }
+        ],
+        "pokes": [
+          {
+            "address": 1074238024,
+            "guardLength": 4,
+            "guardSha256": "8fbd3190028fe564c11b56e3e73e8eaf36925cbabf94164176eeb4c4f57bc6ac",
+            "code": "48780006"
+          },
+          {
+            "address": 1074103802,
+            "guardLength": 4,
+            "guardSha256": "8fbd3190028fe564c11b56e3e73e8eaf36925cbabf94164176eeb4c4f57bc6ac",
+            "code": "48780006"
+          },
+          {
+            "address": 1073989968,
+            "guardLength": 2,
+            "guardSha256": "74d01dadcbe6a57ef61bc53a5a65404cd8446c6738ff0ac86b1b1a78d8ae7d41",
+            "code": "7205"
+          },
+          {
+            "address": 1074235000,
+            "guardLength": 2,
+            "guardSha256": "04cd1c6d463ba6752ff68f9125991b1c4af983ae355b62366122ba2d47eee3b2",
+            "code": "7005"
+          },
+          {
+            "address": 1074235086,
+            "guardLength": 2,
+            "guardSha256": "04cd1c6d463ba6752ff68f9125991b1c4af983ae355b62366122ba2d47eee3b2",
+            "code": "7005"
+          },
+          {
+            "address": 1074239748,
+            "guardLength": 2,
+            "guardSha256": "577d7ba37f9786ab02a7dc9eeb612bb55936018179b550b14f4b9f000a89bf20",
+            "code": "7605"
+          }
+        ]
+      },
+      "runtimeUnits": [
+        "poly"
+      ],
+      "runtimeExports": {
+        "poly": {
+          "symbols": [
+            "po_octave",
+            "po_legkey",
+            "po_legmode",
+            "po_keyrel",
+            "po_knob",
+            "po_keyrec",
+            "po_hold128",
+            "po_pgdesc"
+          ]
+        }
+      }
+    }
+  ]
+}

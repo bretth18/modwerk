@@ -1,0 +1,9 @@
+[
+  "Select an audio track, open SRC SETUP, choose POLY8 and press YES.",
+  "Only one POLY8 can be assigned in each Part. A second assignment is refused without changing the track; press NO to dismiss the modal. Inactive Parts can each hold one POLY8.",
+  "After assignment, POLY8 stays on the current page like FLEX/STATIC. Double-press the track key to open its FLEX sample pool. Load a sample with the stock file browser, then confirm its slot with YES. NO leaves the browser.",
+  "Return to SRC, open the trig-mode menu with FUNC+DOWN, select CHROMATIC and confirm with YES. Hold several trig keys; FUNC+LEFT/RIGHT changes octave from -6 to +3.",
+  "Turn PTCH to transpose the sounding chord. A dedicated POLY8 MIDI channel accepts notes 0\u2013127; note 84 plays the tuned sample root.",
+  "New assignments default to LOOP OFF. POLY8 has a maximum of eight voices, subject to the pitch-work limit, with fixed -18.06 dB gain per voice.",
+  "Use REC+PLAY in chromatic mode to record up to four held panel notes spanning at most eleven semitones. AMP HOLD or the next sequencer trig starts their release. With HOLD INF, the final chord sustains until another trig or STOP; recorded key-up timing is not captured."
+]

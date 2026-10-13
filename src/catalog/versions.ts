@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 // Semantic ordering used by source-change validation; build metadata is disallowed.
 export function compareModuleVersions(next: string, previous: string): number {
   const parse=(value:string)=>{const match=/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/.exec(value);if(!match)throw new Error('Invalid module semantic version: '+value);const numbers=match.slice(1,4).map(Number);if(numbers.some(v=>!Number.isSafeInteger(v)))throw new Error('Module version number is too large');const pre=match[4]?.split('.')??[];if(pre.some(v=>/^\d+$/.test(v)&&v.length>1&&v.startsWith('0')))throw new Error('Numeric prerelease identifiers cannot have leading zeros');return {numbers,pre}}

@@ -28,17 +28,17 @@ export const FIRST_UNREAD_JOIN = `LEFT JOIN forum_posts fu ON fu.id=(SELECT np.i
 export const FIRST_UNREAD_FIELDS = 'fu.id AS first_unread_id,(SELECT CAST(COUNT(*)/30 AS INTEGER) FROM forum_posts preceding WHERE preceding.thread_id=t.id AND (preceding.created_at<fu.created_at OR (preceding.created_at=fu.created_at AND preceding.rowid<fu.rowid))) AS first_unread_page'
 
 export type ForumVisit = { since: string | null; newThreads: number; newReplies: number; unreadFollowed: number }
-/** Opening the forum home notes the visit and answers what happened since the previous one: threads started, replies in
- * followed threads (both by other people) and how many followed threads are unread now. A load more than 30 minutes after
- * the last one begins a new visit, so the counts hold still while the member reads; the first visit ever has no "since". */
+/** Opening the forum home notes the visit and answers what is still unread: threads started and replies in followed
+ * threads since the previous visit (both by other people), plus all unread followed threads. A load more than 30 minutes
+ * after the last one begins a new visit; the baseline stays fixed while the member reads, and the first visit has no "since". */
 export async function noteForumVisit(db: Database, memberId: string, now = Date.now()): Promise<ForumVisit> {
   const [, counts] = await db.batch([
     db.prepare('INSERT INTO forum_visits(member_id,seen_at) VALUES(?,?) ON CONFLICT(member_id) DO UPDATE SET last_visit_at=CASE WHEN forum_visits.seen_at<=? THEN forum_visits.seen_at ELSE forum_visits.last_visit_at END,seen_at=excluded.seen_at WHERE forum_visits.seen_at<=?').bind(memberId, stamp(now), stamp(now - VISIT_GAP), stamp(now - SEEN_WRITE)),
     db.prepare(`SELECT v.last_visit_at AS since,
-      (SELECT COUNT(*) FROM forum_threads t WHERE t.hidden=0 AND t.user_id<>'${SYSTEM_AUTHOR}' AND t.user_id<>v.member_id AND t.created_at>=v.last_visit_at) AS newThreads,
-      (SELECT COUNT(*) FROM forum_follows f JOIN forum_threads t ON t.id=f.thread_id JOIN forum_posts p ON p.thread_id=t.id WHERE f.user_id=v.member_id AND t.hidden=0 AND p.hidden=0 AND p.user_id<>v.member_id AND p.created_at>=v.last_visit_at AND p.id<>(SELECT first.id FROM forum_posts first WHERE first.thread_id=t.id ORDER BY first.created_at,first.rowid LIMIT 1)) AS newReplies,
+      (SELECT COUNT(*) FROM forum_threads t ${UNREAD_JOINS} WHERE t.hidden=0 AND t.user_id<>'${SYSTEM_AUTHOR}' AND t.user_id<>v.member_id AND t.created_at>=v.last_visit_at AND ${UNREAD}) AS newThreads,
+      (SELECT COUNT(*) FROM forum_follows f JOIN forum_threads t ON t.id=f.thread_id ${UNREAD_JOINS} JOIN forum_posts np ON ${NEW_POST} WHERE f.user_id=v.member_id AND t.hidden=0 AND np.created_at>=v.last_visit_at) AS newReplies,
       (SELECT COUNT(*) FROM forum_follows f JOIN forum_threads t ON t.id=f.thread_id ${UNREAD_JOINS} WHERE f.user_id=v.member_id AND t.hidden=0 AND ${UNREAD}) AS unreadFollowed
-      FROM forum_visits v WHERE v.member_id=?`).bind(memberId, memberId, memberId),
+      FROM forum_visits v WHERE v.member_id=?`).bind(memberId, memberId, memberId, memberId, memberId, memberId, memberId),
   ]) as [unknown, { results: ForumVisit[] }]
   return counts.results[0] ?? { since: null, newThreads: 0, newReplies: 0, unreadFollowed: 0 }
 }

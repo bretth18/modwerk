@@ -23,7 +23,7 @@ export function IssueReport({id,author,openRequest=0,embedded=false,workspaceCon
  const report=useRef<HTMLDetailsElement>(null),title=useRef<HTMLInputElement>(null),success=useRef<HTMLDivElement>(null)
  const fileInput=useRef<HTMLInputElement>(null),readRequest=useRef(0),helpId=useId()
  useOpenIssueReport(report,title,openRequest)
- const {draft,clearDraft}=useDiscussionIssueDraft(id)
+ const {draft,clearDraft}=useDiscussionIssueDraft(id,report)
  const savedWorkspace=useWorkspaceReportContext(),workspace=workspaceContext??savedWorkspace
  const [opened,setOpened]=useState(embedded),tracker=useIssueTracker(id,opened)
  const [model,setModel]=useState<OtModel|''>(''),[flash,setFlash]=useState<FlashState>('flashed')
@@ -125,7 +125,7 @@ export function IssueReport({id,author,openRequest=0,embedded=false,workspaceCon
    </details>
    {embedded&&!log?<details className="issue-report-more"><summary>Downloaded build <span>{workspace.modules.length} modules attached</span></summary><ReportConfiguration machine="octatrack" moduleId={reportedModule} workspace={workspace} log={null} value={configuration} onChange={setConfiguration} disabled={busy} os={baseOs}/></details>:<ReportConfiguration machine="octatrack" moduleId={reportedModule} workspace={workspace} log={log?.summary??null} value={configuration} onChange={setConfiguration} disabled={busy} os={baseOs}/>}
    </ReportMoreDetails>
-   {isPreview?<p className="service-note">Local preview — nothing is sent.</p>:embedded?<p className="service-note">Your report is public and notifies the module’s developers. The configuration and any log stay private to you, the maintainers and the administrator.</p>:<BugReportNotice tracker={tracker}/>}
+   {isPreview?<p className="service-note">Local preview — nothing is sent.</p>:embedded?<p className="service-note">{tracker?.tracker==='github'?'Your report, configuration and any log are public on GitHub and notify the module’s developers.':'Your report is public and notifies the module’s developers. The configuration and any log stay private to you, the maintainers and the administrator.'}</p>:<BugReportNotice tracker={tracker}/>}
    <ReportNotifications id={id} defaultChecked={follow}/>
    <button className="button button-primary" disabled={busy||reading}>{busy?'Posting…':'Post report'}</button>
   </form>}

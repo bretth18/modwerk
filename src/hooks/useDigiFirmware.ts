@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { openDeviceDatabase, deviceStore } from '../storage/device'
-import { createDigiFirmwareClient } from '../engine/elektron/firmware-client'
+import { createObservedDigiFirmwareClient } from './firmware-client'
 import { createDigiFirmwareSession, type DigiFirmwareView } from '../engine/elektron/firmware-session'
 import type { DigiMachine } from '../engine/elektron/firmware'
 
@@ -9,7 +9,7 @@ export function useDigiFirmware(machine: DigiMachine) {
   const session = useRef<ReturnType<typeof createDigiFirmwareSession> | null>(null)
   const [result, setResult] = useState<{ machine: DigiMachine; view: DigiFirmwareView }>({ machine, view: { state: 'restoring' } })
   useEffect(() => {
-    const current = createDigiFirmwareSession(machine, createDigiFirmwareClient(), async () => {
+    const current = createDigiFirmwareSession(machine, createObservedDigiFirmwareClient(), async () => {
       const database = await openDeviceDatabase()
       return { ...deviceStore(database), close: () => database.close() }
     }, view => setResult({ machine, view }))

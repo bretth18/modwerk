@@ -267,3 +267,14 @@ st_pool_title:
         jmp 0x40077b62
 .title_plain:
         jmp 0x40077b70
+
+/* Validate the rest of each Part with the real stock routine. */
+        .text
+        .balign 2
+        .global st_validate, st_stock_validate
+st_validate:
+        jmp st_validate_part
+st_stock_validate:
+        lea -96(%sp),%sp
+        movem.l %d2-%d7/%a2-%fp,(%sp)
+        jmp 0x40002320

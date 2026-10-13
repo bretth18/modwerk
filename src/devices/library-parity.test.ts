@@ -7,17 +7,24 @@ import { LibraryTools } from '../components/LibraryTools'
 import { ModuleComparison } from '../components/ModuleComparison'
 import { DEFAULT_MODULE_SORT } from '../community/module-statistics'
 import { DEVICES_BY_ID } from './registry'
-import { DIGI_MODS } from './digi-mods'
-import { AllMachinesLibrary, DigiLibrary, MachineLibrary } from './MachinePages'
+import { DIGI_MODS, type DigiMod } from './digi-mods'
+import { EmptyMachine, MachineLibrary } from './MachinePages'
 
 const noop = () => {}
+// The all-machines library is the machine library without a device; a Digi library is the same view with that machine's selection.
+const AllMachinesLibrary = MachineLibrary
+type DigiDevice = NonNullable<Parameters<typeof MachineLibrary>[0]['device']> & { id: DigiMod['device'] }
+type DigiProps = { device: DigiDevice; selectedIds: string[]; onToggle: (id: string) => void } & Omit<Parameters<typeof MachineLibrary>[0], 'device' | 'octatrackModules' | 'octatrackSelected' | 'onToggleOctatrack' | 'digiSelected' | 'onToggleDigi' | 'octatrackConflicts' | 'viewedModuleVersions' | 'moduleBaseline'>
+function DigiLibrary({ device, selectedIds, onToggle, ...rest }: DigiProps) {
+  return createElement(MachineLibrary, { ...rest, device, octatrackModules: [], octatrackSelected: [], onToggleOctatrack: noop, digiSelected: { digitakt: device.id === 'digitakt' ? selectedIds : [], 'digitakt-ii': device.id === 'digitakt-ii' ? selectedIds : [], digitone: device.id === 'digitone' ? selectedIds : [] }, onToggleDigi: (_: string, id: string) => onToggle(id), octatrackConflicts: [], viewedModuleVersions: {}, moduleBaseline: null })
+}
 // Likes and downloads show the number beside an icon; the word is there for screen readers only.
 const count = (value: string, word: string) => value + '<span class="sr-only"> ' + word + '</span>'
 const props = {
   query: '', octatrackModules: AVAILABLE_MODULES, octatrackSelected: ['miniverb'],
-  onToggleOctatrack: noop, digiSelected: { digitakt: [], digitone: [] }, onToggleDigi: noop,
+  onToggleOctatrack: noop, digiSelected: { digitakt: [], 'digitakt-ii': [], digitone: [] }, onToggleDigi: noop,
   family: 'all', onFamilyChange: noop, sort: 'collection', onSortChange: noop,
-  statistics: [{module_id: 'miniverb', average: 4.5, count: 2, likes: 7, downloads: 12, downloadsStarted: null}],
+  statistics: [{module_id: 'miniverb', average: 4.5, count: 2, likes: 7, downloads: 12, worksReports: 5, downloadsStarted: null}],
   octatrackConflicts: [], comparison: ['miniverb'], onCompare: noop, onOpenComparison: noop,
   viewedModuleVersions: {}, moduleBaseline: AVAILABLE_MODULES.map(module=>module.id),
 }
@@ -39,14 +46,24 @@ describe('machine switching layout', () => {
   })
 })
 
+describe('Digitakt II research preview', () => {
+  it('offers a local core build preview without presenting it as an approved module catalog', () => {
+    const html = renderToStaticMarkup(createElement(EmptyMachine, { device: DEVICES_BY_ID['digitakt-ii'] }))
+    expect(html).toContain('href="#digitakt-ii/configuration"')
+    expect(html).toContain('Open local build preview')
+    expect(DEVICES_BY_ID['digitakt-ii'].status).toBe('research')
+    expect(DIGI_MODS.some(mod => mod.device === 'digitakt-ii')).toBe(false)
+  })
+})
+
 describe('All machines library parity', () => {
-  it('keeps the Octatrack build, sort, rating, popularity and comparison controls', () => {
+  it('keeps the Octatrack build, sort, popularity and comparison controls', () => {
     const html = renderToStaticMarkup(createElement(AllMachinesLibrary, props))
     const tools = renderToStaticMarkup(createElement(LibraryTools, {
       family: 'all', families: [], onFamilyChange: noop, sort: 'collection', onSortChange: noop,
       comparisonCount: 1, onCompare: noop,
     }))
-    for (const value of ['updated', 'collection', 'recent', 'name', 'author', 'rated', 'liked', 'downloaded']) {
+    for (const value of ['updated', 'collection', 'recent', 'name', 'author', 'working', 'liked', 'downloaded']) {
       const option = `<option value="${value}"`
       expect(html).toContain(option)
       expect(tools).toContain(option)
@@ -57,7 +74,8 @@ describe('All machines library parity', () => {
     expect(html.slice(html.indexOf('class="discovery-tools"'), html.indexOf('id="machine-octatrack"'))).toContain('Build firmware')
     expect(html.slice(html.indexOf('id="machine-octatrack"'),html.indexOf('id="machine-digitakt"'))).not.toContain('Build firmware')
     expect(html).toContain('aria-label="Build firmware for Octatrack"')
-    expect(html).toContain('4.5 (2)')
+    expect(html).toContain('aria-label="5 members report this module working, across versions"')
+    expect(html).not.toContain('4.5 (2)')
     expect(html).toContain(count('7', 'likes'))
     expect(html).toContain(count('12', 'downloads'))
     expect(html).toContain('Remove Mini Verb from configuration')
@@ -68,7 +86,7 @@ describe('All machines library parity', () => {
     const html = renderToStaticMarkup(createElement(AllMachinesLibrary, {...props,
       query: 'no matching modules', octatrackModules: [],
       octatrackConflicts: selectionConflicts(['midi-scenes', 'analog-bassdrum']),
-      digiSelected: {digitakt: ['digislicer', 'digisophie'], digitone: []},
+      digiSelected: {digitakt: ['digislicer', 'digisophie'], 'digitakt-ii': [], digitone: []},
     }))
     expect(html).toContain('Octatrack: your selection needs a change')
     expect(html).toContain('Digitakt: your selection needs a change')
@@ -125,22 +143,23 @@ describe('Digi library parity', () => {
 
   const digiProps = { device: {...DEVICES_BY_ID.digitakt, id: 'digitakt' as const}, category: undefined, query: '', selectedIds: [], onToggle: noop, family: 'all', onFamilyChange: noop, sort: 'collection', onSortChange: noop, statistics: props.statistics, comparison: [], onCompare: noop, onOpenComparison: noop }
 
-  it.each(['liked', 'downloaded', 'rated'])('shows and sorts %s statistics in both libraries without sharing counts across machines', sort => {
+  it.each(['liked', 'downloaded', 'working'])('shows and sorts %s statistics in both libraries without sharing counts across machines', sort => {
     const statistics = [
-      {module_id: 'digitakt-digisophie', average: 4.8, count: 5, likes: 19, downloads: 42, downloadsStarted: '2026-10-01T00:00:00Z'},
-      {module_id: 'digitakt-digihealth', average: 3.2, count: 2, likes: 8, downloads: 11, downloadsStarted: '2026-10-01T00:00:00Z'},
-      {module_id: 'digitone-digihealth', average: 2.5, count: 4, likes: 3, downloads: 7, downloadsStarted: '2026-10-01T00:00:00Z'},
+      {module_id: 'digitakt-digisophie', average: 4.8, count: 5, likes: 19, downloads: 42, worksReports: 9, downloadsStarted: '2026-10-01T00:00:00Z'},
+      {module_id: 'digitakt-digihealth', average: 3.2, count: 2, likes: 8, downloads: 11, worksReports: 4, downloadsStarted: '2026-10-01T00:00:00Z'},
+      {module_id: 'digitone-digihealth', average: 2.5, count: 4, likes: 3, downloads: 7, worksReports: 2, downloadsStarted: '2026-10-01T00:00:00Z'},
     ]
     const all = renderToStaticMarkup(createElement(AllMachinesLibrary, {...props, sort, statistics}))
     const digitakt = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, sort, statistics}))
     for (const html of [all, digitakt]) {
       expect(html.indexOf('View SOPHIE')).toBeLessThan(html.indexOf('View digihealth'))
-      for (const value of ['4.8 (5)', count('19', 'likes'), count('42', 'downloads'), '3.2 (2)', count('8', 'likes'), count('11', 'downloads')]) expect(html).toContain(value)
+      for (const value of ['aria-label="9 members report this module working, across versions"', count('19', 'likes'), count('42', 'downloads'), 'aria-label="4 members report this module working, across versions"', count('8', 'likes'), count('11', 'downloads')]) expect(html).toContain(value)
+      expect(html).not.toContain('4.8 (5)')
       expect(html).not.toContain('counts are not available yet')
     }
     const digitone = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, device: {...DEVICES_BY_ID.digitone, id: 'digitone'}, statistics}))
     for (const html of [all.slice(all.indexOf('id="machine-digitone"')), digitone]) {
-      for (const value of ['2.5 (4)', count('3', 'likes'), count('7', 'downloads')]) expect(html).toContain(value)
+      for (const value of ['aria-label="2 members report this module working, across versions"', count('3', 'likes'), count('7', 'downloads')]) expect(html).toContain(value)
       expect(html).not.toContain(count('8', 'likes'))
       expect(html).not.toContain(count('11', 'downloads'))
     }
@@ -154,7 +173,6 @@ describe('Digi library parity', () => {
       const unavailable = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, device: machine, statistics: null}))
       expect(loaded).toContain(count('0', 'likes'))
       expect(loaded).toContain(count('0', 'downloads'))
-      expect(loaded).not.toContain('is-rating')
       expect(loaded).not.toContain(count('—', 'downloads'))
       expect(unavailable).toContain(count('—', 'likes'))
       expect(unavailable).toContain(count('—', 'downloads'))
@@ -204,9 +222,9 @@ describe('Digi library parity', () => {
     expect(html).toContain('type="checkbox" disabled=""')
     const other = renderToStaticMarkup(createElement(DigiLibrary, {...digiProps, comparison: ['digitone-digihealth']}))
     expect(other).not.toContain('type="checkbox" checked=""')
-    const dialog = renderToStaticMarkup(createElement(ModuleComparison, {ids:['digitakt-digihealth','digitone-digihealth'], selected: [], digiSelected:{digitakt:['digihealth'],digitone:[]}, onToggle:noop,onToggleDigi:noop,onClose:noop}))
-    expect(dialog).toContain('href="#digitakt/module/digihealth"')
-    expect(dialog).toContain('href="#digitone/module/digihealth"')
+    const dialog = renderToStaticMarkup(createElement(ModuleComparison, {ids:['digitakt-digihealth','digitone-digihealth'], selected: [], digiSelected:{digitakt:['digihealth'],'digitakt-ii':[],digitone:[]}, onToggle:noop,onToggleDigi:noop,onClose:noop}))
+    expect(dialog).toContain('href="/digitakt/module/digihealth/"')
+    expect(dialog).toContain('href="/digitone/module/digihealth/"')
     expect(dialog).toContain('aria-pressed="true"')
     expect(dialog).toContain('aria-pressed="false"')
     expect(dialog).toContain('Not measured')

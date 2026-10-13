@@ -418,7 +418,10 @@ dsp=DspSection(
   shared-window address that must not move to the other half cannot be
   spelled `$30000`, and the literal is censused.
 - **`ptable`**: a tuple of words the build parks in the stock curve bank
-  (X:0x4840) and points the source's `$fab1e0` literal at.
+  (X:0x4840) and points the source's `$fab1e0` literal at. It stays in P,
+  before the code, while a stock reader of the bank survives, and always
+  for a `stock_dsp` module, whose code only hooks reach (Sidechain
+  Compressor's table in X froze a MKII; `FAILURE_MODES.md`).
 - **`hooks`**: entries from STOCK P code (`schema.DspHook(site, stock,
   label)`). The two stock words at `site` become `jsr >label` after
   placement, the build asserting them first; the section replays the

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later OR Elastic-2.0
+// Copyright (c) 2026 Jannik Aßfalg (repeat98)
 /**
  * OCTAMOD.LOG v1/v2: the text log the on-device logger writes to the CF card root.
  * The grammar is deliberately strict so an upload can only ever be this log:

@@ -1,8 +1,8 @@
 # VECTOR
 
-Version: `0.2.3-experimental` · author: @repeat98 / Octamod contributors.
+Version: `0.2.4-experimental` · author: @repeat98 / Octamod contributors.
 
-Native SRC generator for Flex and Static samples. Physical hardware remains untested; the owner approved this exact release using emulator evidence while their OT is in repair.
+Native SRC generator for Flex and Static samples. Physical hardware remains untested; the owner approved release and closure with physical reboot/audio unverified on 9 October 2026.
 
 ![VECTOR phrase generator](presentation/thumbnail.svg)
 
@@ -39,7 +39,7 @@ Start with a disposable local project. Choose VECTOR, then select its Static or 
 
 The generator owns note masks and PTCH/HOLD/VOL locks across the 64-step lane. Generation also resets the note timing, conditions, one-shot and slide state for old/new notes. Recorder events, swing and unrelated sample/FX/LFO locks stay intact. A preserved lock on a new rest becomes a trigless lock. There is no custom Undo: duplicate a pattern before replacing edits you want to keep.
 
-The Part’s unused PICKUP slots store the marker and nine packed settings bytes; all writes stay within that track’s two six-byte slots and its SRAM mirror. Older draft markers migrate in place with default secondary controls. Native save/reload and power-cycle persistence still need testing. Selecting normal Flex/Static removes the marker while retaining the phrase.
+The Part’s unused NEIGHBOR slots store the marker and nine packed settings bytes; all writes stay within that track’s two six-byte slots and its SRAM mirror. Older draft markers migrate in place with default secondary controls. Part/project save-reload and battery-RAM-only restart pass in the emulator. Physical reboot/audio remain unverified. Selecting normal Flex/Static removes the marker while retaining the phrase.
 
 ## Generate a phrase, then edit a note
 
@@ -67,7 +67,7 @@ The shared DRAM loader reserves 1,707 audio pages / 10,487,808 bytes. VECTOR add
 
 ## Tests and measurements
 
-See [TESTING.md](TESTING.md). Sanitizer tests cover the firmware-free C engine, secondary controls, packed settings and native-record writer. Emulator evidence separately covers real panel navigation and sequence-record changes during playback. Both backing-pool browsers, file loading, sample confirmation, menu navigation and cancellation are checked in the emulator. Save/reload and power-cycle persistence, hardware audio continuity and mixed-module maximum-load playback remain untested. The release includes source packaging, a conditional resource model and browser/native parity checks.
+See [TESTING.md](TESTING.md). Sanitizer tests cover the firmware-free C engine, secondary controls, packed settings and native-record writer. Emulator evidence separately covers real panel navigation and sequence-record changes during playback. The fresh walk covers both backing-pool lists and navigation; file loading and sample confirmation have historical 0.2.3 evidence. Current two-instance Part/project save-reload, fresh saved-card load and battery-RAM-only restart pass in the emulator. Physical reboot/audio and mixed-module maximum-load playback remain unverified. The release includes source packaging, a conditional resource model and browser/native parity checks.
 
 Run `prepare.py` in the isolated toolchain to regenerate authored `control.s`; its four replay spans remain zero placeholders. The shared native/browser builders restore them from guarded local 1.40C firmware. Keep linked ELF, firmware, cards and dumps private. `verify_native.py` checks sanitizer cases and assembly reproducibility; it does not claim a hardware test.
 
@@ -112,3 +112,7 @@ RIGHT on STATIC opens the existing Static sample-slot tools.
 ![Native Flex sample-slot list with recorder buffers and memory readout reached from VECTOR pool choice.](media/ot-flex-pool.png)
 
 RIGHT on FLEX opens the existing Flex sample and recorder-slot tools.
+
+## Reboot fix in 0.2.4
+
+Packed VECTOR settings no longer trigger stock Part repair and whole-bank reset at startup. Existing `S2` version 1/2 settings are preserved. The real stock validator still checks other data. Part/project save-reload, fresh saved-project load and battery-only restart pass in the ColdFire emulator with T1/T5 at distinct settings. Physical reboot and working audio remain unverified; the owner explicitly approved release and closure of issue #349 with that limitation on 9 October 2026. Already reset projects require a known-good backup. See [TESTING.md](TESTING.md) for exact identities and limits.
